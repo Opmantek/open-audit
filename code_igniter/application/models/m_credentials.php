@@ -45,15 +45,17 @@ class M_credentials extends MY_Model
     private function build_properties() {
         $CI = & get_instance();
         $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'credentials.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
+        if (!empty($CI->response->meta->properties)) {
+            $temp = explode(',', $CI->response->meta->properties);
+            for ($i=0; $i<count($temp); $i++) {
+                if (strpos($temp[$i], '.') === false) {
+                    $temp[$i] = 'credentials.'.trim($temp[$i]);
+                } else {
+                    $temp[$i] = trim($temp[$i]);
+                }
             }
+            $properties = implode(',', $temp);
         }
-        $properties = implode(',', $temp);
         return($properties);
     }
 
@@ -61,49 +63,42 @@ class M_credentials extends MY_Model
         $CI = & get_instance();
         $reserved = ' properties limit resource action sort current offset format ';
         $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+        if (!empty($CI->response->meta->filter)) {
+            foreach ($CI->response->meta->filter as $item) {
+                if (strpos(' '.$item->name.' ', $reserved) === false) {
+                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                }
             }
-        }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
+            if ($filter != '') {
+                $filter = substr($filter, 5);
+                $filter = ' WHERE ' . $filter;
+            }
         }
         return($filter);
     }
 
-    public function read()
+    public function read($id = '')
     {
         $CI = & get_instance();
-        $properties = $this->build_properties();
-        $sql = "SELECT " . $properties . " FROM credentials WHERE id = ?";
-        $sql = $this->clean_sql($sql);
-        $data = array(intval($CI->response->meta->id));
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->meta->debug) {
-            $CI->response->meta->sql = $this->db->last_query();
+        if ($id == '') {
+            $id = @intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
         }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->meta->collection . '::' . $CI->response->meta->action;
-            $CI->error->function = 'm_credentials::read';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error->code, $CI->error->function);
-            $CI->response->error->detail_specific = $this->db->_error_message();
-            return false;
+        if (empty($id)) {
+            return null;
         }
-        $result = $query->result();
-        if (!empty($result[0]->credentials)) {
-            $result[0]->credentials = json_decode($this->encrypt->decode($result[0]->credentials));
-        }
+        $sql = "SELECT * FROM credentials WHERE id = ?";
+        $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'credentials');
-        return($result);
+        if (!empty($result->attributes->credentials)) {
+            $result->attributes->credentials = json_decode($this->encrypt->decode($result->attributes->credentials));
+        }
+        if ($result) {
+            return($result);
+        } else {
+            return null;
+        }
     }
 
     /*
@@ -170,41 +165,29 @@ class M_credentials extends MY_Model
         $CI = & get_instance();
         $filter = $this->build_filter();
         $properties = $this->build_properties();
-        if ($CI->response->meta->internal->limit != '') {
+        if (!empty($CI->response->meta->internal->limit)) {
             $limit = $CI->response->meta->internal->limit;
         } else {
             $limit = '';
         }
 
+        if (!empty($CI->user->org_list)) {
+            $org_list = "WHERE credentials.org_id IN (" . $CI->user->org_list . ")";
+        } else {
+            $org_list = '';
+        }
+
         # get the total credential count
-        $sql = "SELECT COUNT(*) as `count` FROM credentials WHERE credentials.org_id IN (" . $CI->user->org_list . ")";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        $CI->response->meta->total = intval($result[0]->count);
-
-        $sql = "SELECT " . $properties . " FROM credentials WHERE credentials.org_id IN (" . $CI->user->org_list . ") " . $limit;
-
-        $sql = $this->clean_sql($sql);
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql);
-        if ($CI->response->meta->debug) {
-            $CI->response->meta->sql = $this->db->last_query();
+        if (!empty($CI->response->meta)) {
+            $sql = "SELECT COUNT(*) as `count` FROM credentials " . $org_list;
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $CI->response->meta->total = intval($result[0]->count);
         }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->meta->collection . '::' . $CI->response->meta->action;
-            $CI->error->function = 'm_credentials::collection';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error->code, $CI->error->function);
-            $CI->response->errors[count($this->response->errors)-1]->detail_specific = $this->db->_error_message();
-            return false;
-        }
-        $result = $query->result();
+
+        $sql = "SELECT * FROM credentials " . $org_list . " " . $limit;
+        $result = $this->run_sql($sql, array());
         for ($i=0; $i < count($result); $i++) { 
             if (!empty($result[$i]->credentials)) {
                 $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
