@@ -37,10 +37,11 @@
   <div class="panel-heading">
     <h3 class="panel-title">
       <span class="text-left">Credentials</span>
-      <span class="pull-right">Count: <?php echo @count($this->response->data); ?></span>
+      <span class="pull-right">Count: <?php echo count($this->response->data); ?></span>
     </h3>
   </div>
   <div class="panel-body">
+  <?php if (!empty($this->response->data)) { ?>
 	<table class="table">
 		<thead>
 			<tr>
@@ -69,5 +70,6 @@
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+    <?php } ?>
   </div>
 </div>
