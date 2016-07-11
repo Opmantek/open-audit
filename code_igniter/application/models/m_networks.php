@@ -156,7 +156,7 @@ class M_networks extends MY_Model
         $CI = & get_instance();
         $sql = '';
         $fields = ' name description ';
-        foreach ($CI->response->meta->received_data as $key => $value) {
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
                     $sql = "SET `" . $key . "` = '" . $value . "'";
