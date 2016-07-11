@@ -38,14 +38,13 @@
 
 # Vendor Isilon
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
 
-    if ($details->snmp_oid == '1.3.6.1.4.1.12124.1') {
+    if ($oid == '1.3.6.1.4.1.12124.1') {
         $details->type = 'storage misc';
     }
-
-    if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.12124.2.51.1.3.1"));
-        $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.12124.2.51.1.4.1"));
-    }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.3.1");
+    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.4.1");
+    return($details);
 };

@@ -38,10 +38,11 @@
 
 # Vendor Nokia
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.1713.1.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.1713.1.1') {
         $details->model = 'D50';
         $details->type = 'switch';
     }
-
+    return($details);
 };

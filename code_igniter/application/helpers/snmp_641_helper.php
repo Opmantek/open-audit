@@ -38,25 +38,27 @@
 
 # Vendor Lexmark
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.641.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.641.1') {
         $details->model = 'ADP LaserStation 2000';
         $details->type = 'network printer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106851') {
+    if ($oid == '1.3.6.1.4.1.641.1.71106851') {
         $details->model = 'Lexmark E260dn';
         $details->type = 'network printer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71106860') {
+    if ($oid == '1.3.6.1.4.1.641.1.71106860') {
         $details->model = 'Lexmark T652';
         $details->type = 'network printer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.641.1.71107113') {
+    if ($oid == '1.3.6.1.4.1.641.1.71107113') {
         $details->model = 'Lexmark MS810';
         $details->type = 'network printer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.641.2.71107143') {
+    if ($oid == '1.3.6.1.4.1.641.2.71107143') {
         $details->model = 'Lexmark XM3150';
         $details->type = 'network printer';
     }
+    return($details);
 };

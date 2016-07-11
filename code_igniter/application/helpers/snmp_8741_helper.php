@@ -38,8 +38,10 @@
 
 # Vendor SonicWall
 
-$get_oid_details = function ($details) {
-    $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.8741.2.1.1.1.0"));
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.8741.2.1.1.1.0");
     $details->type = 'firewall';
-    $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.8741.2.1.1.2.0"));
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.8741.2.1.1.2.0");
+    return($details);
 };

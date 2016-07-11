@@ -38,10 +38,11 @@
 
 # Vendor Billion
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.17453') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.17453') {
         $details->model = 'BiPAC 7300A';
         $details->type = 'router';
     }
-
+    return($details);
 };

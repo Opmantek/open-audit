@@ -38,9 +38,11 @@
 
 # Vendor Hitachi
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.3347.8.1.4') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.3347.8.1.4') {
         $details->model = 'SINELINK 90Mbps High-speed Radio Link';
         $details->type = 'telecom misc';
     }
+    return($details);
 };

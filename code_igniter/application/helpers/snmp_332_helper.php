@@ -38,21 +38,19 @@
 
 # Vendor Digi Connect
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.332.11.5.3.3') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.332.11.5.3.3') {
         $details->model = '';
         $details->type = 'terminal server';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.332.11.6') {
+    if ($oid == '1.3.6.1.4.1.332.11.6') {
         $details->model = 'Digi Connect Device';
         $details->type = 'terminal server';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.332.11.6.3.3.1.3.16.4') {
+    if ($oid == '1.3.6.1.4.1.332.11.6.3.3.1.3.16.4') {
         $details->model = '';
         $details->type = 'remote management';
     }
-
-
-
-    
+    return($details);
 };

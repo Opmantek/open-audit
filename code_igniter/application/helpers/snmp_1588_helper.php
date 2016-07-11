@@ -38,145 +38,147 @@
 
 # Vendor Brocade
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.1') {
         $details->model = 'Brocade 3200 (IBM 3534-F08)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.10') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.10') {
         $details->model = 'Brocade 12000 (IBM 2109-M12)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.12') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.12') {
         $details->model = 'Brocade 3900 (IBM 2109-F32)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.16') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.16') {
         $details->model = 'Brocade 3200 (IBM 3534-F08)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.17') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.17') {
         $details->model = 'HP StorageWorks 2-16-EL';
         $details->type = 'storage misc';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.18') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.18') {
         $details->model = 'HP StorageWorks 2-8';
         $details->type = 'storage misc';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.2') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.2') {
         $details->model = 'Brocade 2800 (IBM 2109-S16)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.21') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.21') {
         $details->model = 'Brocade 24000 (IBM 2109-M14)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.22') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.22') {
         $details->model = 'IBM BladeCenter';
         $details->type = 'computer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.26') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.26') {
         $details->model = 'Brocade 3250 (IBM 2005-H08)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.27') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.27') {
         $details->model = 'Brocade 3850 (IBM 2005-H16)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.29') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.29') {
         $details->model = 'HP BladeCenter';
         $details->type = 'computer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.3') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.3') {
         $details->model = 'Brocade 2400 (IBM 2109-S08)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.32') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.32') {
         $details->model = 'HP 4100';
         $details->type = 'printer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.33') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.33') {
         $details->model = 'Dell BladeCenter';
         $details->type = 'computer';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.38') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.38') {
         $details->model = 'Brocade AP7420 (IBM 2109-A16)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.4') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.4') {
         $details->model = 'Brocade 20X0';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.42') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.42') {
         $details->model = 'Brocade 48000 (IBM 2109-M48)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.43') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.43') {
         $details->model = 'Brocade Switch';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.5') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.5') {
         $details->model = 'Brocade 22X0';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.6') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.6') {
         $details->model = 'Brocade 2800 (IBM 2109-S16)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.7') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.7') {
         $details->model = 'Brocade 2800 (IBM 2109-S16)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.71') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.71') {
         $details->model = 'Brocade 300 (IBM 2498-24e)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.72') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.72') {
         $details->model = 'Brocade Switch';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.1.1.9') {
+    if ($oid == '1.3.6.1.4.1.1588.2.1.1.9') {
         $details->model = 'Brocade 3800 (IBM 2109-F16)';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.2.1.1.1.1') {
+    if ($oid == '1.3.6.1.4.1.1588.2.2.1.1.1.1') {
         $details->model = 'VDX 6720-24';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.2.1.1.1.2') {
+    if ($oid == '1.3.6.1.4.1.1588.2.2.1.1.1.2') {
         $details->model = 'VDX 6720P-60';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.2.1.1.1.3') {
+    if ($oid == '1.3.6.1.4.1.1588.2.2.1.1.1.3') {
         $details->model = 'VDX 6730P-32';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.2.1.1.1.4') {
+    if ($oid == '1.3.6.1.4.1.1588.2.2.1.1.1.4') {
         $details->model = 'VDX 6730P-64';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.2.2.1.1.1.5') {
+    if ($oid == '1.3.6.1.4.1.1588.2.2.1.1.1.5') {
         $details->model = 'VDX 6710P-54';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.3.3.1.1000') {
+    if ($oid == '1.3.6.1.4.1.1588.3.3.1.1000') {
         $details->model = 'VDX 8770S-4';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.3.3.1.1001') {
+    if ($oid == '1.3.6.1.4.1.1588.3.3.1.1001') {
         $details->model = 'VDX 8770S-8';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.3.3.1.1002') {
+    if ($oid == '1.3.6.1.4.1.1588.3.3.1.1002') {
         $details->model = 'VDX 8770S-16';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.3.3.1.131') {
+    if ($oid == '1.3.6.1.4.1.1588.3.3.1.131') {
         $details->model = 'VDX 6740';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.1588.3.3.1.137') {
+    if ($oid == '1.3.6.1.4.1.1588.3.3.1.137') {
         $details->model = 'VDX 6740T';
         $details->type = 'switch';
     }
+    return($details);
 };

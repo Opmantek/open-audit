@@ -38,63 +38,52 @@
 
 # Vendor 3com
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.2.1.1.1.1.9') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.114.1.2.1.1.1.1.9') {
         $details->model = 'Corebuilder 3500';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.2') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.2') {
         $details->model = 'Corebuilder 6000';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.2.1') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.2.1') {
         $details->model = 'Corebuilder 6012';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.2.2') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.2.2') {
         $details->model = 'Corebuilder 6004';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.3') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.3') {
         $details->model = 'LANplex 2000';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.3.1') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.3.1') {
         $details->model = 'Corebuilder 2500';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.3.2') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.3.2') {
         $details->model = 'LANplex 2200';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.3.3') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.3.3') {
         $details->model = 'LANplex 2000';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.1.3.3.4.7') {
+    if ($oid == '1.3.6.1.4.1.114.1.3.3.4.7') {
         $details->model = 'LinkSwitch 2200';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.114.2.1.1.1.1.9') {
+    if ($oid == '1.3.6.1.4.1.114.2.1.1.1.1.9') {
         $details->model = 'Corebuilder 3500';
         $details->type = 'switch';
     }
 
-    if ($details->snmp_version == '2') {
-        # serial
-        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1"));
-
-        if ($details->serial == '') {
-            $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.43.10.27.1.1.1.13.1"));
-        }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43.47.1.1.3.1.10.1");
+    if ($details->serial == '') {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43.10.27.1.1.1.13.1");
     }
-
-    if ($details->snmp_version == '1') {
-        # serial
-        $details->serial = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1"));
-
-        if ($details->serial == '') {
-            $details->serial = snmp_clean(@snmpget($details->ip, $details->snmp_community, "1.3.6.1.4.1.43.10.27.1.1.1.13.1"));
-        }
-    }
+    return($details);
 };

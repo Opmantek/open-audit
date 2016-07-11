@@ -38,10 +38,11 @@
 
 # Vendor D-Link
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.171.10.37.38') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.171.10.37.38') {
         $details->model = 'DAP-1353';
         $details->type = 'wap';
     }
-
+    return($details);
 };

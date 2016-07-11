@@ -38,7 +38,8 @@
 
 # Vendor NxNetworks
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
 
     # TP-LINK adsl modem
     if ($details->sysDescr == 'TD-W8951ND') {
@@ -46,5 +47,5 @@ $get_oid_details = function ($details) {
         $details->manufacturer = 'TP-Link Technology Co.,Ltd';
         $details->type = 'adsl modem';
     }
-
+    return($details);
 };

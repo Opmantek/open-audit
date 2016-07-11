@@ -38,9 +38,11 @@
 
 # Vendor Avaya
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.6889.1.9') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.6889.1.9') {
         $details->model = 'G700';
         $details->type = 'voip gateway';
     }
+    return($details);
 };

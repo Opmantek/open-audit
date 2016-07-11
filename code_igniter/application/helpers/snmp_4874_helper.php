@@ -38,14 +38,12 @@
 
 # Vendor Juniper
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.4874.1.1.1.6.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.4874.1.1.1.6.1') {
         $details->model = 'E320';
         $details->type = 'router';
     }
-
-    if ($details->snmp_version == '2') {
-        # serial
-        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.4874.2.2.2.1.3.4.1.9.0"));
-    }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4874.2.2.2.1.3.4.1.9.0");
+    return($details);
 };

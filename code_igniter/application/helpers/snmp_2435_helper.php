@@ -38,12 +38,11 @@
 
 # Vendor Brother
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.2435.2.3.9.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.2435.2.3.9.1') {
         $details->model = 'Print Server';
         $details->type = 'print server';
     }
-
-
-
+    return($details);
 };

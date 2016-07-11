@@ -38,141 +38,143 @@
 
 # Vendor Bluecoat
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.3417.1.1.1') {
         $details->model = 'SG1000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.10') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.10') {
         $details->model = 'SG600';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.11') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.11') {
         $details->model = 'SGCA6000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.12') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.12') {
         $details->model = 'SG610';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.13') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.13') {
         $details->model = 'SG600';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.14') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.14') {
         $details->model = 'SG3000s';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.15') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.15') {
         $details->model = 'SG5000s';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.16') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.16') {
         $details->model = 'SG700';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.17') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.17') {
         $details->model = 'SG710';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.18') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.18') {
         $details->model = 'SG7000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.19') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.19') {
         $details->model = 'SG611';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.2') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.2') {
         $details->model = 'SG100';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.20') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.20') {
         $details->model = 'SG800';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.22') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.22') {
         $details->model = 'SG400';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.23') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.23') {
         $details->model = 'SG8000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.24') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.24') {
         $details->model = 'SG200';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.25') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.25') {
         $details->model = 'SG810';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.26') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.26') {
         $details->model = 'SG210';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.27') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.27') {
         $details->model = 'SG510';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.28') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.28') {
         $details->model = 'SG8100';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.29') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.29') {
         $details->model = 'SG9000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.3') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.3') {
         $details->model = 'SG500';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.31') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.31') {
         $details->model = 'SG600';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.32') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.32') {
         $details->model = 'SG300';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.34') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.34') {
         $details->model = 'SG900';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.4') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.4') {
         $details->model = 'SG2000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.5') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.5') {
         $details->model = 'SG5000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.6') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.6') {
         $details->model = 'SG500A';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.7') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.7') {
         $details->model = 'SG3000';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.8') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.8') {
         $details->model = 'SG5x5';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.1.9') {
+    if ($oid == '1.3.6.1.4.1.3417.1.1.9') {
         $details->model = 'SG110';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.2.1') {
+    if ($oid == '1.3.6.1.4.1.3417.1.2.1') {
         $details->model = 'SGME710';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.2.2') {
+    if ($oid == '1.3.6.1.4.1.3417.1.2.2') {
         $details->model = 'SGME800';
         $details->type = 'proxy';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3417.1.2.3') {
+    if ($oid == '1.3.6.1.4.1.3417.1.2.3') {
         $details->model = 'SGME810';
         $details->type = 'proxy';
     }
+    return($details);
 };

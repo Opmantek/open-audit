@@ -39,9 +39,10 @@
 # Vendor Alcatel
 # NOTE - this is VERY much guesswork.
 # http://www.zhone.com/support/manuals/docs/AZ/SNMP-A2-GB20-00.pdf
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
     $details->manufacturer = 'Alcatel';
-    $i = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.8059.1.1.2.1.1.1.1"));
+    $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.8059.1.1.2.1.1.1.1");
     if ($i == '1') {
         $details->model = '12000';
         $details->type = 'dslam';
@@ -70,4 +71,5 @@ $get_oid_details = function ($details) {
         $details->model = '4000E';
         $details->type = 'dslam';
     }
+    return($details);
 };

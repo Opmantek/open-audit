@@ -38,9 +38,11 @@
 
 # Vendor Compaq
 
-$get_oid_details = function ($details) {
-    if (strpos($details->snmp_oid, '1.3.6.1.4.1.232.9.4.10') == 0) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if (strpos($oid, '1.3.6.1.4.1.232.9.4.10') == 0) {
         $details->model = 'Compaq iLO';
         $details->type = 'remote access controller';
     }
+    return($details);
 };

@@ -38,9 +38,11 @@
 
 # Vendor Schneider Electric
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.3833.1.7.255.13') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.3833.1.7.255.13') {
         $details->model = 'TSXETG100 ConneXium Ethernet Gateway';
         $details->type = 'serial to ethernet';
     }
+    return($details);
 };

@@ -38,11 +38,12 @@
 
 # Vendor McAfee
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
 
     # unknown really - could be for mail or web or....
-    if ($details->snmp_oid == '1.3.6.1.4.1.1230.2.3') {
+    if ($oid == '1.3.6.1.4.1.1230.2.3') {
         $details->type = 'proxy';
     }
-
+    return($details);
 };

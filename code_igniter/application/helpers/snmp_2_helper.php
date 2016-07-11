@@ -38,49 +38,51 @@
 
 # Vendor IBM
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.3.10') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.2.3.10') {
         $details->model = '8271 Nways 216';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.3.42') {
+    if ($oid == '1.3.6.1.4.1.2.3.42') {
         $details->model = '8271 Nways F12';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.3.43') {
+    if ($oid == '1.3.6.1.4.1.2.3.43') {
         $details->model = '8271 Nways F24';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.3') {
+    if ($oid == '1.3.6.1.4.1.2.6.3') {
         $details->model = 'BladeCenter Gigabit Ethernet Switch Module';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.66.1.1.108') {
+    if ($oid == '1.3.6.1.4.1.2.6.66.1.1.108') {
         $details->model = '8270 Nways Token-Ring LAN Switch Model 108';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.66.1.1.800') {
+    if ($oid == '1.3.6.1.4.1.2.6.66.1.1.800') {
         $details->model = '8270 Nways Token-Ring LAN Switch Model 800';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.98.1.1.524') {
+    if ($oid == '1.3.6.1.4.1.2.6.98.1.1.524') {
         $details->model = '8271 Nways 524';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.98.1.1.612') {
+    if ($oid == '1.3.6.1.4.1.2.6.98.1.1.612') {
         $details->model = '8271 Nways 612';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.98.1.1.624') {
+    if ($oid == '1.3.6.1.4.1.2.6.98.1.1.624') {
         $details->model = '8271 Nways 624';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.98.1.1.712') {
+    if ($oid == '1.3.6.1.4.1.2.6.98.1.1.712') {
         $details->model = '8271 Nways 712';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.2.6.158.4') {
+    if ($oid == '1.3.6.1.4.1.2.6.158.4') {
         $details->model = 'IBM Remote Supervisor Adapter II';
         $details->type = 'remote access controller';
     }
+    return($details);
 };

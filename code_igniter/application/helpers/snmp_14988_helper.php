@@ -38,8 +38,10 @@
 
 # Vendor Mikrotik
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
     $details->model = '';
     $details->type = 'router';
-    $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.14988.1.1.7.3.0"));
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.7.3.0");
+    return($details);
 };

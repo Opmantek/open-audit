@@ -38,92 +38,92 @@
 
 # Vendor Watchguard
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.3097.1.4.1') {
         $details->model = 'fbX500';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.10') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.10') {
         $details->model = 'fbX5000';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.11') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.11') {
         $details->model = 'fbX5500e';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.12') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.12') {
         $details->model = 'fbX6000';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.13') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.13') {
         $details->model = 'fbX6500e';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.14') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.14') {
         $details->model = 'fbX8000';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.15') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.15') {
         $details->model = 'fbX8500e';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.16') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.16') {
         $details->model = 'fbX8500e-F';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.2') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.2') {
         $details->model = 'fbX550e';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.3') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.3') {
         $details->model = 'fbX700';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.4') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.4') {
         $details->model = 'fbX750e';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.5') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.5') {
         $details->model = 'fbX750e-4';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.6') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.6') {
         $details->model = 'fbX1000';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.7') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.7') {
         $details->model = 'fbX1250e';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.8') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.8') {
         $details->model = 'fbX1250e-4';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.4.9') {
+    if ($oid == '1.3.6.1.4.1.3097.1.4.9') {
         $details->model = 'fbX2500';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3097.1.5.12') {
+    if ($oid == '1.3.6.1.4.1.3097.1.5.12') {
         $details->model = 'Watchguard Firewall';
         $details->type = 'firewall';
     }
 
-    if (!isset($details->type) or $details->type == '') {
+    if (empty($details->type)) {
         $details->type = 'firewall';
         $details->model = "Watchguard Firewall";
     }
 
-    if ($details->snmp_version == '2') {
-        # model
-        // $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.17163.1.1.1.1.0" ));
-        // if (!isset($details->model) or $details->model == '') {
-        // 	$details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.17163.1.51.1.1.0" ));
-        // }
+    # model
+    // $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.1.1.1.0");
+    // if (empty($details->model)) {
+    // 	$details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.51.1.1.0");
+    // }
 
-        # serial
-        // $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.17163.1.1.1.2.0" ));
-        // if (!isset($details->serial) or $details->serial == '') {
-        // 	$details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.17163.1.51.1.2.0" ));
-        // }
-    }
+    # serial
+    // $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.1.1.2.0");
+    // if (empty($details->serial)) {
+    // 	$details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.17163.1.51.1.2.0");
+    // }
+    return($details);
 };

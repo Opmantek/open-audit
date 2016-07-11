@@ -38,16 +38,16 @@
 
 # Vendor Airespace, Inc (formerly Black Storm Networks)
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.14179.1.1.4.3') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.14179.1.1.4.3') {
         $details->model = '4402 WLAN Controller ';
         $details->os_group = 'Cisco';
         $details->manufacturer = 'Cisco Systems';
         $details->type = 'wap';
         $details->os_family = 'Cisco IOS';
     }
-
-    $test = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2"));
+    $test = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2");
     if ($test != '') {
         if (stripos($test, 'Cisco IOS Software') !== false) {
             $temp2 = explode(',', $test);
@@ -64,20 +64,16 @@ $get_oid_details = function ($details) {
             }
         }
     }
-
+    unset($test);
     # Cisco specific model OID
     if ($details->model == '') {
-        $details->model = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.13.1"));
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13.1");
     }
-
     # Generic Cisco serial
-    if ($details->serial == '') {
-        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1"));
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
+    # Second Generic Cisco serial
+    if (empty($details->serial)) {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1.0");
     }
-
-    # Generic Cisco serial
-    if ($details->serial == '') {
-        $details->serial = snmp_clean(@snmp2_get($details->ip, $details->snmp_community, "1.3.6.1.2.1.47.1.1.1.1.11.1.0"));
-    }
-
+    return($details);
 };

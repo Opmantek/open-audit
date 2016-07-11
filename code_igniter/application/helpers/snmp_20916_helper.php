@@ -38,29 +38,31 @@
 
 # Vendor AVTech
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.20916.1.4') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.20916.1.4') {
         $details->model = 'Room Alert 26W';
         $details->type = 'environment monitor';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.20916.1.5') {
+    if ($oid == '1.3.6.1.4.1.20916.1.5') {
         $details->model = 'Room Alert 24E';
         $details->type = 'environment monitor';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.20916.1.6') {
+    if ($oid == '1.3.6.1.4.1.20916.1.6') {
         $details->model = 'Room Alert 4E';
         $details->type = 'environment monitor';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.20916.1.7') {
+    if ($oid == '1.3.6.1.4.1.20916.1.7') {
         $details->model = 'Room Alert 3E';
         $details->type = 'environment monitor';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.20916.1.8') {
+    if ($oid == '1.3.6.1.4.1.20916.1.8') {
         $details->model = '';
         $details->type = 'environment monitor';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.20916.1.9') {
+    if ($oid == '1.3.6.1.4.1.20916.1.9') {
         $details->model = 'Room Alert 3E';
         $details->type = 'environment monitor';
     }
+    return($details);
 };
