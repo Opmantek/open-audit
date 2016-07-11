@@ -47,7 +47,7 @@ class MY_Model extends CI_Model
     {
         if (empty($result)) {
             # TODO - thorw an error here
-            return false;
+            return null;
         }
         if (empty($type)) {
             return false;
@@ -161,7 +161,7 @@ class MY_Model extends CI_Model
         // run the query
         $query = $this->db->query($sql, $data);
         // if we have debug set to TRUE, store the last run query
-        if ($CI->response->meta->debug) {
+        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug) {
             $CI->response->meta->sql = $this->db->last_query();
         }
         // restore the origin setting to db_debug
@@ -169,7 +169,9 @@ class MY_Model extends CI_Model
         // do we have an error?
         if ($this->db->_error_message()) {
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
-            $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+            if (!empty($CI->response)) {
+                $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+            }
             return false;
         }
         // no error, so get the result
