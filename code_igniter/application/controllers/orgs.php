@@ -74,7 +74,7 @@ class orgs extends MY_Controller
     private function collection()
     {
         $this->response->data = $this->m_orgs->collection();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
@@ -85,7 +85,7 @@ class orgs extends MY_Controller
         } else {
             $this->response->data = $this->m_orgs->read();
         }
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
