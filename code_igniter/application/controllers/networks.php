@@ -125,7 +125,7 @@ class networks extends MY_Controller
         }
         $this->response->meta->sub_resource = 'devices';
         $this->response->data = $this->m_networks->read();
-        $this->response->included = $this->response->networks->sub_resource();
+        $this->response->included = $this->m_networks->sub_resource();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
