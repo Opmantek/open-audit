@@ -426,11 +426,11 @@ class discovery extends CI_Controller
 
             // show the form to accept scan details
             $this->data['type'] = "";
-            $this->data['credentials'] = new stdClass();
+            #$this->data['credentials'] = new stdClass();
             if ($this->uri->segment(3) and $this->uri->segment(3)) {
                 if (is_numeric($this->uri->segment(3))) {
                     $this->data['system_id'] = $this->uri->segment(3);
-                    $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
+                    #$this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
                     $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'ip'));
                     $this->data['type'] = 'device';
                 } else {
@@ -441,12 +441,11 @@ class discovery extends CI_Controller
             }
             if ($this->uri->segment(4) and is_numeric($this->uri->segment(4))) {
                 $this->data['system_id'] = $this->uri->segment(4);
-                $this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
+                #$this->data['credentials'] = $this->m_system->get_credentials($this->data['system_id']);
                 $this->data['ip_address'] = ip_address_from_db($this->m_devices_components->read($this->data['system_id'], 'y', 'system', '', 'ip'));
             }
             if (!empty($this->data['system_id'])) {
                 $temp_system = $this->m_system->get_system_summary($this->data['system_id']);
-                #echo "<pre>\n"; print_r($temp_system); exit();
                 $this->data['org_id'] = $temp_system[0]->org_id;
                 $this->data['location_id'] = $temp_system[0]->location_id;
                 unset($temp_system);
@@ -455,8 +454,15 @@ class discovery extends CI_Controller
             $this->data['orgs'] = $this->m_oa_org->get_org_names();
             $this->load->model('m_oa_location');
             $this->data['locations'] = $this->m_oa_location->get_location_names();
-
             $this->data['warning'] = '';
+            
+            $sql = "SELECT COUNT(*) AS `count` FROM credentials";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $row = $query->row();
+            if (isset($row->count) and intval($row->count) == 0) {
+                $this->data['warning'] = 'You do not have any credentials stored. Please create some using menu -> Admin -> Credentials -> Add Credential Set.';
+            }            
             $this->data['include'] = "v_discover_subnet";
             $this->data['sortcolumn'] = '1';
             $this->data['heading'] = 'Discovery';
@@ -508,48 +514,6 @@ class discovery extends CI_Controller
             // the script will simply pass back the timestamp and the credentials will be retrieved and used
             $this->load->library('encrypt');
 
-            if (isset($_POST['snmp_community']) and $_POST['snmp_community'] > '') {
-                $encode['snmp_community'] = $this->input->post('snmp_community', false);
-                $credentials->snmp_community = $this->input->post('snmp_community', false);
-            } else {
-                $encode['snmp_community'] = '';
-            }
-
-            if (isset($_POST['ssh_username']) and $_POST['ssh_username'] > '') {
-                $encode['ssh_username'] = $_POST['ssh_username'];
-                $credentials->ssh_username = $_POST['ssh_username'];
-            } else {
-                $encode['ssh_username'] = '';
-            }
-
-            if (isset($_POST['ssh_password']) and $_POST['ssh_password'] > '') {
-                $encode['ssh_password'] = $this->input->post('ssh_password', false);
-                $credentials->ssh_password = $this->input->post('ssh_password', false);
-            } else {
-                $encode['ssh_password'] = '';
-            }
-
-            if (isset($_POST['windows_username']) and $_POST['windows_username'] > '') {
-                $encode['windows_username'] = $_POST['windows_username'];
-                $credentials->windows_username = $_POST['windows_username'];
-            } else {
-                $encode['windows_username'] = '';
-            }
-
-            if (isset($_POST['windows_password']) and $_POST['windows_password'] > '') {
-                $encode['windows_password'] = $this->input->post('windows_password', false);
-                $credentials->windows_password = $this->input->post('windows_password', false);
-            } else {
-                $encode['windows_password'] = '';
-            }
-
-            if (isset($_POST['windows_domain']) and $_POST['windows_domain'] > '') {
-                $encode['windows_domain'] = $_POST['windows_domain'];
-                $credentials->windows_domain = $_POST['windows_domain'];
-            } else {
-                $encode['windows_domain'] = '';
-            }
-
             if (isset($_POST['network_address']) and $_POST['network_address'] > '') {
                 $encode['network_address'] = $_POST['network_address'];
             } else {
@@ -574,17 +538,18 @@ class discovery extends CI_Controller
                 $encode['location'] = '';
             }
 
-            if (isset($_POST['type']) and $_POST['type'] == 'device' and
-                isset($_POST['system_id']) and $_POST['system_id'] > '') {
+            if (isset($_POST['type']) and $_POST['type'] == 'device' and isset($_POST['system_id']) and $_POST['system_id'] > '') {
                 // we are auditing a single device that exists in the DB
                 // update the device access credentials
                 $this->m_system->update_credentials($credentials, $_POST['system_id']);
             }
+
             if (isset($this->user->full_name)) {
                 $encode['last_user'] = $this->user->full_name;
             } else {
                 $encode['last_user'] = '';
             }
+
             $encoded = json_encode($encode);
             $credentials = $this->encrypt->encode($encoded);
             $i = 0;
@@ -1018,35 +983,35 @@ class discovery extends CI_Controller
                         // default Open-AudIT credentials
                         $default = $this->m_oa_config->get_credentials();
                         // 1.12.6
-                        if (!empty($default->default_ssh_username) and !empty($default->default_ssh_password)) {
-                            $credential = new stdClass();
-                            $credential->source = 'default';
-                            $credential->type = 'ssh';
-                            $credential->credentials = new stdClass();
-                            $credential->credentials->username = $default->default_ssh_username;
-                            $credential->credentials->password = $default->default_ssh_password;
-                            $credentials[] = $credential;
-                            unset($credential);
-                        }
-                        if (!empty($default->default_windows_username) and !empty($default->default_windows_password) and !empty($default->default_windows_domain)) {
-                            $credential = new stdClass();
-                            $credential->source = 'default';
-                            $credential->type = 'windows';
-                            $credential->credentials = new stdClass();
-                            $credential->credentials->username = $default->default_windows_domain . '\\' . $default->default_windows_username;
-                            $credential->credentials->password = $default->default_windows_password;
-                            $credentials[] = $credential;
-                            unset($credential);
-                        }
-                        if (!empty($default->default_snmp_community)) {
-                            $credential = new stdClass();
-                            $credential->source = 'default';
-                            $credential->type = 'snmp';
-                            $credential->credentials = new stdClass();
-                            $credential->credentials->community = $default->default_snmp_community;
-                            $credentials[] = $credential;
-                            unset($credential);
-                        }
+                        // if (!empty($default->default_ssh_username) and !empty($default->default_ssh_password)) {
+                        //     $credential = new stdClass();
+                        //     $credential->source = 'default';
+                        //     $credential->type = 'ssh';
+                        //     $credential->credentials = new stdClass();
+                        //     $credential->credentials->username = $default->default_ssh_username;
+                        //     $credential->credentials->password = $default->default_ssh_password;
+                        //     $credentials[] = $credential;
+                        //     unset($credential);
+                        // }
+                        // if (!empty($default->default_windows_username) and !empty($default->default_windows_password) and !empty($default->default_windows_domain)) {
+                        //     $credential = new stdClass();
+                        //     $credential->source = 'default';
+                        //     $credential->type = 'windows';
+                        //     $credential->credentials = new stdClass();
+                        //     $credential->credentials->username = $default->default_windows_domain . '\\' . $default->default_windows_username;
+                        //     $credential->credentials->password = $default->default_windows_password;
+                        //     $credentials[] = $credential;
+                        //     unset($credential);
+                        // }
+                        // if (!empty($default->default_snmp_community)) {
+                        //     $credential = new stdClass();
+                        //     $credential->source = 'default';
+                        //     $credential->type = 'snmp';
+                        //     $credential->credentials = new stdClass();
+                        //     $credential->credentials->community = $default->default_snmp_community;
+                        //     $credentials[] = $credential;
+                        //     unset($credential);
+                        // }
                         unset($default);
 
                         if (intval($details->count) >= intval($details->limit)) {
@@ -1384,7 +1349,6 @@ $details->snmp_status = '';
                         }
 
                         # Audit SSH
-                        #scp($ip = '', $credentials, $source = '', $destination = '', $display = 'n')
                         if ($details->ssh_status == "true" and $details->os_family != 'DD-WRT' and $credentials_ssh) {
                             $log_details->message = "Starting ssh audit for $details->ip (System ID $details->id)";
                             stdlog($log_details);

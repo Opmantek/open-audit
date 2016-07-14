@@ -185,9 +185,7 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/windows'><?php echo __('Discover a Windows computer')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/linux'><?php echo __('Discover a device using SSH')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/snmp'><?php echo __('Discover a device using SNMP')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/device'><?php echo __('Discover a Device')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
