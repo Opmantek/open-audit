@@ -431,7 +431,11 @@ class M_devices extends MY_Model
 
         # update a standard field in the system table
         if ($custom == 'n') {
-            $source = 'user'; // TODO - allow for others
+            if (isset($CI->response->attributes->last_seen_by)) {
+                $source = $CI->response->attributes->last_seen_by;
+            } else {
+                $source = 'user';
+            }
             $fields = implode(' ', $this->db->list_fields('system'));
             foreach ($CI->response->meta->received_data->attributes as $key => $value) {
                 if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
@@ -441,16 +445,25 @@ class M_devices extends MY_Model
                     $data = array(intval($CI->response->meta->id));
                     $result = $this->run_sql($sql, $data);
                     $previous_value = $result[0]->{$key};
-                    // calculate t5he weight
-                    $weight = $this->weight($source);
-                    // update the system table
-                    $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
-                    $data = array((string)$value, intval($CI->response->meta->id));
-                    $this->run_sql($sql, $data);
-                    // insert an entry into the edit table
-                    $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                    $data = array(intval($CI->user->id), intval($CI->response->meta->id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
-                    $this->run_sql($sql, $data);
+                    # get the current entry in the edit_log
+                    $sql = "SELECT * FROM edit_log WHERE id = ? AND db_table = 'system' AND db_column = ? ORDER BY `timestamp` LIMIT 1";
+                    $data = array(intval($CI->response->meta->id), "$key");
+                    $result = $this->run_sql($sql, $data);
+                    $previous_weight = intval($this->weight($result[0]->weight));
+                    // calculate the weight
+                    $weight = intval($this->weight($source));
+                    if ($weight <= $previous_weight) {
+                        // update the system table
+                        $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
+                        $data = array((string)$value, intval($CI->response->meta->id));
+                        $this->run_sql($sql, $data);
+                        // insert an entry into the edit table
+                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                        $data = array(intval($CI->user->id), intval($CI->response->meta->id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                        $this->run_sql($sql, $data);
+                    } else {
+                        # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
+                    }
                 }
             }
         }
@@ -480,24 +493,43 @@ class M_devices extends MY_Model
         // We assign a weight to the submitted data and compare it to what we already have for each column
         // Valid weights and the sources are:
         // 1000 - user or import (import should set as user as well)
-        // 2000 - audit
+        // 2000 - audit, ssh, wmi
         // 3000 - snmp
         // 4000 - ad (active directory)
         // 5000 - nmap
         // The lower the value, the higher the priority is given
 
-        if ($set_by == 'user') {
-            $weight = 1000;
-        } elseif ($set_by == 'audit') {
-            $weight = 2000;
-        } elseif ($set_by == 'snmp') {
-            $weight = 3000;
-        } elseif ($set_by == 'ad') {
-            $weight = 4000;
-        }elseif ($set_by == 'nmap') {
-            $weight = 5000;
-        } else {
-            $weight = 2500;
+        switch ($set_by) {
+            case 'user':
+                $weight = 1000;
+                break;
+
+            case 'audit':
+            case 'ssh':
+            case 'windows':
+            case 'wmi':
+                $weight = 2000;
+                break;
+
+            case 'snmp':
+                $weight = 3000;
+                break;
+
+            case 'ipmi':
+                $weight = 4000;
+                break;
+
+            case 'ad':
+                $weight = 5000;
+                break;
+
+            case 'nmap':
+                $weight = 6000;
+                break;
+            
+            default:
+                $weight = 10000;
+                break;
         }
         return($weight);
     }
@@ -552,12 +584,12 @@ class M_devices extends MY_Model
         } elseif (!empty($details->hostname)) {
             $name = $details->hostname;
             $details->name = $details->hostname;
-        } elseif (!empty($details->dns_hostname)) {
-            $name = $details->dns_hostname;
-            $details->name = $details->dns_hostname;
         } elseif (!empty($details->sysName)) {
             $name = $details->sysName;
             $details->name = $details->sysName;
+        } elseif (!empty($details->dns_hostname)) {
+            $name = $details->dns_hostname;
+            $details->name = $details->dns_hostname;
         }
 
         if (!isset($details->ip)) {
@@ -570,8 +602,11 @@ class M_devices extends MY_Model
         $log_details->file = 'system';
         stdlog($log_details);
 
+        # remove some characters from the OS string
         $details->os_name = str_ireplace("(r)", "", $details->os_name);
         $details->os_name = str_ireplace("(tm)", "", $details->os_name);
+
+
         if (empty($details->status)) {
             $details->status = 'production';
         }
@@ -589,19 +624,21 @@ class M_devices extends MY_Model
             $details->location_id = '0';
         }
 
+        # Set the form factor to virtual if required
         if ((strripos($details->manufacturer, "vmware") !== false) or
             (strripos($details->manufacturer, "parallels") !== false) or
-            (strripos($details->manufacturer, "virtual") !== false)) {
+            (strripos($details->manufacturer, "virtual") !== false) or
+            (strripos($details->model, "bhyve") !== false)) {
             if (!isset($details->class) or $details->class != 'hypervisor') {
-                $details->form_factor = 'Virtual';
                 $details->form_factor = 'Virtual';
             }
         }
 
+        # Pad the IP address
         $details->ip = ip_address_to_db($details->ip);
 
-        if (!empty($details->dns_hostname) and !empty($details->dns_domain) and empty($details->fqdn)) {
-            $details->fqdn = $details->dns_hostname.".".$details->dns_domain;
+        if (!empty($details->hostname) and !empty($details->domain) and empty($details->fqdn)) {
+            $details->fqdn = $details->hostname.".".$details->domain;
         }
 
         $sql = "SHOW COLUMNS FROM system";
