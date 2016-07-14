@@ -114,7 +114,12 @@ class M_networks extends MY_Model
         $CI = & get_instance();
         # ensure we have a valid subnet
         $this->load->helper('network');
-        $test = network_details($CI->response->meta->received_data->attributes->name);
+        if (!empty($CI->response->meta->received_data->attributes->name)) {
+            $test = network_details($CI->response->meta->received_data->attributes->name);
+        } else {
+            log_error('ERR-0009', 'm_networks::create_network');
+            return false;
+        }
         if (!empty($test->error)) {
             log_error('ERR-0009', 'm_networks::create_network');
             return false;
