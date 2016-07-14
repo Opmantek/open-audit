@@ -85,27 +85,39 @@ if (! function_exists('ssh_credentials')) {
                 } else {
                     $credential->root = false;
                 }
+                # initial attempt to connect
                 if ($result = ssh_command($ip, $credential, 'uname', $display)) {
+                    # Successful connect
                     if ($result['status'] == 0) {
+                            # Did we use root?
                         if ($credential->root) {
+                            # yes we did use root
                             $log->message = "Credential set from " . $credential->source . " working on " . $ip;
                             stdlog($log);
                             return $credential;
                         } else {
+                            # no we didn't use root - is sudo on the box?
                             if ($result = ssh_command($ip, $credential, 'which sudo', $display)) {
+                                # yes, sudo is present
                                 $sudo_binary = $result['output'][0];
                                 $command = 'echo ' . $credential->credentials->password . ' | sudo -S whoami';
+                                # can we use sudo?
                                 if ($result = ssh_command($ip, $credential, $command, $display)) {
+                                    # yes, we can use sudo
                                     if ($result['status'] == 0) {
+                                        # the command ran AND we got no returned error status - we can use sudo
                                         $credential->sudo = $sudo_binary;
                                         return $credential;
                                     } else {
+                                        # the command ran BUT we got a returned error status - we cannot use sudo
                                         $connected[] = $credential;
                                     }
                                 } else {
+                                    # the commadn failed - we cannot use sudo
                                     $connected[] = $credential;
                                 }
                             } else {
+                                # sudo is not on the box
                                 $connected[] = $credential;
                             }
                         }
@@ -152,24 +164,20 @@ if (! function_exists('ssh_command')) {
         } else {
             $display = 'y';
         }
-
         $log = new stdClass();
         $log->severity = 7;
         $log->file = 'system';
         $log->display = $display;
-
         if (empty($ip)) {
             $log->message = 'No IP supplied to ssh_command function.';
             stdlog($log);
             return false;
         }
-
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No valid IP supplied to ssh_command function.';
             stdlog($log);
             return false;
         }
-
         if (!is_object($credentials)) {
             $log->message = 'No credentials supplied to ssh_command function.';
             stdlog($log);
@@ -179,7 +187,6 @@ if (! function_exists('ssh_command')) {
             $password = $credentials->credentials->password;
             $username = escapeshellarg($credentials->credentials->username);
         }
-
         if (empty($command)) {
             $log->message = 'No command supplied to ssh_command function.';
             stdlog($log);
@@ -187,7 +194,6 @@ if (! function_exists('ssh_command')) {
         } else {
             $command = escapeshellarg($command);
         }
-
         $return = array('output' => '', 'status' => '');
 
         if (php_uname('s') == 'Linux') {
@@ -214,36 +220,14 @@ if (! function_exists('ssh_command')) {
             }
         }
 
-        // NOTE - requires "brew install coreutils" for the gtimeout command
         // NOTE - requires the command "brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb" for the sshpass command
         if (php_uname('s') == 'Darwin') {
             # test we have sshpass installed
-            unset($command_string);
-            unset($output);
-            unset($return_var);
-            $command_string = "which sshpass 2>/dev/null";
-            exec($command_string, $output, $return_var);
-            // if (empty($output[0])) {
-            //     $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
-            //     stdlog($log);
-            //     return false;
-            // }
-
-            # test we have gtimeout installed - if we don't, just exclude it from the command executed
-            unset($command_string);
-            unset($output);
-            unset($return_var);
-            $command_string = "which gtimeout 2>/dev/null";
-            exec($command_string, $output, $return_var);
-            if (empty($output[0])) {
-                $timeout_command = '';
-            } else {
-                $timeout_command = 'gtimeout 5m ';
+            if (!file_exists('/usr/local/bin/sshpass')) {
+                $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
+                stdlog($log);
+                return false;
             }
-            unset($command_string);
-            unset($output);
-            unset($return_var);
-
             $descriptorspec = array(
                 0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
                 1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
@@ -251,7 +235,7 @@ if (! function_exists('ssh_command')) {
             );
             $cwd = '/usr/local/open-audit/other';
             $env = array();
-            $command_string = $timeout_command . 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
+            $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
             $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
             if (is_resource($process)) {
                 fwrite($pipes[0], $password);
@@ -286,8 +270,15 @@ if (! function_exists('ssh_command')) {
         $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
         $command_string = str_replace(escapeshellarg($password), '******', $command_string);
 
+        if ($return['status'] != '0') {
+            $log->message = 'SSH command \'' . $command_string . '\' on ' . $ip . ' failed';
+            stdlog($log);
+        } else {
+            $log->message = 'SSH command \'' . $command_string . '\' on ' . $ip . ' succeeded';
+            stdlog($log);
+        }
+
         if ($display == 'y') {
-            echo "\n";
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
             echo "DEBUG - Command Output:\n";
@@ -298,16 +289,11 @@ if (! function_exists('ssh_command')) {
                 unset($formatted_output[count($formatted_output)-1]);
             }
             print_r($formatted_output);
+            echo "\n";
+            echo "\n";
+            ob_flush();
+            flush();
         }
-
-        if ($return['status'] != '0') {
-            $log->message = 'SSH command \'' . $command_string . '\' on ' . $ip . ' failed';
-            stdlog($log);
-        } else {
-            $log->message = 'SSH command \'' . $command_string . '\' on ' . $ip . ' succeeded';
-            stdlog($log);
-        }
-
         return($return);
     }
 }
@@ -383,7 +369,7 @@ if (! function_exists('ssh_audit')) {
         }
 
         # Hostname
-        $command = 'hostnamne -s';
+        $command = 'hostname -s';
         $ssh_result = ssh_command($ip, $credentials, $command, $display);
         if ($ssh_result['status'] == 0) {
             $details->hostname = $ssh_result['output'][0];
@@ -396,7 +382,7 @@ if (! function_exists('ssh_audit')) {
             $details->fqdn = $ssh_result['output'][0];
         }
 
-        if (empty($details->hostname) and $details->fqdn != '') {
+        if (empty($details->hostname) and !empty($details->fqdn)) {
             $temp = explode('.', $details->fqdn);
             $details->hostname = $temp[0];
             unset($temp);
@@ -407,7 +393,7 @@ if (! function_exists('ssh_audit')) {
             if ($credentials->credentials->username == 'root') {
                 $command = 'dmidecode -s system-uuid';
             } elseif ($credentials->sudo) {
-                $command = 'echo ' . $password . ' | sudo -S dmidecode -s system-uuid';
+                $command = 'echo ' . $credentials->credentials->password . ' | sudo -S dmidecode -s system-uuid';
             } else {
                 $command = '';
             }
@@ -420,11 +406,11 @@ if (! function_exists('ssh_audit')) {
                 $details->uuid = '';
             }
 
-            if ($details->uuid == '') {
+            if (empty($details->uuid)) {
                 if ($credentials->credentials->username == 'root') {
                     $command = 'cat /sys/class/dmi/id/product_uuid';
                 } elseif ($credentials->sudo) {
-                    $command = 'echo ' . escapeshellarg($details->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
+                    $command = 'echo ' . escapeshellarg($credentials->credentials->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
                 } else {
                     $command = '';
                 }
@@ -557,6 +543,31 @@ if (! function_exists('scp')) {
             $cwd = '/tmp';
             $env = array();
             $command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
+            $echo = $command;
+            $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
+            if (is_resource($process)) {
+                fwrite($pipes[0], $password);
+                fclose($pipes[0]);
+                // stdOut
+                $temp = stream_get_contents($pipes[1]);
+                $return['output'] = explode("\n", $temp);
+                if (end($return['output']) == '') {
+                    unset($return['output'][count($return['output'])-1]);
+                }
+                fclose($pipes[1]);
+                $return['status'] = proc_close($process);
+            }
+        }
+
+        if (php_uname('s') == 'Darwin') {
+            $descriptorspec = array(
+                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+                2 => array("file", "/dev/null", "a"), // stderr is a file to write to
+            );
+            $cwd = '/tmp';
+            $env = array();
+            $command = 'sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . $ip . ':' . $destination;
             $echo = $command;
             $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
             if (is_resource($process)) {
