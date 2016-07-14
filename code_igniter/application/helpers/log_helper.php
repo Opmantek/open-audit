@@ -203,9 +203,7 @@ if (! function_exists('stdlog')) {
             $log->display = $log_details->display;
         }
         if ($log->display == 'y') {
-            echo "LOG   - ".$log->message."\n".str_pad("", 1024, " ")."\n";
-            ob_flush();
-            flush();
+            echo "LOG   - ".$log->message."\n";
         }
 
         // check the requested logging level and if not met, exit
