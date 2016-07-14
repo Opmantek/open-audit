@@ -780,7 +780,7 @@ class M_system extends MY_Model
     #TODO what do we do with linked systems when the above is run from db_admin/maintenance?
     public function delete_linked_system($system_id)
     {
-        $sql = "DELETE FROM system WHERE linked_sys = ?";
+        $sql = "DELETE FROM system WHERE attached_system_id = ?";
         $sql = $this->clean_sql($sql);
         $data = array(intval($system_id));
         $query = $this->db->query($sql, $data);
