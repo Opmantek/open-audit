@@ -667,7 +667,7 @@ class M_devices_components extends MY_Model
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
                     if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                        $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                        $sql = "SELECT last_seen FROM `system` WHERE id = ?";
                         $sql = $this->clean_sql($sql);
                         $data = array($details->id);
                         $query = $this->db->query($sql, $data);
@@ -724,7 +724,7 @@ class M_devices_components extends MY_Model
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
                 if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                    $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                    $sql = "SELECT last_seen FROM `system` WHERE id = ?";
                     $sql = $this->clean_sql($sql);
                     $data = array($details->id);
                     $query = $this->db->query($sql, $data);
