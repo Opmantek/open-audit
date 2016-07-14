@@ -179,54 +179,9 @@ class M_devices extends MY_Model
         $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'devices');
         return($result);
-
-
-
-
-
-
-
-
-
-        // $document['system'] = $query->result();
-
-        // // the credentials object
-        // $document['credentials'] = array();
-        // $document['credentials'][0] = $this->m_system->get_credentials($CI->response->meta->id);
-
-        // // the location object
-        // #$sql = "SELECT oa_location.id, oa_location.name, oa_location.type, IF(system.location_room != '', system.location_room, oa_location.room) as room, IF(system.location_suite != '', system.location_suite, oa_location.suite) as suite, IF(system.location_level != '', system.location_level, oa_location.level) as level, oa_location.address, oa_location.suburb, oa_location.city, oa_location.postcode, oa_location.state, oa_location.country, oa_location.phone, system.location_rack as rack, system.location_rack_position as rack_position, system.location_rack_size as rack_size FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
-        // $sql = "SELECT location_id, '' AS location_name, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system WHERE system.id = ?";
-        // $sql = $this->clean_sql($sql);
-        // $data = array($CI->response->meta->id);
-        // $query = $this->db->query($sql, $data);
-        // $document['location'] = $query->result();
-
-        // // the additional_fields object
-        // $sql = "SELECT additional_field.id as `additional_field.id`, additional_field.group_id AS `additional_field.group_id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
-        // $sql = $this->clean_sql($sql);
-        // $data = array($CI->response->meta->id);
-        // $query = $this->db->query($sql, $data);
-        // $document['additional_fields'] = $query->result();
-
-        // // the purchase object
-        // $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
-        // $sql = $this->clean_sql($sql);
-        // $data = array($CI->response->meta->id);
-        // $query = $this->db->query($sql, $data);
-        // $document['purchase'] = $query->result();
-
-        // $tables = array('audit_log', 'bios', 'change_log', 'disk', 'dns', 'edit_log', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'pagefile', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
-        // foreach ($tables as $table) {
-        //     $result = $this->m_devices_components->read($CI->response->meta->id, $CI->response->meta->current, $table, $CI->response->meta->filter, '*');
-        //     if (count($result) > 0) {
-        //         $document[$table] = $result;
-        //     }
-        // }
-        // return($document);
     }
 
-    public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '')
+    public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y')
     {
         $CI = & get_instance();
         $log = new stdClass();
@@ -280,6 +235,10 @@ class M_devices extends MY_Model
             $sort = '';
         }
 
+        if ($current != 'y') {
+            $current = 'n';
+        }
+
         $filter = $this->build_filter();
 
         if ($sub_resource == 'location') {
@@ -295,7 +254,19 @@ class M_devices extends MY_Model
             $data = array($id);
 
         } else {
-            $sql = "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . $id . " " . $sub_resource_id . " " . $filter . " " . $sort;
+
+            $currency = '';
+            $fields = $this->db->list_fields($sub_resource);
+            foreach ($fields as $field) {
+                if ($field == 'current') {
+                    $currency = true;
+                }
+            }
+            if ($currency != '') {
+                $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
+            }
+
+            $sql = "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $sort;
             $data = array($CI->user->id);
         }
         $result = $this->run_sql($sql, $data);
