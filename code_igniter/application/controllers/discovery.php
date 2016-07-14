@@ -1100,7 +1100,7 @@ class discovery extends CI_Controller
                                 $details->audits_ip = '127.0.0.1';
                             }
                         }
-$details->snmp_status = '';
+
                         // SNMP audit
                         if (!extension_loaded('snmp') and $details->snmp_status == 'true') {
                             $log_details->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $details->ip;
@@ -1108,6 +1108,8 @@ $details->snmp_status = '';
                         }
 
                         if (extension_loaded('snmp') and $details->snmp_status == 'true') {
+                            $log_details->message = 'Testing SNMP credentials for '.$details->ip;
+                            stdlog($log_details);
                             $credentials_snmp = snmp_credentials($details->ip, $credentials, $display);
                         } else {
                             $credentials_snmp = false;
@@ -1269,14 +1271,16 @@ $details->snmp_status = '';
                         }
 
                         if (!empty($credentials_snmp) and $details->snmp_status == 'true') {
-                            $update = new stdClass();
-                            $update->ip_address = $details->ip;
-                            $update->snmp_community = $credentials_snmp->credentials->community;
-                            $update->snmp_version = $credentials_snmp->credentials->version;
-                            $this->m_system->update_credentials($update, $details->id);
-                            unset($update);
-                            $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->id.')';
-                            stdlog($log_details);
+                            if ($credentials_snmp->credentials->version == '2') {
+                                $update = new stdClass();
+                                $update->ip_address = $details->ip;
+                                $update->snmp_community = $credentials_snmp->credentials->community;
+                                $update->snmp_version =   $credentials_snmp->credentials->version;
+                                $this->m_system->update_credentials($update, $details->id);
+                                unset($update);
+                                $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->id.')';
+                                stdlog($log_details);
+                            }
                         }
 
                         if (!empty($credentials_ssh) and $details->ssh_status == 'true') {
