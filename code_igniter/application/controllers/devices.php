@@ -118,7 +118,6 @@ class devices extends MY_Controller
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
             $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
-            #echo "<pre>\n"; print_r($this->response->meta); exit();
         }
 
         if ($this->response->meta->sub_resource != '') {
@@ -131,6 +130,7 @@ class devices extends MY_Controller
                 $related = $this->m_devices->get_related_tables();
                 $this->response->data[0]->links->relationships = $related;
             }
+            # get any additionally included tables
             if (!empty($this->response->meta->include) and !empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
