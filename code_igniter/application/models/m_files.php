@@ -77,8 +77,12 @@ class M_files extends MY_Model
         $sql = "SELECT * FROM files WHERE id = ?";
         $data = array(intval($CI->response->meta->id));
         $result = $this->run_sql($sql, $data);
-        $return_data['files'] = $result;
-        return($return_data);
+        $result = $this->format_data($result, 'files');
+        if ($result) {
+            return($result);
+        } else {
+            return null;
+        }
     }
 
     public function create()
@@ -86,14 +90,17 @@ class M_files extends MY_Model
         $CI = & get_instance();
         # check to see if we already have a file with the same name
         $sql = "SELECT COUNT(id) AS count FROM `files` WHERE `path` = ?";
-        $data = array($CI->response->meta->received_data['path']);
+        $data = array($CI->response->meta->received_data->attributes->path);
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
             log_error('ERR-0010', 'm_files::create_file');
             return false;
         }
         $sql = "INSERT INTO `files` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array($CI->response->meta->received_data['org_id'], $CI->response->meta->received_data['path'], $CI->response->meta->received_data['description'], $CI->user->full_name);
+        if (empty($CI->response->meta->received_data->attributes->org_id)) {
+            $CI->response->meta->received_data->attributes->org_id = 0;
+        }
+        $data = array($CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->path, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -111,6 +118,7 @@ class M_files extends MY_Model
 
         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM files" . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'files');
         return $result;
     }
 
@@ -119,7 +127,7 @@ class M_files extends MY_Model
         $CI = & get_instance();
         $sql = '';
         $fields = ' path description ';
-        foreach ($CI->response->meta->received_data as $key => $value) {
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
                     $sql = "SET `" . $key . "` = '" . $value . "'";
