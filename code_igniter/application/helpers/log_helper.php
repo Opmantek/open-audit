@@ -72,7 +72,7 @@ if (! function_exists('log_error')) {
             $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
             if (!empty($CI->response)) {
                 $CI->response->errors[] = $error;
-                $CI->response->header = $error->status;
+                $CI->response->meta->header = $error->status;
             }
         }
     }
