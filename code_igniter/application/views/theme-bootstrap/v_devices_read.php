@@ -908,7 +908,7 @@ if ($data['system']->type == 'computer') {
                         echo '<div class="panel panel-default">';
                         echo '<div class="panel-body">';
                         echo '<div class="row">';
-                        $row_attribute_count = intval(count((array)$item_row) / 2);
+                        $row_attribute_count = intval(count((array)$item_row) / 2)-1;
                         $count = 0;
                         echo '<div class="col-md-6">';
                         foreach ($item_row as $key => $value) {
