@@ -91,8 +91,8 @@ class M_credentials extends MY_Model
         $sql = "SELECT * FROM credentials WHERE id = ?";
         $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'credentials');
-        if (!empty($result->attributes->credentials)) {
-            $result->attributes->credentials = json_decode($this->encrypt->decode($result->attributes->credentials));
+        if (!empty($result[0]->attributes->credentials)) {
+            $result[0]->attributes->credentials = json_decode($this->encrypt->decode($result[0]->attributes->credentials));
         }
         if ($result) {
             return($result);
