@@ -1166,13 +1166,6 @@ $details->snmp_status = '';
                             }
                         }
 
-                        if ($display == 'y') {
-                            $details->show_output = true;
-                            echo "DEBUG-1- ---------------\n";
-                            $this->echo_details($details);
-                            echo "DEBUG-1- ---------------\n";
-                        }
-
                         // test for working Windows credentials
                         if ($details->wmi_status == 'true') {
                             $log_details->message = 'Testing Windows credentials for '.$details->ip;
@@ -1209,9 +1202,9 @@ $details->snmp_status = '';
 
                         if ($display == 'y') {
                             $details->show_output = true;
-                            echo "DEBUG-2- ---------------\n";
+                            echo "DEBUG- ---------------\n";
                             $this->echo_details($details);
-                            echo "DEBUG-2- ---------------\n";
+                            echo "DEBUG- ---------------\n";
                         }
 
                         // insert or update the device
@@ -1407,7 +1400,7 @@ $details->snmp_status = '';
                                 # successfully copied and chmodded the audit script
                                 if (!empty($credentials_ssh->sudo)) {
                                     # run the audit script as a normal user
-                                $command = 'echo "'.escapeshellarg($credentials->credentials->password).'" | '.$credentials->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
+                                $command = 'echo "'.escapeshellarg($credentials_ssh->credentials->password).'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 } else {
                                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 }
