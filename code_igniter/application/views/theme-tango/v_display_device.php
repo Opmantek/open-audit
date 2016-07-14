@@ -52,7 +52,6 @@
 ?>
 <!-- v_display_device -->
 <?php include "v_display_inc_common.php";
-
 ?>
 <!-- below is the menu div that sits on the left -->
 <div style="float: left; width: 180px; margin-left: 0%; vertical-align: top; position: fixed;" >
