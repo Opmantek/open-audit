@@ -129,6 +129,20 @@ if (! function_exists('getError')) {
         $error_array['ERR-0010']->title = "Bad Request.";
         $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a unique field is already used by another item in the collection.';
 
+        $error_array['ERR-0011'] = new stdClass();
+        $error_array['ERR-0011']->code = 'ERR-0010';
+        $error_array['ERR-0011']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0011']->severity = 3;
+        $error_array['ERR-0011']->title = "Bad Request.";
+        $error_array['ERR-0011']->detail = 'Cannot create read uploaded file.';
+
+        $error_array['ERR-0012'] = new stdClass();
+        $error_array['ERR-0012']->code = 'ERR-0010';
+        $error_array['ERR-0012']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0012']->severity = 3;
+        $error_array['ERR-0012']->title = "Bad Request.";
+        $error_array['ERR-0012']->detail = 'Uploaded XML is invalid.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
