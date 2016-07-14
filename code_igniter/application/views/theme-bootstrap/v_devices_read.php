@@ -102,7 +102,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
       </div>
         <?php
         // the hardware catrgories
-        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'partition', 'processor', 'san', 'sound', 'video');
+        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'processor', 'san', 'sound', 'video');
         $display_hardware = false;
         foreach ($hardware as $item) {
             if (!empty($data[$item])) {
