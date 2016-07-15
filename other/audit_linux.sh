@@ -2189,6 +2189,12 @@ if [ "$debugging" -gt 0 ]; then
 fi
 
 if [ "$submit_online" = "y" ]; then
+
+	if [ "$display" = "y" ]; then
+		url="$url/display"
+		debugging=4
+	fi
+
 	sed -i -e 's/+/%2B/g' "$xml_file"
 	sed -i -e 's/"/%22/g' "$xml_file"
 	sed -i -e 's/&/%26/g' "$xml_file"
@@ -2196,13 +2202,10 @@ if [ "$submit_online" = "y" ]; then
 		echo "Submitting results to server"
 		echo "URL: $url"
 	fi
-	if [ "$display" = "y" ]; then
-		url="$url/display"
-		debugging=4
-	fi
+
 	if [ -n "$(which wget 2>/dev/null)" ]; then
 		if [ "$debugging" -gt 3 ]; then
-			wget -O add_system --post-file="$xml_file" "$url" 2>/dev/null
+			wget -O add_system --post-file="$xml_file" "$url"
 			cat add_system
 			rm add_system
 		else
