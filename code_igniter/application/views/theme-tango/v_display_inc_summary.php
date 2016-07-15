@@ -433,7 +433,8 @@
 						</td>
 					</thead>
 					<tbody>
-					<?php foreach ($vm as $key) {
+					<?php foreach ($vm as $item) {
+                        $key = $item->attributes;
                         if ($key->icon != '') {
                             $icon = "<a href=\"".base_url()."index.php/main/system_display/".$key->guest_system_id."\"><img alt=\"\" src=\"".base_url()."theme-tango/tango-images/16_" . $key->icon . ".png\" /></a>\n";
                         } else {
@@ -493,7 +494,8 @@
 							</td>
 						</thead>
 						<tbody>
-						<?php foreach ($network as $key) { ?><tr>
+						<?php foreach ($network as $item) { ?><tr>
+                            <?php $key = $item->attributes; ?>
 								<td><?php echo print_something($key->net_index); ?></td>
 								<td><?php echo print_something($key->mac); ?></td>
 								<td><?php echo print_something($key->connection); ?></td>
