@@ -541,9 +541,10 @@
 						<?php foreach ($ip as $item) {
                             $ip_address = $item->attributes;
                             $interface = '';
-                            foreach ($network as $key) {
-                                if ($key->net_index == $ip_address->net_index) {
-                                    $interface = $key->connection . ' - ' . $key->description;
+                            foreach ($network as $item2) {
+                                $key2 = $item2->attributes;
+                                if ($key2->net_index == $ip_address->net_index) {
+                                    $interface = $key2->connection . ' - ' . $key2->description;
                                 }
                             }
                         ?>
@@ -587,18 +588,19 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ($module as $mod): ?>
+					<?php foreach ($module as $item): ?>
+                    <?php $key = $item->attributes; ?>
 							<tr>
-								<td align='center'><?php echo print_something($mod->module_index)?></td>
-								<td align='center'><?php echo print_something($mod->contained_in)?></td>
-								<td><?php echo print_something($mod->class_text)?></td>
-								<td><?php echo print_something($mod->description)?></td>
-								<td align='center'><?php echo print_something($mod->hardware_revision)?></td>
-								<td><?php echo print_something($mod->firmware_revision)?></td>
-								<td><?php echo print_something($mod->software_revision)?></td>
-								<td><?php echo print_something($mod->serial)?></td>
-								<td><?php echo print_something($mod->asset_ident)?></td>
-								<td align='center'><?php echo print_something($mod->is_fru)?></td>
+								<td align='center'><?php echo print_something($key->module_index)?></td>
+								<td align='center'><?php echo print_something($key->contained_in)?></td>
+								<td><?php echo print_something($key->class_text)?></td>
+								<td><?php echo print_something($key->description)?></td>
+								<td align='center'><?php echo print_something($key->hardware_revision)?></td>
+								<td><?php echo print_something($key->firmware_revision)?></td>
+								<td><?php echo print_something($key->software_revision)?></td>
+								<td><?php echo print_something($key->serial)?></td>
+								<td><?php echo print_something($key->asset_ident)?></td>
+								<td align='center'><?php echo print_something($key->is_fru)?></td>
 							</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -628,7 +630,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($dns as $key): ?>
+                        <?php foreach ($dns as $item): ?>
+                        <?php $key = $item->attributes; ?>
                         <tr>
                             <td><span style="display:none;"><?php echo print_something($key->ip)?></span><?php echo print_something(ip_address_from_db($key->ip))?></td>
                             <td><?php echo print_something($key->name)?>&nbsp;</td>
@@ -642,10 +645,6 @@
         </form>
     <?php } ?>
     </div>
-
-
-
-
 
     <div id="view_summary_san" style="float: left; width: 100%;">
     <?php if (count($san) > 0) { ?>
@@ -671,16 +670,17 @@
                     <tbody>
                         <?php 
                             foreach ($san as $item) {
+                                $key = $item->attributes;
                                 echo "<tr>
-                                <td>" . @$item->type . "</td>
-                                <td>" . @$item->manufacturer . "</td>
-                                <td>" . @$item->serial . "</td>
-                                <td>" . @$item->part_number . "</td>
-                                <td>" . @$item->location . "</td>
-                                <td>" . @$item->attached_to . "</td>
-                                <td>" . @$item->status . "</td>
-                                <td>" . @$item->date_of_manufacture . "</td>
-                                <td>" . @str_replace(',', ',<br />', $item->notes) . "</td>
+                                <td>" . @$key->type . "</td>
+                                <td>" . @$key->manufacturer . "</td>
+                                <td>" . @$key->serial . "</td>
+                                <td>" . @$key->part_number . "</td>
+                                <td>" . @$key->location . "</td>
+                                <td>" . @$key->attached_to . "</td>
+                                <td>" . @$key->status . "</td>
+                                <td>" . @$key->date_of_manufacture . "</td>
+                                <td>" . @str_replace(',', ',<br />', $key->notes) . "</td>
                                 </tr>\n";
                             }
                         ?>
@@ -715,15 +715,16 @@
                     <tbody>
                         <?php 
                             foreach ($hard_drive as $item) {
+                                $key = $item->attributes;
                                 echo "<tr>
-                                <td>" . @$item->device . "</td>
-                                <td>" . @$item->manufacturer . "</td>
-                                <td>" . @$item->model . "</td>
-                                <td>" . @$item->serial . "</td>
-                                <td>" . @$item->interface_type . "</td>
-                                <td>" . @number_format(($item->size / 1024 / 1024)) . " GB</td>
-                                <td>" . @$item->status . "</td>
-                                <td>" . @$item->firmware . "</td>
+                                <td>" . @$key->device . "</td>
+                                <td>" . @$key->manufacturer . "</td>
+                                <td>" . @$key->model . "</td>
+                                <td>" . @$key->serial . "</td>
+                                <td>" . @$key->interface_type . "</td>
+                                <td>" . @number_format(($key->size / 1024 / 1024)) . " GB</td>
+                                <td>" . @$key->status . "</td>
+                                <td>" . @$key->firmware . "</td>
                                 </tr>\n";
                             }
                         ?>
