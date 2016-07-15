@@ -4971,8 +4971,20 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
 
+
+            # Some hoop jumping here. Because a previous default SQL schema did not include the key
+            # audit_log_system_id but the upgrade did, we have to test if it exists before trying to delete it
+            $sqlt = "SELECT count(*) AS `count` FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_SCHEMA = DATABASE() AND TABLE_NAME='audit_log' AND INDEX_NAME = 'audit_log_system_id'";
+            $query = $this->db->query($sqlt);
+            $result = $query->result();
+            if ($result[0]->count > 0) {
+                $sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
+            }
+            unset($sqlt);
+            unset($query);
+            unset($result);
+
             # DROP all the table indexes / foreign keys that link to system.system_id
-            #$sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
             $sql[] = "ALTER TABLE bios DROP FOREIGN KEY sys_hw_bios_system_id";
             $sql[] = "ALTER TABLE change_log DROP FOREIGN KEY change_log_system_id";
             $sql[] = "ALTER TABLE disk DROP FOREIGN KEY sys_hw_hard_drive_system_id";
