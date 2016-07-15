@@ -1405,7 +1405,8 @@ class discovery extends CI_Controller
                                 # successfully copied and chmodded the audit script
                                 if (!empty($credentials_ssh->sudo)) {
                                     # run the audit script as a normal user
-                                $command = 'echo "'.escapeshellarg($credentials_ssh->credentials->password).'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
+                                #$command = 'echo "'.escapeshellarg($credentials_ssh->credentials->password).'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
+                                $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 } else {
                                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 }
