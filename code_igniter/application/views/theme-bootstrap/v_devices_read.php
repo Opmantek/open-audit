@@ -630,13 +630,20 @@ foreach ($list as $item) {
                 if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen') {
                     $label = ucfirst(str_replace('_', ' ', $key));
                     if ($item == 'purchase' or $item == 'credentials') {
+                        if ($key == 'ssh_password' or $key == 'snmp_community' or $key == 'windows_password') {
+                          $type = 'password';
+                        } else {
+                          $type = 'text';
+                        }
                         if ($item == 'credentials') {
-                            $key = 'credentials_' . $key;
-                        } ?>
+                            $key = $key[0];
+                            $key = 'credentials.' . $key;
+                        }
+                        ?>
                         <div class="form-group">
                             <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
-                              <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+                              <input type="<?php echo $type; ?>" class="form-control" id="<?php echo $key; ?>" placeholder="-" value="<?php echo $value; ?>" disabled>
                               <span class="input-group-btn">
                                 <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>

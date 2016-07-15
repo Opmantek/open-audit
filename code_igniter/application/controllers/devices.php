@@ -117,7 +117,7 @@ class devices extends MY_Controller
         $this->response->included = array();
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credentials,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
 
         if ($this->response->meta->sub_resource != '') {
@@ -129,6 +129,13 @@ class devices extends MY_Controller
             if (!empty($this->response->data)) {
                 $related = $this->m_devices->get_related_tables();
                 $this->response->data[0]->links->relationships = $related;
+                unset($related);
+                $item = new stdClass();
+                $item ->credentials = new stdClass();
+                $item->credentials->links = new stdClass();
+                $item->credentials->links->self = $this->config->config['base_url'] . 'index.php/devices/' . $this->response->meta->id . '/credentials';
+                $this->response->data[0]->links->relationships[] = $item;
+                unset($item);
             }
             # get any additionally included tables
             if (!empty($this->response->meta->include) and !empty($this->response->data)) {

@@ -245,6 +245,10 @@ class M_devices extends MY_Model
             $sql = "SELECT location_id, oa_location.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
             $data = array($id);
 
+        } elseif ($sub_resource == 'credentials') {
+            $sql = "SELECT `access_details` FROM `system` WHERE `id` = ?";
+            $data = array($id);
+
         } elseif ($sub_resource == 'purchase') {
             $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
@@ -270,6 +274,15 @@ class M_devices extends MY_Model
             $data = array($CI->user->id);
         }
         $result = $this->run_sql($sql, $data);
+        if ($sub_resource == 'credentials' and !empty($result[0]->access_details)) {
+            $result[0]->id = "";
+            $result[0]->credentials = json_decode($this->encrypt->decode($result[0]->access_details));
+            foreach ($result[0]->credentials as $key => $value) {
+                $result[0]->$key = $value;
+            }
+            unset($result[0]->credentials);
+            unset($result[0]->access_details);
+        }
         $result = $this->format_data($result, 'devices/' . $id . '/' . $sub_resource);
         if (count($result) == 0) {
             return NULL;
