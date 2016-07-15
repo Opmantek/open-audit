@@ -78,6 +78,13 @@ if (! function_exists('ssh_credentials')) {
         }
         $connected = array();
         foreach ($credentials as $credential) {
+            $from = ' ';
+            if (!empty($credential->source)) {
+                $from = ' from ' . $credential->source . ' ';
+            }
+            if (!empty($credential->name)) {
+                $from = ' named ' . $credential->name . ' ';
+            }
             if ($credential->type == 'ssh') {
                 $credential->sudo = false;
                 if ($credential->credentials->username == 'root') {
@@ -92,7 +99,7 @@ if (! function_exists('ssh_credentials')) {
                             # Did we use root?
                         if ($credential->root) {
                             # yes we did use root
-                            $log->message = "Credential set from " . $credential->source . " working on " . $ip;
+                            $log->message = "Credential set" . $from . "working on " . $ip;
                             stdlog($log);
                             return $credential;
                         } else {
@@ -126,7 +133,14 @@ if (! function_exists('ssh_credentials')) {
             }
         }
         if (!empty($connected[0])) {
-            $log->message = "Credential set from " . $connected[0]->source . " working on " . $ip;
+            $from = ' ';
+            if (!empty($connected[0]->source)) {
+                $from = ' from ' . $connected[0]->source . ' ';
+            }
+            if (!empty($connected[0]->name)) {
+                $from = ' named ' . $connected[0]->name . ' ';
+            }
+            $log->message = "Credential set from" . $from . "working on " . $ip;
             stdlog($log);
             return $connected[0];
         } else {
