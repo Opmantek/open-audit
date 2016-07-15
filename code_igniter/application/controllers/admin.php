@@ -5282,7 +5282,7 @@ class admin extends MY_Controller
             $options = array();
             $options['submit_online'] = 'y';
             $options['create_file'] = 'n';
-            if (!empty($this->config->item('default_network_address'))) {
+            if ($this->config->item('default_network_address') != '') {
                 $options['url'] = 'http://' . $this->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
             } else {
                 $options['url'] = 'http://localhost/open-audit/index.php/system/add_system';
