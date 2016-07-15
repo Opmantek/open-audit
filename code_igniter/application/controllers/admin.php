@@ -4972,7 +4972,7 @@ class admin extends MY_Controller
             $sql = array();
 
             # DROP all the table indexes / foreign keys that link to system.system_id
-            $sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
+            #$sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
             $sql[] = "ALTER TABLE bios DROP FOREIGN KEY sys_hw_bios_system_id";
             $sql[] = "ALTER TABLE change_log DROP FOREIGN KEY change_log_system_id";
             $sql[] = "ALTER TABLE disk DROP FOREIGN KEY sys_hw_hard_drive_system_id";
@@ -5182,6 +5182,7 @@ class admin extends MY_Controller
 
             $sql[] = "RENAME TABLE sys_man_invoice TO `invoice`";
             $sql[] = "ALTER TABLE `invoice` CHANGE invoice_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `invoice` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
 
             $sql[] = "RENAME TABLE sys_man_invoice_line TO `invoice_item`";
             $sql[] = "ALTER TABLE `invoice_item` CHANGE line_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
@@ -5293,10 +5294,9 @@ class admin extends MY_Controller
             $sql[] = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
 
             $sql[] = "DROP TABLE IF EXISTS `credentials`";
-            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi',mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "UPDATE invoice CHANGE org_id `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
-            $sql[] = "UPDATE oa_user_org CHANGE org_id `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE `oa_user_org` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
 
             // update any leftover group definitions by changing man_icon to icon
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
