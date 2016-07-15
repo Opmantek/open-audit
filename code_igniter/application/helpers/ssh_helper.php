@@ -424,7 +424,7 @@ if (! function_exists('ssh_audit')) {
                 if ($credentials->credentials->username == 'root') {
                     $command = 'cat /sys/class/dmi/id/product_uuid';
                 } elseif ($credentials->sudo) {
-                    $command = 'echo ' . escapeshellarg($credentials->credentials->ssh_password) . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
+                    $command = 'echo ' . $credentials->credentials->password . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
                 } else {
                     $command = '';
                 }
