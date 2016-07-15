@@ -538,7 +538,8 @@
 							</td>
 						</thead>
 						<tbody>
-						<?php foreach ($ip as $ip_address) {
+						<?php foreach ($ip as $item) {
+                            $ip_address = $item->attributes;
                             $interface = '';
                             foreach ($network as $key) {
                                 if ($key->net_index == $ip_address->net_index) {
