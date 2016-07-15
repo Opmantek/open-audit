@@ -1080,26 +1080,27 @@ class discovery extends CI_Controller
 
 
                         # IPMI audit
-                        if (isset($this->config->config['discovery_use_ipmi']) and $this->config->config['discovery_use_ipmi'] == 'y' and $this->config->config['default_ipmi_username'] != '') {
-                            $credentials_ipmi = new stdClass();
-                            $credentials_ipmi->type = 'ipmi';
-                            $credentials_ipmi->credentials = new stdClass();
-                            $credentials_ipmi->credentials->username = $this->config->config['default_ipmi_username'];
-                            $credentials_ipmi->credentials->password = $this->config->config['default_ipmi_username'];
-                            $credentials[] = $credentials_ipmi;
-                            $ipmi_details = ipmi_audit($details->ip, $credentials_ipmi, $display);
-                            if (!empty($ipmi_details)) {
-                                foreach ($ipmi_details as $key => $value) {
-                                    if (!empty($value)) {
-                                        $details->key = $value;
-                                    }
-                                }
-                            }
-                            if ($details->serial) {
-                                $details->last_seen_by = 'ipmi';
-                                $details->audits_ip = '127.0.0.1';
-                            }
-                        }
+                        # TODO - make a ipmi_helper::ipmi_credentials function
+                        // if (isset($this->config->config['discovery_use_ipmi']) and $this->config->config['discovery_use_ipmi'] == 'y') {
+                        //     $credentials_ipmi = new stdClass();
+                        //     $credentials_ipmi->type = 'ipmi';
+                        //     $credentials_ipmi->credentials = new stdClass();
+                        //     $credentials_ipmi->credentials->username = $this->config->config['default_ipmi_username'];
+                        //     $credentials_ipmi->credentials->password = $this->config->config['default_ipmi_username'];
+                        //     $credentials[] = $credentials_ipmi;
+                        //     $ipmi_details = ipmi_audit($details->ip, $credentials_ipmi, $display);
+                        //     if (!empty($ipmi_details)) {
+                        //         foreach ($ipmi_details as $key => $value) {
+                        //             if (!empty($value)) {
+                        //                 $details->key = $value;
+                        //             }
+                        //         }
+                        //     }
+                        //     if ($details->serial) {
+                        //         $details->last_seen_by = 'ipmi';
+                        //         $details->audits_ip = '127.0.0.1';
+                        //     }
+                        // }
 
                         // SNMP audit
                         if (!extension_loaded('snmp') and $details->snmp_status == 'true') {
