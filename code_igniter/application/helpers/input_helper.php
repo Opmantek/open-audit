@@ -191,6 +191,7 @@ if (! function_exists('inputRead')) {
             // TODO - SEPARATE THIS OUT
             $log->message = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
+            $sql = '';
             switch ($CI->response->meta->collection) {
             case 'devices':
                 $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
