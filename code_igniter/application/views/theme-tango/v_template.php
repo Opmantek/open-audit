@@ -327,9 +327,11 @@ function print_something($string = '')
 	</div> <!-- end of topsection -->
 	<div id="content_container" style="float: left; width: 100%">
 	<?php
-    if (isset($this->response)) {
+    if (!empty($this->response->meta->filtered) and !empty($this->response->meta->total)) {
         $total = $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results';
         $query = '';
+    } else {
+        $total = '';
     }
     if (isset($query) and $include != 'v_add_user') {
         if (empty($total)) {
