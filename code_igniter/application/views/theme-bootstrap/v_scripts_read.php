@@ -33,6 +33,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $item = $this->response->data[0];
+if ($edit) {
+    $disabled = '';
+} else {
+    $disabled = 'disabled';
+}
 ?>
 <form class="form-horizontal" id="form_update">
 <div class="panel panel-default">
@@ -112,7 +117,12 @@ $item = $this->response->data[0];
             <label for="edited_date" class="col-sm-2 control-label"><?php echo htmlentities($key); ?></label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="<?php echo htmlentities($key); ?>" name="<?php echo htmlentities($key); ?>" placeholder="" value="<?php echo htmlentities($value); ?>" disabled>
+                    <input type="text" class="form-control" id="options.<?php echo htmlentities($key); ?>" name="options.<?php echo htmlentities($key); ?>" value="<?php echo htmlentities($value); ?>" disabled>
+                    <?php if (!empty($edit)) { ?>
+                    <span class="input-group-btn">
+                        <button id="edit_[options]<?php echo htmlentities($key); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlentities($key); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                    </span>
+                    <?php } ?>
                 </div>
             </div>
         </div>

@@ -166,20 +166,52 @@ class M_scripts extends MY_Model
 
     public function update()
     {
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->file = 'system';
         $CI = & get_instance();
-        $sql = '';
-        $fields = ' name description ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
+
+        $sql = 'UPDATE `scripts` SET ';
+        $data = array();
+        $log->message = json_encode($CI->response->meta->received_data);
+        stdlog($log);
+        if ( !empty($CI->response->meta->received_data->attributes->options)) {
+            $received_options = new stdClass();
+            foreach ($CI->response->meta->received_data->attributes->options as $key => $value) {
+                    $received_options->$key = $value;
+            }
+            $select = "SELECT * FROM scripts WHERE id = ?";
+            $existing_options = $this->run_sql($select, array($CI->response->meta->id));
+            $existing_options = json_decode($existing_options[0]->options);
+            $new_options = new stdClass();
+            foreach ($existing_options as $existing_key => $existing_value) {
+                if (!empty($received_options->$existing_key)) {
+                    $new_options->$existing_key = $received_options->$existing_key;
                 } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                    $new_options->$existing_key = $existing_options->$existing_key;
                 }
             }
+            $sql .= "`options` = ?, ";
+            $data[] = (string)json_encode($new_options);
         }
-        $sql = "UPDATE `scripts` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
+        
+        if (!empty($CI->response->meta->received_data->attributes->name)) {
+            $sql .= "`name` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->name;
+        }
+
+        if (!empty($CI->response->meta->received_data->attributes->description)) {
+            $sql .= "`description` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->description;
+        }
+
+        if ($sql == 'UPDATE `scripts` SET ') {
+            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
+        }
+        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
+        $data[] = (string)$CI->user->full_name;
+        $data[] = intval($CI->response->meta->id);
+        $this->run_sql($sql, $data);
         return;
     }
 
