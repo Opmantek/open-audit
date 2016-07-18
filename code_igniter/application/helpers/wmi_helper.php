@@ -81,12 +81,17 @@ if (! function_exists('windows_credentials')) {
                 $command = 'csproduct get uuid';
                 $wmi_result = wmi_command($ip, $credential, $command, $display);
                 if ($wmi_result['status'] == 0) {
-                    return $credntial;
+                    $log->message = 'Working Windows credentials for ' . $ip . ' found.';
+                    stdlog($log);
+                    return $credential;
                 }
             }
         }
+        $log->message = 'No working Windows credentials for ' . $ip . ' found.';
+        stdlog($log);
     }
 }
+
 if (! function_exists('execute_windows')) {
     /**
      * The SSH credentials test. 
@@ -97,11 +102,9 @@ if (! function_exists('execute_windows')) {
      *
      * @author    Mark Unwin <marku@opmantek.com>
      *
-     * @param     username  The username used to connect
-     *
-     * @param     password  The password used to connect
-     *
      * @param     ip        The target device's ip address
+     *
+     * @param     credentials The credentials object
      *
      * @param     command   The command to be run using SSH
      *
@@ -144,6 +147,21 @@ if (! function_exists('execute_windows')) {
             $log->message = 'No command passed to wmi_helper::execute_windows';
             stdlog($log);
             return false;
+        }
+
+        if (php_uname('s') == 'Darwin') {
+            if (!file_exists('/usr/local/bin/winexe')) {
+                $log->message = 'Winexe not installed on OSX, cannot run execute_windows.';
+                stdlog($log);
+                return false;
+            }
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
+            unset($temp);
+            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+            $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
+            exec($command_string, $return['output'], $return['status']);
         }
 
         if (php_uname('s') == 'Linux') {
@@ -260,6 +278,68 @@ if (! function_exists('copy_to_windows')) {
             return false;
         }
 
+
+        if (php_uname('s') == 'Darwin') {
+            $ts = date('Y_m_d_H_i_s');
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
+            unset($temp);
+            if (!is_dir('/private/tmp')) {
+                mkdir('/private/tmp') or die ('OSX attempt to create /private/tmp failed in wmi_helper::copy_to_windows failed');
+            }
+            if (mkdir('/private/tmp/' . $ts)) {
+                $log->message = 'Attempt to create /tmp/' . $ts . ' in wmi_helper::copy_to_windows succeeded.';
+                $log->severity = 5;
+                stdlog($log);
+            } else {
+                $log->message = 'Attempt to create /tmp/' . $ts . ' in wmi_helper::copy_to_windows failed.';
+                $log->severity = 5;
+                stdlog($log);
+            }
+
+            $command = 'mount -t smbfs "smb://' . $domain . ';' . $username . ':' . $credentials->credentials->password . '@' . $ip . '/admin$" /private/tmp/' . $ts;
+            exec($command, $output, $return_var);
+            if ($return_var != 0) {
+                $log->message = 'Attempt to mount admin$ share in wmi_helper::copy_to_windows failed.';
+                $log->severity = 5;
+                stdlog($log);
+                print_r($output);
+                echo $command . "\n";
+                return false;
+            } else {
+                $log->message = 'Attempt to mount admin$ share in wmi_helper::copy_to_windows succeeded.';
+                $log->severity = 5;
+                stdlog($log);
+            }
+
+            if (copy($source, '/tmp/'.$ts.'/'.$destination) or die ('Could not copy ' . $source . ' to /tmp/' . $ts . '/' . $destination)) {
+                $log->message = 'Attempt to copy ' . $destination . ' in wmi_helper::copy_to_windows succeeded.';
+                $log->severity = 5;
+                stdlog($log);
+            } else {
+                $log->message = 'Attempt to copy ' . $destination . ' in wmi_helper::copy_to_windows failed.';
+                $log->severity = 5;
+                stdlog($log);
+            }
+
+            $command = 'umount /private/tmp/'.$ts;
+            exec($command, $output, $return_var);
+            if ($return_var != 0) {
+                $log->message = 'Attempt to unmount /private/tmp/' . $ts . ' in wmi_helper::copy_to_windows failed.';
+                $log->severity = 5;
+                stdlog($log);
+                print_r($output);
+                echo $command . "\n";
+                return false;
+            } else {
+                $log->message = 'Attempt to unmount /private/tmp/' . $ts . ' in wmi_helper::copy_to_windows succeeded.';
+                $log->severity = 5;
+                stdlog($log);
+            }
+
+        }
+
         if (php_uname('s') == 'Linux') {
             $command = 'which smbclient';
             exec($command, $output, $return_var);
@@ -362,12 +442,6 @@ if (! function_exists('wmi_command')) {
         $log->display = $display;
         $return = array('output' => '', 'status' => '');
 
-        if (php_uname('s') == 'Darwin') {
-            $log->message = 'OSX not supported for running wmi commands in wmi_helper::wmi_command';
-            stdlog($log);
-            return false;
-        }
-
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::wmi_command';
             stdlog($log);
@@ -410,6 +484,21 @@ if (! function_exists('wmi_command')) {
             return false;
         }
 
+        if (php_uname('s') == 'Darwin') {
+            if (!file_exists('/usr/local/bin/winexe')) {
+                $log->message = 'Winexe not installed on OSX, cannot run wmi_command.';
+                stdlog($log);
+                return false;
+            }
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
+            unset($temp);
+            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+            $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $password . ' //' . $ip . ' \'wmic ' . $command . '\'';
+            exec($command_string, $return['output'], $return['status']);
+        }
+
         if (php_uname('s') == 'Linux') {
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($username))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
@@ -422,9 +511,9 @@ if (! function_exists('wmi_command')) {
         }
 
         if ($display == 'y') {
-            $command_string = str_replace($password, '******', $command_string);
-            $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
-            $command_string = str_replace(escapeshellarg($password), '******', $command_string);
+            // $command_string = str_replace($password, '******', $command_string);
+            // $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
+            // $command_string = str_replace(escapeshellarg($password), '******', $command_string);
             echo 'DEBUG - Command Executed: '.$command_string."\n";
             echo 'DEBUG - Return Value: '.$return['status']."\n";
             echo "DEBUG - Command Output:\n";
@@ -439,10 +528,10 @@ if (! function_exists('wmi_command')) {
         }
 
         if ($return['status'] != '0') {
-            $log->message = 'WMIC command \'' . $command_string . '\' on ' . $host . ' failed';
+            $log->message = 'WMIC command \'' . $command_string . '\' on ' . $ip . ' failed';
             stdlog($log);
         } else {
-            $log->message = 'WMIC command \'' . $command_string . '\' on ' . $host . ' succeeded';
+            $log->message = 'WMIC command \'' . $command_string . '\' on ' . $ip . ' succeeded';
             stdlog($log);
         }
 
