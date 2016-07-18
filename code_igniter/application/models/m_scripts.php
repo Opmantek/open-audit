@@ -121,7 +121,7 @@ class M_scripts extends MY_Model
         return $result;
     }
 
-    public function execute($id = 0)
+    public function download($id = 0)
     {
         $CI = & get_instance();
         $script_id = 0;
@@ -140,27 +140,41 @@ class M_scripts extends MY_Model
         $options = json_decode($data->options);
 
         $find = 'Configuration from web UI here';
+        $files = false;
         foreach ($options as $key => $value) {
             if ($key != 'files') {
                 $replace = $find . "\n" . $key . "=\"" . $value . "\"";
                 $file = str_replace($find, $replace, $file);
+            } else {
+                $files = true;
             }
         }
 
-        if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
-            foreach (array_reverse($options->files) as $key => $value) {
-                if ($data->based_on != 'audit_windows.vbs') {
-                    $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
-                } else {
-                    $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
+        # TODO - enable the below for a per script list of files
+        #if (!$files and $data->based_on == $data->name) {
+            $sql = "SELECT * FROM files";
+            $result = $this->run_sql($sql, array(intval($id)));
+            $options = new stdClass();
+            $options->file = array();
+            foreach ($result as $item) {
+                $options->files[] = ($item->path);
+            }
+
+            if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
+                foreach (array_reverse($options->files) as $key => $value) {
+                    if ($data->based_on != 'audit_windows.vbs') {
+                        $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
+                    } else {
+                        $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
+                    }
+                    $file = str_replace($find, $replace, $file);
                 }
-                $file = str_replace($find, $replace, $file);
+                if ($data->based_on == 'audit_windows.vbs') {
+                    $replace = $find . "\ndim files(".count($options->files).")";
+                    $file = str_replace($find, $replace, $file);
+                }
             }
-            if ($data->based_on == 'audit_windows.vbs') {
-                $replace = $find . "\ndim files(".count($options->files).")";
-                $file = str_replace($find, $replace, $file);
-            }
-        }
+        #}
         return $file;
     }
 

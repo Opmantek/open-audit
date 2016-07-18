@@ -32,6 +32,16 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+foreach ($this->response->included as $item) {
+    if ($item->type != 'script_option') {
+        $data[$item->type][] = $item->attributes;
+    } else {
+        $data['script_option'][$item->id] = $item->attributes;
+    }
+}
+// echo "<pre>\n";
+// print_r($data);
+// echo "</pre>\n";
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
 <div class="panel panel-default">
@@ -114,23 +124,66 @@
         </div>
   </div>
 </div>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">Options</span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-    <div id="options"></div>
-  </div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="text-left">Options</span>
+                    <span class="pull-right"></span>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div id="options"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="text-left">Files</span>
+                    <span class="pull-right"></span>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div id="files">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <td>Select</td>
+                            <td>Description</td>
+                            <td>Path</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($data['files'] as $file): ?>
+                    <?php # TODO - enable per script file retrieval ?>
+                    <?php # TODO - Maybe only display files per based_on ?>
+                        <tr>
+                            <td><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked disabled></td>
+                            <td><?php echo htmlentities($file->description); ?></td>
+                            <td><?php echo htmlentities($file->path); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
 </form>
 
 
 <?php
-foreach ($this->data['options_scripts'] as $key => $value) {
-    $script_options[$key] = generate_options($value, $this->data['options'], '', $this->data['orgs']);
+foreach ($data['script_option'] as $key => $value) {
+    $script_options[$key] = generate_options($value, $data['option'], '', $data['orgs']);
 }
 ?>
 
@@ -150,19 +203,16 @@ function based_on(){
 </script>
 
 
-
-
 <?php
-
 function generate_options($option_list, $options, $files, $orgs) {
     $return = '';
     foreach ($options as $option) {
         foreach ($option_list as $list_item) {
             if ($list_item == $option->name) {
                 $return .= '        <div class="form-group">\
-                <label for="data[edited_date]" class="col-sm-2 control-label">' . $option->name . '</label>\
-                <div class="col-sm-4">\
-                <div class="col-sm-8 input-group">';
+                <label for="data[edited_date]" class="col-md-3 control-label">' . $option->name . '</label>\
+                <div class="col-md-9">\
+                <div class="col-md-12 input-group">';
                 
                 switch ($option->type) {
                     case 'text';

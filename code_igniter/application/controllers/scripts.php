@@ -92,13 +92,31 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
+        # include our scripts options
         include 'include_scripts_options.php';
-        $this->data['options'] = $options;
-        $this->data['options_scripts'] = $options_scripts;
+        $this->response->included = array();
+        foreach ($options as $item) {
+            $option = new stdClass();
+            $option->id = $item->name;
+            $option->type = 'option';
+            $option->attributes = $item;
+            $this->response->included[] = $option;
+            unset($option);
+        }
+        foreach ($options_scripts as $key => $value) {
+            $option = new stdClass();
+            $option->id = $key;
+            $option->type = 'script_option';
+            $option->attributes = $value;
+            $this->response->included[] = $option;
+            unset($option);
+        }
+        # Include a list of Orgs
         $this->load->model('m_orgs');
-        $this->data['orgs'] = $this->m_orgs->get_orgs();
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        # Include our list of files
         $this->load->model('m_files');
-        $this->response->data['files'] = $this->m_files->collection();
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
         output($this->response);
     }
 
@@ -110,6 +128,8 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
+        #$this->response->meta->format = 'json';
+        #output($this->response);
         $this->response->meta->id = $this->m_scripts->create();
         if (!empty($this->response->meta->id)) {
             redirect('/scripts/');
@@ -166,18 +186,22 @@ class scripts extends MY_Controller
         }
     }
 
-    private function execute()
+    private function download()
     {
         $this->response->meta->format = 'json';
-        $script = $this->m_scripts->execute($this->response->meta->id);
+        $script = $this->m_scripts->download($this->response->meta->id);
         $script_details = $this->m_scripts->read($this->response->meta->id);
         header('Cache-Control: public');
         header('Content-Description: File Transfer');
-        header('Content-Disposition: attachment; filename=' . $script_details['scripts'][0]->name);
-        header("Content-Type: text/vbscript");
+        header('Content-Disposition: attachment; filename=' . $script_details[0]->attributes->name);
+        if ($script_details[0]->attributes->based_on == 'audit_windows.vbs') {
+            header("Content-Type: text/vbscript");
+        } else {
+            header("Content-Type: application/x-sh");
+        }
+        
         header('Content-Transfer-Encoding: binary');
         echo $script;
-
     }
 
     # not implemented

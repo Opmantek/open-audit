@@ -53,7 +53,7 @@ if (! function_exists('inputRead')) {
         // id is the integer value (if any) following the controller name in the URL
         // sub_resource = blank
         // sub_resource_id = blank
-        // action = read if id is set or list if id is not set (create, read, update, delete, list, execute)
+        // action = read if id is set or list if id is not set (create, read, update, delete, list, execute, download)
         // sort = blank
         // current = y
         // groupby = blank
@@ -170,7 +170,7 @@ if (! function_exists('inputRead')) {
         }
 
         # get the id of the collection item in question
-        $collection_words = ' create edit update delete list execute debug ';
+        $collection_words = ' create edit update delete list execute debug download ';
 
         # if we have an integer
         if ($CI->uri->segment(2) and is_numeric($CI->uri->segment(2))) {
@@ -312,7 +312,7 @@ if (! function_exists('inputRead')) {
         # get the action
         # valid values are typically - create, read, update, delete, list, execute
         # TODO - request_method == post and body contains system_id, then update, not create
-        $action_words = ' collection read new edit execute create update delete debug create_form update_form bulk_update_form import import_form ';
+        $action_words = ' collection read new edit execute download create update delete debug create_form update_form bulk_update_form import import_form ';
         $action = '';
         if (stripos($action_words, ' '.$CI->response->meta->action. ' ') !== false) {
             $action = $CI->response->meta->action;
@@ -367,6 +367,12 @@ if (! function_exists('inputRead')) {
             // mainly used for running a report and displaying the output
             $CI->response->meta->action = 'execute';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = execute.';
+            stdlog($log);
+        }
+        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == 'download') {
+            // mainly used for running a report and displaying the output
+            $CI->response->meta->action = 'download';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = download.';
             stdlog($log);
         }
         if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == '') {
