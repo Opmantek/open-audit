@@ -43,6 +43,7 @@ class discovery extends CI_Controller
         $this->load->helper('url');
         $this->load->helper('network');
         $this->load->helper('ssh');
+        $this->load->helper('wmi');
         $this->load->library('session');
         $this->load->model('m_system');
         $this->load->model('m_oa_config');
@@ -764,6 +765,7 @@ class discovery extends CI_Controller
             }
 
             $this->load->model('m_oa_user');
+            $this->load->model('m_scripts');
 
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
                 $this->user = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
@@ -982,36 +984,6 @@ class discovery extends CI_Controller
 
                         // default Open-AudIT credentials
                         $default = $this->m_oa_config->get_credentials();
-                        // 1.12.6
-                        // if (!empty($default->default_ssh_username) and !empty($default->default_ssh_password)) {
-                        //     $credential = new stdClass();
-                        //     $credential->source = 'default';
-                        //     $credential->type = 'ssh';
-                        //     $credential->credentials = new stdClass();
-                        //     $credential->credentials->username = $default->default_ssh_username;
-                        //     $credential->credentials->password = $default->default_ssh_password;
-                        //     $credentials[] = $credential;
-                        //     unset($credential);
-                        // }
-                        // if (!empty($default->default_windows_username) and !empty($default->default_windows_password) and !empty($default->default_windows_domain)) {
-                        //     $credential = new stdClass();
-                        //     $credential->source = 'default';
-                        //     $credential->type = 'windows';
-                        //     $credential->credentials = new stdClass();
-                        //     $credential->credentials->username = $default->default_windows_domain . '\\' . $default->default_windows_username;
-                        //     $credential->credentials->password = $default->default_windows_password;
-                        //     $credentials[] = $credential;
-                        //     unset($credential);
-                        // }
-                        // if (!empty($default->default_snmp_community)) {
-                        //     $credential = new stdClass();
-                        //     $credential->source = 'default';
-                        //     $credential->type = 'snmp';
-                        //     $credential->credentials = new stdClass();
-                        //     $credential->credentials->community = $default->default_snmp_community;
-                        //     $credentials[] = $credential;
-                        //     unset($credential);
-                        // }
                         unset($default);
 
                         if (intval($details->count) >= intval($details->limit)) {
@@ -1327,13 +1299,40 @@ class discovery extends CI_Controller
                             } else {
                                 $debugging = 0;
                             }
+                            $sql = "/* discovery::process_subnet */ SELECT * FROM `scripts` WHERE `name` = 'audit_windows.vbs' AND `based_on` = 'audit_windows.vbs' ORDER BY `id` LIMIT 1";
+                            $query = $this->db->query($sql);
+                            $result = $query->result();
+                            if (!empty($result[0])) {
+                                $script_details = $result[0];
+                                # Just ensure we delete any audit scripts that might exist. 
+                                # Shouldn't be required because we're creating based on the timestamp
+                                # Then open the file for writing
+                                $source_name = 'audit_windows_' . str_replace(' ', '_', date('Y-m-d H:i:s')) . '.vbs';
+                                if (php_uname('s') == 'Windows NT') {
+                                    @unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
+                                    $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                                } else {
+                                    @unlink($this->config->config['base_path'] . '/other/' . $source_name);
+                                    try {
+                                        $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
+                                    } catch (Exception $e) {
+                                        print_r($e);
+                                    }
+                                }
+                                $script = $this->m_scripts->download($script_details->id);
+                                fwrite($fp, $script);
+                                fclose($fp);
+
+                            } else {
+                                $source_name = 'audit_windows.vbs';
+                            }
+
                             if (php_uname('s') != 'Windows NT') {
-                                $source = $this->config->config['base_path'] . '/open-audit/other/audit_windows.vbs';
+                                $source = $this->config->config['base_path'] . '/other/' . $source_name;
                                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id;
                             } else {
-                                $source = $this->config->config['base_path'] . '\\open-audit\\other\\audit_windows.vbs';
-                                $command = "%comspec% /c start /b cscript //nologo c:\\windows\\audit_windows.vbs strcomputer=. submit_online=y create_file=n struser=".$credentiuals_windows->credentials->username." strpass=".$credentiuals_windows->credentials->password." url=".$url."index.php/system/add_system debugging=".$debugging." system_id=".$details->id;
-                                $command = " ".$command;
+                                $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
+                                $command = " %comspec% /c start /b cscript //nologo c:\\windows\\audit_windows.vbs strcomputer=. submit_online=y create_file=n struser=".$credentiuals_windows->credentials->username." strpass=".$credentiuals_windows->credentials->password." url=".$url."index.php/system/add_system debugging=".$debugging." system_id=".$details->id;
                             }
                             if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
                                 if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
