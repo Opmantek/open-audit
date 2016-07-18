@@ -353,10 +353,11 @@ if (! function_exists('copy_to_windows')) {
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1';
+            $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            #$command = "smbclient \\\\\\\\$ip\\" . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             exec($command, $output, $return_var);
             if ($display == 'y') {
-                echo 'DEBUG - Windows Copy Command: ' . str_replace($password, '******', $command);
+                echo 'DEBUG - Windows Copy Command: ' . str_replace($password, '******', $command) . "\n";
             }
             if ($return_var == 0) {
                 $log->message = 'Linux attempt to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
@@ -500,8 +501,13 @@ if (! function_exists('wmi_command')) {
         }
 
         if (php_uname('s') == 'Linux') {
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
+            unset($temp);
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
-            $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($username))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
+            # $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($username))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
+            $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.'/'.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
             exec($command_string, $return['output'], $return['status']);
         }
 
