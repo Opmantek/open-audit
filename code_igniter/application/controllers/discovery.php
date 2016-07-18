@@ -1307,7 +1307,8 @@ class discovery extends CI_Controller
                                 # Just ensure we delete any audit scripts that might exist. 
                                 # Shouldn't be required because we're creating based on the timestamp
                                 # Then open the file for writing
-                                $source_name = 'audit_windows_' . str_replace(' ', '_', date('Y-m-d H:i:s')) . '.vbs';
+                                $ts = date('y_m_d_H_i_s');
+                                $source_name = 'audit_windows_' . $ts . '.vbs';
                                 if (php_uname('s') == 'Windows NT') {
                                     @unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
                                     $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
@@ -1342,6 +1343,9 @@ class discovery extends CI_Controller
                                 }
                             } else {
                                 # copy audit script to Windows failed
+                            }
+                            if ($source_name != 'audit_windows.vbs') {
+                                unlink($this->config->config['base_path'] . '/other/' . $source_name);
                             }
                         }
 
