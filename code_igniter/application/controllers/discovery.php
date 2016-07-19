@@ -1157,7 +1157,7 @@ class discovery extends CI_Controller
                                 $details->audits_ip = '127.0.0.1';
                                 foreach ($windows_details as $key => $value) {
                                     if (!empty($value)) {
-                                        $details->key = $value;
+                                        $details->$key = $value;
                                     }
                                 }
                             }
@@ -1332,22 +1332,60 @@ class discovery extends CI_Controller
                             if (php_uname('s') != 'Windows NT') {
                                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
                                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id;
-                            } else {
-                                $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
-                                $command = " %comspec% /c start /b cscript //nologo c:\\windows\\audit_windows.vbs strcomputer=. submit_online=y create_file=n struser=".$credentiuals_windows->credentials->username." strpass=".$credentiuals_windows->credentials->password." url=".$url."index.php/system/add_system debugging=".$debugging." system_id=".$details->id;
-                            }
-                            if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
-                                if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
-                                    # All complete!
+                                if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
+                                    if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
+                                        # All complete!
+                                    } else {
+                                        # run audit script failed
+                                    }
                                 } else {
-                                    # run audit script failed
+                                    # copy audit script to Windows failed
+                                }
+                                if ($source_name != 'audit_windows.vbs') {
+                                    unlink($this->config->config['base_path'] . '/other/' . $source_name);
                                 }
                             } else {
-                                # copy audit script to Windows failed
+
+                                $log_details->message = "Windows audit for $details->ip (System ID $details->id)";
+                                stdlog($log_details);
+                                    $username = $credentials_windows->credentials->username;
+                                    $temp = explode('@', $username);
+                                    $username = $temp[0];
+                                    if (count($temp) > 1) {
+                                        $domain = $temp[1] . '\\';
+                                    } else {
+                                        $domain = '';
+                                    }
+                                    unset($temp);
+
+                                if ($display == 'y') {
+                                    $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->id;
+                                    $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
+                                    exec($command_string, $output, $return_var);
+                                    $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
+                                    echo 'DEBUG - Command Executed: '.$command_string."\n";
+                                    echo 'DEBUG - Return Value: '.$return_var."\n";
+                                    echo "DEBUG - Command Output:\n";
+                                    print_r($output);
+
+                                    if ($return_var != '0') {
+                                        $error = "Attempt to run audit_windows.vbs on $details->ip has failed";
+                                        $log_details->message = $error;
+                                        stdlog($log_details);
+                                    } else {
+                                        $log_details->message = "Attempt to run audit_windows.vbs on $details->ip has succeeded";
+                                        stdlog($log_details);
+                                    }
+                                    $output = null;
+                                    $return_var = null;
+                                } else {
+                                    $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->system_id;
+                                    $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
+                                    pclose(popen($command_string, "r"));
+                                }
+                                $command_string = null;
                             }
-                            if ($source_name != 'audit_windows.vbs') {
-                                unlink($this->config->config['base_path'] . '/other/' . $source_name);
-                            }
+
                         }
 
                         # Audit SSH
