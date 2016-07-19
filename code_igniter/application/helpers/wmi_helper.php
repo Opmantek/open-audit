@@ -373,7 +373,7 @@ if (! function_exists('copy_to_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $command = "net use \\\\$ip\\$share $password /USER:$username";
+            $command = "net use \\\\$ip\\$share " . $credentials->credentials->password . " /USER:" . $credentials->credentials->username;
             exec($command, $output, $return_var);
             if ($return_var != 0) {
                 $log->message = 'Windows attempt to mount remote filesystem on ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
@@ -475,8 +475,17 @@ if (! function_exists('wmi_command')) {
 
         if (!empty($credentials->credentials->username)) {
             $username = $credentials->credentials->username;
+            $temp = explode('@', $username);
+            $username = $temp[0];
+            if (count($temp) > 1) {
+                $domain = $temp[1];
+            } else {
+                $domain = '';
+            }
+            unset($temp);
         } else {
             $username = false;
+            $domain = false;
         }
 
         if (!$username or !$password) {
@@ -501,15 +510,10 @@ if (! function_exists('wmi_command')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $temp = explode('@', $credentials->credentials->username);
-            $username = $temp[0];
-            if (count($temp) > 1) {
-                $domain = $temp[1] . '/';
-            } else {
-                $domain = '';
-            }
-            unset($temp);
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+            if ($domain != '') {
+                $domain .= '/';
+            }
             # $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($username))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
             
             #$command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.'/'.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
@@ -519,8 +523,14 @@ if (! function_exists('wmi_command')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $command_string = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:' . $username . ' /password:"' . str_replace('"', '\"', $password) . '" ' . $command;
+            if ($domain != '') {
+                $domain .= '\\';
+            }
+            $command_string = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:' . $domain.$username . ' /password:"' . str_replace('"', '\"', $password) . '" ' . $command;
             exec($command_string, $return['output'], $return['status']);
+            if (empty($return['output'][0])) {
+                $return['status'] = 1;
+            }
         }
 
         if ($display == 'y') {
