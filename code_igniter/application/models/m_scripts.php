@@ -153,13 +153,12 @@ class M_scripts extends MY_Model
         # TODO - enable the below for a per script list of files
         #if (!$files and $data->based_on == $data->name) {
             $sql = "SELECT * FROM files";
-            $result = $this->run_sql($sql, array(intval($id)));
+            $result = $this->run_sql($sql, array());
             $options = new stdClass();
-            $options->file = array();
+            $options->files = array();
             foreach ($result as $item) {
                 $options->files[] = ($item->path);
             }
-
             if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
                 foreach (array_reverse($options->files) as $key => $value) {
                     if ($data->based_on != 'audit_windows.vbs') {
