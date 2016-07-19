@@ -6253,7 +6253,8 @@ if (strcomputer = ".") then
 	        if ( file > "" ) then
 	            hash = ""
 	            on error resume next
-	            	command = "certUtil -hashfile " & file & " SHA1"
+	            	'command = "certUtil -hashfile " & file & " SHA1"
+	            	command = "certUtil -hashfile """ & file & """"
 	            	Set objExecObj = objShell.exec(command)
 	            	hash = objExecObj.StdOut.Readline() ' ignore this first line of output
 	            	hash = objExecObj.StdOut.Readline()
@@ -6276,9 +6277,10 @@ if (strcomputer = ".") then
 	                result.WriteText "          <hash>" & escape_xml(hash) & "</hash>" & vbcrlf
 	                result.WriteText "          <last_changed>" & escape_xml(last_changed) & "</last_changed>" & vbcrlf
 	                result.WriteText "          <meta_last_changed></meta_last_changed>" & vbcrlf
-	                result.WriteText "          <permissions>" & escape_xml(objFile.AccessMask) & "</permissions>" & vbcrlf
+	                result.WriteText "          <permission>" & escape_xml(objFile.AccessMask) & "</permission>" & vbcrlf
 	                result.WriteText "          <owner>" & escape_xml(owner) & "</owner>" & vbcrlf
 	                result.WriteText "          <version>" & escape_xml(objFile.Version) & "</version>" & vbcrlf
+	                result.WriteText "          <inode>0</inode>" & vbcrlf
 	                result.WriteText "          <group></group>" & vbcrlf
 	                result.WriteText"      </item>" & vbcrlf
 	            next

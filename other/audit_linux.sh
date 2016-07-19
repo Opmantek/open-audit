@@ -2139,7 +2139,7 @@ echo "	</netstat>"
 if [ "$debugging" -gt "0" ]; then
 	echo "Custom File Info"
 fi
-echo "	<files>" >> "$xml_file"
+echo "	<file>" >> "$xml_file"
 for dir in ${files[@]}; do
     for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
         file_size=$(stat --printf="%s" "$file")
@@ -2151,7 +2151,7 @@ for dir in ${files[@]}; do
         file_owner=$(ls -ld "$file" | awk '{print $3}')
         file_group=$(ls -ld "$file" | awk '{print $4}')
         inode=$(ls -li "$file" | awk '{print $1}')
-        file_name=($basename "$file")
+        file_name=$(basename "$file")
         {
     	echo "		<item>"
     	echo "			<name>$(escape_xml "$file_name")</name>"
@@ -2161,7 +2161,7 @@ for dir in ${files[@]}; do
         echo "			<hash>$(escape_xml "$file_hash")</hash>"
         echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
         echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
-        echo "			<permissions>$(escape_xml "$file_permissions")</permissions>"
+        echo "			<permission>$(escape_xml "$file_permissions")</permission>"
         echo "			<owner>$(escape_xml "$file_owner")</owner>"
         echo "			<group>$(escape_xml "$file_group")</group>"
         echo "			<inode>$(escape_xml "$inode")</inode>"
@@ -2169,7 +2169,7 @@ for dir in ${files[@]}; do
     	} >> "$xml_file"
     done
 done
-echo "	</files>" >> "$xml_file"
+echo "	</file>" >> "$xml_file"
 
 
 
