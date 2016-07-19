@@ -442,10 +442,15 @@ class M_system extends MY_Model
         if ($field_name == 'ip') {
             $field_data = $this->ip_address_to_db($field_data);
         }
-        $sql = "UPDATE system SET $field_name = ? WHERE system.id = ?";
-        $sql = $this->clean_sql($sql);
-        $data = array("$field_data", "$system_id");
-        $query = $this->db->query($sql, $data);
+        $fields = $this->db->list_fields('system');
+        foreach ($fields as $field) {
+            if ($field_name == $field) {
+                $sql = "UPDATE system SET $field_name = ? WHERE system.id = ?";
+                $sql = $this->clean_sql($sql);
+                $data = array("$field_data", "$system_id");
+                $query = $this->db->query($sql, $data);
+            }
+        }
     }
 
     public function check_ip($id)
