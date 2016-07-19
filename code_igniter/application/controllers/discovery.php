@@ -1304,15 +1304,16 @@ class discovery extends CI_Controller
                             $result = $query->result();
                             if (!empty($result[0])) {
                                 $script_details = $result[0];
-                                # Just ensure we delete any audit scripts that might exist. 
+                                # Just ensure we delete any audit scripts that might exist.
                                 # Shouldn't be required because we're creating based on the timestamp
                                 # Then open the file for writing
                                 $ts = date('y_m_d_H_i_s');
-                                $source_name = 'audit_windows_' . $ts . '.vbs';
                                 if (php_uname('s') == 'Windows NT') {
+                                    $source_name = 'scripts\\audit_windows_' . $ts . '.vbs';
                                     @unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
                                     $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
                                 } else {
+                                    $source_name = 'scripts/audit_windows_' . $ts . '.vbs';
                                     @unlink($this->config->config['base_path'] . '/other/' . $source_name);
                                     try {
                                         $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
@@ -1386,14 +1387,69 @@ class discovery extends CI_Controller
                                     break;
                             }
 
+
+
+
+
+                            $log_details->message = "Starting ssh audit for $details->ip (System ID $details->id)";
+                            stdlog($log_details);
+                            $destination = $audit_script;
+                            if ($display = 'y') {
+                                $debugging = 3;
+                            } else {
+                                $debugging = 0;
+                            }
+                            $sql = "/* discovery::process_subnet */ SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
+                            $query = $this->db->query($sql);
+                            $result = $query->result();
+                            if (!empty($result[0])) {
+                                $script_details = $result[0];
+                                # Just ensure we delete any audit scripts that might exist.
+                                # Shouldn't be required because we're creating based on the timestamp
+                                # Then open the file for writing
+                                $ts = date('y_m_d_H_i_s');
+                                if (php_uname('s') == 'Windows NT') {
+                                    $source_name = 'scripts\\' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
+                                    $unlink = $this->config->config['base_path'] . '\\other\\' . $source_name;
+                                    @unlink($unlink);
+                                    $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                                } else {
+                                    $source_name = 'scripts/' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
+                                    $unlink = $this->config->config['base_path'] . '/other/' . $source_name;
+                                    @unlink($unlink);
+                                    try {
+                                        $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
+                                    } catch (Exception $e) {
+                                        print_r($e);
+                                    }
+                                }
+                                $script = $this->m_scripts->download($script_details->id);
+                                fwrite($fp, $script);
+                                fclose($fp);
+
+                            } else {
+                                $unlink = '';
+                                $source_name = $audit_script;
+                            }
+
+
+
                             unset($temp);
                             if ($audit_script != '') {
                                 # copy the audit script to the target ip
-                                $source = $filepath.'/'.$audit_script;
+                                if (php_uname('s') == 'Windows NT') {
+                                    $source = $filepath.'\\'.$source_name;
+                                } else {
+                                    $source = $filepath.'/'.$source_name;
+                                }
                                 $destination = $this->config->item('discovery_linux_script_directory');
+                                if (substr($destination, -1) != '/') {
+                                    $destination .= '/';
+                                }
+                                $destination .= $audit_script;
                                 if ($ssh_result = scp($details->ip, $credentials_ssh, $source, $destination, $display)) {
                                     # Successfully copied the audit script
-                                    $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination . $audit_script;
+                                    $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
                                     $temp = ssh_command($details->ip, $credentials_ssh, $command, $display);
                                 }
                                 if ($display = 'y') {
@@ -1404,7 +1460,7 @@ class discovery extends CI_Controller
                             }
 
                             # audit anything that's not ESX
-                            if (isset($temp['status']) and $temp['status'] == 0 and $audit_script != 'audit_esxi.sh') {
+                            if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
                                 # successfully copied and chmodded the audit script
                                 if (!empty($credentials_ssh->sudo)) {
                                     # run the audit script as a normal user
@@ -1414,9 +1470,12 @@ class discovery extends CI_Controller
                                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
                                 }
                                 $result = ssh_command($details->ip, $credentials_ssh, $command, $display);
+                                if ($unlink != '') {
+                                    unlink($unlink);
+                                }
                             }
                             # audit ESX
-                            if (isset($temp['status']) and $temp['status'] == 0 and $audit_script == 'audit_esxi.sh') {
+                            if ($audit_script == 'audit_esxi.sh') {
                                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->id.'" 2>/dev/null';
                                 if ($result = ssh_command($details->ip, $credentials_ssh, $command, $display)) {
                                     if ($result['status'] == 0) {
