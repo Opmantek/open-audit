@@ -503,11 +503,18 @@ if (! function_exists('wmi_command')) {
         if (php_uname('s') == 'Linux') {
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
-            $domain = $temp[1];
+            if (count($temp) > 1) {
+                $domain = $temp[1] . '/';
+            } else {
+                $domain = '';
+            }
             unset($temp);
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             # $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($username))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
-            $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.'/'.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
+            
+            #$command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.'/'.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
+            
+            $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
             exec($command_string, $return['output'], $return['status']);
         }
 
