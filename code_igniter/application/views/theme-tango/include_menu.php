@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,7 +80,7 @@ var modal_content_image = "";
     $new_object->report_name = 'Partition Alerts';
     $menu[] = $new_object;
 
-    if ($this->user->sam > '0') {
+    if (isset($this->user->sam) and $this->user->sam > '0') {
         $new_object = new stdClass();
         $new_object->report_id = '';
         $new_object->report_name = 'Software Licensing';
@@ -152,6 +153,12 @@ var modal_content_image = "";
                 </ul>
             </li>
 
+            <li><a href='javascript:void(0)'><?php echo __('Credentials')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/credentials'><?php echo __('View Credentials')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/credentials?action=create'><?php echo __('Add Credential Set')?></a></li>
+                </ul>
+            </li>
             <li><a href='javascript:void(0)'><?php echo __('Database')?></a>
                 <ul>
                     <!--
@@ -161,8 +168,7 @@ var modal_content_image = "";
                     <?php
                     if (php_uname('s') == 'Linux') {
                         echo "                  <li><a href='".$oa_web_index."/admin_db/backup'>".__('Backup the Database')."</a></li>\n";
-                    }
-        ?>
+                    } ?>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/maintenance'><?php echo __('Database Maintenance')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
@@ -179,9 +185,7 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/windows'><?php echo __('Discover a Windows computer')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/linux'><?php echo __('Discover a device using SSH')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/snmp'><?php echo __('Discover a device using SNMP')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/device'><?php echo __('Discover a Device')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
@@ -235,7 +239,9 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Scripts')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li>
+                    <!-- <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li> -->
+                    <li><a href='<?php echo $oa_web_index?>/scripts'><?php echo __('View Scripts')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/scripts?action=create'><?php echo __('Add Script')?></a></li>
                 </ul>
             </li>
 

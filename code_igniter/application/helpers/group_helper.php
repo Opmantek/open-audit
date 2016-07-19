@@ -30,7 +30,8 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('refresh_group_definitions')) {
@@ -51,7 +52,8 @@ if (! function_exists('refresh_group_definitions')) {
             $query = $CI->db->query($sql);
         }
 
-        $sql = "SELECT * FROM oa_group WHERE group_category != 'network' AND group_category != 'owner' AND group_category != 'location'";
+        //$sql = "SELECT * FROM oa_group WHERE group_category != 'network' AND group_category != 'owner' AND group_category != 'location'";
+        $sql = "SELECT * FROM oa_group WHERE group_category != 'network'";
         # get the list of activated groups
         $query = $CI->db->query($sql);
         $result = $query->result();
@@ -125,22 +127,24 @@ if (! function_exists('refresh_group_definitions')) {
                     $data = array($group->group_id);
                     $query = $CI->db->query($sql, $data);
 
-                    foreach ($xml->columns->column as $column) {
-                        $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
-                        $data = array($group_id,
-                            (string)$column->column_order,
-                            (string)$column->column_name,
-                            (string)$column->column_variable,
-                            (string)$column->column_type,
-                            (string)$column->column_link,
-                            (string)$column->column_secondary,
-                            (string)$column->column_ternary,
-                            (string)$column->column_align);
+                    if (!empty($xml->columns)) {
+                        foreach ($xml->columns->column as $column) {
+                            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+                            $data = array($group_id,
+                                (string)$column->column_order,
+                                (string)$column->column_name,
+                                (string)$column->column_variable,
+                                (string)$column->column_type,
+                                (string)$column->column_link,
+                                (string)$column->column_secondary,
+                                (string)$column->column_ternary,
+                                (string)$column->column_align);
+                            $query = $CI->db->query($sql, $data);
+                        }
+                        $sql = "UPDATE oa_group SET updated = 'y' WHERE group_id = ?";
+                        $data = array($group_id);
                         $query = $CI->db->query($sql, $data);
                     }
-                    $sql = "UPDATE oa_group SET updated = 'y' WHERE group_id = ?";
-                    $data = array($group_id);
-                    $query = $CI->db->query($sql, $data);
                     // ensure we remove all rows for this group id
                     // this should have already occurred when we deleted the group above
                     // $sql = "DELETE FROM oa_group_user WHERE group_id = ?";
@@ -156,8 +160,12 @@ if (! function_exists('refresh_group_definitions')) {
                 }
             }
         }
+        // update the default location and owner groups
+        // $sql = "UPDATE oa_group SET group_dynamic_select = \"SELECT distinct(system.id) FROM system WHERE (system.location_id = '0' OR LOWER(system.sysLocation) LIKE LOWER('%Default Location%')) AND system.status = 'production'\" WHERE group_name = 'Items in Default Location'";
+        // $sql = "UPDATE oa_group SET group_dynamic_select = \"SELECT distinct(system.id) FROM system WHERE (system.location_id = '0' OR LOWER(system.sysLocation) LIKE LOWER('%Default Location%')) AND system.status = 'production'\" WHERE group_name = 'Default Organisation owned items'";
         // get the non-updated groups
-        $sql = "SELECT group_id, group_name FROM oa_group WHERE updated != 'y' and group_category NOT IN ('network', 'location', 'owner')";
+        // $sql = "SELECT group_id, group_name FROM oa_group WHERE updated != 'y' and group_category NOT IN ('network', 'location', 'owner')";
+        $sql = "SELECT group_id, group_name FROM oa_group WHERE updated != 'y' and group_category NOT IN ('network')";
         $query = $CI->db->query($sql);
         $non_updated_groups = $query->result();
         if (count($non_updated_groups) > 0) {
@@ -182,7 +190,7 @@ if (! function_exists('refresh_group_definitions')) {
             $sql = $myrow->group_dynamic_select;
             # update the group with all systems that match
             $sql = substr_replace($sql, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-            $sql = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$myrow->group_id."' ", $sql);
+            $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$myrow->group_id."' ", $sql);
             $CI->db->query($sql);
         }
 

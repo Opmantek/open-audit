@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,7 +46,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
             <div style="float:right; width: 100px;">
                 <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_<?php echo $icon; ?>.png' alt='' title='' />
             </div>
-            <?php foreach ($windows as $key): ?>
+            <?php foreach ($windows as $item): ?>
+            <?php $key = $item->attributes; ?>
                 <div>
                     <div style="float:left; width:50%;">
                         <p><label for="windows_registered_user"><?php echo __('Registered User')?>: </label><span id="windows_registered_user"><?php echo print_something($key->registered_user)?></span></p>
@@ -56,7 +58,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <p><label for="windows_time_daylight"><?php echo __('Time (daylight)')?>: </label><span id="windows_time_daylight"><?php echo print_something($key->time_daylight)?></span></p>
                         <p><label for="windows_part_of_domain"><?php echo __('Part of Domain')?>: </label><span id="windows_part_of_domain"><?php echo print_something($key->part_of_domain)?></span></p>
                         <p><label for="windows_domain_role"><?php echo __('Domain Role')?>: </label><span id="windows_domain_role"><?php echo print_something($key->domain_role)?></span></p>
-                        <p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($system[0]->pc_date_os_installation)?></span></p>
+                        <p><label for="os_install_date"><?php echo __('OS Install Date')?>: </label><span id="os_install_date"><?php echo print_something($system[0]->os_installation_date)?></span></p>
                     </div>
                     <div style="float:left; width:40%;">
                         <p><label for="windows_workgroup"><?php echo __('Workgroup')?>: </label><span id="windows_workgroup"><?php echo print_something($key->workgroup)?></span></p>
@@ -83,7 +85,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                 <?php }
                 $windows_service_pack = $key->service_pack;
             endforeach;
-            echo display_custom_field('view_summary_windows',  $additional_fields_data, $edit);
+            echo display_custom_field('view_summary_windows',  $additional_fields, $edit);
             ?>
         </fieldset>
     </form>
@@ -98,8 +100,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
         <form action="#" method="post" class='niceforms'>
             <fieldset id="processor_details">
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Processor Details')?></span></legend>
-                <?php foreach ($processor as $key):
-                    ?>
+                <?php foreach ($processor as $item): ?>
+                <?php $key = $item->attributes; ?>
                     <img class='section_image' src='<?php echo $oa_theme_images.'/48_component_cpu.png'; ?>' alt='' title='' />
                     <p><label for="processor_description"><?php echo __('Description')?>: </label><span id="processor_description" class="form_field"><?php echo print_something($key->description)?></span></p>
                     <p><label for="processor_speed"><?php echo __('Speed')?>: </label><span id="processor_speed" class="form_field"><?php echo print_something($key->speed)?> MHz</span></p>
@@ -109,7 +111,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <p><label for="processor_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="processor_manufacturer" class="form_field"><?php echo print_something($key->manufacturer)?></span></p>
                     <p><label for="processor_architecture"><?php echo __('Architecture')?>: </label><span id="processor_architecture" class="form_field"><?php echo print_something($key->architecture)?></span></p>
                 <?php endforeach; ?>
-                <?php echo display_custom_field('view_hardware_processor',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_processor',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php
@@ -142,7 +144,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($memory as $key): ?>
+                    <?php foreach ($memory as $item): ?>
+                    <?php $key = $item->attributes; ?>
                             <tr>
                                 <td><?php echo print_something($key->bank)?></td>
                                 <td><?php echo print_something($key->type)?></td>
@@ -155,7 +158,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <?php endforeach; ?>
                     </tbody>
                 </table>
-                <?php echo display_custom_field('view_hardware_memory',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_memory',  $additional_fields, $edit); ?>
                 </div>
             </fieldset>
         </form>
@@ -170,7 +173,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
             <fieldset id="bios_details">
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Bios Details')?></span></legend>
                 <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_gnome-cpu.png' alt='' title='' />
-                <?php foreach ($bios as $key): ?>
+                <?php foreach ($bios as $item): ?>
+                <?php $key = $item->attributes; ?>
                     <p><label for="bios_description"><?php echo __('Description')?>: </label><span id="bios_description"><?php echo print_something($key->description); ?></span></p>
                     <p><label for="bios_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="bios_manufacturer"><?php echo print_something($key->manufacturer); ?></span></p>
                     <p><label for="bios_serial"><?php echo __('Serial')?>: </label><span id="bios_serial"><?php echo print_something($key->serial); ?>&nbsp;</span></p>
@@ -178,7 +182,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <p><label for="bios_version"><?php echo __('Version')?>: </label><span id="bios_version"><?php echo print_something($key->version); ?></span></p>
                     <p><label for="bios_asset_tag"><?php echo __('Asset Tag')?>: </label><span id="bios_asset_tag"><?php echo print_something($key->asset_tag); ?></span></p>
                 <?php endforeach; ?>
-                <?php echo display_custom_field('view_hardware_bios',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_bios',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -192,7 +196,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
             <fieldset id="motherboard_details">
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Motherboard Details')?></span></legend>
                 <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_gnome-cpu.png' alt='' title='' />
-                <?php foreach ($motherboard as $key): ?>
+                <?php foreach ($motherboard as $item): ?>
+                <?php $key = $item->attributes; ?>
                     <p><label for="motherboard_manufacturer"><?php echo __('Manufacturer')?>: </label><span id="motherboard_manufacturer"><?php echo print_something($key->manufacturer)?></span></p>
                     <p><label for="motherboard_model"><?php echo __('Model')?>: </label><span id="motherboard_model"><?php echo print_something($key->model)?></span></p>
                     <p><label for="motherboard_serial"><?php echo __('Serial')?>: </label><span id="motherboard_serial"><?php echo print_something($key->serial)?></span></p>
@@ -200,7 +205,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <p><label for="motherboard_cpu_type"><?php echo __('CPU Type')?>: </label><span id="motherboard_cpu_type"><?php echo print_something($key->processor_type)?></span></p>
                     <p><label for="motherboard_memory_slots"><?php echo __('Memory Slots')?>: </label><span id="motherboard_memory_slots"><?php echo print_something($key->memory_slot_count)?></span></p>
                 <?php endforeach; ?>
-                <?php echo display_custom_field('view_hardware_motherboard',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_motherboard',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -213,7 +218,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
         <form action="#" method="post" class='niceforms'>
             <fieldset id="network_details">
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Network Details')?></span></legend>
-                <?php foreach ($network as $key):
+                <?php foreach ($network as $item):
+                        $key = $item->attributes;
                         if (intval($key->speed) < 1000) {
                             $speed = number_format(intval($key->speed))." b/s";
                         }
@@ -276,7 +282,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <tbody>
                         <?php
                         $ip_count = 0;
-                        foreach ($ip as $ip_address) {
+                        foreach ($ip as $item_ip) {
+                            $ip_address = $item_ip->attributes;
                             if ($ip_address->mac == $key->mac and $ip_address->net_index == $key->net_index) {
                                 $ip_count ++;
                                 echo "                          <tr>";
@@ -303,7 +310,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                 </fieldset>
                 <br /><br />
             <?php endforeach;
-            echo display_custom_field('view_hardware_network',  $additional_fields_data, $edit);
+            echo display_custom_field('view_hardware_network',  $additional_fields, $edit);
             ?></fieldset>
         </form>
     <?php } ?>
@@ -330,7 +337,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($scsi as $key): ?>
+                        <?php foreach ($scsi as $item): ?>
+                        <?php $key = $item->attributes; ?>
                             <tr>
                                 <td><?php echo $key->type; ?></td>
                                 <td><?php echo $key->model; ?></td>
@@ -341,7 +349,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_scsi_controller',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_scsi_controller',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -354,7 +362,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
         <form action="#" method="post" class='niceforms'>
             <fieldset id="hard_disk_details">
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Hard Disk Details')?></span></legend>
-                <?php foreach ($hard_drive as $key): ?>
+                <?php foreach ($hard_drive as $item): ?>
+                    <?php $key = $item->attributes; ?>
                     <fieldset id="hard_disk_details_<?php echo str_replace('/', '-', $key->hard_drive_index)?>">
                     <legend><span style="font-size: 10pt;">&nbsp;<?php echo print_something($key->caption)?> <?php echo __('Details')?></span></legend>
                         <?php
@@ -408,7 +417,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                             <p><label for='hd_status_<?php echo str_replace('/', '-', $key->hard_drive_index)?>'><?php echo __('SMART Status')?>: </label><span id='hd_status_<?php echo str_replace('/', '-', $key->hard_drive_index)?>' class="form_field"><?php echo $key->status?>&nbsp;</span></p>
                             <p><label for='hd_interface_<?php echo str_replace('/', '-', $key->hard_drive_index)?>'><?php echo __('Interface')?>: </label><span id='hd_interface_<?php echo str_replace('/', '-', $key->hard_drive_index)?>' class="form_field"><?php echo print_something($key->interface_type)?>&nbsp;</span></p>
                             <?php if ($key->scsi_logical_unit != "") { ?>
-                            <p><label for='scsi_id_<?php echo str_replace('/', '-', $key->hard_drive_scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/', '-', $key->hard_drive_scsi_logical_unit)?>' class="form_field"><?php echo print_something($key->scsi_logical_unit)?>&nbsp;</span></p>
+                            <p><label for='scsi_id_<?php echo str_replace('/', '-', $key->scsi_logical_unit)?>'><?php echo __('SCSI id')?>: </label><span id='scsi_id_<?php echo str_replace('/', '-', $key->scsi_logical_unit)?>' class="form_field"><?php echo print_something($key->scsi_logical_unit)?>&nbsp;</span></p>
                             <?php } ?>
                             <p><label for='hd_firmware_<?php echo str_replace('/', '-', $key->hard_drive_index)?>'><?php echo __('Firmware')?>: </label><span id='hd_firmware_<?php echo str_replace('/', '-', $key->hard_drive_index)?>' class="form_field"><?php echo print_something($key->firmware)?>&nbsp;</span></p>
                         </div>
@@ -429,7 +438,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </thead>
                     <tbody>
                     <?php $partition_count = 0; ?>
-                    <?php foreach ($partition as $key_partition): ?>
+                    <?php foreach ($partition as $item): ?>
+                    <?php $key_partition = $item->attributes; ?>
                         <?php if ($key_partition->hard_drive_index == $key->hard_drive_index): ?>
                         <?php $partition_count++; ?>
                         <?php if ($key_partition->type == $key_partition->mount_type) {
@@ -458,11 +468,12 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </fieldset>
                     <br /><br />
                     <?php endforeach; ?>
-                    <?php echo display_custom_field('view_hardware_hard_drive',  $additional_fields_data, $edit)?>
+                    <?php echo display_custom_field('view_hardware_hard_drive',  $additional_fields, $edit)?>
                     <!-- mounted volumes - not associated with any particular disk -->
                     <?php 
                     $volumes = 0;
-                    foreach ($partition as $key_partition) {
+                    foreach ($partition as $item) {
+                        $key_partition = $item->attributes;
                         if ($key_partition->hard_drive_index == '') {
                             $volumes = 1;
                         } else {
@@ -486,7 +497,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($partition as $key_partition): ?>
+                        <?php foreach ($partition as $item_partition): ?>
+                            <?php $key_partition = $item_partition->attributes; ?>
                             <?php if ($key_partition->hard_drive_index == ''): ?>
                                 <tr>
                                     <td><a href="<?php echo base_url(); ?>index.php/main/disk_graph/<?php echo $system_id."/".$key_partition->id?>"><img src='<?php echo $oa_theme_images?>/16_graph.png' alt='' title='' /></a></td>
@@ -532,7 +544,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($optical as $key): ?>
+                        <?php foreach ($optical as $item): ?>
+                        <?php $key = $item->attributes; ?>
                             <tr>
                                 <td><?php echo print_something($key->mount_point); ?></td>
                                 <td><?php echo print_something($key->description); ?></td>
@@ -543,7 +556,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_optical',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_optical',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -570,7 +583,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($video as $key): ?>
+                        <?php foreach ($video as $item): ?>
+                        <?php $key = $item->attributes; ?>
                             <tr>
                                 <td><?php echo print_something($key->model); ?></td>
                                 <td><?php echo print_something($key->size); ?></td>
@@ -581,7 +595,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_video',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_video',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
@@ -611,7 +625,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                             </tr>
                         </thead>
                         <tbody>
-                        <?php foreach ($monitor as $key): ?>
+                        <?php foreach ($monitor as $item): ?>
+                        <?php $key = $item->attributes; ?>
                             <tr>
                                 <td><?php echo print_something($key->manufacturer); ?></td>
                                 <td><?php echo print_something($key->model); ?></td>
@@ -623,7 +638,7 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         <?php endforeach; ?>
                         </tbody>
                     </table>
-                <?php echo display_custom_field('view_hardware_monitor',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_monitor',  $additional_fields, $edit); ?>
                 </div>
             </fieldset>
         </form>
@@ -651,7 +666,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($sound as $key): ?>
+                        <?php foreach ($sound as $item): ?>
+                        <?php $key = $item->attributes; ?>
                             <tr>
                                 <td><?php echo $key->model; ?></td>
                                 <td><?php echo $key->manufacturer; ?></td>
@@ -661,14 +677,14 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </tbody>
                 </table>
                 </div>
-                <?php echo display_custom_field('view_hardware_sound',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('view_hardware_sound',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
     </div>
 
     <div id="view_hardware_printer" style="float: left; width: 100%;">
-    <?php if (count($printer) > 0) { ?>
+    <?php if (isset($printer) and count($printer) > 0) { ?>
         <br />
         <br />
         <form action="#" method="post" class='niceforms'>
@@ -685,11 +701,12 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($printer as $key): ?>
+                    <?php foreach ($printer as $item): ?>
+                    <?php $key = $item->attributes; ?>
                     <tr>
-                        <td><a href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>" ><?php echo print_something($key->man_model)?></a></td>
-                        <td><?php echo $key->man_manufacturer?></td>
-                        <td><?php echo $key->man_serial?></td>
+                        <td><a href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>" ><?php echo print_something($key->model)?></a></td>
+                        <td><?php echo $key->manufacturer?></td>
+                        <td><?php echo $key->serial?></td>
                         <td><?php echo $key->printer_shared?></td>
                         <td><?php echo $key->printer_shared_name?></td>
                     </tr>
@@ -740,7 +757,8 @@ function show_software($type, $software) {
             $type = 'odbc driver';
         }
         $count = 0;
-        foreach ($software as $key) {
+        foreach ($software as $item) {
+            $key = $item->attributes;
             if ($key->type == $type) {
                 if (mb_strlen($key->version) > 18) {
                     $key->version = mb_substr("$key->version", 0, 15).'...';
@@ -798,7 +816,8 @@ function show_software($type, $software) {
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($service as $key): ?>
+                <?php foreach ($service as $item): ?>
+                <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo clean_url($key->name)?></td>
                         <td><?php echo clean_url($key->description)?></td>
@@ -831,7 +850,8 @@ function show_software($type, $software) {
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($software_key as $key): ?>
+                <?php foreach ($software_key as $item): ?>
+                    <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->string)?></td>
@@ -866,7 +886,8 @@ function show_software($type, $software) {
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach ($pagefile as $key): ?>
+                <?php foreach ($pagefile as $item): ?>
+                    <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->initial_size)?></td>
@@ -897,14 +918,14 @@ function show_software($type, $software) {
                             <th><?php echo __('Path')?></th>                        </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($share as $key): ?>
-                    <?php
-                    if ((!$key->size == '') or ($key->size == '0') or (is_null($key->size))) {
-                        $size = number_format(intval($key->size)).' Mb';
-                    } else {
-                        $size = number_format(intval($key->size));
-                    }
-                    ?>
+                    <?php foreach ($share as $item): ?>
+                        <?php $key = $item->attributes;
+                        if ((!$key->size == '') or ($key->size == '0') or (is_null($key->size))) {
+                            $size = number_format(intval($key->size)).' Mb';
+                        } else {
+                            $size = number_format(intval($key->size));
+                        }
+                        ?>
                         <tr>
                             <td><?php echo clean_url($key->name)?></td>
                             <td style="text-align: right;" ><?php echo $size?></td>
@@ -938,8 +959,9 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($route as $key): ?>
-                    <tr>
+                    <?php foreach ($route as $item): ?>
+                        <?php $key = $item->attributes; ?>
+                        <tr>
                         <td><span style="display: none;"><?php echo print_something($key->destination)?></span><?php echo ip_address_from_db(print_something($key->destination)); ?></td>
                         <td><span style="display: none;"><?php echo print_something($key->next_hop)?></span><?php echo ip_address_from_db(print_something($key->next_hop)); ?></td>
                         <td><?php echo print_something($key->mask)?></td>
@@ -978,7 +1000,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($task as $key): ?>
+                    <?php foreach ($task as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->name); ?></td>
                         <td><?php echo print_something($key->last_run)?></td>
@@ -1021,7 +1044,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($user as $key): ?>
+                    <?php foreach ($user as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->full_name)?></td>
@@ -1059,7 +1083,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($user_group as $key): ?>
+                    <?php foreach ($user_group as $item): ?>
+                    <?php $key = $item->attributes; ?>
                     <?php #$group_members = str_replace(", ", " <br />", $key->members); ?>
                     <?php #$group_members = mb_substr($group_members, 0, mb_strlen($group_members)-1); ?>
                     <tr>
@@ -1103,7 +1128,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($print_queue as $key): ?>
+                    <?php foreach ($print_queue as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->manufacturer)?></td>
                         <td><?php echo print_something($key->model)?></td>
@@ -1143,7 +1169,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($dns as $key): ?>
+                    <?php foreach ($dns as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->fqdn)?></td>
@@ -1179,7 +1206,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($netstat as $key): ?>
+                    <?php foreach ($netstat as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->protocol)?></td>
                         <td><?php echo print_something($key->ip)?></td>
@@ -1214,7 +1242,8 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($log as $key): ?>
+                    <?php foreach ($log as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->name)?></td>
                         <td><?php echo print_something($key->file_name)?></td>
@@ -1246,11 +1275,51 @@ function show_software($type, $software) {
                         </tr>
                     </thead>
                     <tbody>
-                    <?php foreach ($variable as $key): ?>
+                    <?php foreach ($variable as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->program)?></td>
                         <td><?php echo print_something($key->name)?></td>
                         <td style="word-wrap:break-word;"><?php echo print_something($key->value)?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>
+
+    <div id="view_settings_file" style="float: left; width: 100%;">
+    <?php if (count($file) > 0) { ?>
+        <br />
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="file">
+            <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Files')?></span></legend>
+                <table cellspacing="1" class="tablesorter" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Name')?></th>
+                            <th><?php echo __('Directory')?></th>
+                            <th><?php echo __('Full Name')?></th>
+                            <th><?php echo __('Size')?></th>
+                            <th><?php echo __('Last Changed')?></th>
+                            <th><?php echo __('Owner')?></th>
+                            <th><?php echo __('Permission')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($file as $item): ?>
+                        <?php $key = $item->attributes; ?>
+                    <tr>
+                        <td><?php echo print_something($key->name)?></td>
+                        <td><?php echo print_something($key->directory)?></td>
+                        <td style="word-wrap:break-word;"><?php echo print_something($key->full_name)?></td>
+                        <td><?php echo print_something($key->size)?></td>
+                        <td><?php echo print_something($key->last_changed)?></td>
+                        <td><?php echo print_something($key->owner)?></td>
+                        <td><?php echo print_something($key->permission)?></td>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>
@@ -1266,7 +1335,8 @@ function show_software($type, $software) {
         <form action="#" method="post" class='niceforms'>
             <fieldset id="server_database" class='niceforms'>
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Database Server Details')?></span></legend>
-                <?php foreach ($database as $key): ?>
+                <?php foreach ($database as $item): ?>
+                <?php $key = $item->attributes; ?>
                     <?php if ($key->name == 'SQL Server') { ?>
                     <img class='section_image' src='<?php echo $oa_theme_images; ?>/48_sql_server.png' alt='' title='' />
                     <?php } elseif ($key->name == 'MySQL') { ?>
@@ -1300,7 +1370,8 @@ function show_software($type, $software) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($database_details as $key): ?>
+                    <?php foreach ($database_details as $item): ?>
+                        <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->instance)?></td>
                         <td><?php echo print_something($key->id_internal)?></td>
@@ -1335,7 +1406,8 @@ function show_software($type, $software) {
         <form action="#" method="post" class='niceforms'>
             <fieldset id="server_web" class='niceforms'>
                 <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Web Server Details')?></span></legend>
-                <?php foreach ($webserver as $key): ?>
+                <?php foreach ($webserver as $item): ?>
+                <?php $key = $item->attributes; ?>
                     <p><label for="sw_webserver_type"><?php echo __('Type')?>: </label><span id="sw_webserver_type"><?php echo print_something($key->type)?>&nbsp;</span></p>
                     <p><label for="sw_webserver_name"><?php echo __('Name')?>: </label><span id="sw_webserver_name"><?php echo print_something($key->name)?>&nbsp;</span></p>
                     <p><label for="sw_webserver_version"><?php echo __('Version')?>: </label><span id="sw_webserver_version"><?php echo print_something($key->version)?>&nbsp;</span></p>
@@ -1359,7 +1431,8 @@ function show_software($type, $software) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($website_details as $key): ?>
+                    <?php foreach ($website_details as $item): ?>
+                    <?php $key = $item->attributes; ?>
                     <tr>
                         <td><?php echo print_something($key->instance)?></td>
                         <td><?php echo print_something($key->id_internal)?></td>

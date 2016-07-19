@@ -2,38 +2,38 @@
 	<details>
 		<group_name>Duplicate UUIDs</group_name>
 		<group_padded_name/>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system INNER JOIN (SELECT uuid FROM system GROUP BY uuid HAVING count(uuid)> 1) system2 ON system.uuid = system2.uuid WHERE system2.uuid != '']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system INNER JOIN (SELECT uuid FROM system GROUP BY uuid HAVING count(uuid)> 1) system2 ON system.uuid = system2.uuid WHERE system2.uuid != '']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_description>Any items in the system table that have an identical UUID entry regardless of status.</group_description>
 		<group_category>general</group_category>
-		<group_display_sql><![CDATA[SELECT system.icon, system.system_id, system.hostname, system.uuid, system.man_status, system.man_type, system.man_os_family, system.man_os_name, system.timestamp FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.system_id]]></group_display_sql>
+		<group_display_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.name AS `system.name`, system.uuid AS `system.uuid`, system.status AS `system.status`, system.type AS `system.type`, system.os_family AS `system.os_family`, system.os_name AS `system.os_name`, system.last_seen AS `system.last_seen` FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id]]></group_display_sql>
 		<group_icon>general</group_icon>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
 			<column_name>Icon</column_name>
-			<column_variable>icon</column_variable>
+			<column_variable>system.icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
+			<column_secondary>system.os_family</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Hostname</column_name>
-			<column_variable>hostname</column_variable>
+			<column_variable>system.name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_link>/devices/</column_link>
+			<column_secondary>id</column_secondary>
 			<column_ternary/>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>2</column_order>
 			<column_name>UUID</column_name>
-			<column_variable>uuid</column_variable>
+			<column_variable>system.uuid</column_variable>
 			<column_type>text</column_type>
 			<column_link/>
 			<column_secondary/>
@@ -43,7 +43,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Status</column_name>
-			<column_variable>man_status</column_variable>
+			<column_variable>system.status</column_variable>
 			<column_type>text</column_type>
 			<column_link/>
 			<column_secondary/>
@@ -53,7 +53,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>OS Name</column_name>
-			<column_variable>man_os_name</column_variable>
+			<column_variable>system.os_name</column_variable>
 			<column_type>text</column_type>
 			<column_link/>
 			<column_secondary/>
@@ -62,8 +62,8 @@
 		</column>
 		<column>
 			<column_order>5</column_order>
-			<column_name>Timestamp</column_name>
-			<column_variable>timestamp</column_variable>
+			<column_name>Last Seen</column_name>
+			<column_variable>system.last_seen</column_variable>
 			<column_type>text</column_type>
 			<column_link/>
 			<column_secondary/>

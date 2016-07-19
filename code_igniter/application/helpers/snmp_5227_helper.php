@@ -30,74 +30,76 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Melco Buffalo
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
     $details->manufacturer = 'Buffalo';
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.4') {
+    if ($oid == '1.3.6.1.4.1.5227.4') {
         $details->model = 'AirStation WLM2';
         $details->type = 'wap';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.6') {
+    if ($oid == '1.3.6.1.4.1.5227.6') {
         $details->model = 'LSM10_100-16W';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.7') {
+    if ($oid == '1.3.6.1.4.1.5227.7') {
         $details->model = 'LSM10_100-24W';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.9') {
+    if ($oid == '1.3.6.1.4.1.5227.9') {
         $details->model = 'LSM10_100-8W';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.11') {
+    if ($oid == '1.3.6.1.4.1.5227.11') {
         $details->model = 'BS-POE-2024GM';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.12') {
+    if ($oid == '1.3.6.1.4.1.5227.12') {
         $details->model = 'BS-2024GM';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.13') {
+    if ($oid == '1.3.6.1.4.1.5227.13') {
         $details->model = 'LPV3-U2S';
         $details->type = 'print server';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.14') {
+    if ($oid == '1.3.6.1.4.1.5227.14') {
         $details->model = 'BS-POE-2008M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.15') {
+    if ($oid == '1.3.6.1.4.1.5227.15') {
         $details->model = 'BPV-PD-TX1';
         $details->type = 'print server';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.16') {
+    if ($oid == '1.3.6.1.4.1.5227.16') {
         $details->model = 'BS-2108M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.17') {
+    if ($oid == '1.3.6.1.4.1.5227.17') {
         $details->model = 'BS-2016M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.18') {
+    if ($oid == '1.3.6.1.4.1.5227.18') {
         $details->model = 'AirStation WAPM-APG300N';
         $details->type = 'wap';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.19') {
+    if ($oid == '1.3.6.1.4.1.5227.19') {
         $details->model = 'LPV3-U2-G54';
         $details->type = 'print server';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.22') {
+    if ($oid == '1.3.6.1.4.1.5227.22') {
         $details->model = 'BS-G3024MR';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.5227.32') {
+    if ($oid == '1.3.6.1.4.1.5227.32') {
         $details->model = 'BSL-WS-G2116M';
         $details->type = 'switch';
     }
-
+    return($details);
 };

@@ -27,7 +27,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12.6
+# 
+# @version 1.12.8
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -357,7 +358,7 @@ if [[ "$hosts" != "" ]]; then
 		if [ "$host_is_up" == "true" ]; then
 			result="	<device>"$'\n'
 			result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
-			result="$result		<man_ip_address>$host</man_ip_address>"$'\n'
+			result="$result		<ip>$host</ip>"$'\n'
 			result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 			result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
 			#result="$result		<description><![CDATA[$description]]></description>"$'\n'

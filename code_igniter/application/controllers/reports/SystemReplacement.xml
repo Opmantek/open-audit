@@ -3,8 +3,7 @@
 	<details>
 		<report_name>System Replacement</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_manufacturer, system.man_model, system.man_serial, oa_location.name, oa_org.name as org_name, system.man_purchase_date FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) LEFT JOIN oa_location ON (system.man_location_id
- = oa_location.id) LEFT JOIN oa_org ON (system.man_org_id = oa_org.id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.purchase_date AS `system.purchase_date`, oa_location.name AS `oa_location.name`, oa_org.name as `oa_org.name` FROM system LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) LEFT JOIN oa_location ON (system.location_id = oa_location.id) LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE oa_group_sys.group_id = @group ORDER BY system.name]]></report_sql>
 		<report_display_sql></report_display_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
@@ -15,18 +14,18 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>System Name</column_name>
-			<column_variable>hostname</column_variable>
+			<column_name>Device Name</column_name>
+			<column_variable>system.name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_link>/devices/</column_link>
+			<column_secondary>system.id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
 			<column_name>Date Purchased</column_name>
-			<column_variable>man_purchase_date</column_variable>
+			<column_variable>system.purchase_date</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -36,7 +35,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>system.manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -46,7 +45,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>system.model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -56,7 +55,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
+			<column_variable>system.serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -66,7 +65,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Owner</column_name>
-			<column_variable>org_name</column_variable>
+			<column_variable>oa_org.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -76,7 +75,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Location</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>oa_location.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

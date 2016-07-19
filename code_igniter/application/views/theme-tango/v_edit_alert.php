@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -92,9 +93,9 @@ echo form_open('change/process_edit_alert')."\n";
 			<?php foreach ($query as $key): ?>
 			<tr>
 				<td><?php echo $key->timestamp?></td>
-				<td><span style="display: none;"><?php echo print_something($key->man_ip_address)?></span><?php echo ip_address_from_db(print_something($key->man_ip_address))?></td>
-				<td><a class="SystemPopupTrigger" rel="<?php echo $key->system_id;?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key->system_id?>"><?php echo print_something($key->hostname)?></a></td>
-				<td><?php echo print_something($key->man_description)?></td>
+				<td><span style="display: none;"><?php echo print_something($key->ip)?></span><?php echo ip_address_from_db(print_something($key->ip))?></td>
+				<td><a class="SystemPopupTrigger" rel="<?php echo $key->id;?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo $key->id?>"><?php echo print_something($key->name)?></a></td>
+				<td><?php echo print_something($key->description)?></td>
 				<td><?php echo print_something($key->details)?></td>
 			</tr>
 			<?php endforeach; ?>

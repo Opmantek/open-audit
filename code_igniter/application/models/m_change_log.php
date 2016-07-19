@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -166,8 +167,7 @@ class M_change_log extends MY_Model
      */
     public function readChange($id)
     {
-        $sql = "SELECT change_log.*, system.hostname, system.man_ip_address, system.man_description FROM
-			change_log LEFT JOIN system ON (change_log.system_id = system.system_id) WHERE change_log.id = ?";
+        $sql = "SELECT change_log.*, system.name, system.ip, system.description FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);

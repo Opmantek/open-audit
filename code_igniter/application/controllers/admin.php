@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -90,65 +91,6 @@ class admin extends MY_Controller
     {
         redirect('/');
     }
-
-    /**
-     * Just a simple echo of the page name for a test.
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-     *
-     * @link      http://www.open-audit.org
-     *
-     * @return string
-     */
-    public function test()
-    {
-        $system_id = 1;
-        $table_name = 'system';
-        $extended = 'y';
-        echo "<pre>\n";
-
-        $sql = "SELECT * FROM $table_name WHERE system_id = 29 or system_id = 26";
-        $data = array($system_id);
-        $query = $this->db->query($sql, $data);
-        $devices = $query->result();
-        $result = array();
-
-        if ($extended == 'y') {
-            $sql= "SELECT COLUMN_NAME as name, DATA_TYPE as type, COLUMN_TYPE as extended_type, CHARACTER_MAXIMUM_LENGTH as length, COLUMN_DEFAULT as `default` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? and table_name = ?";
-            $data = array($this->db->database, $table_name);
-            $query = $this->db->query($sql, $data);
-            $table = $query->result();
-
-            $count = 0;
-            foreach ($devices as $device) {
-                foreach ($device as $key => $value) {
-                    foreach ($table as $column) {
-                        if ($column->name == $key) {
-                            $result[$count][$key]['name'] = $key;
-                            $result[$count][$key]['value'] = $value;
-                            $result[$count][$key]['type'] = $column->type;
-                            $result[$count][$key]['extended_type'] = $column->extended_type;
-                            $result[$count][$key]['length'] = $column->length;
-                            $result[$count][$key]['default'] = $column->default;
-                        }
-                    }
-                }
-                $count++;
-            }
-        } else {
-            foreach ($devices as $device) {
-                $result[] = (array)$device;
-            }
-        }
-        print_r($result);
-        exit();
-    }
-
 
     /**
      * Reset the device icons in the database.
@@ -299,12 +241,12 @@ class admin extends MY_Controller
         }
         unset($temp);
         // full path to text file
-        if (php_uname('s') === 'Linux') {
-            $file = '/usr/local/open-audit/other/log_'.$logfile.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $this->config->item('base_path') . '\other\log_' . $logfile . '.log';
         } else {
-            $file = 'c:\\xampplite\\open-audit\\other\\log_'.$logfile.'.log';
+            $file = $this->config->item('base_path') . '/other/log_' . $logfile . '.log';
         }
-        $handle = fopen($file, 'w');
+        $handle = fopen($file, 'w') or die ("Cannot open log file");
         fwrite($handle, '');
         fclose($handle);
         redirect('admin/view_log/'.$logfile);
@@ -329,10 +271,10 @@ class admin extends MY_Controller
         $this->load->helper('file');
         $file = @intval($this->uri->segment(3, 0));
         $complete_filename = '';
-        if (php_uname('s') === 'Linux') {
+        if (php_uname('s') != 'Windows NT') {
             switch ($file) {
                 case '1':
-                    $complete_filename = '/usr/local/open-audit/other/log_system.log';
+                    $complete_filename = $this->config->item('base_path') . '/other/log_system.log';
                     break;
 
                 case '2':
@@ -363,7 +305,7 @@ class admin extends MY_Controller
         if (php_uname('s') == 'Windows NT') {
             switch ($file) {
                 case '1':
-                    $complete_filename = 'c:\xampplite\open-audit\other\log_system.log';
+                    $complete_filename = $this->config->item('base_path') . '\other\log_system.log';
                     break;
 
                 case '2':
@@ -431,11 +373,10 @@ class admin extends MY_Controller
         }
 
         //full path to text file
-        if (php_uname('s') == 'Linux') {
-            $file = "/usr/local/open-audit/other/log_".$logfile.".log";
-            //$file = '../../other/log_'.$logfile.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $this->config->item('base_path') . '\other\log_' . $logfile . '.log';
         } else {
-            $file = "c:\\xampplite\\open-audit\\other\\log_".$logfile.".log";
+            $file = $this->config->item('base_path') . '/other/log_' . $logfile . '.log';
         }
 
         $fsize = round(filesize($file)/1024/1024, 2);
@@ -502,7 +443,7 @@ class admin extends MY_Controller
             $this->load->model("m_systems");
             $data = array($this->data['id']);
             $query = $this->db->query('SET @group = ?', $data);
-            $sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.system_id ORDER BY system.system_id";
+            $sql = "SELECT system.id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.ip as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.id ORDER BY system.id";
             $query = $this->db->query($sql);
             $this->data['query'] = $query->result();
             $this->load->library('encrypt');
@@ -744,7 +685,7 @@ class admin extends MY_Controller
                 $info = ldap_get_entries($ad, $sr);
                 for ($i = 0; $i < count($info)-1; $i++) {
                     $details = new stdClass();
-                    $details->timestamp = $timestamp;
+                    $details->last_seen = $timestamp;
                     $details->dns_hostname = @strtolower($info[$i]['dnshostname'][0]);
                     $details->fqdn = $details->dns_hostname;
                     $j = explode(".", $details->dns_hostname);
@@ -830,21 +771,20 @@ class admin extends MY_Controller
                         unset($details->man_ip_address);
                     }
 
-                    $details->system_key = $this->m_system->create_system_key($details);
-                    $details->system_id = $this->m_system->find_system($details);
-                    if (isset($details->system_id) and $details->system_id != '') {
+                    $details->id = $this->m_system->find_system($details);
+                    if (!empty($details->id)) {
                         # update an existing system
                         $this->m_system->update_system($details);
                     } else {
                         # insert a new system
-                        $details->system_id = $this->m_system->insert_system($details);
+                        $details->id = $this->m_system->insert_system($details);
                     }
                     if (isset($this->user->full_name)) {
                         $temp_user = $this->user->full_name;
                     } else {
                         $temp_user = '';
                     }
-                    $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                    $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                     unset($temp_user);
                     $this->m_oa_group->update_system_groups($details);
                 }
@@ -1493,27 +1433,27 @@ class admin extends MY_Controller
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY sys_man_additional_fields_group_id";
+            $sql = "ALTER TABLE additional_field DROP FOREIGN KEY additional_field_group_id";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields ADD CONSTRAINT sys_man_additional_fields_group_id FOREIGN KEY (group_id) REFERENCES oa_group (group_id) ON DELETE CASCADE";
+            $sql = "ALTER TABLE additional_field ADD CONSTRAINT additional_field_group_id FOREIGN KEY (group_id) REFERENCES oa_group (group_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
+            $sql = "ALTER TABLE additional_field_item DROP FOREIGN KEY additional_field_item_system_id";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT sys_man_additional_fields_data_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE";
+            $sql = "ALTER TABLE additional_field_item ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
+            $sql = "ALTER TABLE additional_field_item DROP FOREIGN KEY additional_field_item_field_id";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
-            $sql = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT sys_man_additional_fields_data_field_id FOREIGN KEY (field_id) REFERENCES sys_man_additional_fields (field_id) ON DELETE CASCADE";
+            $sql = "ALTER TABLE additional_field_item ADD CONSTRAINT additional_field_item_field_id FOREIGN KEY (field_id) REFERENCES additional_field (field_id) ON DELETE CASCADE";
             $this->data['output'] .= $sql."<br /><br />\n";
             $query = $this->db->query($sql);
 
@@ -4092,7 +4032,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_used_space used int unsigned NOT NULL DEFAULT '1' AFTER free";
             $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_format format varchar(20) NOT NULL DEFAULT '' AFTER used";
             $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_bootable bootable varchar(10) NOT NULL DEFAULT '' AFTER format";
-            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_type type varchar(50) NOT NULL DEFAULT '' AFTER bootable";
+            $sql[] = "ALTER TABLE sys_hw_partition CHANGE partition_type `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
             $sql[] = "ALTER TABLE sys_hw_partition DROP partition_quotas_supported";
             $sql[] = "ALTER TABLE sys_hw_partition DROP partition_quotas_enabled";
             $sql[] = "RENAME TABLE sys_hw_partition TO `partition`";
@@ -4480,7 +4420,7 @@ class admin extends MY_Controller
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the ', SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5), ' attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5) as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'man_%'";
             $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the name attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, 'name' as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'hostname - %'";
-            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'sys_man_additional_fields_data%'";
+            $sql[] = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE audit_log_event_details LIKE 'additional_field_item%'";
             $sql[] = "DROP TABLE IF EXISTS oa_audit_log";
 
             # tasks (scheduled tasks / cron)
@@ -4622,12 +4562,6 @@ class admin extends MY_Controller
                 $this->m_oa_report->activate_file('Changes - Software');
             }
             $sql = "DELETE oa_report FROM oa_report WHERE report_name = 'Alerts - Software Updates'";
-
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
 
             $log_details->message = 'Upgrade database to 1.10 completed';
             stdlog($log_details);
@@ -4836,9 +4770,6 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.12.4 commenced';
             stdlog($log_details);
 
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
             $sql = array();
             $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
             $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
@@ -4874,13 +4805,11 @@ class admin extends MY_Controller
             $log_details->message = 'Upgrade database to 1.12.6 commenced';
             stdlog($log_details);
 
-            $this->load->model('m_system');
-            $this->m_system->reset_icons();
-
             unset($sql);
             $sql = array();
             # we're removving the foreign key between additional fields and groups
-            $sql[] = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY sys_man_additional_fields_group_id";
+            $sql[] = "ALTER TABLE sys_man_additional_fields DROP FOREIGN KEY `sys_man_additional_fields_group_id`";
+            $sql[] = "ALTER TABLE sys_man_additional_fields DROP KEY `sys_man_additional_fields_group`";
 
             # this should be unused now - groups and reports refreshed further down
             $sql[] = "ALTER TABLE system DROP man_icon";
@@ -4891,15 +4820,15 @@ class admin extends MY_Controller
             # change the oa_org to the new SQL schema style
             $sql[] = "ALTER TABLE oa_org CHANGE org_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE oa_org CHANGE org_name name varchar(100) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT NULL";
-            $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_parent_id parent_id int(10) unsigned DEFAULT '0'";
+            $sql[] = "ALTER TABLE oa_org CHANGE org_group_id group_id int(10) unsigned DEFAULT '0'";
             $sql[] = "ALTER TABLE oa_org DROP contact_id";
             $sql[] = "ALTER TABLE oa_org DROP org_picture";
             $sql[] = "ALTER TABLE oa_org CHANGE org_comments comments text NOT NULL DEFAULT ''";
             $sql[] = "UPDATE oa_org SET name = 'Default Organisation' WHERE id = 0";
 
             # now add the key back
-            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org_id) REFERENCES oa_org (id)";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_org_id FOREIGN KEY (org_id) REFERENCES oa_org (id) ON DELETE CASCADE";
 
             # drop these foreign keys so we can change user_id to id
             $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_user_id";
@@ -4907,6 +4836,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_group_user DROP FOREIGN KEY oa_group_user_user_id";
             $sql[] = "ALTER TABLE oa_user_org DROP FOREIGN KEY oa_user_org_user_id";
             $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_user_id";
+            $sql[] = "ALTER TABLE sys_man_attachment DROP KEY att_user_id";
             $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_user_id";
 
             # change the user table to the new SQL schema format
@@ -4926,9 +4856,8 @@ class admin extends MY_Controller
             # now add the foreign keys back
             $sql[] = "ALTER TABLE edit_log ADD CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
             $sql[] = "ALTER TABLE oa_change ADD CONSTRAINT oa_change_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
-            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT att_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
+            $sql[] = "ALTER TABLE oa_group_user ADD CONSTRAINT oa_group_user_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE oa_user_org ADD CONSTRAINT oa_user_org_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT sys_man_notes_user_id FOREIGN KEY (user_id) REFERENCES oa_user (id)";
 
             # change the location table to use the new SQL schema format
@@ -4963,7 +4892,7 @@ class admin extends MY_Controller
             # allow for some silly long serial numbers
             $sql[] = "ALTER TABLE system CHANGE `serial` `serial` varchar(250) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE `man_serial` `man_serial` varchar(250) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(250) NOT NULL DEFAULT '' AFTER uuid";
+            $sql[] = "ALTER TABLE system ADD `dbus_identifier` varchar(255) NOT NULL DEFAULT '' AFTER uuid";
 
             # a new function we'll use for checking if an IP is in a blessed subnet
             $sql[] = "DROP FUNCTION IF EXISTS cidr_to_mask";
@@ -5003,14 +4932,6 @@ class admin extends MY_Controller
                 $query = $this->db->query($this_query);
             }
 
-            # refresh the reports
-            $this->load->helper('report_helper');
-            refresh_report_definitions();
-
-            # refresh the groups
-            $this->load->helper('group_helper');
-            refresh_group_definitions();
-
             // update any leftover group definitions by changing man_icon to icon
             $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
             $query = $this->db->query($sql);
@@ -5038,7 +4959,474 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '20160620') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.8
 
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.8 commenced';
+            stdlog($log_details);
+
+            # initialise our $sql array
+            unset($sql);
+            $sql = array();
+
+
+            # Some hoop jumping here. Because a previous default SQL schema did not include the key
+            # audit_log_system_id but the upgrade did, we have to test if it exists before trying to delete it
+            $sqlt = "SELECT count(*) AS `count` FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_SCHEMA = DATABASE() AND TABLE_NAME='audit_log' AND INDEX_NAME = 'audit_log_system_id'";
+            $query = $this->db->query($sqlt);
+            $result = $query->result();
+            if ($result[0]->count > 0) {
+                $sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
+            }
+            unset($sqlt);
+            unset($query);
+            unset($result);
+
+            # DROP all the table indexes / foreign keys that link to system.system_id
+            $sql[] = "ALTER TABLE bios DROP FOREIGN KEY sys_hw_bios_system_id";
+            $sql[] = "ALTER TABLE change_log DROP FOREIGN KEY change_log_system_id";
+            $sql[] = "ALTER TABLE disk DROP FOREIGN KEY sys_hw_hard_drive_system_id";
+            $sql[] = "ALTER TABLE dns DROP FOREIGN KEY sys_sw_dns_system_id";
+            $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_system_id";
+            $sql[] = "ALTER TABLE graph DROP FOREIGN KEY sys_hw_graph_system_id";
+            $sql[] = "ALTER TABLE ip DROP FOREIGN KEY ip_system_id";
+            $sql[] = "ALTER TABLE log DROP FOREIGN KEY sys_sw_log_system_id";
+            $sql[] = "ALTER TABLE memory DROP FOREIGN KEY sys_hw_memory_system_id";
+            $sql[] = "ALTER TABLE module DROP FOREIGN KEY sys_hw_module_system_id";
+            $sql[] = "ALTER TABLE monitor DROP FOREIGN KEY sys_hw_monitor_system_id";
+            $sql[] = "ALTER TABLE motherboard DROP FOREIGN KEY sys_hw_motherboard_system_id";
+            $sql[] = "ALTER TABLE netstat DROP FOREIGN KEY sys_sw_netstat_system_id";
+            $sql[] = "ALTER TABLE network DROP FOREIGN KEY sys_hw_network_card_system_id";
+            $sql[] = "ALTER TABLE oa_group_sys DROP FOREIGN KEY oa_group_sys_system_id";
+            $sql[] = "ALTER TABLE optical DROP FOREIGN KEY sys_hw_optical_drive_system_id";
+            $sql[] = "ALTER TABLE pagefile DROP FOREIGN KEY sys_sw_pagefile_system_id";
+            $sql[] = "ALTER TABLE partition DROP FOREIGN KEY sys_hw_partition_system_id";
+            $sql[] = "ALTER TABLE print_queue DROP FOREIGN KEY sys_sw_print_queue_system_id";
+            $sql[] = "ALTER TABLE processor DROP FOREIGN KEY sys_hw_processor_system_id";
+            $sql[] = "ALTER TABLE route DROP FOREIGN KEY sys_sw_ip_route_system_id";
+            $sql[] = "ALTER TABLE san DROP FOREIGN KEY san_system_id";
+            $sql[] = "ALTER TABLE scsi DROP FOREIGN KEY sys_hw_scsi_controller_system_id";
+            $sql[] = "ALTER TABLE server DROP FOREIGN KEY server_system_id";
+            $sql[] = "ALTER TABLE server_item DROP FOREIGN KEY server_item_system_id";
+            $sql[] = "ALTER TABLE service DROP FOREIGN KEY sys_sw_service_system_id";
+            $sql[] = "ALTER TABLE share DROP FOREIGN KEY sys_sw_share_system_id";
+            $sql[] = "ALTER TABLE software DROP FOREIGN KEY sys_sw_software_system_id";
+            $sql[] = "ALTER TABLE software_key DROP FOREIGN KEY sys_sw_software_key_system_id";
+            $sql[] = "ALTER TABLE sound DROP FOREIGN KEY sys_hw_sound_system_id";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
+            $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_system_id";
+            $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_system_id";
+            $sql[] = "ALTER TABLE task DROP FOREIGN KEY task_system_id";
+            $sql[] = "ALTER TABLE user DROP FOREIGN KEY sys_sw_user_system_id";
+            $sql[] = "ALTER TABLE user_group DROP FOREIGN KEY sys_sw_groups_system_id";
+            $sql[] = "ALTER TABLE variable DROP FOREIGN KEY sys_sw_variable_system_id";
+            $sql[] = "ALTER TABLE video DROP FOREIGN KEY sys_hw_video_system_id";
+            $sql[] = "ALTER TABLE vm DROP FOREIGN KEY sys_sw_virtual_machine_system_id";
+            $sql[] = "ALTER TABLE warranty DROP FOREIGN KEY sys_hw_warranty_system_id";
+            $sql[] = "ALTER TABLE windows DROP FOREIGN KEY sys_sw_windows_system_id";
+
+            $sql[] = "ALTER TABLE system DROP KEY id";
+            $sql[] = "ALTER TABLE system DROP KEY id2";
+            $sql[] = "ALTER TABLE system DROP KEY id3";
+            $sql[] = "ALTER TABLE system DROP KEY hostname";
+            $sql[] = "ALTER TABLE system DROP KEY linked_sys";
+            $sql[] = "ALTER TABLE system DROP KEY system_key";
+            $sql[] = "ALTER TABLE system CHANGE system_id system_id int(10) unsigned NOT NULL";
+            $sql[] = "ALTER TABLE system DROP PRIMARY KEY";
+            $sql[] = "ALTER TABLE system DROP KEY system_id";
+            $sql[] = "ALTER TABLE system CHANGE system_id id int(10) unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT FIRST";
+            $sql[] = "ALTER TABLE system DROP system_key";
+            $sql[] = "ALTER TABLE system DROP system_key_type";
+            $sql[] = "ALTER TABLE system CHANGE uuid uuid varchar(100) NOT NULL DEFAULT '' AFTER id";
+            $sql[] = "ALTER TABLE system CHANGE hostname name varchar(100) NOT NULL DEFAULT '' AFTER uuid";
+            $sql[] = "ALTER TABLE system CHANGE man_ip_address ip varchar(45) NOT NULL DEFAULT '' AFTER name";
+            $sql[] = "ALTER TABLE system ADD hostname varchar(100) NOT NULL default '' AFTER ip";
+            $sql[] = "ALTER TABLE system ADD dns_hostname varchar(100) NOT NULL default '' AFTER hostname";
+            $sql[] = "ALTER TABLE system DROP domain";
+            $sql[] = "ALTER TABLE system CHANGE man_domain domain varchar(100) NOT NULL DEFAULT '' AFTER dns_hostname";
+            $sql[] = "ALTER TABLE system ADD dns_domain varchar(100) NOT NULL default '' AFTER domain";
+            $sql[] = "ALTER TABLE system DROP description";
+            $sql[] = "ALTER TABLE system CHANGE man_description description text NOT NULL AFTER fqdn";
+            $sql[] = "ALTER TABLE system DROP type";
+            $sql[] = "ALTER TABLE system CHANGE man_type type varchar(50) NOT NULL DEFAULT '' AFTER description";
+            $sql[] = "ALTER TABLE system DROP os_group";
+            $sql[] = "ALTER TABLE system CHANGE man_os_group os_group varchar(50) NOT NULL DEFAULT '' AFTER icon";
+            $sql[] = "ALTER TABLE system DROP os_family";
+            $sql[] = "ALTER TABLE system CHANGE man_os_family os_family varchar(50) NOT NULL DEFAULT '' AFTER os_group";
+            $sql[] = "ALTER TABLE system DROP os_name";
+            $sql[] = "ALTER TABLE system CHANGE man_os_name os_name varchar(100) NOT NULL DEFAULT '' AFTER os_family";
+            $sql[] = "ALTER TABLE system CHANGE linked_sys attached_system_id int(10) DEFAULT NULL";
+            $sql[] = "ALTER TABLE system DROP manufacturer";
+            $sql[] = "ALTER TABLE system CHANGE man_manufacturer manufacturer varchar(100) NOT NULL DEFAULT '' AFTER attached_system_id";
+            $sql[] = "ALTER TABLE system DROP model";
+            $sql[] = "ALTER TABLE system CHANGE man_model model varchar(200) NOT NULL DEFAULT '' AFTER manufacturer";
+            $sql[] = "ALTER TABLE system DROP `serial`";
+            $sql[] = "ALTER TABLE system CHANGE man_serial `serial` varchar(200) NOT NULL DEFAULT '' AFTER model";
+            $sql[] = "ALTER TABLE system DROP form_factor";
+            $sql[] = "ALTER TABLE system CHANGE man_form_factor form_factor varchar(50) NOT NULL DEFAULT '' AFTER uptime";
+            $sql[] = "ALTER TABLE system CHANGE pc_os_bit os_bit tinyint unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE pc_memory memory_count int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE pc_num_processor processor_count tinyint unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE pc_date_os_installation os_installation_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "UPDATE system SET printer_color = 'y' WHERE LOWER(printer_color) ='true' OR LOWER(printer_color) = 't'";
+            $sql[] = "UPDATE system SET printer_color = 'n' WHERE LOWER(printer_color) ='false' OR LOWER(printer_color) = 'f'";
+            $sql[] = "ALTER TABLE system CHANGE printer_color printer_color enum('y','n','') NOT NULL DEFAULT ''";
+            $sql[] = "UPDATE system SET printer_duplex = 'y' WHERE LOWER(printer_duplex) ='true' OR LOWER(printer_duplex) = 't'";
+            $sql[] = "UPDATE system SET printer_duplex = 'n' WHERE LOWER(printer_duplex) ='false' OR LOWER(printer_duplex) = 'f'";
+            $sql[] = "ALTER TABLE system CHANGE printer_duplex printer_duplex enum('y','n','') NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_status status enum('production','deleted','lost','maintenance','retired','unallocated') NOT NULL DEFAULT 'production'";
+            $sql[] = "ALTER TABLE system CHANGE man_environment environment enum('production','dev','dr','eval','pre-prod','test','train','uat') NOT NULL DEFAULT 'production'";
+            $sql[] = "ALTER TABLE system CHANGE man_class class enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','hypervisor','') NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_function function varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_owner owner varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_org_id org_id int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system DROP man_criticality";
+            $sql[] = "ALTER TABLE system CHANGE man_location_id location_id int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_location_level location_level varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_suite location_suite varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_room location_room varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_rack location_rack varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_rack_position location_rack_position varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_location_rack_size location_rack_size int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_location_latitude location_latitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_location_longitude location_longitude float(10,6) NOT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_asset_number asset_number varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_vm_server_name vm_server_name varchar(150) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_vm_system_id vm_system_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_vm_group vm_group varchar(150) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_cluster_name cluster_name varchar(150) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system ADD cluster_type varchar(150) NOT NULL DEFAULT '' AFTER cluster_name";
+            $sql[] = "ALTER TABLE system CHANGE invoice_id invoice_id int(10) unsigned DEFAULT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_invoice purchase_invoice varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_order_number purchase_order_number varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_cost_center purchase_cost_center varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_vendor purchase_vendor varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_date purchase_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_service_contract_number purchase_service_contract_number varchar(255) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_lease_expiry_date lease_expiry_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_amount purchase_amount varchar(50) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_duration warranty_duration int(5) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_expires warranty_expires date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_type warranty_type enum('','24x7x365','9x5x5','Next Business Day') NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system DROP man_terminal_number";
+            $sql[] = "ALTER TABLE system DROP nmap_type";
+            $sql[] = "ALTER TABLE system DROP contact_id";
+            $sql[] = "ALTER TABLE system CHANGE man_switch_id switch_system_id int(10) DEFAULT NULL";
+            $sql[] = "ALTER TABLE system CHANGE man_switch_port switch_port int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_patch_panel patch_panel varchar(45) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_patch_panel_port patch_panel_port_new int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE patch_panel_port_new patch_panel_port int unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE system CHANGE man_wall_port wall_port varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system DROP man_picture";
+            $sql[] = "ALTER TABLE system CHANGE man_service_number service_number varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_provider service_provider varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_type service_type varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_plan service_plan varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_service_network service_network varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_unlock_pin unlock_pin varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_serial_imei serial_imei varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE man_serial_sim serial_sim varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE system CHANGE nmis_export nmis_export enum('true','false','y','n') NOT NULL DEFAULT 'false'";
+            $sql[] = "UPDATE system SET nmis_export = 'n' WHERE LOWER(nmis_export) ='false'";
+            $sql[] = "UPDATE system SET nmis_export = 'y' WHERE LOWER(nmis_export) ='true'";
+            $sql[] = "ALTER TABLE system CHANGE nmis_export nmis_export enum('y','n') NOT NULL DEFAULT 'n'";
+            $sql[] = "ALTER TABLE system CHANGE man_oae_manage oae_manage enum('y','n') NOT NULL DEFAULT 'y' AFTER nmis_export";
+            $sql[] = "ALTER TABLE system CHANGE snmp_oid snmp_oid text NOT NULL AFTER oae_manage";
+            $sql[] = "ALTER TABLE system DROP last_seen";
+            $sql[] = "ALTER TABLE system CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER sysLocation";
+            $sql[] = "ALTER TABLE system CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE system CHANGE last_seen_by last_seen_by varchar(150) NOT NULL DEFAULT '' AFTER last_seen";
+            $sql[] = "ALTER TABLE system CHANGE last_user last_user varchar(150) NOT NULL DEFAULT '' AFTER last_seen_by";
+            $sql[] = "ALTER TABLE system ADD KEY ip (`ip`)";
+            $sql[] = "ALTER TABLE system ADD KEY name (`name`)";
+
+            # recreate the indexes
+            $sql[] = "ALTER TABLE audit_log ADD CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE bios ADD CONSTRAINT bios_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE change_log ADD CONSTRAINT change_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE disk ADD CONSTRAINT disk_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE dns ADD CONSTRAINT dns_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE graph ADD CONSTRAINT graph_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE ip ADD CONSTRAINT ip_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE log ADD CONSTRAINT log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE memory ADD CONSTRAINT memory_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE module ADD CONSTRAINT module_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE monitor ADD CONSTRAINT monitor_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE motherboard ADD CONSTRAINT motherboard_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE netstat ADD CONSTRAINT netstat_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE network ADD CONSTRAINT network_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE oa_group_sys ADD CONSTRAINT oa_group_sys_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE optical ADD CONSTRAINT optical_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE pagefile ADD CONSTRAINT pagefile_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE partition ADD CONSTRAINT partition_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE print_queue ADD CONSTRAINT print_queue_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE processor ADD CONSTRAINT processor_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE route ADD CONSTRAINT route_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE san ADD CONSTRAINT san_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE scsi ADD CONSTRAINT scsi_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE server ADD CONSTRAINT server_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE server_item ADD CONSTRAINT server_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE service ADD CONSTRAINT service_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE share ADD CONSTRAINT share_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE software ADD CONSTRAINT software_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE software_key ADD CONSTRAINT software_key_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sound ADD CONSTRAINT sound_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_additional_fields_data ADD CONSTRAINT additional_field_item_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_attachment ADD CONSTRAINT attachment_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE sys_man_notes ADD CONSTRAINT notes_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE task ADD CONSTRAINT task_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE user ADD CONSTRAINT user_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE user_group ADD CONSTRAINT user_group_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE variable ADD CONSTRAINT variable_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE video ADD CONSTRAINT video_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE vm ADD CONSTRAINT vm_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE warranty ADD CONSTRAINT warranty_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE windows ADD CONSTRAINT windows_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+
+            $sql[] = "RENAME TABLE sys_man_attachment TO `attachment`";
+            $sql[] = "ALTER TABLE `attachment` CHANGE att_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `attachment` CHANGE `att_title` `title` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `attachment` CHANGE `att_filename` `filename` text NOT NULL";
+
+            $sql[] = "ALTER TABLE `change_log` CHANGE `details` `details` text NOT NULL";
+
+            $sql[] = "RENAME TABLE sys_man_invoice TO `invoice`";
+            $sql[] = "ALTER TABLE `invoice` CHANGE invoice_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `invoice` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
+
+            $sql[] = "RENAME TABLE sys_man_invoice_line TO `invoice_item`";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE line_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE `system_id` `system_id` int(10) unsigned DEFAULT NULL AFTER id";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE `man_serial` `serial` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `invoice_item` CHANGE `man_asset_number` `asset_number` varchar(200) NOT NULL DEFAULT ''";
+
+            $sql[] = "RENAME TABLE sys_man_notes TO `notes`";
+            $sql[] = "ALTER TABLE `notes` CHANGE notes_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `notes` CHANGE `notes_title` `title` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `notes` CHANGE `notes_text` `comment` text NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `notes` DROP FOREIGN KEY sys_man_notes_user_id";
+
+            $sql[] = "RENAME TABLE `sys_man_additional_fields_data` TO `additional_field_item`";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP FOREIGN KEY sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP KEY         sys_man_additional_fields_data_field_id";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP field_int";
+            $sql[] = "ALTER TABLE `additional_field_item` DROP field_memo";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE field_details_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_id` `additional_field_id` int(10) unsigned NOT NULL DEFAULT '0'";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_datetime` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `field_varchar` `value` text NOT NULL DEFAULT ''";
+
+            $sql[] = "RENAME TABLE `sys_man_additional_fields` TO `additional_field`";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE field_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `additional_field` DROP field_sys_type";
+            $sql[] = "ALTER TABLE `additional_field` DROP field_derived_type";
+            $sql[] = "ALTER TABLE `additional_field` DROP field_derived_sql";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_name` `name` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_type` `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar'";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_values` `values` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `additional_field` CHANGE `field_placement` `placement` varchar(100) NOT NULL DEFAULT ''";
+
+            $sql[] = "ALTER TABLE `network` DROP KEY timestamp";
+            $sql[] = "ALTER TABLE `edit_log` DROP FOREIGN KEY edit_log_user_id";
+            $sql[] = "ALTER TABLE `edit_log` DROP KEY user_id";
+            $sql[] = "ALTER TABLE `edit_log` ADD KEY system_id (system_id)";
+            $sql[] = "ALTER TABLE `edit_log` ADD CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE `edit_log` DROP KEY edit_log_system_id";
+            $sql[] = "ALTER TABLE `notes` DROP KEY user_id";
+            $sql[] = "ALTER TABLE `oa_connection` CHANGE connection_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_group_column` CHANGE column_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_group_sys` CHANGE group_sys_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_group_user` CHANGE group_user_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_report_column` CHANGE column_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `service` DROP KEY description";
+
+            $sql[] = "ALTER TABLE `oa_change` DROP FOREIGN KEY oa_change_user_id";
+            $sql[] = "ALTER TABLE `oa_change` DROP KEY oa_change_user_id";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE change_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_short_desc` `title` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_reason` `reason` text NOT NULL";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_planned_date` `planned_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_implemented_date` `implemented_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_external_id` `external_id` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_external_link` `external_link` varchar(200) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_authorising_person` `authorized_by` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_performing_person` `performed_by` varchar(100) NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_detailed_desc` `details` text NOT NULL";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_potential_issues` `potential_issues` text NOT NULL";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_backout_plan` `backout_plan` text NOT NULL";
+
+            $sql[] = "DROP TABLE IF EXISTS cluster";
+            $sql[] = "CREATE TABLE `cluster` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `type` enum('high availability', 'load balancing', 'perforance', 'storage', 'other'), `purpose` enum('application', 'database', 'file', 'virtualisation', 'web', 'other'), `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+            $sql[] = "UPDATE system SET hostname = name";
+            $sql[] = "UPDATE system SET dns_hostname = name";
+            $sql[] = "UPDATE system SET dns_domain = domain";
+ 
+            $sql[] = "DROP FUNCTION IF EXISTS cidr_to_mask";
+            $sql[] = "CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10))";
+
+            $sql[] = "DROP TABLE IF EXISTS `files`";
+            $sql[] = "CREATE TABLE `files` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `path` varchar(45) NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+            $sql[] = "DROP TABLE IF EXISTS `file`";
+            $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            # fix a previous missed item
+            $sql[] = "ALTER TABLE partition CHANGE `type` `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
+
+            $sql[] = "DROP TABLE IF EXISTS `scripts`";
+            $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+            $options = array();
+            $options['submit_online'] = 'y';
+            $options['create_file'] = 'n';
+            if ($this->config->item('default_network_address') != '') {
+                $options['url'] = 'http://' . $this->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
+            } else {
+                $options['url'] = 'http://localhost/open-audit/index.php/system/add_system';
+            }
+            $options['debugging'] = 1;
+            $options = json_encode($options);
+
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_aix.sh', '" . $options . "', 'The default audit AIX config.', 'audit_aix.sh', '', 'system', '2016-06-01 00:00:00')";
+
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_esx.sh', '" . $options . "', 'The default audit ESX config.', 'audit_esx.sh', '', 'system', '2016-06-01 00:00:00')";
+
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_linux.sh', '" . $options . "', 'The default audit Linux config.', 'audit_linux.sh', '', 'system', '2016-06-01 00:00:00')";
+
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_osx.sh', '" . $options . "', 'The default audit OSX config.', 'audit_osx.sh', '', 'system', '2016-06-01 00:00:00')";
+
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', '2016-06-01 00:00:00')";
+
+            $sql[] = "UPDATE additional_field SET placement = 'custom' WHERE placement = 'view_summary_custom'";
+            $sql[] = "UPDATE additional_field SET placement = 'location' WHERE placement = 'view_summary_location'";
+            $sql[] = "UPDATE additional_field SET placement = 'network' WHERE placement = 'view_summary_network'";
+            $sql[] = "UPDATE additional_field SET placement = 'purchase' WHERE placement = 'view_summary_purchase'";
+            $sql[] = "UPDATE additional_field SET placement = 'san' WHERE placement = 'view_hardware_san'";
+            $sql[] = "UPDATE additional_field SET placement = 'san_disk' WHERE placement = 'view_hardware_san_disk'";
+            $sql[] = "UPDATE additional_field SET placement = 'system' WHERE placement = 'system_details'";
+            $sql[] = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
+
+            $sql[] = "DROP TABLE IF EXISTS `credentials`";
+            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "ALTER TABLE `oa_user_org` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
+
+            // update any leftover group definitions by changing man_icon to icon
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'man_', 'system.')";
+
+            # set our versions
+            $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.8' WHERE config_name = 'display_version'";
+
+            foreach ($sql as $this_query) {
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            # Move of default config values for credentials into credential sets
+            $this->load->model('m_oa_config');
+            $this->m_oa_config->load_config();
+            $this->load->model('m_credentials');
+            $this->response = new stdClass();
+            $this->response->meta = new stdClass();
+            $this->response->meta->received_data = new stdClass();
+            $this->response->meta->received_data->attributes = new stdClass();
+            if (!empty($this->config->config['default_snmp_community'])) {
+                unset ($this->response->meta->received_data->attributes->credentials);
+                $this->response->meta->received_data->attributes->credentials = new stdClass();
+                $this->response->meta->received_data->attributes->name = 'Default SNMP';
+                $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
+                $this->response->meta->received_data->attributes->type = 'snmp';
+                $this->response->meta->received_data->attributes->credentials = new stdClass();
+                $this->response->meta->received_data->attributes->credentials->community = $this->config->config['default_snmp_community'];
+                if ($id =$this->m_credentials->create()) {
+                    $this->data['output'] .= "Default SNMP community migrated into credentials.<br /><br />\n";
+                } else {
+                    $this->data['output'] .= "Could not migrate default SNMP community into credentials. Please add this to the credential sets.<br /><br />\n";
+                }
+
+            }
+            if (!empty($this->config->config['default_ssh_username']) and !empty($this->config->config['default_ssh_password'])) {
+                unset ($this->response->meta->received_data->attributes->credentials);
+                $this->response->meta->received_data->attributes->credentials = new stdClass();
+                $this->response->meta->received_data->attributes->name = 'Default SSH';
+                $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
+                $this->response->meta->received_data->attributes->type = 'ssh';
+                $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_ssh_username'];
+                $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_ssh_password'];
+                if ($id =$this->m_credentials->create()) {
+                    $this->data['output'] .= "Default SSH username and password migrated into credentials.<br /><br />\n";
+                } else {
+                    $this->data['output'] .= "Could not migrate default SSH username and password into credentials. Please add this to the credential sets.<br /><br />\n";
+                }
+            }
+            if (!empty($this->config->config['default_windows_username']) and !empty($this->config->config['default_windows_password'])) {
+                unset ($this->response->meta->received_data->attributes->credentials);
+                $this->response->meta->received_data->attributes->credentials = new stdClass();
+                $this->response->meta->received_data->attributes->name = 'Default Windows';
+                $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
+                $this->response->meta->received_data->attributes->type = 'windows';
+                $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_windows_username'] . '@' . $this->config->config['default_windows_domain'];
+                $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_windows_password'];
+                if ($id =$this->m_credentials->create()) {
+                    $this->data['output'] .= "Default Windows username and password migrated into credentials.<br /><br />\n";
+                } else {
+                    $this->data['output'] .= "Could not migrate default Windows username and password into credentials. Please add this to the credential sets.<br /><br />\n";
+                }
+            }
+            if (!empty($this->config->config['default_ipmi_username']) and !empty($this->config->config['default_ipmi_password'])) {
+                unset ($this->response->meta->received_data->attributes->credentials);
+                $this->response->meta->received_data->attributes->credentials = new stdClass();
+                $this->response->meta->received_data->attributes->name = 'Default IPMI';
+                $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
+                $this->response->meta->received_data->attributes->type = 'ipmi';
+                $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_ipmi_username'];
+                $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_ipmi_password'];
+                if ($id =$this->m_credentials->create()) {
+                    $this->data['output'] .= "Default IPMI username and password migrated into credentials.<br /><br />\n";
+                } else {
+                    $this->data['output'] .= "Could not migrate default IPMI username and password into credentials. Please add this to the credential sets.<br /><br />\n";
+                }
+            }
+
+            $this_query = "DELETE FROM oa_config WHERE config_name IN ('default_ipmi_password', 'default_ipmi_username', 'default_snmp_community', 'default_ssh_password', 'default_ssh_username', 'default_windows_username', 'default_windows_domain', 'default_windows_password')";
+            $this->data['output'] .= $this_query."<br /><br />\n";
+            $query = $this->db->query($this_query);
+
+
+
+            # reinitialise our $sql array
+            unset($sql);
+            $sql = array();
+
+
+
+            $log_details->message = 'Upgrade database to 1.12.8 completed';
+            stdlog($log_details);
+            unset($log_details);
+        }
+
+        # refresh the icons
+        $this->load->model('m_system');
+        $this->m_system->reset_icons();
+
+        # refresh the reports
+        $this->load->helper('report_helper');
+        refresh_report_definitions();
+
+        # refresh the groups
+        $this->load->helper('group_helper');
+        refresh_group_definitions();
+
+        #refresh the scripts
+        // $this->load->helper('script_helper');
+        // refresh_script_definitions();
 
         $this->m_oa_config->load_config();
         $this->data['message'] .= "New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!<br/>\n";

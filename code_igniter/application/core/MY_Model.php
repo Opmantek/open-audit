@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -36,9 +37,54 @@
 
 class MY_Model extends CI_Model
 {
-    public function MY_Model()
+    #public function MY_Model()
+    public function __construct()
     {
         parent::__construct();
+    }
+
+    public function format_data($result, $type)
+    {
+        if (empty($result)) {
+            # TODO - thorw an error here
+            return null;
+        }
+        if (gettype($result) == 'string') {
+            # TODO - this ws being provided through Discovery some how.
+            # Check this when we change from m_system to m_devices for processing results
+            return null;
+        }
+        if (empty($type)) {
+            return false;
+        }
+        $return = array();
+        if (strpos($type, '/') !== false) {
+            $temp = explode('/', $type);
+            $link = $type;
+            $type = $temp[count($temp)-1];
+        } else {
+            $link = $type;
+        }
+        // echo "\$result is of type: " . gettype($result);
+        // print_r($result); echo "\n";
+        foreach ($result as $entry) {
+            $item = new stdClass();
+            $item->id = '';
+            if (isset($entry->id) and $entry->id != '') {
+                $item->id = intval($entry->id);
+            } else if (!empty($entry->{'system.id'})) {
+                $item->id = intval($entry->{'system.id'});
+            } else if (!empty($entry->{$type.".id"})) {
+                $item->id = intval($entry->{$type.".id"});
+            }
+            $item->type = $type;
+            $item->attributes = $entry;
+            $item->links = new stdClass();
+            $item->links->self = $this->config->config['base_url'] . 'index.php/' . $link . '/' . $item->id;
+            $return[] = $item;
+            unset($item);
+        }
+        return $return;
     }
 
     public function ip_address_to_db($ip)
@@ -102,5 +148,42 @@ class MY_Model extends CI_Model
         $sql = preg_replace('!\s+!', ' ', $sql);
         $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
         return $sql;
+    }
+
+    public function run_sql($sql, $data = array())
+    {
+        $CI = & get_instance();
+        if ($sql == '') {
+            return;
+        }
+        $trace = debug_backtrace();
+        $caller = $trace[1];
+        // clean our SQL (usually adding the running model, etc)
+        $sql = $this->clean_sql($sql);
+        // store the current setting of db_debug
+        $temp_debug = $this->db->db_debug;
+        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
+        // to output a nice formatted page with the $error object
+        $this->db->db_debug = FALSE;
+        // run the query
+        $query = $this->db->query($sql, $data);
+        // if we have debug set to TRUE, store the last run query
+        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug) {
+            $CI->response->meta->sql = $this->db->last_query();
+        }
+        // restore the origin setting to db_debug
+        $this->db->db_debug = $temp_debug;
+        // do we have an error?
+        if ($this->db->_error_message()) {
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
+            if (!empty($CI->response)) {
+                $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+            }
+            return false;
+        }
+        // no error, so get the result
+        $result = $query->result();
+        // return what we have
+        return ($result);
     }
 }

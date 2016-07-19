@@ -30,7 +30,8 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('getError')) {
@@ -51,8 +52,8 @@ if (! function_exists('getError')) {
 
         $error = new stdClass();
         $CI = & get_instance();
-        $error->controller = $CI->response->collection;
-        $error->function = $CI->response->action;
+        $error->controller = $CI->response->meta->collection;
+        $error->function = $CI->response->meta->action;
         $error->code = $error_id;
 
         $error_array = array();
@@ -127,6 +128,20 @@ if (! function_exists('getError')) {
         $error_array['ERR-0010']->severity = 3;
         $error_array['ERR-0010']->title = "Bad Request.";
         $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a unique field is already used by another item in the collection.';
+
+        $error_array['ERR-0011'] = new stdClass();
+        $error_array['ERR-0011']->code = 'ERR-0010';
+        $error_array['ERR-0011']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0011']->severity = 3;
+        $error_array['ERR-0011']->title = "Bad Request.";
+        $error_array['ERR-0011']->detail = 'Cannot create read uploaded file.';
+
+        $error_array['ERR-0012'] = new stdClass();
+        $error_array['ERR-0012']->code = 'ERR-0010';
+        $error_array['ERR-0012']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0012']->severity = 3;
+        $error_array['ERR-0012']->title = "Bad Request.";
+        $error_array['ERR-0012']->detail = 'Uploaded XML is invalid.';
 
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {

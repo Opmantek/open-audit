@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,8 +53,11 @@ class login extends CI_Controller
 
         $this->load->helper('report_helper');
         check_default_reports();
+
         $this->load->helper('group_helper');
-        check_default_groups();
+        if ($this->config->config['internal_version'] >= '20160620') {
+            check_default_groups();
+        }
 
         // log the attempt
         $log_details = new stdClass();
@@ -417,13 +421,13 @@ class login extends CI_Controller
     {
         $file = @json_decode(file_get_contents('/usr/local/opmojo/conf/modal_oae.json'));
         if (!$file) {
-            $file = @json_decode(file_get_contents('/usr/local/open-audit/other/modal_oae.json'));
+            $file = @json_decode(file_get_contents($this->config->item('base_path') . '/other/modal_oae.json'));
         }
         if (!$file) {
             $file = @json_decode(file_get_contents('c:\\omk\\conf\\modal_oae.json'));
         }
         if (!$file) {
-            $file = @json_decode(file_get_contents('c:\\xampplite\\open-audit\\other\\modal_oae.json'));
+            $file = @json_decode(file_get_contents($this->config->item('base_path') . '\\other\\modal_oae.json'));
         }
         if (!$file) {
             $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');

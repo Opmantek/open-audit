@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -51,13 +52,13 @@ class Admin_system extends MY_Controller
     public function system_add_new_credentials()
     {
         $details = new stdClass();
-        $details->system_id = intval($this->uri->segment(3, 0));
-        if ((!is_int($details->system_id)) or ($details->system_id == 0)) {
+        $details->id = intval($this->uri->segment(3, 0));
+        if ((!is_int($details->id)) or ($details->id == 0)) {
             redirect('main/list_devices');
         }
         $this->load->model("m_system");
-        $this->data['system_id'] = $details->system_id;
-        $this->data['ip_address'] = ip_address_from_db($this->m_system->check_man_ip_address($details->system_id));
+        $this->data['system_id'] = $details->id;
+        $this->data['ip_address'] = ip_address_from_db($this->m_system->check_ip($details->id));
         $this->data['heading'] = 'Add Device Credentials';
         $this->data['include'] = 'v_add_system_credentials';
         $this->load->view('v_template', $this->data);
@@ -235,13 +236,13 @@ class Admin_system extends MY_Controller
         $this->load->helper('snmp');
         $this->load->helper('snmp_oid');
         $details = new stdClass();
-        $details->system_id = $this->uri->segment(3, 0);
-        $encrypted_access_details = $this->m_system->get_access_details($details->system_id);
-        $details->hostname = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'hostname');
+        $details->id = $this->uri->segment(3, 0);
+        $encrypted_access_details = $this->m_system->get_access_details($details->id);
+        $details->hostname = $this->m_devices_components->read($details->id, 'y', 'system', '', 'hostname');
         if ($details->hostname == '-') {
             $details->hostname = '';
         }
-        $details->man_ip_address = ip_address_from_db($this->m_devices_components->read($details->system_id, 'y', 'system', '', 'man_ip_address'));
+        $details->ip = ip_address_from_db($this->m_devices_components->read($details->id, 'y', 'system', '', 'ip'));
         $details->show_output = true;
 
         # set up the pop up page
@@ -266,8 +267,11 @@ class Admin_system extends MY_Controller
 		<pre>";
 
         # audit the device via snmp
-        $temp_array = get_snmp($details);
-        $details = $temp_array['details'];
+        if ($temp_array = get_snmp($details)) {
+            $details = $temp_array['details'];
+        } else {
+            echo "Error - nothing returned when SNMP routine executed.";
+        }
         $network_interfaces = $temp_array['interfaces'];
         $ip = $temp_array['ip'];
         unset($guests);
@@ -277,31 +281,30 @@ class Admin_system extends MY_Controller
         $modules = $temp_array['modules'];
 
         $details->last_seen_by = 'snmp';
-        $details->timestamp = date('Y-m-d G:i:s');
-        $details->last_seen = $details->timestamp;
+        $details->last_seen = date('Y-m-d G:i:s');
         $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
         $details = dns_validate($details, 'y');
 
-        unset($details->man_type);
+        #unset($details->type);
         unset($details->show_output);
-        unset($details->man_ip_address);
+        unset($details->ip);
         echo "<pre>\n";
         if (isset($details->snmp_oid) and $details->snmp_oid > '') {
-            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
+            $details->original_timestamp = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
             $this->m_system->update_system($details);
             if (isset($this->user->full_name)) {
                 $temp_user = $this->user->full_name;
             } else {
                 $temp_user = '';
             }
-            $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+            $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
             unset($temp_user);
 
             # update any network interfaces and ip addresses retrieved by SNMP
-            $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
-            $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
-            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
+            $details->last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+            $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
+            $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
 
             if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                 $input = new stdClass();
@@ -333,7 +336,7 @@ class Admin_system extends MY_Controller
             // Generate any DNS entries required
             $dns = new stdClass();
             $dns->item = array();
-            $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+            $dns->item = $this->m_devices_components->create_dns_entries((int)$details->id);
             if (count($dns->item) > 0) {
                 $this->m_devices_components->process_component('dns', $details, $dns, 'y');
             }
@@ -341,7 +344,7 @@ class Admin_system extends MY_Controller
 
             // insert a blank to indicate we're finished this part of the discovery
             // if required, the audit scripts will insert their own audit logs
-            $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
+            $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
 
         } else {
             echo "Audit NOT submitted.";
@@ -376,18 +379,18 @@ class Admin_system extends MY_Controller
             foreach ($_POST as $key => $value) {
                 $details->$key = $value;
             }
-            $details->type = $details->man_type;
-            if (!isset($details->man_os_group)) {
-                $details->man_os_group = '';
+            $details->name = $details->hostname;
+            if (!isset($details->os_group)) {
+                $details->os_group = '';
             }
-            if (!isset($details->man_os_group_2)) {
-                $details->man_os_group_2 = '';
+            if (!isset($details->os_group_2)) {
+                $details->os_group_2 = '';
             }
-            if (!isset($details->man_os_family_typed)) {
-                $details->man_os_family_typed = '';
+            if (!isset($details->os_family_typed)) {
+                $details->os_family_typed = '';
             }
-            if (!isset($details->man_os_name_2)) {
-                $details->man_os_name_2 = '';
+            if (!isset($details->os_name_2)) {
+                $details->os_name_2 = '';
             }
             if (!isset($details->hostname)) {
                 $details->hostname = '';
@@ -396,76 +399,75 @@ class Admin_system extends MY_Controller
             $details->last_seen = date('Y-m-d G:i:s');
             $details->last_user = $this->user->full_name;
 
-            if (($details->man_type == 'access token' or
-                $details->man_type == 'cell phone' or
-                $details->man_type == 'mobile modem' or
-                $details->man_type == 'phone' or
-                $details->man_type == 'satellite phone' or
-                $details->man_type == 'smart phone' or
-                $details->man_type == 'tablet') and
-                (!isset($details->man_serial) or $details->man_serial == '')) {
+            if (($details->type == 'access token' or
+                $details->type == 'cell phone' or
+                $details->type == 'mobile modem' or
+                $details->type == 'phone' or
+                $details->type == 'satellite phone' or
+                $details->type == 'smart phone' or
+                $details->type == 'tablet') and
+                (!isset($details->serial) or $details->serial == '')) {
                 $this->data['error'] = 'Serial number required.';
             }
 
-            if (($details->man_type == 'cable modem' or
-                $details->man_type == 'computer' or
-                $details->man_type == 'firewall' or
-                $details->man_type == 'game console' or
-                $details->man_type == 'ip phone' or
-                $details->man_type == 'network printer' or
-                $details->man_type == 'router' or
-                $details->man_type == 'switch') and
+            if (($details->type == 'cable modem' or
+                $details->type == 'computer' or
+                $details->type == 'firewall' or
+                $details->type == 'game console' or
+                $details->type == 'ip phone' or
+                $details->type == 'network printer' or
+                $details->type == 'router' or
+                $details->type == 'switch') and
                 ((!isset($details->hostname) or $details->hostname == '') and
-                  (!isset($details->man_ip_address) or $details->man_ip_address == '') and
-                  (!isset($details->man_serial) or $details->man_serial == ''))) {
+                  (!isset($details->ip) or $details->ip == '') and
+                  (!isset($details->serial) or $details->serial == ''))) {
                 $this->data['error'] = 'Hostname, ip address or serial number required.';
             }
 
-            if (isset($details->man_os_group_2) and $details->man_os_group_2 != '' and $details->man_os_group == '') {
-                $details->man_os_group = $details->man_os_group_2;
-                unset($details->man_os_group_2);
+            if (isset($details->os_group_2) and $details->os_group_2 != '' and $details->os_group == '') {
+                $details->os_group = $details->os_group_2;
+                unset($details->os_group_2);
             } else {
-                unset($details->man_os_group_2);
+                unset($details->os_group_2);
             }
 
-            if (($details->man_os_family_typed > '') and ($details->man_os_family == '')) {
-                $details->man_os_family = $details->man_os_family_typed;
-                unset($details->man_os_family_typed);
+            if (($details->os_family_typed > '') and ($details->os_family == '')) {
+                $details->os_family = $details->os_family_typed;
+                unset($details->os_family_typed);
             } else {
-                unset($details->man_os_family_typed);
+                unset($details->os_family_typed);
             }
 
-            if (($details->man_os_name_2 > '') and ($details->man_os_name == '')) {
-                $details->man_os_name = $details->man_os_name_2;
-                unset($details->man_os_name_2);
+            if (($details->os_name_2 > '') and ($details->os_name == '')) {
+                $details->os_name = $details->os_name_2;
+                unset($details->os_name_2);
             } else {
-                unset($details->man_os_name_2);
+                unset($details->os_name_2);
             }
 
-            $details->system_key = $this->m_system->create_system_key($details);
             $details->hostname = preg_replace("/[^a-z0-9-.]+/i", "", $details->hostname);
             $details->hostname = mb_strtolower($details->hostname);
 
-            if (isset($details->man_ip_address)) {
-                $details->man_ip_address = ip_address_to_db($details->man_ip_address);
+            if (isset($details->ip)) {
+                $details->ip = ip_address_to_db($details->ip);
             }
-            $details->timestamp = date('Y-m-d H:i:s');
-            $details->first_timestamp = $details->timestamp;
+            $details->last_seen = date('Y-m-d H:i:s');
+            $details->first_seen = $details->last_seen;
             $details->last_seen_by = 'web form';
 
             unset($details->AddSystem);
 
             if ($this->data['error'] == '') {
                 # add the system
-                $details->system_id = $this->m_system->insert_system($details);
-                $this->m_system->reset_icons($details->system_id);
+                $details->id = $this->m_system->insert_system($details);
+                $this->m_system->reset_icons($details->id);
                 $this->m_oa_group->update_system_groups($details);
                 if (isset($this->user->full_name)) {
                     $temp_user = $this->user->full_name;
                 } else {
                     $temp_user = '';
                 }
-                $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                 unset($temp_user);
                 redirect('main/index');
             } else {
@@ -508,7 +510,7 @@ class Admin_system extends MY_Controller
         }
         if (isset($_POST['submit'])) {
             # we have an uploaded file - store and process
-            $timestamp = date("Y-m-d H:i:s");
+            $last_seen = date("Y-m-d H:i:s");
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
 
             if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {
@@ -582,17 +584,16 @@ class Admin_system extends MY_Controller
 
                     // convert the $details array to an object
                     $details = (object) $details;
+                    $details->last_seen = $last_seen;
                     $details->last_seen_by = "spreadsheet";
-                    $details->last_seen = $timestamp;
                     $details->last_user = $this->user->full_name;
-                    $details->timestamp = $timestamp;
                     $error = '';
 
                     if (isset($details->org_name)) {
                         # we have an org name - need to find it's ID
                         if ($org_id = $this->m_oa_org->select_org($details->org_name)) {
                             # we have a matching org
-                            $details->man_org_id = $org_id;
+                            $details->org_id = $org_id;
                         }
                     }
 
@@ -600,7 +601,7 @@ class Admin_system extends MY_Controller
                         # we have a location name - need to find it's ID
                         if ($location_id = $this->m_oa_location->get_location_id($details->location_name)) {
                             # we have a match
-                            $details->man_location_id = $location_id;
+                            $details->location_id = $location_id;
                         }
                     }
 
@@ -615,9 +616,9 @@ class Admin_system extends MY_Controller
                         } else {
                             $details->snmp_version = '2c';
                         }
-                        if (isset($details->man_ip_address) and $details->man_ip_address != '') {
+                        if (isset($details->ip) and $details->ip != '') {
                             $encode = array();
-                            $encode->ip_address = $details->man_ip_address;
+                            $encode->ip_address = $details->ip;
                             $encode->snmp_version = $details->snmp_version;
                             $encode->snmp_community = $details->snmp_community;
                             $encode->snmp_port = $details->snmp_port;
@@ -633,35 +634,10 @@ class Admin_system extends MY_Controller
                         }
                     }
 
-                    # New for 1.5.6 - set any corresponding man_* items
-                    $this->load->model("m_oa_admin_database");
-                    $system_table_fields = $this->m_oa_admin_database->get_fields('system');
-                    foreach ($details as $key => $value) {
-                        if ($key > '') {
-                            # need to iterate through available columns and only insert where $key == valid column name
-                            foreach ($system_table_fields as $column) {
-                                if ($column == "man_".$key) {
-                                    $new_column = "man_".$key;
-                                    $details->$new_column = $value;
-                                    $new_column == '';
-                                }
-                            }
-                        }
-                    }
-
                     # first test to see if we have a system_id -
                     # if not, make a system key and find (or not) the device
-                    if (!isset($details->system_id) or $details->system_id == '') {
+                    if (!isset($details->id) or $details->id == '') {
 
-                        # make a system key
-                        if (!isset($details->system_key) or $details->system_key == '') {
-                            $details->system_key = $this->m_system->create_system_key($details);
-                        }
-                        # setting the system_key - we don't have the required info to create a unique key
-                        if (!isset($details->system_key) or $details->system_key == '') {
-                            $error = "Error on row #".$count.". Insufficient details to create system key. Please supply (in order of preference) fqdn, hostname and domain, type and (unique) serial, ip address.<br />";
-                            $this->data['error'] .= $error;
-                        }
                         # make sure we have a hostname variable
                         if (!isset($details->hostname)) {
                             $details->hostname = '';
@@ -670,24 +646,24 @@ class Admin_system extends MY_Controller
                         $details->hostname = mb_strtolower($details->hostname);
 
                         # try to determine if this device is already in the database
-                        $details->system_id = $this->m_system->find_system($details);
+                        $details->id = $this->m_system->find_system($details);
                     }
 
                     if ($error != '') {
                         $error = '';
                     } else {
-                        if (isset($details->system_id) and $details->system_id > '') {
+                        if (isset($details->id) and $details->id > '') {
                             # we need to update an existing system
                             $this->m_system->update_system($details);
                         } else {
-                            # this is a new system (we don't have a system_key match)
-                            $details->first_timestamp = $details->timestamp;
-                            $details->system_id = $this->m_system->insert_system($details);
+                            # this is a new system
+                            $details->first_seen = $details->last_seen;
+                            $details->id = $this->m_system->insert_system($details);
                         }
                         // Insert an entry in to the audit log
                         $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                         if (!isset($details->type) or $details->type == '') {
-                            $details->type = $this->m_system->get_system_type($details->system_id);
+                            $details->type = $this->m_system->get_system_type($details->id);
                         }
 
                         if (isset($this->user->full_name)) {
@@ -695,12 +671,12 @@ class Admin_system extends MY_Controller
                         } else {
                             $temp_user = '';
                         }
-                        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                        $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                         unset($temp_user);
 
                          # update any network interfaces and ip addresses retrieved by SNMP
-                        $details->timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
-                        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
+                        $details->last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+                        $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                             foreach ($network_interfaces as $input) {

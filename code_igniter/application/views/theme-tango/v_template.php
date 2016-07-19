@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -54,7 +55,7 @@ if ($function == "list_devices") {
     $title .= " - ".ucwords(str_replace("_", " ", $function));
 }
 
-function print_something($string)
+function print_something($string = '')
 {
     if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
         return '-';
@@ -114,6 +115,39 @@ function print_something($string)
 	</script>
 
 	<script type="text/javascript">
+<?php
+        if (!empty($data['system'][0]->id)) {
+            echo "        var system_id = '" . $data['system'][0]->id . "';\n";
+        }
+        if (!empty($this->response->collection)) {
+            echo "        var collection = '" . $this->response->collection . "';\n";
+        }
+?>
+
+    /* any Delete links */
+    $(document).ready(function(){
+        $('.delete_link').click(function() {
+            if (confirm('Are you sure?') != true) {
+                return;
+            }
+            var $id = $(this).attr('data-id');
+            var $name = $(this).attr('data-name');
+            var $url = '/open-audit/index.php/' + collection + '/' + $id;
+            $.ajax({
+                type: 'DELETE',
+                url: $url,
+                dataType: 'json',
+                success: function(data) {
+                    // alert($name + " has been deleted.");
+                    window.location = "/open-audit/index.php/" + collection;
+                },
+                error: function() {
+                    alert("An error occurred when deleting item:" + $name);
+                }
+           });
+        });
+    });
+
 	$(document).ready(function() {
 		$(function() {
             $("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
@@ -293,9 +327,11 @@ function print_something($string)
 	</div> <!-- end of topsection -->
 	<div id="content_container" style="float: left; width: 100%">
 	<?php
-    if (isset($this->response)) {
-        $total = $this->response->filtered . ' of ' . $this->response->total . ' results';
+    if (!empty($this->response->meta->filtered) and !empty($this->response->meta->total)) {
+        $total = $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results';
         $query = '';
+    } else {
+        $total = '';
     }
     if (isset($query) and $include != 'v_add_user') {
         if (empty($total)) {
@@ -312,3 +348,4 @@ function print_something($string)
 </div>
 </body>
 </html>
+<?php exit(); ?>

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,7 +51,7 @@ class M_oa_admin_database extends MY_Model
 
     public function statistics()
     {
-        $sql = "SELECT type, os_family, COUNT(*) as count FROM system WHERE man_status = 'production' GROUP BY type, os_family ";
+        $sql = "SELECT type, os_family, COUNT(*) as count FROM system WHERE status = 'production' GROUP BY type, os_family ";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -111,10 +112,10 @@ class M_oa_admin_database extends MY_Model
         // NOTE - this only works on Linux at the moment
         $directory = '/tmp/';
         $filename = "open-audit_database_backup_".date("Y_m_d_H_i_s").".sql";
-        $dump_command = 'mysqldump -h '.$this->db->hostname.' -u '.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' > '.$directory.$filename;
-        exec($dump_command);
+        $command = 'mysqldump -h '.$this->db->hostname.' -u '.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' > '.$directory.$filename;
+        exec($command) or die("Failed to run mysqldump.");
         $this->load->helper('download');
-        $file_contents = file_get_contents($directory.$file);
+        $file_contents = file_get_contents($directory.$filename);
         force_download($filename, $file_contents);
         unlink($directory.$filename);
     }

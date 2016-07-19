@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -90,23 +91,23 @@ class System extends CI_Controller
     {
 
         if ((!isset($details->hostname) or $details->hostname == '') and
-            (isset($details->man_ip_address) and $details->man_ip_addres != '' and
-             $details->man_ip_address != '0.0.0.0' and $details->man_ip_address != '000.000.000.000')) {
+            (isset($details->ip) and $details->ip != '' and
+             $details->ip != '0.0.0.0' and $details->ip != '000.000.000.000')) {
             # no hostname, get using ip address
-            $details->hostname = gethostbyaddr(ip_address_from_db($details->man_ip_address));
+            $details->hostname = gethostbyaddr(ip_address_from_db($details->ip));
         }
 
-        if ((!isset($details->man_ip_address) or $details->man_ip_address == '' or
-            $details->man_ip_address == '0.0.0.0' or $details->man_ip_address == '000.000.000.000') and
+        if ((!isset($details->ip) or $details->ip == '' or
+            $details->ip == '0.0.0.0' or $details->ip == '000.000.000.000') and
             (isset($details->hostname) and $details->hostname != '')) {
             # no ip address, get using hostname
-            $details->man_ip_address = gethostbyname($details->hostname);
+            $details->ip = gethostbyname($details->hostname);
         }
 
-        if (isset($details->man_ip_address) and !filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+        if (isset($details->ip) and !filter_var($details->ip, FILTER_VALIDATE_IP)) {
             # not a valid ip address - assume it's a hostname
-            $details->hostname = $details->man_ip_address;
-            $details->man_ip_address = gethostbyname($details->hostname);
+            $details->hostname = $details->ip;
+            $details->ip = gethostbyname($details->hostname);
         }
 
         if (isset($details->hostname) and filter_var($details->hostname, FILTER_VALIDATE_IP)) {
@@ -156,12 +157,12 @@ class System extends CI_Controller
             foreach ($xml_post->children() as $child) {
                 $count++;
                 if ($child->getName() === 'computer') {
-                    $details->timestamp = date('Y-m-d H:i:s');
+                    $details->last_seen = date('Y-m-d H:i:s');
                     $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
                     $details->last_seen_by = 'active directory';
-                    $details->system_id = $this->m_system->process_system_from_ad($child);
+                    $details->id = $this->m_system->process_system_from_ad($child);
                     $this->m_oa_group->update_system_groups($details);
-                    $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                    $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                 }
             }
             unset($temp_user);
@@ -230,9 +231,6 @@ class System extends CI_Controller
             $display = 'n';
         }
 
-        // date_default_timezone_set("Australia/Queensland");
-        $timestamp = date('Y-m-d H:i:s');
-
         // get the input either from the textfield or the uploaded file
         if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
             $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
@@ -283,7 +281,7 @@ class System extends CI_Controller
 
 
         $i = (string) $xml->sys[0]->hostname;
-        $j = (string) $xml->sys[0]->system_id;
+        $j = (string) $xml->sys[0]->id;
         $log_details = new stdClass();
         $log_details->severity = 7;
         $log_details->file = 'system';
@@ -300,10 +298,10 @@ class System extends CI_Controller
         # and inserts all the (or any) retrieved mac addresses into the sys XML section
         # which are then compared against in the m_system->find_system function to match a device
         foreach ($xml->children() as $child) {
-            if ($child->getName() === 'network_cards') {
+            if ($child->getName() === 'network') {
                 foreach ($child->children() as $card) {
                     $mac = '';
-                    $mac = strtolower((string)$card->net_mac_address);
+                    $mac = trim(strtolower((string)$card->mac));
                     if ($mac != '') {
                         $xml->sys->mac_addresses->$mac = $card->net_mac_address;
                     }
@@ -313,24 +311,22 @@ class System extends CI_Controller
         unset($mac);
 
         $details = (object) $xml->sys;
-        $details->timestamp = date('Y-m-d H:i:s');
+        $details->last_seen = date('Y-m-d H:i:s');
         $received_system_id = '';
-        if (! isset($details->system_id)) {
-            $details->system_id = '';
-        } else if ($details->system_id > '') {
-            $received_system_id = (string) $details->system_id;
+        if (empty($details->id)) {
+            $details->id = '';
+        } else if ($details->id > '') {
+            $received_system_id = (string) $details->id;
         }
         $received_status = "";
-        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'man_status');
+        $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
         if ($received_status !== 'production') {
             $received_system_id = '';
         }
         $details->fqdn = $details->hostname . "." . $details->domain;
         if (!isset($details->type)) {
             $details->type = 'computer';
-            $details->man_type = 'computer';
         }
-        $details->system_key = $this->m_system->create_system_key($details);
 
         $i = $this->m_system->find_system($details, $display);
         if ($i == '' and $received_system_id > '') {
@@ -341,7 +337,7 @@ class System extends CI_Controller
             // nmap and/or snmp) we couldn't match an existing system
             // Now we have an actual audit result with plenty of data
             // we have found a match and it's not the original
-            $sql = "/* system::add_system */ DELETE FROM system WHERE system_id = ?";
+            $sql = "/* system::add_system */ DELETE FROM system WHERE id = ?";
             $data = array($received_system_id);
             $query = $this->db->query($sql, $data);
 
@@ -353,8 +349,7 @@ class System extends CI_Controller
             unset($log_details);
 
         }
-        $details->system_id = $i;
-        $details->last_seen = $details->timestamp;
+        $details->id = $i;
         if ((string) $details->last_seen_by === '') {
             $details->last_seen_by = 'audit';
         }
@@ -364,39 +359,40 @@ class System extends CI_Controller
         $details->last_audit_date = "";
         if ((string) $i === '') {
             // insert a new system
-            $details->system_id = $this->m_system->insert_system($details, $display);
+            $details->id = $this->m_system->insert_system($details, $display);
 
             $log_details = new stdClass();
             $log_details->severity = 7;
             $log_details->file = 'system';
-            $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
+            $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
             stdlog($log_details);
             unset($log_details);
 
-            $details->original_timestamp = "";
-            echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
+            $details->original_last_seen = "";
+            echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         } else {
             // update an existing system
 
             $log_details = new stdClass();
             $log_details->severity = 7;
             $log_details->file = 'system';
-            $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
+            $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
             stdlog($log_details);
             unset($log_details);
 
-            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
-            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
+            $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
+            $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
             $this->m_system->update_system($details, $display);
-            echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
+            echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         }
-        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
+        $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
 
 
-        $this->m_audit_log->create($details->system_id, $user_full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
+        $this->m_audit_log->create($details->id, $user_full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
 
         $this->m_devices_components->process_component('bios', $details, $xml->bios, $display);
         $this->m_devices_components->process_component('disk', $details, $xml->disk, $display);
+        $this->m_devices_components->process_component('file', $details, $xml->file, $display);
         $this->m_devices_components->process_component('ip', $details, $xml->ip, $display);
         $this->m_devices_components->process_component('log', $details, $xml->log, $display);
         $this->m_devices_components->process_component('memory', $details, $xml->memory, $display);
@@ -429,15 +425,15 @@ class System extends CI_Controller
 
         foreach ($xml->children() as $child) {
             if ($child->getName() === 'audit_wmi_fail') {
-                $this->m_audit_log->update('debug', $child->getName(), $details->system_id, $details->last_seen);
-                $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->system_id, $details->last_seen);
+                $this->m_audit_log->update('debug', $child->getName(), $details->id, $details->last_seen);
+                $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->id, $details->last_seen);
             }
         }
 
         // Generate any DNS entries required
         $dns = new stdClass();
         $dns->item = array();
-        $dns->item = $this->m_devices_components->create_dns_entries((int)$details->system_id);
+        $dns->item = $this->m_devices_components->create_dns_entries((int)$details->id);
         if (count($xml->dns->item) > 0) {
             foreach ($xml->dns->item as $item) {
                 # likely not required, but turn it into an array and back to a standard object
@@ -456,11 +452,11 @@ class System extends CI_Controller
         unset($item);
         unset($dns);
 
-        $this->m_audit_log->update('debug', 'finished processing', $details->system_id, $details->last_seen);
+        $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
 
-        // set the man_ip_address (if not already set)
-        $this->m_audit_log->update('debug', 'check and set initial man_ip_address', $details->system_id, $details->last_seen);
-        $this->m_devices_components->set_initial_address($details->system_id);
+        // set the ip (if not already set)
+        $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
+        $this->m_devices_components->set_initial_address($details->id);
 
         $this->load->model('m_oa_group');
 
@@ -469,10 +465,10 @@ class System extends CI_Controller
         if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
             # don't run the update group routine
         } else {
-            $this->m_audit_log->update('debug', 'system groups', $details->system_id, $details->last_seen);
+            $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
             $this->m_oa_group->update_system_groups($details);
         }
-        $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
+        $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
         $this->benchmark->mark('code_end');
         echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
         $i = (string) $xml->sys[0]->hostname;
@@ -480,7 +476,7 @@ class System extends CI_Controller
         $log_details = new stdClass();
         $log_details->severity = 7;
         $log_details->file = 'system';
-        $log_details->message = 'Processing completed for ' . $i . ' (System ID ' . $details->system_id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+        $log_details->message = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
         stdlog($log_details);
         unset($log_details);
 
@@ -540,38 +536,20 @@ class System extends CI_Controller
                 $details = (object) $details;
 
                 if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
-                    echo 'Device IP: ' . $details->man_ip_address . "\n";
+                    echo 'Device IP: ' . $details->ip . "\n";
                 }
 
                 $count++;
                 $details->last_seen = $timestamp;
                 $details->last_user = '';
-                $details->timestamp = $timestamp;
-
                 $details->hostname = '';
-                // $details->hostname = gethostbyaddr($details->man_ip_address);
-                // $details->hostname = strtolower($details->hostname);
-                // $details->domain = '';
-                // if (! filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                //     if (strpos($details->hostname, '.') !== false) {
-                //         // we have a domain returned
-                //         $details->fqdn = strtolower($details->hostname);
-                //         $t_array = explode('.', $details->hostname);
-                //         $details->hostname = $t_array[0];
-                //         unset($t_array[0]);
-                //         $details->domain = implode('.', $t_array);
-                //     }
-                // }
                 $details = dns_validate($details);
-
-
-
                 $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
                 $log_details = new stdClass();
                 $log_details->severity = 7;
                 $log_details->file = 'system';
-                $log_details->message = 'Processing nmap audit result for ' . $details->man_ip_address . ' (' . $details->hostname . ')';
+                $log_details->message = 'Processing nmap audit result for ' . $details->ip . ' (' . $details->hostname . ')';
                 stdlog($log_details);
                 unset($log_details);
 
@@ -584,7 +562,7 @@ class System extends CI_Controller
                 if (extension_loaded('snmp')) {
                     // try to get more information using SNMP
                     if (! isset($details->access_details)) {
-                        $details->access_details = $this->m_system->get_access_details($details->system_id);
+                        $details->access_details = $this->m_system->get_access_details($details->id);
                     }
                     $decoded_access = $this->encrypt->decode($details->access_details);
                     $decoded_access = json_decode($decoded_access);
@@ -597,10 +575,8 @@ class System extends CI_Controller
                     $ip = $temp_array['ip'];
                 }
 
-                $details->system_key = '';
-                $details->system_key = $this->m_system->create_system_key($details);
-                $details->system_id = '';
-                $details->system_id = $this->m_system->find_system($details);
+                $details->id = '';
+                $details->id = $this->m_system->find_system($details);
 
                 if ((isset($details->snmp_oid)) and ($details->snmp_oid > '')) {
                     // we received a result from SNMP, use this data to update OR insert
@@ -608,21 +584,21 @@ class System extends CI_Controller
                     $details->audits_ip = '127.0.0.1';
                     $details = dns_validate($details);
 
-                    if (isset($details->system_id) and !empty($details->system_id)) {
+                    if (isset($details->id) and !empty($details->id)) {
                         // we have a system_id and snmp details to update
                         $log_details = new stdClass();
                         $log_details->severity = 7;
                         $log_details->file = 'system';
-                        $log_details->message = 'SNMP update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'SNMP update for ' . $details->ip . ' (system id ' . $details->id . ')';
                         stdlog($log_details);
                         unset($log_details);
                         $this->m_system->update_system($details);
                     } else {
                         // we have a new system
-                        $details->system_id = $this->m_system->insert_system($details);
+                        $details->id = $this->m_system->insert_system($details);
                         $log_details = new stdClass();
                         $log_details->severity = 7;
-                        $log_details->message = 'SNMP insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'SNMP insert for ' . $details->ip . ' (system id ' . $details->id . ')';
                         stdlog($log_details);
                         unset($log_details);
                     }
@@ -641,20 +617,20 @@ class System extends CI_Controller
                     // we received a result from nmap only, use this data to update OR insert
                     $details->last_seen_by = 'nmap';
 
-                    if (isset($details->system_id) and $details->system_id !== '') {
+                    if (isset($details->id) and $details->id !== '') {
                         // we have a system id and nmap details to update
                         $log_details = new stdClass();
                         $log_details->severity = 7;
-                        $log_details->message = 'Nmap update for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'Nmap update for ' . $details->ip . ' (system id ' . $details->id . ')';
                         stdlog($log_details);
                         unset($log_details);
                         $this->m_system->update_system($details);
                     } else {
                         // we have a new system
-                        $details->system_id = $this->m_system->insert_system($details);
+                        $details->id = $this->m_system->insert_system($details);
                         $log_details = new stdClass();
                         $log_details->severity = 7;
-                        $log_details->message = 'Nmap insert for ' . $details->man_ip_address . ' (system id ' . $details->system_id . ')';
+                        $log_details->message = 'Nmap insert for ' . $details->ip . ' (system id ' . $details->id . ')';
                         stdlog($log_details);
                         unset($log_details);
                     }
@@ -664,7 +640,7 @@ class System extends CI_Controller
                 } else {
                     $temp_user = '';
                 }
-                $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
+                $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                 unset($temp_user);
                 $this->m_oa_group->update_system_groups($details);
             }

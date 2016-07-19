@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -186,7 +187,7 @@ class cli extends CI_Controller
 
         foreach ($conf as $device) {
             $device = (object) $device;
-            $device->man_ip_address = '';
+            $device->ip = '';
             $device->hostname = '';
             $device->fqdn = '';
             $device->domain = '';
@@ -195,7 +196,7 @@ class cli extends CI_Controller
                 // only import where collect == true
 
                 $device->hostname = $device->host;
-                $device->man_ip_address = $device->host;
+                $device->ip = $device->host;
                 $device->fqdn = $device->host;
                 $device = dns_validate($device);
 
@@ -203,7 +204,7 @@ class cli extends CI_Controller
                 // if ((string) $device->host !== '127.0.0.1') {
                 //     if (filter_var($device->host, FILTER_VALIDATE_IP)) {
                 //         // we have an ip address as opposed to a name or fqdn
-                //         $device->man_ip_address = $device->host;
+                //         $device->ip = $device->host;
                 //     } else {
                 //         // we have a name or fqdn
                 //         if (strpos($device->host, '.')) {
@@ -218,10 +219,10 @@ class cli extends CI_Controller
                 //             $device->hostname = $device->host;
                 //         }
                 //     }
-                //     if ((string) $device->man_ip_address !== '') {
+                //     if ((string) $device->ip !== '') {
                 //         if ($device->hostname == '') {
                 //             // lookup the name
-                //             $device->hostname = gethostbyaddr($device->man_ip_address);
+                //             $device->hostname = gethostbyaddr($device->ip);
                 //             if (filter_var($device->host, FILTER_VALIDATE_IP)) {
                 //                 // we have an ip address returned, use the field 'name' from Nodes.nmis
                 //                 $device->hostname = $device->name;
@@ -237,9 +238,9 @@ class cli extends CI_Controller
                 //     } else {
                 //         // lookup the ip
                 //         if ((string) $device->fqdn !== '') {
-                //             $device->man_ip_address = gethostbyname($device->fqdn);
+                //             $device->ip = gethostbyname($device->fqdn);
                 //         } else {
-                //             $device->man_ip_address = gethostbyname($device->host);
+                //             $device->ip = gethostbyname($device->host);
                 //         }
                 //     }
 
@@ -247,8 +248,8 @@ class cli extends CI_Controller
                         $device->version = '2c';
                     }
 
-                    if (((string) $device->community !== '') and ((string) $device->version === '2c') and ((string) $device->man_ip_address !== '')) {
-                        $encode['ip_address'] = $device->man_ip_address;
+                    if (((string) $device->community !== '') and ((string) $device->version === '2c') and ((string) $device->ip !== '')) {
+                        $encode['ip_address'] = $device->ip;
                         $encode['fqdn'] = $device->fqdn;
                         $encode['hostname'] = $device->hostname;
                         $encode['snmp_version'] = @$device->version;
@@ -283,8 +284,7 @@ class cli extends CI_Controller
                         $device->nmis_name = $device->name;
                         $device->nmis_role = $device->roleType;
                     }
-                    $device->system_key = '';
-                    $device->system_key = $this->m_system->create_system_key($device);
+
                     $device->system_id = '';
                     $device->system_id = $this->m_system->find_system($device);
 
@@ -292,11 +292,11 @@ class cli extends CI_Controller
                         // we received a result from snmp, use this data to update or insert
                         if (isset($device->system_id) and (string) $device->system_id !== '') {
                             // update an existing device with snmp
-                            $device->original_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp');
+                            $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
                             $device->original_last_seen_by = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen_by');
                             $device->last_seen_by = 'snmp nmis import';
                             $this->m_system->update_system($device);
-                            $log_details->message = 'NMIS import, update SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
+                            $log_details->message = 'NMIS import, update SNMP for '.$device->ip.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         } else {
@@ -304,14 +304,14 @@ class cli extends CI_Controller
                             $device->last_seen_by = 'snmp nmis import';
                             $device->original_last_seen_by = 'snmp nmis import';
                             $device->system_id = $this->m_system->insert_system($device);
-                            $device->original_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp');
-                            $log_details->message = 'NMIS import, insert SNMP for '.$device->man_ip_address.' ('.$device->hostname.')';
+                            $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
+                            $log_details->message = 'NMIS import, insert SNMP for '.$device->ip.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         }
                         // update any network interfaces and ip addresses retrieved by SNMP
-                        $device->timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'timestamp');
-                        $device->first_timestamp = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_timestamp');
+                        $device->last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
+                        $device->first_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_seen');
                         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
                             $this->m_devices_components->process_component('network', $details, $xml->network);
                         }
@@ -326,7 +326,7 @@ class cli extends CI_Controller
                             // update an existing device
                             $device->last_seen_by = 'nmis import';
                             $this->m_system->update_system($device);
-                            $log_details->message = 'NMIS import, update basic result for '.$device->man_ip_address.' ('.$device->hostname.')';
+                            $log_details->message = 'NMIS import, update basic result for '.$device->ip.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         } else {
@@ -334,7 +334,7 @@ class cli extends CI_Controller
                             $device->description = 'NMIS Imported, but not seen using SNMP';
                             $device->last_seen_by = 'nmis import';
                             $device->system_id = $this->m_system->insert_system($device);
-                            $log_details->message = 'NMIS import, insert basic result for '.$device->man_ip_address.' ('.$device->hostname.')';
+                            $log_details->message = 'NMIS import, insert basic result for '.$device->ip.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         }

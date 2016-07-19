@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,34 +44,32 @@
 	<table class="table">
 		<thead>
 			<tr>
-				<th><?php echo __('ID')?></th>
+				<th style='text-align:center;'><?php echo __('ID')?></th>
 				<th><?php echo __('Name')?></th>
 				<th><?php echo __('Description')?></th>
 				<th><?php echo __('Edited By')?></th>
 				<th><?php echo __('Edited Date')?></th>
-				<th align='center'><?php echo __('Edit')?></th>
-				<th align='center'><?php echo __('Delete')?></th>
+				<th style='text-align:center;'><?php echo __('Edit')?></th>
+				<th style='text-align:center;'><?php echo __('Delete')?></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php
 	        foreach ($this->response->data as $item):
-                $edit_pic = '<a href="networks/'.intval($item->id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
-                $delete_pic = '<a href="networks/'.intval($item->id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
+                $edit_pic = '<a class="btn btn-sm btn-info" href="networks/'.intval($item->id).'?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>';
+                $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->attributes->name) . '" aria-hidden="true"></span></button>';
 	            ?>
 			<tr>
-				<td><?php echo htmlentities($item->id)?></td>
-				<td><?php echo htmlentities($item->name)?></td>
-				<td><?php echo htmlentities($item->description)?></td>
-				<td><?php echo htmlentities($item->edited_by)?></td>
-				<td><?php echo htmlentities($item->edited_date)?></td>
-				<td align='center'><?php echo $edit_pic?></td>
-				<td align='center'><?php echo $delete_pic?></td>
+                <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
+				<td><?php echo htmlentities($item->attributes->name)?></td>
+				<td><?php echo htmlentities($item->attributes->description)?></td>
+				<td><?php echo htmlentities($item->attributes->edited_by)?></td>
+				<td><?php echo htmlentities($item->attributes->edited_date)?></td>
+				<td style='text-align:center;'><?php echo $edit_pic?></td>
+				<td style='text-align:center;'><?php echo $delete_pic?></td>
 			</tr>
 			<?php endforeach; ?>
 		</tbody>
 	</table>
   </div>
 </div>
-<?php exit();
-?>

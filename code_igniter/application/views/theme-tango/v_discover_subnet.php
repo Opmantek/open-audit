@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -54,6 +55,11 @@ if (php_uname('s') == "Windows NT") {
     } else {
         $output[0] = '';
     }
+    if ($nmap_installed == 'n') {
+        if (file_exists('/usr/local/bin/nmap')) {
+            $nmap_installed = 'y';
+        }
+    }
 }
 
 if ($nmap_installed == 'n') {
@@ -79,28 +85,28 @@ switch ($type) {
     case 'windows':
         $title = 'Audit a Windows computer';
         $icon = $oa_theme_images."/48_windows.png";
-        $scan_title = "Computer";
+        $scan_title = "Computer IP";
         $submit_text = "Audit";
         break;
 
     case 'linux':
         $title = 'Audit a Linux computer';
         $icon = $oa_theme_images."/48_linux.png";
-        $scan_title = "Computer";
+        $scan_title = "Computer IP";
         $submit_text = "Audit";
         break;
 
     case 'snmp':
         $title = 'Scan a device using SNMP';
         $icon = $oa_theme_images."/48_network.png";
-        $scan_title = "Device";
+        $scan_title = "Device IP";
         $submit_text = "Scan";
         break;
 
     case 'device':
         $title = 'Discover a device';
         $icon = $oa_theme_images."/48_network.png";
-        $scan_title = "Device";
+        $scan_title = "Device IP";
         $submit_text = "Discover";
         break;
 
@@ -126,16 +132,7 @@ if (!isset($org_id)) {
 if (!isset($location_id)) {
     $location_id = '';
 }
-if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] == 'n') {
-    $snmp_community_field = 'password';
-} else {
-    $snmp_community_field = 'text';
-}
-if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] == 'n') {
-    $password_field = 'password';
-} else {
-    $password_field = 'text';
-}
+
 ?>
 
 <fieldset id="subnet_details" class='niceforms'>
@@ -146,56 +143,7 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 			<td style='width:30%' style="vertical-align: top;">
 				<p><label for='subnet_range'><?php echo __($scan_title); ?>: </label> <input type='text' id='subnet_range' name='subnet_range' tabindex='1' title='Subnet Range' value='<?php echo $ip_address; ?>' /></p>
 
-				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
-					<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $this->config->item('default_network_address'); ?>' />*</p>
-				<?php } ?>
-				<?php if ($type == "" or $type == "snmp" or $type == "device") { ?>
-					<?php if (isset($credentials->snmp_community)) {
-                        $snmp_community = $credentials->snmp_community;
-                    } else {
-                        $snmp_community = $this->config->item('default_snmp_community');
-                    } ?>
-					<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: </label> <input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' tabindex='3' title='SNMP Community' value='<?php echo $snmp_community; ?>' /></p>
-				<?php } ?>
-				<?php if ($type == "" or $type == "linux" or $type == "device") { ?>
-					<?php if (isset($credentials->ssh_username)) {
-                        $ssh_username = $credentials->ssh_username;
-                    } else {
-                        $ssh_username = $this->config->item('default_ssh_username');
-                    }
-                    ?>
-					<?php if (isset($credentials->ssh_password)) {
-                        $ssh_password = $credentials->ssh_password;
-                    } else {
-                        $ssh_password = $this->config->item('default_ssh_password');
-                    }
-                    ?>
-				<p><label for='ssh_username'><?php echo __("SSH User"); ?>: </label> <input type='text' id='ssh_username' name='ssh_username' tabindex='4' title='SSH User' value='<?php echo $ssh_username; ?>' /></p>
-				<p><label for='ssh_password'><?php echo __("SSH Password"); ?>: </label> <input type='<?php echo $password_field; ?>' id='ssh_password' name='ssh_password' tabindex='5' title='SSH Password' value='<?php echo $ssh_password; ?>' /></p>
-				<?php } ?>
-				<?php if ($type == "" or $type == "windows" or $type == "device") { ?>
-				<?php if (isset($credentials->windows_username)) {
-                    $windows_username = $credentials->windows_username;
-                } else {
-                    $windows_username = $this->config->item('default_windows_username');
-                }
-                ?>
-				<?php if (isset($credentials->windows_password)) {
-                    $windows_password = $credentials->windows_password;
-                } else {
-                    $windows_password = $this->config->item('default_windows_password');
-                }
-                ?>
-				<?php if (isset($credentials->windows_domain)) {
-                    $windows_domain = $credentials->windows_domain;
-                } else {
-                    $windows_domain = $this->config->item('default_windows_domain');
-                }
-                ?>
-				<p><label for='windows_username'><?php echo __("Windows User"); ?>: </label> <input type='text' id='windows_username' name='windows_username' tabindex='6' title='Windows User' value='<?php echo $windows_username; ?>' /></p>
-				<p><label for='windows_password'><?php echo __("Windows Password"); ?>: </label> <input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' tabindex='7' title='Windows Password' value='<?php echo $windows_password; ?>' /></p>
-				<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: </label> <input type='text' id='windows_domain' name='windows_domain' tabindex='8' title='Windows Domain' value='<?php echo $windows_domain; ?>' /></p>
-				<?php } ?>
+				<p><label for='network_address'><?php echo __("Local Network Address"); ?>: </label> <input type='text' id='network_address' name='network_address' tabindex='2' title='Local Network Address' value='<?php echo $this->config->item('default_network_address'); ?>' />*</p>
 
                 <p><label for='org'><?php echo __('Org'); ?>: </label>
                     <select id='org' name='org' width='20'>
@@ -246,34 +194,31 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
                 <p><label for='submit'>&nbsp;</label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), 'Submit'); ?></p>
                 <?php } ?>
 
-				<?php if ($type == "" or $type == "device" or $type == "linux" or (php_uname('s') == "Linux" and $type == "windows")) { ?>
+
                 * The ip address or resolvable hostname used by external devices to talk to Open-AudIT (This should be the real IP Address of this Open-AudIT server).<br />
-                <?php } ?>
+
 
                 <p>** Do not set "debug" in normal use. Doing so may take a while for the page to return - please be patient.</p>
 
-				<?php if ($warning > '') {
-                    echo "<p><br /><br />$warning</p>\n";
-                } ?>
-                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br />
 			</td>
-			<td style='width:70%' style="vertical-align: top;">
+			<td style='width:70%' style="vertical-align: text-top;">
+                <?php if ($warning > '') {
+                    echo "<h3 style='color:red;'>" . __('Warning') . "</h3>" . $warning . "<br />\n";
+                } ?>
+
+                <h3><?php echo __('Credentials'); ?></h3><?php echo __('As of Open-AudIT 1.12.8, default credentials are no longer stored in the configuration of Open-AudIT. They now have their own table and can have multiple sets supplied for the same type. Because of this, they have been removed from the Discovery form (and the Configuration editor). If you need specific credentials, please add them at menu -> Admin -> Credentials -> Add Credential Set. You can view the existing set\'s at menu -> Admin -> Credentials -> View Credentials. If this is an upgraded installation, your old default credentials have been migrated. When Discovery is run, all credential sets will be tested upon a device until one is found to be working.'); ?><br />
+
 				<?php if ($type != '') { ?>
-				<h3><?php echo __('Note'); ?> - <?php echo __('Discovery'); ?></h3><?php echo __('This will run an nmap scan against the target device, followed by attempting to retrieve details via SNMP (if SNMP is detected), then finally either running the Windows or Linux audit script (if WMI/SMB or SSH is detected). This will effectively "audit" your target device, assuming you provide the correct credentials.'); ?>
+				<h3><?php echo __('Note'); ?> - <?php echo __('Discovery'); ?></h3><?php echo __('This will run an nmap scan against the target device, followed by attempting to retrieve details via SNMP (if SNMP is detected), then finally running the relevant audit script (if WMI/SMB or SSH is detected). This will effectively "audit" your target device, assuming you provide the correct credentials.'); ?>
 
 				<?php } else { ?>
-				<h3><?php echo __('Note'); ?> - <?php echo __('Discovery'); ?></h3><?php echo __('This will run an nmap scan against each ip address in the the target subnet, followed by attempting to retrieve details via SNMP (if SNMP is detected), then finally either running the Windows or Linux audit script (if WMI/SMB or SSH is detected). This will effectively "audit" your target subnet, assuming you provide the correct credentials.'); ?>
+				<h3><?php echo __('Note'); ?> - <?php echo __('Discovery'); ?></h3><?php echo __('This will run an nmap scan against each ip address in the the target subnet, followed by attempting to retrieve details via SNMP (if SNMP is detected), then finally running the relevant audit script (if WMI/SMB or SSH is detected). This will effectively "audit" your target subnet, assuming you provide the correct credentials.'); ?>
 				<?php } ?>
 
 				<?php if ($type != 'windows') { ?>
 				<h3><?php echo __('Note'); ?> - <?php echo __('sudo without TTY'); ?></h3><?php echo __('Some Linux systems cannot use "sudo" without a TTY. The discovery function relies on an SSH command without a TTY. To completely audit one of these linux distributions it is best to supply the root user credentials. If no root is supplied and sudo without a TTY is not possible, the audit script will be run but will NOT contain the amount of data as would otherwise.'); ?><br />
 				<?php } ?>
-
-				<h3><?php echo __('Note'); ?> - <?php echo __('SNMP Credentials'); ?></h3><?php echo __('The order of credential use for SNMP is as follows: Device specific credentials will be used as a first preference. If these fail (or do not exist) the form credentials (the credentials on this form) will be attempted. If these fail the Open-AudIT default credentials (as per Menu -> Admin -> Config) will be attempted.'); ?><br />
-
-				<h3><?php echo __('Note'); ?> - <?php echo __('Audit Credentials'); ?></h3><?php echo __('The credentials used for auditing are device specific (if they exist) then form supplied (the credentials on this form). Device specific credentials can be modified on the Device Summary pages by clicking the menu item for Credentials.'); ?><br />
-
-				<h3><?php echo __('Note'); ?> - <?php echo __('Credentials Storage'); ?></h3><?php echo __('Any credentials that are used and are valid will be stored against the specific device. These can be modified per device on the Device Summary pages by clicking the menu item for Credentials.'); ?></br />
 
                 <h3><?php echo __('Organisation Assignment'); ?></h3><?php echo __('If an Org is selected, any devices found in this discovery will be assigned to this Organisation. If no organisation is selected, existing devices found will not be assigned to any organisation but new devices created will be assigned to the Default Organisation.'); ?><br />
 
@@ -281,38 +226,21 @@ if (isset($this->config->config['show_passwords']) and $this->config->config['sh
 
                 <h3><?php echo __('Use HTTPS'); ?></h3><?php echo __('If Use HTTPS is checked, the audit scripts will use the HTTPS address of the server to submit their results.'); ?><br />
 
-                <h3><?php echo __('Network Group Creation'); ?></h3><?php echo __('At present Network Groups will be created if a subnet is supplied using a slash (ie - 192.168.1.0/24) and you have the config option to auto create network groups set to "y". Network Groups will NOT be created if a range of ip addresses, a /32 subnet or a single ip address is supplied.'); ?><br />
-
+                <?php if ($type == '') { ?>
                 <h3><?php echo __('Subnet Examples'); ?></h3>
                     <?php echo __('The format of the subnet is specified in standard Nmap syntax. The following are valid examples:'); ?><br />
                     <?php echo __('192.168.0.1 (a single address)'); ?><br />
                     <?php echo __('192.168.1.2/32 (a single address with mask)'); ?><br />
                     <?php echo __('192.168.3.0/24 (a 24 bit mask - 192.168.3.0 to 192.168.3.255)'); ?><br />
-                    <?php echo __('198.168.0-255.1-127 (a range of ip addresses)'); ?><br />                
+                    <?php echo __('198.168.0-255.1-127 (a range of ip addresses)'); ?><br />   
+                <?php } ?>           
 			</td>
 		</tr>
 	</table>
 </fieldset>
 <br />
-
-<?php
-if ($type == '') {
-    if ($this->config->config['default_snmp_community'] == '' or
-        $this->config->config['default_ssh_username'] == '' or
-        $this->config->config['default_ssh_password'] == '' or
-        $this->config->config['default_windows_username'] == '' or
-        $this->config->config['default_windows_password'] == '' or
-        $this->config->config['default_windows_domain'] == '') {
-        ?>
-	<p><h3 style="color: blue"><?php echo __('Warning'); ?></h3><?php echo __('Please ensure you have default for ALL attributes. Defaults can be set on the Config page - click'); ?> <a href="<?php echo $oa_web_index;
-        ?>/admin/edit_config" style="color: red";><?php echo __('here'); ?></a>.<br />
-	<?php }
-    ?>
-
-	<br />
-	</p>
-	<br />
-    <?php } else { ?>
-    <?php } ?>
+<br />
+</p>
+<br />
 
 </form>

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -72,15 +73,15 @@
 	<tbody>
 	<?php foreach ($this->response->data['devices'] as $item) { ?>
 		<tr>
-			<td style="text-align: center;"><a href="../main/system_display/<?php echo intval($item->system_id)?>"><?php echo intval($item->system_id)?></td>
-			<td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->icon))).".svg\""; ?>" style="border-width:0px; width:24px;" title="<?php echo htmlentities($item->icon); ?>" alt="<?php echo htmlentities($item->icon); ?>"/></td>
-			<td><?php echo $item->type; ?></td>
-			<td><?php echo $item->hostname; ?></td>
-			<td><?php echo $item->domain; ?></td>
-			<td><span style="display:none;"><?php echo str_replace('.', '', $item->ip_padded); ?></span><?php echo $item->ip; ?></td>
-			<td><?php echo $item->description; ?></td>
-			<td><?php echo $item->os_family; ?></td>
-			<td><?php echo $item->man_status; ?></td>
+			<td style="text-align: center;"><a href="../main/system_display/<?php echo intval($item->{'system.id'})?>"><?php echo intval($item->{'system.id'})?></td>
+			<td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->{'system.icon'}))).".svg\""; ?>" style="border-width:0px; width:24px;" title="<?php echo htmlentities($item->{'system.icon'}); ?>" alt="<?php echo htmlentities($item->{'system.icon'}); ?>"/></td>
+			<td><?php echo $item->{'system.type'}; ?></td>
+			<td><?php echo $item->{'system.name'}; ?></td>
+			<td><?php echo $item->{'system.domain'}; ?></td>
+			<td><span style="display:none;"><?php echo str_replace('.', '', $item->ip_padded); ?></span><?php echo $item->{'ip.ip'}; ?></td>
+			<td><?php echo $item->{'system.description'}; ?></td>
+			<td><?php echo $item->{'system.os_family'}; ?></td>
+			<td><?php echo $item->{'system.status'}; ?></td>
 		</tr>
 	<?php } ?>
 	</table>

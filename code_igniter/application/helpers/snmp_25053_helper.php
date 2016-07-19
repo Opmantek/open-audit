@@ -30,42 +30,42 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Ruckus
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
     $details->manufacturer = 'Ruckus';
     $details->type = 'wap';
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3')   { $details->model = 'Wireless Router'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.1')   { $details->model = 'Wireless Router'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.1.1') { $details->model = 'Wireless Router VF2825';  }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.1.2') { $details->model = 'Wireless Router VF2811'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.1.3') { $details->model = 'Wireless Router VF2821'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.1.4') { $details->model = 'Wireless Router VF2835'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.1.5') { $details->model = 'Wireless Router VF7811'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.2')   { $details->model = 'Wireless Adapter'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.2.1') { $details->model = 'Wireless Adapter VF2111'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.2.2') { $details->model = 'Wireless Adapter VF2121'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.2.3') { $details->model = 'Wireless Adapter VF7111'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.3')   { $details->model = 'Wireless Metro'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.3.1') { $details->model = 'Wireless Metro MM2225'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.3.2') { $details->model = 'Wireless Metro MM2211'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.3.3') { $details->model = 'Wireless Metro MM2221'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4')   { $details->model = 'Wireless Hotzone'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4.1') { $details->model = 'Wireless Hotzone ZF2925'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4.2') { $details->model = 'Wireless Hotzone ZF2942'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4.3') { $details->model = 'Wireless Hotzone ZF7942'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4.4') { $details->model = 'Wireless Hotzone ZF7962'; }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25053.3.1.4.5') { $details->model = 'Wireless Hotzone ZF2741'; }
-
-    if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25053.1.1.2.1.1.1.2.0"));
-        if (empty($details->model)) {
-            $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25053.1.1.2.1.1.1.1.0"));
-        }
+    if ($oid == '1.3.6.1.4.1.25053.3')   { $details->model = 'Wireless Router'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1')   { $details->model = 'Wireless Router'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.1') { $details->model = 'Wireless Router VF2825';  }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.2') { $details->model = 'Wireless Router VF2811'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.3') { $details->model = 'Wireless Router VF2821'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.4') { $details->model = 'Wireless Router VF2835'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.5') { $details->model = 'Wireless Router VF7811'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2')   { $details->model = 'Wireless Adapter'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2.1') { $details->model = 'Wireless Adapter VF2111'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2.2') { $details->model = 'Wireless Adapter VF2121'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2.3') { $details->model = 'Wireless Adapter VF7111'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3')   { $details->model = 'Wireless Metro'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3.1') { $details->model = 'Wireless Metro MM2225'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3.2') { $details->model = 'Wireless Metro MM2211'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3.3') { $details->model = 'Wireless Metro MM2221'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4')   { $details->model = 'Wireless Hotzone'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.1') { $details->model = 'Wireless Hotzone ZF2925'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.2') { $details->model = 'Wireless Hotzone ZF2942'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.3') { $details->model = 'Wireless Hotzone ZF7942'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.4') { $details->model = 'Wireless Hotzone ZF7962'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.5') { $details->model = 'Wireless Hotzone ZF2741'; }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.25053.1.1.2.1.1.1.2.0");
+    if (empty($details->model)) {
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.25053.1.1.2.1.1.1.1.0");
     }
+    return($details);
 };

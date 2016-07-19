@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,18 +45,18 @@ class M_charts extends MY_Model
 
         # use the sub_resource as the first preference for the type
         $count = 0;
-        if (!empty($CI->response->sub_resource)) {
+        if (!empty($CI->response->meta->sub_resource)) {
             $filter = new stdClass();
             $filter->name = 'what';
             $filter->operator = '=';
-            $filter->value = $CI->response->sub_resource;
-            $CI->response->filter[] = $filter;
-            $CI->response->internal->what = $CI->response->sub_resource;
+            $filter->value = $CI->response->meta->sub_resource;
+            $CI->response->meta->filter[] = $filter;
+            $CI->response->meta->internal->what = $CI->response->meta->sub_resource;
             $count = 1;
         }
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if ($item->name == 'what') {
-                $CI->response->internal->what = $item->value;
+                $CI->response->meta->internal->what = $item->value;
                 $count += 1;
             }
         }
@@ -64,15 +65,15 @@ class M_charts extends MY_Model
             $filter->name = 'what';
             $filter->operator = '=';
             $filter->value = 'audit';
-            $CI->response->filter[] = $filter;
-            $CI->response->internal->what = 'audit';
+            $CI->response->meta->filter[] = $filter;
+            $CI->response->meta->internal->what = 'audit';
         }
 
         $count = 0;
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if ($item->name == 'start' or ($item->name == 'when' and ($item->operator == '>=' or $item->operator == '>'))) {
                 $count += 1;
-                $CI->response->internal->start = $item->value;
+                $CI->response->meta->internal->start = $item->value;
             }
         }
         if ($count == 0) {
@@ -80,12 +81,12 @@ class M_charts extends MY_Model
             $filter->name = 'start';
             $filter->operator = '>=';
             $filter->value = date('Y-m-d', strtotime('-29 days'));
-            $CI->response->filter[] = $filter;
-            $CI->response->internal->start = $filter->value;
+            $CI->response->meta->filter[] = $filter;
+            $CI->response->meta->internal->start = $filter->value;
         }
 
         $count = 0;
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if ($item->name == 'end' or ($item->name == 'when' and ($item->operator == '<=' or $item->operator == '<'))) {
                 $count += 1;
                 $CI->response->internal->end = $item->value;
@@ -96,19 +97,16 @@ class M_charts extends MY_Model
             $filter->name = 'end';
             $filter->operator = '=<';
             $filter->value = (string)date('Y-m-d');
-            $CI->response->filter[] = $filter;
-            $CI->response->internal->end = $filter->value;
+            $CI->response->meta->filter[] = $filter;
+            $CI->response->meta->internal->end = $filter->value;
         }
 
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if (($item->name == 'start' or $item->name == 'when') and $item->operator == '=') {
-                $CI->response->internal->start = $item->value;
-                $CI->response->internal->end = $item->value;
+                $CI->response->meta->internal->start = $item->value;
+                $CI->response->meta->internal->end = $item->value;
             }
         }
-
-
-
         return;
     }
 
@@ -116,7 +114,7 @@ class M_charts extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        $CI->response->internal->filter = $filter;
+        $CI->response->meta->internal->filter = $filter;
 
         $sql = "SELECT DISTINCT `what`, DATE(MAX(`when`)) AS start, DATE(MIN(`when`)) AS `end` FROM chart GROUP BY `what`";
         $result = $this->run_sql($sql, array());
@@ -128,16 +126,16 @@ class M_charts extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        $CI->response->internal->filter = $filter;
+        $CI->response->meta->internal->filter = $filter;
 
         $sql = "SELECT COUNT(*) AS `count` FROM chart WHERE `what` = ?";
-        $data = array($CI->response->internal->what);
+        $data = array($CI->response->meta->internal->what);
         $result = $this->run_sql($sql, $data);
-        $CI->response->total = intval($result[0]->count);
+        $CI->response->meta->total = intval($result[0]->count);
 
-        if ($CI->response->internal->what == 'device_missing') {
-            $sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.system_id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.system_id, first_timestamp, timestamp, last_seen FROM system LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND man_ip_address <> '' AND man_ip_address <> '0.0.0.0' AND man_ip_address <> '000.000.000.000' and man_status = 'production') ftd ON (DATE(ftd.timestamp) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
-            $data = array(1, $CI->response->internal->end, $CI->response->internal->end);
+        if ($CI->response->meta->internal->what == 'device_missing') {
+            $sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, first_seen, last_seen FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND ip <> '' AND ip <> '0.0.0.0' AND ip <> '000.000.000.000' and status = 'production') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
+            $data = array(1, $CI->response->meta->internal->end, $CI->response->meta->internal->end);
         } else {
             // $sql = "SELECT DATE(a.Date) AS `date`, UNIX_TIMESTAMP(a.Date) AS `timestamp`, SUM(IF(`count` IS NULL, 0, `count`)) as `count` FROM ( SELECT a.Date FROM ( 
             // SELECT CURDATE() - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY AS Date
@@ -170,7 +168,7 @@ class M_charts extends MY_Model
                     ORDER BY a.Date asc";
 
 
-            $data = array($CI->response->internal->start, $CI->response->internal->end, $CI->response->internal->start, $CI->response->internal->end, $CI->response->internal->what);
+            $data = array($CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->what);
         }
         $result = $this->run_sql($sql, $data);
         foreach ($result as $item) {
@@ -199,8 +197,8 @@ class M_charts extends MY_Model
         // run the query
         $query = $this->db->query($sql, $data);
         // if we have debug set to TRUE, store the last run query
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
+        if ($CI->response->meta->debug) {
+            $CI->response->meta->sql = $this->db->last_query();
         }
         // restore the origin setting to db_debug
         $this->db->db_debug = $temp_debug;

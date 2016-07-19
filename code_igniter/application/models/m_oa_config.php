@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -156,11 +157,22 @@ class M_oa_config extends MY_Model
         $this->config->config['server_os'] = php_uname('s');
 
         # get the total number of devices
-        $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
+        if (isset($internal_version) and $internal_version >= '20160620') {
+            $sql = "SELECT count(id) as device_count FROM system WHERE status = 'production'";
+        } else {
+            $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
+        }
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
         $this->config->config['device_count'] = intval($result[0]->device_count);
+
+        if ((string) php_uname('s') === 'Windows NT') {
+            $this->config->config['base_path'] = str_replace('\code_igniter\application\models\m_oa_config.php', '', __FILE__);
+        } else {
+            $this->config->config['base_path'] = str_replace('/code_igniter/application/models/m_oa_config.php', '', __FILE__);
+        }
+
     }
 
     public function get_credentials()
@@ -388,9 +400,15 @@ class M_oa_config extends MY_Model
         }
         $this->load->helper('network_helper');
         $networks = array();
-        foreach ($ip_address_array as $network) {
-            $test = network_details($network);
-            $networks[] = $test->network . '/' . $test->network_slash;
+        if (is_array($ip_address_array) and count($ip_address_array) > 0) {
+            foreach ($ip_address_array as $network) {
+                if (!empty($network)) {
+                    $test = network_details($network);
+                }
+                if (!empty($test->network) and !empty($test->network_slash)) {
+                    $networks[] = $test->network . '/' . $test->network_slash;
+                }
+            }
         }
         return ($networks);
     }
@@ -423,6 +441,9 @@ class M_oa_config extends MY_Model
             return false;
         }
         if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
+            return true;
+        }
+        if ($ip == '::1') {
             return true;
         }
         $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(name, LOCATE('/', name)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(name, 1, LOCATE('/', name)-1))";

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,9 +41,10 @@ if (!isset($this->user->theme) or $this->user->theme == '') {
     $this->user->theme = 'tango';
 }
 
-if (file_exists("/usr/local/open-audit/code_igniter/application/views/theme-bootstrap/".$include.".php")) {
+if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php', __FILE__))) {
     $this->user->theme = 'bootstrap';
 }
+
 
 $oa_web_index    = htmlentities($this->config->item('oa_web_index'));
 $oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));
