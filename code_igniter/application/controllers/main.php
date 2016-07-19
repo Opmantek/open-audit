@@ -378,7 +378,7 @@ class main extends MY_Controller
         $group_id = $_POST['group_id'];
         $data['items'] = array();
         foreach ($_POST as $key => $value) {
-            if (value != '') {
+            if ($value != '') {
                 $item = array($key, $value);
                 array_push($data['items'], ($item));
                 $item = null;
