@@ -1177,9 +1177,13 @@ class discovery extends CI_Controller
 
                         if ($display == 'y') {
                             $details->show_output = true;
-                            echo "DEBUG- ---------------\n";
-                            $this->echo_details($details);
-                            echo "DEBUG- ---------------\n";
+                            echo "=======DETAILS======\n";
+                            foreach ($details as $key => $value) {
+                                echo "DEBUG - " . $key . ": " . (string)$value . "\n";
+                            }
+                            echo "====================\n";
+                            ob_flush();
+                            flush();
                         }
 
                         // insert or update the device
@@ -1311,7 +1315,11 @@ class discovery extends CI_Controller
                                 if (php_uname('s') == 'Windows NT') {
                                     $source_name = 'scripts\\audit_windows_' . $ts . '.vbs';
                                     @unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
-                                    $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                                    try {
+                                        $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                                    } catch (Exception $e) {
+                                        print_r($e);
+                                    }
                                 } else {
                                     $source_name = 'scripts/audit_windows_' . $ts . '.vbs';
                                     @unlink($this->config->config['base_path'] . '/other/' . $source_name);
@@ -1345,45 +1353,72 @@ class discovery extends CI_Controller
                                     unlink($this->config->config['base_path'] . '/other/' . $source_name);
                                 }
                             } else {
+                                if (strtolower($_SERVER['USERPROFILE']) == 'c:\windows\system32\config\systemprofile') {
+                                    # We're running on the LocalSystem account.
+                                    # We cannot copy the audit script to the target and then run it,
+                                    # We _must_ run the script locally and use $details->ip as the script target
+                                    # We will loose the ability to retrieve certain items like files, netstat, tasks, etc
+                                    $log_details->message = "Windows audit for $details->ip (System ID $details->id)";
+                                    stdlog($log_details);
+                                        $username = $credentials_windows->credentials->username;
+                                        $temp = explode('@', $username);
+                                        $username = $temp[0];
+                                        if (count($temp) > 1) {
+                                            $domain = $temp[1] . '\\';
+                                        } else {
+                                            $domain = '';
+                                        }
+                                        unset($temp);
 
-                                $log_details->message = "Windows audit for $details->ip (System ID $details->id)";
-                                stdlog($log_details);
-                                    $username = $credentials_windows->credentials->username;
-                                    $temp = explode('@', $username);
-                                    $username = $temp[0];
-                                    if (count($temp) > 1) {
-                                        $domain = $temp[1] . '\\';
+                                    if ($display == 'y') {
+                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->id;
+                                        $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
+                                        exec($command_string, $output, $return_var);
+                                        $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
+                                        echo 'DEBUG - Command Executed: '.$command_string."\n";
+                                        echo 'DEBUG - Return Value: '.$return_var."\n";
+                                        echo "DEBUG - Command Output:\n";
+                                        print_r($output);
+
+                                        if ($return_var != '0') {
+                                            $error = "Attempt to run audit_windows.vbs on $details->ip has failed";
+                                            $log_details->message = $error;
+                                            stdlog($log_details);
+                                        } else {
+                                            $log_details->message = "Attempt to run audit_windows.vbs on $details->ip has succeeded";
+                                            stdlog($log_details);
+                                        }
+                                        $output = null;
+                                        $return_var = null;
                                     } else {
-                                        $domain = '';
+                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->system_id;
+                                        $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
+                                        pclose(popen($command_string, "r"));
                                     }
-                                    unset($temp);
-
-                                if ($display == 'y') {
-                                    $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->id;
-                                    $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
-                                    exec($command_string, $output, $return_var);
-                                    $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
-                                    echo 'DEBUG - Command Executed: '.$command_string."\n";
-                                    echo 'DEBUG - Return Value: '.$return_var."\n";
-                                    echo "DEBUG - Command Output:\n";
-                                    print_r($output);
-
-                                    if ($return_var != '0') {
-                                        $error = "Attempt to run audit_windows.vbs on $details->ip has failed";
-                                        $log_details->message = $error;
-                                        stdlog($log_details);
-                                    } else {
-                                        $log_details->message = "Attempt to run audit_windows.vbs on $details->ip has succeeded";
-                                        stdlog($log_details);
+                                    $command_string = null;
+                                    if ($source_name != 'audit_windows.vbs') {
+                                        unlink($this->config->config['base_path'] . '/other/' . $source_name);
                                     }
-                                    $output = null;
-                                    $return_var = null;
                                 } else {
-                                    $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->system_id;
-                                    $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
-                                    pclose(popen($command_string, "r"));
+                                    # We are running as something other than the LocalSystem account.
+                                    # Therefore we _should_ be able to copy the audit script to tthe target and start it there
+                                    # and therefore retrieve ALL information
+                                    rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
+                                    $source = 'audit_windows_' . $ts . '.vbs';
+                                    $command = "cscript \\\\" . $details->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id . " self_delete=y";
+                                    if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
+                                        if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
+                                            # All complete!
+                                        } else {
+                                            # run audit script failed
+                                        }
+                                    } else {
+                                        # copy audit script to Windows failed
+                                    }
+                                    if ($source_name != 'audit_windows.vbs') {
+                                        unlink('c:\\windows\\audit_windows_' . $ts . '.vbs');
+                                    }
                                 }
-                                $command_string = null;
                             }
 
                         }
