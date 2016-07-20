@@ -1353,7 +1353,8 @@ class discovery extends CI_Controller
                                     unlink($this->config->config['base_path'] . '/other/' . $source_name);
                                 }
                             } else {
-                                if (strtolower($_SERVER['USERPROFILE']) == 'c:\windows\system32\config\systemprofile') {
+                                #if (strtolower($_SERVER['USERPROFILE']) == 'c:\windows\system32\config\systemprofile') {
+                                if (exec('whoami') == 'nt authority\system') {
                                     # We're running on the LocalSystem account.
                                     # We cannot copy the audit script to the target and then run it,
                                     # We _must_ run the script locally and use $details->ip as the script target
@@ -1403,6 +1404,7 @@ class discovery extends CI_Controller
                                     # We are running as something other than the LocalSystem account.
                                     # Therefore we _should_ be able to copy the audit script to tthe target and start it there
                                     # and therefore retrieve ALL information
+                                    $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                                     $source = 'audit_windows_' . $ts . '.vbs';
                                     $command = "cscript \\\\" . $details->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id . " self_delete=y";
