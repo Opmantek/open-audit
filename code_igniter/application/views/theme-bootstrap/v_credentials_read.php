@@ -89,7 +89,7 @@ $item = $this->response->data[0];
             </div>
         </div>
 
-        <?php if ($item->attributes->type == 'ssh' or $item->attributes->type == 'windows') { ?>
+        <?php if ($item->attributes->type == 'ssh' or $item->attributes->type == 'ssh_key' or $item->attributes->type == 'windows') { ?>
         <div class="form-group">
             <label for="credentials.username" class="col-sm-2 control-label">Username</label>
             <div class="col-sm-4">
