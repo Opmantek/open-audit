@@ -35,7 +35,38 @@ if (!defined('BASEPATH')) {
  * @version 1.12.8
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+if (! function_exists('ssh_create_keyfile')) {
+    function ssh_create_keyfile ($key_string, $display = 'n') {
+        if (strtolower($display) != 'y') {
+            $display = 'n';
+        } else {
+            $display = 'y';
+        }
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->file = 'system';
+        $log->display = $display;
 
+        if (empty($key_string)) {
+            $log->message = 'No key_string array passed to ssh_create_keyfile.';
+            stdlog($log);
+            return false;
+        }
+
+        $CI = & get_instance();
+        if (php_uname('s') != 'Windows NT') {
+            $ssh_keyfile = $CI->config->config['base_path'] . '/other/scripts/key_' . date('y_m_d_H_i_s');
+        } else {
+            $ssh_keyfile = $CI->config->config['base_path'] . '\\other\\scripts\\key_' . date('y_m_d_H_i_s');
+        }
+
+        $fp = fopen($ssh_keyfile, 'w') or die ("Could not open $ssh_keyfile for writing");
+        chmod($ssh_keyfile, 0600) or die ("Could not chmod $ssh_keyfile to 0666");
+        fwrite($fp, $key_string) or die ("Could not write into $ssh_keyfile");
+        fclose($fp) or die ("Could not close $ssh_keyfile");
+        return($ssh_keyfile);
+    }
+}
 
 if (! function_exists('ssh_credentials')) {
     /**
@@ -77,6 +108,27 @@ if (! function_exists('ssh_credentials')) {
             return false;
         }
         $connected = array();
+
+        $CI = & get_instance();
+        if (php_uname('s') != 'Windows NT') {
+            $filepath = $CI->config->config['base_path'] . '/other';
+        } else {
+            $filepath = $CI->config->config['base_path'] . '\\other';
+        }
+
+        foreach ($credentials as $credential) {
+            #if ($credential->attributes->type == 'ssh_key') {
+            if ($credential->type == 'ssh_key') {
+                if (php_uname('s') != 'Windows NT') {
+                    # write uut our key file
+                    # now try to connect
+                    if ($result = ssh_command($ip, $credential, 'uname', $display)) {
+                        return($credential);
+                    }
+                }
+            }
+        }
+
         foreach ($credentials as $credential) {
             $from = ' ';
             if (!empty($credential->source)) {
@@ -197,9 +249,18 @@ if (! function_exists('ssh_command')) {
             stdlog($log);
             return false;
         } else {
-            #$password = escapeshellarg($credentials->credentials->password);
-            $password = $credentials->credentials->password;
-            $username = escapeshellarg($credentials->credentials->username);
+            if ($credentials->type == 'ssh') {
+                $password = $credentials->credentials->password;
+                $username = escapeshellarg($credentials->credentials->username);
+            } elseif ($credentials->type == 'ssh_key') {
+                $username = escapeshellarg($credentials->credentials->username);
+                $keyfile = ssh_create_keyfile($credentials->credentials->ssh_key);
+                $password = '';
+            } else {
+                $log->message = 'No username / password combo or keyfile supplied to ssh_command function.';
+                stdlog($log);
+                return false;
+            }
         }
         if (empty($command)) {
             $log->message = 'No command supplied to ssh_command function.';
@@ -218,65 +279,88 @@ if (! function_exists('ssh_command')) {
             );
             $cwd = '/tmp';
             $env = array();
-            $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
-            $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
-            if (is_resource($process)) {
-                fwrite($pipes[0], $password);
-                fclose($pipes[0]);
-                // stdOut
-                $temp = stream_get_contents($pipes[1]);
-                $return['output'] = explode("\n", $temp);
-                if (end($return['output']) == '') {
-                    unset($return['output'][count($return['output'])-1]);
+            if ($credentials->type == 'ssh') {
+                $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
+                $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
+                if (is_resource($process)) {
+                    fwrite($pipes[0], $password);
+                    fclose($pipes[0]);
+                    // stdOut
+                    $temp = stream_get_contents($pipes[1]);
+                    $return['output'] = explode("\n", $temp);
+                    if (end($return['output']) == '') {
+                        unset($return['output'][count($return['output'])-1]);
+                    }
+                    fclose($pipes[1]);
+                    $return['status'] = proc_close($process);
                 }
-                fclose($pipes[1]);
-                $return['status'] = proc_close($process);
+            } elseif ($credentials->type == 'ssh_key') {
+                if ($password != '') {
+                    # NOT SUPPORTED YET
+                } else {
+                    $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
+                    exec($command_string, $return['output'], $return['status']);
+                }
+                unlink($keyfile);
             }
+
         }
 
         // NOTE - requires the command "brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb" for the sshpass command
         if (php_uname('s') == 'Darwin') {
-            # test we have sshpass installed
-            if (!file_exists('/usr/local/bin/sshpass')) {
-                $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
-                stdlog($log);
-                return false;
-            }
-            $descriptorspec = array(
-                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-            );
-            $cwd = '/usr/local/open-audit/other';
-            $env = array();
-            $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
-            $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
-            if (is_resource($process)) {
-                fwrite($pipes[0], $password);
-                fclose($pipes[0]);
-                // stdOut
-                $temp = stream_get_contents($pipes[1]);
-                $return['output'] = explode("\n", $temp);
-                if (end($return['output']) == '') {
-                    unset($return['output'][count($return['output'])-1]);
+            if ($credentials->type == 'ssh') {
+                # test we have sshpass installed
+                if (!file_exists('/usr/local/bin/sshpass')) {
+                    $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
+                    stdlog($log);
+                    return false;
                 }
-                fclose($pipes[1]);
-                $return['status'] = proc_close($process);
+                $descriptorspec = array(
+                    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+                    2 => array("file", "/dev/null", "a"), // stderr is a file to write to
+                );
+                $cwd = '/usr/local/open-audit/other';
+                $env = array();
+                $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
+                $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
+                if (is_resource($process)) {
+                    fwrite($pipes[0], $password);
+                    fclose($pipes[0]);
+                    // stdOut
+                    $temp = stream_get_contents($pipes[1]);
+                    $return['output'] = explode("\n", $temp);
+                    if (end($return['output']) == '') {
+                        unset($return['output'][count($return['output'])-1]);
+                    }
+                    fclose($pipes[1]);
+                    $return['status'] = proc_close($process);
+                }
+            } elseif ($credentials->type = 'ssh_key') {
+                if ($password != '') {
+                    # NOT SUPPORTED YET
+                } else {
+                    $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
+                    exec($command_string, $return['output'], $return['status']);
+                }
+                unlink($keyfile);
             }
         }
 
 
         if (php_uname('s') == 'Windows NT') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
-            #$command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . str_replace('"', '\"', $password) . ' ' . $command;
-            #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->id." self_delete=y\"";
-            $command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
-            exec($command_string, $return['output'], $return['status']);
-            if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
-                (isset($return['output'][0]) and stripos($return['output'][0], 'using keyboard-interactive authentication') !== false) or
-                (isset($return['output'][1]) and stripos($return['output'][1], 'password') !== false) ) {
-                $return['output'][0] = '';
-                $return['status'] = 5;
+            if ($credentials->type == 'ssh') {
+                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
+                #$command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . str_replace('"', '\"', $password) . ' ' . $command;
+                #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->id." self_delete=y\"";
+                $command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
+                exec($command_string, $return['output'], $return['status']);
+                if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
+                    (isset($return['output'][0]) and stripos($return['output'][0], 'using keyboard-interactive authentication') !== false) or
+                    (isset($return['output'][1]) and stripos($return['output'][1], 'password') !== false) ) {
+                    $return['output'][0] = '';
+                    $return['status'] = 5;
+                }
             }
         }
 
@@ -406,7 +490,7 @@ if (! function_exists('ssh_audit')) {
         if ($details->os_group == 'Linux') {
             if ($credentials->credentials->username == 'root') {
                 $command = 'dmidecode -s system-uuid';
-            } elseif ($credentials->sudo) {
+            } elseif (!empty($credentials->sudo) and $credentials->sudo) {
                 $command = 'echo ' . $credentials->credentials->password . ' | sudo -S dmidecode -s system-uuid';
             } else {
                 $command = '';
@@ -423,7 +507,7 @@ if (! function_exists('ssh_audit')) {
             if (empty($details->uuid)) {
                 if ($credentials->credentials->username == 'root') {
                     $command = 'cat /sys/class/dmi/id/product_uuid';
-                } elseif ($credentials->sudo) {
+                } elseif (!empty($credentials->sudo) and $credentials->sudo) {
                     $command = 'echo ' . $credentials->credentials->password . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
                 } else {
                     $command = '';
@@ -475,7 +559,7 @@ if (! function_exists('ssh_audit')) {
                 $details->manufacturer = "TP-Link Technology";
             }
         }
-    return $details;
+        return $details;
     }
 }
 
@@ -530,8 +614,13 @@ if (! function_exists('scp')) {
             stdlog($log);
             return false;
         } else {
-            $username = $credentials->credentials->username;
-            $password = $credentials->credentials->password;
+            if ($credentials->type == 'ssh') {
+                $username = $credentials->credentials->username;
+                $password = $credentials->credentials->password;
+            } elseif ($credentials->type == 'ssh_key') {
+                $username = $credentials->credentials->username;
+                $keyfile = ssh_create_keyfile($credentials->credentials->ssh_key);
+            }
         }
 
         if (empty($source)) {
@@ -549,61 +638,77 @@ if (! function_exists('scp')) {
         $return = array('output' => '', 'status' => '');
 
         if (php_uname('s') == 'Linux') {
-            $descriptorspec = array(
-                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-            );
-            $cwd = '/tmp';
-            $env = array();
-            $command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
-            $echo = $command;
-            $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
-            if (is_resource($process)) {
-                fwrite($pipes[0], $password);
-                fclose($pipes[0]);
-                // stdOut
-                $temp = stream_get_contents($pipes[1]);
-                $return['output'] = explode("\n", $temp);
-                if (end($return['output']) == '') {
-                    unset($return['output'][count($return['output'])-1]);
+            if ($credentials->type == 'ssh') {
+                $descriptorspec = array(
+                    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+                    2 => array("file", "/dev/null", "a"), // stderr is a file to write to
+                );
+                $cwd = '/tmp';
+                $env = array();
+                $command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
+                $echo = $command;
+                $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
+                if (is_resource($process)) {
+                    fwrite($pipes[0], $password);
+                    fclose($pipes[0]);
+                    // stdOut
+                    $temp = stream_get_contents($pipes[1]);
+                    $return['output'] = explode("\n", $temp);
+                    if (end($return['output']) == '') {
+                        unset($return['output'][count($return['output'])-1]);
+                    }
+                    fclose($pipes[1]);
+                    $return['status'] = proc_close($process);
                 }
-                fclose($pipes[1]);
-                $return['status'] = proc_close($process);
+            } elseif ($credentials->type == 'ssh_key') {
+                $command = 'scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
+                $echo = $command;
+                exec($command, $return['output'], $return['status']);
+                unlink($keyfile);
             }
         }
 
         if (php_uname('s') == 'Darwin') {
-            $descriptorspec = array(
-                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-            );
-            $cwd = '/tmp';
-            $env = array();
-            $command = 'sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . $ip . ':' . $destination;
-            $echo = $command;
-            $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
-            if (is_resource($process)) {
-                fwrite($pipes[0], $password);
-                fclose($pipes[0]);
-                // stdOut
-                $temp = stream_get_contents($pipes[1]);
-                $return['output'] = explode("\n", $temp);
-                if (end($return['output']) == '') {
-                    unset($return['output'][count($return['output'])-1]);
+            if ($credentials->type == 'ssh') {
+                $descriptorspec = array(
+                    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
+                    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
+                    2 => array("file", "/dev/null", "a"), // stderr is a file to write to
+                );
+                $cwd = '/tmp';
+                $env = array();
+                $command = 'sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . $ip . ':' . $destination;
+                $echo = $command;
+                $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
+                if (is_resource($process)) {
+                    fwrite($pipes[0], $password);
+                    fclose($pipes[0]);
+                    // stdOut
+                    $temp = stream_get_contents($pipes[1]);
+                    $return['output'] = explode("\n", $temp);
+                    if (end($return['output']) == '') {
+                        unset($return['output'][count($return['output'])-1]);
+                    }
+                    fclose($pipes[1]);
+                    $return['status'] = proc_close($process);
                 }
-                fclose($pipes[1]);
-                $return['status'] = proc_close($process);
+            } elseif ($credentials->type == 'ssh_key') {
+                $command = 'scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
+                $echo = $command;
+                exec($command, $return['output'], $return['status']);
+                unlink($keyfile);
             }
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
-            $password = str_replace('"', '\"', $password);
-            $command = $filepath . '\pscp.exe -pw "' . $password . '" ' . $source . ' ' . $user . '@' . $host . ':' . $destination;
-            $echo = str_replace($password, '******', $command);
-            exec($command, $return['output'], $return['status']);
+            if ($credentials->type == 'ssh') {
+                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
+                $password = str_replace('"', '\"', $password);
+                $command = $filepath . '\pscp.exe -pw "' . $password . '" ' . $source . ' ' . $user . '@' . $host . ':' . $destination;
+                $echo = str_replace($password, '******', $command);
+                exec($command, $return['output'], $return['status']);
+            }
         }
 
         if ($display == 'y') {

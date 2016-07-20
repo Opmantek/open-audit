@@ -795,10 +795,15 @@ class discovery extends CI_Controller
                 echo 'DEBUG - <a href=\''.base_url()."index.php'>Front Page</a>\n";
             }
 
-            if (php_uname('s') === 'Windows NT') {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'\\open-audit\\other';
+            // if (php_uname('s') === 'Windows NT') {
+            //     $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'\\open-audit\\other';
+            // } else {
+            //     $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/open-audit/other';
+            // }
+            if (php_uname('s') != 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '/other';
             } else {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/open-audit/other';
+                $filepath = $this->config->config['base_path'] . '\\other';
             }
 
             $this->load->helper('xml');
