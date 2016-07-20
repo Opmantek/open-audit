@@ -175,13 +175,22 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $echo = str_replace($credentials->credentials->password, "******", $command);
-            if ($display == 'y') {
-                exec($command_string, $output, $return_var);
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            if (!empty($temp[1])) {
+                $domain = $temp[1] . '\\';
+                $domain = '';
             } else {
-                pclose(popen($command, "r"));
-                $return_var = 0;
+                $domain = '';
             }
+            $echo = str_replace($credentials->credentials->password, "******", $command);
+            #if ($display == 'y') {
+                $command = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ' . $credentials->credentials->password . ' cmd /c "' . $command . '"';
+                exec($command, $output, $return_var);
+            #} else {
+            #    pclose(popen($command, "r"));
+            #    $return_var = 0;
+            #}
         }
 
         if ($display == 'y') {
@@ -373,15 +382,14 @@ if (! function_exists('copy_to_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $command = "net use \\\\$ip\\$share " . $credentials->credentials->password . " /USER:" . $credentials->credentials->username;
-            exec($command, $output, $return_var);
-            if ($return_var != 0) {
-                $log->message = 'Windows attempt to mount remote filesystem on ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                $log->severity = 5;
-                stdlog($log);
-                return false;
+            # NOTE - the file to be copied MUST be in c:\windows\
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            if (!empty($temp[1])) {
+                $domain = $temp[1] . '/';
             }
-            $command = "copy $source \\\\$ip\\$share\\$destination";
+            unset($temp);
+            $command = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ' . $credentials->credentials->password . ' -c "c:\\windows\\' . $source . '"';
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 $log->message = 'Windows attempt to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
@@ -390,14 +398,6 @@ if (! function_exists('copy_to_windows')) {
                 return true;
             } else {
                 $log->message = 'Windows attempt to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                $log->severity = 5;
-                stdlog($log);
-                return false;
-            }
-            $command = "net use \\\\$ip\\$share /DELETE";
-            exec($command, $output, $return_var);
-            if ($return_var != 0) {
-                $log->message = 'Windows attempt to remove mount from remote filesystem on ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
                 $log->severity = 5;
                 stdlog($log);
                 return false;
@@ -548,6 +548,8 @@ if (! function_exists('wmi_command')) {
             }
             print_r($formatted_output);
             echo "\nDEBUG ---------------\n";
+            ob_flush();
+            flush();
         }
 
         if ($return['status'] != '0') {
