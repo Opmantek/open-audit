@@ -130,10 +130,9 @@ class M_devices_components extends MY_Model
             $sql = "SELECT $properties FROM system WHERE id = ? $filter";
             $data = array($id);
         }
-        
+
         $result = false;
         if ($sql != '') {
-            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             $result = $this->from_db($result);
@@ -143,9 +142,10 @@ class M_devices_components extends MY_Model
                 unset($result);
                 $result = (string)$temp_result;
                 unset($temp_result);
+            } else {
+                $result = $this->format_data($result, 'devices/' . $id . '/' . $table);
             }
         }
-        $result = $this->format_data($result, 'devices/' . $id . '/' . $table);
         return($result);
     }
 

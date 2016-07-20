@@ -430,21 +430,27 @@ class M_devices extends MY_Model
                     $result = $this->run_sql($sql, $data);
                     $previous_value = $result[0]->{$key};
                     # get the current entry in the edit_log
-                    $sql = "SELECT * FROM edit_log WHERE id = ? AND db_table = 'system' AND db_column = ? ORDER BY `timestamp` LIMIT 1";
+                    $sql = "SELECT * FROM `edit_log` WHERE `system_id` = ? AND `db_table` = 'system' AND `db_column` = ? ORDER BY `timestamp` DESC LIMIT 1";
                     $data = array(intval($CI->response->meta->id), "$key");
                     $result = $this->run_sql($sql, $data);
-                    $previous_weight = intval($this->weight($result[0]->weight));
+                    if (!empty($result[0]->weight)) {
+                        $previous_weight = intval($result[0]->weight);
+                    } else {
+                        $previous_weight = 10000;
+                    }
                     // calculate the weight
                     $weight = intval($this->weight($source));
-                    if ($weight <= $previous_weight) {
-                        // update the system table
-                        $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
-                        $data = array((string)$value, intval($CI->response->meta->id));
-                        $this->run_sql($sql, $data);
-                        // insert an entry into the edit table
-                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                        $data = array(intval($CI->user->id), intval($CI->response->meta->id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
-                        $this->run_sql($sql, $data);
+                    if ($weight <= $previous_weight AND $value != $previous_value) {
+                        if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
+                            // update the system table
+                            $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
+                            $data = array((string)$value, intval($CI->response->meta->id));
+                            $this->run_sql($sql, $data);
+                            // insert an entry into the edit table
+                            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                            $data = array(intval($CI->user->id), intval($CI->response->meta->id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                            $this->run_sql($sql, $data);
+                        }
                     } else {
                         # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
                     }
