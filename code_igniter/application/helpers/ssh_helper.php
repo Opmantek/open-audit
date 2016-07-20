@@ -349,8 +349,8 @@ if (! function_exists('ssh_command')) {
 
 
         if (php_uname('s') == 'Windows NT') {
+            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
             if ($credentials->type == 'ssh') {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
                 #$command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . str_replace('"', '\"', $password) . ' ' . $command;
                 #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->id." self_delete=y\"";
                 $command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
@@ -361,6 +361,16 @@ if (! function_exists('ssh_command')) {
                     $return['output'][0] = '';
                     $return['status'] = 5;
                 }
+            } elseif ($credentials->type == 'ssh_key') {
+                $command_string = $filepath . '\plink.exe -ssh -i ' . $keyfile . ' ' . $username . "@" . $ip . ' ' . $command;
+                exec($command_string, $return['output'], $return['status']);
+                if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
+                    (isset($return['output'][0]) and stripos($return['output'][0], 'using keyboard-interactive authentication') !== false) or
+                    (isset($return['output'][1]) and stripos($return['output'][1], 'password') !== false) ) {
+                    $return['output'][0] = '';
+                    $return['status'] = 5;
+                }
+                unlink($keyfile);
             }
         }
 
@@ -702,11 +712,15 @@ if (! function_exists('scp')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
+            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
             if ($credentials->type == 'ssh') {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
                 $password = str_replace('"', '\"', $password);
                 $command = $filepath . '\pscp.exe -pw "' . $password . '" ' . $source . ' ' . $user . '@' . $host . ':' . $destination;
                 $echo = str_replace($password, '******', $command);
+                exec($command, $return['output'], $return['status']);
+            } elseif ($credentials->type == 'ssh_key') {
+                $command = $filepath . '\pscp.exe -i "' . $keyfile . '" ' . $source . ' ' . $user . '@' . $host . ':' . $destination;
+                $echo = $command;
                 exec($command, $return['output'], $return['status']);
             }
         }
