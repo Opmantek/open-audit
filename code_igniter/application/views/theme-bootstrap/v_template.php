@@ -57,6 +57,11 @@ include "v_lang.php";
         if (!empty($this->response->meta->collection)) {
             echo "        var collection = '" . $this->response->meta->collection . "';\n";
         }
+        if (!empty($this->response->meta->baseurl)) {
+            echo "        var baseurl = '" . $this->response->meta->baseurl . "';\n";
+        } else {
+            echo "        var baseurl = '';\n";
+        }
 ?>
         var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
     </script>
