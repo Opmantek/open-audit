@@ -5336,6 +5336,7 @@ class admin extends MY_Controller
             $this->load->model('m_oa_config');
             $this->m_oa_config->load_config();
             $this->load->model('m_credentials');
+            $this->load->library('encrypt');
             $this->response = new stdClass();
             $this->response->meta = new stdClass();
             $this->response->meta->received_data = new stdClass();
@@ -5402,6 +5403,55 @@ class admin extends MY_Controller
             $this->data['output'] .= $this_query."<br /><br />\n";
             $query = $this->db->query($this_query);
 
+            # populate our new credential table with the system.access_details columns
+            $sql = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $timestamp = $result[0]->timestamp;
+
+            $sql = "DELETE FROM `credential`";
+            $query = $this->db->query($sql);
+
+            $sql = "SELECT id, access_details FROM system WHERE access_details != ''";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $device) {
+                $creds = $this->encrypt->decode($device->access_details);
+                $creds = json_decode($creds);
+                $newcreds = array();
+                if (!empty($creds->snmp_community)) {
+                    $cred = new stdClass();
+                    $cred->community = $creds->snmp_community;
+                    $credentials = (string)$this->encrypt->encode(json_encode($cred));
+                    $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SNMP credentials.', 'Migrated from device upon upgrade.', 'snmp', ?, 'system', ?)";
+                    $data = array(intval($device->id), (string)$credentials, "$timestamp");
+                    $query = $this->db->query($sql, $data);
+                    unset($cred);
+                    unset($credentials);
+                }
+                if (!empty($creds->windows_username)) {
+                    $cred = new stdClass();
+                    $cred->username = $creds->windows_username . '@' . $creds->windows_domain;
+                    $cred->password = $creds->windows_password;
+                    $credentials = (string)$this->encrypt->encode(json_encode($cred));
+                    $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device Windows credentials.', 'Migrated from device upon upgrade.', 'windows', ?, 'system', ?)";
+                    $data = array(intval($device->id), (string)$credentials, "$timestamp");
+                    $query = $this->db->query($sql, $data);
+                    unset($cred);
+                    unset($credentials);
+                }
+                if (!empty($creds->ssh_username)) {
+                    $cred = new stdClass();
+                    $cred->username = $creds->ssh_username;
+                    $cred->password = $creds->ssh_password;
+                    $credentials = (string)$this->encrypt->encode(json_encode($cred));
+                    $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SSH credentials.', 'Migrated from device upon upgrade.', 'ssh', ?, 'system', ?)";
+                    $data = array(intval($device->id), (string)$credentials, "$timestamp");
+                    $query = $this->db->query($sql, $data);
+                    unset($cred);
+                    unset($credentials);
+                }
+            }
 
 
             # reinitialise our $sql array
