@@ -1259,9 +1259,12 @@ class M_system extends MY_Model
                             $data = array((string)$value, intval($details->id));
                             $query = $this->db->query($sql, $data);
                             // insert an entry into the edit table
-                            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                            $data = array(0, intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
-                            $query = $this->db->query($sql, $data);
+                            $columns_that_dont_get_edit_log = ' id sysUpTime uptime ';
+                            if (stripos($columns_that_dont_get_edit_log, $key) === false) {
+                                $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                                $data = array(0, intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                                $query = $this->db->query($sql, $data);
+                            }
                         }
                     } else {
                         # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
