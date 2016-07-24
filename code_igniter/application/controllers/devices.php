@@ -117,7 +117,7 @@ class devices extends MY_Controller
         $this->response->included = array();
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credentials,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credential,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
 
         if ($this->response->meta->sub_resource != '') {
@@ -178,14 +178,14 @@ class devices extends MY_Controller
         if ($this->response->meta == 'json') {
             output($this->response);
         } else {
-            redirect(devices);
+            redirect('devices');
         }
     }
 
     private function update()
     {
         $this->m_devices->update();
-        output($this->response);
+        redirect('devices');
     }
 
     private function create_form()
@@ -209,15 +209,65 @@ class devices extends MY_Controller
 
     private function bulk_update_form()
     {
-        $this->response->meta->format = 'json';
-        $this->response->meta->debug = true;
-        $this->response->meta->id = '';
-        $temp_ids = array();
-        foreach ($_POST['ids'] as $temp) {
-            $temp_ids[] = $temp;
+        $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in (" . $this->response->meta->ids . ")";
+        $query = $this->db->query($sql);
+        $this->response->devices = $query->result();
+
+        if ($this->response->meta->sub_resource == '') {
+            $this->load->model('m_locations');
+            $this->response->included = array();
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+            $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+            include 'include_device_types.php';
+            $this->response->types = $device_types;
+        } elseif ($this->response->meta->sub_resource == 'credential') {
+            $this->response->meta->action = 'create_form_credentials';
         }
-        $this->response->meta->id = implode(',', $temp_ids);
         output($this->response);
+    }
+
+    private function sub_resource_delete()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->m_devices->sub_resource_delete($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            redirect('devices');
+        }
+    }
+
+    private function sub_resource_create_form()
+    {
+        if ($this->response->meta->sub_resource == 'credential') {
+            $this->response->meta->action = 'create_form_credentials';
+            output($this->response);
+        } else {
+            redirect('devices');
+        }
+    }
+
+    private function sub_resource_create()
+    {
+        if ($this->m_devices->sub_resource_create()) {
+            $this->response->meta->succeeded = true;
+        } else {
+            $this->response->meta->succeeded = false;
+        }
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            if (!empty($this->response->meta->id)) {
+                redirect('devices/' . $this->response->meta->id);
+            } else {
+                redirect('devices');
+            }
+        }
     }
 
     private function delete()
