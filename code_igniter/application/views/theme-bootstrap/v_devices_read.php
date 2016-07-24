@@ -92,7 +92,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="alert_log"><?php echo __('Edit Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="edit_log"><?php echo __('Edit Log'); ?></a></li>
                 <?php if (isset($data['windows'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
                 <?php } ?>
@@ -599,6 +599,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
                         <!-- <a class="btn btn-primary btn-block" href="#" role="button" id="toggle_link"><?php echo __('Edit'); ?></a> -->
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Warranty'); ?></a>
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Downloads'); ?></a>
+                        <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=credential&action=create" role="button"><?php echo __('Add Credentials'); ?></a>
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Discover'); ?></a>
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('SNMP'); ?></a>
                     </div>
@@ -613,7 +614,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
 
 <?php
 // form style displays
-$list = array('bios', 'credentials', 'motherboard', 'processor', 'purchase', 'windows');
+$list = array('bios', 'motherboard', 'processor', 'purchase', 'windows');
 foreach ($list as $item) {
 ?>
 <div id="<?php echo $item; ?>" class="section">
@@ -629,21 +630,11 @@ foreach ($list as $item) {
             foreach ($data[$item][0] as $key => $value) {
                 if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen') {
                     $label = ucfirst(str_replace('_', ' ', $key));
-                    if ($item == 'purchase' or $item == 'credentials') {
-                        if ($key == 'ssh_password' or $key == 'snmp_community' or $key == 'windows_password') {
-                          $type = 'password';
-                        } else {
-                          $type = 'text';
-                        }
-                        if ($item == 'credentials') {
-                            $key = $key[0];
-                            $key = 'credentials.' . $key;
-                        }
-                        ?>
+                    if ($item == 'purchase') { ?>
                         <div class="form-group">
                             <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
-                              <input type="<?php echo $type; ?>" class="form-control" id="<?php echo $key; ?>" placeholder="-" value="<?php echo $value; ?>" disabled>
+                              <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="-" value="<?php echo $value; ?>" disabled>
                               <span class="input-group-btn">
                                 <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
@@ -669,6 +660,52 @@ foreach ($list as $item) {
 <?php
 }
 ?>
+
+
+
+
+<?php
+// credentials
+if (isset($data['credential']) and count($data['credential']) > 0) { ?>
+    <div id="credentials" class="section">
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title pull-left">Credentials</h3>
+        <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="credentials"></span>
+        <div class="clearfix"></div>
+      </div>
+          <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <td style="text-align:center;">Edit</td>
+                        <td style="text-align:center;">Delete</td>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($data['credential'] as $item) { ?>
+                <tr>
+                  <td><?php echo htmlentities($item->id); ?></td>
+                  <td><?php echo htmlentities($item->type); ?></td>
+                  <td><?php echo htmlentities($item->name); ?></td>
+                  <td><?php echo htmlentities($item->description); ?></td>
+                  <td style="text-align:center;"><?php echo htmlentities($item->id); ?></td>
+                  <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlentities($item->name); ?>" aria-hidden="true"></span></button></td>
+                <?php } ?>
+                </tbody>
+            </table>
+          </div>
+        </div>
+    </div>
+<?php } ?>
+
+
+
+
 
 <div id="location" class="section"><!-- 0 -->
 	<div class="row"><!-- 1 -->
@@ -797,7 +834,7 @@ foreach ($list as $item) {
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
