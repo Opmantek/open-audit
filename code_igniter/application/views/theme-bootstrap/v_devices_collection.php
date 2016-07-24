@@ -95,7 +95,7 @@ if (count($this->response->meta->filter) > 0) {
 }
 
 if (!empty($this->response->data)) { ?>
-    <form action="devices?action=edit" method="post" id="bulk_edit" name="bulk_edit">
+    <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
       <table class="table">
         <thead>
           <tr>
@@ -125,7 +125,8 @@ if (!empty($this->response->data)) { ?>
       }
       ?>
             <th class="text-center">
-              <button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp;
+              <!--<button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp; -->
+              <button type="button" class="btn btn-primary bulk_edit_button"><?php echo __('Edit') ?></button>&nbsp;
               <input type="checkbox"/>
             </th>
           </tr>
