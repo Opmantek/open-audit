@@ -79,81 +79,90 @@
                 <li class="dropdown-submenu">
                     <a href="#">Additional Fields</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/fields'>List Fields</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/fields?action=create'>Add Field</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields'>List Fields</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields?action=create'>Add Field</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Configuration</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/config'>List Config</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/config'>List Config</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown-submenu">
+                    <a href="#">Credentials</a>
+                    <ul class="dropdown-menu" style="min-width:250px;">
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>List Credentials</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>Create Credentials</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Connections</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/connections?action=create'>Add Connection</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections?action=create'>Add Connection</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Database</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/database'>Maintenance</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/database'>Maintenance</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Devices</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=create'>Add Device Manually</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=update'>Add Device (using audit result)</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=import'>Add Multiple Devices</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices'>List Devices</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=create'>Add Device Manually</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=update'>Add Device (using audit result)</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=import'>Add Multiple Devices</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Groups</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/groups'>List Groups</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/groups?action=create'>Add Group</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/groups?action=import'>Import Group</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/groups?action=activate'>Activate Group</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups'>List Groups</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups?action=create'>Add Group</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups?action=import'>Import Group</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups?action=activate'>Activate Group</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Locations</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/locations'>List Locations</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/locations?action=create'>Add Location</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/locations?action=import'>Import Multiple Locations</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations'>List Locations</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations?action=create'>Add Location</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations?action=import'>Import Multiple Locations</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Organisations</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/orgs'>List Organisations</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/orgs?action=create'>Add Organisation</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/orgs?action=import'>Import Multiple Organisations</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs'>List Organisations</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs?action=create'>Add Organisation</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs?action=import'>Import Multiple Organisations</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Queries</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/queries'>List Queries</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/queries?action=activate'>Activate Query</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/queries?action=import'>Import Query</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/queries'>List Queries</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/queries?action=activate'>Activate Query</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/queries?action=import'>Import Query</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
-                    <a href="#">Audit Scripts</a>
+                    <a href="#">Scripts</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/scripts?action=create_audit_windows'>Create Windows Audit</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'>List Scripts</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts/create'>Create Script</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Users</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/users'>List Users</a></li>
-                        <li><a target='_blank' href='<?php echo $this->config->config['oa_web_index']; ?>/users?action=create'>Add User</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users'>List Users</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users?action=create'>Add User</a></li>
                     </ul>
                 </li>
               </ul>
