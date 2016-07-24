@@ -2163,7 +2163,6 @@ CREATE TABLE `system` (
   `unlock_pin` varchar(100) NOT NULL DEFAULT '',
   `serial_imei` varchar(100) NOT NULL DEFAULT '',
   `serial_sim` varchar(100) NOT NULL DEFAULT '',
-  `access_details` text NOT NULL,
   `nmis_group` varchar(50) NOT NULL DEFAULT '',
   `nmis_name` varchar(50) NOT NULL DEFAULT '',
   `nmis_role` varchar(50) NOT NULL DEFAULT '',
