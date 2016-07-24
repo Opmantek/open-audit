@@ -1259,6 +1259,37 @@ function show_software($type, $software) {
     <?php } ?>
     </div>
 
+    <div id="view_settings_nmap" style="float: left; width: 100%;">
+    <?php if (count($nmap) > 0) { ?>
+        <br />
+        <br />
+        <form action="#" method="post" class='niceforms'>
+            <fieldset id="nmap">
+            <legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Nmap')?></span></legend>
+                <table cellspacing="1" class="tablesorter" style="width:100%; table-layout:fixed;">
+                    <thead>
+                        <tr>
+                            <th><?php echo __('Protocol')?></th>
+                            <th><?php echo __('IP')?></th>
+                            <th><?php echo __('Port')?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($nmap as $item): ?>
+                        <?php $key = $item->attributes; ?>
+                    <tr>
+                        <td><?php echo print_something($key->protocol)?></td>
+                        <td><?php echo print_something($key->ip)?></td>
+                        <td><?php echo print_something($key->port)?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </fieldset>
+        </form>
+    <?php } ?>
+    </div>
+
     <div id="view_settings_variables" style="float: left; width: 100%;">
     <?php if (count($variable) > 0) { ?>
         <br />

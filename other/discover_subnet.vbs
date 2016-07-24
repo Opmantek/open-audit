@@ -67,7 +67,7 @@ dim host_is_up
 dim snmp_status : snmp_status = "false"
 dim ssh_status : ssh_status = "false"
 dim wmi_status : wmi_status = "false"
-dim nmap_scan
+dim nmap_result
 
 
 ' below we take any command line arguements
@@ -303,7 +303,7 @@ for each host in hosts_in_subnet
     exit_status = "y"
     host_is_up = "false"
     command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 " & host
-    nmap_scan = ""
+    nmap_result = ""
     execute_command()
 
     Do Until objExecObject.Status = 0
@@ -312,7 +312,7 @@ for each host in hosts_in_subnet
 
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
-        nmap_scan = nmap_scan & vbcrlf & line
+        nmap_result = nmap_result & "&#10;" & line
 
         if instr(lcase(line), "host is up") then
             host_is_up = "true"
@@ -383,7 +383,7 @@ for each host in hosts_in_subnet
         result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
         result = result & "     <wmi_status><![CDATA[" & wmi_status & "]]></wmi_status>" & vbcrlf
         result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
-        result = result & "     <nmap_result><![CDATA[" & nmap_scan & "]]></nmap_result>" & vbcrlf
+        result = result & "     <nmap_result><![CDATA[" & nmap_result & "]]></nmap_result>" & vbcrlf
         result = result & " </device>" & vbcrlf
         result_file = result_file & result
 

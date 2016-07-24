@@ -867,6 +867,7 @@ class main extends MY_Controller
         $this->data['monitor'] = $this->m_devices_components->read($this->data['id'], 'y', 'monitor');
         $this->data['motherboard'] = $this->m_devices_components->read($this->data['id'], 'y', 'motherboard');
         $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
+        $this->data['nmap'] = $this->m_devices_components->read($this->data['id'], 'y', 'nmap');
         $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
         $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
         $this->data['pagefile'] = $this->m_devices_components->read($this->data['id'], 'y', 'pagefile');

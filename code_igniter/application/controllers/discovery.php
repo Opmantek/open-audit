@@ -1218,6 +1218,32 @@ class discovery extends CI_Controller
                             echo "DEBUG - System ID <a href='".base_url()."index.php/devices/".$details->id."'>".$details->id."</a>\n";
                         }
 
+                        // process and store the Nmap result
+                        # ex: Discovered open port 111/tcp on 192.168.1.126
+                        $nmap_result = array();
+                        $nmap_lines = explode("&#10;", $details->nmap_result);
+                        foreach ($nmap_lines as $line) {
+                            if (stripos($line, 'discovered open port ') !== false) {
+                                $temp = explode(' ', $line);
+                                $temp2 = explode('/', $temp[3]);
+                                $nmap_item = new stdClass();
+                                $nmap_item->protocol = $temp2[1];
+                                $nmap_item->ip = (string)$details->ip;
+                                $nmap_item->port = $temp2[0];
+                                $nmap_item->program = '';
+                                $nmap_result[] = $nmap_item;
+                                unset($nmap_item);
+                                unset($temp);
+                                unset($temp2);
+                            }
+                        }
+                        if (count($nmap_result) > 0) {
+                            $input = new stdClass();
+                            $input->item = array();
+                            $input->item = $nmap_result;
+                            $this->m_devices_components->process_component('nmap', $details, $input, $display);
+                        }
+
                         // insert a blank to indicate we're finished this part of the discovery
                         // if required, the audit scripts will insert their own audit logs
                         $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);

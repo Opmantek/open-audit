@@ -270,6 +270,7 @@ if [[ "$hosts" != "" ]]; then
 		p443_status="false"
 		tel_status="false"
 		host_is_up="false"
+		nmap_result=""
 
 		# options
 		# -vv Very Verbose
@@ -279,7 +280,7 @@ if [[ "$hosts" != "" ]]; then
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
 		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 90 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
-
+			nmap_result="$nmap_result&#10;$line"
 			NEEDLE="/tcp"
 			if [[ "$line" == *"$NEEDLE"* ]]; then
 				NEEDLE="open"
@@ -368,7 +369,8 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
 			result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
 			result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
-			result="$result     <nmap_result><![CDATA[$nmap_scan]]></nmap_result>"$'\n'
+			result="$result     <nmap_result><![CDATA[$nmap_result]]></nmap_result>"$'\n'
+			#result="$result     <nmap_result><![CDATA[$nmap_scan]]></nmap_result>"$'\n'
 			result="$result	</device>"
 			# add the result for this device to the result_file var for display or file output later on
 			result_file="$result_file"$'\n'"$result"

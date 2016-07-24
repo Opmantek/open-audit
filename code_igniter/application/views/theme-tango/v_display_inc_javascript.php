@@ -785,6 +785,7 @@ $(document).ready(function(){
     $('#view_settings_groups').hide();
     $('#view_settings_logs').hide();
     $('#view_settings_netstat').hide();
+    $('#view_settings_nmap').hide();
     $('#view_settings_pagefile').hide();
     $('#view_settings_print_queue').hide();
     $('#view_settings_routes').hide();
@@ -837,10 +838,15 @@ $(document).ready(function(){
         toggleBold("toggle_settings_dns");
 	});
 
-	$('#toggle_settings_netstat').click(function(){
-		$('#view_settings_netstat').slideToggle("fast");
+  $('#toggle_settings_netstat').click(function(){
+    $('#view_settings_netstat').slideToggle("fast");
         toggleBold("toggle_settings_netstat");
-	});
+  });
+
+  $('#toggle_settings_nmap').click(function(){
+    $('#view_settings_nmap').slideToggle("fast");
+        toggleBold("toggle_settings_nmap");
+  });
 
 	$('#toggle_settings_logs').click(function(){
 		$('#view_settings_logs').slideToggle("fast");

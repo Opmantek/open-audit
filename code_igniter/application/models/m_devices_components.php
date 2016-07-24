@@ -94,6 +94,11 @@ class M_devices_components extends MY_Model
         // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
         //     $filter = 'AND ' . $filter;
         // }
+
+        if ($table == 'nmap') {
+            $properties = 'nmap.id, nmap.system_id, nmap.current, nmap.first_seen, nmap.last_seen, nmap.protocol, nmap.ip, nmap.port';
+        }
+
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {
@@ -207,6 +212,9 @@ class M_devices_components extends MY_Model
         }
         if ($table == 'network') {
                 $match_columns = array('mac');
+        }
+        if ($table == 'nmap') {
+                $match_columns = array('protocol', 'ip', 'port', 'program');
         }
         if ($table == 'ip') {
                 $match_columns = array('ip', 'mac', 'netmask');

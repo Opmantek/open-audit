@@ -101,7 +101,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
         </div>
       </div>
         <?php
-        // the hardware catrgories
+        // the hardware categories
         $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'processor', 'san', 'sound', 'video');
         $display_hardware = false;
         foreach ($hardware as $item) {
@@ -180,7 +180,7 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'netstat', 'log', 'share', 'route', 'user');
+        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -834,7 +834,7 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
