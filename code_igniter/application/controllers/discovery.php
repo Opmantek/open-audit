@@ -829,6 +829,7 @@ class discovery extends CI_Controller
             $this->load->model('m_audit_log');
             $this->load->model('m_change_log');
             $this->load->model('m_devices_components');
+            $this->load->model('m_devices');
             $timestamp = date('Y-m-d H:i:s');
 
             $count = 0;
@@ -885,44 +886,21 @@ class discovery extends CI_Controller
 
                         // Device specific credentials
                         if (!empty($details->id)) {
-                            $device_specific_credentials = $this->m_system->get_access_details($details->id);
-                            $device_specific_credentials = $this->encrypt->decode($device_specific_credentials);
-                            $specific = json_decode($device_specific_credentials);
-                            unset($device_specific_credentials);
+                            $temp = $this->m_devices_components->read(intval($details->id), 'y', 'credential', '', '*');
+                            if (count($temp) > 0) {
+                                foreach ($temp as $credential) {
+                                    $credentials[] = $credential;
+                                }
+                            }
+                            unset($temp);
                         }
-                        // 1.12.6
-                        if (!empty($specific)) {
-                            if (!empty($specific->ssh_username) and !empty($specific->ssh_password)) {
-                                $credential = new stdClass();
-                                $credential->source = 'device specific';
-                                $credential->type = 'ssh';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = $specific->ssh_username;
-                                $credential->credentials->password = $specific->ssh_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($specific->windows_username) and !empty($specific->windows_password) and !empty($specific->windows_domain)) {
-                                $credential = new stdClass();
-                                $credential->source = 'device specific';
-                                $credential->type = 'windows';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = $specific->windows_domain . '\\' . $specific->windows_username;
-                                $credential->credentials->password = $specific->windows_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($specific->snmp_community)) {
-                                $credential = new stdClass();
-                                $credential->source = 'device specific';
-                                $credential->type = 'snmp';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->community = $specific->snmp_community;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
+
+                        // Credential Sets
+                        $temp = $this->m_credentials->collection();
+                        if (count($temp) > 0) {
+                            $credentials = array_merge($credentials, $temp);
                         }
-                        unset($specific);
+                        unset($temp);
 
                         // supplied credentials
                         $sql = '/* discovery::process_subnet */ SELECT temp_value FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ORDER BY temp_id DESC LIMIT 1';
@@ -933,35 +911,6 @@ class discovery extends CI_Controller
                         if (isset($supplied_credentials) and $supplied_credentials > '') {
                             $supplied_credentials = $this->encrypt->decode($supplied_credentials);
                             $supplied_credentials = json_decode($supplied_credentials);
-                            if (!empty($supplied_credentials->snmp_community)) {
-                                $credential = new stdClass();
-                                $credential->source = 'supplied';
-                                $credential->type = 'snmp';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->community = $supplied_credentials->snmp_community;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($supplied_credentials->ssh_username)) {
-                                $credential = new stdClass();
-                                $credential->source = 'supplied';
-                                $credential->type = 'ssh';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = @$supplied_credentials->ssh_username;
-                                $credential->credentials->password = @$supplied_credentials->ssh_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($supplied_credentials->windows_username)) {
-                                $credential = new stdClass();
-                                $credential->source = 'supplied';
-                                $credential->type = 'windows';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = @$supplied_credentials->windows_domain . '\\' . @$supplied_credentials->windows_username;
-                                $credential->credentials->password = @$supplied_credentials->windows_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
                             $details->last_seen_user =  @$supplied_credentials->last_user;
                             $details->network_address =   @$supplied_credentials->network_address;
                             $details->limit = (int)@$supplied_credentials->limit;
@@ -972,24 +921,18 @@ class discovery extends CI_Controller
                             $details->location_id = (int)@$supplied_credentials->location;
                             $details->use_https = (string)@$supplied_credentials->use_https;
                         }
-
-                        // 1.12.6 - credential sets
-                        $temp = $this->m_credentials->collection();
-                        if (!empty($temp)) {
-                            foreach ($temp as $item) {
-                                $credential = new stdClass();
-                                $credential->source = 'set';
-                                $credential->type = $item->attributes->type;
-                                $credential->credentials = $item->attributes->credentials;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
+                        # TODO - replace the ugly code below
+                        $creds = array();
+                        foreach ($credentials as $credential) {
+                            $creds[] = $credential->attributes;
                         }
-                        unset($temp);
+                        unset($credentials);
+                        $credentials = $creds;
+                        unset($creds);
 
                         // default Open-AudIT credentials
-                        $default = $this->m_oa_config->get_credentials();
-                        unset($default);
+                        // $default = $this->m_oa_config->get_credentials();
+                        // unset($default);
 
                         if (intval($details->count) >= intval($details->limit)) {
                             # we have discovered the requested number of devcies
@@ -1253,44 +1196,26 @@ class discovery extends CI_Controller
                         }
 
                         if (!empty($credentials_snmp) and $details->snmp_status == 'true') {
-                            if ($credentials_snmp->credentials->version == '2') {
-                                $update = new stdClass();
-                                $update->ip_address = $details->ip;
-                                $update->snmp_community = $credentials_snmp->credentials->community;
-                                $update->snmp_version =   $credentials_snmp->credentials->version;
-                                $this->m_system->update_credentials($update, $details->id);
-                                unset($update);
-                                $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->id.')';
-                                stdlog($log_details);
-                            }
+                            $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->id.')';
+                            stdlog($log_details);
+                            $this->m_devices->sub_resource_create($details->id, 'credential', $credentials_snmp);
                         }
 
                         if (!empty($credentials_ssh) and $details->ssh_status == 'true') {
-                            $update = new stdClass();
-                            $update->ip_address = $details->ip;
-                            $update->ssh_username = $credentials_ssh->credentials->username;
-                            $update->ssh_password = $credentials_ssh->credentials->password;
-                            $this->m_system->update_credentials($update, $details->id);
-                            unset($update);
                             $log_details->message = 'SSH credential update for '.$details->ip.' (System ID '.$details->id.')';
                             stdlog($log_details);
+                            $this->m_devices->sub_resource_create($details->id, 'credential', $credentials_ssh);
                         }
 
                         if (isset($credentials_windows) and $details->wmi_status == 'true') {
-                            $update = new stdClass();
-                            $update->ip_address = $details->ip;
-                            $update->windows_username = $credentials_windows->credentials->username;
-                            $update->windows_password = $credentials_windows->credentials->password;
-                            #$update->windows_domain = $details->windows_domain;
-                            $this->m_system->update_credentials($update, $details->id);
-                            unset($update);
                             $log_details->message = "Windows credential update for $details->ip (System ID $details->id)";
                             stdlog($log_details);
+                            $this->m_devices->sub_resource_create($details->id, 'credential', $credentials_windows);
                         }
 
                         // $details->id is now set
                         if ($display == 'y') {
-                            echo "DEBUG - System ID <a href='".base_url()."index.php/main/system_display/".$details->id."'>".$details->id."</a>\n";
+                            echo "DEBUG - System ID <a href='".base_url()."index.php/devices/".$details->id."'>".$details->id."</a>\n";
                         }
 
                         // insert a blank to indicate we're finished this part of the discovery
