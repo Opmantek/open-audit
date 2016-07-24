@@ -117,27 +117,28 @@ if (! function_exists('ssh_credentials')) {
         }
 
         foreach ($credentials as $credential) {
-            #if ($credential->attributes->type == 'ssh_key') {
-            if ($credential->type == 'ssh_key') {
+            if (!empty($credential->type) and $credential->type == 'ssh_key') {
                 if (php_uname('s') != 'Windows NT') {
-                    # write uut our key file
+                    # write out our key file
                     # now try to connect
-                    if ($result = ssh_command($ip, $credential, 'uname', $display)) {
+                    $result = false;
+                    $result = ssh_command($ip, $credential, 'uname', $display);
+                    if ($result['status'] == 0) {
                         return($credential);
                     }
                 }
             }
         }
-
+        unset($credential);
         foreach ($credentials as $credential) {
-            $from = ' ';
-            if (!empty($credential->source)) {
-                $from = ' from ' . $credential->source . ' ';
-            }
-            if (!empty($credential->name)) {
-                $from = ' named ' . $credential->name . ' ';
-            }
-            if ($credential->type == 'ssh') {
+            if (!empty($credential->type) and $credential->type == 'ssh') {
+                $from = ' ';
+                if (!empty($credential->source)) {
+                    $from = ' from ' . $credential->source . ' ';
+                }
+                if (!empty($credential->name)) {
+                    $from = ' named ' . $credential->name . ' ';
+                }
                 $credential->sudo = false;
                 if ($credential->credentials->username == 'root') {
                     $credential->root = true;
@@ -250,12 +251,12 @@ if (! function_exists('ssh_command')) {
             return false;
         } else {
             if ($credentials->type == 'ssh') {
-                $password = $credentials->credentials->password;
                 $username = escapeshellarg($credentials->credentials->username);
+                $password = $credentials->credentials->password;
             } elseif ($credentials->type == 'ssh_key') {
                 $username = escapeshellarg($credentials->credentials->username);
-                $keyfile = ssh_create_keyfile($credentials->credentials->ssh_key);
                 $password = '';
+                $keyfile = ssh_create_keyfile($credentials->credentials->ssh_key);
             } else {
                 $log->message = 'No username / password combo or keyfile supplied to ssh_command function.';
                 stdlog($log);
