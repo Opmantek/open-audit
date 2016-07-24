@@ -117,7 +117,6 @@ class M_credentials extends MY_Model
 
         $sql = 'UPDATE `credentials` SET ';
         $data = array();
-        # echo "<pre>\n"; var_dump($CI->response); exit();
         # credentials object
         #if ( $CI->input->server('REQUEST_METHOD') == 'PATCH' and !empty($CI->response->received_data->attributes->credentials)) {
         if ( !empty($CI->response->meta->received_data->attributes->credentials)) {
