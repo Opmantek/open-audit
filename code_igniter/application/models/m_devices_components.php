@@ -135,7 +135,14 @@ class M_devices_components extends MY_Model
         if ($sql != '') {
             $query = $this->db->query($sql, $data);
             $result = $query->result();
+            if ($table == 'credential') {
+                $this->load->library('encrypt');
+                for ($i=0; $i < count($result); $i++) { 
+                    $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+                }
+            }
             $result = $this->from_db($result);
+
             if ($properties != '*' and !stripos($properties, ',') and $table == 'system') {
                 # the request is for a single value from the system table - return only this value (as a string)
                 $temp_result = $result[0]->$properties;
@@ -148,6 +155,22 @@ class M_devices_components extends MY_Model
         }
         return($result);
     }
+
+    // public function credentials_read($id, $type = '')
+    // {
+    //     if (empty($id)) {
+    //         return false;
+    //     }
+    //     $this->load->library('encrypt');
+    //     $sql = "SELECT * FROM credential WHERE system_id = ?";
+    //     $data = array(intval($id));
+    //     $query = $this->db->query($sql, $data);
+    //     $result = $query->result();
+    //     for ($i=0; $i < count($result); $i++) { 
+    //         $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+    //     }
+    //     return($result);
+    // }
 
     public function match_columns($table)
     {
