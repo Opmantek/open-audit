@@ -5458,7 +5458,6 @@ class admin extends MY_Controller
 
             $sql = "ALTER TABLE `system` DROP access_details";
             $query = $this->db->query($sql);
-            $result = $query->result();
 
             # reinitialise our $sql array
             unset($sql);
