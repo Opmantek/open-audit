@@ -185,7 +185,7 @@ class devices extends MY_Controller
     private function update()
     {
         $this->m_devices->update();
-        redirect('devices');
+        output($this->response);
     }
 
     private function create_form()
