@@ -175,6 +175,9 @@ class M_charts extends MY_Model
             if (!empty($item->timestamp)) {
                 $item->timestamp = intval($item->timestamp);
             }
+            if (empty($item->count)) {
+                $item->count = 0;
+            }
         }
         return($result);
     }
