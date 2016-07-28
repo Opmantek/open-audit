@@ -713,9 +713,9 @@ class San extends CI_Controller
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
-            // print_r($details);
-            // print_r($network);
-            // print_r($disk);
+            print_r($details);
+            // // print_r($network);
+            print_r($disk);
             // exit();
 
             if ($details->id == '') {
@@ -789,19 +789,19 @@ class San extends CI_Controller
         $size = $string;
         if (stripos($string, 'TB') !== false) {
             $temp_size = trim(str_replace(' TB', '', $string));
-            $size = intval($temp_size * 1000 * 1000 * 1000 * 1000);
+            $size = intval($temp_size * 1024);
         }
         if (stripos($string, 'GB') !== false) {
             $temp_size = trim(str_replace(' GB', '', $string));
-            $size = intval($temp_size * 1000 * 1000 * 1000);
+            $size = intval($temp_size);
         }
         if (stripos($string, 'MB') !== false) {
             $temp_size = trim(str_replace(' MB', '', $string));
-            $size = intval($temp_size * 1000 * 1000);
+            $size = intval($temp_size / 1024);
         }
         if (stripos($string, 'KB') !== false) {
             $temp_size = trim(str_replace(' KB', '', $string));
-            $size = intval($temp_size * 1000);
+            $size = intval($temp_size / 1024 / 1024);
         }
         unset($temp_size);
         return intval($size);

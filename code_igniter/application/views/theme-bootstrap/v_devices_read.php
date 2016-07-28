@@ -69,6 +69,9 @@ if (strtolower($data['system']->os_group) == 'windows') {
     $attributes['user'] = array('sid' => 'Sid', 'name' => 'Name', 'full_name' => 'Description', 'type' => 'Type');
 }
 $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', 'metric' => 'Metric', 'next_hop' => 'Next Hop', 'protocol' => 'Protocol', 'type' => 'type');
+if ($data['system']->type != 'computer') {
+  $attributes['disk'] = array('model' => 'Model', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'size' => 'Size', 'status' => 'Status');
+}
 ?>
 
 <div class="row">
@@ -835,6 +838,9 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
 $list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
+if ($data['system']->type != 'computer' and !empty($data['disk'])) {
+  $list[] = 'disk';
+}
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
