@@ -63,8 +63,8 @@ class orgs extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->action)) {
-            $this->{$this->response->action}();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -98,7 +98,7 @@ class orgs extends MY_Controller
             exit();
         }
         $this->m_orgs->delete();
-        if ($this->response->format == 'json') {
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             redirect('orgs');
