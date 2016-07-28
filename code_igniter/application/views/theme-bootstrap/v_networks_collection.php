@@ -55,20 +55,22 @@
 		</thead>
 		<tbody>
 			<?php
-	        foreach ($this->response->data as $item):
-                $edit_pic = '<a class="btn btn-sm btn-info" href="networks/'.intval($item->id).'?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>';
-                $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->attributes->name) . '" aria-hidden="true"></span></button>';
-	            ?>
-			<tr>
-                <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
-				<td><?php echo htmlentities($item->attributes->name)?></td>
-				<td><?php echo htmlentities($item->attributes->description)?></td>
-				<td><?php echo htmlentities($item->attributes->edited_by)?></td>
-				<td><?php echo htmlentities($item->attributes->edited_date)?></td>
-				<td style='text-align:center;'><?php echo $edit_pic?></td>
-				<td style='text-align:center;'><?php echo $delete_pic?></td>
-			</tr>
-			<?php endforeach; ?>
+            if (!empty($this->response->data)) {
+    	        foreach ($this->response->data as $item):
+                    $edit_pic = '<a class="btn btn-sm btn-info" href="networks/'.intval($item->id).'?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>';
+                    $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->attributes->name) . '" aria-hidden="true"></span></button>';
+    	            ?>
+    			<tr>
+                    <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
+    				<td><?php echo htmlentities($item->attributes->name)?></td>
+    				<td><?php echo htmlentities($item->attributes->description)?></td>
+    				<td><?php echo htmlentities($item->attributes->edited_by)?></td>
+    				<td><?php echo htmlentities($item->attributes->edited_date)?></td>
+    				<td style='text-align:center;'><?php echo $edit_pic?></td>
+    				<td style='text-align:center;'><?php echo $delete_pic?></td>
+    			</tr>
+    			<?php endforeach; ?>
+            <?php } ?>
 		</tbody>
 	</table>
   </div>
