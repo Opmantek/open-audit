@@ -472,6 +472,7 @@ class discovery extends CI_Controller
             // process the scan details and call the discovery script
             $this->load->model('m_oa_config');
             $this->m_oa_config->load_config();
+            $this->load->helper('network_helper');
 
             $return_var = "";
             $output = "";
@@ -513,7 +514,8 @@ class discovery extends CI_Controller
                 $this->m_oa_config->update_blessed($subnet_range);
             } else {
                 if (filter_var($subnet_range, FILTER_VALIDATE_IP) !== false) {
-                    $this->m_oa_config->update_blessed($subnet_range . '/32');
+                    $temp = network_details($subnet_range.'/30');
+                    $this->m_oa_config->update_blessed($temp->network.'/'.$temp->network_slash);
                 }
             }
 
