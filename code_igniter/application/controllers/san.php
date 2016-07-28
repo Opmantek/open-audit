@@ -104,8 +104,9 @@ class San extends CI_Controller
             $this->load->helper('url');
 
             $input = explode(PHP_EOL, $_POST['input']);
+            // echo "FILE: " . $input[0] . "\n";
             echo "<pre>\n";
-            #print_r($input);
+            // print_r($input);
             $details = new stdClass();
             $details->hostname = '';
             $details->type = 'san';
@@ -118,10 +119,10 @@ class San extends CI_Controller
                 $value = trim($value);
 
                 if (stripos($value, 'Feature pack:') === 0 and (!isset($details->description) or $details->description == '')) {
-                    $details->description = str_replace('Feature pack:', '', $value);
+                    $details->description = trim(str_replace('Feature pack:', '', $value));
                 }
                 if (stripos($value, 'Chassis name:') === 0 and (!isset($details->description) or $details->description == '')) {
-                    $details->description = str_replace('Chassis name:', '', $value);
+                    $details->description = trim(str_replace('Chassis name:', '', $value));
                 }
                 if (stripos($value, 'Storage Subsystem world-wide identifier (ID):') === 0 and (!isset($details->serial) or $details->serial == '')) {
                     $details->serial = str_replace('Storage Subsystem world-wide identifier (ID):', '', $value);
@@ -693,6 +694,16 @@ class San extends CI_Controller
                 $details->hostname .= '-' . str_replace('.', '', $details->ip);
             }
             $details->name = $details->hostname;
+            if (!empty($details->description)) {
+                if ($details->description == 'DS5100') {
+                    $details->model = $details->description;
+                }
+                if (stripos($details->description, 'DS5020') !== false) {
+                    $details->model = 'DS5020';
+                }
+            }
+
+
 
             $log_details->message = 'Processing audit result for san at ' . $details->ip;
             stdlog($log_details);
@@ -701,6 +712,11 @@ class San extends CI_Controller
             $details->id = intval($this->m_system->find_system($details, 'y'));
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
+
+            // print_r($details);
+            // print_r($network);
+            // print_r($disk);
+            // exit();
 
             if ($details->id == '') {
                 // insert a new system
