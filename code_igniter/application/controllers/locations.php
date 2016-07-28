@@ -62,8 +62,8 @@ class locations extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->action)) {
-            $this->{$this->response->action}();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -79,7 +79,7 @@ class locations extends MY_Controller
 
     private function read()
     {
-        if ($this->response->sub_resource != '') {
+        if ($this->response->meta->sub_resource != '') {
             $this->response->data = $this->m_locations->read_sub_resource();
         } else {
             $this->response->data = $this->m_locations->read();
@@ -96,8 +96,8 @@ class locations extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_locations->delete();
-        if ($this->response->format == 'json') {
+        $this->m_locations->delete($this->response->meta->id);
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
             redirect('locations');
