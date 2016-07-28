@@ -509,7 +509,13 @@ class discovery extends CI_Controller
             stdlog($log_details);
 
             // add to the list of blessed subnets
-            $this->m_oa_config->update_blessed($subnet_range);
+            if (strpos($subnet_range, '/') !== false) {
+                $this->m_oa_config->update_blessed($subnet_range);
+            } else {
+                if (filter_var($subnet_range, FILTER_VALIDATE_IP) !== false) {
+                    $this->m_oa_config->update_blessed($subnet_range . '/32');
+                }
+            }
 
             // we encode the supplied credentials and store them in the database
             // the script will simply pass back the timestamp and the credentials will be retrieved and used
