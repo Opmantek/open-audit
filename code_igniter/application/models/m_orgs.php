@@ -140,7 +140,7 @@ class M_orgs extends MY_Model
         return ($result);
     }
 
-    public function delete($id)
+    public function delete($id = '')
     {
         if ($id == '') {
             $CI = & get_instance();
