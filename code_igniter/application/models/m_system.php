@@ -253,20 +253,6 @@ class M_system extends MY_Model
             }
         }
 
-        # check serial + type
-        if (!empty($details->serial) and !empty($details->type)and $details->id == '') {
-            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production'";
-            $sql = $this->clean_sql($sql);
-            $data = array("$details->serial", "$details->type");
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            if (count($row) > 0) {
-                $details->id = $row->id;
-                $log_details->message = 'HIT on serial for '.$details->ip.' (System ID '.$row->id.')';
-                stdlog($log_details);
-            }
-        }
-
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_name_match'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
