@@ -212,8 +212,8 @@ class M_credentials extends MY_Model
         $log->severity = 7;
         $log->file = 'system';
 
-        if (!empty($CI->response->meta->received_data->type)) {
-            $type = $CI->response->meta->received_data->type;
+        if (!empty($CI->response->meta->received_data->attributes->type)) {
+            $type = $CI->response->meta->received_data->attributes->type;
             $log->message = "Using type from received_data.";
             stdlog($log);
         } else {
