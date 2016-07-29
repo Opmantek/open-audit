@@ -79,11 +79,9 @@ class locations extends MY_Controller
 
     private function read()
     {
-        if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_locations->read_sub_resource();
-        } else {
-            $this->response->data = $this->m_locations->read();
-        }
+        $this->response->meta->sub_resource = 'devices';
+        $this->response->data = $this->m_locations->read();
+        $this->response->included = $this->m_locations->sub_resource();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }

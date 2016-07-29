@@ -86,7 +86,7 @@ class M_locations extends MY_Model
         return ($result);
     }
 
-    public function read_sub_resource($id = '')
+    public function sub_resource($id = '')
     {
         if ($id == '') {
             $CI = & get_instance();
@@ -94,25 +94,11 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($CI->response->meta->collection == 'locations') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-            $sort = $CI->response->meta->sort;
-            $limit = $CI->response->meta->limit;
-        } else {
-            $id = intval($id);
-            $sort = '';
-            $limit = '';
-        }
-        $filter = $this->build_filter();
-        $sql = "SELECT type, count(system.id) as device_count FROM system WHERE system.location_id = ? GROUP BY type " . $sort . " " . $limit;
-        $data = array($id);
+        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
+        $data = array((string)$id);
         $result = $this->run_sql($sql, $data);
-        if (count($result) == 0) {
-            return false;
-        } else {
-            return ($result);
-        }
+        $result = $this->format_data($result, 'devices');
+        return $result;
     }
 
     public function collection()
