@@ -47,8 +47,9 @@ $(document).ready(function(){
                 // alert($name + " has been deleted.");
                 window.location = web_folder + "/index.php/" + collection;
             },
-            error: function() {
+            error: function(data) {
                 alert("An error occurred when deleting item:" + $name);
+                alert(data.serialize());
             }
        });
     });
