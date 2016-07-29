@@ -100,9 +100,6 @@ if (!empty($this->response->data)) {
             <?php
             if (count($data) > 0) {
                 foreach ($data as $item):
-                    $edit_pic = '<a href="orgs/'.intval($item->attributes->group_id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
-                    #$delete_pic = '<a href="orgs/'.intval($item->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
-                    $delete_pic = '<button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlentities($item->attributes->name) . '" aria-hidden="true"></span></button>';
                     if ($item->attributes->name == '') {
                         $item->attributes->name = '-';
                     }
@@ -124,8 +121,12 @@ if (!empty($this->response->data)) {
                         <td class="text-center"><?php echo $activate_pic?></td>
                         <td class="text-center"><?php echo $deactivate_pic?></td>
                         <td class="text-center"><?php echo $show_pic?></td>
-                        <td class="text-center"><?php echo $edit_pic?></td>
-                        <td class="text-center"><?php echo $delete_pic?></td>
+                        <td class="text-center"><a href="orgs/<?php echo intval($item->attributes->group_id); ?>?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a></td>
+                        <?php if ($item->attributes->id != 0) { ?>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
+                        <?php } else { ?>
+                        <td></td>
+                        <?php } ?>
                     </tr>
                 <?php endforeach;
                 ?>
