@@ -95,10 +95,6 @@ class M_devices_components extends MY_Model
         //     $filter = 'AND ' . $filter;
         // }
 
-        if ($table == 'nmap') {
-            $properties = 'nmap.id, nmap.system_id, nmap.current, nmap.first_seen, nmap.last_seen, nmap.protocol, nmap.ip, nmap.port';
-        }
-
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {

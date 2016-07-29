@@ -662,7 +662,7 @@ class discovery extends CI_Controller
             }
 
             if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-                if ($subnet_range > '') {
+                if ($subnet_range != '') {
                     if ($display == 'y') {
                         // run the script and wait for the output so we can echo it.
                         $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " 2>&1";
@@ -690,14 +690,23 @@ class discovery extends CI_Controller
                         exit();
                     } else {
                         // run the script and continue (do not wait for result)
-                        $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                        #$command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                        $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                        if (php_uname('s') == 'Linux') {
+                            $command_string = 'nohup ' . $command_string;
+                        }
                         @exec($command_string, $output, $return_var);
                         if ($return_var != '0') {
                             $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has failed';
                             $log_details->message = $error;
                             stdlog($log_details);
+                        } else {
+                            $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has started';
+                            $log_details->message = $error;
+                            stdlog($log_details);
                         }
                     }
+
                     $command_string = null;
                     $output = null;
                     $return_var = null;
@@ -787,27 +796,21 @@ class discovery extends CI_Controller
 
             if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
                 if ($display == 'y') {
-                    echo "\nAudit submission from an IP (" . $_SERVER['REMOTE_ADDR'] . ") not in the list of blessed subnets, exiting.\n";
+                    $log_details->message = "Audit submission from an IP (" . $_SERVER['REMOTE_ADDR'] . ") not in the list of blessed subnets, exiting.";
+                    echo "\n" . $log_details->message . "\n";
+                    stdlog($log_details);
                 }
                 exit;
             }
 
             $this->load->helper('url');
             $this->load->model('m_credentials');
-            // below should be loaded in the constructor
-            // $this->load->model('m_oa_config');
-            // $this->m_oa_config->load_config();
 
             if ($display == 'y') {
                 echo 'DEBUG - <a href=\''.base_url()."index.php/discovery/discover_subnet'>Back to input page</a>\n";
                 echo 'DEBUG - <a href=\''.base_url()."index.php'>Front Page</a>\n";
             }
 
-            // if (php_uname('s') === 'Windows NT') {
-            //     $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'\\open-audit\\other';
-            // } else {
-            //     $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/open-audit/other';
-            // }
             if (php_uname('s') != 'Windows NT') {
                 $filepath = $this->config->config['base_path'] . '/other';
             } else {
@@ -948,7 +951,14 @@ class discovery extends CI_Controller
                             stdlog($log_details);
                             return;
                         }
-                        $supplied_credentials->count++;
+                        if (empty($supplied_credentials)) {
+                            $supplied_credentials = new stdClass();
+                        }
+                        if (empty($supplied_credentials->count)) {
+                            $supplied_credentials->count = 0;
+                        } else {
+                            $supplied_credentials->count++;
+                        }
 
                         $sql = '/* discovery::process_subnet */ UPDATE oa_temp SET temp_value = ? WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\'';
                         $data_in = json_encode($supplied_credentials);
@@ -1124,7 +1134,7 @@ class discovery extends CI_Controller
                         if (empty($details->type) and 
                             empty($details->snmp_oid) and 
                             empty($details->uuid) and 
-                            stripos($details->nmap_result, 'Discovered open port 5060') !== false) {
+                            stripos($details->nmap_result, '5060/') !== false) {
                             $details->type = 'voip phone';
                         }
 
@@ -1227,23 +1237,19 @@ class discovery extends CI_Controller
                         }
 
                         // process and store the Nmap result
-                        # ex: Discovered open port 111/tcp on 192.168.1.126
                         $nmap_result = array();
-                        $nmap_lines = explode("&#10;", $details->nmap_result);
-                        foreach ($nmap_lines as $line) {
-                            if (stripos($line, 'discovered open port ') !== false) {
-                                $temp = explode(' ', $line);
-                                $temp2 = explode('/', $temp[3]);
-                                $nmap_item = new stdClass();
-                                $nmap_item->protocol = $temp2[1];
-                                $nmap_item->ip = (string)$details->ip;
-                                $nmap_item->port = $temp2[0];
-                                $nmap_item->program = '';
+                        foreach (explode(',', $details->nmap_ports) as $port) {
+                            $temp = explode('/', $port);
+                            $nmap_item = new stdClass();
+                            $nmap_item->ip = (string)$details->ip;
+                            $nmap_item->port = $temp[0];
+                            $nmap_item->protocol = $temp[1];
+                            $nmap_item->program = $temp[2];
+                            if ($nmap_item->port != '') {
                                 $nmap_result[] = $nmap_item;
-                                unset($nmap_item);
-                                unset($temp);
-                                unset($temp2);
                             }
+                            unset($nmap_item);
+                            unset($temp);
                         }
                         if (count($nmap_result) > 0) {
                             $input = new stdClass();

@@ -228,10 +228,6 @@ class M_devices extends MY_Model
             $properties = '`' . $sub_resource . '`.*';
         }
 
-        if ($sub_resource == 'nmap') {
-            $properties = 'nmap.id, nmap.system_id, nmap.current, nmap.first_seen, nmap.last_seen, nmap.protocol, nmap.ip, nmap.port';
-        }
-
         if ($sort == '') {
             $sort = @$CI->response->meta->sort;
         }
