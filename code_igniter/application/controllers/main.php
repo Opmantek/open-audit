@@ -416,28 +416,6 @@ class main extends MY_Controller
         }
 
         $discover_ids = '';
-        $credentials = new stdClass();
-        $credentials->windows_username = @$this->input->post('windows_username');
-        $credentials->windows_password = @$this->input->post('windows_password');
-        $credentials->windows_domain = @$this->input->post('windows_domain');
-        $credentials->ssh_username = @$this->input->post('ssh_username');
-        $credentials->ssh_password = @$this->input->post('ssh_password');
-        $credentials->snmp_version = @$this->input->post('snmp_version');
-        $credentials->snmp_community = @$this->input->post('snmp_community');
-
-        if ((isset($credentials->windows_username) and $credentials->windows_username != '') or
-            (isset($credentials->windows_password) and $credentials->windows_password != '') or
-            (isset($credentials->windows_domain) and $credentials->windows_domain != '') or
-            (isset($credentials->ssh_username) and $credentials->ssh_username != '') or
-            (isset($credentials->ssh_password) and $credentials->ssh_password != '') or
-            (isset($credentials->snmp_version) and $credentials->snmp_version != '') or
-            (isset($credentials->snmp_community) and $credentials->snmp_community != '')) {
-            foreach ($data['systems'] as $system) {
-                $credentials->ip_address = ip_address_from_db($this->m_system->check_ip($system[1]));
-                $system_id = $system[1];
-                $this->m_system->update_credentials($credentials, $system_id);
-            }
-        }
 
         foreach ($_POST as $field_name => $field_data) {
             if ($field_data != '') {
