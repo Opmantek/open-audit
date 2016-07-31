@@ -201,11 +201,21 @@ class admin extends MY_Controller
      */
     public function set_config()
     {
+        $log_details = new stdClass();
+        $log_details->file = 'system';
+        $log_details->message = 'admin::set_config called by ' . $this->user->name;
+        stdlog($log_details);
+        $this->load->model('m_oa_config');
         if (isset($_POST['config'])) {
+            $log_details->message = 'admin::set_config has a _POST variable called config.';
+            stdlog($log_details);
             if ($config = json_decode($_POST['config'])) {
-                $this->load->model('m_oa_config');
+                $log_details->message = 'admin::set_config config is valid JSON. ' . $_POST['config'];
+                stdlog($log_details);
                 foreach ($config as $name => $value) {
                     $value = urldecode($value);
+                    $log_details->message = 'admin::set_config name is: ' . $name . ' ,  value is: ' . $value;
+                    stdlog($log_details);
                     $this->m_oa_config->update_config($name, $value, $this->user->id, date('Y-m-d H:i:s'));
                 }
                 header(' ', true, 200);
