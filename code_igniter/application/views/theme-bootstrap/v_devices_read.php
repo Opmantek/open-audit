@@ -598,13 +598,14 @@ if ($data['system']->type != 'computer') {
                     <div class="col-md-2 col-centered">
                         <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url()?>device_images/<?php echo $data['system']->icon; ?>.svg" />
                         <br /><br />
-                        <!-- <input class="btn btn-success btn-block" type="button" value="Submit" id="submit_button" style="display:none;" onClick="submit();" > -->
-                        <!-- <a class="btn btn-primary btn-block" href="#" role="button" id="toggle_link"><?php echo __('Edit'); ?></a> -->
+                        <!--
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Warranty'); ?></a>
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Downloads'); ?></a>
+                        -->
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=credential&action=create" role="button"><?php echo __('Add Credentials'); ?></a>
-                        <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Discover'); ?></a>
-                        <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('SNMP'); ?></a>
+                        <a class="btn btn-default btn-block" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/discovery/discover_subnet/device/<?php echo $data['system']->id; ?>" role="button"><?php echo __('Discover'); ?></a>
+                        <a class="btn btn-default btn-block" href="#" onclick="window.open('<?php echo $this->config->config['oa_web_folder']; ?>/index.php/admin_system/system_snmp/<?php echo $data['system']->id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');"><?php echo __('SNMP Scan'); ?></a>
+
                     </div>
                 </div>
             </fieldset>
