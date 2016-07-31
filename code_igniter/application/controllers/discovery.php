@@ -547,12 +547,6 @@ class discovery extends CI_Controller
                 $encode['location'] = '';
             }
 
-            if (isset($_POST['type']) and $_POST['type'] == 'device' and isset($_POST['system_id']) and $_POST['system_id'] > '') {
-                // we are auditing a single device that exists in the DB
-                // update the device access credentials
-                $this->m_system->update_credentials($credentials, $_POST['system_id']);
-            }
-
             if (isset($this->user->full_name)) {
                 $encode['last_user'] = $this->user->full_name;
             } else {
