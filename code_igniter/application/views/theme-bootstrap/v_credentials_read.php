@@ -271,12 +271,6 @@ $item = $this->response->data[0];
                 </div>
             </div>
         </div>
-
-
-
-
-
-
     </form>
   </div>
 </div>
