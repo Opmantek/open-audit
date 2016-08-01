@@ -391,11 +391,17 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = download.';
             stdlog($log);
         }
-        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == '') {
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == '' and $CI->response->meta->received_data != '') {
             // insert an item
             $CI->response->meta->action = 'create';
             $CI->response->meta->header = 'HTTP/1.1 201 Created';
-            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and no action.';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, data, no id and no action.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == '' and $CI->response->meta->received_data == '') {
+            // insert an item
+            $CI->response->meta->action = 'collection';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, no data and no action.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'import') {
