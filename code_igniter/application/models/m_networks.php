@@ -97,13 +97,17 @@ class M_networks extends MY_Model
         $sql = "SELECT `name` FROM `networks` WHERE `id` = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $name = $result[0]->name;
-        if ($name != '') {
-            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
-            $data = array((string)$name);
-            $result = $this->run_sql($sql, $data);
-            $result = $this->format_data($result, 'devices');
-            return $result;
+        if (count($result) > 0) {
+            $name = $result[0]->name;
+            if ($name != '') {
+                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
+                $data = array((string)$name);
+                $result = $this->run_sql($sql, $data);
+                $result = $this->format_data($result, 'devices');
+                return $result;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -117,10 +121,6 @@ class M_networks extends MY_Model
         if (!empty($CI->response->meta->received_data->attributes->name)) {
             $test = network_details($CI->response->meta->received_data->attributes->name);
         } else {
-            log_error('ERR-0009', 'm_networks::create_network');
-            return false;
-        }
-        if (!empty($test->error)) {
             log_error('ERR-0009', 'm_networks::create_network');
             return false;
         }
