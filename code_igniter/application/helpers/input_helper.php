@@ -94,13 +94,15 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->format = '';
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
-        $CI->response->meta->id = 0;
+        $CI->response->meta->id = NULL;
         $CI->response->meta->ids = 0;
         $CI->response->meta->include = '';
         $CI->response->meta->limit = '';
         $CI->response->meta->offset = 0;
         $CI->response->meta->properties = '';
         $CI->response->meta->query_string = '';
+        $REQUEST_METHOD = strtoupper($CI->input->server('REQUEST_METHOD'));
+        $CI->response->meta->request_method = $REQUEST_METHOD;
         $CI->response->meta->sort = '';
         $CI->response->meta->sub_resource = '';
         $CI->response->meta->sub_resource_id = 0;
@@ -110,7 +112,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->internal = new stdClass();
         $CI->response->meta->received_data = array();
         $CI->response->links = array();
-        
+
         # Allow for URLs thus:
         # /api/{version}/
         # /v1/
@@ -175,7 +177,7 @@ if (! function_exists('inputRead')) {
         $collection_words = ' create edit update delete list execute debug download ';
 
         # if we have an integer
-        if ($CI->uri->segment(2) and is_numeric($CI->uri->segment(2))) {
+        if ($CI->uri->segment(2) != '' and is_numeric($CI->uri->segment(2))) {
             $CI->response->meta->id = intval($CI->uri->segment(2));
             $log->message = 'Set ID to ' . $CI->response->meta->id . ', according to URI.';
             stdlog($log);
@@ -189,7 +191,7 @@ if (! function_exists('inputRead')) {
         }
         
         # if we have an item name (ie, not it's ID)
-        if (empty($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
+        if (is_null($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
             // TODO - SEPARATE THIS OUT
             $log->message = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
@@ -235,7 +237,7 @@ if (! function_exists('inputRead')) {
                     stdlog($log);
                 } else {
                     // should throw an error as we were given a name, but nothing matched
-                    $CI->response->meta->id = 0;
+                    $CI->response->meta->id = NULL;
                     $log->message = 'Set id to ' . $CI->response->meta->id . ', after searching - no match found.';
                     stdlog($log);
                 }
@@ -299,7 +301,7 @@ if (! function_exists('inputRead')) {
         }
 
         # put any POST data into the object
-        if ($CI->input->server('REQUEST_METHOD') == 'POST') {
+        if ($REQUEST_METHOD == 'POST') {
             if (is_array($CI->input->post('data'))) {
                 $CI->response->meta->received_data = $CI->input->post('data');
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
@@ -308,7 +310,7 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = json_decode($CI->input->post('data'));
             }
         }
-        if ($CI->input->server('REQUEST_METHOD') == 'PATCH') {
+        if ($REQUEST_METHOD == 'PATCH') {
             $data = json_decode(urldecode(str_replace('data=', '', file_get_contents('php://input'))));
             $CI->response->meta->received_data = $data->data;
             unset($data);
@@ -340,79 +342,75 @@ if (! function_exists('inputRead')) {
         }
 
 
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and $action == '') {
+        if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == '') {
             // return a list of items
             $CI->response->meta->action = 'collection';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, no id, no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and $action == 'create') {
+        if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'create') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'create_form';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
-        #if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == 'create' and $CI->response->meta->sub_resource != '') {
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $action == 'create' and $CI->response->meta->sub_resource != '') {
+        if ($REQUEST_METHOD == 'GET' and $action == 'create' and $CI->response->meta->sub_resource != '') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create_form';
-            #$log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id, sub_resource and action = create.';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource and action = create.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and $action == 'import') {
+        if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'import') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'import_form';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = import.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == '') {
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == '') {
             // return a single item
             $CI->response->meta->action = 'read';
             $CI->response->meta->id = intval($CI->response->meta->id);
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == 'update' and empty($CI->response->meta->ids)) {
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'update' and empty($CI->response->meta->ids)) {
             // show a HTML form for updating an existing item
             $CI->response->meta->action = 'update_form';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id == '' and $action == 'update' and !empty($CI->response->meta->ids)) {
+        if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id)  and $action == 'update' and !empty($CI->response->meta->ids)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'bulk_update_form';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, ids, no id and action = update.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'get' and $CI->response->meta->id != '' and $action == 'download') {
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'download') {
             // mainly used for running a report and displaying the output
             $CI->response->meta->action = 'download';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = download.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == '') {
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == '') {
             // insert an item
             $CI->response->meta->action = 'create';
             $CI->response->meta->header = 'HTTP/1.1 201 Created';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == 'import') {
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'import') {
             // insert an item
             $CI->response->meta->action = 'import';
             $CI->response->meta->header = 'HTTP/1.1 201 Created';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and action = import.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and $CI->response->meta->id == '' and $action == 'update' and !empty($CI->response->meta->ids)) {
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'update' and !empty($CI->response->meta->ids)) {
             $CI->response->meta->action = 'update';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, ids, no id and action = update.';
             stdlog($log);
         }
-        if ((strtolower($CI->input->server('REQUEST_METHOD')) == 'post' or 
-            strtolower($CI->input->server('REQUEST_METHOD')) == 'put' or
-            strtolower($CI->input->server('REQUEST_METHOD')) == 'patch') and $CI->response->meta->id != '' and $action == '') {
+        if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
             // update an item
             $CI->response->meta->action = 'update';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
@@ -420,7 +418,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST/PATCH/PUT, id and no action.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'patch' and !empty($CI->response->meta->received_data->ids)) {
+        if ($REQUEST_METHOD == 'PATCH' and is_null($CI->response->meta->id) and !empty($CI->response->meta->received_data->ids)) {
             // update several items
             $CI->response->meta->action = 'update';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
@@ -428,13 +426,13 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because PATCH, ids and no id.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'post' and ($CI->response->meta->id != '' or $CI->response->meta->ids != '') and $CI->response->meta->sub_resource != '') {
+        if ($REQUEST_METHOD == 'POST' and (!is_null($CI->response->meta->id) or $CI->response->meta->ids != '') and $CI->response->meta->sub_resource != '') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, id, sub_resource.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'delete' and $CI->response->meta->id != '' and $CI->response->meta->sub_resource == '') {
+        if ($REQUEST_METHOD == 'DELETE' and !is_null($CI->response->meta->id) and $CI->response->meta->sub_resource == '') {
             // delete an item
             $CI->response->meta->action = 'delete';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
@@ -442,7 +440,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id.';
             stdlog($log);
         }
-        if (strtolower($CI->input->server('REQUEST_METHOD')) == 'delete' and $CI->response->meta->id != '' and $CI->response->meta->sub_resource != '' and $CI->response->meta->sub_resource_id != '') {
+        if ($REQUEST_METHOD == 'DELETE' and !is_null($CI->response->meta->id) and $CI->response->meta->sub_resource != '' and $CI->response->meta->sub_resource_id != '') {
             // delete an item
             $CI->response->meta->action = 'sub_resource_delete';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
@@ -725,7 +723,7 @@ if (! function_exists('inputRead')) {
 
         $CI->response->links = new stdClass();
         $CI->response->links->self = $CI->config->config['base_url'] . 'index.php/' . $CI->response->meta->collection;
-        if ($CI->response->meta->id != '') {
+        if (!is_null($CI->response->meta->id)) {
             $CI->response->links->self .= '/' . $CI->response->meta->id;
         }
         if ($CI->response->meta->sub_resource != '') {
