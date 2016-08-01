@@ -51,17 +51,15 @@ class main extends MY_Controller
         if (stripos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
             // JSON request to the base URL
             // return a document providing futher links
-            $response = new stdClass();
-            $response->meta->status = 'success';
-            $response->links = array(
-                array('rel' => 'groups', 'href' => $this->config->item('basic_url').'/groups', 'description' => 'List the Groups'),
-                array('rel' => 'devices', 'href' => $this->config->item('basic_url').'/devices', 'description' => 'List the Devices'),
-                array('rel' => 'locations', 'href' => $this->config->item('basic_url').'/locations', 'description' => 'List the Locations'),
-                array('rel' => 'reports', 'href' => $this->config->item('basic_url').'/reports', 'description' => 'List the Reports'), );
-            echo json_encode($response);
-            header('Content-Type: application/json');
-            header('Cache-Control: max-age=0');
-            header('HTTP/1.1 200 OK');
+            $this->load->helper('input');
+            $this->load->helper('output');
+            $this->load->helper('error');
+            inputRead();
+            $this->response->links->related = array();
+            $this->response->links->related[]['href'] = $this->response->links->self . 'devices';
+            $this->response->links->related[]['href'] = $this->response->links->self . 'networks';
+            $this->response->links->related[]['href'] = $this->response->links->self . 'credentials';
+            output($this->response);
         } else {
             redirect('main/list_groups/');
         }
