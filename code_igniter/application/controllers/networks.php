@@ -110,6 +110,7 @@ class networks extends MY_Controller
         $this->response->meta->id = $this->m_networks->create();
         if (!empty($this->response->meta->id)) {
             if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_networks->read();
                 output($this->response);
             } else {
                 redirect('/networks');

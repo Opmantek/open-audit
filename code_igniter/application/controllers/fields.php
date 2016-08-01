@@ -103,6 +103,23 @@ class fields extends MY_Controller
         output($this->response);
     }
 
+    private function create()
+    {
+        $this->response->meta->id = $this->m_fields->create();
+        if (!empty($this->response->meta->id)) {
+            if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_fields->read();
+                output($this->response);
+            } else {
+                redirect('/fields');
+            }
+        } else {
+            log_error('ERR-0009');
+            output($this->response);
+            exit();
+        }
+    }
+
     private function update_form()
     {
         # Only admin's

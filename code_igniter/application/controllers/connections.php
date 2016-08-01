@@ -105,7 +105,12 @@ class connections extends MY_Controller
         }
         $this->response->meta->id = $this->m_connections->create();
         if (!empty($this->response->meta->id)) {
-            redirect('/connections');
+            if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_connections->read();
+                output($this->response);
+            } else {
+                redirect($this->response->meta->collection);
+            }
         } else {
             log_error('ERR-0009');
             output($this->response);

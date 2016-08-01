@@ -131,6 +131,7 @@ class scripts extends MY_Controller
         $this->response->meta->id = $this->m_scripts->create();
         if (!empty($this->response->meta->id)) {
             if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_scripts->read();
                 output($this->response);
             } else {
                 redirect('scripts');

@@ -124,6 +124,7 @@ class credentials extends MY_Controller
         $this->response->meta->id = $this->m_credentials->create();
         if (!empty($this->response->meta->id)) {
             if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_credentials->read();
                 output($this->response);
             } else {
                 redirect('/credentials');
