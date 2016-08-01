@@ -128,8 +128,6 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
-        #$this->response->meta->format = 'json';
-        #output($this->response);
         $this->response->meta->id = $this->m_scripts->create();
         if (!empty($this->response->meta->id)) {
             redirect('/scripts/');
@@ -203,20 +201,4 @@ class scripts extends MY_Controller
         header('Content-Transfer-Encoding: binary');
         echo $script;
     }
-
-    # not implemented
-    private function bulk_update_form()
-    {
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // $this->response->id = '';
-        // $temp_ids = array();
-        // foreach ($_POST['ids'] as $temp) {
-        //     $temp_ids[] = $temp;
-        // }
-        // $this->response->id = implode(',', $temp_ids);
-        // output($this->response);
-    }
-
-
 }

@@ -119,8 +119,8 @@ function print_something($string = '')
         if (!empty($data['system'][0]->id)) {
             echo "        var system_id = '" . $data['system'][0]->id . "';\n";
         }
-        if (!empty($this->response->collection)) {
-            echo "        var collection = '" . $this->response->collection . "';\n";
+        if (!empty($this->response->meta->collection)) {
+            echo "        var collection = '" . $this->response->meta->collection . "';\n";
         }
 ?>
 

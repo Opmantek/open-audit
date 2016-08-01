@@ -72,10 +72,10 @@ include "v_lang.php";
 <div class="container-fluid">
 <?php 
 include "include_header.php";
-if (!empty($this->response->error)) {
-  echo '</div></div><div class="alert alert-danger" role="alert">' . $this->response->error->title . '</div>';
+if (!empty($this->response->errors)) {
+  echo '</div></div><div class="alert alert-danger" role="alert"></div>';
   echo "<pre>\n";
-  print_r($this->response->error);
+  print_r($this->response->errors);
   echo "</pre>\n";
 } else {
     include($include.'.php');

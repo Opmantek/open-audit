@@ -34,7 +34,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $item = $this->response->data[0];
-echo form_open('credentials/' . $this->response->id)."\n";
+echo form_open('credentials/' . $this->response->meta->id)."\n";
 ?>
 <fieldset id="details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Update Credential Set')?></span></legend>
@@ -112,7 +112,7 @@ echo form_open('credentials/' . $this->response->id)."\n";
         ?>
         </p>
         <input type="hidden" id="data[id]" name="data[id]" value="<?php echo htmlentities($item->id); ?>" />
-        <input type="hidden" id="data[type]" name="data[type]" value="<?php echo htmlentities($this->response->collection); ?>" />
+        <input type="hidden" id="data[type]" name="data[type]" value="<?php echo htmlentities($this->response->meta->collection); ?>" />
 		<p><label for='submit'>Submit: </label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit', 'tabindex' => '6'), __('Submit') ); ?></p>
 </fieldset>
 <?php echo form_close(); ?>

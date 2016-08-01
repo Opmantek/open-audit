@@ -33,10 +33,6 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if (!empty($this->response->error)) {
-	echo "<h3>" . $this->response->error->title . "</h3><br />";
-	echo "<p>" . $this->response->error->message . "</p>\n";
-}
 ?>
 <div style="text-align:right;">
 <button><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>&nbsp;
@@ -83,9 +79,9 @@ if (!empty($this->response->error)) {
 
 <div id='error' name='error'>
 <?php
-if (!empty($this->response->error)) {
+if (!empty($this->response->errors)) {
   echo "<pre>\n";
-  print_r($this->response->error);
+  print_r($this->response->errors);
   echo "</pre>\n";
 }
 ?>

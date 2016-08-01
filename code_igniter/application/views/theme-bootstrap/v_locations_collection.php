@@ -59,10 +59,9 @@
                 </tr>
             </thead>
             <tbody>
-                <?php
-                foreach ($this->response->data as $item): ?>
+                <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td style='text-align:center;'><a class="btn btn-sm btn-success" href="../admin_location/edit_location/<?php echo intval($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                    <td style='text-align:center;'><a class="btn btn-sm btn-success" href="admin_location/edit_location/<?php echo intval($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                     <td><?php echo htmlentities($item->attributes->name)?></td>
                     <td><?php echo htmlentities($item->attributes->type)?></td>
                     <td><?php echo htmlentities($item->attributes->address)?></td>

@@ -80,7 +80,7 @@ class orgs extends MY_Controller
 
     private function read()
     {
-        if ($this->response->sub_resource != '') {
+        if ($this->response->meta->sub_resource != '') {
             $this->response->data = $this->m_orgs->read_sub_resource();
         } else {
             $this->response->data = $this->m_orgs->read();

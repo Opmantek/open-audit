@@ -211,6 +211,7 @@ class devices extends MY_Controller
     {
         $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in (" . $this->response->meta->ids . ")";
         $query = $this->db->query($sql);
+        # TODO - change the below to use this->response->included
         $this->response->devices = $query->result();
 
         if ($this->response->meta->sub_resource == '') {
@@ -219,6 +220,7 @@ class devices extends MY_Controller
             $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             include 'include_device_types.php';
+            # TODO - change the below to use this->response->included
             $this->response->types = $device_types;
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
