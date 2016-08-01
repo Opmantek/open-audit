@@ -75,14 +75,22 @@ class files extends MY_Controller
     {
         $this->response->data = $this->m_files->collection();
         $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            redirect('main/list_groups');
+        }
     }
 
     private function read()
     {
         $this->response->data = $this->m_files->read();
         $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            redirect('main/list_groups');
+        }
     }
 
     private function create()
@@ -99,7 +107,7 @@ class files extends MY_Controller
                 $this->response->data = $this->m_files->read();
                 output($this->response);
             } else {
-                redirect($this->response->meta->collection);
+                redirect('main/list_groups');
             }
         } else {
             log_error('ERR-0009');
@@ -118,9 +126,10 @@ class files extends MY_Controller
         }
         $this->m_files->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_files->read();
             output($this->response);
         } else {
-            
+            redirect('main/list_groups');
         }
     }
 
@@ -135,7 +144,7 @@ class files extends MY_Controller
         if ($this->m_files->delete()) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
         } else {
@@ -144,25 +153,19 @@ class files extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect('main/list_groups');
         }
     }
 
     # not implemented
     private function create_form()
     {
-        redirect('/files');
+        redirect('/main/list_groups');
     }
 
     # not implemented
     private function update_form()
     {
-        redirect('/files');
-    }
-
-    # not implemented
-    private function execute()
-    {
-        redirect('/files');
+        redirect('/main/list_groups');
     }
 }

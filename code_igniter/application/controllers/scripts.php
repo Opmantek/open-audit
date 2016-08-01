@@ -79,6 +79,12 @@ class scripts extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->data = $this->m_scripts->read();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
@@ -92,6 +98,11 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         # include our scripts options
         include 'include_scripts_options.php';
         $this->response->included = array();
@@ -167,6 +178,7 @@ class scripts extends MY_Controller
         }
         $this->m_scripts->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_scripts->read();
             output($this->response);
         } else {
             redirect('scripts');
@@ -193,7 +205,7 @@ class scripts extends MY_Controller
             if ($this->response->meta->format == 'json') {
                 output($this->response);
             } else {
-                redirect($this->response->collection);
+                redirect($this->response->meta->collection);
             }
             exit();
         }
@@ -209,7 +221,7 @@ class scripts extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect($this->response->meta->collection);
         }
     }
 

@@ -80,6 +80,12 @@ class orgs extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         if ($this->response->meta->sub_resource != '') {
             $this->response->data = $this->m_orgs->read_sub_resource();
         } else {
@@ -96,6 +102,13 @@ class orgs extends MY_Controller
 
     private function create_form()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        # TODO - check this - should likely use included not data.
         $this->response->data = $this->m_orgs->collection();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
@@ -136,14 +149,14 @@ class orgs extends MY_Controller
         if ($this->response->meta->id == 0) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
             log_error('ERR-0014');
             if ($this->response->meta->format == 'json') {
                 output($this->response);
             } else {
-                redirect($this->response->collection);
+                redirect($this->response->meta->collection);
             }
             exit();
         }
@@ -151,7 +164,7 @@ class orgs extends MY_Controller
         if ($this->m_orgs->delete()) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
         } else {
@@ -160,7 +173,7 @@ class orgs extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect($this->response->meta->collection);
         }
     }
 }

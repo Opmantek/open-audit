@@ -79,6 +79,12 @@ class networks extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->meta->sub_resource = 'devices';
         $this->response->data = $this->m_networks->read();
         if (!empty($this->response->data)) {
@@ -96,6 +102,11 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         output($this->response);
     }
 
@@ -147,6 +158,7 @@ class networks extends MY_Controller
         }
         $this->m_networks->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_networks->read();
             output($this->response);
         } else {
             redirect('networks');
@@ -164,7 +176,7 @@ class networks extends MY_Controller
         if ($this->m_networks->delete()) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
         } else {
@@ -173,7 +185,7 @@ class networks extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect($this->response->meta->collection);
         }
     }
 }

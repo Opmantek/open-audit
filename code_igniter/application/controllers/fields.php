@@ -80,6 +80,12 @@ class fields extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->load->model('m_groups');
         $this->response->included = array();
         $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
@@ -96,6 +102,11 @@ class fields extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         # Include a list of Groups
         $this->load->model('m_groups');
         $this->response->included = array();
@@ -105,6 +116,12 @@ class fields extends MY_Controller
 
     private function create()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->meta->id = $this->m_fields->create();
         if (!empty($this->response->meta->id)) {
             if ($this->response->meta->format == 'json') {
@@ -146,6 +163,7 @@ class fields extends MY_Controller
         }
         $this->m_fields->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_fields->read();
             output($this->response);
         } else {
             redirect('fields');
@@ -163,7 +181,7 @@ class fields extends MY_Controller
         if ($this->m_fields->delete()) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
         } else {
@@ -172,7 +190,7 @@ class fields extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect($this->response->meta->collection);
         }
     }
 }

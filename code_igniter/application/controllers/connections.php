@@ -79,6 +79,12 @@ class connections extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->data = $this->m_connections->read();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
@@ -92,6 +98,11 @@ class connections extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         output($this->response);
     }
 
@@ -141,6 +152,7 @@ class connections extends MY_Controller
         }
         $this->m_connections->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_connections->read();
             output($this->response);
         } else {
             redirect('connections');
@@ -158,7 +170,7 @@ class connections extends MY_Controller
         if ($this->m_connections->delete()) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
         } else {
@@ -167,7 +179,7 @@ class connections extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect($this->response->meta->collection);
         }
     }
 }

@@ -79,6 +79,12 @@ class locations extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->meta->sub_resource = 'devices';
         $this->response->data = $this->m_locations->read();
         $this->response->included = $this->m_locations->sub_resource();
@@ -98,14 +104,14 @@ class locations extends MY_Controller
         if ($this->response->meta->id == 0) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
             log_error('ERR-0014');
             if ($this->response->meta->format == 'json') {
                 output($this->response);
             } else {
-                redirect($this->response->collection);
+                redirect($this->response->meta->collection);
             }
             exit();
         }
@@ -113,7 +119,7 @@ class locations extends MY_Controller
         if ($this->m_locations->delete()) {
             $this->response->data = array();
             $temp = new stdClass();
-            $temp->type = $this->response->collection;
+            $temp->type = $this->response->meta->collection;
             $this->response->data[] = $temp;
             unset($temp);
         } else {
@@ -122,7 +128,7 @@ class locations extends MY_Controller
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect($this->response->collection);
+            redirect($this->response->meta->collection);
         }
     }
 }

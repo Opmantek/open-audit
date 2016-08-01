@@ -185,7 +185,11 @@ class devices extends MY_Controller
     private function update()
     {
         $this->m_devices->update();
-        output($this->response);
+        if ($this->response->meta == 'json') {
+            $this->response->data = $this->m_devices->read();
+            output($this->response);
+        }
+        exit();
     }
 
     private function create_form()

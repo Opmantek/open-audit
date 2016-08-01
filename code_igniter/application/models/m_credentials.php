@@ -202,7 +202,7 @@ class M_credentials extends MY_Model
         $sql = "DELETE FROM `credentials` WHERE id = ?";
         $data = array(intval($CI->response->meta->id));
         $this->run_sql($sql, $data);
-        return;
+        return true;
     }
 
     public function create()
