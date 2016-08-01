@@ -46,7 +46,7 @@
 
     <div class="col-md-1" style="text-align:center;">
         <a href="<?php echo $this->config->config['oa_web_index']; ?>/main/edit_user"><?php echo htmlentities($this->user->name); ?></a><br />
-        <a class="btn btn-default btn-sm" href="/login/logout" role="button">Logout</a>
+        <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index']; ?>/login/logout" role="button">Logout</a>
     </div>
 </div>
 
