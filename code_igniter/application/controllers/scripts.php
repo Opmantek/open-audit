@@ -130,7 +130,11 @@ class scripts extends MY_Controller
         }
         $this->response->meta->id = $this->m_scripts->create();
         if (!empty($this->response->meta->id)) {
-            redirect('/scripts/');
+            if ($this->response->meta->format == 'json') {
+                output($this->response);
+            } else {
+                redirect('scripts');
+            }
         } else {
             log_error('ERR-0009');
             output($this->response);
@@ -176,11 +180,35 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_scripts->delete();
+        # do not allow deletion of default Scripts
+        $script = $this->m_scripts->read();
+        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            if ($this->response->meta->format == 'json') {
+                output($this->response);
+            } else {
+                redirect($this->response->collection);
+            }
+            exit();
+        }
+        if ($this->m_scripts->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('scripts');
+            redirect($this->response->collection);
         }
     }
 

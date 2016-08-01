@@ -92,11 +92,25 @@ class credentials extends MY_Controller
 
     private function delete()
     {
-        $this->m_credentials->delete();
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        if ($this->m_credentials->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('credentials');
+            redirect($this->response->collection);
         }
     }
 

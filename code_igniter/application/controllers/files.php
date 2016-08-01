@@ -127,11 +127,19 @@ class files extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_files->delete();
+        if ($this->m_files->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('files');
+            redirect($this->response->collection);
         }
     }
 

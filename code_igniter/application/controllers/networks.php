@@ -160,11 +160,19 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_networks->delete();
+        if ($this->m_networks->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('networks');
+            redirect($this->response->collection);
         }
     }
 }

@@ -130,18 +130,32 @@ if (! function_exists('getError')) {
         $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a unique field is already used by another item in the collection.';
 
         $error_array['ERR-0011'] = new stdClass();
-        $error_array['ERR-0011']->code = 'ERR-0010';
+        $error_array['ERR-0011']->code = 'ERR-0011';
         $error_array['ERR-0011']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0011']->severity = 3;
         $error_array['ERR-0011']->title = "Bad Request.";
         $error_array['ERR-0011']->detail = 'Cannot create read uploaded file.';
 
         $error_array['ERR-0012'] = new stdClass();
-        $error_array['ERR-0012']->code = 'ERR-0010';
+        $error_array['ERR-0012']->code = 'ERR-0012';
         $error_array['ERR-0012']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0012']->severity = 3;
         $error_array['ERR-0012']->title = "Bad Request.";
         $error_array['ERR-0012']->detail = 'Uploaded XML is invalid.';
+
+        $error_array['ERR-0013'] = new stdClass();
+        $error_array['ERR-0013']->code = 'ERR-0013';
+        $error_array['ERR-0013']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0013']->severity = 3;
+        $error_array['ERR-0013']->title = "Bad Request.";
+        $error_array['ERR-0013']->detail = 'Could not delete specified resource.';
+
+        $error_array['ERR-0014'] = new stdClass();
+        $error_array['ERR-0014']->code = 'ERR-0014';
+        $error_array['ERR-0014']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0014']->severity = 3;
+        $error_array['ERR-0014']->title = "Bad Request.";
+        $error_array['ERR-0014']->detail = 'Could not delete default resource.';
 
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {

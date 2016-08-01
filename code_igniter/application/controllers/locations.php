@@ -94,11 +94,35 @@ class locations extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_locations->delete($this->response->meta->id);
+        # do not allow deletion of default Location
+        if ($this->response->meta->id == 0) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            if ($this->response->meta->format == 'json') {
+                output($this->response);
+            } else {
+                redirect($this->response->collection);
+            }
+            exit();
+        }
+
+        if ($this->m_locations->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('locations');
+            redirect($this->response->collection);
         }
     }
 }

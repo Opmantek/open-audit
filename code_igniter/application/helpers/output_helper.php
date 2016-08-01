@@ -55,6 +55,8 @@ if (! function_exists('output')) {
         #$CI->response = output_convert($CI->response);
         if (!empty($CI->response->data)) {
             $CI->response->data = output_convert($CI->response->data);
+        } else {
+            log_error('ERR-0005');
         }
         if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
