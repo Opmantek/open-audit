@@ -42,15 +42,15 @@ $(document).ready(function(){
         $.ajax({
             type: 'DELETE',
             url: $url,
-            dataType: 'json',
-            success: function(data) {
-                // alert($name + " has been deleted.");
-                window.location = web_folder + "/index.php/" + collection;
-            },
-            error: function(data) {
-                alert("An error occurred when deleting item:" + $name);
-                alert(data.serialize());
-            }
+            dataType: 'json',           
+       })
+       .success(function(data) {
+            // alert($name + " has been deleted.");
+            window.location = web_folder + "/index.php/" + collection;
+       })
+       .fail( function(jqXHR, textStatus, errorThrown ) {
+            //alert("An error occurred when deleting item:" + $name);
+            alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
        });
     });
 });
