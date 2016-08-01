@@ -94,15 +94,7 @@ class M_orgs extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($CI->response->meta->internal->limit != '') {
-            $sort = $CI->response->meta->sort;
-            $limit = $CI->response->meta->limit;
-        } else {
-            $sort = '';
-            $limit = '';
-        }
-        $filter = $this->build_filter();
-        $sql = "SELECT type, count(system.id) as device_count FROM system WHERE system.org_id = ? GROUP BY type " . $sort . " " . $limit;
+        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? GROUP BY `system`.`type`";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         if (count($result) == 0) {
@@ -156,6 +148,30 @@ class M_orgs extends MY_Model
         } else {
             return false;
         }
+    }
+
+    public function create()
+    {
+        $CI = & get_instance();
+        if (empty($CI->response->meta->received_data->attributes->name)) {
+            return false;
+        } else {
+            $name = $CI->response->meta->received_data->attributes->name;
+        }
+        if (empty($CI->response->meta->received_data->attributes->parent_id)) {
+            $parent_id = 0;
+        } else {
+            $parent_id = intval($CI->response->meta->received_data->attributes->parent_id);
+        }
+        if (empty($CI->response->meta->received_data->attributes->comments)) {
+            $comments = '';
+        } else {
+            $comments = $CI->response->meta->received_data->attributes->comments;
+        }
+        $sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, '', ?)";
+        $data = array("$name", $parent_id, $comments);
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
     }
 
     public function get_orgs()
