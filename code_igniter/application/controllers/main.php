@@ -48,11 +48,11 @@ class main extends MY_Controller
 
     public function index()
     {
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+        if (stripos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
             // JSON request to the base URL
             // return a document providing futher links
             $response = new stdClass();
-            $response->status = 'success';
+            $response->meta->status = 'success';
             $response->links = array(
                 array('rel' => 'groups', 'href' => $this->config->item('basic_url').'/groups', 'description' => 'List the Groups'),
                 array('rel' => 'devices', 'href' => $this->config->item('basic_url').'/devices', 'description' => 'List the Devices'),
