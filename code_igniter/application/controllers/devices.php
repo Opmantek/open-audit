@@ -252,6 +252,11 @@ class devices extends MY_Controller
     {
         if ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
             output($this->response);
         } else {
             redirect('devices');
