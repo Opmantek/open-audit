@@ -89,22 +89,40 @@ class M_connections extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'connections') {
-            # get the total location count
-            $sql = "SELECT COUNT(*) as `count` FROM oa_connection";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
-            # and set a limit
-            $limit = $CI->response->meta->internal->limit;
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'connections') {
+            $filter = $this->build_filter();
+            $properties = $this->build_properties();
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+            if ($CI->response->meta->limit == '') {
+                $limit = '';
+            } else {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->offset != '') {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
+            }
         } else {
+            $properties = '*';
+            $filter = '';
+            $sort = '';
             $limit = '';
         }
-
-        $sql = "SELECT * FROM oa_connection GROUP BY `id` " . $limit;
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `oa_connection`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (!empty($CI->response->meta->total)) {
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+        # get the response data
+        $sql = "SELECT " . $properties . " FROM `oa_connection` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'locations');
+        $result = $this->format_data($result, 'connections');
         return ($result);
     }
 

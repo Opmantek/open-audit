@@ -58,33 +58,40 @@ class M_fields extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $properties = $this->build_properties();
-
-        if ($CI->response->meta->sort == '') {
-            $sort = 'ORDER BY id';
-        } else {
-            $sort = 'ORDER BY ' . $CI->response->meta->sort;
-        }
-
-        if ($CI->response->meta->limit == '') {
-            $limit = '';
-        } else {
-            $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-            if ($CI->response->meta->offset != '') {
-                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'fields') {
+            $filter = $this->build_filter();
+            $properties = $this->build_properties();
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
             }
+            if ($CI->response->meta->limit == '') {
+                $limit = '';
+            } else {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->offset != '') {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
+            }
+        } else {
+            $properties = '*';
+            $filter = '';
+            $sort = '';
+            $limit = '';
         }
         # get the total count
         $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-        $CI->response->meta->total = intval($result[0]->count);
+        if (!empty($CI->response->meta->total)) {
+            $CI->response->meta->total = intval($result[0]->count);
+        }
         # get the response data
         $sql = "SELECT " . $properties . ", oa_group.group_name as `group_name` FROM `additional_field` LEFT JOIN `oa_group` ON (`additional_field`.`group_id` = `oa_group`.`group_id`) GROUP BY `additional_field`.`id` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, $CI->response->meta->collection);
+        $result = $this->format_data($result, 'fields');
         return ($result);
     }
 
