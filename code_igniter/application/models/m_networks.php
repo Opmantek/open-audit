@@ -181,7 +181,7 @@ class M_networks extends MY_Model
         $sql = "DELETE FROM `networks` WHERE id = ?";
         $data = array(intval($CI->response->meta->id));
         $this->run_sql($sql, $data);
-        return;
+        return true;
     }
 
     private function count_data($result)
