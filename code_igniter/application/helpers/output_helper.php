@@ -57,11 +57,9 @@ if (! function_exists('output')) {
             unset($CI->response->data);
             $CI->response->data = array();
         }
-        #if (!empty($CI->response->data)) {
+        if (count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
-        #} else {
-        #    log_error('ERR-0005');
-        #}
+        }
         if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }
