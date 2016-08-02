@@ -149,7 +149,7 @@ class devices extends MY_Controller
                 }
             }
         }
-
+        $this->response->meta->total = count($this->response->data);
         $this->response->meta->filtered = count($this->response->data);
         if ($this->response->meta->format == 'screen') {
             // return a list of all orgs and locations so we can create the edit functionality on the web page
@@ -185,7 +185,7 @@ class devices extends MY_Controller
     private function update()
     {
         $this->m_devices->update();
-        if ($this->response->meta == 'json') {
+        if ($this->response->meta->format == 'json') {
             $this->response->data = $this->m_devices->read();
             output($this->response);
         }
