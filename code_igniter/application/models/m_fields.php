@@ -58,22 +58,33 @@ class M_fields extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'fields') {
-            # get the total location count
-            $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
-            # and set a limit
-            $limit = $CI->response->meta->internal->limit;
+        $filter = $this->build_filter();
+        $properties = $this->build_properties();
+
+        if ($CI->response->meta->sort == '') {
+            $sort = 'ORDER BY id';
         } else {
-            $limit = '';
+            $sort = 'ORDER BY ' . $CI->response->meta->sort;
         }
 
-        $sql = "SELECT `additional_field`.*, oa_group.group_name as `group_name` FROM `additional_field`  LEFT JOIN oa_group ON (additional_field.group_id = oa_group.group_id) GROUP BY additional_field.id " . $limit;
+        if ($CI->response->meta->limit == '') {
+            $limit = '';
+        } else {
+            $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            if ($CI->response->meta->offset != '') {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+            }
+        }
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $CI->response->meta->total = intval($result[0]->count);
+        # get the response data
+        $sql = "SELECT " . $properties . ", oa_group.group_name as `group_name` FROM `additional_field` LEFT JOIN `oa_group` ON (`additional_field`.`group_id` = `oa_group`.`group_id`) GROUP BY `additional_field`.`id` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'locations');
+        $result = $this->format_data($result, $CI->response->meta->collection);
         return ($result);
     }
 

@@ -109,17 +109,33 @@ class M_files extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
-        $CI->response->meta->internal->filter = $filter;
         $properties = $this->build_properties();
-        # get the total number
-        $sql = "SELECT count(*) AS count FROM `files` " . $filter . " " . $CI->response->meta->internal->groupby;
-        $result = $this->run_sql($sql, array());
-        $CI->response->meta->total = intval($result[0]->count);
 
-        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM files" . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        if ($CI->response->meta->sort == '') {
+            $sort = 'ORDER BY id';
+        } else {
+            $sort = 'ORDER BY ' . $CI->response->meta->sort;
+        }
+
+        if ($CI->response->meta->limit == '') {
+            $limit = '';
+        } else {
+            $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            if ($CI->response->meta->offset != '') {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+            }
+        }
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `files`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $CI->response->meta->total = intval($result[0]->count);
+        # get the response data
+        $sql = "SELECT " . $properties . " FROM `files` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'files');
-        return $result;
+        $result = $this->format_data($result, $CI->response->meta->collection);
+        return ($result);
     }
 
     public function update()

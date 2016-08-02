@@ -164,36 +164,32 @@ class M_credentials extends MY_Model
         $CI = & get_instance();
         $filter = $this->build_filter();
         $properties = $this->build_properties();
-        if (!empty($CI->response->meta->internal->limit)) {
-            $limit = $CI->response->meta->internal->limit;
+
+        if ($CI->response->meta->sort == '') {
+            $sort = 'ORDER BY id';
         } else {
+            $sort = 'ORDER BY ' . $CI->response->meta->sort;
+        }
+
+        if ($CI->response->meta->limit == '') {
             $limit = '';
-        }
-
-        if (!empty($CI->user->org_list)) {
-            $org_list = "WHERE credentials.org_id IN (" . $CI->user->org_list . ")";
         } else {
-            $org_list = '';
-        }
-
-        # get the total credential count
-        if (!empty($CI->response->meta)) {
-            $sql = "SELECT COUNT(*) as `count` FROM credentials " . $org_list;
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
-        }
-
-        $sql = "SELECT * FROM credentials " . $org_list . " " . $limit;
-        $result = $this->run_sql($sql, array());
-        for ($i=0; $i < count($result); $i++) { 
-            if (!empty($result[$i]->credentials)) {
-                $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+            $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            if ($CI->response->meta->offset != '') {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
             }
         }
-        $result = $this->format_data($result, 'credentials');
-        return $result;
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `credentials`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $CI->response->meta->total = intval($result[0]->count);
+        # get the response data
+        $sql = "SELECT " . $properties . " FROM `credentials` " . $filter . " " . $sort . " " . $limit;
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, $CI->response->meta->collection);
+        return ($result);
     }
 
     public function delete()

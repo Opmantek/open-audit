@@ -46,7 +46,7 @@ class M_locations extends MY_Model
         $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'oa_org.'.trim($temp[$i]);
+                $temp[$i] = 'oa_location.'.trim($temp[$i]);
             } else {
                 $temp[$i] = trim($temp[$i]);
             }
@@ -104,22 +104,33 @@ class M_locations extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'locations') {
-            # get the total location count
-            $sql = "SELECT COUNT(*) as `count` FROM oa_location";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
-            # and set a limit
-            $limit = $CI->response->meta->internal->limit;
+        $filter = $this->build_filter();
+        $properties = $this->build_properties();
+
+        if ($CI->response->meta->sort == '') {
+            $sort = 'ORDER BY id';
         } else {
-            $limit = '';
+            $sort = 'ORDER BY ' . $CI->response->meta->sort;
         }
 
-        $sql = "SELECT * FROM oa_location GROUP BY `id` " . $limit;
+        if ($CI->response->meta->limit == '') {
+            $limit = '';
+        } else {
+            $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            if ($CI->response->meta->offset != '') {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+            }
+        }
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `oa_location`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $CI->response->meta->total = intval($result[0]->count);
+        # get the response data
+        $sql = "SELECT " . $properties . " FROM `oa_location` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'locations');
+        $result = $this->format_data($result, $CI->response->meta->collection);
         return ($result);
     }
 
