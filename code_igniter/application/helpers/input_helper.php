@@ -237,8 +237,8 @@ if (! function_exists('inputRead')) {
                     stdlog($log);
                 } else {
                     // should throw an error as we were given a name, but nothing matched
-                    $CI->response->meta->id = NULL;
-                    $log->message = 'Set id to ' . $CI->response->meta->id . ', after searching - no match found.';
+                    $CI->response->meta->id = 888888888888;
+                    $log->message = 'Set id to NULL, after searching - no match found.';
                     stdlog($log);
                 }
             }

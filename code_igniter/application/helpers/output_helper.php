@@ -52,7 +52,10 @@ if (! function_exists('output')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
-        #$CI->response = output_convert($CI->response);
+        if ($CI->response->meta->id == 888888888888) {
+            $CI->response->meta->id = NULL;
+            unset($CI->response->data);
+        }
         if (!empty($CI->response->data)) {
             $CI->response->data = output_convert($CI->response->data);
         } else {
