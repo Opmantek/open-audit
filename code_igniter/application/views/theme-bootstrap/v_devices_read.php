@@ -51,7 +51,7 @@ if (empty($data['additional_fields'])) {
   $data['additional_fields'] = array();
 }
 
-#echo "<pre>\n"; print_r($data); exit();
+#echo "<pre>\n"; print_r($data['additional_fields']); exit();
 
 if (strtolower($data['system']->os_group) == 'windows') {
     $attributes['software'] = array('name' => 'Name', 'version' => 'Version', 'installed_on' => 'Installed On', 'installed_by' => 'Installed By', 'first_seen' => 'First Seen', 'location' => 'Location', 'type' => 'Type');
@@ -1132,22 +1132,23 @@ function insert_additional_fields($section = '', $additional_fields)
 {
     foreach ($additional_fields as $field) {
         if ($field->{'additional_field.placement'} == $section) {
+            $name = 'custom_' . str_replace(' ', '_', $field->{'additional_field.name'});
             if ($field->{'additional_field.type'} == 'varchar') {
                 echo '                    <div class="form-group">
-                    <label for="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
                     <div class="input-group">
-                      <input disabled type="text" class="form-control" placeholder="" id="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" name="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" value="' . $field->{'value'} . '">
+                      <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">
                       <span class="input-group-btn">
-                        <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" data-action="edit" class="btn btn-default edit_button" type="button" value="custom_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                       </span>
                     </div>
                 </div>' . "\n";
             }
             if ($field->{'additional_field.type'} == 'list') {
                 echo '                    <div class="form-group">
-                    <label for="custom_' . $field->{'additional_field.name'} . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
                     <div class="col-sm-8 input-group">
-                        <select id="custom_' . $field->{'additional_field.name'} . '" class="form-control" disabled>' . "\n";
+                        <select id="' . $name . '" class="form-control" disabled>' . "\n";
 
                         foreach (explode(',', $field->{'additional_field.values'}) as $key => $value) {
                             if ($field->{'value'} == $value) {
@@ -1160,7 +1161,7 @@ function insert_additional_fields($section = '', $additional_fields)
 
                         echo '                        </select>
                         <span class="input-group-btn">
-                          <button id="edit_' . str_replace(' ', '_', $field->{'additional_field.name'}) . '" data-action="edit" class="btn btn-default edit_button" type="button" value="custom_' . $field->{'additional_field.name'} . '">
+                          <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                           </button>
                         </span>
