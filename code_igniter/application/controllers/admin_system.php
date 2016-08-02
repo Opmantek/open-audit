@@ -300,7 +300,10 @@ class Admin_system extends MY_Controller
         $details->last_seen = date('Y-m-d G:i:s');
         $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
-        $details = dns_validate($details, 'y');
+
+        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+            $details = dns_validate($details, 'y');
+        }
 
         #unset($details->type);
         unset($details->show_output);
