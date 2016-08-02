@@ -55,12 +55,13 @@ if (! function_exists('output')) {
         if ($CI->response->meta->id == 888888888888) {
             $CI->response->meta->id = NULL;
             unset($CI->response->data);
+            $CI->response->data = array();
         }
-        if (!empty($CI->response->data)) {
+        #if (!empty($CI->response->data)) {
             $CI->response->data = output_convert($CI->response->data);
-        } else {
-            log_error('ERR-0005');
-        }
+        #} else {
+        #    log_error('ERR-0005');
+        #}
         if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }

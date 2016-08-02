@@ -228,13 +228,19 @@ class M_scripts extends MY_Model
         return;
     }
 
-    public function delete()
+    public function delete($id = '')
     {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $CI = & get_instance();
-        $sql = "DELETE FROM `scripts` WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
+        $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
+        $data = array(intval($id));
         $this->run_sql($sql, $data);
-        return;
+        return true;
     }
 
     private function count_data($result)

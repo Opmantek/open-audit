@@ -175,11 +175,17 @@ class M_networks extends MY_Model
         return;
     }
 
-    public function delete()
+    public function delete($id = '')
     {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $CI = & get_instance();
         $sql = "DELETE FROM `networks` WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
+        $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
     }
