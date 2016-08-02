@@ -62,8 +62,8 @@ class locations extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->action)) {
-            $this->{$this->response->action}();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -79,11 +79,15 @@ class locations extends MY_Controller
 
     private function read()
     {
-        if ($this->response->sub_resource != '') {
-            $this->response->data = $this->m_locations->read_sub_resource();
-        } else {
-            $this->response->data = $this->m_locations->read();
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
+        $this->response->meta->sub_resource = 'devices';
+        $this->response->data = $this->m_locations->read();
+        $this->response->included = $this->m_locations->sub_resource();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
@@ -96,11 +100,35 @@ class locations extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_locations->delete();
-        if ($this->response->format == 'json') {
+        # do not allow deletion of default Location
+        if ($this->response->meta->id == 0) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            if ($this->response->meta->format == 'json') {
+                output($this->response);
+            } else {
+                redirect($this->response->meta->collection);
+            }
+            exit();
+        }
+
+        if ($this->m_locations->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
+        if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('locations');
+            redirect($this->response->meta->collection);
         }
     }
 }

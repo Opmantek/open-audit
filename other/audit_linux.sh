@@ -577,7 +577,7 @@ if [ -z "$system_ip_address" ]; then
 fi
 
 # Set the icon as the lower case version of the System Family.
-system_os_icon=$(lcase $system_os_family)
+system_os_icon=$(lcase "$system_os_family")
 
 # Get the System Serial Number
 system_serial=""

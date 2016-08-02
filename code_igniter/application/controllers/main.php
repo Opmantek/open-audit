@@ -48,20 +48,18 @@ class main extends MY_Controller
 
     public function index()
     {
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+        if (stripos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
             // JSON request to the base URL
             // return a document providing futher links
-            $response = new stdClass();
-            $response->status = 'success';
-            $response->links = array(
-                array('rel' => 'groups', 'href' => $this->config->item('basic_url').'/groups', 'description' => 'List the Groups'),
-                array('rel' => 'devices', 'href' => $this->config->item('basic_url').'/devices', 'description' => 'List the Devices'),
-                array('rel' => 'locations', 'href' => $this->config->item('basic_url').'/locations', 'description' => 'List the Locations'),
-                array('rel' => 'reports', 'href' => $this->config->item('basic_url').'/reports', 'description' => 'List the Reports'), );
-            echo json_encode($response);
-            header('Content-Type: application/json');
-            header('Cache-Control: max-age=0');
-            header('HTTP/1.1 200 OK');
+            $this->load->helper('input');
+            $this->load->helper('output');
+            $this->load->helper('error');
+            inputRead();
+            $this->response->links->related = array();
+            $this->response->links->related[]['href'] = $this->response->links->self . 'devices';
+            $this->response->links->related[]['href'] = $this->response->links->self . 'networks';
+            $this->response->links->related[]['href'] = $this->response->links->self . 'credentials';
+            output($this->response);
         } else {
             redirect('main/list_groups/');
         }
@@ -416,28 +414,6 @@ class main extends MY_Controller
         }
 
         $discover_ids = '';
-        $credentials = new stdClass();
-        $credentials->windows_username = @$this->input->post('windows_username');
-        $credentials->windows_password = @$this->input->post('windows_password');
-        $credentials->windows_domain = @$this->input->post('windows_domain');
-        $credentials->ssh_username = @$this->input->post('ssh_username');
-        $credentials->ssh_password = @$this->input->post('ssh_password');
-        $credentials->snmp_version = @$this->input->post('snmp_version');
-        $credentials->snmp_community = @$this->input->post('snmp_community');
-
-        if ((isset($credentials->windows_username) and $credentials->windows_username != '') or
-            (isset($credentials->windows_password) and $credentials->windows_password != '') or
-            (isset($credentials->windows_domain) and $credentials->windows_domain != '') or
-            (isset($credentials->ssh_username) and $credentials->ssh_username != '') or
-            (isset($credentials->ssh_password) and $credentials->ssh_password != '') or
-            (isset($credentials->snmp_version) and $credentials->snmp_version != '') or
-            (isset($credentials->snmp_community) and $credentials->snmp_community != '')) {
-            foreach ($data['systems'] as $system) {
-                $credentials->ip_address = ip_address_from_db($this->m_system->check_ip($system[1]));
-                $system_id = $system[1];
-                $this->m_system->update_credentials($credentials, $system_id);
-            }
-        }
 
         foreach ($_POST as $field_name => $field_data) {
             if ($field_data != '') {
@@ -867,6 +843,7 @@ class main extends MY_Controller
         $this->data['monitor'] = $this->m_devices_components->read($this->data['id'], 'y', 'monitor');
         $this->data['motherboard'] = $this->m_devices_components->read($this->data['id'], 'y', 'motherboard');
         $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
+        $this->data['nmap'] = $this->m_devices_components->read($this->data['id'], 'y', 'nmap');
         $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
         $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
         $this->data['pagefile'] = $this->m_devices_components->read($this->data['id'], 'y', 'pagefile');

@@ -11,3 +11,4 @@ other/log_debug.log
 other/log_system.log
 code_igniter/application/controllers/admin_test_private.php
 ._*
+.idea

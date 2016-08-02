@@ -256,6 +256,38 @@ LOCK TABLES `cluster` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `credential`
+--
+
+DROP TABLE IF EXISTS `credential`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `credential` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',
+  `credentials` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `credential_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `credential`
+--
+
+LOCK TABLES `credential` WRITE;
+/*!40000 ALTER TABLE `credential` DISABLE KEYS */;
+/*!40000 ALTER TABLE `credential` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `credentials`
 --
 
@@ -266,7 +298,7 @@ CREATE TABLE `credentials` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',
+  `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',
   `credentials` text NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -883,6 +915,38 @@ LOCK TABLES `networks` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `nmap`
+--
+
+DROP TABLE IF EXISTS `nmap`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `nmap` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '',
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `port` int(5) NOT NULL DEFAULT '0',
+  `program` varchar(250) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `nmap`
+--
+
+LOCK TABLES `nmap` WRITE;
+/*!40000 ALTER TABLE `nmap` DISABLE KEYS */;
+/*!40000 ALTER TABLE `nmap` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `notes`
 --
 
@@ -1012,6 +1076,7 @@ INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00
 INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
+INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y','0000-00-00 00:00:00',0,'Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `oa_config` VALUES ('display_version','1.12.8','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
@@ -2131,7 +2196,6 @@ CREATE TABLE `system` (
   `unlock_pin` varchar(100) NOT NULL DEFAULT '',
   `serial_imei` varchar(100) NOT NULL DEFAULT '',
   `serial_sim` varchar(100) NOT NULL DEFAULT '',
-  `access_details` text NOT NULL,
   `nmis_group` varchar(50) NOT NULL DEFAULT '',
   `nmis_name` varchar(50) NOT NULL DEFAULT '',
   `nmis_role` varchar(50) NOT NULL DEFAULT '',

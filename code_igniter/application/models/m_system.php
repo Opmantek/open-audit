@@ -253,20 +253,6 @@ class M_system extends MY_Model
             }
         }
 
-        # check serial + type
-        if (!empty($details->serial) and !empty($details->type)and $details->id == '') {
-            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production'";
-            $sql = $this->clean_sql($sql);
-            $data = array("$details->serial", "$details->type");
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            if (count($row) > 0) {
-                $details->id = $row->id;
-                $log_details->message = 'HIT on serial for '.$details->ip.' (System ID '.$row->id.')';
-                stdlog($log_details);
-            }
-        }
-
         $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_name_match'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -973,6 +959,19 @@ class M_system extends MY_Model
         $query = $this->db->query($sql);
         $details->id = $this->db->insert_id();
 
+        $weight = intval($this->weight($details->last_seen_by));
+        foreach ($details as $key => $value) {
+            foreach ($columns as $column) {
+                if ($key === $column->Field and !empty($value)) {
+                    if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
+                        $edit_sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, 'Data was changed', ?, ?, 'system', ?, ?, ?, '')";
+                        $edit_data = array(intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$details->last_seen, (string)$value);
+                        $query = $this->db->query($edit_sql, $edit_data);
+                    }
+                }
+            }
+        }
+
         # update the device icon
         $this->m_system->reset_icons($details->id);
 
@@ -1215,25 +1214,65 @@ class M_system extends MY_Model
             unset($details->ip);
         }
 
-        $sql = "SHOW COLUMNS FROM system";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $columns = $query->result();
-        $sql = "UPDATE system SET ";
+        $fields = implode(' ', $this->db->list_fields('system'));
         foreach ($details as $key => $value) {
             if (($key != '') and ($value != '')) {
                 # need to iterate through available columns and only insert where $key == valid column name
-                foreach ($columns as $column) {
-                    if ($key == $column->Field) {
-                        $sql .= $key." = '".str_replace("'", "\'", $value)."', ";
+                if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
+                    // OK, we have a valid attribute name ($key)
+                    // get the current value
+                    $sql = "SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?";
+                    $data = array(intval($details->id));
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
+                    $previous_value = $result[0]->{$key};
+                    # get the current entry in the edit_log
+                    $sql = "SELECT * FROM `edit_log` WHERE `system_id` = ? AND `db_table` = 'system' AND `db_column` = ? ORDER BY `timestamp` DESC LIMIT 1";
+                    $data = array(intval($details->id), "$key");
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
+                    if (!empty($result[0]->weight)) {
+                        $previous_weight = intval($result[0]->weight);
+                    } else {
+                        $previous_weight = 10000;
+                    }
+                    // calculate the weight
+                    $weight = intval($this->weight($details->last_seen_by));
+                    if ($weight <= $previous_weight and $value != $previous_value) {
+                         if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
+                            // update the system table
+                            $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
+                            $data = array((string)$value, intval($details->id));
+                            $query = $this->db->query($sql, $data);
+                            // insert an entry into the edit table
+                            $columns_that_dont_get_edit_log = ' id sysUpTime uptime ';
+                            if (stripos($columns_that_dont_get_edit_log, $key) === false) {
+                                $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                                $data = array(0, intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                                $query = $this->db->query($sql, $data);
+                            }
+                        }
+                    } else {
+                        # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
                     }
                 }
+
             }
         }
-        $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-        $sql .= " WHERE id = '".$details->id."'";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
+
+        if (!empty($details->last_seen_by)) {
+            $last_seen_by = $details->last_seen_by;
+        } else {
+            $last_seen_by = '';
+        }
+        if (!empty($details->last_seen)) {
+            $last_seen = $details->last_seen;
+        } else {
+            $last_seen = '';
+        }
+        $sql = "UPDATE system SET `last_seen_by` = ?, `last_seen` = ? WHERE id = ?";
+        $query = $this->db->query($sql, array((string)$last_seen_by, (string)$last_seen, intval($details->id)));
+
 
         # finally, update the device icon
         $this->m_system->reset_icons($details->id);
@@ -1667,5 +1706,62 @@ class M_system extends MY_Model
         }
 
         return($decoded_access_details);
+    }
+
+
+
+
+
+    /**
+    * Pass in a string detailing what has attempted to set a value and recieve a result containing the weight
+    *
+    * @param   string $set_by The source
+    * @access  public
+    * @return  int the integer containing the weighted value
+    */
+    public function weight($set_by = 'user')
+    {
+        // We assign a weight to the submitted data and compare it to what we already have for each column
+        // Valid weights and the sources are:
+        // 1000 - user or import (import should set as user as well)
+        // 2000 - audit, ssh, wmi
+        // 3000 - snmp
+        // 4000 - ad (active directory)
+        // 5000 - nmap
+        // The lower the value, the higher the priority is given
+
+        switch ($set_by) {
+            case 'user':
+                $weight = 1000;
+                break;
+
+            case 'audit':
+            case 'ssh':
+            case 'windows':
+            case 'wmi':
+                $weight = 2000;
+                break;
+
+            case 'snmp':
+                $weight = 3000;
+                break;
+
+            case 'ipmi':
+                $weight = 4000;
+                break;
+
+            case 'ad':
+                $weight = 5000;
+                break;
+
+            case 'nmap':
+                $weight = 6000;
+                break;
+            
+            default:
+                $weight = 10000;
+                break;
+        }
+        return($weight);
     }
 }

@@ -85,6 +85,12 @@ class credentials extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->data = $this->m_credentials->read();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
@@ -92,24 +98,56 @@ class credentials extends MY_Controller
 
     private function delete()
     {
-        $this->m_credentials->delete();
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        if ($this->m_credentials->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('credentials');
+            redirect($this->response->meta->collection);
         }
     }
 
     private function create_form()
-    {
+    {       
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         output($this->response);
     }
 
     private function create()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->meta->id = $this->m_credentials->create();
         if (!empty($this->response->meta->id)) {
             if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_credentials->read();
                 output($this->response);
             } else {
                 redirect('/credentials');
@@ -123,12 +161,24 @@ class credentials extends MY_Controller
 
     private function update_form()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->data = $this->m_credentials->read();
         output($this->response);
     }
 
     private function update()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->m_credentials->update();
         if ($this->response->meta->format == 'json') {
             $this->response->data = $this->m_credentials->read();

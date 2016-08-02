@@ -387,21 +387,29 @@ if (! function_exists('copy_to_windows')) {
             $username = $temp[0];
             if (!empty($temp[1])) {
                 $domain = $temp[1] . '/';
+            } else {
+                $domain = '';
             }
             unset($temp);
             $command = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ' . $credentials->credentials->password . ' -c "c:\\windows\\' . $source . '"';
             exec($command, $output, $return_var);
-            if ($return_var == 0) {
-                $log->message = 'Windows attempt to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
-                $log->severity = 7;
-                stdlog($log);
-                return true;
-            } else {
-                $log->message = 'Windows attempt to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                $log->severity = 5;
-                stdlog($log);
-                return false;
+            if ($display == 'y') {
+                echo 'DEBUG - Windows Copy Command: ' . str_replace($credentials->credentials->password, '******', $command) . "\n";
             }
+            return true;
+            # NOTE - We expect this to report that it fails as paexec attempts to EXECUTE the file.
+            # In this function, we just want the file copied to the target, which does appear to work as it should.
+            // if ($return_var == 0) {
+            //     $log->message = 'Windows attempt to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+            //     $log->severity = 7;
+            //     stdlog($log);
+            //     return true;
+            // } else {
+            //     $log->message = 'Windows attempt to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows.';
+            //     $log->severity = 5;
+            //     stdlog($log);
+            //     return false;
+            // }
         }
     }
 }

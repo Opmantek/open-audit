@@ -79,6 +79,12 @@ class scripts extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->data = $this->m_scripts->read();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
@@ -92,6 +98,11 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         # include our scripts options
         include 'include_scripts_options.php';
         $this->response->included = array();
@@ -128,11 +139,14 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
-        #$this->response->meta->format = 'json';
-        #output($this->response);
         $this->response->meta->id = $this->m_scripts->create();
         if (!empty($this->response->meta->id)) {
-            redirect('/scripts/');
+            if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_scripts->read();
+                output($this->response);
+            } else {
+                redirect('scripts');
+            }
         } else {
             log_error('ERR-0009');
             output($this->response);
@@ -164,6 +178,7 @@ class scripts extends MY_Controller
         }
         $this->m_scripts->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_scripts->read();
             output($this->response);
         } else {
             redirect('scripts');
@@ -178,11 +193,35 @@ class scripts extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_scripts->delete();
+        # do not allow deletion of default Scripts
+        $script = $this->m_scripts->read();
+        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            if ($this->response->meta->format == 'json') {
+                output($this->response);
+            } else {
+                redirect($this->response->meta->collection);
+            }
+            exit();
+        }
+        if ($this->m_scripts->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('scripts');
+            redirect($this->response->meta->collection);
         }
     }
 
@@ -203,20 +242,4 @@ class scripts extends MY_Controller
         header('Content-Transfer-Encoding: binary');
         echo $script;
     }
-
-    # not implemented
-    private function bulk_update_form()
-    {
-        // $this->response->format = 'json';
-        // $this->response->debug = true;
-        // $this->response->id = '';
-        // $temp_ids = array();
-        // foreach ($_POST['ids'] as $temp) {
-        //     $temp_ids[] = $temp;
-        // }
-        // $this->response->id = implode(',', $temp_ids);
-        // output($this->response);
-    }
-
-
 }

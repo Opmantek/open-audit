@@ -472,6 +472,7 @@ class discovery extends CI_Controller
             // process the scan details and call the discovery script
             $this->load->model('m_oa_config');
             $this->m_oa_config->load_config();
+            $this->load->helper('network_helper');
 
             $return_var = "";
             $output = "";
@@ -509,7 +510,14 @@ class discovery extends CI_Controller
             stdlog($log_details);
 
             // add to the list of blessed subnets
-            $this->m_oa_config->update_blessed($subnet_range);
+            if (strpos($subnet_range, '/') !== false) {
+                $this->m_oa_config->update_blessed($subnet_range);
+            } else {
+                if (filter_var($subnet_range, FILTER_VALIDATE_IP) !== false) {
+                    $temp = network_details($subnet_range.'/30');
+                    $this->m_oa_config->update_blessed($temp->network.'/'.$temp->network_slash);
+                }
+            }
 
             // we encode the supplied credentials and store them in the database
             // the script will simply pass back the timestamp and the credentials will be retrieved and used
@@ -537,12 +545,6 @@ class discovery extends CI_Controller
                 $encode['location'] = $_POST['location'];
             } else {
                 $encode['location'] = '';
-            }
-
-            if (isset($_POST['type']) and $_POST['type'] == 'device' and isset($_POST['system_id']) and $_POST['system_id'] > '') {
-                // we are auditing a single device that exists in the DB
-                // update the device access credentials
-                $this->m_system->update_credentials($credentials, $_POST['system_id']);
             }
 
             if (isset($this->user->full_name)) {
@@ -654,7 +656,7 @@ class discovery extends CI_Controller
             }
 
             if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
-                if ($subnet_range > '') {
+                if ($subnet_range != '') {
                     if ($display == 'y') {
                         // run the script and wait for the output so we can echo it.
                         $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " 2>&1";
@@ -682,14 +684,23 @@ class discovery extends CI_Controller
                         exit();
                     } else {
                         // run the script and continue (do not wait for result)
-                        $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                        #$command_string = "nohup $filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                        $command_string = "$filepath/discover_subnet.sh subnet_range=$subnet_range url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                        if (php_uname('s') == 'Linux') {
+                            $command_string = 'nohup ' . $command_string;
+                        }
                         @exec($command_string, $output, $return_var);
                         if ($return_var != '0') {
                             $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has failed';
                             $log_details->message = $error;
                             stdlog($log_details);
+                        } else {
+                            $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has started';
+                            $log_details->message = $error;
+                            stdlog($log_details);
                         }
                     }
+
                     $command_string = null;
                     $output = null;
                     $return_var = null;
@@ -779,26 +790,25 @@ class discovery extends CI_Controller
 
             if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
                 if ($display == 'y') {
-                    echo "\nAudit submission from an IP (" . $_SERVER['REMOTE_ADDR'] . ") not in the list of blessed subnets, exiting.\n";
+                    $log_details->message = "Audit submission from an IP (" . $_SERVER['REMOTE_ADDR'] . ") not in the list of blessed subnets, exiting.";
+                    echo "\n" . $log_details->message . "\n";
+                    stdlog($log_details);
                 }
                 exit;
             }
 
             $this->load->helper('url');
             $this->load->model('m_credentials');
-            // below should be loaded in the constructor
-            // $this->load->model('m_oa_config');
-            // $this->m_oa_config->load_config();
 
             if ($display == 'y') {
                 echo 'DEBUG - <a href=\''.base_url()."index.php/discovery/discover_subnet'>Back to input page</a>\n";
                 echo 'DEBUG - <a href=\''.base_url()."index.php'>Front Page</a>\n";
             }
 
-            if (php_uname('s') === 'Windows NT') {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'\\open-audit\\other';
+            if (php_uname('s') != 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '/other';
             } else {
-                $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__))))).'/open-audit/other';
+                $filepath = $this->config->config['base_path'] . '\\other';
             }
 
             $this->load->helper('xml');
@@ -824,6 +834,7 @@ class discovery extends CI_Controller
             $this->load->model('m_audit_log');
             $this->load->model('m_change_log');
             $this->load->model('m_devices_components');
+            $this->load->model('m_devices');
             $timestamp = date('Y-m-d H:i:s');
 
             $count = 0;
@@ -859,7 +870,9 @@ class discovery extends CI_Controller
                         $details->domain = '';
                         $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                         $details->hostname = '';
-                        $details = dns_validate($details, $display);
+                        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                            $details = dns_validate($details, $display);
+                        }
                         $details->id = '';
                         $details->id = $this->m_system->find_system($details);
                         $details->last_seen_user = '';
@@ -880,44 +893,21 @@ class discovery extends CI_Controller
 
                         // Device specific credentials
                         if (!empty($details->id)) {
-                            $device_specific_credentials = $this->m_system->get_access_details($details->id);
-                            $device_specific_credentials = $this->encrypt->decode($device_specific_credentials);
-                            $specific = json_decode($device_specific_credentials);
-                            unset($device_specific_credentials);
+                            $temp = $this->m_devices_components->read(intval($details->id), 'y', 'credential', '', '*');
+                            if (count($temp) > 0) {
+                                foreach ($temp as $credential) {
+                                    $credentials[] = $credential;
+                                }
+                            }
+                            unset($temp);
                         }
-                        // 1.12.6
-                        if (!empty($specific)) {
-                            if (!empty($specific->ssh_username) and !empty($specific->ssh_password)) {
-                                $credential = new stdClass();
-                                $credential->source = 'device specific';
-                                $credential->type = 'ssh';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = $specific->ssh_username;
-                                $credential->credentials->password = $specific->ssh_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($specific->windows_username) and !empty($specific->windows_password) and !empty($specific->windows_domain)) {
-                                $credential = new stdClass();
-                                $credential->source = 'device specific';
-                                $credential->type = 'windows';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = $specific->windows_domain . '\\' . $specific->windows_username;
-                                $credential->credentials->password = $specific->windows_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($specific->snmp_community)) {
-                                $credential = new stdClass();
-                                $credential->source = 'device specific';
-                                $credential->type = 'snmp';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->community = $specific->snmp_community;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
+
+                        // Credential Sets
+                        $temp = $this->m_credentials->collection();
+                        if (count($temp) > 0) {
+                            $credentials = array_merge($credentials, $temp);
                         }
-                        unset($specific);
+                        unset($temp);
 
                         // supplied credentials
                         $sql = '/* discovery::process_subnet */ SELECT temp_value FROM oa_temp WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\' ORDER BY temp_id DESC LIMIT 1';
@@ -928,35 +918,6 @@ class discovery extends CI_Controller
                         if (isset($supplied_credentials) and $supplied_credentials > '') {
                             $supplied_credentials = $this->encrypt->decode($supplied_credentials);
                             $supplied_credentials = json_decode($supplied_credentials);
-                            if (!empty($supplied_credentials->snmp_community)) {
-                                $credential = new stdClass();
-                                $credential->source = 'supplied';
-                                $credential->type = 'snmp';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->community = $supplied_credentials->snmp_community;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($supplied_credentials->ssh_username)) {
-                                $credential = new stdClass();
-                                $credential->source = 'supplied';
-                                $credential->type = 'ssh';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = @$supplied_credentials->ssh_username;
-                                $credential->credentials->password = @$supplied_credentials->ssh_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
-                            if (!empty($supplied_credentials->windows_username)) {
-                                $credential = new stdClass();
-                                $credential->source = 'supplied';
-                                $credential->type = 'windows';
-                                $credential->credentials = new stdClass();
-                                $credential->credentials->username = @$supplied_credentials->windows_domain . '\\' . @$supplied_credentials->windows_username;
-                                $credential->credentials->password = @$supplied_credentials->windows_password;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
                             $details->last_seen_user =  @$supplied_credentials->last_user;
                             $details->network_address =   @$supplied_credentials->network_address;
                             $details->limit = (int)@$supplied_credentials->limit;
@@ -967,24 +928,18 @@ class discovery extends CI_Controller
                             $details->location_id = (int)@$supplied_credentials->location;
                             $details->use_https = (string)@$supplied_credentials->use_https;
                         }
-
-                        // 1.12.6 - credential sets
-                        $temp = $this->m_credentials->collection();
-                        if (!empty($temp)) {
-                            foreach ($temp as $item) {
-                                $credential = new stdClass();
-                                $credential->source = 'set';
-                                $credential->type = $item->attributes->type;
-                                $credential->credentials = $item->attributes->credentials;
-                                $credentials[] = $credential;
-                                unset($credential);
-                            }
+                        # TODO - replace the ugly code below
+                        $creds = array();
+                        foreach ($credentials as $credential) {
+                            $creds[] = $credential->attributes;
                         }
-                        unset($temp);
+                        unset($credentials);
+                        $credentials = $creds;
+                        unset($creds);
 
                         // default Open-AudIT credentials
-                        $default = $this->m_oa_config->get_credentials();
-                        unset($default);
+                        // $default = $this->m_oa_config->get_credentials();
+                        // unset($default);
 
                         if (intval($details->count) >= intval($details->limit)) {
                             # we have discovered the requested number of devcies
@@ -992,7 +947,14 @@ class discovery extends CI_Controller
                             stdlog($log_details);
                             return;
                         }
-                        $supplied_credentials->count++;
+                        if (empty($supplied_credentials)) {
+                            $supplied_credentials = new stdClass();
+                        }
+                        if (empty($supplied_credentials->count)) {
+                            $supplied_credentials->count = 0;
+                        } else {
+                            $supplied_credentials->count++;
+                        }
 
                         $sql = '/* discovery::process_subnet */ UPDATE oa_temp SET temp_value = ? WHERE temp_name = \'Subnet Credentials - '.$details->subnet_range.'\' and temp_timestamp = \''.$details->subnet_timestamp.'\'';
                         $data_in = json_encode($supplied_credentials);
@@ -1168,11 +1130,13 @@ class discovery extends CI_Controller
                         if (empty($details->type) and 
                             empty($details->snmp_oid) and 
                             empty($details->uuid) and 
-                            stripos($details->nmap_result, 'Discovered open port 5060') !== false) {
+                            stripos($details->nmap_result, '5060/') !== false) {
                             $details->type = 'voip phone';
                         }
 
-                        $details = dns_validate($details, $display);
+                        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                            $details = dns_validate($details, $display);
+                        }
                         $details->id = $this->m_system->find_system($details, $display);
 
                         if ($display == 'y') {
@@ -1248,44 +1212,48 @@ class discovery extends CI_Controller
                         }
 
                         if (!empty($credentials_snmp) and $details->snmp_status == 'true') {
-                            if ($credentials_snmp->credentials->version == '2') {
-                                $update = new stdClass();
-                                $update->ip_address = $details->ip;
-                                $update->snmp_community = $credentials_snmp->credentials->community;
-                                $update->snmp_version =   $credentials_snmp->credentials->version;
-                                $this->m_system->update_credentials($update, $details->id);
-                                unset($update);
-                                $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->id.')';
-                                stdlog($log_details);
-                            }
+                            $log_details->message = 'SNMP credential update for '.$details->ip.' (System ID '.$details->id.')';
+                            stdlog($log_details);
+                            $this->m_devices->sub_resource_create($details->id, 'credential', $credentials_snmp);
                         }
 
                         if (!empty($credentials_ssh) and $details->ssh_status == 'true') {
-                            $update = new stdClass();
-                            $update->ip_address = $details->ip;
-                            $update->ssh_username = $credentials_ssh->credentials->username;
-                            $update->ssh_password = $credentials_ssh->credentials->password;
-                            $this->m_system->update_credentials($update, $details->id);
-                            unset($update);
                             $log_details->message = 'SSH credential update for '.$details->ip.' (System ID '.$details->id.')';
                             stdlog($log_details);
+                            $this->m_devices->sub_resource_create($details->id, 'credential', $credentials_ssh);
                         }
 
                         if (isset($credentials_windows) and $details->wmi_status == 'true') {
-                            $update = new stdClass();
-                            $update->ip_address = $details->ip;
-                            $update->windows_username = $credentials_windows->credentials->username;
-                            $update->windows_password = $credentials_windows->credentials->password;
-                            #$update->windows_domain = $details->windows_domain;
-                            $this->m_system->update_credentials($update, $details->id);
-                            unset($update);
                             $log_details->message = "Windows credential update for $details->ip (System ID $details->id)";
                             stdlog($log_details);
+                            $this->m_devices->sub_resource_create($details->id, 'credential', $credentials_windows);
                         }
 
                         // $details->id is now set
                         if ($display == 'y') {
-                            echo "DEBUG - System ID <a href='".base_url()."index.php/main/system_display/".$details->id."'>".$details->id."</a>\n";
+                            echo "DEBUG - System ID <a href='".base_url()."index.php/devices/".$details->id."'>".$details->id."</a>\n";
+                        }
+
+                        // process and store the Nmap result
+                        $nmap_result = array();
+                        foreach (explode(',', $details->nmap_ports) as $port) {
+                            $temp = explode('/', $port);
+                            $nmap_item = new stdClass();
+                            $nmap_item->ip = (string)$details->ip;
+                            $nmap_item->port = $temp[0];
+                            $nmap_item->protocol = $temp[1];
+                            $nmap_item->program = $temp[2];
+                            if ($nmap_item->port != '') {
+                                $nmap_result[] = $nmap_item;
+                            }
+                            unset($nmap_item);
+                            unset($temp);
+                        }
+                        if (count($nmap_result) > 0) {
+                            $input = new stdClass();
+                            $input->item = array();
+                            $input->item = $nmap_result;
+                            $this->m_devices_components->process_component('nmap', $details, $input, $display);
                         }
 
                         // insert a blank to indicate we're finished this part of the discovery
@@ -1353,7 +1321,8 @@ class discovery extends CI_Controller
                                     unlink($this->config->config['base_path'] . '/other/' . $source_name);
                                 }
                             } else {
-                                if (strtolower($_SERVER['USERPROFILE']) == 'c:\windows\system32\config\systemprofile') {
+                                #if (strtolower($_SERVER['USERPROFILE']) == 'c:\windows\system32\config\systemprofile') {
+                                if (exec('whoami') == 'nt authority\system') {
                                     # We're running on the LocalSystem account.
                                     # We cannot copy the audit script to the target and then run it,
                                     # We _must_ run the script locally and use $details->ip as the script target
@@ -1403,6 +1372,7 @@ class discovery extends CI_Controller
                                     # We are running as something other than the LocalSystem account.
                                     # Therefore we _should_ be able to copy the audit script to tthe target and start it there
                                     # and therefore retrieve ALL information
+                                    $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                                     $source = 'audit_windows_' . $ts . '.vbs';
                                     $command = "cscript \\\\" . $details->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id . " self_delete=y";

@@ -89,7 +89,7 @@ $item = $this->response->data[0];
             </div>
         </div>
 
-        <?php if ($item->attributes->type == 'ssh' or $item->attributes->type == 'windows') { ?>
+        <?php if ($item->attributes->type == 'ssh' or $item->attributes->type == 'ssh_key' or $item->attributes->type == 'windows') { ?>
         <div class="form-group">
             <label for="credentials.username" class="col-sm-2 control-label">Username</label>
             <div class="col-sm-4">
@@ -116,6 +116,17 @@ $item = $this->response->data[0];
                         <button id="edit_credentials.password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                     </span>
                     <?php } ?>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+
+        <?php if ($item->attributes->type == 'ssh_key') { ?>
+        <div class="form-group">
+            <label for="credentials.community" class="col-sm-2 control-label">SSH Key</label>
+            <div class="col-sm-4">
+                <div class="col-sm-8 input-group">
+                    <textarea tabindex="4" class="form-control" rows="3" id="credentials.ssh_key" name="credentials.ssh_key" placeholder="Key Not Shown" disabled></textarea>
                 </div>
             </div>
         </div>
@@ -260,12 +271,6 @@ $item = $this->response->data[0];
                 </div>
             </div>
         </div>
-
-
-
-
-
-
     </form>
   </div>
 </div>

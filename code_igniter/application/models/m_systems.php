@@ -63,7 +63,7 @@ class M_systems extends MY_Model
 
     public function search($search_term = '', $group_id = '0')
     {
-        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $sql = '';
         $result_set = array();
         foreach ($tables as $table) {
@@ -82,13 +82,13 @@ class M_systems extends MY_Model
             $select_string = mb_substr($select_string, 1);
             // now create the search statement
             if ($table != 'system') {
-                $sql = "SELECT DISTINCT(system.id), system.icon, system.hostname, system.domain, system.ip, system.type, $select_string
+                $sql = "SELECT DISTINCT(system.id) AS `system.id`, system.icon, system.hostname, system.domain, system.ip, system.type, `$table`.id, $select_string
 			            FROM system, oa_group_sys, $table
-			            WHERE system.id = $table.system_id AND system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string ) ";
+			            WHERE system.id = $table.system_id AND system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string )  AND `$table`.current = 'y' GROUP BY `$table`.`id`";
             } else {
-                $sql = "SELECT DISTINCT(system.id), system.icon, system.hostname, system.domain, system.ip, system.type, $select_string
+                $sql = "SELECT DISTINCT(system.id) AS `system.id`, system.icon, system.hostname, system.domain, system.ip, system.type, $select_string
                         FROM system, oa_group_sys
-                        WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string ) ";
+                        WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string )";
             }
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
@@ -100,7 +100,7 @@ class M_systems extends MY_Model
                     foreach ($fields as $field) {
                         // for each field in this table, check to see if the result matches the search
                         $i = new stdClass();
-                        $i->system_id = $row->id;
+                        $i->{'system.id'} = $row->{'system.id'};
                         $i->icon = $row->icon;
                         $i->hostname = $row->hostname;
                         $i->domain = $row->domain;

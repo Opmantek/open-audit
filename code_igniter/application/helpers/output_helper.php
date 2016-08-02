@@ -52,8 +52,12 @@ if (! function_exists('output')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
-        #$CI->response = output_convert($CI->response);
-        if (!empty($CI->response->data)) {
+        if ($CI->response->meta->id == 888888888888) {
+            $CI->response->meta->id = NULL;
+            unset($CI->response->data);
+            $CI->response->data = array();
+        }
+        if (count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
         }
         if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {

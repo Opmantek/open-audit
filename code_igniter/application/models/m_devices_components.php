@@ -94,6 +94,7 @@ class M_devices_components extends MY_Model
         // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
         //     $filter = 'AND ' . $filter;
         // }
+
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {
@@ -130,24 +131,47 @@ class M_devices_components extends MY_Model
             $sql = "SELECT $properties FROM system WHERE id = ? $filter";
             $data = array($id);
         }
-        
+
         $result = false;
         if ($sql != '') {
-            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
+            if ($table == 'credential') {
+                $this->load->library('encrypt');
+                for ($i=0; $i < count($result); $i++) { 
+                    $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+                }
+            }
             $result = $this->from_db($result);
+
             if ($properties != '*' and !stripos($properties, ',') and $table == 'system') {
                 # the request is for a single value from the system table - return only this value (as a string)
                 $temp_result = $result[0]->$properties;
                 unset($result);
                 $result = (string)$temp_result;
                 unset($temp_result);
+            } else {
+                $result = $this->format_data($result, 'devices/' . $id . '/' . $table);
             }
         }
-        $result = $this->format_data($result, 'devices/' . $id . '/' . $table);
         return($result);
     }
+
+    // public function credentials_read($id, $type = '')
+    // {
+    //     if (empty($id)) {
+    //         return false;
+    //     }
+    //     $this->load->library('encrypt');
+    //     $sql = "SELECT * FROM credential WHERE system_id = ?";
+    //     $data = array(intval($id));
+    //     $query = $this->db->query($sql, $data);
+    //     $result = $query->result();
+    //     for ($i=0; $i < count($result); $i++) { 
+    //         $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+    //     }
+    //     return($result);
+    // }
 
     public function match_columns($table)
     {
@@ -184,6 +208,9 @@ class M_devices_components extends MY_Model
         }
         if ($table == 'network') {
                 $match_columns = array('mac');
+        }
+        if ($table == 'nmap') {
+                $match_columns = array('protocol', 'ip', 'port', 'program');
         }
         if ($table == 'ip') {
                 $match_columns = array('ip', 'mac', 'netmask');

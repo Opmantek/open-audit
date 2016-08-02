@@ -107,9 +107,9 @@ if (!empty($this->response->data)) {
 </table>
 <?php
 }
-if (!empty($this->response->error)) {
+if (!empty($this->response->errors)) {
     echo "<pre>\n";
-    print_r($this->response->error);
+    print_r($this->response->errors);
     echo "</pre>\n";
 }
 ?>

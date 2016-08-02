@@ -237,7 +237,13 @@ class Admin_system extends MY_Controller
         $this->load->helper('snmp_oid');
         $details = new stdClass();
         $details->id = $this->uri->segment(3, 0);
-        $encrypted_access_details = $this->m_system->get_access_details($details->id);
+        $credentials = $this->m_devices_components->read($details->id, 'y', 'credential');
+        foreach ($credentials as $credential) {
+            if (!empty($credential->type and $credential->type == 'snmp')) {
+                break;
+            }
+        }
+
         $details->hostname = $this->m_devices_components->read($details->id, 'y', 'system', '', 'hostname');
         if ($details->hostname == '-') {
             $details->hostname = '';
@@ -267,8 +273,18 @@ class Admin_system extends MY_Controller
 		<pre>";
 
         # audit the device via snmp
-        if ($temp_array = get_snmp($details)) {
-            $details = $temp_array['details'];
+        
+        #if ($temp_array = get_snmp($details)) {
+        if ($temp_array = snmp_audit($details->ip, $credential->attributes, 'y')) {
+            if (!empty($temp_array['details'])) {
+                foreach ($temp_array['details'] as $key => $value) {
+                    if (!empty($value)) {
+                        $details->$key = $value;
+                    }
+                }
+                $details->last_seen_by = 'snmp';
+                $details->audits_ip = '127.0.0.1';
+            }
         } else {
             echo "Error - nothing returned when SNMP routine executed.";
         }
@@ -284,7 +300,10 @@ class Admin_system extends MY_Controller
         $details->last_seen = date('Y-m-d G:i:s');
         $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
-        $details = dns_validate($details, 'y');
+
+        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+            $details = dns_validate($details, 'y');
+        }
 
         #unset($details->type);
         unset($details->show_output);

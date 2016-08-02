@@ -198,7 +198,9 @@ class cli extends CI_Controller
                 $device->hostname = $device->host;
                 $device->ip = $device->host;
                 $device->fqdn = $device->host;
-                $device = dns_validate($device);
+                if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                    $device = dns_validate($device);
+                }
 
 
                 // if ((string) $device->host !== '127.0.0.1') {

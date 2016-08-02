@@ -270,6 +270,7 @@ if [[ "$hosts" != "" ]]; then
 		p443_status="false"
 		tel_status="false"
 		host_is_up="false"
+		nmap_ports=""
 
 		# options
 		# -vv Very Verbose
@@ -280,14 +281,18 @@ if [[ "$hosts" != "" ]]; then
 		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 90 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
+			test=$(echo $line | grep "tcp.*open")
+			if [[ "$test" != "" ]]; then
+				port=$(echo $line | awk '{print $1}')
+				program=$(echo $line | awk '{print $3}')
+				nmap_ports="$nmap_ports,$port/$program"
+			fi
+
 			NEEDLE="/tcp"
 			if [[ "$line" == *"$NEEDLE"* ]]; then
 				NEEDLE="open"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					host_is_up="true"
-					if [ "$debugging" -gt 1 ]; then
-						echo "Host $host is up."
-					fi
 				fi
 			fi
 
@@ -321,9 +326,6 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="open"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					ssh_status="true"
-					if [ "$debugging" -gt 1 ]; then
-						echo "Host $host SSH status os true."
-					fi
 				fi
 			fi
 
@@ -332,9 +334,6 @@ if [[ "$hosts" != "" ]]; then
 				NEEDLE="open"
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					wmi_status="true"
-					if [ "$debugging" -gt 1 ]; then
-						echo "Host $host WMI status os true."
-					fi
 				fi
 			fi
 
@@ -345,17 +344,19 @@ if [[ "$hosts" != "" ]]; then
 		command=$(nmap -n -sU -p161 "$timing" --host-timeout 90 "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
 			snmp_status="true"
+			nmap_ports="$nmap_ports,161/udp"
 			if [ "$host_is_up" == "false" ] && [ "$debugging" -gt 1 ]; then
 				echo "SNMP only detected host $host is up."
 			fi
 			if [ "$debugging" -gt 1 ]; then
-				echo "Host $host SNMP status os true."
+				echo "Host $host SNMP status is true."
 			fi
 			host_is_up="true"
 		fi
 
 		result=""
 		if [ "$host_is_up" == "true" ]; then
+			nmap_ports=${nmap_ports#?}
 			result="	<device>"$'\n'
 			result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
 			result="$result		<ip>$host</ip>"$'\n'
@@ -368,7 +369,8 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
 			result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
 			result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
-			result="$result     <nmap_result><![CDATA[$nmap_scan]]></nmap_result>"$'\n'
+			result="$result     <nmap_ports><![CDATA[$nmap_ports]]></nmap_ports>"$'\n'
+			#result="$result     <nmap_result><![CDATA[$nmap_result]]></nmap_result>"$'\n'
 			result="$result	</device>"
 			# add the result for this device to the result_file var for display or file output later on
 			result_file="$result_file"$'\n'"$result"
@@ -388,7 +390,7 @@ if [[ "$hosts" != "" ]]; then
 					wget $sequential -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
 				fi
 				if [[ $(uname) == "Darwin" ]]; then
-					curl --data "form_details=$result" "$url"
+					curl --data "form_details=$result" "$url" -o curl_output.txt
 				fi
 			else
 				log_entry="IP $host responding."

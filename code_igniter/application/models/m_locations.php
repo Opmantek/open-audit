@@ -46,7 +46,7 @@ class M_locations extends MY_Model
         $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'oa_org.'.trim($temp[$i]);
+                $temp[$i] = 'oa_location.'.trim($temp[$i]);
             } else {
                 $temp[$i] = trim($temp[$i]);
             }
@@ -55,7 +55,7 @@ class M_locations extends MY_Model
         return($properties);
     }
 
-    private function build_filter() {
+    private function build_filter($filter = '') {
         $CI = & get_instance();
         $reserved = ' properties limit resource action sort current offset format ';
         $filter = '';
@@ -86,7 +86,7 @@ class M_locations extends MY_Model
         return ($result);
     }
 
-    public function read_sub_resource($id = '')
+    public function sub_resource($id = '')
     {
         if ($id == '') {
             $CI = & get_instance();
@@ -94,44 +94,50 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($CI->response->meta->collection == 'locations') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-            $sort = $CI->response->meta->sort;
-            $limit = $CI->response->meta->limit;
-        } else {
-            $id = intval($id);
-            $sort = '';
-            $limit = '';
-        }
-        $filter = $this->build_filter();
-        $sql = "SELECT type, count(system.id) as device_count FROM system WHERE system.location_id = ? GROUP BY type " . $sort . " " . $limit;
-        $data = array($id);
+        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
+        $data = array((string)$id);
         $result = $this->run_sql($sql, $data);
-        if (count($result) == 0) {
-            return false;
-        } else {
-            return ($result);
-        }
+        $result = $this->format_data($result, 'devices');
+        return $result;
     }
 
     public function collection()
     {
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'locations') {
-            # get the total location count
-            $sql = "SELECT COUNT(*) as `count` FROM oa_location";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
-            # and set a limit
-            $limit = $CI->response->meta->internal->limit;
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'locations') {
+            $filter = $this->build_filter();
+            $properties = $this->build_properties();
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+
+            if ($CI->response->meta->limit == '') {
+                $limit = '';
+            } else {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->offset != '') {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
+            }
         } else {
+            $properties = '*';
+            $filter = '';
+            $sort = '';
             $limit = '';
         }
 
-        $sql = "SELECT * FROM oa_location GROUP BY `id` " . $limit;
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `oa_location`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (!empty($CI->response->meta->total)) {
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+        # get the response data
+        $sql = "SELECT " . $properties . " FROM `oa_location` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'locations');
         return ($result);

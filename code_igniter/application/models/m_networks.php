@@ -97,13 +97,17 @@ class M_networks extends MY_Model
         $sql = "SELECT `name` FROM `networks` WHERE `id` = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $name = $result[0]->name;
-        if ($name != '') {
-            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
-            $data = array((string)$name);
-            $result = $this->run_sql($sql, $data);
-            $result = $this->format_data($result, 'devices');
-            return $result;
+        if (count($result) > 0) {
+            $name = $result[0]->name;
+            if ($name != '') {
+                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
+                $data = array((string)$name);
+                $result = $this->run_sql($sql, $data);
+                $result = $this->format_data($result, 'devices');
+                return $result;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -117,10 +121,6 @@ class M_networks extends MY_Model
         if (!empty($CI->response->meta->received_data->attributes->name)) {
             $test = network_details($CI->response->meta->received_data->attributes->name);
         } else {
-            log_error('ERR-0009', 'm_networks::create_network');
-            return false;
-        }
-        if (!empty($test->error)) {
             log_error('ERR-0009', 'm_networks::create_network');
             return false;
         }
@@ -142,18 +142,41 @@ class M_networks extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $CI->response->meta->internal->filter = $filter;
-        $properties = $this->build_properties();
-        # get the total number
-        $sql = "SELECT count(*) AS count FROM `networks` " . $filter . " " . $CI->response->meta->internal->groupby;
-        $result = $this->run_sql($sql, array());
-        $CI->response->meta->total = intval($result[0]->count);
-
-        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM networks" . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'networks') {
+            $filter = $this->build_filter();
+            $properties = $this->build_properties();
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+            if ($CI->response->meta->limit == '') {
+                $limit = '';
+            } else {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->offset != '') {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
+            }
+        } else {
+            $properties = '*';
+            $filter = '';
+            $sort = '';
+            $limit = '';
+        }
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `networks`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (!empty($CI->response->meta->total)) {
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+        # get the response data
+        $sql = "SELECT " . $properties . " FROM `networks` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'networks');
-        return $result;
+        return ($result);
     }
 
     public function update()
@@ -175,13 +198,19 @@ class M_networks extends MY_Model
         return;
     }
 
-    public function delete()
+    public function delete($id = '')
     {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $CI = & get_instance();
         $sql = "DELETE FROM `networks` WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
+        $data = array(intval($id));
         $this->run_sql($sql, $data);
-        return;
+        return true;
     }
 
     private function count_data($result)

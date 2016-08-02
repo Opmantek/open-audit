@@ -457,7 +457,7 @@ class M_oa_location extends MY_Model
         $group_id = intval($group_id);
         $limit = intval($limit);
         # get the devices in the group, apply limit if requested
-        $sql = "SELECT type, location_id FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = $group_id LIMIT $limit";
+        $sql = "SELECT type, location_id FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = $group_id AND system.status = 'production' LIMIT $limit";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $types = $query->result();
@@ -511,7 +511,11 @@ class M_oa_location extends MY_Model
         foreach ($types as $type) {
             $device_type = $type->type;
             $id = $type->location_id;
-            $new_locations[$id]->infoDisplay->$device_type++;
+            if (empty($new_locations[$id]->infoDisplay->{$device_type})) {
+                $new_locations[$id]->infoDisplay->{$device_type} = 1;
+            } else {
+                $new_locations[$id]->infoDisplay->{$device_type}++;
+            }
         }
         # remove any locations without devices
         foreach ($new_locations as $location) {

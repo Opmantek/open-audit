@@ -79,10 +79,18 @@ class networks extends MY_Controller
 
     private function read()
     {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
         $this->response->meta->sub_resource = 'devices';
         $this->response->data = $this->m_networks->read();
-        $this->response->included = $this->response->networks->sub_resource();
-        $this->response->meta->filtered = count($this->response->data);
+        if (!empty($this->response->data)) {
+            $this->response->included = $this->m_networks->sub_resource();
+            $this->response->meta->filtered = count($this->response->data);
+        }
         output($this->response);
     }
 
@@ -94,6 +102,11 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
         output($this->response);
     }
 
@@ -107,7 +120,12 @@ class networks extends MY_Controller
         }
         $this->response->meta->id = $this->m_networks->create();
         if (!empty($this->response->meta->id)) {
-            redirect('/networks');
+            if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_networks->read();
+                output($this->response);
+            } else {
+                redirect('/networks');
+            }
         } else {
             log_error('ERR-0009');
             output($this->response);
@@ -140,6 +158,7 @@ class networks extends MY_Controller
         }
         $this->m_networks->update();
         if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_networks->read();
             output($this->response);
         } else {
             redirect('networks');
@@ -154,11 +173,19 @@ class networks extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->m_networks->delete();
+        if ($this->m_networks->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
         if ($this->response->meta->format == 'json') {
             output($this->response);
         } else {
-            redirect('networks');
+            redirect($this->response->meta->collection);
         }
     }
 }

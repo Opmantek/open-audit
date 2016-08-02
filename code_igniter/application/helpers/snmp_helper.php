@@ -90,23 +90,29 @@ if (!function_exists('snmp_credentials')) {
         foreach ($credentials as $credential) {
             $from = ' ';
             if (!empty($credential->source)) {
-                $from = ' from ' . $credential->source . ' ';
+                $from = 'from ' . $credential->source;
             }
             if (!empty($credential->name)) {
-                $from = ' named ' . $credential->name . ' ';
+                $from = 'named ' . $credential->name;
             }
-            if ($credential->type == 'snmp') {
+            if (!empty($credential->type) and $credential->type == 'snmp') {
                 if (@snmp2_get($ip, $credential->credentials->community, "1.3.6.1.2.1.1.2.0", $timeout, $retries)) {
                     $credential->credentials->version = 2;
-                    $log->message = "Credential set for SNMPv2" . $from . "working on " . $ip;
+                    $log->message = "Credential set for SNMPv2 " . $from . " working on " . $ip;
                     stdlog($log);
                     return $credential;
+                } else {
+                    $log->message = "Credential set for SNMPv2 " . $from . " not working on " . $ip;
+                    stdlog($log);
                 }
                 if (@snmpget($ip, $credential->credentials->community, "1.3.6.1.2.1.1.2.0", $timeout, $retries)) {
                     $credential->credentials->version = 1;
-                    $log->message = "Credential set for SNMPv1" . $from . "working on " . $ip;
+                    $log->message = "Credential set for SNMPv1 " . $from . " working on " . $ip;
                     stdlog($log);
                     return $credential;
+                } else {
+                    $log->message = "Credential set for SNMPv1 " . $from . " not working on " . $ip;
+                    stdlog($log);
                 }
             }
         }
@@ -118,7 +124,7 @@ if (!function_exists('snmp_credentials')) {
             if (!empty($credential->name)) {
                 $from = ' named ' . $credential->name . ' ';
             }
-            if ($credential->type == 'snmp_v3') {
+            if (!empty($credential->type) and $credential->type == 'snmp_v3') {
                 $sec_name = $credential->credentials->security_name ?: '';
                 $sec_level = $credential->credentials->security_level ?: '';
                 $auth_protocol = $credential->credentials->authentication_protocol ?: '';
@@ -128,9 +134,12 @@ if (!function_exists('snmp_credentials')) {
                 $oid = "1.3.6.1.2.1.1.2.0";
                 if (@snmp3_get( $ip, $sec_name ,$sec_level ,$auth_protocol ,$auth_passphrase ,$priv_protocol , $priv_passphrase , $oid, $timeout, $retries)) {
                     $credential->credentials->version = 3;
-                    $log->message = "Credential set for SNMPv3 from" . $from . "working on " . $ip;
+                    $log->message = "Credential set for SNMPv3 from " . $from . " working on " . $ip;
                     stdlog($log);
                     return $credential;
+                } else {
+                    $log->message = "Credential set for SNMPv3 from " . $from . " not working on " . $ip;
+                    stdlog($log);
                 }
             }
         }
@@ -146,6 +155,10 @@ if (!function_exists('my_snmp_get')) {
     {
         $timeout = '3000000';
         $retries = '0';
+
+        if (empty($credentials->credentials->version) or $credentials->credentials->version != 1 or $credentials->credentials->version != 2 or $credentials->credentials->version !=3) {
+            $credentials->credentials->version = 2;
+        }
         switch ($credentials->credentials->version) {
             case '1':
                 $string = @snmpget($ip, $credentials->credentials->community, $oid, $timeout, $retries);

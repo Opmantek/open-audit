@@ -78,6 +78,7 @@
                         <option value='snmp'>SNMP (v1 / v2)</option>
                         <option value='snmp_v3'>SNMP v3</option>
                         <option value='ssh'>SSH</option>
+                        <option value='ssh_key'>SSH Key</option>
                         <option value='windows'>Windows</option>
                     </select>
                 </div>
@@ -205,7 +206,24 @@ $(document).ready(function(){
                 </div>\
             </div>\
         </div>';
-    
+
+    var $ssh_key_text = '        <div class="form-group">\
+            <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
+            <div class="col-sm-4">\
+                <div class="col-sm-8 input-group">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                </div>\
+            </div>\
+        </div>\
+        <div class="form-group">\
+            <label for="data[attributes][credentials][ssh_key]" class="col-sm-2 control-label">Key</label>\
+            <div class="col-sm-4">\
+                <div class="col-sm-8 input-group">\
+                    <textarea tabindex="4" class="form-control" rows="3" id="data[attributes][credentials][ssh_key]" name="data[attributes][credentials][ssh_key]"></textarea>\
+                </div>\
+            </div>\
+        </div>';
+
     var $windows_text = '        <div class="form-group">\
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
@@ -231,6 +249,8 @@ $(document).ready(function(){
             $("#options").html($snmp_v3_text);
         } else if ($type == "ssh") {
             $("#options").html($ssh_text);
+        } else if ($type == "ssh_key") {
+            $("#options").html($ssh_key_text);
         } else if ($type == "windows") {
             $("#options").html($windows_text);
         } else {

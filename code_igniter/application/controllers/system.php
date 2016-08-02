@@ -543,7 +543,9 @@ class System extends CI_Controller
                 $details->last_seen = $timestamp;
                 $details->last_user = '';
                 $details->hostname = '';
-                $details = dns_validate($details);
+                if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                    $details = dns_validate($details);
+                }
                 $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
                 $log_details = new stdClass();
@@ -582,7 +584,9 @@ class System extends CI_Controller
                     // we received a result from SNMP, use this data to update OR insert
                     $details->last_seen_by = 'snmp';
                     $details->audits_ip = '127.0.0.1';
-                    $details = dns_validate($details);
+                    if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                        $details = dns_validate($details);
+                    }
 
                     if (isset($details->id) and !empty($details->id)) {
                         // we have a system_id and snmp details to update

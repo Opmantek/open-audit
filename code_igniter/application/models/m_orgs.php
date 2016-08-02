@@ -94,15 +94,7 @@ class M_orgs extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($CI->response->meta->internal->limit != '') {
-            $sort = $CI->response->meta->sort;
-            $limit = $CI->response->meta->limit;
-        } else {
-            $sort = '';
-            $limit = '';
-        }
-        $filter = $this->build_filter();
-        $sql = "SELECT type, count(system.id) as device_count FROM system WHERE system.org_id = ? GROUP BY type " . $sort . " " . $limit;
+        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? GROUP BY `system`.`type`";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         if (count($result) == 0) {
@@ -115,32 +107,44 @@ class M_orgs extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if ($CI->response->meta->collection == 'orgs') {
-            # TODO - enable the below filter/properties use
-            #$filter = $this->build_filter();
-            #$properties = $this->build_properties();
-            if ($CI->response->meta->internal->limit != '') {
-                $limit = $CI->response->meta->internal->limit;
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'orgs') {
+            $filter = $this->build_filter();
+            $properties = $this->build_properties();
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY id';
             } else {
-                $limit = '';
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
             }
-            # get the total org count
-            $sql = "SELECT COUNT(*) as `count` FROM oa_org WHERE oa_org.id IN (" . $CI->user->org_list . ")";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
+            if ($CI->response->meta->limit == '') {
+                $limit = '';
+            } else {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->offset != '') {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
+            }
         } else {
+            $properties = '*';
+            $filter = '';
+            $sort = '';
             $limit = '';
         }
-
-        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id " . $limit;
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `oa_org`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (!empty($CI->response->meta->total)) {
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+        # get the response data
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY o1.id " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'orgs');
         return ($result);
     }
 
-    public function delete($id)
+    public function delete($id = '')
     {
         if ($id == '') {
             $CI = & get_instance();
@@ -156,6 +160,30 @@ class M_orgs extends MY_Model
         } else {
             return false;
         }
+    }
+
+    public function create()
+    {
+        $CI = & get_instance();
+        if (empty($CI->response->meta->received_data->attributes->name)) {
+            return false;
+        } else {
+            $name = $CI->response->meta->received_data->attributes->name;
+        }
+        if (empty($CI->response->meta->received_data->attributes->parent_id)) {
+            $parent_id = 0;
+        } else {
+            $parent_id = intval($CI->response->meta->received_data->attributes->parent_id);
+        }
+        if (empty($CI->response->meta->received_data->attributes->comments)) {
+            $comments = '';
+        } else {
+            $comments = $CI->response->meta->received_data->attributes->comments;
+        }
+        $sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, '', ?)";
+        $data = array("$name", $parent_id, $comments);
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
     }
 
     public function get_orgs()

@@ -245,10 +245,6 @@ class M_devices extends MY_Model
             $sql = "SELECT location_id, oa_location.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
             $data = array($id);
 
-        } elseif ($sub_resource == 'credentials') {
-            $sql = "SELECT `access_details` FROM `system` WHERE `id` = ?";
-            $data = array($id);
-
         } elseif ($sub_resource == 'purchase') {
             $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
@@ -274,20 +270,141 @@ class M_devices extends MY_Model
             $data = array($CI->user->id);
         }
         $result = $this->run_sql($sql, $data);
-        if ($sub_resource == 'credentials' and !empty($result[0]->access_details)) {
-            $result[0]->id = "";
-            $result[0]->credentials = json_decode($this->encrypt->decode($result[0]->access_details));
-            foreach ($result[0]->credentials as $key => $value) {
-                $result[0]->$key = $value;
+
+        if ($sub_resource == 'credential') {
+            $this->load->library('encrypt');
+            for ($i=0; $i < count($result); $i++) {
+                $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
             }
-            unset($result[0]->credentials);
-            unset($result[0]->access_details);
         }
+
         $result = $this->format_data($result, 'devices/' . $id . '/' . $sub_resource);
         if (count($result) == 0) {
             return NULL;
         } else {
             return ($result);
+        }
+    }
+
+    public function sub_resource_delete($id = 0, $sub_resource = 0, $sub_resource_id = 0) {
+        $CI = & get_instance();
+        if (empty($id)) {
+            if (!empty($CI->response->meta->id)) {
+                $id = intval($CI->response->meta->id);
+            }
+        }
+        if (empty($id)) {
+            return false;
+        }
+
+        if (empty($sub_resource)) {
+            if (!empty($CI->response->meta->sub_resource)) {
+                $sub_resource = intval($CI->response->meta->sub_resource);
+            }
+        }
+        if (empty($sub_resource)) {
+            return false;
+        }
+
+        if (empty($sub_resource_id)) {
+            if (!empty($CI->response->meta->sub_resource_id)) {
+                $sub_resource_id = intval($CI->response->meta->sub_resource_id);
+            }
+        }
+        if (empty($sub_resource_id)) {
+            return false;
+        }
+        $sql = "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
+        $data = array(intval($id), intval($sub_resource_id));
+        $result = $this->run_sql($sql, $data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function sub_resource_create($id = 0, $sub_resource = '', $data = '')
+    {
+        $CI = & get_instance();
+        $CI = & get_instance();
+        $log = new stdClass();
+        $log->file = 'system';
+        $log->level = 7;
+        $log->message = "sub_resource_create start.";
+        stdlog($log);
+
+        if ($sub_resource == 'credential' or (!empty($CI->response->meta->sub_resource) and $CI->response->meta->sub_resource == 'credential')) {
+            $this->load->library('encrypt');
+
+            if (!empty($id)) {
+                $device_ids[] = $id;
+            } elseif (!empty($CI->response->meta->received_data->ids)) {
+                $device_ids = explode(',', $CI->response->meta->received_data->ids);
+            } elseif (!empty($CI->response->meta->id)) {
+                $device_ids = array($CI->response->meta->id);
+            } else {
+                $log->message = "No ID, nor list of IDs supplied to sub_resource_create.";
+                stdlog($log);
+                return false;
+            }
+
+            foreach ($device_ids as $id) {
+                if (!empty($data->credentials)) {
+                    $credentials = $this->encrypt->encode(json_encode($data->credentials));
+                } elseif (!empty($CI->response->meta->received_data->attributes->credentials)) {
+                    $credentials = $this->encrypt->encode(json_encode($CI->response->meta->received_data->attributes->credentials));
+                } else {
+                    $log->message = "No credentials supplied to sub_resource_create.";
+                    stdlog($log);
+                    return false;
+                }
+
+                if (!empty($data->type)) {
+                    $type = $data->type;
+                } elseif (!empty($CI->response->meta->received_data->attributes->type)) {
+                    $type = $CI->response->meta->received_data->attributes->type;
+                } else {
+                    $log->message = "No credential type supplied to sub_resource_create.";
+                    stdlog($log);
+                    return false;
+                }
+
+                if (!empty($data->name)) {
+                    $name = $data->name;
+                } elseif (!empty($CI->response->meta->received_data->attributes->name)) {
+                    $name = $CI->response->meta->received_data->attributes->name;
+                } else {
+                    $name = '';
+                }
+
+                if (!empty($data->description)) {
+                    $description = $data->description;
+                } elseif (!empty($CI->response->meta->received_data->attributes->description)) {
+                    $description = $CI->response->meta->received_data->attributes->description;
+                } else {
+                    $description = '';
+                }
+
+                if (!empty($CI->user->full_name)) {
+                    $user = $CI->user->full_name;
+                } else {
+                    $user = '';
+                }
+
+                # we only store a SINGLE credential set of each type per device - delete any existing
+                $sql = "DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?";
+                $data = array(intval($id), (string)$type);
+                $this->run_sql($sql, $data);
+                # insert the new credentials
+                $sql = "INSERT INTO `credential` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, NOW())";
+                $data = array(intval($id), (string)$name, (string)$description, (string)$type, (string)$credentials, (string)$user);
+                $this->run_sql($sql, $data);
+            }
+            return true;
+        } else {
+            $log->message = "sub_resource not equal to credential - exiting.";
+            stdlog($log);
         }
     }
 
@@ -375,41 +492,53 @@ class M_devices extends MY_Model
         $this->db->db_debug = FALSE;
         $custom = 'n';
 
+        // $log_details = new stdClass();
+        // $log_details->severity = 7;
+        // $log_details->file = 'system';
+        // $log_details->message = 'System update start for ' . $CI->response->meta->id;
+        // stdlog($log_details);
+
         # test to see if we're updating a field from additional_field_item table
         # these fields will be prefixed with custom_
-        foreach ($CI->response->meta->received_data as $key => $value) {
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (stripos($key, 'custom_') !== false) {
                 $custom = 'y';
+                $log_details->message = 'System update using custom fields for ' . $CI->response->meta->id;
+                stdlog($log_details);
             }
         }
 
         # update the field in additional_field_item (or insert it)
         if ($custom == 'y') {
-            foreach ($CI->response->meta->received_data as $key => $value) {
-                if ($key != 'id') {
+            $field_name = '';
+            $field_value = '';
+            foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+                if (stripos($key, 'custom_') !== false) {
                     $field_name = str_replace('custom_', '', $key);
+                    $field_name = str_replace('_', ' ', $field_name);
                     $field_value = $value;
-                } else {
-                    $id = $value;
                 }
             }
-            $sql = "SELECT * FROM additional_field WHERE name = ?";
-            $data = array("$field_name");
-            $result = $this->run_sql($sql, $data);
-            $additional_field = $result[0];
-            $sql = "SELECT * FROM additional_field_item WHERE system_id = ? AND additional_field_id = ?";
-            $data = array(intval($id), intval($additional_field->id));
-            $result = $this->run_sql($sql, $data);
-            if (count($result) > 0) {
-                #update
-                $sql = "UPDATE additional_field_item SET value = ?, timestamp = NOW() WHERE id = ?";
-                $data = array("$field_value", intval($result[0]->id));
-                $this->run_sql($sql, $data);
-            } else {
-                #insert
-                $sql = "INSERT INTO additional_field_item (id, system_id, additional_field_id, timestamp, value) VALUES (NULL, ?, ?, NOW(), ?)";
-                $data = array(intval($id), intval($additional_field->id), "$field_value");
-                $this->run_sql($sql, $data);
+            $id = $CI->response->meta->id;
+            if ($field_name != '' and $field_value != '') {
+                $sql = "SELECT * FROM additional_field WHERE name = ?";
+                $data = array((string)$field_name);
+                $result = $this->run_sql($sql, $data);
+                $additional_field = $result[0];
+                $sql = "SELECT * FROM additional_field_item WHERE system_id = ? AND additional_field_id = ?";
+                $data = array(intval($id), intval($additional_field->id));
+                $result = $this->run_sql($sql, $data);
+                if (count($result) > 0) {
+                    #update
+                    $sql = "UPDATE additional_field_item SET value = ?, timestamp = NOW() WHERE id = ?";
+                    $data = array("$field_value", intval($result[0]->id));
+                    $this->run_sql($sql, $data);
+                } else {
+                    #insert
+                    $sql = "INSERT INTO additional_field_item (id, system_id, additional_field_id, timestamp, value) VALUES (NULL, ?, ?, NOW(), ?)";
+                    $data = array(intval($id), intval($additional_field->id), "$field_value");
+                    $this->run_sql($sql, $data);
+                }
             }
         }
 
@@ -421,32 +550,49 @@ class M_devices extends MY_Model
                 $source = 'user';
             }
             $fields = implode(' ', $this->db->list_fields('system'));
+
+            # account for a single id or multiple id's
+            $ids = array();
+            if (!empty($CI->response->meta->id)) {
+                $ids[] = $CI->response->meta->id;
+            } elseif (!empty($CI->response->meta->ids)) {
+                $ids = explode(',', $CI->response->meta->ids);
+            }
+
             foreach ($CI->response->meta->received_data->attributes as $key => $value) {
                 if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
                     // OK, we have a valid attribute name ($key)
-                    // get the current value
-                    $sql = "SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?";
-                    $data = array(intval($CI->response->meta->id));
-                    $result = $this->run_sql($sql, $data);
-                    $previous_value = $result[0]->{$key};
-                    # get the current entry in the edit_log
-                    $sql = "SELECT * FROM edit_log WHERE id = ? AND db_table = 'system' AND db_column = ? ORDER BY `timestamp` LIMIT 1";
-                    $data = array(intval($CI->response->meta->id), "$key");
-                    $result = $this->run_sql($sql, $data);
-                    $previous_weight = intval($this->weight($result[0]->weight));
-                    // calculate the weight
-                    $weight = intval($this->weight($source));
-                    if ($weight <= $previous_weight) {
-                        // update the system table
-                        $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
-                        $data = array((string)$value, intval($CI->response->meta->id));
-                        $this->run_sql($sql, $data);
-                        // insert an entry into the edit table
-                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                        $data = array(intval($CI->user->id), intval($CI->response->meta->id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
-                        $this->run_sql($sql, $data);
-                    } else {
-                        # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
+                    foreach ($ids as $id) {
+                        // get the current value
+                        $sql = "SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?";
+                        $data = array(intval($id));
+                        $result = $this->run_sql($sql, $data);
+                        $previous_value = $result[0]->{$key};
+                        # get the current entry in the edit_log
+                        $sql = "SELECT * FROM `edit_log` WHERE `system_id` = ? AND `db_table` = 'system' AND `db_column` = ? ORDER BY `timestamp` DESC LIMIT 1";
+                        $data = array(intval($id), "$key");
+                        $result = $this->run_sql($sql, $data);
+                        if (!empty($result[0]->weight)) {
+                            $previous_weight = intval($result[0]->weight);
+                        } else {
+                            $previous_weight = 10000;
+                        }
+                        // calculate the weight
+                        $weight = intval($this->weight($source));
+                        if ($weight <= $previous_weight AND $value != $previous_value) {
+                            if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
+                                // update the system table
+                                $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
+                                $data = array((string)$value, intval($id));
+                                $this->run_sql($sql, $data);
+                                // insert an entry into the edit table
+                                $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                                $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                                $this->run_sql($sql, $data);
+                            }
+                        } else {
+                            # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
+                        }
                     }
                 }
             }

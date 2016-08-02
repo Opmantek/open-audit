@@ -201,11 +201,21 @@ class admin extends MY_Controller
      */
     public function set_config()
     {
+        $log_details = new stdClass();
+        $log_details->file = 'system';
+        $log_details->message = 'admin::set_config called by ' . $this->user->name;
+        stdlog($log_details);
+        $this->load->model('m_oa_config');
         if (isset($_POST['config'])) {
+            $log_details->message = 'admin::set_config has a _POST variable called config.';
+            stdlog($log_details);
             if ($config = json_decode($_POST['config'])) {
-                $this->load->model('m_oa_config');
+                $log_details->message = 'admin::set_config config is valid JSON. ' . $_POST['config'];
+                stdlog($log_details);
                 foreach ($config as $name => $value) {
                     $value = urldecode($value);
+                    $log_details->message = 'admin::set_config name is: ' . $name . ' ,  value is: ' . $value;
+                    stdlog($log_details);
                     $this->m_oa_config->update_config($name, $value, $this->user->id, date('Y-m-d H:i:s'));
                 }
                 header(' ', true, 200);
@@ -5309,8 +5319,11 @@ class admin extends MY_Controller
             $sql[] = "UPDATE additional_field SET placement = 'system' WHERE placement = 'system_details'";
             $sql[] = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
 
+            $sql[] = "DROP TABLE IF EXISTS `credential`";
+            $sql[] = "CREATE TABLE `credential` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other', `credentials` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `credential_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
             $sql[] = "DROP TABLE IF EXISTS `credentials`";
-            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_cert','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             $sql[] = "ALTER TABLE `oa_user_org` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
 
@@ -5320,7 +5333,12 @@ class admin extends MY_Controller
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'man_', 'system.')";
 
+            $sql[] = "DROP TABLE IF EXISTS `nmap`";
+            $sql[] = "CREATE TABLE `nmap` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL,`current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '', `ip` varchar(45) NOT NULL DEFAULT '', `port` int(5) NOT NULL DEFAULT '0', `program` varchar(250) NOT NULL DEFAULT '', PRIMARY KEY (`id`), KEY `system_id` (`system_id`),CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
             # set our versions
+            $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_use_dns'";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y','0000-00-00 00:00:00',0,'Should we use DNS for looking up the hostname and domain.')";
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8' WHERE config_name = 'display_version'";
 
@@ -5333,6 +5351,7 @@ class admin extends MY_Controller
             $this->load->model('m_oa_config');
             $this->m_oa_config->load_config();
             $this->load->model('m_credentials');
+            $this->load->library('encrypt');
             $this->response = new stdClass();
             $this->response->meta = new stdClass();
             $this->response->meta->received_data = new stdClass();
@@ -5399,7 +5418,58 @@ class admin extends MY_Controller
             $this->data['output'] .= $this_query."<br /><br />\n";
             $query = $this->db->query($this_query);
 
+            # populate our new credential table with the system.access_details columns
+            $sql = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $timestamp = $result[0]->timestamp;
 
+            $sql = "DELETE FROM `credential`";
+            $query = $this->db->query($sql);
+
+            $sql = "SELECT id, access_details FROM system WHERE access_details != ''";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $device) {
+                $creds = $this->encrypt->decode($device->access_details);
+                $creds = json_decode($creds);
+                $newcreds = array();
+                if (!empty($creds->snmp_community)) {
+                    $cred = new stdClass();
+                    $cred->community = $creds->snmp_community;
+                    $credentials = (string)$this->encrypt->encode(json_encode($cred));
+                    $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SNMP credentials.', 'Migrated from device upon upgrade.', 'snmp', ?, 'system', ?)";
+                    $data = array(intval($device->id), (string)$credentials, "$timestamp");
+                    $query = $this->db->query($sql, $data);
+                    unset($cred);
+                    unset($credentials);
+                }
+                if (!empty($creds->windows_username)) {
+                    $cred = new stdClass();
+                    $cred->username = $creds->windows_username . '@' . $creds->windows_domain;
+                    $cred->password = $creds->windows_password;
+                    $credentials = (string)$this->encrypt->encode(json_encode($cred));
+                    $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device Windows credentials.', 'Migrated from device upon upgrade.', 'windows', ?, 'system', ?)";
+                    $data = array(intval($device->id), (string)$credentials, "$timestamp");
+                    $query = $this->db->query($sql, $data);
+                    unset($cred);
+                    unset($credentials);
+                }
+                if (!empty($creds->ssh_username)) {
+                    $cred = new stdClass();
+                    $cred->username = $creds->ssh_username;
+                    $cred->password = $creds->ssh_password;
+                    $credentials = (string)$this->encrypt->encode(json_encode($cred));
+                    $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SSH credentials.', 'Migrated from device upon upgrade.', 'ssh', ?, 'system', ?)";
+                    $data = array(intval($device->id), (string)$credentials, "$timestamp");
+                    $query = $this->db->query($sql, $data);
+                    unset($cred);
+                    unset($credentials);
+                }
+            }
+
+            $sql = "ALTER TABLE `system` DROP access_details";
+            $query = $this->db->query($sql);
 
             # reinitialise our $sql array
             unset($sql);

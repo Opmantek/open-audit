@@ -7,12 +7,28 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
+/* NOTE - baseurl is set on the template page and typically looks like http://192.168.1.118/open-audit/ */
+
 /* *_collection */
 $(document).ready(function(){
     $(function () {
       $('[data-toggle="popover"]').popover()
     })
 });
+
+/* Send to bulk edit form */
+$(document).ready(function(){
+    $(document).on('click', '.bulk_edit_button', function(e){
+        var ids = "";
+        $("input:checked").each(function () {
+            ids = ids + "," + $(this).attr("value");
+        });
+        ids = ids.substring(1);
+        var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;
+        window.location = url;
+    });
+});
+        
 
 /* any Delete links */
 $(document).ready(function(){
@@ -22,14 +38,40 @@ $(document).ready(function(){
         }
         var $id = $(this).attr('data-id');
         var $name = $(this).attr('data-name');
-        var $url = '/open-audit/index.php/' + collection + '/' + $id;
+        var $url = baseurl + 'index.php/' + collection + '/' + $id;
+        $.ajax({
+            type: 'DELETE',
+            url: $url,
+            dataType: 'json',           
+       })
+       .success(function(data) {
+            // alert($name + " has been deleted.");
+            window.location = web_folder + "/index.php/" + collection;
+       })
+       .fail( function(jqXHR, textStatus, errorThrown ) {
+            //alert("An error occurred when deleting item:" + $name);
+            alert(jqXHR.responseJSON.errors[0].code + ": " + jqXHR.responseJSON.errors[0].detail);
+       });
+    });
+});
+
+/* Delete device credential link */
+$(document).ready(function(){
+    $('.subresource_delete_link').click(function() {
+        if (confirm('Are you sure?') != true) {
+            return;
+        }
+        var $sub_resource = $(this).attr('data-sub-resource');
+        var $sub_resource_id = $(this).attr('data-sub-resource-id');
+        var $name = $(this).attr('data-name');
+        var $url = baseurl + 'index.php/' + collection + '/' + id + '/' + $sub_resource + "/" + $sub_resource_id;
         $.ajax({
             type: 'DELETE',
             url: $url,
             dataType: 'json',
             success: function(data) {
                 // alert($name + " has been deleted.");
-                window.location = web_folder + "/index.php/" + collection;
+                // window.location = web_folder + "/index.php/" + collection + "/" + id;
             },
             error: function() {
                 alert("An error occurred when deleting item:" + $name);
@@ -66,7 +108,6 @@ $(document).ready(function(){
         document.getElementById("submit_button").style.display = "inline";
     });
 });
-
 
 /* inline edit */
 $(document).ready(function(){

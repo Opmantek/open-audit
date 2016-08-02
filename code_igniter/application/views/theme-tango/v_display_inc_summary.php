@@ -722,7 +722,7 @@
                                 <td>" . @$key->model . "</td>
                                 <td>" . @$key->serial . "</td>
                                 <td>" . @$key->interface_type . "</td>
-                                <td>" . @number_format(($key->size / 1024 / 1024)) . " GB</td>
+                                <td>" . @number_format(($key->size)) . " GB</td>
                                 <td>" . @$key->status . "</td>
                                 <td>" . @$key->firmware . "</td>
                                 </tr>\n";
