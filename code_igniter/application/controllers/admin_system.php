@@ -301,7 +301,7 @@ class Admin_system extends MY_Controller
         $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
 
-        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+        if ($this->config->item('discovery_use_dns') == 'y') {
             $details = dns_validate($details, 'y');
         }
 

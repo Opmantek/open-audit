@@ -870,7 +870,7 @@ class discovery extends CI_Controller
                         $details->domain = '';
                         $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
                         $details->hostname = '';
-                        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                        if ($this->config->item('discovery_use_dns') == 'y') {
                             $details = dns_validate($details, $display);
                         }
                         $details->id = '';
@@ -1134,7 +1134,7 @@ class discovery extends CI_Controller
                             $details->type = 'voip phone';
                         }
 
-                        if (!empty($this->config->item('discovery_use_dns')) and $this->config->item('discovery_use_dns') == 'y') {
+                        if ($this->config->item('discovery_use_dns') == 'y') {
                             $details = dns_validate($details, $display);
                         }
                         $details->id = $this->m_system->find_system($details, $display);
