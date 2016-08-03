@@ -78,7 +78,11 @@
                         <option value='snmp'>SNMP (v1 / v2)</option>
                         <option value='snmp_v3'>SNMP v3</option>
                         <option value='ssh'>SSH</option>
+                        <?php
+                        # TODO - SSH Keys not supported in OA 1.12.8 under Windows
+                        if (php_uname('s') != 'Windows NT') { ?>
                         <option value='ssh_key'>SSH Key</option>
+                        <?php } ?>
                         <option value='windows'>Windows</option>
                     </select>
                 </div>
