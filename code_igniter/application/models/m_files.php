@@ -45,7 +45,11 @@ class M_files extends MY_Model
         $properties = '';
         $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
-            $temp[$i] = trim($temp[$i]);
+            if (strpos($temp[$i], '.') === false) {
+                $temp[$i] = 'files.'.trim($temp[$i]);
+            } else {
+                $temp[$i] = trim($temp[$i]);
+            }
         }
         $properties = implode(',', $temp);
         return($properties);

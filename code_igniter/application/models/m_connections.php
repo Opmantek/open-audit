@@ -46,7 +46,7 @@ class M_connections extends MY_Model
         $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'oa_org.'.trim($temp[$i]);
+                $temp[$i] = 'oa_connection.'.trim($temp[$i]);
             } else {
                 $temp[$i] = trim($temp[$i]);
             }
