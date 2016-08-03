@@ -322,8 +322,6 @@ for each host in hosts_in_subnet
             temp = Replace(temp, "  ", " ")
         Loop
         if instr(temp, "/tcp open ") then
-            wscript.echo "-----hit-----"
-            wscript.echo temp
             temp = split(temp, " ")
             port = temp(0)
             program = temp(2)
