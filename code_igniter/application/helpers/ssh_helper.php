@@ -118,6 +118,7 @@ if (! function_exists('ssh_credentials')) {
 
         foreach ($credentials as $credential) {
             if (!empty($credential->type) and $credential->type == 'ssh_key') {
+                # TODO - SSH Keys not supported in OA 1.12.8 under Windows
                 if (php_uname('s') != 'Windows NT') {
                     # write out our key file
                     # now try to connect

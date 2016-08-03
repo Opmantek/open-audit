@@ -40,6 +40,37 @@ class M_fields extends MY_Model
         parent::__construct();
     }
 
+    private function build_properties() {
+        $CI = & get_instance();
+        $properties = '';
+        $temp = explode(',', $CI->response->meta->properties);
+        for ($i=0; $i<count($temp); $i++) {
+            if (strpos($temp[$i], '.') === false) {
+                $temp[$i] = 'additional_field.'.trim($temp[$i]);
+            } else {
+                $temp[$i] = trim($temp[$i]);
+            }
+        }
+        $properties = implode(',', $temp);
+        return($properties);
+    }
+
+    private function build_filter() {
+        $CI = & get_instance();
+        $reserved = ' properties limit resource action sort current offset format ';
+        $filter = '';
+        foreach ($CI->response->meta->filter as $item) {
+            if (strpos(' '.$item->name.' ', $reserved) === false) {
+                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+            }
+        }
+        if ($filter != '') {
+            $filter = substr($filter, 5);
+            $filter = ' WHERE ' . $filter;
+        }
+        return($filter);
+    }
+
     public function read($id = '')
     {
         if ($id == '') {
