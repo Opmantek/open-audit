@@ -453,14 +453,14 @@ class admin extends MY_Controller
             $this->load->model("m_systems");
             $data = array($this->data['id']);
             $query = $this->db->query('SET @group = ?', $data);
-            $sql = "SELECT system.id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.ip as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.id ORDER BY system.id";
+            #$sql = "SELECT system.id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.ip as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group GROUP BY system.id ORDER BY system.id";
+            $sql = "SELECT system.id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.ip as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, credential.credentials FROM system LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id LEFT JOIN credential ON (credential.system_id = system.id AND credential.type = 'snmp') WHERE oa_group_sys.group_id = @group AND system.status = 'production' GROUP BY system.id ORDER BY system.id";
             $query = $this->db->query($sql);
             $this->data['query'] = $query->result();
             $this->load->library('encrypt');
             for ($i = 0; $i<count($this->data['query']); $i++) {
-                if ($this->data['query'][$i]->access_details > '') {
-                    $j = $this->encrypt->decode($this->data['query'][$i]->access_details);
-                    $j = json_decode($j);
+                if ($this->data['query'][$i]->credentials != '') {
+                    $j = json_decode($this->encrypt->decode($this->data['query'][$i]->credentials));
                 }
 
                 if ($this->data['query'][$i]->nmis_name == '') {
@@ -515,20 +515,20 @@ class admin extends MY_Controller
                 }
 
                 # snmp community
-                if (isset($j->snmp_community)) {
-                    $this->data['query'][$i]->nmis_community = $j->snmp_community;
+                if (isset($j->community)) {
+                    $this->data['query'][$i]->nmis_community = $j->community;
                 }
 
                 if ($this->data['query'][$i]->nmis_community == '') {
-                    $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">".htmlentities($this->config->item('default_snmp_community'))."</span>";
+                    $this->data['query'][$i]->nmis_community = "<span style=\"color: blue;\">public</span>";
                 }
 
                 # snmp version
-                if (isset($j->snmp_version)) {
-                    $this->data['query'][$i]->nmis_snmp_version = $j->snmp_version;
+                if (isset($j->version)) {
+                    $this->data['query'][$i]->nmis_snmp_version = $j->version;
                 }
                 if (!isset($this->data['query'][$i]->nmis_snmp_version) or $this->data['query'][$i]->nmis_snmp_version == '') {
-                    $this->data['query'][$i]->nmis_snmp_version = "<span style=\"color: blue;\">2c</span>";
+                    $this->data['query'][$i]->nmis_snmp_version = "<span style=\"color: blue;\">2</span>";
                 }
 
                 $j = null;
@@ -540,11 +540,12 @@ class admin extends MY_Controller
             foreach ($_POST as $key => $value) {
                 if (strpos($key, 'system_id_') !== false) {
                     $i = explode("_", $key);
-                    if ($i[2] > 0) {
-                        $device_array[] .= $i[2];
+                    if (intval($i[2]) != 0) {
+                        $device_array[] = $i[2];
                     }
                 }
             }
+
             $this->load->model("m_system");
             $this->load->model("m_oa_group");
             $this->load->library('encrypt');
@@ -552,16 +553,17 @@ class admin extends MY_Controller
             $query = array();
             $i = 0; # I set $i = 0 so I could copy/paste the code from above :-)
             foreach ($device_array as $key => $value) {
-                #$sql = "SELECT system.nmis_name, system.man_ip_address as nmis_host, system.nmis_group, system.nmis_role, system.hostname, system.fqdn, '' as nmis_community, '' as nmis_version, 'true' as nmis_collect, '' as nmis_net, access_details FROM system WHERE system_id = ?";
-                $sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system WHERE system_id = ?";
+                #$sql = "SELECT system.system_id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.man_ip_address as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, access_details FROM system WHERE system_id = ?";
+                $sql = "SELECT system.id, system.nmis_name, system.hostname, system.domain, system.fqdn, system.ip as nmis_host, '' as nmis_community, '' as nmis_version, system.nmis_group, 'true' as nmis_collect, system.nmis_role, '' as nmis_net, nmis_export, credential.credentials FROM system LEFT JOIN credential ON (system.id = credential.system_id AND credential.type = 'snmp') WHERE system.id = ?";
                 $data = array($value);
                 $query = $this->db->query($sql, $data);
                 $this->data['query'] = $query->result();
 
-                if ($this->data['query'][$i]->access_details > '') {
-                    $j = $this->encrypt->decode($this->data['query'][$i]->access_details);
-                    $j = json_decode($j);
+                if ($this->data['query'][$i]->credentials != '') {
+                    $j = json_decode($this->encrypt->decode($this->data['query'][$i]->credentials));
                 }
+
+                $this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
 
                 # blank nmis name and populated hostname
                 if ($this->data['query'][$i]->nmis_name == '') {
@@ -578,7 +580,7 @@ class admin extends MY_Controller
                         $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->hostname.$this->data['query'][$i]->domain;
                     } elseif ($this->data['query'][$i]->nmis_host != '') {
                         # lastly - use the ip address
-                        $this->data['query'][$i]->nmis_name = ip_address_from_db($this->data['query'][$i]->nmis_host);
+                        $this->data['query'][$i]->nmis_name = $this->data['query'][$i]->nmis_host;
                     }
                 }
                 # ensure we don't have a name ending in a .
@@ -595,9 +597,6 @@ class admin extends MY_Controller
                 } elseif ($this->data['query'][$i]->hostname != '' and $this->data['query'][$i]->domain != '') {
                     # second - create the FQDN from the hostname + domain
                     $this->data['query'][$i]->nmis_host = $this->data['query'][$i]->hostname.$this->data['query'][$i]->domain;
-                } elseif ($this->data['query'][$i]->nmis_host != '') {
-                    # lastly - use the ip address
-                    $this->data['query'][$i]->nmis_host = ip_address_from_db($this->data['query'][$i]->nmis_host);
                 }
                 # ensure we don't have a host ending in a .
                 if (strrpos($this->data['query'][$i]->nmis_host, '.') == strlen($this->data['query'][$i]->nmis_host)-1) {
@@ -615,18 +614,21 @@ class admin extends MY_Controller
                 }
 
                 # snmp community
-                if (isset($j->snmp_community)) {
-                    $this->data['query'][$i]->nmis_community = $j->snmp_community;
+                if (!empty($j->community)) {
+                    $this->data['query'][$i]->nmis_community = $j->community;
                 }
-                if ($this->data['query'][$i]->nmis_community == '') {
-                    $this->data['query'][$i]->nmis_community = $this->config->item('default_snmp_community');
+                if (empty($this->data['query'][$i]->nmis_community)) {
+                    $this->data['query'][$i]->nmis_community = 'public';
                 }
 
                 # snmp version
                 if (isset($j->snmp_version)) {
-                    $this->data['query'][$i]->nmis_snmp_version = 'snmpv'.$j->snmp_version;
+                    if ($j->snmp_version == '2') {
+                        $j->snmp_version = '2c';
+                    }
+                    $this->data['query'][$i]->nmis_snmp_version = 'snmpv'.$j->version;
                 }
-                if (!isset($this->data['query'][$i]->nmis_snmp_version) or $this->data['query'][$i]->nmis_snmp_version == '') {
+                if (empty($this->data['query'][$i]->nmis_snmp_version)) {
                     $this->data['query'][$i]->nmis_snmp_version = "snmpv2c";
                 }
 
