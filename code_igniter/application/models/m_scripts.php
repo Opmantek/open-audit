@@ -162,6 +162,11 @@ class M_scripts extends MY_Model
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
 
+        if ($options->url = 'http://open-audit/index.php/system/add_system') {
+            # inject our default network address
+            $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
+        }
+
         $find = 'Configuration from web UI here';
         $files = false;
         foreach ($options as $key => $value) {
