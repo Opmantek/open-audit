@@ -100,7 +100,7 @@
                     <a href="#">Connections</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_connection/add_connection'>Create Connection</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
