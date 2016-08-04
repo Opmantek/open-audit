@@ -85,11 +85,86 @@ class locations extends MY_Controller
             output($this->response);
             exit();
         }
-        $this->response->meta->sub_resource = 'devices';
         $this->response->data = $this->m_locations->read();
+        $this->response->meta->sub_resource = 'devices';
         $this->response->included = $this->m_locations->sub_resource();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
+    }
+
+    private function create_form()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->data = array();
+        $temp = new stdClass();
+        $temp->type = $this->response->meta->collection;
+        $this->response->data[] = $temp;
+        unset($temp);
+        output($this->response);
+    }
+
+    private function create()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->meta->id = $this->m_locations->create();
+        if (!empty($this->response->meta->id)) {
+            if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_locations->read();
+                output($this->response);
+            } else {
+                redirect($this->response->meta->collection);
+            }
+        } else {
+            log_error('ERR-0009');
+            output($this->response);
+            exit();
+        }
+    }
+
+    private function update_form()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->data = $this->m_locations->read();
+        $this->response->meta->sub_resource = 'devices';
+        $this->response->included = array();
+        $temp = $this->m_locations->sub_resource();
+        if (is_array($temp)) {
+            $this->response->included = array_merge($this->response->included, $temp);
+        }
+        $this->response->meta->filtered = count($this->response->data);
+        output($this->response);
+    }
+
+    private function update()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->m_locations->update();
+        if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_locations->read();
+            output($this->response);
+        } else {
+            redirect(locations);
+        }
     }
 
     private function delete()

@@ -71,6 +71,34 @@ class M_locations extends MY_Model
         return($filter);
     }
 
+    public function create()
+    {
+        $CI = & get_instance();
+        if (empty($CI->response->meta->received_data->attributes->name)) {
+            return false;
+        } else {
+            $name = $CI->response->meta->received_data->attributes->name;
+        }
+        $data = array((string)$name,
+                        (string)$CI->response->meta->received_data->attributes->type,
+                        (string)$CI->response->meta->received_data->attributes->room,
+                        (string)$CI->response->meta->received_data->attributes->suite,
+                        (string)$CI->response->meta->received_data->attributes->level,
+                        (string)$CI->response->meta->received_data->attributes->address,
+                        (string)$CI->response->meta->received_data->attributes->city,
+                        (string)$CI->response->meta->received_data->attributes->stats,
+                        (string)$CI->response->meta->received_data->attributes->postcode,
+                        (string)$CI->response->meta->received_data->attributes->country,
+                        (string)$CI->response->meta->received_data->attributes->phone,
+                        (string)$CI->response->meta->received_data->attributes->latitude,
+                        (string)$CI->response->meta->received_data->attributes->longitude,
+                        (string)$CI->response->meta->received_data->attributes->geo);
+
+        $sql = "INSERT INTO `oa_location` VALUES (NULL, ?, ?, ?, ?, ?, ?, '', ?, '', '', '', ?, ?, ?, '', ?, '', ?, ?, ?, '', '', 0)";
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
+    }
+
     public function read($id = '')
     {
         if ($id == '') {
@@ -141,6 +169,25 @@ class M_locations extends MY_Model
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'locations');
         return ($result);
+    }
+
+    public function update()
+    {
+        $CI = & get_instance();
+        $sql = '';
+        $fields = ' name type room suite level address city state postcode country phone geo latitude longitude ';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                } else {
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                }
+            }
+        }
+        $sql = "UPDATE `oa_location` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql, array());
+        return;
     }
 
     public function delete($id = '')
