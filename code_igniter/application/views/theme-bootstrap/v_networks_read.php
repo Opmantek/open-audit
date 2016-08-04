@@ -123,7 +123,9 @@ $item = $this->response->data[0];
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->response->included as $item) { ?><tr>
+            <?php 
+            if (!empty($this->response->included)) {
+            foreach ($this->response->included as $item) { ?><tr>
                 <td><?php echo $item->attributes->{'system.id'}; ?></td>
                 <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->{'system.icon'}))).".svg"; ?>" style="border-width:0px; width:24px;" title="<?php echo htmlentities($item->attributes->{'system.icon'}); ?>" alt="<?php echo htmlentities($item->attributes->{'system.icon'}); ?>"/></td>
                 <td><?php echo $item->attributes->{'system.type'}; ?></td>
@@ -133,7 +135,7 @@ $item = $this->response->data[0];
                 <td><?php echo $item->attributes->{'system.description'}; ?></td>
                 <td><?php echo $item->attributes->{'system.os_family'}; ?></td>
                 <td><?php echo $item->attributes->{'system.status'}; ?></td>
-            </tr><?php } ?>
+            </tr><?php } ?><?php } ?>
         </tbody>
     </table>
   </div>
