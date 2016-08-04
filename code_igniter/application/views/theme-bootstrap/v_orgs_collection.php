@@ -71,15 +71,15 @@
                         }
                         ?>
                         <tr>
-                            <td style='text-align:center;'><a class="btn btn-sm btn-success" href="main/view_org/<?php echo intval($item->id); ?>"><?php echo intval($item->id); ?></a></td>
+                            <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo intval($item->id); ?></a></td>
                             <td class="text-center"><?php echo $item->attributes->device_count?></td>
-                            <td><a href="../main/view_org/<?php echo $item->id?>"><?php echo htmlentities($item->attributes->name)?></a></td>
+                            <td><?php echo htmlentities($item->attributes->name)?></td>
                             <td><?php echo htmlentities($item->attributes->comments)?></td>
                             <td><?php echo htmlentities($item->attributes->parent_name)?></td>
                             <td class="text-center"><?php echo $activate_pic?></td>
                             <td class="text-center"><?php echo $deactivate_pic?></td>
                             <td class="text-center"><?php echo $show_pic?></td>
-                            <td class="text-center"><a href="orgs/<?php echo intval($item->attributes->group_id); ?>?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a></td>
+                            <td class="text-center"><a href="<?php echo htmlentities($item->links->self); ?>/update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a></td>
                             <?php if ($item->attributes->id != 0) { ?>
                                 <td class="text-center"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
                             <?php } else { ?>

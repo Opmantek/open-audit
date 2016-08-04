@@ -94,12 +94,13 @@ class M_orgs extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? GROUP BY `system`.`type`";
+        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         if (count($result) == 0) {
             return false;
         } else {
+            $result = $this->format_data($result, 'devices');
             return ($result);
         }
     }
@@ -142,6 +143,25 @@ class M_orgs extends MY_Model
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'orgs');
         return ($result);
+    }
+
+    public function update()
+    {
+        $CI = & get_instance();
+        $sql = '';
+        $fields = ' name comments parent_id ';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                } else {
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                }
+            }
+        }
+        $sql = "UPDATE `oa_org` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql, array());
+        return;
     }
 
     public function delete($id = '')

@@ -137,10 +137,10 @@ var modal_content_image = "";
     <li><a href='#'><?php echo mb_strtoupper(__('Admin'))?></a>
         <ul>
 
-            <li><a href='javascript:void(0)'><?php echo __('Additional Fields')?></a>
+            <li><a href='javascript:void(0)'><?php echo __('Fields')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_field/list_fields'><?php echo __('List Fields')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_field/add_field'><?php echo __('Add Field')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/fields'><?php echo __('List Fields')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/fields/create'><?php echo __('Create Field')?></a></li>
                 </ul>
             </li>
 
