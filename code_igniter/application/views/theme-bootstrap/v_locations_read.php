@@ -47,7 +47,7 @@ $item = $this->response->data[0];
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="id" class="col-sm-2 control-label">ID</label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="id" name="id" placeholder="<?php echo htmlentities($item->id); ?>" value="<?php echo htmlentities($item->id); ?>" disabled>
                         </div>
@@ -56,7 +56,7 @@ $item = $this->response->data[0];
 
                 <div class="form-group">
                     <label for="name" class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -70,7 +70,7 @@ $item = $this->response->data[0];
 
                 <div class="form-group">
                     <label for="type" class="col-sm-2 control-label">Type</label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <div class="col-sm-12 input-group">
                         <select class="form-control" name="type" id="type" disabled>
                                 <option value=''<?php if ($item->attributes->type == '') { echo ' selected '; }?>></option>
@@ -125,7 +125,7 @@ $item = $this->response->data[0];
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -137,7 +137,7 @@ $item = $this->response->data[0];
                 ?>
                 <div class="form-group">
                     <label for="<?php echo $attribute; ?>" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlentities($item->attributes->{$attribute}); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -152,7 +152,7 @@ $item = $this->response->data[0];
                 <?php if (!empty($edit)) { ?>
                     <div class="form-group">
                         <label for="locations_latlong" class="col-sm-2 control-label">Get Latitude and Longitude</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-8">
                             <div class="col-sm-12 input-group">
                                 <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-primary">Get</button>
                             </div>
@@ -160,7 +160,7 @@ $item = $this->response->data[0];
                     </div>
                     <div class="form-group">
                         <label for="locations_geocode" class="col-sm-2 control-label">Create GeoCode</label>
-                        <div class="col-sm-4">
+                        <div class="col-sm-8">
                             <div class="col-sm-12 input-group">
                                 <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary">Create</button>
                             </div>
@@ -175,7 +175,7 @@ $item = $this->response->data[0];
                 ?>
                 <div class="form-group">
                     <label for="<?php echo $attribute; ?>" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
-                    <div class="col-sm-4">
+                    <div class="col-sm-8">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlentities($item->attributes->{$attribute}); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -195,7 +195,7 @@ $item = $this->response->data[0];
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Devices in Location <?php echo $item->attributes->name; ?></span>
+      <span class="text-left">Devices assigned to <?php echo $item->attributes->name; ?></span>
       <span class="pull-right"></span>
     </h3>
   </div>
