@@ -217,7 +217,7 @@ var modal_content_image = "";
             </li>
             <li><a href='javascript:void(0)'><?php echo __('Networks')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/networks'><?php echo __('View Networks')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/networks'><?php echo __('List Networks')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/networks?action=create'><?php echo __('Add Network')?></a></li>
                 </ul>
             </li>

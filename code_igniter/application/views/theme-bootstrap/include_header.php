@@ -160,7 +160,7 @@
                 <li class="dropdown-submenu">
                     <a href="#">Networks</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>View Networks</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>List Networks</a></li>
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks?action=create'>Create Network</a></li>
                     </ul>
                 </li>
