@@ -344,7 +344,7 @@ if [[ "$hosts" != "" ]]; then
 		command=$(nmap -n -sU -p161 "$timing" --host-timeout 90 "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
 			snmp_status="true"
-			nmap_ports="$nmap_ports,161/udp"
+			nmap_ports="$nmap_ports,161/udp/snmp"
 			if [ "$host_is_up" == "false" ] && [ "$debugging" -gt 1 ]; then
 				echo "SNMP only detected host $host is up."
 			fi

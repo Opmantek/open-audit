@@ -88,13 +88,20 @@ class orgs extends MY_Controller
         }
         if ($this->response->meta->sub_resource != '') {
             $this->response->data = $this->m_orgs->read_sub_resource();
+            $this->response->meta->format = 'json';
+            output($this->response);
+            exit();
         } else {
             $this->response->data = $this->m_orgs->read();
         }
         if (!empty($this->response->data)) {
             $this->response->meta->filtered = count($this->response->data);
             if ($this->response->meta->format == 'screen') {
-                $this->response->included = $this->m_orgs->read_sub_resource();
+                $this->response->included = array();
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+                if ($this->m_orgs->read_sub_resource()) {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
+                }
             }
         }
         output($this->response);
@@ -134,6 +141,41 @@ class orgs extends MY_Controller
             log_error('ERR-0009');
             output($this->response);
             exit();
+        }
+    }
+
+    private function update_form()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->included = array();
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        if ($this->m_orgs->read_sub_resource()) {
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
+        }
+        $this->response->data = $this->m_orgs->read();
+        $this->response->meta->filtered = count($this->response->data);
+        output($this->response);
+    }
+
+    private function update()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->m_orgs->update();
+        if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_orgs->read();
+            output($this->response);
+        } else {
+            redirect('orgs');
         }
     }
 

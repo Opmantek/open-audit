@@ -42,6 +42,14 @@ class M_oa_group extends MY_Model
 
     public function get_group_access($group_id = '1', $user_id = '0')
     {
+        $sql = "SELECT COUNT(*) as `count` FROM oa_group";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        if (intval($row->count) == 0) {
+            # We have no groups as yet - make them
+            $this->load->helper('group_helper');
+            check_default_groups();
+        }
         if ($group_id == '0') {
             $group_id = '1';
         }
@@ -50,8 +58,11 @@ class M_oa_group extends MY_Model
         $data = array("$user_id", "$group_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
-
-        return $row->group_user_access_level;
+        if (!empty($row->group_user_access_level)) {
+            return $row->group_user_access_level;
+        } else {
+            return 0;
+        }
     }
 
     public function get_group_name($group_id)

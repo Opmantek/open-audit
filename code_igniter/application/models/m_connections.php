@@ -119,11 +119,70 @@ class M_connections extends MY_Model
         if (!empty($CI->response->meta->total)) {
             $CI->response->meta->total = intval($result[0]->count);
         }
+        # get a list of Orgs and Locations so we can populate the names
+        $sql = "SELECT id, name FROM oa_org";
+        $result = $this->run_sql($sql, array());
+        $orgs = $result;
+        $sql = "SELECT id, name FROM oa_location";
+        $result = $this->run_sql($sql, array());
+        $locations = $result;
+
         # get the response data
         $sql = "SELECT " . $properties . " FROM `oa_connection` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
+        for ($i=0; $i < count($result); $i++) { 
+            foreach ($orgs as $org) {
+                if ($org->id == $result[$i]->org_id) {
+                    $result[$i]->org_name = $org->name;
+                }
+            }
+            foreach ($locations as $location) {
+                if ($location->id == $result[$i]->location_id_a) {
+                    $result[$i]->location_name_a = $location->name;
+                }
+                if ($location->id == $result[$i]->location_id_b) {
+                    $result[$i]->location_name_b = $location->name;
+                }
+            }
+        }
         $result = $this->format_data($result, 'connections');
         return ($result);
+    }
+
+    public function create()
+    {
+        $CI = & get_instance();
+        if (empty($CI->response->meta->received_data->attributes->name)) {
+            log_error('ERR-0010', 'm_connections::create');
+            return false;
+        }
+        $attributes = array('org_id', 'name', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed', 'location_id_a', 'location_id_b', 'system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
+        $data = array();
+        foreach ($attributes as $attribute) {
+            $data[] = $CI->response->meta->received_data->attributes->{$attribute};
+        }
+        $sql = "INSERT INTO `oa_connection` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
+    }
+
+    public function update()
+    {
+        $CI = & get_instance();
+        $sql = '';
+        $fields = 'org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                } else {
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                }
+            }
+        }
+        $sql = "UPDATE `oa_connection` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql, array());
+        return;
     }
 
     public function delete($id = '')

@@ -77,13 +77,6 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
               <ul class="dropdown-menu">
                 <li class="dropdown-submenu">
-                    <a href="#">Additional Fields</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_field/list_fields'>List Fields</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_field/add_field'>Create Field</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
                     <a href="#">Configuration</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/edit_config'>Config</a></li>
@@ -100,7 +93,7 @@
                     <a href="#">Connections</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_connection/add_connection'>Create Connection</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
@@ -132,6 +125,13 @@
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
+                    <a href="#">Fields</a>
+                    <ul class="dropdown-menu" style="min-width:250px;">
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields'>List Fields</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields/create'>Create Field</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown-submenu">
                     <a href="#">Groups</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/list_groups'>List Groups</a></li>
@@ -160,15 +160,15 @@
                 <li class="dropdown-submenu">
                     <a href="#">Networks</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>View Networks</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks?action=create'>Create Network</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>List Networks</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks/create'>Create Network</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
                     <a href="#">Organisations</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs'>List Organisations</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_org/add_org'>Create Organisation</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs/create'>Create Organisation</a></li>
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_org/add_orgs'>Import Multiple Organisations</a></li>
                     </ul>
                 </li>
@@ -184,7 +184,7 @@
                     <a href="#">Scripts</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'>List Scripts</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts?action=create'>Create Script</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts/create'>Create Script</a></li>
                     </ul>
                 </li>
                 <li class="dropdown-submenu">

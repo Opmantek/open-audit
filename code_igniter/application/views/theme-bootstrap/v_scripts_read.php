@@ -125,7 +125,7 @@ if (!empty($edit)) {
                             <input type="text" class="form-control" id="options.<?php echo htmlentities($key); ?>" name="options.<?php echo htmlentities($key); ?>" value="<?php echo htmlentities($value); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_[options]<?php echo htmlentities($key); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlentities($key); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_options.<?php echo htmlentities($key); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlentities($key); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>

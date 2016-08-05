@@ -63,9 +63,9 @@
                 <tr>
                     <td style='text-align:center;'><a class="btn btn-sm btn-success" href="connections/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                     <td><?php echo htmlentities($item->attributes->name)?></td>
-                    <td><?php echo htmlentities($item->attributes->org_id)?></td>
-                    <td><?php echo htmlentities($item->attributes->location_id_a)?></td>
-                    <td><?php echo htmlentities($item->attributes->location_id_b)?></td>
+                    <td><?php echo htmlentities($item->attributes->org_name)?></td>
+                    <td><?php echo htmlentities($item->attributes->location_name_a)?></td>
+                    <td><?php echo htmlentities($item->attributes->location_name_b)?></td>
                     <td><?php echo htmlentities($item->attributes->provider)?></td>
                     <td><?php echo htmlentities($item->attributes->service_type)?></td>
                     <td><?php echo htmlentities($item->attributes->speed)?></td>

@@ -67,13 +67,32 @@ $item = $this->response->data[0];
         </div>
 
         <div class="form-group">
+            <label for="comments" class="col-sm-2 control-label">Comments</label>
+            <div class="col-sm-4">
+                <div class="col-sm-8 input-group">
+                    <input type="text" class="form-control" id="comments" name="comments" placeholder="" value="<?php echo htmlentities($item->attributes->comments); ?>" disabled>
+                    <?php if (!empty($edit)) { ?>
+                    <span class="input-group-btn">
+                        <button id="edit_comments" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="comments"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                    </span>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="parent_id" class="col-sm-2 control-label">Parent</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="parent_id" name="parent_id" placeholder="" value="<?php echo htmlentities($item->attributes->parent_id); ?>" disabled>
+                    <select class="data_type form-control" id="parent_id" name="parent_id" disabled>
+                    <?php foreach ($this->response->included as $org) {
+                        if ($org->type == 'orgs' and $org->attributes->id != $item->attributes->id) { ?>
+                            <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->parent_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                    <?php } } ?>
+                    </select>
                     <?php if (!empty($edit)) { ?>
                     <span class="input-group-btn">
-                        <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="parent_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        <button id="edit_parent_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="parent_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                     </span>
                     <?php } ?>
                 </div>
@@ -85,7 +104,7 @@ $item = $this->response->data[0];
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Devices in Network <?php echo $item->attributes->name; ?></span>
+      <span class="text-left">Devices assigned to <?php echo $item->attributes->name; ?></span>
       <span class="pull-right"></span>
     </h3>
   </div>
@@ -98,10 +117,13 @@ $item = $this->response->data[0];
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->response->included as $item) { ?><tr>
-                <td><a class="btn btn-sm btn-success" href="../devices?system.org_id=<?php echo intval($item->org_id); ?>"><?php echo intval($item->count); ?></a></td>
-                <td><?php echo $item->type; ?></td>
-            </tr><?php } ?>
+            <?php
+            if (!empty($this->response->included)) {
+            foreach ($this->response->included as $device) { ?><tr>
+                <?php if ($device->type == 'devices') { ?>
+                <td><a class="btn btn-sm btn-success" href="../../devices?system.type=<?php echo $device->attributes->type; ?>&system.org_id=<?php echo intval($item->id); ?>"><?php echo intval($device->attributes->count); ?></a></td>
+                <td><?php echo $device->attributes->type; ?></td>
+            </tr><?php } } } ?>
         </tbody>
     </table>
   </div>

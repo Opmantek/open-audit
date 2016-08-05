@@ -1080,6 +1080,7 @@ INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y','0000-00-00 00:00:00
 INSERT INTO `oa_config` VALUES ('display_version','1.12.8','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
+INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','0000-00-00 00:00:00',0,'The API key for Google Maps.');
 INSERT INTO `oa_config` VALUES ('internal_version','20160620','n','0000-00-00 00:00:00',0,'The internal numerical version.');
 INSERT INTO `oa_config` VALUES ('logo','logo-banner-oae','y','2016-05-20 10:46:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');

@@ -85,6 +85,12 @@ class connections extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->included = array();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+        $this->response->data = array();
         $this->response->data = $this->m_connections->read();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
@@ -98,6 +104,11 @@ class connections extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->included = array();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
         $this->response->data = array();
         $temp = new stdClass();
         $temp->type = $this->response->meta->collection;
@@ -137,6 +148,12 @@ class connections extends MY_Controller
             output($this->response);
             exit();
         }
+        $this->response->included = array();
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+        $this->response->data = array();
         $this->response->data = $this->m_connections->read();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);

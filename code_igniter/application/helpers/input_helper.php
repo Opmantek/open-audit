@@ -113,6 +113,12 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->received_data = array();
         $CI->response->links = array();
 
+        $actions = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
+        $action = '';
+
+        $collections = ' charts connections credentials devices fields files locations networks orgs scripts ';
+        $collection = '';
+
         # Allow for URLs thus:
         # /api/{version}/
         # /v1/
@@ -148,7 +154,7 @@ if (! function_exists('inputRead')) {
         
         # get our collection - usually devices, groups, reports, etc
         $temp = $CI->uri->segment(1);
-        if (isset($temp) and $temp != '') {
+        if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
             $CI->response->meta->collection = (string)$temp;
             $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
             $log->message = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
@@ -174,8 +180,6 @@ if (! function_exists('inputRead')) {
         }
 
         # get the id of the collection item in question
-        $collection_words = ' create edit update delete list execute debug download ';
-
         # if we have an integer
         if ($CI->uri->segment(2) != '' and is_numeric($CI->uri->segment(2))) {
             $CI->response->meta->id = intval($CI->uri->segment(2));
@@ -184,15 +188,21 @@ if (! function_exists('inputRead')) {
         }
 
         # if we have a reserved word
-        if ($CI->uri->segment(2) and !is_numeric($CI->uri->segment(2)) and stripos($collection_words, ' '.$CI->uri->segment(2).' ') !== false) {
+        if ($CI->uri->segment(2) and stripos($actions, ' '.$CI->uri->segment(2).' ') !== false) {
             $CI->response->meta->action = $CI->uri->segment(2);
+            $action = $CI->uri->segment(2);
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
+            stdlog($log);
+        }
+        if ($CI->uri->segment(3) and stripos($actions, ' '.$CI->uri->segment(3).' ') !== false) {
+            $CI->response->meta->action = $CI->uri->segment(3);
+            $action = $CI->uri->segment(3);
             $log->message = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
         }
         
         # if we have an item name (ie, not it's ID)
-        if (is_null($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($collection_words, ' '.$CI->uri->segment(2).' ') === false) {
-            // TODO - SEPARATE THIS OUT
+        if (is_null($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($actions, ' '.$CI->uri->segment(2).' ') === false) {
             $log->message = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
             $sql = '';
@@ -243,7 +253,6 @@ if (! function_exists('inputRead')) {
                 }
             }
         }
-        unset($collection_words);
 
         # get the include
         if ($CI->input->get('include')) {
@@ -259,9 +268,12 @@ if (! function_exists('inputRead')) {
 
         # get the sub_resource
         if (empty($CI->response->meta->sub_resource)) {
-            $CI->response->meta->sub_resource = (string)$CI->uri->segment(3, '');
-            $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to URI.';
-            stdlog($log);
+            $temp = @(string)$CI->uri->segment(3, '');
+            if (stripos($actions, ' '.$temp. ' ') === false and $temp != '') {
+                $CI->response->meta->sub_resource = $temp;
+                $log->message = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to URI.';
+                stdlog($log);
+            }
         }
         if ($CI->input->get('sub_resource')) {
             $CI->response->meta->sub_resource = $CI->input->get('sub_resource');
@@ -278,9 +290,11 @@ if (! function_exists('inputRead')) {
         # get the sub_resource id
         #$CI->response->meta->sub_resource_id = $CI->uri->segment(4, '');
         if (empty($CI->response->meta->sub_resource_id)) {
-            $CI->response->meta->sub_resource_id = (string)$CI->uri->segment(4, '');
-            $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
-            stdlog($log);
+            if (!empty($CI->response->meta->sub_resource)) {
+                $CI->response->meta->sub_resource_id = (string)$CI->uri->segment(4, '');
+                $log->message = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
+                stdlog($log);
+            }
         }
         if ($CI->input->get('sub_resource_id')) {
             $CI->response->meta->sub_resource_id = $CI->input->get('sub_resource_id');
@@ -322,14 +336,6 @@ if (! function_exists('inputRead')) {
         # get the action
         # valid values are typically - create, read, update, delete, list, execute
         # TODO - request_method == post and body contains system_id, then update, not create
-        $action_words = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
-        $action = '';
-        if (stripos($action_words, ' '.$CI->response->meta->action. ' ') !== false) {
-            $action = $CI->response->meta->action;
-            $log->message = 'Set action to ' . $CI->response->meta->action . ', because approved word.';
-            stdlog($log);
-        }
-
         if ($CI->input->get('action')) {
             $action = $CI->input->get('action');
             $log->message = 'Set action to ' . $action . ', according to GET.';
@@ -459,7 +465,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', no action.';
             stdlog($log);
         }
-        if (stripos($action_words, ' '.$CI->response->meta->action.' ') === false) {
+        if (stripos($actions, ' '.$CI->response->meta->action.' ') === false) {
             $CI->response->meta->action = 'collection';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because not in reserved words.';
             stdlog($log);
