@@ -642,7 +642,7 @@ if (! function_exists('wmi_audit')) {
         $command = 'computersystem get name';
         $wmi_result = wmi_command($ip, $credentials, $command, $display);
         if ($wmi_result['status'] == 0) {
-            $details->hostname = $wmi_result['output'][1];
+            $details->hostname = strtolower($wmi_result['output'][1]);
             $details->name = $details->hostname;
         }
 
@@ -650,7 +650,7 @@ if (! function_exists('wmi_audit')) {
         $command = 'computersystem get domain';
         $wmi_result = wmi_command($ip, $credentials, $command, $display);
         if ($wmi_result['status'] == 0) {
-            $details->domain = $wmi_result['output'][1];
+            $details->domain = strtolower($wmi_result['output'][1]);
             $details->fqdn = $details->hostname . '.' . $details->domain;
         }
 
