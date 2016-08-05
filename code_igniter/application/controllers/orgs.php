@@ -97,7 +97,11 @@ class orgs extends MY_Controller
         if (!empty($this->response->data)) {
             $this->response->meta->filtered = count($this->response->data);
             if ($this->response->meta->format == 'screen') {
-                $this->response->included = $this->m_orgs->read_sub_resource();
+                $this->response->included = array();
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+                if ($this->m_orgs->read_sub_resource()) {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
+                }
             }
         }
         output($this->response);

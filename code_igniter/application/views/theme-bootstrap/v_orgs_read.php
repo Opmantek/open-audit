@@ -117,11 +117,13 @@ $item = $this->response->data[0];
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($this->response->included as $device) { ?><tr>
+            <?php
+            if (!empty($this->response->included)) {
+            foreach ($this->response->included as $device) { ?><tr>
                 <?php if ($device->type == 'devices') { ?>
                 <td><a class="btn btn-sm btn-success" href="../../devices?system.type=<?php echo $device->attributes->type; ?>&system.org_id=<?php echo intval($item->id); ?>"><?php echo intval($device->attributes->count); ?></a></td>
                 <td><?php echo $device->attributes->type; ?></td>
-            </tr><?php } } ?>
+            </tr><?php } } } ?>
         </tbody>
     </table>
   </div>
