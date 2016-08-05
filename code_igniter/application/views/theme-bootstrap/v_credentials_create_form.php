@@ -232,7 +232,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="username@domain" value="">\
                 </div>\
             </div>\
         </div>\
