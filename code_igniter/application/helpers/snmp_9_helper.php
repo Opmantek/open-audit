@@ -6931,31 +6931,31 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 	}
 
 	# Cisco specific model OID
-	if ($details->model == '') {
+	if (empty($details->model)) {
 		$details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13.1");
 	}
 
 	# catch all for catalyst == switch
-	if (stripos($details->model, 'catalyst') !== FALSE OR stripos($details->os_family, 'cataylst') !== FALSE) {
+	if (!empty($details->model) and (stripos($details->model, 'catalyst') !== FALSE OR stripos($details->os_family, 'cataylst') !== FALSE)) {
 	   $details->type = 'switch';
 	}
 
 	# Generic Cisco serial
-	if ($details->serial == '') {
+	if (empty($details->serial)) {
 		$details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
 	}
 
 	# Generic Cisco serial
-	if ($details->serial == '') {
+	if (empty($details->serial)) {
 		$details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1.0");
 	}
 
 	# Cisco 37xx stack serial
-	if ($details->serial == '') {
+	if (empty($details->serial)) {
 		$details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.5.1.2.19.0");
 	}
 
-	if ($details->serial == '') {
+	if (empty($details->serial)) {
 		$i_array = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11");
 		if (!empty($i_array[0])) {
 			$details->serial = $i_array[0];
