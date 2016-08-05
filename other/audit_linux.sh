@@ -632,6 +632,10 @@ if [ -z "$system_model" ] && [ -n "$(which dmidecode 2>/dev/null)" ]; then
 	fi
 fi
 
+if [ "$system_manufacturer" = "VMware, Inc." ]; then
+	system_manufacturer="VMware"
+fi
+
 # Get the System Uptime
 system_uptime=$(cut -d. -f1 < /proc/uptime)
 
