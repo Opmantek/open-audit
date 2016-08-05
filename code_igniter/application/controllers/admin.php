@@ -4983,61 +4983,13 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
 
-
-            # Some hoop jumping here. Because a previous default SQL schema did not include the key
-            # audit_log_system_id but the upgrade did, we have to test if it exists before trying to delete it
-            $sqlt = "SELECT count(*) AS `count` FROM INFORMATION_SCHEMA.STATISTICS WHERE INDEX_SCHEMA = DATABASE() AND TABLE_NAME='audit_log' AND INDEX_NAME = 'audit_log_system_id'";
-            $query = $this->db->query($sqlt);
+            $sql_indexes = "SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = 'openaudit' AND  REFERENCED_TABLE_NAME = 'system' and REFERENCED_COLUMN_NAME = 'system_id'";
+            $query = $this->db->query($sql_indexes);
             $result = $query->result();
-            if ($result[0]->count > 0) {
-                $sql[] = "ALTER TABLE audit_log DROP FOREIGN KEY audit_log_system_id";
+            foreach ($result as $item) {
+                $sql[] = "ALTER TABLE " . $item->TABLE_NAME . " DROP FOREIGN KEY " . $item->CONSTRAINT_NAME;
             }
-            unset($sqlt);
-            unset($query);
-            unset($result);
-
-            # DROP all the table indexes / foreign keys that link to system.system_id
-            $sql[] = "ALTER TABLE bios DROP FOREIGN KEY sys_hw_bios_system_id";
-            $sql[] = "ALTER TABLE change_log DROP FOREIGN KEY change_log_system_id";
-            $sql[] = "ALTER TABLE disk DROP FOREIGN KEY sys_hw_hard_drive_system_id";
-            $sql[] = "ALTER TABLE dns DROP FOREIGN KEY sys_sw_dns_system_id";
-            $sql[] = "ALTER TABLE edit_log DROP FOREIGN KEY edit_log_system_id";
-            $sql[] = "ALTER TABLE graph DROP FOREIGN KEY sys_hw_graph_system_id";
-            $sql[] = "ALTER TABLE ip DROP FOREIGN KEY ip_system_id";
-            $sql[] = "ALTER TABLE log DROP FOREIGN KEY sys_sw_log_system_id";
-            $sql[] = "ALTER TABLE memory DROP FOREIGN KEY sys_hw_memory_system_id";
-            $sql[] = "ALTER TABLE module DROP FOREIGN KEY sys_hw_module_system_id";
-            $sql[] = "ALTER TABLE monitor DROP FOREIGN KEY sys_hw_monitor_system_id";
-            $sql[] = "ALTER TABLE motherboard DROP FOREIGN KEY sys_hw_motherboard_system_id";
-            $sql[] = "ALTER TABLE netstat DROP FOREIGN KEY sys_sw_netstat_system_id";
-            $sql[] = "ALTER TABLE network DROP FOREIGN KEY sys_hw_network_card_system_id";
-            $sql[] = "ALTER TABLE oa_group_sys DROP FOREIGN KEY oa_group_sys_system_id";
-            $sql[] = "ALTER TABLE optical DROP FOREIGN KEY sys_hw_optical_drive_system_id";
-            $sql[] = "ALTER TABLE pagefile DROP FOREIGN KEY sys_sw_pagefile_system_id";
-            $sql[] = "ALTER TABLE partition DROP FOREIGN KEY sys_hw_partition_system_id";
-            $sql[] = "ALTER TABLE print_queue DROP FOREIGN KEY sys_sw_print_queue_system_id";
-            $sql[] = "ALTER TABLE processor DROP FOREIGN KEY sys_hw_processor_system_id";
-            $sql[] = "ALTER TABLE route DROP FOREIGN KEY sys_sw_ip_route_system_id";
-            $sql[] = "ALTER TABLE san DROP FOREIGN KEY san_system_id";
-            $sql[] = "ALTER TABLE scsi DROP FOREIGN KEY sys_hw_scsi_controller_system_id";
-            $sql[] = "ALTER TABLE server DROP FOREIGN KEY server_system_id";
-            $sql[] = "ALTER TABLE server_item DROP FOREIGN KEY server_item_system_id";
-            $sql[] = "ALTER TABLE service DROP FOREIGN KEY sys_sw_service_system_id";
-            $sql[] = "ALTER TABLE share DROP FOREIGN KEY sys_sw_share_system_id";
-            $sql[] = "ALTER TABLE software DROP FOREIGN KEY sys_sw_software_system_id";
-            $sql[] = "ALTER TABLE software_key DROP FOREIGN KEY sys_sw_software_key_system_id";
-            $sql[] = "ALTER TABLE sound DROP FOREIGN KEY sys_hw_sound_system_id";
-            $sql[] = "ALTER TABLE sys_man_additional_fields_data DROP FOREIGN KEY sys_man_additional_fields_data_system_id";
-            $sql[] = "ALTER TABLE sys_man_attachment DROP FOREIGN KEY att_system_id";
-            $sql[] = "ALTER TABLE sys_man_notes DROP FOREIGN KEY sys_man_notes_system_id";
-            $sql[] = "ALTER TABLE task DROP FOREIGN KEY task_system_id";
-            $sql[] = "ALTER TABLE user DROP FOREIGN KEY sys_sw_user_system_id";
-            $sql[] = "ALTER TABLE user_group DROP FOREIGN KEY sys_sw_groups_system_id";
-            $sql[] = "ALTER TABLE variable DROP FOREIGN KEY sys_sw_variable_system_id";
-            $sql[] = "ALTER TABLE video DROP FOREIGN KEY sys_hw_video_system_id";
-            $sql[] = "ALTER TABLE vm DROP FOREIGN KEY sys_sw_virtual_machine_system_id";
-            $sql[] = "ALTER TABLE warranty DROP FOREIGN KEY sys_hw_warranty_system_id";
-            $sql[] = "ALTER TABLE windows DROP FOREIGN KEY sys_sw_windows_system_id";
+            unset($sql_indexes);
 
             $sql[] = "ALTER TABLE system DROP KEY id";
             $sql[] = "ALTER TABLE system DROP KEY id2";
