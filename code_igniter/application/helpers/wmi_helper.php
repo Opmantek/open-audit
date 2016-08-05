@@ -168,8 +168,11 @@ if (! function_exists('execute_windows')) {
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-
-            $command = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$username."%".$password." --uninstall //".$ip." \"$command\" ";
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
+            unset($temp);
+            $command = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%".$password." --uninstall //".$ip." \"$command\" ";
             $echo = str_replace($password, '******', $command);
             exec($command, $output, $return_var);
         }
