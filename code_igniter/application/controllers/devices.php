@@ -111,6 +111,9 @@ class devices extends MY_Controller
 
     private function read()
     {
+        if (php_uname('s') == 'Windows NT') {
+            redirect('main/system_display/' . $this->response->meta->id);
+        }
         $this->load->model('m_orgs');
         $this->load->model('m_locations');
         $this->load->model('m_devices_components');
