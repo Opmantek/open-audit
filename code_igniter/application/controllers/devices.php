@@ -169,6 +169,9 @@ class devices extends MY_Controller
             }
         }
 
+        if (php_uname('s') == 'Windows NT' and $this->response->meta->format == 'screen') {
+            redirect('main/system_display/' . $this->response->meta->id);
+        }
         output($this->response);
     }
 
