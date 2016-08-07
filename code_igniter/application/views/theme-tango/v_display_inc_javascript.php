@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -71,7 +72,7 @@ function display_credentials() {
         $snmp_community_field = 'text';
     }
     ?>
-	status_text="<p><label for='ip_address'><?php echo __("IP Address"); ?>: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->man_ip_address) and $system[0]->man_ip_address != '' and $system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0') { echo ip_address_from_db($system[0]->man_ip_address); } ?>' \/><\/p> \
+	status_text="<p><label for='ip_address'><?php echo __("IP Address"); ?>: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->ip) and $system[0]->ip != '' and $system[0]->ip != '000.000.000.000' and $system[0]->ip != '0.0.0.0') { echo ip_address_from_db($system[0]->ip); } ?>' \/><\/p> \
 	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') { echo $decoded_access_details->snmp_version; } else { echo '2c'; } ?>' \/><\/p> \
 	<p><label for='snmp_community'><?php echo __("SNMP Community"); ?>: <\/label><input type='<?php echo $snmp_community_field; ?>' id='snmp_community' name='snmp_community' value='<?php if (isset($decoded_access_details->snmp_community) and $decoded_access_details->snmp_community > '') { echo $decoded_access_details->snmp_community; } else { echo $this->config->item('default_snmp_community'); } ?>' \/><\/p> \
 	<p><label for='ssh_username'><?php echo __("SSH Username"); ?>: <\/label><input type='text' id='ssh_username' name='ssh_username' value='<?php echo $decoded_access_details->ssh_username; ?>' \/><\/p> \
@@ -80,12 +81,12 @@ function display_credentials() {
 	<p><label for='windows_password'><?php echo __("Windows Password"); ?>: <\/label><input type='<?php echo $password_field; ?>' id='windows_password' name='windows_password' value='<?php echo $decoded_access_details->windows_password; ?>' \/><\/p> \
 	<p><label for='windows_domain'><?php echo __("Windows Domain"); ?>: <\/label><input type='text' id='windows_domain' name='windows_domain' value='<?php if (isset($decoded_access_details->windows_domain) and $decoded_access_details->windows_domain > '') { echo $decoded_access_details->windows_domain; } elseif (isset($windows[0]->windows_domain_short)) { echo $windows[0]->windows_domain_short; } ?>' \/><\/p> \
 	<p><label for='submit'><?php echo __("Update Credentials"); ?>: <\/label><input type='submit' id='submit' name='submit' value='Submit' \/><\/p> \
-	<input type='hidden' id='system_id' name='system_id' value='<?php echo $system[0]->system_id; ?>' \/>";
+	<input type='hidden' id='system_id' name='system_id' value='<?php echo $system[0]->id; ?>' \/>";
 	document.getElementById("credentials").innerHTML = status_text;
 }
 
-function display_man_environment() {
-	status_text="<select id='man_environment' onchange='send_environment();'>\
+function display_environment() {
+	status_text="<select id='environment' onchange='send_environment();'>\
 	<option value=' '><?php echo __("Choose an Environment"); ?><\/option>\
 	<option value='production'><?php echo __("Production"); ?><\/option>\
 	<option value='dev'><?php echo __("Development"); ?><\/option>\
@@ -96,13 +97,13 @@ function display_man_environment() {
 	<option value='train'><?php echo __("Training"); ?><\/option>\
 	<option value='uat'><?php echo __("User Acceptance Testing"); ?><\/option>\
 	<\/select>";
-	document.getElementById("man_environment_select").innerHTML = status_text;
+	document.getElementById("environment_select").innerHTML = status_text;
 }
 
 function send_environment() {
-	table_text=document.getElementById("man_environment").value;
-	//http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_environment/'+table_text);
-    data = "name=man_environment&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+	table_text=document.getElementById("environment").value;
+	//http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/environment/'+table_text);
+    data = "name=environment&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
@@ -116,26 +117,26 @@ function receive_environment() {
     if(http.responseText) {
       // UPDATE ajaxTest content
       update="<span onclick='display_environment();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_environment_select").innerHTML = update;
+      document.getElementById("environment_select").innerHTML = update;
     }
   }
 }
 
-function display_man_criticality() {
-    status_text="<select id='man_criticality' onchange='send_criticality();'>\
+function display_criticality() {
+    status_text="<select id='criticality' onchange='send_criticality();'>\
     <option value=' '><?php echo __("Choose a Criticality"); ?><\/option>\
     <option value='critical'><?php echo __("Critical"); ?><\/option>\
     <option value='normal'><?php echo __("Normal"); ?><\/option>\
     <option value='low'><?php echo __("Low"); ?><\/option>\
     <\/select>";
-    document.getElementById("man_criticality_select").innerHTML = status_text;
+    document.getElementById("criticality_select").innerHTML = status_text;
 }
 
 function send_criticality() {
-    table_text=document.getElementById("man_criticality").value;
-    //http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_criticality/'+table_text);
+    table_text=document.getElementById("criticality").value;
+    //http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/criticality/'+table_text);
     //http.onreadystatechange = receive_criticality;
-    data = "name=man_criticality&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=criticality&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
@@ -148,46 +149,46 @@ function receive_criticality() {
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_man_criticality();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_criticality_select").innerHTML = update;
+      update="<span onclick='display_criticality();'>"+http.responseText+"<\/span>";
+      document.getElementById("criticality_select").innerHTML = update;
     }
   }
 }
 
-function display_man_oae_manage() {
-	status_text="<select id='man_oae_manage' onchange='send_man_oae_manage();'>\
+function display_oae_manage() {
+	status_text="<select id='oae_manage' onchange='send_oae_manage();'>\
 	<option value=' '><?php echo __("Choose"); ?><\/option>\
 	<option value='y'><?php echo __("Yes"); ?><\/option>\
 	<option value='n'><?php echo __("No"); ?><\/option>\
 	<\/select>";
-	document.getElementById("man_oae_manage_select").innerHTML = status_text;
+	document.getElementById("oae_manage_select").innerHTML = status_text;
 }
 
-function send_man_oae_manage() {
-	table_text=document.getElementById("man_oae_manage").value;
-	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_oae_manage/'+table_text);
-	// http.onreadystatechange = receive_man_oae_manage;
+function send_oae_manage() {
+	table_text=document.getElementById("oae_manage").value;
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/oae_manage/'+table_text);
+	// http.onreadystatechange = receive_oae_manage;
 	// http.send(null);
-    data = "name=man_oae_manage&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=oae_manage&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
-    http.onreadystatechange = receive_man_oae_manage;
+    http.onreadystatechange = receive_oae_manage;
 }
 
-function receive_man_oae_manage() {
+function receive_oae_manage() {
   if(http.readyState == 4 && http.status == 200){
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_man_oae_manage();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_oae_manage_select").innerHTML = update;
+      update="<span onclick='display_oae_manage();'>"+http.responseText+"<\/span>";
+      document.getElementById("oae_manage_select").innerHTML = update;
     }
   }
 }
 
-function display_man_status() {
-	status_text="<select id='man_status' onchange='send_status();'>\
+function display_status() {
+	status_text="<select id='status' onchange='send_status();'>\
 	<option value=' '><?php echo __("Choose a status"); ?><\/option>\
 	<option value='production'><?php echo __("Production"); ?><\/option>\
 	<option value='deleted'><?php echo __("Deleted"); ?><\/option>\
@@ -196,15 +197,15 @@ function display_man_status() {
 	<option value='retired'><?php echo __("Retired"); ?><\/option>\
 	<option value='unallocated'><?php echo __("Unallocated"); ?><\/option>\
 	<\/select>";
-	document.getElementById("man_status_select").innerHTML = status_text;
+	document.getElementById("status_select").innerHTML = status_text;
 }
 
 function send_status() {
-	table_text=document.getElementById("man_status").value;
-	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_status/'+table_text);
+	table_text=document.getElementById("status").value;
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/status/'+table_text);
 	// http.onreadystatechange = receive_status;
 	// http.send(null);
-    data = "name=man_status&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=status&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
@@ -216,14 +217,14 @@ function receive_status() {
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_man_status();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_status_select").innerHTML = update;
+      update="<span onclick='display_status();'>"+http.responseText+"<\/span>";
+      document.getElementById("status_select").innerHTML = update;
     }
   }
 }
 
-function display_man_class() {
-	status_text="<select id='man_class' onchange='send_man_class();'>\
+function display_class() {
+	status_text="<select id='class' onchange='send_class();'>\
 	<option value=' '><?php echo __("Choose a class"); ?><\/option>\
 	<option value='desktop'><?php echo __("Desktop"); ?><\/option>\
 	<option value='laptop'><?php echo __("Laptop"); ?><\/option>\
@@ -234,47 +235,47 @@ function display_man_class() {
 	<option value='virtual server'><?php echo __("Virtual Server"); ?><\/option>\
 	<option value='virtual desktop'><?php echo __("Virtual Desktop"); ?><\/option>\
 	<\/select>";
-	document.getElementById("man_class_select").innerHTML = status_text;
+	document.getElementById("class_select").innerHTML = status_text;
 }
 
-function send_man_class() {
-	table_text=document.getElementById("man_class").value;
-	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_class/'+table_text);
-	// http.onreadystatechange = receive_man_class;
+function send_class() {
+	table_text=document.getElementById("class").value;
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/class/'+table_text);
+	// http.onreadystatechange = receive_class;
 	// http.send(null);
-    data = "name=man_class&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=class&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
-    http.onreadystatechange = receive_man_class;
+    http.onreadystatechange = receive_class;
 }
 
-function receive_man_class() {
+function receive_class() {
   if(http.readyState == 4 && http.status == 200){
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_man_class();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_class_select").innerHTML = update;
+      update="<span onclick='display_class();'>"+http.responseText+"<\/span>";
+      document.getElementById("class_select").innerHTML = update;
     }
   }
 }
 
-function display_man_type() {
+function display_type() {
 	// we now pass the list of device types from the controller
 	// see the file controllers/include_device_types.php to edit
-	type_text = "<select id='man_type' onchange='send_type();'><?php foreach ($device_types as $key => $value) {
+	type_text = "<select id='type' onchange='send_type();'><?php foreach ($device_types as $key => $value) {
     echo "<option value='$key'>".__("$value")."</option>";
 } ?><\/select>";
-	document.getElementById("man_type_select").innerHTML = type_text;
+	document.getElementById("type_select").innerHTML = type_text;
 }
 
 function send_type() {
-	table_text=document.getElementById("man_type").value;
-	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_type/'+table_text);
+	table_text=document.getElementById("type").value;
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/type/'+table_text);
 	// http.onreadystatechange = receive_type;
 	// http.send(null);
-    data = "name=man_type&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=type&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
@@ -286,8 +287,8 @@ function receive_type() {
     // Text returned FROM the PHP script
     if(http.responseText) {
       // UPDATE ajaxTest content
-      update="<span onclick='display_man_type();'>"+http.responseText+"<\/span>";
-      document.getElementById("man_type_select").innerHTML = update;
+      update="<span onclick='display_type();'>"+http.responseText+"<\/span>";
+      document.getElementById("type_select").innerHTML = update;
     }
   }
 }
@@ -395,21 +396,21 @@ function display_location() {
         $location_form .= "<option value='".intval($location->id)."'>".htmlentities($location->name)."<\/option>";
     }
     if ($location_id != "") {
-        $location_form = "<select id='man_location_id' onchange='send_location();'>".$location_form."<\/select>";
+        $location_form = "<select id='location_id' onchange='send_location();'>".$location_form."<\/select>";
     } else {
-        $location_form = "<select id='man_location_id' onchange='send_location();'><option value=' '>".__("Choose a location")."<\/option>".$location_form."<\/select>";
+        $location_form = "<select id='location_id' onchange='send_location();'><option value=' '>".__("Choose a location")."<\/option>".$location_form."<\/select>";
     }
     ?>
 	status_text="<?php echo $location_form;?>";
-	document.getElementById("man_location_id_select").innerHTML = status_text;
+	document.getElementById("location_id_select").innerHTML = status_text;
 }
 
 function send_location() {
-	table_text=document.getElementById("man_location_id").value;
-	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_location_id/'+table_text);
+	table_text=document.getElementById("location_id").value;
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/location_id/'+table_text);
 	// http.onreadystatechange = receive_location;
 	// http.send(null);
-    data = "name=man_location_id&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=location_id&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
@@ -424,7 +425,7 @@ function receive_location() {
 			//update="<span onclick='display_location();'>"+http.responseText+"<\/span>";
 			//document.getElementById("location_container").innerHTML = update;
 			document.getElementById("location_container").innerHTML = http.responseText;
-			//update=http.responseText+"<p><label for='man_location_rack'><?php echo __('Rack')?>: <\/label><span id='man_location_rack' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack)?><\/span><\/p><p><label for='man_location_rack_position'><?php echo __('Rack Position')?>: <\/label><span id='man_location_rack_position' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack_position)?><\/p>";
+			//update=http.responseText+"<p><label for='location_rack'><?php echo __('Rack')?>: <\/label><span id='location_rack' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack)?><\/span><\/p><p><label for='location_rack_position'><?php echo __('Rack Position')?>: <\/label><span id='location_rack_position' <?php echo str_replace('"', "'", $edit)?>><?php echo print_something($location_rack_position)?><\/p>";
 			document.getElementById("location_container").innerHTML = update;
 		}
 	}
@@ -437,21 +438,21 @@ function display_org() {
         $org_form .= "<option value='".intval($org->id)."'>".htmlentities($org->name)."<\/option>";
     }
     if ($org_id != "") {
-        $org_form = "<select id='man_org_id' onchange='send_org();'>".$org_form."<\/select>";
+        $org_form = "<select id='org_id' onchange='send_org();'>".$org_form."<\/select>";
     } else {
-        $org_form = "<select id='man_org_id' onchange='send_org();'><option value=' '>".__("Choose an Org")."<\/option>".$org_form."<\/select>";
+        $org_form = "<select id='org_id' onchange='send_org();'><option value=' '>".__("Choose an Org")."<\/option>".$org_form."<\/select>";
     }
     ?>
 	status_text="<?php echo $org_form;?>";
-	document.getElementById("man_org_id_select").innerHTML = status_text;
+	document.getElementById("org_id_select").innerHTML = status_text;
 }
 
 function send_org() {
-	table_text=document.getElementById("man_org_id").value;
-	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/man_org_id/'+table_text);
+	table_text=document.getElementById("org_id").value;
+	// http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/org_id/'+table_text);
 	// http.onreadystatechange = receive_org;
 	// http.send(null);
-    data = "name=man_org_id&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+    data = "name=org_id&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
     http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     http.send(data);
@@ -507,38 +508,38 @@ $(document).ready(function(){
     $('#view_summary_dns').hide();
     $('#view_summary_san').hide();
     $('#view_summary_san_disk').hide();
-	<?php if ($system[0]->man_type == 'access point' or
-        $system[0]->man_type == 'adsl modem' or
-        $system[0]->man_type == 'bdsl modem' or
-        $system[0]->man_type == 'cable modem' or
-        $system[0]->man_type == 'dsl modem' or
-        $system[0]->man_type == 'firewall' or
-        $system[0]->man_type == 'gateway' or
-        $system[0]->man_type == 'load balancer' or
-        $system[0]->man_type == 'nas' or
-        $system[0]->man_type == 'network device' or
-        $system[0]->man_type == 'network ids' or
-        $system[0]->man_type == 'network printer' or
-        $system[0]->man_type == 'network scanner' or
-        $system[0]->man_type == 'router' or
-        $system[0]->man_type == 'switch' or
-        $system[0]->man_type == 'voip gateway' or
-        $system[0]->man_type == 'vpn terminator' or
-        $system[0]->man_type == 'wan accelerator' or
-        $system[0]->man_type == 'wap' or
-        $system[0]->man_type == 'wireless router') {
+	<?php if ($system[0]->type == 'access point' or
+        $system[0]->type == 'adsl modem' or
+        $system[0]->type == 'bdsl modem' or
+        $system[0]->type == 'cable modem' or
+        $system[0]->type == 'dsl modem' or
+        $system[0]->type == 'firewall' or
+        $system[0]->type == 'gateway' or
+        $system[0]->type == 'load balancer' or
+        $system[0]->type == 'nas' or
+        $system[0]->type == 'network device' or
+        $system[0]->type == 'network ids' or
+        $system[0]->type == 'network printer' or
+        $system[0]->type == 'network scanner' or
+        $system[0]->type == 'router' or
+        $system[0]->type == 'switch' or
+        $system[0]->type == 'voip gateway' or
+        $system[0]->type == 'vpn terminator' or
+        $system[0]->type == 'wan accelerator' or
+        $system[0]->type == 'wap' or
+        $system[0]->type == 'wireless router') {
     ?>
     $('#view_summary_network_interfaces').show();
     toggleBold("toggle_summary_network_interfaces");
 	<?php } ?>
-    <?php if ($system[0]->man_type == 'san') { ?>
+    <?php if ($system[0]->type == 'san') { ?>
         $('#view_summary_san').show();
         $('#view_summary_san_disk').show();
         $('#view_summary_network_interfaces').hide();
         toggleBold("toggle_summary_san");
         toggleBold("toggle_summary_san_disk");
     <?php } ?>
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) { ?>
+	<?php if (strpos($system[0]->type, 'phone') !== false) { ?>
         $('#view_summary_phone').show();
         toggleBold("toggle_summary_phone");
     <?php } ?>
@@ -623,7 +624,7 @@ $(document).ready(function(){
         toggleBold("toggle_summary_network_interfaces");
 	});
 
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
+	<?php if (strpos($system[0]->type, 'phone') !== false) {
     ?>
 	$('#toggle_summary_phone').click(function(){
 		$('#view_summary_phone').slideToggle("fast");
@@ -784,6 +785,7 @@ $(document).ready(function(){
     $('#view_settings_groups').hide();
     $('#view_settings_logs').hide();
     $('#view_settings_netstat').hide();
+    $('#view_settings_nmap').hide();
     $('#view_settings_pagefile').hide();
     $('#view_settings_print_queue').hide();
     $('#view_settings_routes').hide();
@@ -791,6 +793,9 @@ $(document).ready(function(){
     $('#view_settings_tasks').hide();
     $('#view_settings_users').hide();
     $('#view_settings_variables').hide();
+    $('#view_settings_file').hide();
+    $('#view_server_database').hide();
+    $('#view_server_web').hide();
 
 
 	$('#toggle_settings_pagefile').click(function(){
@@ -833,24 +838,30 @@ $(document).ready(function(){
         toggleBold("toggle_settings_dns");
 	});
 
-	$('#toggle_settings_netstat').click(function(){
-		$('#view_settings_netstat').slideToggle("fast");
+  $('#toggle_settings_netstat').click(function(){
+    $('#view_settings_netstat').slideToggle("fast");
         toggleBold("toggle_settings_netstat");
-	});
+  });
+
+  $('#toggle_settings_nmap').click(function(){
+    $('#view_settings_nmap').slideToggle("fast");
+        toggleBold("toggle_settings_nmap");
+  });
 
 	$('#toggle_settings_logs').click(function(){
 		$('#view_settings_logs').slideToggle("fast");
         toggleBold("toggle_settings_logs");
 	});
 
-	$('#toggle_settings_variables').click(function(){
-		$('#view_settings_variables').slideToggle("fast");
+  $('#toggle_settings_variables').click(function(){
+    $('#view_settings_variables').slideToggle("fast");
         toggleBold("toggle_settings_variables");
-	});
+  });
 
-	$('#view_server_database').hide();
-	$('#view_server_web').hide();
-
+  $('#toggle_settings_file').click(function(){
+    $('#view_settings_file').slideToggle("fast");
+        toggleBold("toggle_settings_file");
+  });
 
 	$('#toggle_server_database').click(function(){
 		$('#view_server_database').slideToggle("fast");
@@ -865,16 +876,15 @@ $(document).ready(function(){
 });
 
 <?php
-foreach ($additional_fields_data as $field) {
-    if ($field->field_type == 'list') {
-
-        $field_id = "custom_".htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id);
-        $field_contents = "<select id='" . $field_id . "' onchange='send_additional_" . str_replace(' ', '_', $field->field_name) . "();' >";
-        $values = explode(',', $field->field_values);
+foreach ($additional_fields as $field) {
+    if ($field->type == 'list') {
+        $field_id = "custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'});
+        $field_contents = "<select id='" . $field_id . "' onchange='send_additional_" . str_replace(' ', '_', $field->name) . "();' >";
+        $values = explode(',', $field->values);
         $field_contents .= "<option></option>";
         $field_contents .= "<option value='-'>Remove Value</option>";
         foreach ($values as $value) {
-            if ($field->data_value == $value) {
+            if (!empty($field->value) and $field->value == $value) {
                 $selected = ' selected ';
             } else {
                 $selected = ' ';
@@ -885,27 +895,24 @@ foreach ($additional_fields_data as $field) {
         ?>
 
 
-        function display_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
-            document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id); ?>_inner'><?php echo $field_contents; ?></span>";
+        function display_additional_<?php echo str_replace(' ', '_', $field->name); ?>() {
+            document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = "<span id='custom_<?php echo htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'}); ?>_inner'><?php echo $field_contents; ?></span>";
         }
 
-        function send_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+        function send_additional_<?php echo str_replace(' ', '_', $field->name); ?>() {
             table_text=document.getElementById("<?php echo $field_id; ?>").value;
-            // http.open('get', '<?php echo base_url();?>index.php/ajax/update_system_man/'+formVars+'/<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>/'+submitted_value);
-            // http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
-            // http.send(null);
-            data = "name=<?php echo "custom_varchar_" . htmlentities($field->data_id) . "_" . $field->field_id; ?>&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
+            data = "name=<?php echo "custom_" . @htmlentities($field->type) . "_" . @htmlentities($field->{'additional_field.id'}) . "_" . @intval($field->id) ; ?>&value="+encodeURIComponent(table_text)+"&system_id="+formVars;
             http.open("POST", "<?php echo base_url();?>index.php/ajax/update_system_man", true);
             http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             http.send(data);
-            http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>;
+            http.onreadystatechange = receive_additional_<?php echo str_replace(' ', '_', $field->name); ?>;
         }
 
-        function receive_additional_<?php echo str_replace(' ', '_', $field->field_name); ?>() {
+        function receive_additional_<?php echo str_replace(' ', '_', $field->name); ?>() {
           if(http.readyState == 4 && http.status == 200){
             // Text returned FROM the PHP script
             if(http.responseText) {
-              update = "<span id='custom_<?php echo htmlentities($field->field_type)."_".htmlentities($field->data_id)."_".htmlentities($field->field_id)."_inner"; ?>' onclick='display_additional_<?php echo str_replace(' ', '_', $field->field_name);?>();' >"+http.responseText+"</span>";
+              update = "<span id='custom_<?php echo htmlentities($field->type)."_".@htmlentities($field->additional_field_id)."_".@htmlentities($field->id)."_inner"; ?>' onclick='display_additional_<?php echo str_replace(' ', '_', $field->name);?>();' >"+http.responseText+"</span>";
               document.getElementById("<?php echo $field_id; ?>_outer").innerHTML = update;
             }
           }

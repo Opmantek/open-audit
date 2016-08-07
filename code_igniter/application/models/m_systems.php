@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,16 +43,16 @@ class M_systems extends MY_Model
     public function api_index($level = 'min')
     {
         if ($level === 'list') {
-            $sql = 'SELECT system_id AS id, concat("/omk/oae/node_config_documents/", system_id) as show_resource FROM system WHERE man_status = "production"';
+            $sql = 'SELECT id, concat("/omk/oae/node_config_documents/", id) as show_resource FROM system WHERE status = "production"';
         }
         if ($level === 'min') {
-            $sql = 'SELECT system_id, hostname, man_ip_address, man_os_name, man_type FROM system WHERE man_status = "production"';
+            $sql = 'SELECT id AS `system_id`, hostname, ip, os_name AS `man_os_name`, type AS `man_type` FROM system WHERE status = "production"';
         }
         if ($level === 'select') {
-            $sql = 'SELECT system_id, hostname, domain, man_ip_address, man_os_group, man_os_family, man_os_name, man_type, man_serial, man_model, man_manufacturer, pc_memory, pc_num_processor, man_environment, man_class FROM system WHERE man_status = "production"';
+            $sql = 'SELECT id AS `system_id`, hostname, domain, ip, os_group AS `man_os_group`, os_family AS `man_os_family`, os_name AS `man_os_name`, type AS `man_type`, serial AS `man_serial`, model AS `man_model`, manufacturer AS `man_manufacturer`, memory_count AS `pc_memory`, processor_count AS `pc_num_processor`, environment AS `man_environment`, clss AS `man_class` FROM system WHERE status = "production"';
         }
         if ($level === 'max') {
-            $sql = 'SELECT * FROM system WHERE man_status = "production"';
+            $sql = 'SELECT * FROM system WHERE status = "production"';
         }
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -62,7 +63,7 @@ class M_systems extends MY_Model
 
     public function search($search_term = '', $group_id = '0')
     {
-        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'server', 'server_item', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
         $sql = '';
         $result_set = array();
         foreach ($tables as $table) {
@@ -81,13 +82,13 @@ class M_systems extends MY_Model
             $select_string = mb_substr($select_string, 1);
             // now create the search statement
             if ($table != 'system') {
-                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.man_ip_address, a.man_type, $select_string
-			            FROM system a, oa_group_sys, $table
-			            WHERE a.system_id = $table.system_id AND a.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string ) ";
+                $sql = "SELECT DISTINCT(system.id) AS `system.id`, system.icon, system.hostname, system.domain, system.ip, system.type, `$table`.id, $select_string
+			            FROM system, oa_group_sys, $table
+			            WHERE system.id = $table.system_id AND system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND $table.current = 'y' AND ( $search_string )  AND `$table`.current = 'y' GROUP BY `$table`.`id`";
             } else {
-                $sql = "SELECT DISTINCT(a.system_id), a.icon, a.hostname, a.domain, a.man_ip_address, a.man_type, $select_string
-                        FROM system a, oa_group_sys, $table
-                        WHERE a.system_id = $table.system_id AND a.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string ) ";
+                $sql = "SELECT DISTINCT(system.id) AS `system.id`, system.icon, system.hostname, system.domain, system.ip, system.type, $select_string
+                        FROM system, oa_group_sys
+                        WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = '".$group_id."' AND ( $search_string )";
             }
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
@@ -99,12 +100,12 @@ class M_systems extends MY_Model
                     foreach ($fields as $field) {
                         // for each field in this table, check to see if the result matches the search
                         $i = new stdClass();
-                        $i->system_id = $row->system_id;
+                        $i->{'system.id'} = $row->{'system.id'};
                         $i->icon = $row->icon;
                         $i->hostname = $row->hostname;
                         $i->domain = $row->domain;
-                        $i->man_ip_address = $row->man_ip_address;
-                        $i->man_type = $row->man_type;
+                        $i->ip = $row->ip;
+                        $i->type = $row->type;
                         $i->table = $table;
                         $i->field = '';
                         $i->result = '';
@@ -137,29 +138,7 @@ class M_systems extends MY_Model
         if (($display_sql->group_display_sql === '') or ($display_sql->group_display_sql === ' ')) {
             // the group has no specific SQL Select (group_display_sql).
             // Use a standard SQL Select.
-            $sql = "SELECT
-					system.system_id,
-					system.hostname,
-					system.domain,
-					system.man_description,
-					system.man_ip_address,
-					system.man_type,
-					system.man_os_family,
-					system.man_os_name,
-					system.icon,
-					system.man_manufacturer,
-					system.man_model,
-					system.man_serial,
-					system.type
-				FROM
-					system,
-					oa_group_sys
-				WHERE
-					system.system_id = oa_group_sys.system_id AND
-					oa_group_sys.group_id = ? AND
-					system.man_status = 'production'
-				GROUP BY
-					system.system_id";
+            $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.dns_domain AS `system.dns_domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.os_name AS `system.os_name`, system.status AS `system.status`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial` FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id";
             $data = array("$group_id");
         } else {
             $sql = $display_sql->group_display_sql;
@@ -174,7 +153,7 @@ class M_systems extends MY_Model
 
     public function get_distinct_os_group()
     {
-        $sql = "SELECT distinct(man_os_group) FROM system ORDER BY man_os_group";
+        $sql = "SELECT distinct(os_group) FROM system ORDER BY os_group";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -184,7 +163,7 @@ class M_systems extends MY_Model
 
     public function get_distinct_os_family()
     {
-        $sql = "SELECT distinct(man_os_family) FROM system ORDER BY man_os_family";
+        $sql = "SELECT distinct(os_family) FROM system ORDER BY os_family";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -194,7 +173,7 @@ class M_systems extends MY_Model
 
     public function get_distinct_os_name()
     {
-        $sql = "SELECT distinct(man_os_name) FROM system ORDER BY man_os_name";
+        $sql = "SELECT distinct(os_name) FROM system ORDER BY os_name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -204,7 +183,7 @@ class M_systems extends MY_Model
 
     public function get_count()
     {
-        $sql = "SELECT count(*) AS count FROM system WHERE man_status = 'production'";
+        $sql = "SELECT count(*) AS count FROM system WHERE status = 'production'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -215,7 +194,7 @@ class M_systems extends MY_Model
 
     public function get_non_prod_count()
     {
-        $sql = "SELECT count(*) AS count FROM system WHERE man_status <> 'production'";
+        $sql = "SELECT count(*) AS count FROM system WHERE status <> 'production'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();

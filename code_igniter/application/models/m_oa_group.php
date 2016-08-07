@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,6 +42,14 @@ class M_oa_group extends MY_Model
 
     public function get_group_access($group_id = '1', $user_id = '0')
     {
+        $sql = "SELECT COUNT(*) as `count` FROM oa_group";
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        if (intval($row->count) == 0) {
+            # We have no groups as yet - make them
+            $this->load->helper('group_helper');
+            check_default_groups();
+        }
         if ($group_id == '0') {
             $group_id = '1';
         }
@@ -49,8 +58,11 @@ class M_oa_group extends MY_Model
         $data = array("$user_id", "$group_id");
         $query = $this->db->query($sql, $data);
         $row = $query->row();
-
-        return $row->group_user_access_level;
+        if (!empty($row->group_user_access_level)) {
+            return $row->group_user_access_level;
+        } else {
+            return 0;
+        }
     }
 
     public function get_group_name($group_id)
@@ -121,17 +133,14 @@ class M_oa_group extends MY_Model
         if (!isset($details->type)) {
             $details->type = '';
         }
-        if (!isset($details->man_type) or $details->man_type == '') {
-            $details->man_type = $details->type;
-        }
         if ($exclude_type != '') {
             $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ? AND oa_group_sys.group_id IN (SELECT oa_group.group_id FROM oa_group WHERE oa_group.group_category != ?)";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id", "$exclude_type");
+            $data = array("$details->id", "$exclude_type");
         } else {
             $sql = "DELETE FROM oa_group_sys WHERE oa_group_sys.system_id = ?";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->system_id");
+            $data = array("$details->id");
         }
         $query = $this->db->query($sql, $data);
         if ($exclude_type != '') {
@@ -145,15 +154,15 @@ class M_oa_group extends MY_Model
             $query = $this->db->query($sql);
         }
         foreach ($query->result() as $myrow) {
-            $sql_select = "SELECT system_id FROM system WHERE system_id = ? AND system_id in ( ".$myrow->group_dynamic_select." )";
-            $data_select = array("$details->system_id");
+            $sql_select = "SELECT system.id FROM system WHERE system.id = ? AND system.id in ( ".$myrow->group_dynamic_select." )";
+            $data_select = array("$details->id");
             $sql_select = $this->clean_sql($sql_select);
             $query_select = $this->db->query($sql_select, $data_select);
             if ($query_select->num_rows() > 0) {
                 // insert a row because the system matches the select criteria
                 $sql_insert = "INSERT INTO oa_group_sys (system_id, group_id) VALUES (?, ?)";
                 $sql_insert = $this->clean_sql($sql_insert);
-                $data_insert = array("$details->system_id", "$myrow->group_id");
+                $data_insert = array("$details->id", "$myrow->group_id");
                 $query_insert = $this->db->query($sql_insert, $data_insert);
             }
         }
@@ -174,7 +183,7 @@ class M_oa_group extends MY_Model
             $sql_select = $myrow->group_dynamic_select;
             # update the group with all systems that match
             $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-            $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$myrow->group_id."' ", $sql_insert);
+            $sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$myrow->group_id."' ", $sql_insert);
             $sql_insert = $this->clean_sql($sql_insert);
             $insert = $this->db->query($sql_insert);
         }
@@ -197,8 +206,7 @@ class M_oa_group extends MY_Model
         $delete = $this->db->query($sql_delete, $data) or die("Error with delete from oa_group_sys");
         # update the group with all systems that match
         $sql_insert = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-        #$sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."', 'system'", $sql_insert);
-        $sql_insert = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."' ", $sql_insert);
+        $sql_insert = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."' ", $sql_insert);
         $sql_insert = $this->clean_sql($sql_insert);
         $insert = $this->db->query($sql_insert);
     }
@@ -313,8 +321,6 @@ class M_oa_group extends MY_Model
 					oa_group_sys
 				ON
 					oa_group.group_id = oa_group_sys.group_id
-				WHERE
-					oa_group_sys.group_id < '999'
 				GROUP BY
 					oa_group.group_id";
         $sql = $this->clean_sql($sql);
@@ -367,13 +373,6 @@ class M_oa_group extends MY_Model
         $sql = "SELECT group_id FROM oa_group WHERE group_category = 'network' AND group_name LIKE '% / " . intval($subnet) . "'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
-        // echo $this->db->last_query();
-        // echo "<br /><br />\n";
-        // echo "Rows: " . $query->num_rows();
-        // $result = $query->result();
-        // echo "Rows: " . $query->num_rows();
-        // echo "Count: " . count($result);
-        // exit();
         return ($query->num_rows());
     }
 
@@ -589,7 +588,7 @@ class M_oa_group extends MY_Model
             $pos = mb_strpos($detail, "group_id_");
             if (($pos !== false) and ($detail != "group_id_0")) {
                 $group_id_split = explode("_", $detail);
-                $sql = "INSERT INTO oa_group_user (group_user_id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
+                $sql = "INSERT INTO oa_group_user (id, user_id, group_id, group_user_access_level) VALUES (NULL, ?, ?, ?)";
                 $data = array("$details->id", $group_id_split[2], "$key");
                 $query = $this->db->query($sql, $data);
             }
@@ -661,19 +660,21 @@ class M_oa_group extends MY_Model
         $result = $this->db->query($sql, $data);
 
         // insert the group columns
-        foreach ($group_definition->columns->column as $column) {
-            $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
-            $sql = $this->clean_sql($sql);
-            $data = array( $group_id,
-                (string)$column->column_order,
-                (string)$column->column_name,
-                (string)$column->column_variable,
-                (string)$column->column_type,
-                (string)$column->column_link,
-                (string)$column->column_secondary,
-                (string)$column->column_ternary,
-                (string)$column->column_align);
-            $query = $this->db->query($sql, $data);
+        if (!empty($group_definition->columns)) {
+            foreach ($group_definition->columns->column as $column) {
+                $sql = "INSERT INTO oa_group_column SET group_id = ?, column_order = ?, column_name = ?, column_variable = ?, column_type = ?, column_link = ?, column_secondary = ?, column_ternary = ?, column_align = ?";
+                $sql = $this->clean_sql($sql);
+                $data = array( $group_id,
+                    (string)$column->column_order,
+                    (string)$column->column_name,
+                    (string)$column->column_variable,
+                    (string)$column->column_type,
+                    (string)$column->column_link,
+                    (string)$column->column_secondary,
+                    (string)$column->column_ternary,
+                    (string)$column->column_align);
+                $query = $this->db->query($sql, $data);
+            }
         }
         // update the group members
         # get the group select
@@ -684,7 +685,7 @@ class M_oa_group extends MY_Model
         $query = $this->db->query($sql, $data);
         # update the group with all systems that match
         $sql = substr_replace($sql_select, "INSERT INTO oa_group_sys (system_id, group_id) ", 0, 0);
-        $sql = str_ireplace("SELECT DISTINCT(system.system_id)", "SELECT DISTINCT(system.system_id), '".$group_id."' ", $sql);
+        $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT DISTINCT(system.id), '".$group_id."' ", $sql);
         $query = $this->db->query($sql);
         return;
     }

@@ -30,27 +30,26 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Polycom
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.2684.1.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.2684.1.1') {
         $details->type = 'ip phone';
-        $details->model = str_replace("STRING: ", "", @snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.1.1.0"));
+        $details->model = str_replace("STRING: ", "", my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0"));
         $details->model = str_replace("\"\\", "", $details->model);
         $details->model = str_replace("\\\"", "", $details->model);
         $details->model = str_replace("\"", "", $details->model);
-        if (!isset($details->model) or $details->model == '') {
+        if (empty($details->model)) {
             $details->model = 'Polycom HD 8000';
         }
     }
-
-    if ($details->snmp_version == '2') {
-        # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.43.47.1.1.3.1.10.1"));
-    }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43.47.1.1.3.1.10.1");
+    return($details);
 };

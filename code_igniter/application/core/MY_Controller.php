@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,7 +54,8 @@ class MY_Controller extends CI_Controller
     /**
      * The custom default controller object.
      */
-    public function MY_Controller()
+    #public function MY_Controller()
+    public function __construct()
     {
         parent::__construct();
         $this->benchmark->mark('code_start');
@@ -208,7 +210,7 @@ class MY_Controller extends CI_Controller
                 $output_csv .= "\n";
             }
             foreach ($details as $attribute => $value) {
-                if ((string) $attribute === 'man_ip_address') {
+                if ((string) $attribute === 'ip') {
                     $value = ip_address_from_db($value);
                 }
                 $output_csv .= '"'.trim($value).'",';
@@ -239,7 +241,7 @@ class MY_Controller extends CI_Controller
         foreach ($query as $details) {
             echo "\t<item>\n";
             foreach ($details as $attribute => $value) {
-                if ((string) $attribute === 'man_ip_address') {
+                if ((string) $attribute === 'ip') {
                     $value = ip_address_from_db($value);
                 }
                 $value = xml_convert($value);
@@ -295,17 +297,17 @@ class MY_Controller extends CI_Controller
                 $items .= "\t{\n";
                 $output = '';
                 foreach ($details as $attribute => $value) {
-                    if ((string) $attribute === 'man_ip_address') {
+                    if ((string) $attribute === 'ip') {
                         $value = ip_address_from_db($value);
                     }
                     if (strpos($value, '{"') !== false) {
                         $output .= "\t\t\"".$attribute.'": '.$value.",\n";
                     } else {
                         $value = str_replace('"', '\"', $value);
-                        // we have to filter out man_serial and serial because of a bug in PHP
+                        // we have to filter out serial and serial because of a bug in PHP
                         // https://bugs.php.net/bug.php?id=64695
                         // I encountered a serial that was 1234E3456 - the E in the string of numbers breaks json_encode
-                        if (is_numeric($value) and $attribute != 'man_serial' and $attribute != 'serial') {
+                        if (is_numeric($value) and $attribute != 'serial' and $attribute != 'serial') {
                             if (php_uname('s') != 'Windows NT') {
                                 $output .= "\t\t\"".$attribute."\": ".json_encode($value, JSON_NUMERIC_CHECK).",\n";
                             } else {
@@ -374,8 +376,8 @@ class MY_Controller extends CI_Controller
                 if (($column->column_type > '') and ((string) $column->column_name !== 'Tags')) {
                     $col_var_name = $column->column_variable;
 
-                    if ((string) $column->column_variable == 'man_ip_address') {
-                        $query_row->man_ip_address = ip_address_from_db($query_row->man_ip_address);
+                    if ((string) $column->column_variable == 'ip') {
+                        $query_row->ip = ip_address_from_db($query_row->ip);
                     }
                     if ((string) $column->column_align === '') {
                         (string) $column->column_align = 'left';
@@ -545,7 +547,7 @@ class MY_Controller extends CI_Controller
 
                         /////////////////////
                         case 'ip_address':
-                            echo '			<td style="text-align: '.htmlentities($col_align).';"><span style="display: none;">'.htmlentities($query_row->man_ip_address).'&nbsp;</span>'.htmlentities(ip_address_from_db($query_row->man_ip_address))."</td>\n";
+                            echo '			<td style="text-align: '.htmlentities($col_align).';"><span style="display: none;">'.htmlentities($query_row->{$col_var_name}).'&nbsp;</span>'.htmlentities(ip_address_from_db($query_row->{$col_var_name}))."</td>\n";
                                         break;
 
                         /////////////////////
@@ -712,7 +714,7 @@ class MY_Controller extends CI_Controller
                 $value =  html_entity_decode($value);
                 $category = '';
 
-                if ((string) $attribute === 'man_ip_address') {
+                if ((string) $attribute === 'ip') {
                     $value = ip_address_from_db($value);
                 }
                 if ((string) $attribute === 'timestamp') {

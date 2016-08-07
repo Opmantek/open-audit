@@ -30,152 +30,152 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Allied Telesyn
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.14.20') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.207.1.14.20') {
         $details->model = 'AT RP24i Rapier';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.14.30') {
+    if ($oid == '1.3.6.1.4.1.207.1.14.30') {
         $details->model = 'AT 8724XL';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.14.47') {
+    if ($oid == '1.3.6.1.4.1.207.1.14.47') {
         $details->model = 'AT RP24i Rapier DC/NE';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.14.48') {
+    if ($oid == '1.3.6.1.4.1.207.1.14.48') {
         $details->model = 'AT 8724XL-DC NEBS';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4') {
+    if ($oid == '1.3.6.1.4.1.207.1.4') {
         $details->model = 'AT 9000-24';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.105') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.105') {
         $details->model = 'AT 9424T/SP';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.112') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.112') {
         $details->model = 'AT 9424T/GB';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.125') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.125') {
         $details->model = 'AT 8316F';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.126') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.126') {
         $details->model = 'AT 8324';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.127') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.127') {
         $details->model = 'AT 8326GB';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.128') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.128') {
         $details->model = 'AT 8350GB';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.129') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.129') {
         $details->model = 'AT 9000/24';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.131') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.131') {
         $details->model = 'AT 9448T/SP';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.139') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.139') {
         $details->model = 'AT 9410GB';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.140') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.140') {
         $details->model = 'AT 9724TS';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.143') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.143') {
         $details->model = 'AT 8000GS';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.163') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.163') {
         $details->model = 'AT FS750/48';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.37') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.37') {
         $details->model = 'AT 8000/24';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.39') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.39') {
         $details->model = 'AT 8224AL';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.42') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.42') {
         $details->model = 'AT 8324SX';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.52') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.52') {
         $details->model = 'AT 8000/24POE';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.66') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.66') {
         $details->model = 'AT 8024';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.67') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.67') {
         $details->model = 'AT 8024GB';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.72') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.72') {
         $details->model = 'AT 8000/48POE';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.73') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.73') {
         $details->model = 'AT 9410GB';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.74') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.74') {
         $details->model = 'AT 8350GB';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.77') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.77') {
         $details->model = 'AT 8124XL-V2';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.78') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.78') {
         $details->model = 'AT 8024M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.80') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.80') {
         $details->model = 'AT 8O26FC';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.86') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.86') {
         $details->model = 'AT 8012M';
         $details->type = 'unknown';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.89') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.89') {
         $details->model = 'AT 8026T';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.9') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.9') {
         $details->model = 'AT 8200';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.98') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.98') {
         $details->model = 'AT 8524M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.207.1.4.99') {
+    if ($oid == '1.3.6.1.4.1.207.1.4.99') {
         $details->model = 'AT 8550GB';
         $details->type = 'switch';
     }
-
-    if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.207.8.4.4.5.2.1.5"));
-    }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.207.8.4.4.5.2.1.5");
+    return($details);
 };

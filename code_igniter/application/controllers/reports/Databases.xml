@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Databases</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.name AS `system.name`, system.fqdn AS `system.fqdn`, system.os_family AS `system.os_family`, system.environment AS `system.environment`, server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.instance AS `server_item.instance`, server_item.path AS `server_item.path`, server_item.log_status AS `server_item.log_status`, server_item.log_format AS `server_item.log_format`, server_item.log_rotation AS `server_item.log_rotation`, server_item.log_path AS `server_item.log_path` FROM system LEFT JOIN server_item ON (server_item.system_id = system.id and server_item.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND server_item.type = 'database' ORDER BY system.name, server_item.name]]></report_sql>
+		<report_view_file>v_report</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+		<report_description>All databases.</report_description>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>Device Name</column_name>
+			<column_variable>system.name</column_variable>
+			<column_type>link</column_type>
+			<column_link>/devices/</column_link>
+			<column_secondary>system.id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>FQDN</column_name>
+			<column_variable>system.fqdn</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>OS Family</column_name>
+			<column_variable>system.os_family</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Environment</column_name>
+			<column_variable>system.environment</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>Parent Name</column_name>
+			<column_variable>server_item.parent_name</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>Name</column_name>
+			<column_variable>server_item.name</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
+			<column_name>Instance</column_name>
+			<column_variable>server_item.instance</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align></column_align>
+		</column>
+	</columns>
+</report>

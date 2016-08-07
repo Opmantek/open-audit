@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -59,14 +60,14 @@ if ($query) {
 		<tbody>
 	<?php foreach ($query as $key): ?>
 			<tr>
-				<td><?php echo $key->timestamp?></td>
-				<td><span style="display: none;"><?php echo $key->man_ip_address?></span><?php echo ip_address_from_db($key->man_ip_address)?></td>
-				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt=""/></td>
-				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->system_id)?>"><?php echo htmlentities($key->hostname)?></a></td>
-				<td><?php echo htmlentities($key->db_table)?></td>
-				<td><?php echo htmlentities($key->db_action)?></td>
-				<td><?php echo htmlentities($key->details)?></td>
-				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->id)?>" name="alert_id_<?php echo intval($key->id)?>" /></td>
+				<td><?php echo $key->{'change_log.timestamp'}?></td>
+				<td><span style="display: none;"><?php echo $key->ip?></span><?php echo ip_address_from_db($key->{'system.ip'})?></td>
+				<td style="text-align: center;"><img src="<?php echo $oa_theme_images ?>/16_<?php echo $key->{'system.icon'}; ?>.png" style='border-width:0px;' title="" alt=""/></td>
+				<td><a class="SystemPopupTrigger" rel="<?php echo intval($key->{'system.id'}); ?>" href="<?php echo base_url()?>index.php/main/system_display/<?php echo intval($key->{'system.id'})?>"><?php echo htmlentities($key->{'system.name'})?></a></td>
+				<td><?php echo htmlentities($key->{'change_log.db_table'})?></td>
+				<td><?php echo htmlentities($key->{'change_log.db_action'})?></td>
+				<td><?php echo htmlentities($key->{'change_log.details'})?></td>
+				<td align='center'><input type="checkbox" id="alert_id_<?php echo intval($key->{'change_log.id'})?>" name="alert_id_<?php echo intval($key->{'change_log.id'})?>" /></td>
 			</tr>
 	<?php endforeach;
     ?>
@@ -89,13 +90,13 @@ if (document.getElementById("alert_id_0").checked == true)
 {
 <?php
 foreach ($query as $key):
-echo "\tdocument.getElementById(\"alert_id_".$key->alert_id."\").checked = true;\n";
+echo "\tdocument.getElementById(\"alert_id_".$key->{'change_log.id'}."\").checked = true;\n";
 endforeach;
 ?>
 } else {
 <?php
 foreach ($query as $key):
-echo "\tdocument.getElementById(\"alert_id_".$key->alert_id."\").checked = false;\n";
+echo "\tdocument.getElementById(\"alert_id_".$key->{'change_log.id'}."\").checked = false;\n";
 endforeach;
 ?>
 }

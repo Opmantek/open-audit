@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -27,7 +27,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
-# @version 1.12.6
+# 
+# @version 1.12.8
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -52,10 +53,7 @@
 
 # Below are the default settings
 
-# default to localhost
-strComputer="."
-
-# submit the audit to the OAv2 server
+# submit the audit to the Open-AudIT server
 submit_online="n"
 
 # create an XML text file of the result in the current directory
@@ -64,7 +62,7 @@ create_file="y"
 # the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/system/add_system"
 
-# optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
+# optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""
 
 # if set then delete the audit script upon completion
@@ -79,17 +77,14 @@ debugging=2
 # Display help
 help="n"
 
-# attempt to ping a target computer before audit?
-ping_target="y"
-
 # set by the Discovery function - do not normally set this manually
 system_id=""
 
 # Should we attempt to audit any connected SAN's
-audit_san="y"
+san_audit="y"
 
 # If we detect the san management software, should we run an auto-discover before the query
-run_san_discover="n"
+san_discover="n"
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
@@ -103,6 +98,9 @@ busybox="n"
 
 display=""
 # This should only be set by Discovery when using the debug option
+
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
 
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
@@ -196,24 +194,6 @@ escape_xml ()
 	echo "$result"
 }
 
-# cidr2mask ()
-# {
-#   local i mask=""
-#   local full_octets=$(($1/8))
-#   local partial_octet=$(($1%8))
-#   for ((i=0;i<4;i+=1)); do
-#     if [ $i -lt $full_octets ]; then
-#       mask+=255
-#     elif [ $i -eq $full_octets ]; then
-#       mask+=$((256 - 2**(8-partial_octet)))
-#     else
-#       mask+=0
-#     fi
-#     test $i -lt 3 && mask+=.
-#   done
-#   echo "$mask"
-# }
-
 cidr2mask ()
 {
    # Number of args to shift, 255..255, first non-255 byte, zeroes
@@ -296,22 +276,16 @@ for arg in "$@"; do
 			help="y" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
-		"ping_target" )
-			ping_target="$parameter_value" ;;
-		"strcomputer" )
-			strComputer="$parameter_value" ;;
 		"submit_online" )
 			submit_online="$parameter_value" ;;
 		"system_id" )
 			system_id="$parameter_value" ;;
-		"audit_san" )
-			audit_san="$parameter_value" ;;
-		"run_san_discover" )
-			run_san_discover="$parameter_value" ;;
+		"san_audit" )
+			san_audit="$parameter_value" ;;
+		"san_discover" )
+			san_discover="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
-		"$parameter_value" )
-			strComputer="$parameter_value" ;;
 	esac
 done
 
@@ -322,13 +296,9 @@ if [ "$help" = "y" ]; then
 	echo "-----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
-	echo "Prerequisites for this script to function correctly can be tested by running audit_linux.sh check_commands=y."
 	echo ""
 	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
 	echo ""
-	echo "  check_commands"
-	echo "     y - Run a test to determine if the required commands to run this script are present on the target system."
-	echo "    *n - Do not run the test."
 	echo ""
 	echo "  create_file"
 	echo "     y - Create an XML file containing the audit result."
@@ -354,11 +324,11 @@ if [ "$help" = "y" ]; then
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
-	echo "  audit_san"
+	echo "  san_audit"
 	echo "     *y - Should we audit a SAN if it is detected"
 	echo "      n - Do not attempt to audit any attached SANs"
 	echo ""
-	echo "  run_san_discover"
+	echo "  san_discover"
 	echo "     *n - Do not run smcli -A if we detect the SAN management software"
 	echo "      Y - Run the command and update the list of any connected SANs"
 	echo ""
@@ -376,18 +346,6 @@ if [ "$help" = "y" ]; then
 	exit
 fi
 
-# test pinging the server hosting the URL
-# if [ "$submit_online" = "y" ]; then
-# 	server=$(echo "$url" | cut -d"/" -f3 | cut -d: -f1)
-# 	test=$(ping "$server" -n -c 3 | grep "100% packet loss")
-# 	if [ -n "$test" ]; then
-# 		if [  "$debugging" -gt 0 ]; then
-# 			echo "Server $server is not responding to a ping. Cannot submit audit result. Exiting."
-# 		fi
-# 		exit
-# 	fi
-# fi
-
 ########################################################
 # CREATE THE AUDIT FILE                                #
 ########################################################
@@ -395,31 +353,7 @@ fi
 start_time=$(timer)
 
 if [ "$debugging" -gt 0 ]; then
-	echo "Starting audit - $strComputer"
-fi
-
-pc_alive=0
-if [ "$ping_target" = "y" ]; then
-	if [ "$strComputer" = "." ]; then
-		pc_alive=1
-	else
-		ping_result=$(ping -c1 "$strComputer" 2>/dev/null | grep "time")
-		if [ "$ping_result" != "" ]; then
-			pc_alive=1
-		fi
-	fi
-fi
-
-if [ "$debugging" -gt 0 ]; then
-	if [ "$ping_target" = "n" ]; then
-		echo "Not pinging target, attempting to audit."
-	else
-		if [ "$pc_alive" = "1" ]; then
-			echo "PC $strComputer responding to ping"
-		else
-			echo "PC $strComputer not responding to ping"
-		fi
-	fi
+	echo "Starting audit"
 fi
 
 local_hostname=""
@@ -431,14 +365,6 @@ fi
 
 if [ -z "$local_hostname" ]; then
 	local_hostname=$(hostname 2>/dev/null)
-fi
-
-if [ "$strComputer" = "." ] || \
-   [ "$strComputer" = "127.0.0.1" ] || \
-   [ "$(lcase "$strComputer")" = "$(lcase "$local_hostname")" ]; then
-	audit_location="local"
-else
-	audit_location="remote"
 fi
 
 # Set the TimeSamp
@@ -462,20 +388,19 @@ if pidof -x -o $$ "$script_name" >/dev/null 2>&1; then
 	fi
 	exit 0
 fi
-IFS="$NEWLINEIFS"
 
 
 
 #========================
 #  SAN INFO             #
 #========================
-if [ "$audit_san" = "y" ]; then
+if [ "$san_audit" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
 		san_url=$(echo "$san_url" | sed 's/system\/add_system/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
-		if [ "$run_san_discover" = "y" ]; then
+		if [ "$san_discover" = "y" ]; then
 			if [ "$debugging" -gt 1 ]; then
 				echo "Running SAN refresh / discover."
 			fi
@@ -484,7 +409,7 @@ if [ "$audit_san" = "y" ]; then
 		if [ "$debugging" -gt 1 ]; then
 			echo "Running SAN list"
 		fi
-		for san in $(/opt/IBM_DS/client/SMcli -d | grep -v -e '^$' | grep -v 'SMcli' | cut -d" " -f2 ); do
+		for san in $(/opt/IBM_DS/client/SMcli -d | grep -v -e '^$' | grep -v 'SMcli' | cut -f2 ); do
 			$(echo "input=" > /tmp/"$san".txt)
 			if [ "$debugging" -gt 1 ]; then
 				echo "Running command: /opt/IBM_DS/client/SMcli \"$san\" -c \"show storagesubsystem profile;\" >> /tmp/\"$san\".txt"
@@ -512,10 +437,17 @@ if [ "$audit_san" = "y" ]; then
 					fi
 				fi
 			fi
-			if [ "$debugging" -gt 1 ]; then
-				echo "Deleting SAN output file /tmp/$san.txt."
+			if [ "$create_file" != "y" ]; then
+				if [ "$debugging" -gt 1 ]; then
+					echo "Deleting SAN output file /tmp/$san.txt."
+				fi
+				$(rm /tmp/"$san".txt)
+			else
+				if [ "$debugging" -gt 0 ]; then
+					echo "SAN output file for uploading to Open-AudIT is $PWD/san-$san.txt"
+				fi
+				$(mv /tmp/"$san".txt $PWD/san-$san.txt)
 			fi
-			$(rm /tmp/"$san".txt)
 		done
 	fi
 fi
@@ -525,7 +457,7 @@ fi
 #========================
 #  SYSTEM INFO          #
 #========================
-
+IFS="$NEWLINEIFS"
 if [ "$debugging" -gt "0" ]; then
 	echo "System Info"
 fi
@@ -541,24 +473,13 @@ if [ -z "$system_uuid" ]; then
 fi
 
 # Get the hostname & DNS domain
-system_hostname=""
-system_hostname=$(hostname -s 2>/dev/null)
-system_domain=$(hostname -d 2>/dev/null)
+system_hostname=$(hostname -s)
+system_domain=$(hostname -d)
+system_fqdn=$(hostname -f)
 
-# if [ -f /etc/hostname ]; then
-# 	system_hostname=$(cat /etc/hostname 2>/dev/null)
-# else
-# 	system_hostname=$(hostname -s 2>/dev/null)
-# fi
-
-# if [ -z "$system_hostname" ]; then
-# 	system_hostname=$(hostname 2>/dev/null)
-# 	system_domain=""
-# else
-# 	system_domain=$(hostname -d 2>/dev/null)
-# fi
-
-
+dns_hostname=$(hostname -A | head -n1 | cut -d. -f1)
+dns_domain=$(hostname -A | head -n1 | cut -d. -f2-)
+dns_fqdn=$(hostname -A | head -n1)
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
@@ -656,7 +577,7 @@ if [ -z "$system_ip_address" ]; then
 fi
 
 # Set the icon as the lower case version of the System Family.
-system_os_icon=$(lcase $system_os_family)
+system_os_icon=$(lcase "$system_os_family")
 
 # Get the System Serial Number
 system_serial=""
@@ -709,6 +630,10 @@ if [ -z "$system_model" ] && [ -n "$(which dmidecode 2>/dev/null)" ]; then
 		system_model="Virtual Machine"
 		system_manufacturer="Microsoft"
 	fi
+fi
+
+if [ "$system_manufacturer" = "VMware, Inc." ]; then
+	system_manufacturer="VMware"
 fi
 
 # Get the System Uptime
@@ -813,11 +738,14 @@ xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 echo "form_systemXML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
 echo "	<sys>"
-echo "		<timestamp>$(escape_xml "$system_timestamp")</timestamp>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
 echo "		<hostname>$(escape_xml "$system_hostname")</hostname>"
-echo "		<man_ip_address>$(escape_xml "$system_ip_address")</man_ip_address>"
 echo "		<domain>$(escape_xml "$system_domain")</domain>"
+echo "		<fqdn>$(escape_xml "$system_fqdn")</fqdn>"
+echo "		<dns_hostname>$(escape_xml "$dns_hostname")</dns_hostname>"
+echo "		<dns_domain>$(escape_xml "$dns_domain")</dns_domain>"
+echo "		<dns_fqdn>$(escape_xml "$dns_fqdn")</dns_fqdn>"
+echo "		<ip>$(escape_xml "$system_ip_address")</ip>"
 echo "		<description></description>"
 echo "		<type>$(escape_xml "$system_type")</type>"
 echo "		<os_icon>$(escape_xml "$system_os_icon")</os_icon>"
@@ -830,13 +758,13 @@ echo "		<model>$(escape_xml "$system_model")</model>"
 echo "		<manufacturer>$(escape_xml "$system_manufacturer")</manufacturer>"
 echo "		<uptime>$(escape_xml "$system_uptime")</uptime>"
 echo "		<form_factor>$(escape_xml "$system_form_factor")</form_factor>"
-echo "		<pc_os_bit>$(escape_xml "$system_pc_os_bit")</pc_os_bit>"
-echo "		<pc_memory>$(escape_xml "$system_pc_memory")</pc_memory>"
-echo "		<pc_num_processor>$(escape_xml "$system_pc_total_threads")</pc_num_processor>"
-echo "		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>"
-echo "		<man_org_id>$(escape_xml "$org_id")</man_org_id>"
+echo "		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>"
+echo "		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>"
+echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_count>"
+echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
+echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
-echo "		<system_id>$(escape_xml "$system_id")</system_id>"
+echo "		<id>$(escape_xml "$system_id")</id>"
 echo "	</sys>"
 } > "$xml_file"
 
@@ -1890,7 +1818,7 @@ for variable in $(env); do
 done
 
 # Puppet facts
-if [ -n "$(which facter)" ]; then
+if [ -n "$(which facter 2>/dev/null)" ]; then
     exclusions=" system_uptime memoryfree memoryfree_mb sshdsakey sshfp_dsa sshfp_rsa sshrsakey swapfree swapfree_mb system_uptime "
     for variable in $(facter -p); do
         name=$( echo "$variable" | cut -d" " -f1 )
@@ -2209,8 +2137,43 @@ echo "	</netstat>"
 } >> "$xml_file"
 
 
-
-
+########################################################
+# CUSTOM FILES                                         #
+########################################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Custom File Info"
+fi
+echo "	<file>" >> "$xml_file"
+for dir in ${files[@]}; do
+    for file in $(find "$dir"  -maxdepth 1 -type f 2>/dev/null); do
+        file_size=$(stat --printf="%s" "$file")
+        file_directory=$(dirname "${file}")
+        file_hash=$(sha1sum "$file" | cut -d" " -f1)
+        file_last_changed=$(stat -c %y "$file" | cut -d. -f1)
+        file_meta_last_changed=$(stat -c %z "$file" | cut -d. -f1)
+        file_permissions=$(stat -c "%a" "$file")
+        file_owner=$(ls -ld "$file" | awk '{print $3}')
+        file_group=$(ls -ld "$file" | awk '{print $4}')
+        inode=$(ls -li "$file" | awk '{print $1}')
+        file_name=$(basename "$file")
+        {
+    	echo "		<item>"
+    	echo "			<name>$(escape_xml "$file_name")</name>"
+    	echo "			<full_name>$(escape_xml "$file")</full_name>"
+        echo "			<size>$(escape_xml "$file_size")</size>"
+        echo "			<directory>$(escape_xml " $file_directory")</directory>"
+        echo "			<hash>$(escape_xml "$file_hash")</hash>"
+        echo "			<last_changed>$(escape_xml "$file_last_changed")</last_changed>"
+        echo "			<meta_last_changed>$(escape_xml "$file_meta_last_changed")</meta_last_changed>"
+        echo "			<permission>$(escape_xml "$file_permissions")</permission>"
+        echo "			<owner>$(escape_xml "$file_owner")</owner>"
+        echo "			<group>$(escape_xml "$file_group")</group>"
+        echo "			<inode>$(escape_xml "$inode")</inode>"
+        echo "		</item>"
+    	} >> "$xml_file"
+    done
+done
+echo "	</file>" >> "$xml_file"
 
 
 
@@ -2230,6 +2193,12 @@ if [ "$debugging" -gt 0 ]; then
 fi
 
 if [ "$submit_online" = "y" ]; then
+
+	if [ "$display" = "y" ]; then
+		url="$url/display"
+		debugging=4
+	fi
+
 	sed -i -e 's/+/%2B/g' "$xml_file"
 	sed -i -e 's/"/%22/g' "$xml_file"
 	sed -i -e 's/&/%26/g' "$xml_file"
@@ -2237,13 +2206,10 @@ if [ "$submit_online" = "y" ]; then
 		echo "Submitting results to server"
 		echo "URL: $url"
 	fi
-	if [ "$display" = "y" ]; then
-		url="$url/display"
-		debugging=4
-	fi
+
 	if [ -n "$(which wget 2>/dev/null)" ]; then
 		if [ "$debugging" -gt 3 ]; then
-			wget -O add_system --post-file="$xml_file" "$url" 2>/dev/null
+			wget -O add_system --post-file="$xml_file" "$url"
 			cat add_system
 			rm add_system
 		else

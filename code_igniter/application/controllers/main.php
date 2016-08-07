@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -47,20 +48,18 @@ class main extends MY_Controller
 
     public function index()
     {
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+        if (stripos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
             // JSON request to the base URL
             // return a document providing futher links
-            $response = new stdClass();
-            $response->status = 'success';
-            $response->links = array(
-                array('rel' => 'groups', 'href' => $this->config->item('basic_url').'/groups', 'description' => 'List the Groups'),
-                array('rel' => 'devices', 'href' => $this->config->item('basic_url').'/devices', 'description' => 'List the Devices'),
-                array('rel' => 'locations', 'href' => $this->config->item('basic_url').'/locations', 'description' => 'List the Locations'),
-                array('rel' => 'reports', 'href' => $this->config->item('basic_url').'/reports', 'description' => 'List the Reports'), );
-            echo json_encode($response);
-            header('Content-Type: application/json');
-            header('Cache-Control: max-age=0');
-            header('HTTP/1.1 200 OK');
+            $this->load->helper('input');
+            $this->load->helper('output');
+            $this->load->helper('error');
+            inputRead();
+            $this->response->links->related = array();
+            $this->response->links->related[]['href'] = $this->response->links->self . 'devices';
+            $this->response->links->related[]['href'] = $this->response->links->self . 'networks';
+            $this->response->links->related[]['href'] = $this->response->links->self . 'credentials';
+            output($this->response);
         } else {
             redirect('main/list_groups/');
         }
@@ -78,7 +77,7 @@ class main extends MY_Controller
         $this->load->model('m_systems');
         $result = $this->m_systems->api_index($level);
         for ($count = 0; $count<count($result); $count++) {
-            $result[$count]->man_ip_address = ip_address_from_db($result[$count]->man_ip_address);
+            $result[$count]->ip = ip_address_from_db($result[$count]->ip);
         }
         echo json_encode($result);
         header('Content-Type: application/json');
@@ -107,7 +106,7 @@ class main extends MY_Controller
                 $result[$count]->system_id = $system_id;
                 foreach ($result[$count] as $key => $value) {
                     // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                    if ($key == 'man_ip_address' or
+                    if ($key == 'ip' or
                         $key == 'destination'    or
                         $key == 'ip_address_v4'  or
                         $key == 'next_hop') {
@@ -145,7 +144,7 @@ class main extends MY_Controller
                         #$result[$count]->system_id = $system_id;
                         foreach ($result[$count] as $key => $value) {
                             // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                            if ($key == 'man_ip_address' or
+                            if ($key == 'ip' or
                                 $key == 'destination'    or
                                 $key == 'ip_address_v4'  or
                                 $key == 'ip'  or
@@ -212,7 +211,7 @@ class main extends MY_Controller
                         #$result[$count]->system_id = $system_id;
                         foreach ($result[$count] as $key => $value) {
                             // special cases - ip addresses are stored padded so they can be easily sorted. Remove the padding.
-                            if ($key == 'man_ip_address' or
+                            if ($key == 'ip' or
                                 $key == 'destination'    or
                                 $key == 'ip_address_v4'  or
                                 $key == 'next_hop') {
@@ -377,7 +376,7 @@ class main extends MY_Controller
         $group_id = $_POST['group_id'];
         $data['items'] = array();
         foreach ($_POST as $key => $value) {
-            if ((mb_strpos($key, 'man_') !== false) and ($value != '')) {
+            if ($value != '') {
                 $item = array($key, $value);
                 array_push($data['items'], ($item));
                 $item = null;
@@ -409,39 +408,15 @@ class main extends MY_Controller
                     $field_name = $field[0];
                     $field_data = $field[1];
                     $this->m_additional_fields->set_system_field($system[1], $field_name, $field_data);
-                    $this->m_edit_log->create($system[1] , '', 'sys_man_additional_fields_data', $field_name, '', $field_data, '');
+                    $this->m_edit_log->create($system[1] , '', 'additional_field_item', $field_name, '', $field_data, '');
                 }
             }
         }
 
         $discover_ids = '';
-        $credentials = new stdClass();
-        $credentials->windows_username = @$this->input->post('windows_username');
-        $credentials->windows_password = @$this->input->post('windows_password');
-        $credentials->windows_domain = @$this->input->post('windows_domain');
-        $credentials->ssh_username = @$this->input->post('ssh_username');
-        $credentials->ssh_password = @$this->input->post('ssh_password');
-        $credentials->snmp_version = @$this->input->post('snmp_version');
-        $credentials->snmp_community = @$this->input->post('snmp_community');
-
-        if ((isset($credentials->windows_username) and $credentials->windows_username != '') or
-            (isset($credentials->windows_password) and $credentials->windows_password != '') or
-            (isset($credentials->windows_domain) and $credentials->windows_domain != '') or
-            (isset($credentials->ssh_username) and $credentials->ssh_username != '') or
-            (isset($credentials->ssh_password) and $credentials->ssh_password != '') or
-            (isset($credentials->snmp_version) and $credentials->snmp_version != '') or
-            (isset($credentials->snmp_community) and $credentials->snmp_community != '')) {
-            foreach ($data['systems'] as $system) {
-                $credentials->ip_address = ip_address_from_db($this->m_system->check_man_ip_address($system[1]));
-                $system_id = $system[1];
-                $this->m_system->update_credentials($credentials, $system_id);
-            }
-        }
 
         foreach ($_POST as $field_name => $field_data) {
-            # input all the manual fields
-            if (((mb_strpos($field_name, 'man_') !== false) or
-                (mb_strpos($field_name, 'nmis_') !== false)) && ($field_data != '')) {
+            if ($field_data != '') {
                 foreach ($data['systems'] as $system) {
                     if ($field_data == '-') {
                         $field_data = '';
@@ -454,7 +429,7 @@ class main extends MY_Controller
 
         $details = new stdClass();
         foreach ($data['systems'] as $system) {
-            $details->system_id = $system[1];
+            $details->id = $system[1];
             $details->type = 'computer';
             $discover_ids .= $system[1].',';
             $this->m_oa_group->update_system_groups($details, 'network');
@@ -491,7 +466,7 @@ class main extends MY_Controller
     public function list_devices()
     {
         $this->load->model("m_oa_group");
-        if (is_numeric($this->data['id'])) {
+        if (!empty($this->data['id']) and is_numeric($this->data['id'])) {
             // we must check to see if the user has at least VIEW permission on the group
             $this->user->access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->id);
             if ($this->user->access_level < '3') {
@@ -702,7 +677,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id or hostname)
             redirect('main');
         }
 
@@ -737,7 +712,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id or hostname)
             redirect('main');
         }
         $this->m_attachment->delete_attachment($attachment_id);
@@ -759,7 +734,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->helper('file');
@@ -786,7 +761,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->helper('file');
@@ -813,13 +788,13 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_org");
         $this->data['query'] = $this->m_system->system_summary($this->data['id']);
-        $this->data['query'][0]->man_ip_address = ip_address_from_db($this->data['query'][0]->man_ip_address);
+        $this->data['query'][0]->ip = ip_address_from_db($this->data['query'][0]->ip);
         print_r(json_encode($this->data['query']));
     }
 
@@ -835,7 +810,7 @@ class main extends MY_Controller
                 redirect('main');
             }
         } else {
-            // not a valid system (system_id, hostname or system_key)
+            // not a valid system (id, hostname)
             redirect('main');
         }
         $this->load->model("m_oa_general");
@@ -848,7 +823,7 @@ class main extends MY_Controller
         $this->load->model("m_oa_org");
 
         $this->load->model("m_devices_components");
-        // $this->data['additional_fields_data'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
+        $this->data['additional_fields'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
         // $sorted_names = $this->m_additional_fields->get_additional_fields_names();
         // sort($sorted_names);
         // $this->data['additional_fields_names'] = $sorted_names;
@@ -860,6 +835,7 @@ class main extends MY_Controller
         $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
         $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
         $this->data['dns'] = $this->m_devices_components->read($this->data['id'], 'y', 'dns');
+        $this->data['file'] = $this->m_devices_components->read($this->data['id'], 'y', 'file');
         $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
         $this->data['log'] = $this->m_devices_components->read($this->data['id'], 'y', 'log');
         $this->data['memory'] = $this->m_devices_components->read($this->data['id'], 'y', 'memory');
@@ -867,6 +843,7 @@ class main extends MY_Controller
         $this->data['monitor'] = $this->m_devices_components->read($this->data['id'], 'y', 'monitor');
         $this->data['motherboard'] = $this->m_devices_components->read($this->data['id'], 'y', 'motherboard');
         $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
+        $this->data['nmap'] = $this->m_devices_components->read($this->data['id'], 'y', 'nmap');
         $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
         $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
         $this->data['pagefile'] = $this->m_devices_components->read($this->data['id'], 'y', 'pagefile');
@@ -892,7 +869,7 @@ class main extends MY_Controller
         $this->data['website_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'website\'');
         $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
 
-        $this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
+        #$this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
         $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
         $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
         $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
@@ -977,42 +954,12 @@ class main extends MY_Controller
         $this->data['include'] = "v_display_device";
 
         foreach ($this->data['system'] as $system) {
-            $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->man_model)))));
-            $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->man_type)));
-            $default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->man_picture.'.jpg';
+            $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
+            $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
+            #$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
             $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
             $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
-            $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->system_id.'.jpg';
-
-            # check if the man_picture field from the database is populated and a matching image exists
-            if (($system->man_picture > '') and (file_exists($default_file_exists))) {
-                $system->man_picture = $system->man_picture.'.jpg';
-            }
-
-            # check if a custom images exists and overwrite
-            if (file_exists($custom_file_exists)) {
-                $system->man_picture = 'custom/'.$system->system_id.'.jpg';
-            }
-
-            # check if an image matching the model exists
-            if (($system->man_picture == '') and (file_exists($model_file_exists))) {
-                $system->man_picture = ''.$model_formatted.'.jpg';
-            }
-
-            # test for a generic ibm aix device
-            if (($system->man_picture == '') and (strtolower($system->man_os_family) == "ibm aix")) {
-                $system->man_picture = "ibm_aix.jpg";
-            }
-
-            # check if an image matching the type exists
-            if (($system->man_picture == '') and (file_exists($type_file_exists))) {
-                $system->man_picture = ''.$type_formatted.'.png';
-            }
-
-            # no matching images, assign the unknown image
-            if ($system->man_picture == '') {
-                $system->man_picture = 'unknown.png';
-            }
+            $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->id.'.jpg';
         }
 
         $this->data['heading'] = 'Summary - '.$this->m_system->get_system_hostname($this->data['id']);
@@ -1184,6 +1131,7 @@ class main extends MY_Controller
         $data['oae_server'] = '';
         $data['oae_username'] = '';
         $phpini = '';
+        $opCommon = '';
 
         if (php_uname('s') == 'Windows NT') {
             $data['os_platform'] = 'Windows';
@@ -1196,6 +1144,37 @@ class main extends MY_Controller
             unset($output);
         }
 
+        if (php_uname('s') == 'Darwin') {
+            $data['os_platform'] = 'OSX';
+            $command_string = 'sw_vers | grep "ProductVersion:" | cut -f2';
+            @exec($command_string, $return['output'], $return['status']);
+            $data['os_version'] = $return['output'][0];
+            unset($output);
+            unset($command_string);
+            if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/omk/conf/opCommon.nmis';
+            } elseif (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
+                $opCommon = '/usr/local/opmojo/conf/opCommon.nmis';
+            }
+            #nmap
+            $test_path = '/usr/local/bin/nmap';
+            if (file_exists($test_path)) {
+                $data['prereq_nmap'] = '/usr/local/bin/nmap';
+            }
+            $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (isset($output[0])) {
+                $data['application_log_permission'] = $output[0];
+            }
+            unset($output);
+            unset($command_string);
+            
+            # system timezone
+            $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
+            exec($command_string, $output, $return_var);
+            $data['os_timezone'] = @$output[0];
+        }
+
         if (php_uname('s') == 'Linux') {
             $data['os_platform'] = 'linux';
             if (file_exists('/etc/os-release')) {
@@ -1206,9 +1185,11 @@ class main extends MY_Controller
             } elseif (file_exists('/etc/issue.net')) {
                 $i = file('/etc/issue.net');
                 $data['os_version'] = trim($i[0]);
+            } elseif (file_exists('/etc/redhat-release')) {
+                # RedHat 6 doesn't have /etc/os-release
+                $data['os_version'] = 'RedHat';
             }
 
-            $opCommon = '';
             if (file_exists('/usr/local/omk/conf/opCommon.nmis')) {
                 $opCommon = '/usr/local/omk/conf/opCommon.nmis';
             } elseif (file_exists('/usr/local/opmojo/conf/opCommon.nmis')) {
@@ -1245,10 +1226,6 @@ class main extends MY_Controller
             }
         }
 
-        if (php_uname('s') == 'Darwin') {
-            $data['os_platform'] = 'OSX';
-        }
-
         if ($data['os_platform'] == 'Windows') {
             # nmap
             $test_path = 'c:\Program Files\Nmap\Nmap.exe';
@@ -1268,14 +1245,6 @@ class main extends MY_Controller
 
             $data['application_log_permission'] = '-rw-rw-r--';
             $data['prereq_apache_mod_proxy'] = 'y';
-        }
-
-        if ($data['os_platform'] == 'OSX') {
-            #nmap
-            $test_path = '/usr/local/bin/nmap';
-            if (file_exists($test_path)) {
-                $data['prereq_nmap'] = '/usr/local/bin/nmap';
-            }
         }
 
         if (strpos($data['os_platform'], 'Linux') !== false) {
@@ -1448,11 +1417,12 @@ class main extends MY_Controller
         ### oae config details ###
 
         # oae link
-        if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_link';
-        } elseif ($data['os_platform'] == 'Windows') {
+        if (php_uname('s') == 'Windows NT') {
             $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_link"';
+        } else {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_link';
         }
+
         exec($command_string, $output, $return_var);
         if (isset($output[0])) {
             $data['oae_link'] = @$output[0];
@@ -1462,15 +1432,16 @@ class main extends MY_Controller
         unset($command_string);
 
         # oae server
-        if (stripos($data['os_platform'], 'linux') !== false) {
+        if (php_uname('s') == 'Windows NT') {
+            $command_string = 'type '.$opCommon.' | find "oae_server"';
+        } else {
             if ($opCommon != '') {
                 $command_string = 'cat '.$opCommon.' 2>/dev/null | grep oae_server';
             } else {
                 $command_string = '';
             }
-        } elseif ($data['os_platform'] == 'Windows') {
-            $command_string = 'type '.$opCommon.' | find "oae_server"';
         }
+
         if ($command_string != '') {
             exec($command_string, $output, $return_var);
             if (isset($output[0])) {
@@ -1484,10 +1455,10 @@ class main extends MY_Controller
         unset($command_string);
 
         # oae user
-        if (stripos($data['os_platform'], 'linux') !== false) {
-            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis | grep oae_user';
-        } elseif ($data['os_platform'] == 'Windows') {
+        if (php_uname('s') == 'Windows NT') {
             $command_string = 'type c:\omk\conf\opCommon.nmis | find "oae_user"';
+        } else {
+            $command_string = 'cat /usr/local/omk/conf/opCommon.nmis 2>/dev/null | grep oae_user';
         }
         exec($command_string, $output, $return_var);
         if (isset($output[0])) {

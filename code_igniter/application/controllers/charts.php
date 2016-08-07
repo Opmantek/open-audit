@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -59,11 +60,11 @@ class charts extends MY_Controller
         $this->response = new stdClass();
         inputRead();
 
-        $this->response->total = 0;
-        $this->response->filtered = 0;
-        if ($this->response->format == 'screen') {
-            $this->response->heading = 'Charts';
-            $this->response->include = 'v_charts';
+        $this->response->meta->total = 0;
+        $this->response->meta->filtered = 0;
+        if ($this->response->meta->format == 'screen') {
+            $this->response->meta->heading = 'Charts';
+            $this->response->meta->include = 'v_charts';
         }
         $this->output->url = $this->config->item('oa_web_index');
     }
@@ -74,7 +75,7 @@ class charts extends MY_Controller
 
     public function _remap($method)
     {
-        $action = $this->response->action;
+        $action = $this->response->meta->action;
         if ($action != '') {
             $this->$action();
         } else {
@@ -86,14 +87,14 @@ class charts extends MY_Controller
     private function collection()
     {
         $this->response->data = $this->m_charts->read_charts();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
         $this->response->data = $this->m_charts->read_chart();
-        $this->response->filtered = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 }

@@ -27,140 +27,68 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#echo "<div style=\"float:left; width:100%;\">\n";
-if (!empty($this->response->data)) {
 ?>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">Orgs</span>
-      <span class="pull-right"><?php echo $this->response->filtered . ' of ' . $this->response->total . ' results'; ?></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-
-    <div class="panel panel-default pull-right">
-      <div class="panel-body">
-        <div class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a></button>
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a></button>
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a></button>
-        </div>
-      </div>
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <span class="text-left">Orgs</span>
+            <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
+        </h3>
     </div>
-    <?php
-    if (count($this->response->filter) > 0) {
-      echo '<div class="panel panel-default pull-left">';
-      echo '<div class="panel-body">';
-      #echo '<div class="well well-sm pull-left">';
-      foreach ($this->response->filter as $item) {
-        if ($item->operator == '=') {
-          $label = 'label-success';
-        } else if ($item->operator == '!=') {
-          $label = 'label-danger';
-        } else {
-          $label = 'label-info';
-        }
-        if ($item->operator == '=') {
-          $operator = '';
-        } else {
-          $operator = $item->operator;
-        }
-        $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
-        $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
-        if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
-          $link = $refine_link . 'man_status=!=""';
-        }
-        $label = 'label-info';
-        echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
-      }
-      echo '</div>';
-      echo '</div>';
-    } ?>
-
-
-
-
-
-
-
-
-
-
-    <table class="table table-hover table-condensed">
-        <thead>
-            <tr>
-                <th><?php echo __('Systems')?></th>
-                <th><?php echo __('Organisation Name')?></th>
-                <th><?php echo __('Comment')?></th>
-                <th><?php echo __('Parent Name')?></th>
-                <th class="text-center"><?php echo __('Activate Group')?></th>
-                <th class="text-center"><?php echo __('Remove Group')?></th>
-                <th class="text-center"><?php echo __('Show Devices')?></th>
-                <th class="text-center"><?php echo __('Edit Organisation')?></th>
-                <th class="text-center"><?php echo __('Delete Organisation')?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            if (count($data) > 0) {
-                foreach ($data as $key):
-                    $edit_pic = '<a href="orgs/'.intval($key->group_id).'?action=update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a>';
-                    $delete_pic = '<a href="orgs/'.intval($key->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></a>';
-                    if ($key->name == '') {
-                        $key->name = '-';
-                    }
-                    if ($key->group_id != '0') {
-                        $show_pic = '<a href="devices?man_org_id='.intval($key->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
-                        $deactivate_pic = '<a href="groups/'.intval($key->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
-                        $activate_pic = '';
-                    } else {
-                        $show_pic = '';
-                        $deactivate_pic = '';
-                        $activate_pic = '<a href="groups?action=create&org_id='.intval($key->id).'"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
-                    }
-                    ?>
+    <div class="panel-body">
+        <?php include('include_collection_panel_header.php'); ?>
+        <?php if (!empty($this->response->data)) { ?>
+            <table class="table table-hover table-condensed">
+                <thead>
                     <tr>
-                        <td align='center'><?php echo $key->device_count?></td>
-                        <td><a href="../main/view_org/<?php echo $key->id?>"><?php echo htmlentities($key->name)?></a></td>
-                        <td><?php echo htmlentities($key->comments)?></td>
-                        <td><?php echo htmlentities($key->parent_name)?></td>
-                        <td align='center'><?php echo $activate_pic?></td>
-                        <td align='center'><?php echo $deactivate_pic?></td>
-                        <td align='center'><?php echo $show_pic?></td>
-                        <td align='center'><?php echo $edit_pic?></td>
-                        <td align='center'><?php echo $delete_pic?></td>
+                        <th><?php echo __('ID')?></th>
+                        <th><?php echo __('Systems')?></th>
+                        <th><?php echo __('Organisation Name')?></th>
+                        <th><?php echo __('Comment')?></th>
+                        <th><?php echo __('Parent Name')?></th>
+                        <th class="text-center"><?php echo __('Activate Group')?></th>
+                        <th class="text-center"><?php echo __('Remove Group')?></th>
+                        <th class="text-center"><?php echo __('Show Devices')?></th>
+                        <th class="text-center"><?php echo __('Edit Organisation')?></th>
+                        <th class="text-center"><?php echo __('Delete Organisation')?></th>
                     </tr>
-                <?php endforeach;
-                ?>
-            <?php } else { ?>
-            <tr>
-                <td>&nbsp;</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <?php } ?>
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->response->data as $item):
+                        if ($item->attributes->group_id != '0') {
+                            $show_pic = '<a href="devices?org_id='.intval($item->id).'"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a>';
+                            $deactivate_pic = '<a href="groups/'.intval($item->attributes->group_id).'?action=delete"><button type="button" class="btn btn-sm btn-warning" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
+                            $activate_pic = '';
+                        } else {
+                            $show_pic = '';
+                            $deactivate_pic = '';
+                            $activate_pic = '<a href="groups?action=create&org_id='.intval($item->id).'"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button></a>';
+                        }
+                        ?>
+                        <tr>
+                            <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo intval($item->id); ?></a></td>
+                            <td class="text-center"><?php echo $item->attributes->device_count?></td>
+                            <td><?php echo htmlentities($item->attributes->name)?></td>
+                            <td><?php echo htmlentities($item->attributes->comments)?></td>
+                            <td><?php echo htmlentities($item->attributes->parent_name)?></td>
+                            <td class="text-center"><?php echo $activate_pic?></td>
+                            <td class="text-center"><?php echo $deactivate_pic?></td>
+                            <td class="text-center"><?php echo $show_pic?></td>
+                            <td class="text-center"><a href="<?php echo htmlentities($item->links->self); ?>/update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a></td>
+                            <?php if ($item->attributes->id != 0) { ?>
+                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
+                            <?php } else { ?>
+                                <td></td>
+                            <?php } ?>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php } ?>
+    </div>
 </div>
-</div>
-<?php
-}
-if (!empty($this->response->error)) {
-    echo "<pre>\n";
-    print_r($error);
-    echo "</pre>\n";
-}
-?>
-</div>
-<?php
-exit();
-?>

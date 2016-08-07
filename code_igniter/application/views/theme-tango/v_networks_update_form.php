@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,11 +38,12 @@ if (isset($error_message)) {
 } else {
     $error_message = "";
 }
-echo form_open('networks/' . $this->response->id)."\n"; ?>
+$item = $this->response->data[0];
+echo form_open('networks/' . $this->response->meta->id)."\n";
+?>
 <fieldset id="details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Network Details')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_network.png' alt='' title='' />
-	<?php $item = $this->response->data['network'][0]; ?>
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
 			<td>

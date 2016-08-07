@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -69,20 +70,20 @@
 			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Purchase Details')?></span></legend>
 			<img class='section_image' src='<?php echo $oa_theme_images;?>/48_purchases.png' alt='' title='' />
 			<?php foreach ($system as $key): ?>
-				<p><label for="man_asset_number"><?php echo __('Asset Number')?>: </label><span id="man_asset_number" <?php echo $edit?>><?php echo print_something($key->man_asset_number)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_purchase_vendor"><?php echo __('Vendor')?>: </label><span id="man_purchase_vendor" <?php echo $edit?>><?php echo print_something($key->man_purchase_vendor)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_purchase_order_number"><?php echo __('PO Number')?>: </label><span id="man_purchase_order_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_order_number)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_purchase_cost_center"><?php echo __('Cost Center')?>: </label><span id="man_purchase_cost_center" <?php echo $edit?>><?php echo print_something($key->man_purchase_cost_center)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_purchase_service_contract_number"><?php echo __('Contract Number')?>: </label><span id="man_purchase_service_contract_number" <?php echo $edit?>><?php echo print_something($key->man_purchase_service_contract_number)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="man_purchase_invoice" <?php echo $edit?>><?php echo print_something($key->man_purchase_invoice)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_purchase_date"><?php echo __('Purchase Date')?>: </label><span id="man_purchase_date" <?php echo $edit?>><?php echo print_something($key->man_purchase_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
-				<p><label for="man_purchase_amount"><?php echo __('Purchase Amount')?>: </label><span id="man_purchase_amount" <?php echo $edit?>><?php echo print_something($key->man_purchase_amount)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_warranty_duration"><?php echo __('Warranty Length')?>: </label><span id="man_warranty_duration" <?php echo $edit?>><?php echo print_something($key->man_warranty_duration)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_warranty_expires"><?php echo __('Warranty Expires')?>: </label><span id="man_warranty_expires" <?php echo $edit?>><?php echo print_something($key->man_warranty_expires)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
-				<p><label for="man_lease_expiry_date"><?php echo __('Lease Expiry Date')?>: </label><span id="man_lease_expiry_date" <?php echo $edit?>><?php echo print_something($key->man_lease_expiry_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
+				<p><label for="asset_number"><?php echo __('Asset Number')?>: </label><span id="asset_number" <?php echo $edit?>><?php echo print_something($key->asset_number)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="purchase_vendor"><?php echo __('Vendor')?>: </label><span id="purchase_vendor" <?php echo $edit?>><?php echo print_something($key->purchase_vendor)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="purchase_order_number"><?php echo __('PO Number')?>: </label><span id="purchase_order_number" <?php echo $edit?>><?php echo print_something($key->purchase_order_number)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="purchase_cost_center"><?php echo __('Cost Center')?>: </label><span id="purchase_cost_center" <?php echo $edit?>><?php echo print_something($key->purchase_cost_center)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="purchase_service_contract_number"><?php echo __('Contract Number')?>: </label><span id="purchase_service_contract_number" <?php echo $edit?>><?php echo print_something($key->purchase_service_contract_number)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="purchase_invoice"><?php echo __('Invoice Number')?>: </label><span id="purchase_invoice" <?php echo $edit?>><?php echo print_something($key->purchase_invoice)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="purchase_date"><?php echo __('Purchase Date')?>: </label><span id="purchase_date" <?php echo $edit?>><?php echo print_something($key->purchase_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
+				<p><label for="purchase_amount"><?php echo __('Purchase Amount')?>: </label><span id="purchase_amount" <?php echo $edit?>><?php echo print_something($key->purchase_amount)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="warranty_duration"><?php echo __('Warranty Length')?>: </label><span id="warranty_duration" <?php echo $edit?>><?php echo print_something($key->warranty_duration)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="warranty_expires"><?php echo __('Warranty Expires')?>: </label><span id="warranty_expires" <?php echo $edit?>><?php echo print_something($key->warranty_expires)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
+				<p><label for="lease_expiry_date"><?php echo __('Lease Expiry Date')?>: </label><span id="lease_expiry_date" <?php echo $edit?>><?php echo print_something($key->lease_expiry_date)?></span><?php echo $edit_icon; ?> NOTE - format should be yyyy-mm-dd.</p>
 			<?php
             endforeach;
-            echo display_custom_field('view_summary_purchase',  $additional_fields_data, $edit); ?>
+            echo display_custom_field('purchase',  $additional_fields, $edit); ?>
 		</fieldset>
 	</form>
 	</div>
@@ -98,7 +99,7 @@
 				<?php
                 foreach ($system_location as $key) {
                     if ($access_level > 7) {
-                        echo "<p><label for='man_location_id_select'>".__('Location Name').": </label><span id='man_location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something($key->name)."</span></span>$edit_icon</p>\n";
+                        echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='location_id_select' style='color:blue;'><span onclick='display_location();'>".print_something($key->name)."</span></span>$edit_icon</p>\n";
                     } else {
                         echo "<p><label for='location_name'>".__('Location Name').": </label><span id='location_name'>".print_something($key->name)."</span></p>\n";
                     }
@@ -109,26 +110,26 @@
         			<p><label for="location_country"><?php echo __('Country')?>: </label><span id="location_country"><?php echo print_something($key->country)?></span></p>
             	<?php } ?>
                 </div>
-    			<p><label for="man_location_level"><?php echo __('Device specific Level')?>: </label><span id="man_location_level" <?php echo $edit?>><?php echo print_something($location_level)?></span><?php echo $edit_icon; ?></p>
-    			<p><label for="man_location_suite"><?php echo __('Device specific Suite')?>: </label><span id="man_location_suite" <?php echo $edit?>><?php echo print_something($location_suite)?></span><?php echo $edit_icon; ?></p>
-    			<p><label for="man_location_room"><?php echo __('Device specific Room')?>: </label><span id="man_location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span><?php echo $edit_icon; ?></p>
-    			<p><label for="man_location_rack"><?php echo __('Rack')?>: </label><span id="man_location_rack" <?php echo $edit?>><?php echo print_something($location_rack)?></span><?php echo $edit_icon; ?></p>
-    			<p><label for="man_location_rack_position"><?php echo __('Rack Position')?>: </label><span id="man_location_rack_position" <?php echo $edit?>><?php echo print_something($location_rack_position)?></span><?php echo $edit_icon; ?></p>
-    			<p><label for="man_location_latitude"><?php echo __('Device Specific Latitude')?>: </label><span id="man_location_latitude" <?php echo $edit?>><?php echo print_something($man_location_latitude)?></span><?php echo $edit_icon; ?></p>
-    			<p><label for="man_location_longitude"><?php echo __('Device Specific Longitude')?>: </label><span id="man_location_longitude" <?php echo $edit?>><?php echo print_something($man_location_longitude)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_level"><?php echo __('Device specific Level')?>: </label><span id="location_level" <?php echo $edit?>><?php echo print_something($location_level)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_suite"><?php echo __('Device specific Suite')?>: </label><span id="location_suite" <?php echo $edit?>><?php echo print_something($location_suite)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_room"><?php echo __('Device specific Room')?>: </label><span id="location_room" <?php echo $edit?>><?php echo print_something($location_room)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_rack"><?php echo __('Rack')?>: </label><span id="location_rack" <?php echo $edit?>><?php echo print_something($location_rack)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_rack_position"><?php echo __('Rack Position')?>: </label><span id="location_rack_position" <?php echo $edit?>><?php echo print_something($location_rack_position)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_latitude"><?php echo __('Device Specific Latitude')?>: </label><span id="location_latitude" <?php echo $edit?>><?php echo print_something($location_latitude)?></span><?php echo $edit_icon; ?></p>
+    			<p><label for="location_longitude"><?php echo __('Device Specific Longitude')?>: </label><span id="location_longitude" <?php echo $edit?>><?php echo print_something($location_longitude)?></span><?php echo $edit_icon; ?></p>
 				</div>
 			</div>
 			<div style="float:left; width:50%;">
 				<?php foreach ($system as $key): ?>
-					<p><label for="man_owner"><?php echo __('Owner')?>: </label><span id="man_owner" <?php echo $edit?>><?php echo print_something($key->man_owner)?></span><?php echo $edit_icon; ?></p>
+					<p><label for="owner"><?php echo __('Owner')?>: </label><span id="owner" <?php echo $edit?>><?php echo print_something($key->owner)?></span><?php echo $edit_icon; ?></p>
 				<?php endforeach; ?>
                 <p><label for="comments"><?php echo __('Comments')?>: </label><span id="comments" <?php echo $edit?>><?php echo print_something($system[0]->comments)?></span></p>
 				<div id="org_container">
 
-                <p><label for='man_org_id_select'><?php echo __('Org Name'); ?>: </label>
+                <p><label for='org_id_select'><?php echo __('Org Name'); ?>: </label>
                     <?php foreach ($system_org as $key):
                         if ($access_level > 7) {
-                            echo "<span id='man_org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->name)."</span></span>$edit_icon</p>\n";
+                            echo "<span id='org_id_select' style='color:blue;'><span onclick='display_org();'>".print_something($key->name)."</span></span>$edit_icon</p>\n";
                         } else {
                             echo "<span id='org_name'>".print_something($key->name)."</span></p>\n";
                         }
@@ -140,7 +141,7 @@
 				<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 			</div>
 			<?php
-            echo display_custom_field('view_summary_location',  $additional_fields_data, $edit);
+            echo display_custom_field('location',  $additional_fields, $edit);
             ?>
 		</fieldset>
 	</form>
@@ -154,7 +155,7 @@
 			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Custom Details')?></span></legend>
 			<img class='section_image' src='<?php echo $oa_theme_images;?>/48_custom.png' alt='' title='' />
 			<?php
-            echo display_custom_field('view_summary_custom', $additional_fields_data, $edit);
+            echo display_custom_field('custom', $additional_fields, $edit);
             ?>
 		</fieldset>
 	</form>
@@ -289,27 +290,27 @@
 	</div>
 
 	<div id="view_summary_network" style="float: left; width: 100%;">
-	<?php if ($system[0]->man_ip_address != '000.000.000.000' and $system[0]->man_ip_address != '0.0.0.0' and $system[0]->man_ip_address > '') { ?>
+	<?php if ($system[0]->ip != '000.000.000.000' and $system[0]->ip != '0.0.0.0' and $system[0]->ip > '') { ?>
 	<br />
 	<form action="#" method="post" class='niceforms'>
 		<fieldset id="summary_network_details" class='niceforms'>
 			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Network Details')?></span></legend>
 			<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_network_wireless.png' alt='' title='' />
 			<?php foreach ($system as $key): ?>
-				<p><label for="man_switch_id"><?php echo __('Switch ID')?>: </label><span id="man_switch_id" <?php echo $edit?>><?php echo print_something($key->man_switch_id)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_switch_port"><?php echo __('Switch Port')?>: </label><span id="man_switch_port" <?php echo $edit?>><?php echo print_something($key->man_switch_port)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_patch_panel"><?php echo __('Patch Panel')?>: </label><span id="man_patch_panel" <?php echo $edit?>><?php echo print_something($key->man_patch_panel)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_wall_port"><?php echo __('Wall Port')?>: </label><span id="man_wall_port" <?php echo $edit?>><?php echo print_something($key->man_wall_port)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="switch_id"><?php echo __('Switch ID')?>: </label><span id="switch_id" <?php echo $edit?>><?php echo print_something($key->switch_system_id)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="switch_port"><?php echo __('Switch Port')?>: </label><span id="switch_port" <?php echo $edit?>><?php echo print_something($key->switch_port)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="patch_panel"><?php echo __('Patch Panel')?>: </label><span id="patch_panel" <?php echo $edit?>><?php echo print_something($key->patch_panel)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="wall_port"><?php echo __('Wall Port')?>: </label><span id="wall_port" <?php echo $edit?>><?php echo print_something($key->wall_port)?></span><?php echo $edit_icon; ?></p>
 			<?php
             endforeach;
-            echo display_custom_field('view_summary_network',  $additional_fields_data, $edit); ?>
+            echo display_custom_field('network',  $additional_fields, $edit); ?>
 		</fieldset>
 	</form>
 	<?php } ?>
 	</div>
 
 	<div id="view_summary_phone" style="float: left; width: 100%;">
-	<?php if (strpos($system[0]->man_type, 'phone') !== false) {
+	<?php if (strpos($system[0]->type, 'phone') !== false) {
     ?>
 	<br />
 	<form action="#" method="post" class='niceforms'>
@@ -317,28 +318,28 @@
 			<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Phone Details')?></span></legend>
 			<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_phone.png' alt='' title='' />
 			<?php foreach ($system as $key): ?>
-				<p><label for="man_service_number"><?php echo __('Phone Number')?>: </label><span id="man_service_number" <?php echo $edit?>><?php echo print_something($key->man_service_number)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_service_provider"><?php echo __('Provider')?>: </label><span id="man_service_provider" <?php echo $edit?>><?php echo print_something($key->man_service_provider)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_service_type"><?php echo __('Type')?>: </label>
+				<p><label for="service_number"><?php echo __('Phone Number')?>: </label><span id="service_number" <?php echo $edit?>><?php echo print_something($key->service_number)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="service_provider"><?php echo __('Provider')?>: </label><span id="service_provider" <?php echo $edit?>><?php echo print_something($key->service_provider)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="service_type"><?php echo __('Type')?>: </label>
 				<?php if ($access_level > 7) { ?>
-					<span id="man_service_type_select" style="color:blue;"><span onclick="display_service_type();"><?php echo print_something($key->man_service_type)?>&nbsp;&nbsp;<?php echo $edit_icon; ?></span></span></p>
+					<span id="service_type_select" style="color:blue;"><span onclick="display_service_type();"><?php echo print_something($key->service_type)?>&nbsp;&nbsp;<?php echo $edit_icon; ?></span></span></p>
 				<?php } else { ?>
-					<span><?php echo print_something($key->man_service_type)?></span></p>
+					<span><?php echo print_something($key->service_type)?></span></p>
 				<?php } ?>
-				<p><label for="man_service_provider"><?php echo __('Network Provider')?>: </label><span id="man_service_provider" <?php echo $edit?>><?php echo print_something($key->man_service_provider)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_service_plan"><?php echo __('Plan')?>: </label><span id="man_service_plan" <?php echo $edit?>><?php echo print_something($key->man_service_plan)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_service_network"><?php echo __('Network')?>: </label><span id="man_service_network" <?php echo $edit?>><?php echo print_something($key->man_service_network)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_unlock_pin"><?php echo __('Unlock PIN')?>: </label><span id="man_unlock_pin" <?php echo $edit?>>
+				<p><label for="service_provider"><?php echo __('Network Provider')?>: </label><span id="service_provider" <?php echo $edit?>><?php echo print_something($key->service_provider)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="service_plan"><?php echo __('Plan')?>: </label><span id="service_plan" <?php echo $edit?>><?php echo print_something($key->service_plan)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="service_network"><?php echo __('Network')?>: </label><span id="service_network" <?php echo $edit?>><?php echo print_something($key->service_network)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="unlock_pin"><?php echo __('Unlock PIN')?>: </label><span id="unlock_pin" <?php echo $edit?>>
                 <?php if ($access_level >= 7) {
-                    echo print_something($key->man_unlock_pin);
+                    echo print_something($key->unlock_pin);
                 } else {
                     echo "******";
                 }
                 ?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_serial_imei"><?php echo __('IMEI Serial')?>: </label><span id="man_serial_imei" <?php echo $edit?>><?php echo print_something($key->man_serial_imei)?></span><?php echo $edit_icon; ?></p>
-				<p><label for="man_serial_sim"><?php echo __('SIM Serial')?>: </label><span id="man_serial_sim" <?php echo $edit?>><?php echo print_something($key->man_serial_sim)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="serial_imei"><?php echo __('IMEI Serial')?>: </label><span id="serial_imei" <?php echo $edit?>><?php echo print_something($key->serial_imei)?></span><?php echo $edit_icon; ?></p>
+				<p><label for="serial_sim"><?php echo __('SIM Serial')?>: </label><span id="serial_sim" <?php echo $edit?>><?php echo print_something($key->serial_sim)?></span><?php echo $edit_icon; ?></p>
 			<?php endforeach;
-            echo display_custom_field('view_summary_phone', $additional_fields_data, $edit); ?>
+            echo display_custom_field('phone', $additional_fields, $edit); ?>
 		</fieldset>
 	</form>
 	<?php } ?>
@@ -432,7 +433,8 @@
 						</td>
 					</thead>
 					<tbody>
-					<?php foreach ($vm as $key) {
+					<?php foreach ($vm as $item) {
+                        $key = $item->attributes;
                         if ($key->icon != '') {
                             $icon = "<a href=\"".base_url()."index.php/main/system_display/".$key->guest_system_id."\"><img alt=\"\" src=\"".base_url()."theme-tango/tango-images/16_" . $key->icon . ".png\" /></a>\n";
                         } else {
@@ -469,7 +471,7 @@
 
 
 	<div id="view_summary_network_interfaces" style="float: left; width: 100%;">
-	<?php if (count($network) > 0 and $system[0]->man_type != 'computer') { ?>
+	<?php if (count($network) > 0 and $system[0]->type != 'computer') { ?>
 		<br />
 		<br />
 		<form action="#" method="post" class='niceforms'>
@@ -492,7 +494,8 @@
 							</td>
 						</thead>
 						<tbody>
-						<?php foreach ($network as $key) { ?><tr>
+						<?php foreach ($network as $item) { ?><tr>
+                            <?php $key = $item->attributes; ?>
 								<td><?php echo print_something($key->net_index); ?></td>
 								<td><?php echo print_something($key->mac); ?></td>
 								<td><?php echo print_something($key->connection); ?></td>
@@ -535,11 +538,13 @@
 							</td>
 						</thead>
 						<tbody>
-						<?php foreach ($ip as $ip_address) {
+						<?php foreach ($ip as $item) {
+                            $ip_address = $item->attributes;
                             $interface = '';
-                            foreach ($network as $key) {
-                                if ($key->net_index == $ip_address->net_index) {
-                                    $interface = $key->connection . ' - ' . $key->description;
+                            foreach ($network as $item2) {
+                                $key2 = $item2->attributes;
+                                if ($key2->net_index == $ip_address->net_index) {
+                                    $interface = $key2->connection . ' - ' . $key2->description;
                                 }
                             }
                         ?>
@@ -583,23 +588,24 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php foreach ($module as $mod): ?>
+					<?php foreach ($module as $item): ?>
+                    <?php $key = $item->attributes; ?>
 							<tr>
-								<td align='center'><?php echo print_something($mod->module_index)?></td>
-								<td align='center'><?php echo print_something($mod->contained_in)?></td>
-								<td><?php echo print_something($mod->class_text)?></td>
-								<td><?php echo print_something($mod->description)?></td>
-								<td align='center'><?php echo print_something($mod->hardware_revision)?></td>
-								<td><?php echo print_something($mod->firmware_revision)?></td>
-								<td><?php echo print_something($mod->software_revision)?></td>
-								<td><?php echo print_something($mod->serial)?></td>
-								<td><?php echo print_something($mod->asset_ident)?></td>
-								<td align='center'><?php echo print_something($mod->is_fru)?></td>
+								<td align='center'><?php echo print_something($key->module_index)?></td>
+								<td align='center'><?php echo print_something($key->contained_in)?></td>
+								<td><?php echo print_something($key->class_text)?></td>
+								<td><?php echo print_something($key->description)?></td>
+								<td align='center'><?php echo print_something($key->hardware_revision)?></td>
+								<td><?php echo print_something($key->firmware_revision)?></td>
+								<td><?php echo print_something($key->software_revision)?></td>
+								<td><?php echo print_something($key->serial)?></td>
+								<td><?php echo print_something($key->asset_ident)?></td>
+								<td align='center'><?php echo print_something($key->is_fru)?></td>
 							</tr>
 					<?php endforeach; ?>
 					</tbody>
 					</table>
-					<?php echo display_custom_field('view_summary_module',  $additional_fields_data, $edit); ?>
+					<?php echo display_custom_field('module',  $additional_fields, $edit); ?>
 			</fieldset>
 		</form>
 	<?php } ?>
@@ -624,7 +630,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($dns as $key): ?>
+                        <?php foreach ($dns as $item): ?>
+                        <?php $key = $item->attributes; ?>
                         <tr>
                             <td><span style="display:none;"><?php echo print_something($key->ip)?></span><?php echo print_something(ip_address_from_db($key->ip))?></td>
                             <td><?php echo print_something($key->name)?>&nbsp;</td>
@@ -638,10 +645,6 @@
         </form>
     <?php } ?>
     </div>
-
-
-
-
 
     <div id="view_summary_san" style="float: left; width: 100%;">
     <?php if (count($san) > 0) { ?>
@@ -667,29 +670,30 @@
                     <tbody>
                         <?php 
                             foreach ($san as $item) {
+                                $key = $item->attributes;
                                 echo "<tr>
-                                <td>" . @$item->type . "</td>
-                                <td>" . @$item->manufacturer . "</td>
-                                <td>" . @$item->serial . "</td>
-                                <td>" . @$item->part_number . "</td>
-                                <td>" . @$item->location . "</td>
-                                <td>" . @$item->attached_to . "</td>
-                                <td>" . @$item->status . "</td>
-                                <td>" . @$item->date_of_manufacture . "</td>
-                                <td>" . @str_replace(',', ',<br />', $item->notes) . "</td>
+                                <td>" . @$key->type . "</td>
+                                <td>" . @$key->manufacturer . "</td>
+                                <td>" . @$key->serial . "</td>
+                                <td>" . @$key->part_number . "</td>
+                                <td>" . @$key->location . "</td>
+                                <td>" . @$key->attached_to . "</td>
+                                <td>" . @$key->status . "</td>
+                                <td>" . @$key->date_of_manufacture . "</td>
+                                <td>" . @str_replace(',', ',<br />', $key->notes) . "</td>
                                 </tr>\n";
                             }
                         ?>
                     </tbody>
                 </table>
-                <?php echo display_custom_field('view_hardware_san',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('san',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>
     </div>
 
     <div id="view_summary_san_disk" style="float: left; width: 100%;">
-    <?php if (count($hard_drive) > 0 and $system[0]->man_type == 'san') { ?>
+    <?php if (count($hard_drive) > 0 and $system[0]->type == 'san') { ?>
         <br />
         <br />
         <form action="#" method="post" class='niceforms'>
@@ -711,21 +715,22 @@
                     <tbody>
                         <?php 
                             foreach ($hard_drive as $item) {
+                                $key = $item->attributes;
                                 echo "<tr>
-                                <td>" . @$item->device . "</td>
-                                <td>" . @$item->manufacturer . "</td>
-                                <td>" . @$item->model . "</td>
-                                <td>" . @$item->serial . "</td>
-                                <td>" . @$item->interface_type . "</td>
-                                <td>" . @number_format(($item->size / 1024 / 1024)) . " GB</td>
-                                <td>" . @$item->status . "</td>
-                                <td>" . @$item->firmware . "</td>
+                                <td>" . @$key->device . "</td>
+                                <td>" . @$key->manufacturer . "</td>
+                                <td>" . @$key->model . "</td>
+                                <td>" . @$key->serial . "</td>
+                                <td>" . @$key->interface_type . "</td>
+                                <td>" . @number_format(($key->size)) . " GB</td>
+                                <td>" . @$key->status . "</td>
+                                <td>" . @$key->firmware . "</td>
                                 </tr>\n";
                             }
                         ?>
                     </tbody>
                 </table>
-                <?php echo display_custom_field('view_hardware_san_disk',  $additional_fields_data, $edit); ?>
+                <?php echo display_custom_field('san_disk',  $additional_fields, $edit); ?>
             </fieldset>
         </form>
     <?php } ?>

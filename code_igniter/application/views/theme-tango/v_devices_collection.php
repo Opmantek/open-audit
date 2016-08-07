@@ -27,16 +27,12 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-#echo "HERE"; exit();
-#echo "<pre>"; print_r($this->response); #exit();
-#echo "<pre>\n";
-#print_r($this->response);
-#exit();
 echo "<div style=\"float:left; width:100%;\">\n";
 if (!empty($this->response->data)) {
 ?>
@@ -46,16 +42,16 @@ if (!empty($this->response->data)) {
             <?php
 
             $properties = get_object_vars($this->response->data[0]);
-            #echo "<pre>\n"; print_r($properties); echo "</pre>\n";
             foreach ($properties as $key => $value) {
-                if ($key == 'man_ip_address' or $key == 'system.man_ip_address' or $key == 'ip_padded') {
+                if ($key == 'system.ip_padded') {
                     continue;
                 }
                 $key = str_replace('system.', '', $key);
-                $key = str_replace('man_', '', $key);
+                $key = str_replace('', '', $key);
                 $key = str_replace('_', ' ', $key);
                 $key = str_replace('os ', 'OS ', $key);
                 $key = str_replace(' id', ' ID', $key);
+                if ($key == 'Ip') { $key = 'IP'; }
                 $key = ucwords($key);
                 if (stripos($key, 'icon') !== false) {
                     echo "\t\t\t<th style=\"text-align: center;\">" . __($key) . "</th>\n";
@@ -79,18 +75,18 @@ if (!empty($this->response->data)) {
             // if (strpos($property, '.') !== false) {
             //     $property = substr($property, 0, strpos($property, '.'));
             // }
-            if ($property == 'man_ip_address' or $property == 'system.man_ip_address' or $property == 'ip_padded') {
+            if ($property == 'system.ip_padded') {
                 continue;
             }
             if (!empty($item->{$property})) {
                 if (strlen($item->{$property}) > 50) {
                     $item->{$property} = substr($item->{$property}, 0, 50) . '....';
                 }
-                if ($property == 'ip' and !empty($item->ip_padded)) {
-                    echo "\t\t\t\t<td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-                } elseif ($property == 'system_id') {
+                if ($property == 'system.ip' and !empty($item->{'system.ip_padded'})) {
+                    echo "\t\t\t\t<td><span style='display:none;'>" . str_replace('.', '', $item->{'system.ip_padded'}) . "</span>" . $item->{'system.ip'} . "</td>\n";
+                } elseif ($property == 'system.id') {
                     echo "\t\t\t\t<td><a href='devices/" . $item->{$property} . "'>" . $item->{$property} . "</td>\n";
-                } elseif ($property == 'icon') {
+                } elseif ($property == 'system.icon') {
                     echo "\t\t\t\t<td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."theme-tango/tango-images/16_".strtolower(str_replace(" ", "_", htmlentities($item->{$property}))).".png\" style='border-width:0px;' title=\"".htmlentities($item->{$property})."\" alt=\"".htmlentities($item->{$property})."\" /></td>\n";
                 } else {
                     echo "\t\t\t\t<td>" . $item->{$property} . "</td>\n";
@@ -99,7 +95,7 @@ if (!empty($this->response->data)) {
                 echo "\t\t\t\t<td></td>\n";
             }
         }
-        echo "\t\t\t\t<td align='center'><input type='checkbox' id='alert_id_" . intval($item->{'system.system_id'}) . "' name='alert_id_" . intval($item->{'system.system_id'}) . "' /></td>\n";
+        echo "\t\t\t\t<td align='center'><input type='checkbox' id='alert_id_" . intval($item->{'system.id'}) . "' name='alert_id_" . intval($item->{'system.id'}) . "' /></td>\n";
         echo "\t\t\t</tr>\n";
     }
     ?>
@@ -112,9 +108,9 @@ if (!empty($this->response->data)) {
 
 <?php
 }
-if (!empty($this->response->error)) {
+if (!empty($this->response->errors)) {
     echo "<pre>\n";
-    print_r($error);
+    print_r($errors);
     echo "</pre>\n";
 }
 ?>

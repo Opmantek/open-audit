@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,10 +56,10 @@ if ($query) { ?>
             <td align='center'><img src="<?php echo str_replace("index.php", "", site_url()); ?>theme-tango/tango-images/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt="" /></td>
             <td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
             <td><?php echo htmlentities($key->domain)?></td>
-            <td><span style="display:none;"><?php echo htmlentities($key->man_ip_address)?></span><?php echo htmlentities(ip_address_from_db($key->man_ip_address))?></td>
-            <td><?php echo htmlentities($key->man_type)?></td>
-            <td><?php echo htmlentities($key->man_description)?></td>
-            <td><?php echo htmlentities($key->man_os_family)?></td>
+            <td><span style="display:none;"><?php echo htmlentities($key->ip)?></span><?php echo htmlentities(ip_address_from_db($key->ip))?></td>
+            <td><?php echo htmlentities($key->type)?></td>
+            <td><?php echo htmlentities($key->description)?></td>
+            <td><?php echo htmlentities($key->os_family)?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>

@@ -1,0 +1,24 @@
+/**
+ * @author Mark Unwin <marku@opmantek.com>
+ *
+ * @version 1.12.8
+ *
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+ */
+
+body {margin: 8px;}
+
+/* *_collection */
+.glyphicon:hover { 
+    color: green;
+}
+
+/* v_devices_read */
+.list-group-item img {
+    width: 20px;
+    margin-right: 10px;
+}
+.section {
+    display: none;
+}

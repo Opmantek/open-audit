@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,13 +39,18 @@ if (strpos($refine_link, '?') === false) {
 } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1){
   $refine_link .= '&';
 }
+if (!empty($this->response->meta->sub_resource_name)) {
+  $title = ' - ' . $this->response->meta->sub_resource_name;
+} else {
+  $title = '';
+}
 ?>
 
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Devices</span>
-      <span class="pull-right"><?php echo $this->response->filtered . ' of ' . $this->response->total . ' results'; ?></span>
+      <span class="text-left">Devices <?php echo $title ?></span>
+      <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
     </h3>
   </div>
   <div class="panel-body">
@@ -52,19 +58,18 @@ if (strpos($refine_link, '?') === false) {
 <div class="panel panel-default pull-right">
   <div class="panel-body">
     <div class="btn-group" role="group" aria-label="...">
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a></button>
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a></button>
-      <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a></button>
+      <a class="btn btn-default" href="<?php echo $this->response->links->first; ?>" role="button"><?php echo __('first'); ?></a>
+      <a class="btn btn-default" href="<?php echo $this->response->links->prev; ?>" role="button"><?php echo __('prev'); ?></a>
+      <a class="btn btn-default" href="<?php echo $this->response->links->next; ?>" role="button"><?php echo __('next'); ?></a>
+      <a class="btn btn-default" href="<?php echo $this->response->links->last; ?>" role="button"><?php echo __('last'); ?></a>
     </div>
   </div>
 </div>
 <?php
-if (count($this->response->filter) > 0) {
+if (count($this->response->meta->filter) > 0) {
   echo '<div class="panel panel-default pull-left">';
   echo '<div class="panel-body">';
-  #echo '<div class="well well-sm pull-left">';
-  foreach ($this->response->filter as $item) {
+  foreach ($this->response->meta->filter as $item) {
     if ($item->operator == '=') {
       $label = 'label-success';
     } else if ($item->operator == '!=') {
@@ -79,48 +84,49 @@ if (count($this->response->filter) > 0) {
     }
     $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
     $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
-    if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
-      $link = $refine_link . 'man_status=!=""';
+    if (($item->name == 'status' or $item->name == 'system.status') and $item->operator == '=' and $item->value == 'production') {
+      $link = $refine_link . 'system.status=!=\'\'';
     }
     $label = 'label-info';
-    echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
+    echo '<span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
   }
   echo '</div>';
   echo '</div>';
 }
 
 if (!empty($this->response->data)) { ?>
-    <form action="devices?action=edit" method="post" id="bulk_edit" name="bulk_edit">
+    <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
       <table class="table">
         <thead>
           <tr>
 <?php
-      $properties = get_object_vars($this->response->data[0]);
+      $properties = get_object_vars($this->response->data[0]->attributes);
       foreach ($properties as $key => $value) {
         if (strpos($key, '.') !== false) {
           $key = substr($key, strpos($key, '.')+1);
         }
-        if ($key == 'man_ip_address' or $key == 'system.man_ip_address' or $key == 'ip_padded') {
+        if (strrpos($key, 'ip_padded') === strlen($key)-9) {
           continue;
         }
-        if ($key == 'system_id') {
+        if ($key == 'system.id' or $key == 'id') {
           $key = 'ID';
         }
-        $key = str_replace('man_', '', $key);
         $key = str_replace('_', ' ', $key);
         $key = str_replace('os ', 'OS ', $key);
         $key = str_replace(' id', ' ID', $key);
+        $key = str_replace(' ip', ' IP', $key);
         $key = ucwords($key);
         if ($key == 'Ip') { $key = 'IP'; }
         if (stripos($key, 'icon') !== false) {
-          echo "            <th style=\"text-align: center;\" nowrap>" . __($key) . "</th>\n";
+          echo "            <th style=\"text-align: center;\" >" . __($key) . "</th>\n";
         } else {
           echo "            <th>" . __($key) . "</th>\n";
         }
       }
       ?>
-            <th width="150" class="text-center">
-              <button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp;
+            <th class="text-center">
+              <!--<button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp; -->
+              <button type="button" class="btn btn-primary bulk_edit_button"><?php echo __('Edit') ?></button>&nbsp;
               <input type="checkbox"/>
             </th>
           </tr>
@@ -132,11 +138,11 @@ if (!empty($this->response->data)) { ?>
 
     # grab the system_id if it exists
     $system_id = '';
-    if (!empty($item->system_id)) {
-      $system_id = $item->system_id;
+    if (!empty($item->attributes->{'system.id'})) {
+      $system_id = $item->attributes->{'system.id'};
     }
-    if (!empty($item->{'system.system_id'})) {
-      $system_id = $item->{'system.system_id'};
+    if ($system_id == '' and !empty($item->id)) {
+      $system_id = $item->id;
     }
     echo "          <tr>\n";
 
@@ -150,25 +156,32 @@ if (!empty($this->response->data)) { ?>
       // if (strpos($property, '.') !== false) {
       //   $property = substr($property, strpos($property, '.'));
       // }
-      # never output these - we shoudl have an attribute called ip instead
-      if ($property == 'man_ip_address' or $property == 'system.man_ip_address' or $property == 'ip_padded') {
+
+      # never output these - we should have an attribute called ip instead
+      if (strrpos($property, 'ip_padded') === strlen($property)-9) {
         continue;
       }
 
-      if (!empty($item->$property)) {
-        if ($property == 'ip' and !empty($item->ip_padded)) {
-          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->ip_padded) . "</span>" . $item->ip . "</td>\n";
-        } elseif ($property == 'system_id' or $property == 'system.system_id') {
-          echo "            <td><a href='devices/" . $item->$property . "'>" . $item->$property . "</td>\n";
-        } elseif ($property == 'icon' or $property == 'system.icon') {
-          echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->$property)."\" alt=\"".htmlentities($item->$property)."\"/></td>\n";
+      if (!empty($item->attributes->$property)) {
+
+        if ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->attributes->{$property . '_padded'}))) {
+          echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
+        
+        
+        } elseif ($property == 'id' or $property == 'system.id') {
+          #echo "            <td><a href='" . $item->links->self . "'>" . $item->attributes->$property . "</a></td>\n";
+          echo "<td><a href=" . htmlentities($item->links->self) . "><button type=\"button\" class=\"btn btn-sm btn-success\" aria-label=\"Left Align\">" . htmlentities($item->id) . "</button></a></td>";
+        
+        } elseif (strrpos($property, 'icon') === strlen($property)-4) {
+          echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
+        
         } else {
-          if (strlen($item->$property) > 50) {
-            $display = substr($item->$property, 0, 50) . '....';
+          if (strlen($item->attributes->$property) > 50) {
+            $display = substr($item->attributes->$property, 0, 50) . '....';
           } else {
-            $display = $item->$property;
+            $display = $item->attributes->$property;
           }
-          echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
+          echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
         }
       } else {
         echo "            <td></td>\n";
@@ -176,7 +189,7 @@ if (!empty($this->response->data)) { ?>
     }
 
     if (!empty($system_id)) {
-      echo "            <td align='center'><input type='checkbox' id='ids[]' value='" . intval($system_id) . "' name='ids[]' /></td>\n";
+      echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . intval($system_id) . "]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
     }
     echo "          </tr>\n";
   }
@@ -184,30 +197,7 @@ if (!empty($this->response->data)) { ?>
         </tbody>
       </table>
     </form>
-<?php
-}
-if (!empty($this->response->error)) {
-  echo '</div></div><div class="alert alert-danger" role="alert">' . $this->response->error->title . '</div>';
-  echo "<pre>\n";
-  print_r($this->response->error);
-  echo "</pre>\n";
-}
-?>
+<?php } ?>
   </div>
 </div>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $(function () {
-      $('[data-toggle="popover"]').popover()
-    })
-  });
-</script>
-
-<style>
-.glyphicon:hover { 
-    color: green;
-}
-</style>
-<?php
-exit();
-?>
+</div>

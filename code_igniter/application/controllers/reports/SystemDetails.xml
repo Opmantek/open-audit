@@ -3,8 +3,7 @@
 	<details>
 		<report_name>System Details</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.os_name, system.man_class, system.man_owner, system.man_ip_address, system.man_model, date_format(system.first_timestamp, '%Y-%m-%d') as first_seen, date_format(system.last_seen, '%Y-%m-%d') as last_seen, system.last_seen_by, system.pc_date_os_installation as installed, system.man_manufacturer, system.man_serial, system.man_form_factor, windows.client_site_name,  windows.user_name, oa_location.name, windows.active_directory_ou FROM system LEFT JOIN oa_location ON (system.man_location_id
- = oa_location.id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_name AS `system.os_name`, system.class AS `system.class`, system.owner AS `system.owner`, system.model AS `system.model`, system.first_seen as `system.first_seen`, system.last_seen as `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.os_installation_date AS `system.os_installation_date`, system.manufacturer AS `system.manufacturer`, system.serial AS `system.serial`, system.form_factor AS `system.form_factor`, windows.client_site_name AS `windows.client_site_name`,  windows.user_name AS `windows.user_name`, oa_location.name AS `oa_location.name`, windows.active_directory_ou AS `windows.active_directory_ou` FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @groupORDER BY system.name]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
@@ -14,18 +13,18 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>System Name</column_name>
-			<column_variable>hostname</column_variable>
+			<column_name>Device Name</column_name>
+			<column_variable>system.name</column_variable>
 			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_link>/devices/</column_link>
+			<column_secondary>system.id</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align></column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
 			<column_name>First Seen</column_name>
-			<column_variable>first_seen</column_variable>
+			<column_variable>system.first_seen</column_variable>
 			<column_type>timestamp</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -35,7 +34,7 @@
 		<column>
 			<column_order>2</column_order>
 			<column_name>Last Seen</column_name>
-			<column_variable>last_seen</column_variable>
+			<column_variable>system.last_seen</column_variable>
 			<column_type>timestamp</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -45,7 +44,7 @@
 		<column>
 			<column_order>3</column_order>
 			<column_name>Last Seen By</column_name>
-			<column_variable>last_seen_by</column_variable>
+			<column_variable>system.last_seen_by</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -55,7 +54,7 @@
 		<column>
 			<column_order>4</column_order>
 			<column_name>OS Installed</column_name>
-			<column_variable>installed</column_variable>
+			<column_variable>system.os_installation_date</column_variable>
 			<column_type>timestamp</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -65,7 +64,7 @@
 		<column>
 			<column_order>5</column_order>
 			<column_name>Form Factor</column_name>
-			<column_variable>man_form_factor</column_variable>
+			<column_variable>system.form_factor</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -75,7 +74,7 @@
 		<column>
 			<column_order>6</column_order>
 			<column_name>Manufacturer</column_name>
-			<column_variable>man_manufacturer</column_variable>
+			<column_variable>system.manufacturer</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -85,7 +84,7 @@
 		<column>
 			<column_order>7</column_order>
 			<column_name>Model</column_name>
-			<column_variable>man_model</column_variable>
+			<column_variable>system.model</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -95,7 +94,7 @@
 		<column>
 			<column_order>8</column_order>
 			<column_name>Serial</column_name>
-			<column_variable>man_serial</column_variable>
+			<column_variable>system.serial</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -105,7 +104,7 @@
 		<column>
 			<column_order>9</column_order>
 			<column_name>Class</column_name>
-			<column_variable>man_class</column_variable>
+			<column_variable>system.class</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -115,7 +114,7 @@
 		<column>
 			<column_order>10</column_order>
 			<column_name>User</column_name>
-			<column_variable>user_name</column_variable>
+			<column_variable>windows.user_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -125,7 +124,7 @@
 		<column>
 			<column_order>11</column_order>
 			<column_name>Windows Site</column_name>
-			<column_variable>client_site_name</column_variable>
+			<column_variable>windows.client_site_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -135,7 +134,7 @@
 		<column>
 			<column_order>12</column_order>
 			<column_name>Owner</column_name>
-			<column_variable>man_owner</column_variable>
+			<column_variable>system.owner</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -145,7 +144,7 @@
 		<column>
 			<column_order>13</column_order>
 			<column_name>Location</column_name>
-			<column_variable>name</column_variable>
+			<column_variable>oa_location.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -155,7 +154,7 @@
 		<column>
 			<column_order>15</column_order>
 			<column_name>IP</column_name>
-			<column_variable>man_ip_address</column_variable>
+			<column_variable>system.ip</column_variable>
 			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -165,7 +164,7 @@
 		<column>
 			<column_order>16</column_order>
 			<column_name>OU</column_name>
-			<column_variable>active_directory_ou</column_variable>
+			<column_variable>windows.active_directory_ou</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -175,7 +174,7 @@
 		<column>
 			<column_order>17</column_order>
 			<column_name>OS</column_name>
-			<column_variable>os_name</column_variable>
+			<column_variable>system.os_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>

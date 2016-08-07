@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -48,10 +49,10 @@ if (!empty($this->response->data)) {
             $properties = get_object_vars($this->response->data[0]);
             #echo "<pre>\n"; print_r($properties); echo "</pre>\n";
             foreach ($properties as $key => $value) {
-                if ($key == 'man_ip_address' or $key == 'ip_padded') {
+                if ($key == 'ip' or $key == 'ip_padded') {
                     continue;
                 }
-                $key = str_replace('man_', '', $key);
+                $key = str_replace('', '', $key);
                 $key = str_replace('_', ' ', $key);
                 $key = str_replace('os ', 'OS ', $key);
                 $key = str_replace(' id', ' ID', $key);
@@ -78,7 +79,7 @@ if (!empty($this->response->data)) {
             if (strpos($property, '.') !== false) {
                 $property = substr($property, 0, strpos($property, '.'));
             }
-            if ($property == 'man_ip_address' or $property == 'ip_padded') {
+            if ($property == 'ip' or $property == 'ip_padded') {
                 continue;
             }
             if (!empty($item->$property)) {
@@ -106,9 +107,9 @@ if (!empty($this->response->data)) {
 </table>
 <?php
 }
-if (!empty($this->response->error)) {
+if (!empty($this->response->errors)) {
     echo "<pre>\n";
-    print_r($this->response->error);
+    print_r($this->response->errors);
     echo "</pre>\n";
 }
 ?>

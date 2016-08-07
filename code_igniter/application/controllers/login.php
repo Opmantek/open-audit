@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,8 +53,11 @@ class login extends CI_Controller
 
         $this->load->helper('report_helper');
         check_default_reports();
+
         $this->load->helper('group_helper');
-        check_default_groups();
+        if ($this->config->config['internal_version'] >= '20160620') {
+            check_default_groups();
+        }
 
         // log the attempt
         $log_details = new stdClass();
@@ -329,8 +333,9 @@ class login extends CI_Controller
         // those attributes are useable in OAC, this page will set a cookie/session.
         // OAE will then proceed to log the user into OAE, but will have an OAC cookie set so if the user clicks
         // the OAC link from within OAE, they will not be asked to re-login.
-        $username = urldecode($this->uri->segment(3));
-        $password  = urldecode($this->uri->segment(4));
+        $username = html_entity_decode($this->uri->segment(3));
+        $password  = html_entity_decode($this->uri->segment(4));
+
         $this->load->model('m_userlogin');
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
@@ -339,8 +344,11 @@ class login extends CI_Controller
             $this->m_oa_config->update_blessed($subnet, 0);
         }
 
-        if (isset($_POST['username']) and isset($_POST['password']) and $_POST['username'] != '' and $_POST['password'] != '') {
+        if (!empty($_POST['username'])) {
             $username = $_POST['username'];
+        }
+
+        if (!empty($_POST['password'])) {
             $password = $_POST['password'];
         }
 
@@ -386,8 +394,9 @@ class login extends CI_Controller
             }
         }
         // attempt use the internal database to validate user
-        if ($data = $this->m_userlogin->validate_user($username, $password)) {
-            if (isset($data) and $data != 'fail' and $data['user_admin'] == 'y') {
+        $data = $this->m_userlogin->validate_user($username, $password);
+        if (isset($data) and $data != 'fail') {
+            if ($data['user_admin'] == 'y') {
                 // SUCCESS
                 $this->session->set_userdata($data);
                 header('Content-Type: application/json');
@@ -396,13 +405,16 @@ class login extends CI_Controller
             } else {
                 // FAIL
                 header('Content-Type: application/json');
-                header('HTTP/1.1 403 Not Authorised');
-                echo '{"valid": false, "admin": false}';
+                #header('HTTP/1.1 403 Not Authorised');
+                # NOTE - if we use the above of a 403, we get a popup on the OAE logon page
+                header('HTTP/1.1 200 OK');
+                echo '{"valid": true, "admin": false}';
             }
         } else {
             // FAIL
             header('Content-Type: application/json');
-            header('HTTP/1.1 403 Not Authorised');
+            #header('HTTP/1.1 403 Not Authorised');
+            header('HTTP/1.1 200 OK');
             echo '{"valid": false, "admin": false}';
         }
     }
@@ -417,13 +429,13 @@ class login extends CI_Controller
     {
         $file = @json_decode(file_get_contents('/usr/local/opmojo/conf/modal_oae.json'));
         if (!$file) {
-            $file = @json_decode(file_get_contents('/usr/local/open-audit/other/modal_oae.json'));
+            $file = @json_decode(file_get_contents($this->config->item('base_path') . '/other/modal_oae.json'));
         }
         if (!$file) {
             $file = @json_decode(file_get_contents('c:\\omk\\conf\\modal_oae.json'));
         }
         if (!$file) {
-            $file = @json_decode(file_get_contents('c:\\xampplite\\open-audit\\other\\modal_oae.json'));
+            $file = @json_decode(file_get_contents($this->config->item('base_path') . '\\other\\modal_oae.json'));
         }
         if (!$file) {
             $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');

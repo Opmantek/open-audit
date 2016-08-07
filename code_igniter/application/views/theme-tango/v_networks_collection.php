@@ -27,15 +27,12 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if (!empty($this->response->error)) {
-	echo "<h3>" . $this->response->error->title . "</h3><br />";
-	echo "<p>" . $this->response->error->message . "</p>\n";
-}
 ?>
 <div style="text-align:right;">
 <button><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>&nbsp;
@@ -51,7 +48,8 @@ if (!empty($this->response->error)) {
 			<th><?php echo __('Description')?></th>
 			<th><?php echo __('Edited By')?></th>
 			<th><?php echo __('Edited Date')?></th>
-			<th align='center'><?php echo __('Edit')?></th>
+            <th align='center'><?php echo __('View')?></th>
+            <th align='center'><?php echo __('Edit')?></th>
 			<!-- <th align='center'><?php echo __('Delete')?></th> -->
 		</tr>
 	</thead>
@@ -66,11 +64,12 @@ if (!empty($this->response->error)) {
             $delete_pic = "<a href='#' class='delete_link' value='".intval($item->id)."' id='delete_link_".intval($item->id)."' name='delete_link_".intval($item->id)."'><img src='".$oa_theme_images."/16_delete.png' alt='' title='' style='width:16' /></a>";
             ?>
 		<tr>
-			<td><a href="networks/<?php echo intval($item->id)?>"><?php echo intval($item->id)?></td>
+			<td><a style="font-weight:bold;" href="networks/<?php echo intval($item->id)?>"><?php echo intval($item->id)?></td>
 			<td><span style="display: none"><?php echo $sortable_name; ?></span><?php echo htmlentities($item->name)?></td>
 			<td><?php echo htmlentities($item->description)?></td>
 			<td><?php echo htmlentities($item->edited_by)?></td>
 			<td><?php echo htmlentities($item->edited_date)?></td>
+            <td align='center'><a href="networks/<?php echo intval($item->id)?>"><img src="<?php echo $oa_theme_images; ?>/16_find.png" /></td>
 			<td align='center'><?php echo $edit_pic?></td>
 			<!-- <td align='center'><?php echo $delete_pic?></td> -->
 		</tr>
@@ -80,9 +79,9 @@ if (!empty($this->response->error)) {
 
 <div id='error' name='error'>
 <?php
-if (!empty($this->response->error)) {
+if (!empty($this->response->errors)) {
   echo "<pre>\n";
-  print_r($this->response->error);
+  print_r($this->response->errors);
   echo "</pre>\n";
 }
 ?>

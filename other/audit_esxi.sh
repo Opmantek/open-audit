@@ -27,7 +27,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12.6
+# 
+# @version 1.12.8
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -55,49 +56,17 @@ O=$IFS; IFS=$'\n'
 # Below are the default settings
 start=`date +'%F %T'`
 
-# default to localhost
-strComputer="."
-
-# submit the audit to the OAv2 server
+# submit the audit to the Open-AudIT server
 submit_online="n"
-
-# check availability of required commands and exit.
-check_commands="n"
 
 # create an XML text file of the result in the current directory
 create_file="y"
 
-# the address of the OAv2 server "submit" page
+# the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/system/add_system"
 
-# submit via a proxy (using the settings of the user running the script)
-use_proxy="n"
-
-# the username (if not using the user running the script)
-strUser=''
-
-# the password (if not using the user running the script)
-strPass=''
-
-# optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
+# optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=''
-
-# optional - query this Active Directory attribute to determine the users work unit
-# if attribute #1 produces nothing, then try attribute #2
-windows_user_work_1="physicalDeliveryOfficeName"
-windows_user_work_2="company"
-
-# do not attempt to query mount points
-skip_mount_point='n'
-
-# do not enumerate printers
-skip_printer='n'
-
-# audit installed software
-skip_software='n'
-
-# retrieve all DNS names
-skip_dns='n'
 
 # if set then delete the audit script upon completion
 # useful when starting the script on a remote machine and leaving no trace
@@ -111,85 +80,16 @@ debugging=2
 # Display help
 help="n"
 
-# In normal use, DO NOT SET THIS.
-# This value is passed in when running the audit_domain script.
-# Only set this value if your audit host is on a different domain than audit targets and you are not using audit_domain.vbs - IE, you are running "cscript audit_windows.vbs COMPUTER" where COMPUTER is on a seperate domain that the PC you are running the command on. This would then apply to ALL systems audited like this. This would be the exception rather than the rule. Do not do this unless you know what you are doing :-)
-ldap=''
-
-# set this greater than 0 if you wish to insert systems from AD that have only been seen in the last XX days
-ldap_seen_days='0'
-
-# set this greater than 2000-01-01 if you wish to insert systems from AD that have only been seen since XX date
-ldap_seen_date='2012-06-30'
-
-# attempt to ping a target computer before audit?
-ping_target='y'
-
 # set by the Discovery function - do not normally set this manually
 system_id=""
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
 
+echo_output="n"
 
-########################################################
-# DEFINE COMAMND LOCATIONS                             #
-########################################################
-
-	OA_AWK=`which awk 2>/dev/null`
-	OA_BC=`which bc 2>/dev/null`
-	OA_CAT=`which cat 2>/dev/null`
-	OA_CDRDAO=`which cdrdao 2>/dev/null`
-	OA_CHKCONFIG=`which chkconfig 2>/dev/null`
-	OA_CUT=`which cut 2>/dev/null`
-	OA_DATE=`which date 2>/dev/null`
-	OA_DF=`which df 2>/dev/null`
-	OA_DMESG=`which dmesg 2>/dev/null`
-	OA_DMIDECODE=`which dmidecode 2>/dev/null`
-	if [ "$OA_DMIDECODE" = "" ] || [ "$OA_DMIDECODE" = " " ] || [ -z "$OA_DMIDECODE" ]; then
-		if [ -f "/usr/local/sbin/dmidecode" ]; then
-			OA_DMIDECODE="/usr/local/sbin/dmidecode"
-		fi
-	fi
-	OA_DPKG=`which dpkg 2>/dev/null`
-	OA_DPKGQUERY=`which dpkg-query 2>/dev/null`
-	OA_ECHO=`which echo 2>/dev/null`
-	OA_ETHTOOL=`which ethtool 2>/dev/null`
-	OA_EXPR=`which expr 2>/dev/null`
-	OA_FDISK=`which fdisk 2>/dev/null`
-	OA_FIND=`which find 2>/dev/null`
-	OA_GREP=`which grep 2>/dev/null`
-	OA_HEAD=`which head 2>/dev/null`
-	OA_HOSTNAME=`which hostname 2>/dev/null`
-	OA_IFCONFIG=`which ifconfig 2>/dev/null`
-	OA_IP=`which ip 2>/dev/null`
-	OA_IWLIST=`which iwlist 2>/dev/null`
-	OA_LS=`which ls --skip-alias 2>/dev/null`
-	OA_LSB_RELEASE=`which lsb_release 2>/dev/null`
-	OA_LSCPU=`which lscpu 2>/dev/null`
-	OA_LSHAL=`which lshal 2>/dev/null`
-	OA_LSHW=`which lshw 2>/dev/null`
-	OA_LSPCI=`which lspci 2>/dev/null`
-	OA_LVM=`which lvm 2>/dev/null`
-	OA_MDADM=`which mdadm 2>/dev/null`
-	OA_PARTPROBE=`which partprobe 2>/dev/null`
-	OA_PING=`which ping 2>/dev/null`
-	OA_PS=`which ps 2>/dev/null`
-	OA_REV=`which rev 2>/dev/null`
-	OA_RM=`which rm --skip-alias 2>/dev/null`
-	OA_ROUTE=`which route 2>/dev/null`
-	OA_RPM=`which rpm 2>/dev/null`
-	OA_SED=`which sed 2>/dev/null`
-	OA_SERVICE=`which service 2>/dev/null`
-	OA_SORT=`which sort 2>/dev/null`
-	OA_SWAPON=`which swapon 2>/dev/null`
-	OA_TAIL=`which tail 2>/dev/null`
-	OA_TEST=`which test 2>/dev/null`
-	OA_UNAME=`which uname 2>/dev/null`
-	OA_UNIQ=`which uniq 2>/dev/null`
-	OA_WC=`which wc 2>/dev/null`
-	OA_WGET=`which wget 2>/dev/null`
-	OA_WHOAMI=`which whoami 2>/dev/null`
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
 
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
@@ -206,10 +106,10 @@ timer ()
 #
 {
 if [[ $# -eq 0 ]]; then
-	echo $($OA_DATE '+%s')
+	echo $(date '+%s')
 else
 	local  stime=$1
-	etime=$($OA_DATE '+%s')
+	etime=$(date '+%s')
 	if [[ -z "$stime" ]]; then stime=$etime; fi
 	dt=$((etime - stime))
 	echo $dt
@@ -224,7 +124,7 @@ lcase ()
 #   lower_version=$(lcase "$var")
 #
 {
-	result=$(echo "$1" | $OA_AWK '{print tolower($0)}')
+	result=$(echo "$1" | awk '{print tolower($0)}')
 	echo $result
 }
 
@@ -236,7 +136,7 @@ ucase ()
 #   upper_version=$(ucase "$var")
 #
 {
-	result=$(echo "$1" | $OA_AWK '{print toupper($0)}')
+	result=$(echo "$1" | awk '{print toupper($0)}')
 	echo $result
 }
 
@@ -248,7 +148,7 @@ pcase ()
 #   proper_version=$(pcase "$var")
 #
 {
-	result=`lcase "$1" |  $OA_AWK '{ for ( i=1; i <= NF; i++) {   sub(".", substr(toupper($i),1,1) , $i) } print }'`
+	result=`lcase "$1" |  awk '{ for ( i=1; i <= NF; i++) {   sub(".", substr(toupper($i),1,1) , $i) } print }'`
 	echo $result
 }
 
@@ -260,7 +160,7 @@ trim ()
 #   trimmed_version=$(trim "$var")
 #
 {
-	result=`echo "$1" | $OA_SED 's/^ *//g' | $OA_SED 's/ *$//g'`
+	result=`echo "$1" | sed 's/^ *//g' | sed 's/ *$//g'`
 	echo $result
 }
 
@@ -307,11 +207,11 @@ hosthardware ()
 # NOTE - argurments are case sensitive
 
 for arg in "$@"; do
-	parameter=$(echo "$arg" | $OA_CUT -d= -f1)
+	parameter=$(echo "$arg" | cut -d= -f1)
 	parameter=$(lcase "$parameter")
 	parameter=$(trim "$parameter")
 
-	parameter_value=$(echo "$arg" | $OA_CUT -d= -f2)
+	parameter_value=$(echo "$arg" | cut -d= -f2)
 	parameter_value=$(trim "$parameter_value")
 
 	case "$parameter" in
@@ -333,91 +233,17 @@ for arg in "$@"; do
 			ldap="$parameter_value" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
-		"ping_target" )
-			ping_target="$parameter_value" ;;
 		"self_delete" )
 			self_delete="$parameter_value" ;;
-		"skip_printer" )
-			skip_printer="$parameter_value" ;;
-		"skip_software" )
-			skip_software="$parameter_value" ;;
-		"skip_dns" )
-			skip_dns="$parameter_value" ;;
-		"skip_mount_point" )
-			skip_mount_point="$parameter_value" ;;
-		"strcomputer" )
-			strComputer="$parameter_value" ;;
-		"struser" )
-			strUser="$parameter_value" ;;
-		"strpass" )
-			strPass="$parameter_value" ;;
 		"submit_online" )
 			submit_online="$parameter_value" ;;
 		"system_id" )
 			system_id="$parameter_value" ;;
 		"url" )
 			url="$parameter_value" ;;
-		"use_proxy" )
-			use_proxy="$parameter_value" ;;
-		"windows_user_work_1" )
-			windows_user_work_1="$parameter_value" ;;
-		"windows_user_work_2" )
-			windows_user_work_2="$parameter_value" ;;
-		"$parameter_value" )
-			strComputer="$parameter_value" ;;
 	esac
 done
 
-########################################################
-# CHECK COMMANDS                                       #
-########################################################
-
-if [ "$check_commands" = "y" ]; then
-	echo "Checking commands on $strComputer"
-	echo "----------------------" 
-	echo "awk                  : $OA_AWK"
-	echo "bc                   : $OA_BC"
-	echo "cat                  : $OA_CAT"
-	echo "cdrdao               : $OA_CDRDAO"
-	echo "cut                  : $OA_CUT"
-	echo "date                 : $OA_DATE"
-	echo "df                   : $OA_DF"
-	echo "dmesg                : $OA_DMESG"
-	echo "dmidecode            : $OA_DMIDECODE"
-	echo "dpkg                 : $OA_DPKG"
-	echo "echo                 : echo"
-	echo "ethtool              : $OA_ETHTOOL"
-	echo "expr                 : $OA_EXPR"
-	echo "find                 : $OA_FIND"
-	echo "fdisk                : $OA_FDISK"
-	echo "grep                 : $OA_GREP"
-	echo "head                 : $OA_HEAD"
-	echo "hostname             : $OA_HOSTNAME"
-	echo "ifconfig             : $OA_IFCONFIG"
-	echo "ip                   : $OA_IP"
-	echo "iwlist               : $OA_IWLIST"
-	echo "lsb_release          : $OA_LSB_RELEASE"
-	echo "lshal                : $OA_LSHAL"
-	echo "lshw                 : $OA_LSHW"
-	echo "lspci                : $OA_LSPCI"
-	echo "lvm                  : $OA_LVM"
-	echo "mdadm                : $OA_MDADM"
-	echo "partprobe            : $OA_PARTPROBE"
-	echo "ping                 : $OA_PING"
-	echo "ps                   : $OA_PS"
-	echo "rev                  : $OA_REV"
-	echo "rm                   : $OA_RM"
-	echo "sed                  : $OA_SED"
-	echo "sort                 : $OA_SORT"
-	echo "swapon               : $OA_SWAPON"
-	echo "tail                 : $OA_TAIL"
-	echo "test                 : $OA_TEST"
-	echo "uname                : $OA_UNAME"
-	echo "wc                   : $OA_WC"
-	echo "wget                 : $OA_WGET"
-	echo "whoami               : $OA_WHOAMI"
-	exit 0
-fi
 
 if [ "$help" = "y" ]; then
 	echo ""
@@ -426,13 +252,9 @@ if [ "$help" = "y" ]; then
 	echo "----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
-	echo "Prerequisites for this script to function correctly can be tested by running audit_linux.sh check_commands=y."
+	echo "Prerequisites for this script to function correctly can be tested by running audit_esx.sh check_commands=y."
 	echo ""
 	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
-	echo ""
-	echo "  check_commands"
-	echo "     y - Run a test to determine if the required commands to run this script are present on the target system."
-	echo "    *n - Do not run the test."
 	echo ""
 	echo "  create_file"
 	echo "     y - Create an XML file containing the audit result."
@@ -466,7 +288,7 @@ fi
 start_time=$(timer)
 system_timestamp=`date +'%F %T'`
 if [ $debugging -gt 0 ]; then 
-	echo "Starting audit - $strComputer"
+	echo "Starting audit"
 	echo "Audit Start Time : $system_timestamp"
 	echo "-------------------" 
 fi
@@ -531,13 +353,12 @@ xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file
-echo "		<timestamp>"$(escape_xml "$system_timestamp")"</timestamp>" >> $xml_file
 echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
 echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
 echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
 echo "		<description></description>" >> $xml_file
 echo "		<type>computer</type>" >> $xml_file
-echo "		<man_type>computer</man_type>" >> $xml_file
+echo "		<type>computer</type>" >> $xml_file
 echo "		<os_icon>"$(escape_xml "$system_os_icon")"</os_icon>" >> $xml_file
 echo "		<os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
 echo "		<os_family>"$(escape_xml "$system_os_family")"</os_family>" >> $xml_file
@@ -548,14 +369,14 @@ echo "		<model>"$(escape_xml "$system_model")"</model>" >> $xml_file
 echo "		<manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> $xml_file
 echo "		<uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
 echo "		<form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
-echo "		<pc_os_bit>"$(escape_xml "$system_pc_os_bit")"</pc_os_bit>" >> $xml_file
-echo "		<pc_memory>"$(escape_xml "$system_pc_memory")"</pc_memory>" >> $xml_file
-echo "		<pc_num_processor>"$(escape_xml "$system_pc_processors")"</pc_num_processor>" >> $xml_file
-echo "		<pc_date_os_installation>"$(escape_xml "$system_pc_date_os_installation")"</pc_date_os_installation>" >> $xml_file
-echo "		<man_org_id>"$(escape_xml "$org_id")"</man_org_id>" >> $xml_file
-echo "		<system_id>"$(escape_xml "$system_id")"</system_id>" >> $xml_file
+echo "		<os_bit>"$(escape_xml "$system_pc_os_bit")"</os_bit>" >> $xml_file
+echo "		<memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
+echo "		<processor_count>"$(escape_xml "$system_pc_processors")"</processor_count>" >> $xml_file
+echo "		<os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
+echo "		<org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
+echo "		<id>"$(escape_xml "$system_id")"</id>" >> $xml_file
 echo "		<last_seen_by>audit</last_seen_by>" >> $xml_file
-echo "		<man_class>hypervisor</man_class>" >> $xml_file
+echo "		<class>hypervisor</class>" >> $xml_file
 echo "	</sys>" >> $xml_file
 
 
@@ -570,9 +391,9 @@ bios_firm_rev=""
 bios_firm_rev=$(trim `echo "$smbiosDump" | sed -n '/^  BIOS Info:/,/^  [A-Za-z]/p' | grep '    Version' | cut -d":" -f2 | sed 's/"//g'`)
 # Make the BIOS Description using the manufacturer - Firmware Rev
 if [ "$bios_firm_rev" != "" ]; then
-	bios_description=$(echo $bios_manufacturer | $OA_CUT -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
+	bios_description=$(echo $bios_manufacturer | cut -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
 else
-	bios_description=$(echo $bios_manufacturer | $OA_CUT -d" " -f1)" BIOS"
+	bios_description=$(echo $bios_manufacturer | cut -d" " -f1)" BIOS"
 fi
 bios_serial="$system_serial"
 bios_smversion=""
@@ -857,10 +678,10 @@ fi
 # echo "	<logs>" >> $xml_file
 # for log in $(ls -1 /etc/logrotate.d/) ; do\
 # 	echo -e "\t\t<log>\n\t\t\t<log_name>$log</log_name>\n\t\t\t<log_file_name>\
-# 		`$OA_GREP -m 1 -E "^/" /etc/logrotate.d/$log | $OA_SED -e 's/\ {//g'`\
+# 		`grep -m 1 -E "^/" /etc/logrotate.d/$log | sed -e 's/\ {//g'`\
 # 			</log_file_name>\n\t\t\t<log_file_size></log_file_size>\n\t\t\t<log_max_file_size>\
-# 			`$OA_GREP -E '\ size\ ' /etc/logrotate.d/$log |\
-# 			$OA_GREP -oE '[[:digit:]]*'`</log_max_file_size>\n\t\t</log>" ; done >>\
+# 			`grep -E '\ size\ ' /etc/logrotate.d/$log |\
+# 			grep -oE '[[:digit:]]*'`</log_max_file_size>\n\t\t</log>" ; done >>\
 # 	$xml_file
 # echo "	</logs>" >> $xml_file
 
@@ -869,10 +690,10 @@ fi
 # if [ "$debugging" -gt "0" ]; then
 # 	echo "Swap Info"
 # fi
-# FS=$'\n'; for swap in `$OA_CAT /proc/swaps |\
-# 	$OA_TAIL -n +2` ; do\
+# FS=$'\n'; for swap in `cat /proc/swaps |\
+# 	tail -n +2` ; do\
 # 		echo $swap |\
-# 		$OA_AWK ' { print "\t<pagefile>\n\t\t<file_name>"$1"</file_name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</pagefile>" } ' ; done >>\
+# 		$awk ' { print "\t<pagefile>\n\t\t<file_name>"$1"</file_name>\n\t\t<initial_size>"$3"</initial_size>\n\t\t<max_size>"$3"</max_size>\n\t</pagefile>" } ' ; done >>\
 # 		$xml_file
 
 
@@ -884,9 +705,9 @@ fi
 # echo "	<users>" >> $xml_file
 # ORIGIFS=$IFS
 # IFS=`echo -en "\n\b"`; \
-# 	for i in `$OA_CAT /etc/passwd` ; do\
+# 	for i in `cat /etc/passwd` ; do\
 # 		echo $i |\
-# 		$OA_AWK -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name>"$5"</user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> $xml_file ;\
+# 		$awk -F: ' { print "\t\t<user>\n" "\t\t\t<user_name>"$1"</user_name>\n" "\t\t\t<user_full_name>"$5"</user_full_name>\n" "\t\t\t<user_sid>"$3"</user_sid>\n" "\t\t</user>" } ' >> $xml_file ;\
 # 	done
 # IFS=$ORIGIFS
 # echo "	</users>" >> $xml_file
@@ -954,7 +775,7 @@ fi
 # 		echo "Submitting results to server"
 # 		echo "URL: $url"
 # 	fi
-# 	$OA_WGET --delete-after --post-file="$xml_file" $url 2>/dev/null
+# 	wget --delete-after --post-file="$xml_file" $url 2>/dev/null
 # fi
 
 sed -i -e 's/form_systemXML=//g' $xml_file

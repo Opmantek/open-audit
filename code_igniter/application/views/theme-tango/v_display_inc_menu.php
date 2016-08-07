@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -80,7 +81,8 @@ if ((isset($share) and count($share) > 0) or
     (isset($dns) and count($dns) > 0) or
     (isset($log) and count($log) > 0) or
     (isset($variable) and count($variable) > 0) or
-    (isset($netstat) and count($netstat) > 0)) {
+    (isset($netstat) and count($netstat) > 0) or
+    (isset($nmap) and count($nmap) > 0)) {
     ?>
     <li class="parent"><a href="#">&nbsp;&nbsp;&nbsp;<?php echo __('Settings')?></a>
 	<ul>
@@ -90,11 +92,13 @@ if ((isset($share) and count($share) > 0) or
 	 	<?php if (count($user) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_theme.png" /><a href="#" id="toggle_settings_users"><?php echo __('Users')?></a></li> <?php } ?>
 	 	<?php if (count($user_group) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_users.png" /><a href="#" id="toggle_settings_groups"><?php echo __('Groups')?></a></li> <?php } ?>
 	 	<?php if (count($dns) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_dns"><?php echo __('DNS')?></a></li> <?php } ?>
-	 	<?php if (count($netstat) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_settings_netstat"><?php echo __('NetStat')?></a></li> <?php } ?>
+        <?php if (count($netstat) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_network.png" /><a href="#" id="toggle_settings_netstat"><?php echo __('NetStat')?></a></li> <?php } ?>
+        <?php if (count($nmap) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_nmap.png" /><a href="#" id="toggle_settings_nmap"><?php echo __('Nmap')?></a></li> <?php } ?>
 	 	<?php if (count($print_queue) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_printer.png" /><a href="#" id="toggle_settings_print_queue"><?php echo __('Print Queue')?></a></li> <?php } ?>
 	 	<?php if (count($log) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_fill.png" /><a href="#" id="toggle_settings_logs"><?php echo __('Logs')?></a></li> <?php } ?>
         <?php if (count($task) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_task.png" /><a href="#" id="toggle_settings_tasks"><?php echo __('Tasks')?></a></li> <?php } ?>
-	 	<?php if (count($variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_variables"><?php echo __('Variables')?></a></li> <?php } ?>
+        <?php if (count($variable) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_font.png" /><a href="#" id="toggle_settings_variables"><?php echo __('Variables')?></a></li> <?php } ?>
+        <?php if (count($file) > 0) { ?> <li class="child"><img alt="" src="<?php echo $oa_theme_images; ?>/16_file.png" /><a href="#" id="toggle_settings_file"><?php echo __('Files')?></a></li> <?php } ?>
 	</ul>
 </li>
 <?php }

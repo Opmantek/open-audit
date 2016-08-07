@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,10 +40,7 @@ class orgs extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+        stdlog();
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -50,41 +48,23 @@ class orgs extends MY_Controller
             redirect(uri_string());
         }
 
-        $this->load->helper('network');
+        $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
-        $this->load->helper('input');
         $this->load->model('m_orgs');
-
-        $this->error = new stdClass();
-        $this->error->controller = 'orgs';
-
-        $this->response = new stdClass();
+        $this->load->helper('network');
         inputRead();
-
-        $this->response->total = 0;
-        $this->response->filtered = 0;
-        if ($this->response->format == 'screen') {
-            $this->response->heading = 'Orgs';
-            $this->response->include = 'v_orgs';
-        }
         $this->output->url = $this->config->item('oa_web_index');
-
-#echo "<pre>\n"; print_r($this->response); echo "</pre>\n";
-#$this->response->format = 'json';
-
-
     }
 
     public function index()
     {
     }
 
-    public function _remap($method)
+    public function _remap()
     {
-        $action = $this->response->action;
-        if ($action != '') {
-            $this->$action();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -93,19 +73,149 @@ class orgs extends MY_Controller
 
     private function collection()
     {
-        $this->response->data = $this->m_orgs->read_orgs();
-        $this->response->filtered = count($this->response->data);
+        $this->response->data = $this->m_orgs->collection();
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
-        if ($this->response->sub_resource != '') {
-            $this->response->data = $this->m_orgs->read_org_sub_resource();
-        } else {
-            $this->response->data = $this->m_orgs->read_org();
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
         }
-        $this->response->filtered = count($this->response->data);
+        if ($this->response->meta->sub_resource != '') {
+            $this->response->data = $this->m_orgs->read_sub_resource();
+            $this->response->meta->format = 'json';
+            output($this->response);
+            exit();
+        } else {
+            $this->response->data = $this->m_orgs->read();
+        }
+        if (!empty($this->response->data)) {
+            $this->response->meta->filtered = count($this->response->data);
+            if ($this->response->meta->format == 'screen') {
+                $this->response->included = array();
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+                if ($this->m_orgs->read_sub_resource()) {
+                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
+                }
+            }
+        }
         output($this->response);
+    }
+
+    private function create_form()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        # TODO - check this - should likely use included not data.
+        $this->response->data = $this->m_orgs->collection();
+        $this->response->meta->filtered = count($this->response->data);
+        output($this->response);
+    }
+
+    private function create()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->meta->id = $this->m_orgs->create();
+        if (!empty($this->response->meta->id)) {
+            if ($this->response->meta->format == 'json') {
+                $this->response->data = $this->m_orgs->read();
+                output($this->response);
+            } else {
+                redirect('/orgs');
+            }
+        } else {
+            log_error('ERR-0009');
+            output($this->response);
+            exit();
+        }
+    }
+
+    private function update_form()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->response->included = array();
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        if ($this->m_orgs->read_sub_resource()) {
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
+        }
+        $this->response->data = $this->m_orgs->read();
+        $this->response->meta->filtered = count($this->response->data);
+        output($this->response);
+    }
+
+    private function update()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->m_orgs->update();
+        if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_orgs->read();
+            output($this->response);
+        } else {
+            redirect('orgs');
+        }
+    }
+
+    private function delete()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        # do not allow deletion of default Org
+        if ($this->response->meta->id == 0) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            if ($this->response->meta->format == 'json') {
+                output($this->response);
+            } else {
+                redirect($this->response->meta->collection);
+            }
+            exit();
+        }
+
+        if ($this->m_orgs->delete()) {
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+        } else {
+            log_error('ERR-0013');
+        }
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            redirect($this->response->meta->collection);
+        }
     }
 }

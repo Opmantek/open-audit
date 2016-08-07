@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,7 +43,7 @@ class M_orgs extends MY_Model
     private function build_properties() {
         $CI = & get_instance();
         $properties = '';
-        $temp = explode(',', $CI->response->properties);
+        $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             if (strpos($temp[$i], '.') === false) {
                 $temp[$i] = 'oa_org.'.trim($temp[$i]);
@@ -58,7 +59,7 @@ class M_orgs extends MY_Model
         $CI = & get_instance();
         $reserved = ' properties limit resource action sort current offset format ';
         $filter = '';
-        foreach ($CI->response->filter as $item) {
+        foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
                 $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
             }
@@ -70,115 +71,152 @@ class M_orgs extends MY_Model
         return($filter);
     }
 
-    public function read_org()
+    public function read($id = '')
     {
-        $CI = & get_instance();
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $sql = "SELECT * FROM oa_org WHERE id = ?";
-        $sql = $this->clean_sql($sql);
-        $data = array($CI->response->id);
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'orgs');
+        return ($result);
+    }
+
+    public function read_sub_resource($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
         }
-        $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->error->function = 'm_orgs::read_org';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error->code, $CI->error->function);
-            $CI->response->error->detail_specific = $this->db->_error_message();
-            return false;
-        }
-        $result = $query->result();
+        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
         if (count($result) == 0) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->function = 'm_orgs::readOrg';
-            $CI->error->code = 'ERR-0005';
-            log_error($CI->error->code, $CI->error->function);
             return false;
         } else {
+            $result = $this->format_data($result, 'devices');
             return ($result);
         }
     }
 
-    public function read_org_sub_resource()
+    public function collection()
     {
         $CI = & get_instance();
-        $filter = $this->build_filter();
-        $sql = "SELECT type, count(system_id) as device_count FROM system WHERE man_org_id = " . intval($CI->response->id) . " GROUP BY type " . $CI->response->sort . " " . $CI->response->limit;
-        $sql = $this->clean_sql($sql);
-        $data = array($CI->user->id);
-        $query = $this->db->query($sql, $data);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
-        }
-        $result = $query->result();
-        if (count($result) == 0) {
-            return false;
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'orgs') {
+            $filter = $this->build_filter();
+            $properties = $this->build_properties();
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+            if ($CI->response->meta->limit == '') {
+                $limit = '';
+            } else {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->offset != '') {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
+            }
         } else {
-            return ($result);
-        }
-    }
-
-    public function read_orgs()
-    {
-        $CI = & get_instance();
-        $filter = $this->build_filter();
-        $properties = $this->build_properties();
-        if ($CI->response->internal->limit != '') {
-            $limit = $CI->response->internal->limit;
-        } else {
+            $properties = '*';
+            $filter = '';
+            $sort = '';
             $limit = '';
         }
-
-        # get the total org count
-        $sql = "SELECT COUNT(*) as `count` FROM oa_org WHERE oa_org.id IN (" . $CI->user->org_list . ")";
+        # get the total count
+        $sql = "SELECT COUNT(*) as `count` FROM `oa_org`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-        $CI->response->total = intval($result[0]->count);
+        if (!empty($CI->response->meta->total)) {
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+        # get the response data
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY o1.id " . $sort . " " . $limit;
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'orgs');
+        return ($result);
+    }
 
+    public function update()
+    {
+        $CI = & get_instance();
+        $sql = '';
+        $fields = ' name comments parent_id ';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                } else {
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                }
+            }
+        }
+        $sql = "UPDATE `oa_org` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql, array());
+        return;
+    }
 
-        #$sql = "SELECT " . $properties . ", count(system.system_id) as device_count FROM oa_org LEFT JOIN system ON (oa_org.id = system.man_org_id) " . $filter . " GROUP BY oa_org.id " . $CI->response->sort . " " . $limit;
-        $sql = "SELECT o1.*, o2.name as parent_name, count(system.system_id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.man_org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id " . $limit;
+    public function delete($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        if ($id != 0) {
+            $sql = "DELETE FROM `oa_org` WHERE id = ?";
+            $data = array($id);
+            $this->run_sql($sql, $data);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
+    public function create()
+    {
+        $CI = & get_instance();
+        if (empty($CI->response->meta->received_data->attributes->name)) {
+            return false;
+        } else {
+            $name = $CI->response->meta->received_data->attributes->name;
+        }
+        if (empty($CI->response->meta->received_data->attributes->parent_id)) {
+            $parent_id = 0;
+        } else {
+            $parent_id = intval($CI->response->meta->received_data->attributes->parent_id);
+        }
+        if (empty($CI->response->meta->received_data->attributes->comments)) {
+            $comments = '';
+        } else {
+            $comments = $CI->response->meta->received_data->attributes->comments;
+        }
+        $sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, '', ?)";
+        $data = array("$name", $parent_id, $comments);
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
+    }
+
+    public function get_orgs()
+    {
+        $CI = & get_instance();
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
         $sql = $this->clean_sql($sql);
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = FALSE;
         $query = $this->db->query($sql);
-        if ($CI->response->debug) {
-            $CI->response->sql = $this->db->last_query();
-        }
         $this->db->db_debug = $temp_debug;
-        if ($this->db->_error_message()) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->controller = $CI->response->collection . '::' . $CI->response->action;
-            $CI->error->function = 'm_orgs::read_org';
-            $CI->error->code = 'ERR-0009';
-            log_error($CI->error->code, $CI->error->function);
-            $CI->response->errors[count($this->response->errors)-1]->detail_specific = $this->db->_error_message();
-            return false;
-        }
         $result = $query->result();
-        if (count($result) == 0) {
-            if (empty($CI->error)) {
-                $CI->error = new stdClass();
-            }
-            $CI->error->function = 'm_orgs::readOrgs';
-            $CI->error->code = 'ERR-0005';
-            log_error($CI->error->code, $CI->error->function);
-            return false;
-        } else {
-            return ($result);
-        }
+        return($result);
     }
+
 }

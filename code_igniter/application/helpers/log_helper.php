@@ -30,7 +30,8 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('log_error')) {
@@ -39,30 +40,40 @@ if (! function_exists('log_error')) {
     {
         $CI = & get_instance();
         # ensure we have an array in the $response object to hold our error
-        if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
-            $CI->response->errors = array();
+        if (!empty($CI->response)) {
+            if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
+                $CI->response->errors = array();
+            }
         }
 
         # this object will hold this specific error data and be added to the above array at the end
         $error = new stdClass();
         $error->code = $error_code;
-        $error = getError($error->code);
         $error->file = 'system';
-        $error->message = $error->title;
         $error->model = $model;
+        if (function_exists('getError')) {
+            $error = getError($error->code);
+            $error->message = $error->title;
+        }
 
         // log the details of the error to the log file
         stdlog($error);
-        $error->controller = $error->controller . '::' . $error->function;
+        if (!empty($error->controller) and !empty($eror->function)) {
+            $error->controller = $error->controller . '::' . $error->function;
+        } else {
+            $error->controller = '';
+        }
         unset($error->function);
         // if the error is severe enough, set the error in the response object
-        if ($error->severity <= 3) {
+        if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
             unset($error->file); # we don't care about where this was logged (into which file)
             unset($error->message); # this is for logging only and is already contained in the $error->title
             $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
-            $CI->response->errors[] = $error;
-            $CI->response->header = $error->status;
+            if (!empty($CI->response)) {
+                $CI->response->errors[] = $error;
+                $CI->response->meta->header = $error->status;
+            }
         }
     }
 
@@ -82,7 +93,7 @@ if (! function_exists('stdlog')) {
      *
      * @return NULL [logs the provided string to the log file]
      */
-    function stdlog($log_details)
+    function stdlog($log_details = NULL)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -192,9 +203,7 @@ if (! function_exists('stdlog')) {
             $log->display = $log_details->display;
         }
         if ($log->display == 'y') {
-            echo "LOG   - ".$log->message."\n".str_pad("", 1024, " ")."\n";
-            ob_flush();
-            flush();
+            echo "LOG   - ".$log->message."\n";
         }
 
         // check the requested logging level and if not met, exit
@@ -302,11 +311,10 @@ if (! function_exists('stdlog')) {
             $log->file = $log_details->file;
         }
 
-        if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-            $file = "/usr/local/open-audit/other/log_".$log->file.".log";
-            //$file = '../../other/log_'.$log->file.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $CI->config->item('base_path') . '\other\log_' . $log->file . '.log';
         } else {
-            $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
+            $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
         }
 
         // log the page view
@@ -331,11 +339,7 @@ if (! function_exists('stdlog')) {
             if ($log->style == 'syslog') {
                 $extra_log_line = $log->timestamp.' '.$log->hostname.' '.$log->severity.' '.$log->user.' '.$log->controller.' '.$log->function.' '.$message;
             }
-            if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-                $file = '/usr/local/open-audit/other/open-audit.log';
-            } else {
-                $file = 'c:\xampplite\open-audit\other\open-audit.log';
-            }
+            $file = $CI->config->item('base_path') . '/other/open-audit.log';
             $handle = @fopen($file, 'a');
         }
         if (!$handle) {

@@ -3,74 +3,10 @@
 	<details>
 		<group_name>UnClassed Computers</group_name>
 		<group_padded_name></group_padded_name>
-		<group_dynamic_select><![CDATA[SELECT distinct(system.system_id) FROM system WHERE system.man_class = '' AND system.man_status = 'production' and man_type = 'computer']]></group_dynamic_select>
+		<group_dynamic_select><![CDATA[SELECT distinct(system.id) FROM system WHERE system.class = '' AND system.status = 'production' and type = 'computer']]></group_dynamic_select>
 		<group_parent>1</group_parent>
 		<group_category>general</group_category>
 		<group_icon>contact</group_icon>
 		<group_description>Any items that have their status attribute set to 'production' and have their type attribute set to 'computer' and their class attribute is ''. These are computers not classed as 'server'. 'laptop', 'desktop', etc.</group_description>
-		<group_display_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_os_family, system.man_os_name, system.man_type, system.icon, system.man_manufacturer FROM system LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = ?]]></group_display_sql>
 	</details>
-	<columns>
-		<column>
-			<column_order>0</column_order>
-			<column_name>Icon</column_name>
-			<column_variable>icon</column_variable>
-			<column_type>image</column_type>
-			<column_link></column_link>
-			<column_secondary>man_os_family</column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>1</column_order>
-			<column_name>Hostame</column_name>
-			<column_variable>hostname</column_variable>
-			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>2</column_order>
-			<column_name>Description</column_name>
-			<column_variable>man_description</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>3</column_order>
-			<column_name>IP Address</column_name>
-			<column_variable>man_ip_address</column_variable>
-			<column_type>ip_address</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>4</column_order>
-			<column_name>OS / Device</column_name>
-			<column_variable>man_os_name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-		<column>
-			<column_order>5</column_order>
-			<column_name>Tags</column_name>
-			<column_variable>tag</column_variable>
-			<column_table></column_table>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>left</column_align>
-		</column>
-	</columns>
 </group>

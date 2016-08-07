@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -49,7 +50,10 @@ class M_devices_components extends MY_Model
             // we require a system id
             return;
         }
-        $filter = '';
+        if (is_array($filter) and count($filter) == 0) {
+            unset($filter);
+            $filter = '';
+        }
         // if (stripos($filter, 'current = \'full') !== false or stripos($filter, 'current = "full') !== false) {
         //     $current = 'full';
         // }
@@ -85,63 +89,93 @@ class M_devices_components extends MY_Model
                 $found_current = true;
             }
         }
+
         $sql = '';
         // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
         //     $filter = 'AND ' . $filter;
         // }
+
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {
-                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? AND current = 'y' $filter";
+                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? AND current = 'y' $filter";
                     $data = array($id);
                 }
                 if ($current == 'n') {
-                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? AND current = 'n' $filter";
+                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? AND current = 'n' $filter";
                     $data = array($id);
                 }
                 if ($current == '' or $current == 'all') {
-                    $sql = "SELECT $properties FROM `$table` WHERE system_id = ? $filter";
+                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter";
                     $data = array($id);
                 }
                 if ($current == 'delta') {
                     if ($first_seen != '') {
-                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE system_id = ? and (current = 'y' or first_seen = ?)";
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE `$table`.system_id = ? and (current = 'y' or first_seen = ?)";
                         $data = array("$first_seen", $id, "$first_seen");
                     }
                 }
                 if ($current == 'full') {
                     if ($first_seen != '') {
-                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE system_id = ?";
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE `$table`.system_id = ?";
                         $data = array("$first_seen", $id);
                     }
                 }
             } else {
-                $sql = "SELECT $properties FROM `$table` WHERE system_id = ? $filter";
+                $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter";
                 $data = array($id);
             }
         }
-        
+
+        if ($table == 'system') {
+            $sql = "SELECT $properties FROM system WHERE id = ? $filter";
+            $data = array($id);
+        }
+
+        $result = false;
         if ($sql != '') {
-            $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
+            if ($table == 'credential') {
+                $this->load->library('encrypt');
+                for ($i=0; $i < count($result); $i++) { 
+                    $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+                }
+            }
             $result = $this->from_db($result);
+
             if ($properties != '*' and !stripos($properties, ',') and $table == 'system') {
                 # the request is for a single value from the system table - return only this value (as a string)
                 $temp_result = $result[0]->$properties;
                 unset($result);
                 $result = (string)$temp_result;
                 unset($temp_result);
+            } else {
+                $result = $this->format_data($result, 'devices/' . $id . '/' . $table);
             }
-            return($result);
-        } else {
-            return;
         }
-
+        return($result);
     }
+
+    // public function credentials_read($id, $type = '')
+    // {
+    //     if (empty($id)) {
+    //         return false;
+    //     }
+    //     $this->load->library('encrypt');
+    //     $sql = "SELECT * FROM credential WHERE system_id = ?";
+    //     $data = array(intval($id));
+    //     $query = $this->db->query($sql, $data);
+    //     $result = $query->result();
+    //     for ($i=0; $i < count($result); $i++) { 
+    //         $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+    //     }
+    //     return($result);
+    // }
 
     public function match_columns($table)
     {
+        $match_columns = array();
         if ($table == 'bios') {
                 $match_columns = array('description', 'manufacturer', 'serial', 'smversion', 'version');
         }
@@ -150,6 +184,9 @@ class M_devices_components extends MY_Model
         }
         if ($table == 'dns') {
                 $match_columns = array('ip', 'name', 'fqdn');
+        }
+        if ($table == 'file') {
+                $match_columns = array('full_name', 'hash', 'inode', 'last_changed');
         }
         if ($table == 'log') {
                 $match_columns = array('name', 'file_name', 'overwrite');
@@ -171,6 +208,9 @@ class M_devices_components extends MY_Model
         }
         if ($table == 'network') {
                 $match_columns = array('mac');
+        }
+        if ($table == 'nmap') {
+                $match_columns = array('protocol', 'ip', 'port', 'program');
         }
         if ($table == 'ip') {
                 $match_columns = array('ip', 'mac', 'netmask');
@@ -258,16 +298,22 @@ class M_devices_components extends MY_Model
         $log_details->display = $display;
         unset($display);
 
+        if (empty($details->name) and !empty($details->hostname)) {
+            $name = $details->hostname;
+        } else {
+            $name = $details->name;
+        }
+
         // ensure we have a valid table name
         if (!$this->db->table_exists($table)) {
-            $log_details->message = 'Table supplied does not exist (' . $table . ') for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.')';
+            $log_details->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 5;
             stdlog($log_details);
             return;
         }
 
         if (!$input) {
-            $log_details->message = 'No input supplied (' . $table . ') for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.')';
+            $log_details->message = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 5;
             stdlog($log_details);
             return;
@@ -277,28 +323,28 @@ class M_devices_components extends MY_Model
             $match_columns = $this->match_columns($table);
         }
 
-        if ($table == '' or count($match_columns) == 0 or !isset($details->system_id)) {
+        if ($table == '' or count($match_columns) == 0 or !isset($details->id)) {
             if ($table == '') {
-                $log_details->message = 'No table supplied for '.@ip_address_from_db($details->man_ip_address).' ('.@$details->hostname.')';
+                $log_details->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "No table name supplied - failed";
             }
             if (count($match_columns) == 0) {
-                $log_details->message = 'No columns to match supplied for '.@ip_address_from_db($details->man_ip_address).' ('.@$details->hostname.')';
+                $log_details->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No columns to match supplied - failed";
             }
             # if (!isset($details->id)) { # this will be changed when we convert the system table
-            if (!isset($details->system_id)) {
-                $log_details->message = 'No system_id supplied for '.@ip_address_from_db($details->man_ip_address).' ('.@$details->hostname.')';
-                $message = "$table - No system_id supplied - failed";
+            if (!isset($details->id)) {
+                $log_details->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
+                $message = "$table - No id supplied - failed";
             }
-            $this->m_audit_log->update('debug', $message, $details->system_id, $details->last_seen);
+            $this->m_audit_log->update('debug', $message, $details->id, $details->last_seen);
             unset($message);
             $log_details->severity = 5;
             stdlog($log_details);
             return;
         } else {
-            $this->m_audit_log->update('debug', "$table - start", $details->system_id, $details->last_seen);
-            $log_details->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->man_ip_address).' ('.$details->hostname.')';
+            $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
+            $log_details->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 7;
             stdlog($log_details);
         }
@@ -373,9 +419,9 @@ class M_devices_components extends MY_Model
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
-                $sql = "DELETE FROM `ip` WHERE system_id = ?";
+                $sql = "DELETE FROM `ip` WHERE `ip`.`system_id` = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array($details->system_id);
+                $data = array($details->id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
                 $create_alerts = 'n';
@@ -398,9 +444,9 @@ class M_devices_components extends MY_Model
                 $match_columns[] = 'connection';
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
-                $sql = "DELETE FROM `network` WHERE system_id = ?";
+                $sql = "DELETE FROM `network` WHERE `network`.`system_id` = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array($details->system_id);
+                $data = array($details->id);
                 $query = $this->db->query($sql, $data);
                 # set the below so we don't generate alerts for this
                 $create_alerts = 'n';
@@ -479,7 +525,7 @@ class M_devices_components extends MY_Model
                 if (!isset($vm->uuid) or $vm->uuid == '') {
                     $vm->uuid = '';
                 } else {
-                    $sql = "SELECT system_id, icon FROM `system` WHERE LOWER(uuid) = LOWER(?) and man_status = 'production'";
+                    $sql = "SELECT `system`.`id`, `system`.`icon` FROM `system` WHERE LOWER(`uuid`) = LOWER(?) and `system`.`status` = 'production'";
                     $sql = $this->clean_sql($sql);
                     $data = array("$vm->uuid");
                     $query = $this->db->query($sql, $data);
@@ -487,9 +533,9 @@ class M_devices_components extends MY_Model
                         $row = $query->row();
                         $vm->guest_system_id = $row->system_id;
                         $vm->icon = $row->icon;
-                        $sql = "UPDATE system SET man_vm_server_name = ?, man_vm_system_id = ? WHERE system_id = ?";
+                        $sql = "UPDATE `system` SET `system`.`vm_server_name` = ?, `system`.`vm_system_id` = ? WHERE `system`.`id` = ?";
                         $sql = $this->clean_sql($sql);
-                        $data = array("$details->hostname", "$details->system_id", $vm->guest_system_id);
+                        $data = array("$details->name", "$details->id", $vm->guest_system_id);
                         $query = $this->db->query($sql, $data);
                     }
                 }
@@ -497,20 +543,20 @@ class M_devices_components extends MY_Model
         }
 
         # make sure we have a populated org_id for adding items to the charts table
-        if (empty($details->man_org_id)) {
-            $sql = "SELECT man_org_id FROM system WHERE system_id = ?";
+        if (empty($details->org_id)) {
+            $sql = "SELECT `system`.`org_id` FROM `system` WHERE `system`.`id` = ?";
             $sql = $this->clean_sql($sql);
-            $data = array($details->system_id);
+            $data = array($details->id);
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            $details->man_org_id = $row->man_org_id;
+            $details->org_id = $row->org_id;
         }
 
         // get any existing current rows from the database
-        $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND system_id = ?";
+        $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND `$table`.`system_id` = ?";
         $sql = $this->clean_sql($sql);
         #$data = array($details->id); # this will be changed when we convert the system table
-        $data = array($details->system_id);
+        $data = array($details->id);
         $query = $this->db->query($sql, $data);
         $db_result = $query->result();
         $alert = false;
@@ -580,14 +626,14 @@ class M_devices_components extends MY_Model
                         if (isset($input_item->$field) and $input_item->$field != '') {
                             $db_item->$field = (string) $input_item->$field;
                         }
-                        $sql .= " `" . $table . "`." . $field . " = ? , ";
+                        $sql .= " `" . $table . "`.`" . $field . "` = ? , ";
                     }
                     // remove the trailing characters
                     $sql = substr($sql, 0, -2);
                     // set the last_seen column to the same as in $details (system table)
                     $db_item->last_seen = (string)$details->last_seen;
                     // update all values in the table
-                    $sql = "UPDATE `$table` SET $sql WHERE `" . $table . "`.id = '" . $db_item->id . "'";
+                    $sql = "UPDATE `$table` SET $sql WHERE `" . $table . "`.`id` = '" . $db_item->id . "'";
                     // make sure no data is in $data
                     unset ($data);
                     // populate $data with the values from the database, combined with those of the audit
@@ -616,7 +662,7 @@ class M_devices_components extends MY_Model
             // INSERT because the $flag is set to insert
             if ($flag == 'insert') {
                 # $input_item->system_id  = $details->id; # this will be changed when we convert the system table
-                $input_item->system_id  = $details->system_id;
+                $input_item->system_id  = $details->id;
                 $input_item->current  = 'y';
                 $input_item->first_seen = (string)$details->last_seen;
                 $input_item->last_seen  = (string)$details->last_seen;
@@ -626,7 +672,7 @@ class M_devices_components extends MY_Model
                 foreach ($input_item as $key => $value) {
                     foreach($fields as $field) {
                         if ($key == $field) {
-                            $set_fields .= " $key, ";
+                            $set_fields .= " `$key`, ";
                             $set_values .= " ?, ";
                             $data[] = "$value";
                         }
@@ -648,19 +694,19 @@ class M_devices_components extends MY_Model
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
                     if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                        $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                        $sql = "SELECT last_seen FROM `system` WHERE id = ?";
                         $sql = $this->clean_sql($sql);
-                        $data = array($details->system_id);
+                        $data = array($details->id);
                         $query = $this->db->query($sql, $data);
                         $result = $query->result();
                         $details->last_seen = $result[0]->last_seen;
                     }
-                    $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                    $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
                     $sql = $this->clean_sql($sql);
-                    $data = array("$details->system_id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
+                    $data = array("$details->id", "$table", "$id", "create", "$alert_details", "$details->last_seen");
                     $query = $this->db->query($sql, $data);
                     # add a count to our chart table
-                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_create', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_create', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
                     $sql = $this->clean_sql($sql);
                     $query = $this->db->query($sql);
                 }
@@ -671,7 +717,7 @@ class M_devices_components extends MY_Model
                 $free_percent = @intval(100 - $used_percent);
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
-                $data = array(intval($details->system_id), "$table", intval($id), "$table", intval($used_percent),
+                $data = array(intval($details->id), "$table", intval($id), "$table", intval($used_percent),
                         intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
@@ -688,7 +734,7 @@ class M_devices_components extends MY_Model
         // we have also unset any items that were inserted (from the audit set above) from the db set
         // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         if (count($db_result) > 0) {
-            $log_details->message = 'Inserting change logs (' . $table . ') for '.ip_address_from_db($details->man_ip_address).' ('.$details->hostname.')';
+            $log_details->message = 'Inserting change logs (' . $table . ') for '.ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 7;
             stdlog($log_details);
         }
@@ -705,26 +751,26 @@ class M_devices_components extends MY_Model
                 $alert_details = substr($alert_details, 0, -2);
                 $alert_details = "Item removed from $table - " . $alert_details;
                 if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                    $sql = "SELECT last_seen FROM `system` WHERE system_id = ?";
+                    $sql = "SELECT last_seen FROM `system` WHERE id = ?";
                     $sql = $this->clean_sql($sql);
-                    $data = array($details->system_id);
+                    $data = array($details->id);
                     $query = $this->db->query($sql, $data);
                     $result = $query->result();
                     $details->last_seen = $result[0]->last_seen;
                 }
-                $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->system_id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
+                $data = array("$details->id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
                 $query = $this->db->query($sql, $data);
                 # add a count to our chart table
-                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->man_org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
                 $sql = $this->clean_sql($sql);
                 $query = $this->db->query($sql);
             }
         }
         // update the audit log
-        $this->m_audit_log->update('debug', "$table - end", $details->system_id, $details->last_seen);
-        $log_details->message = 'Processing component (' . $table . ') end for '.@ip_address_from_db($details->man_ip_address).' ('.$details->hostname.')';
+        $this->m_audit_log->update('debug', "$table - end", $details->id, $details->last_seen);
+        $log_details->message = 'Processing component (' . $table . ') end for '.@ip_address_from_db($details->ip).' ('.$name.')';
         $log_details->severity = 7;
         stdlog($log_details);
         return;
@@ -736,14 +782,133 @@ class M_devices_components extends MY_Model
 
     public function get_sql_server_version_string($version)
     {
-        // todo - http://sqlserverbuilds.blogspot.com.au/
+        // http://sqlserverbuilds.blogspot.com.au/
+        // https://support.microsoft.com/en-au/kb/2936603
+        // https://buildnumbers.wordpress.com/sqlserver/
         
         // find the version string, based on the version integer.
         $version_string = '';
 
+        // SQL 2016
+        if (mb_strpos($version, "13.0") === 0) {
+            $version_string = "SQL Server 2016";
+        }
+        if (mb_strpos($version, "13.00.1601.5") === 0 or mb_strpos($version, "13.0.1601.5") === 0) {
+            $version_string = "SQL Server 2016 RTM";
+        }
+        if (mb_strpos($version, "13.00.1400.361") === 0 or mb_strpos($version, "13.0.1400.361") === 0) {
+            $version_string = "SQL Server 2016 RC3";
+        }
+        if (mb_strpos($version, "13.00.1300.275") === 0 or mb_strpos($version, "13.0.1300.275") === 0) {
+            $version_string = "SQL Server 2016 RC2";
+        }
+        if (mb_strpos($version, "13.0.1200.242") === 0 or mb_strpos($version, "13.0.1200.242") === 0) {
+            $version_string = "SQL Server 2016 RC1";
+        }
+        if (mb_strpos($version, "13.00.1100.288") === 0 or mb_strpos($version, "13.0.1100.288") === 0) {
+            $version_string = "SQL Server 2016 RC0";
+        }
+        if (mb_strpos($version, "13.00.1000.281") === 0 or mb_strpos($version, "13.0.1000.281") === 0) {
+            $version_string = "SQL Server 2016 CTP 3.3";
+        }
+        if (mb_strpos($version, "13.00.900.73") === 0 or mb_strpos($version, "13.00.900.73") === 0) {
+            $version_string = "SQL Server 2016 CTP 3.2";
+        }
+        if (mb_strpos($version, "13.00.800.111") === 0 or mb_strpos($version, "13.0.800.111") === 0) {
+            $version_string = "SQL Server 2016 CTP 3.1";
+        }
+        if (mb_strpos($version, "13.00.700.1395") === 0 or mb_strpos($version, "13.0.700.1395") === 0) {
+            $version_string = "SQL Server 2016 CTP 3.0";
+        }
+        if (mb_strpos($version, "13.00.600.65") === 0 or mb_strpos($version, "13.0.600.65") === 0) {
+            $version_string = "SQL Server 2016 CTP 2.4";
+        }
+        if (mb_strpos($version, "13.00.500.53") === 0 or mb_strpos($version, "13.0.500.53") === 0) {
+            $version_string = "SQL Server 2016 CTP 2.3";
+        }
+        if (mb_strpos($version, "13.00.407.1") === 0 or mb_strpos($version, "13.0.407.1") === 0) {
+            $version_string = "SQL Server 2016 CTP 2.2";
+        }
+        if (mb_strpos($version, "13.00.400.91") === 0 or mb_strpos($version, "13.0.400.91") === 0) {
+            $version_string = "SQL Server 2016 CTP 2.2 (replaced)";
+        }
+        if (mb_strpos($version, "13.00.300.44") === 0 or mb_strpos($version, "13.0.300.44") === 0) {
+            $version_string = "SQL Server 2016 CTP 2.1";
+        }
+        if (mb_strpos($version, "13.0.200.172") === 0 or mb_strpos($version, "13.0.200.172") === 0) {
+            $version_string = "SQL Server 2016 CTP 2.0";
+        }
+
+
         // SQL 2014
+        if (mb_strpos($version, "12.0") === 0) {
+            $version_string = "SQL Server 2014";
+        }
+        if (mb_strpos($version, "12.00.4457.0") === 0 or mb_strpos($version, "12.0.4457.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU6";
+        }
+        if (mb_strpos($version, "12.00.4449.0") === 0 or mb_strpos($version, "12.0.4449.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU6 (deprecated)";
+        }
+        if (mb_strpos($version, "12.00.4439.1") === 0 or mb_strpos($version, "12.0.4439.1") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU5";
+        }
+        if (mb_strpos($version, "12.00.4436.0") === 0 or mb_strpos($version, "12.0.4436.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU4";
+        }
+        if (mb_strpos($version, "12.00.4427.24") === 0 or mb_strpos($version, "12.0.4427.24") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU3";
+        }
+        if (mb_strpos($version, "12.00.4422.0") === 0 or mb_strpos($version, "12.0.4422.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU2";
+        }
+        if (mb_strpos($version, "12.00.4416.1") === 0 or mb_strpos($version, "12.0.4416.1") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU1";
+        }
+        if (mb_strpos($version, "12.00.4100.1") === 0 or mb_strpos($version, "12.0.4100.1") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1";
+        }
         if (mb_strpos($version, "12.00.4050") === 0 or mb_strpos($version, "12.0.4050") === 0) {
             $version_string = "SQL Server 2014 Service Pack 1";
+        }
+        if (mb_strpos($version, "12.00.2568.0") === 0 or mb_strpos($version, "12.0.2568.0") === 0) {
+            $version_string = "SQL Server 2014 CU13";
+        }
+        if (mb_strpos($version, "12.00.2564.0") === 0 or mb_strpos($version, "12.0.2564.0") === 0) {
+            $version_string = "SQL Server 2014 CU12";
+        }
+        if (mb_strpos($version, "12.00.2560.0") === 0 or mb_strpos($version, "12.0.2560.0") === 0) {
+            $version_string = "SQL Server 2014 CU11";
+        }
+        if (mb_strpos($version, "12.00.2556.4") === 0 or mb_strpos($version, "12.0.2556.4") === 0) {
+            $version_string = "SQL Server 2014 CU10";
+        }
+        if (mb_strpos($version, "12.00.2553.0") === 0 or mb_strpos($version, "12.0.2553.0") === 0) {
+            $version_string = "SQL Server 2014 CU9";
+        }
+        if (mb_strpos($version, "12.00.2546.0") === 0 or mb_strpos($version, "12.0.2546.0") === 0) {
+            $version_string = "SQL Server 2014 CU8";
+        }
+        if (mb_strpos($version, "12.00.2495.0") === 0 or mb_strpos($version, "12.0.2495.0") === 0) {
+            $version_string = "SQL Server 2014 CU7";
+        }
+        if (mb_strpos($version, "12.00.2480.0") === 0 or mb_strpos($version, "12.0.2480.0") === 0) {
+            $version_string = "SQL Server 2014 CU6";
+        }
+        if (mb_strpos($version, "12.00.2456.0") === 0 or mb_strpos($version, "12.0.2456.0") === 0) {
+            $version_string = "SQL Server 2014 CU5";
+        }
+        if (mb_strpos($version, "12.00.2430.0") === 0 or mb_strpos($version, "12.0.2430.0") === 0) {
+            $version_string = "SQL Server 2014 CU4";
+        }
+        if (mb_strpos($version, "12.00.2402.0") === 0 or mb_strpos($version, "12.0.2402.0") === 0) {
+            $version_string = "SQL Server 2014 CU3";
+        }
+        if (mb_strpos($version, "12.00.2370.0") === 0 or mb_strpos($version, "12.0.2370.0") === 0) {
+            $version_string = "SQL Server 2014 CU2";
+        }
+        if (mb_strpos($version, "12.00.2342.0") === 0 or mb_strpos($version, "12.0.2342.0") === 0) {
+            $version_string = "SQL Server 2014 CU1";
         }
         if (mb_strpos($version, "12.00.2000") === 0 or mb_strpos($version, "12.0.2000") === 0) {
             $version_string = "SQL Server 2014 RTM";
@@ -997,13 +1162,13 @@ class M_devices_components extends MY_Model
         # prefer non-DHCP address (ORDER BY network.dhcp_enabled ASC)
         # secondary prefer private to public ip address (pubpriv)
 
-        # get the stored attribute for man_ip_address
-        $sql = "SELECT man_ip_address, timestamp FROM system WHERE system_id = ?";
+        # get the stored attribute for ip
+        $sql = "SELECT `ip`, `last_seen` FROM `system` WHERE `system`.`id` = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-        if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->man_ip_address == '' or $result[0]->man_ip_address == '000.000.000.000'  or $result[0]->man_ip_address == '0.0.0.0'))) {
+        if ($force == 'y' or (isset($result) and is_array($result) and ($result[0]->ip == '' or $result[0]->ip == '000.000.000.000'  or $result[0]->ip == '0.0.0.0'))) {
             # we do not already have an ip address - attempt to set one
             $sql = "SELECT network.system_id, network.dhcp_enabled, ip.ip,
                         if( (ip.ip >= '010.000.000.000' AND ip.ip <= '010.255.255.255') OR
@@ -1034,8 +1199,7 @@ class M_devices_components extends MY_Model
             $result = $query->result();
 
             if (isset($result[0]->ip) and $result[0]->ip != '') {
-                #$sql = "UPDATE system SET ip = ? WHERE id = ?";
-                $sql = "UPDATE system SET man_ip_address = ? WHERE system_id = ?";
+                $sql = "UPDATE system SET ip = ? WHERE id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($result[0]->ip, "$id");
                 $query = $this->db->query($sql, $data);
@@ -1079,19 +1243,20 @@ class M_devices_components extends MY_Model
     public function partition_use_report($group_id, $user_id, $days = '120')
     {
         $resultset = array();
-        $sql = "SELECT DISTINCT(system.system_id), hostname, man_status, man_function, man_criticality, man_environment, man_description, partition.id as partition_id, mount_point, partition.name as partition_name
+        $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`, 
+                `partition`.`id` as partition_id, `partition`.`mount_point`, `partition`.`name` as partition_name
             FROM `system`, `oa_group_sys`, `partition`
             WHERE
-                system.system_id = oa_group_sys.system_id AND
+                system.id = oa_group_sys.system_id AND
                 partition.current = 'y' AND
-                system.system_id = partition.system_id AND
+                system.id = partition.system_id AND
                 partition.mount_point > '' AND
                 oa_group_sys.group_id = ? AND
                 partition.mount_point != ''
             GROUP BY
-                system.hostname, partition.mount_point
+                system.name, partition.mount_point
             ORDER BY
-                system.hostname,
+                system.name,
                 partition.mount_point ";
         $sql = $this->clean_sql($sql);
         $data = array($group_id);
@@ -1100,7 +1265,7 @@ class M_devices_components extends MY_Model
         foreach ($query->result() as $system) {
             $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
             $partition_sql = $this->clean_sql($partition_sql);
-            $data = array($system->system_id, $system->partition_id);
+            $data = array($system->id, $system->partition_id);
             $partition_query = $this->db->query($partition_sql, $data);
             $count = 0;
             $current_date = '';
@@ -1164,14 +1329,13 @@ class M_devices_components extends MY_Model
                 }
                 $days_until_full = round((($total - $partition_used_space) / $i), 2, 0);
                 if (intval($days_until_full) <= intval($days)) {
-                    $returned_row["system_id"] = $system->system_id;
-                    $returned_row["hostname"] = $system->hostname;
+                    $returned_row["id"] = $system->id;
+                    $returned_row["name"] = $system->name;
                     $returned_row["partition_name"] = $system->partition_name;
                     $returned_row["partition_mount_point"] = $system->mount_point;
-                    $returned_row["man_environment"] = $system->man_environment;
-                    $returned_row["man_description"] = $system->man_description;
-                    $returned_row["man_function"] = $system->man_function;
-                    $returned_row["man_criticality"] = $system->man_criticality;
+                    $returned_row["environment"] = $system->environment;
+                    $returned_row["description"] = $system->description;
+                    $returned_row["function"] = $system->function;
                     $returned_row["partition_id"] = $partition_id;
                     $returned_row["partition_size"] = $total;
                     $returned_row["partition_used_space"] = $partition_used_space;
@@ -1197,7 +1361,7 @@ class M_devices_components extends MY_Model
         $log_details = new stdClass();
         $log_details->file = 'system';
         $log_details->severity = 7;
-        $sql = "SELECT DISTINCT ip FROM `ip` LEFT JOIN `system` ON (ip.system_id = system.system_id AND ip.current = 'y') WHERE system.system_id = ? AND ip.version = '4'";
+        $sql = "SELECT DISTINCT `ip`.`ip` FROM `ip` LEFT JOIN `system` ON (ip.system_id = system.id AND ip.current = 'y') WHERE system.id = ? AND ip.version = '4'";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);

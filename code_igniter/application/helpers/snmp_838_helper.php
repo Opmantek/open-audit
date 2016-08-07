@@ -30,64 +30,67 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Xedia
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.1.0') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.838.5.1.1.0') {
         $details->model = 'AccessPoint';
         $details->type = 'access point';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.1000.1.6') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.1000.1.6') {
         $details->model = 'Access Point Router 1000';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.1000.4.0') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.1000.4.0') {
         $details->model = 'Access Point Router 1000';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.1000.4.1') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.1000.4.1') {
         $details->model = 'Access Point Router 1000';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.0.0') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.0.0') {
         $details->model = 'Access Point Router AP300';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.0.1') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.0.1') {
         $details->model = 'Access Point Router 300_U';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.1.0') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.1.0') {
         $details->model = 'Access Point Router 300_U';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.1.1') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.1.1') {
         $details->model = 'Access Point Router 300';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.2.0') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.2.0') {
         $details->model = 'Access Point Router 300';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.2.1') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.2.1') {
         $details->model = 'Access Point Router 300_ST';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.300.3.0') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.300.3.0') {
         $details->model = 'Access Point Router 300_ST';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.450.2.0') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.450.2.0') {
         $details->model = 'Access Point Router 450';
         $details->type = 'router';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.838.5.1.600.4.2') {
+    if ($oid == '1.3.6.1.4.1.838.5.1.600.4.2') {
         $details->model = 'Access Point Router 600';
         $details->type = 'router';
     }
+    return($details);
 };

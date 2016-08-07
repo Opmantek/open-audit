@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -42,6 +43,11 @@ class M_userlogin extends CI_Model
     public function validate_user($username, $password)
     {
         $this->load->library('session');
+        $this->load->helper('log');
+        $log_details = new stdClass();
+        $log_details->file = 'system';
+        $log_details->severity = 7;
+
 
         $sql = "SELECT * FROM oa_user WHERE oa_user.name = ? LIMIT 1";
         $sql = '/* M_userlogin::validate_user */ ' . $sql;
@@ -100,16 +106,22 @@ class M_userlogin extends CI_Model
                     if ($row->active == 'y') {
                         # we have an active user
                     } else {
+                        $log_details->message = "User $username not set to active in DB.";
+                        stdlog($log_details);
                         # remove the $data array
                         unset($user_data);
                         $user_data = 'fail';
                     }
                 }
             } else {
+                $log_details->message = "Password does not match hash for $username.";
+                stdlog($log_details);
                 unset($user_data);
                 $user_data = 'fail';
             }
         } else {
+            $log_details->message = "Cound not find username $username in DB.";
+            stdlog($log_details);
             unset($user_data);
             $user_data = 'fail';
         }

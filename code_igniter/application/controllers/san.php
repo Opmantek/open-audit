@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -103,12 +104,12 @@ class San extends CI_Controller
             $this->load->helper('url');
 
             $input = explode(PHP_EOL, $_POST['input']);
+            // echo "FILE: " . $input[0] . "\n";
             echo "<pre>\n";
-            #print_r($input);
+            // print_r($input);
             $details = new stdClass();
             $details->hostname = '';
             $details->type = 'san';
-            $details->man_criticality = 'critical';
             $san = array();
             $disk = array();
             $network = array();
@@ -118,10 +119,10 @@ class San extends CI_Controller
                 $value = trim($value);
 
                 if (stripos($value, 'Feature pack:') === 0 and (!isset($details->description) or $details->description == '')) {
-                    $details->description = str_replace('Feature pack:', '', $value);
+                    $details->description = trim(str_replace('Feature pack:', '', $value));
                 }
                 if (stripos($value, 'Chassis name:') === 0 and (!isset($details->description) or $details->description == '')) {
-                    $details->description = str_replace('Chassis name:', '', $value);
+                    $details->description = trim(str_replace('Chassis name:', '', $value));
                 }
                 if (stripos($value, 'Storage Subsystem world-wide identifier (ID):') === 0 and (!isset($details->serial) or $details->serial == '')) {
                     $details->serial = str_replace('Storage Subsystem world-wide identifier (ID):', '', $value);
@@ -616,8 +617,8 @@ class San extends CI_Controller
                     if (isset($item_ip->ip) and (!isset($item->ip_enabled) or $item->ip_enabled == '')) {
                         $item->ip_enabled = 'Link Up';
                     }
-                    if (isset($item->ip_enabled) and stripos($item->ip_enabled, 'up') and !isset($details->man_ip_address) and isset($item_ip->ip) and $item_ip->ip != '') {
-                        $details->man_ip_address = $item_ip->ip;
+                    if (isset($item->ip_enabled) and stripos($item->ip_enabled, 'up') and !isset($details->ip) and isset($item_ip->ip) and $item_ip->ip != '') {
+                        $details->ip = $item_ip->ip;
                     }
                     foreach ($san as $each) {
                         if ($each->location == $item->attached_to) {
@@ -689,76 +690,94 @@ class San extends CI_Controller
             $ip = $xml;
             unset($xml);
 
+            if ($details->hostname == 'target') {
+                $details->hostname .= '-' . str_replace('.', '', $details->ip);
+            }
+            $details->name = $details->hostname;
+            if (!empty($details->description)) {
+                if ($details->description == 'DS5100') {
+                    $details->model = $details->description;
+                }
+                if (stripos($details->description, 'DS5020') !== false) {
+                    $details->model = 'DS5020';
+                }
+            }
 
-        $log_details->message = 'Processing audit result for san at ' . $details->man_ip_address;
-        stdlog($log_details);
 
-        $details->timestamp = date('Y-m-d H:i:s');
-        $details->system_key = $this->m_system->create_system_key($details);
-        $details->system_id = intval($this->m_system->find_system($details));
-        $details->last_seen = $details->timestamp;
-        $details->last_seen_by = 'audit';
-        $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
-        if ($details->system_id == '') {
-            // insert a new system
-            $details->system_id = $this->m_system->insert_system($details);
-            $log_details = new stdClass();
-            $log_details->severity = 7;
-            $log_details->file = 'system';
-            $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
+            $log_details->message = 'Processing audit result for san at ' . $details->ip;
             stdlog($log_details);
+
+            $details->last_seen = date('Y-m-d H:i:s');
+            $details->id = intval($this->m_system->find_system($details, 'y'));
+            $details->last_seen_by = 'audit';
+            $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
+
+            print_r($details);
+            // // print_r($network);
+            print_r($disk);
+            // exit();
+
+            if ($details->id == '') {
+                // insert a new system
+                $details->first_seen = $details->last_seen;
+                $details->id = $this->m_system->insert_system($details);
+                $log_details = new stdClass();
+                $log_details->severity = 7;
+                $log_details->file = 'system';
+                $log_details->message = 'Inserting result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+                stdlog($log_details);
+                unset($log_details);
+                $details->original_last_seen = "";
+                echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            } else {
+                // update an existing system
+                $log_details = new stdClass();
+                $log_details->severity = 7;
+                $log_details->file = 'system';
+                $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+                stdlog($log_details);
+                unset($log_details);
+                $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
+                $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+                $this->m_system->update_system($details);
+                echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            }
+            $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
+            $temp_user = '';
+            if (isset($this->user->full_name)) {
+                $temp_user = $this->user->full_name;
+            }
+            $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
+            unset($temp_user);
+
+            $this->m_audit_log->update('debug', 'san', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('san', $details, $san);
+
+            $this->m_audit_log->update('debug', 'network', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('network', $details, $network);
+
+            $this->m_audit_log->update('debug', 'disk', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('disk', $details, $disk);
+
+            $this->m_audit_log->update('debug', 'ip address', $details->id, $details->last_seen);
+            $this->m_devices_components->process_component('ip', $details, $ip);
+
+            // Finally, update any groups for this system if config item is set
+            $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
+            if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+                # don't run the update group routine
+            } else {
+                $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
+                $this->m_oa_group->update_system_groups($details);
+            }
+            $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
+
+            $this->benchmark->mark('code_end');
+            #$log_details->message = 'Processing completed for ' . $details->ip . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+            #stdlog($log_details);
+
             unset($log_details);
-            $details->original_timestamp = "";
-            echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
-        } else {
-            // update an existing system
-            $log_details = new stdClass();
-            $log_details->severity = 7;
-            $log_details->file = 'system';
-            $log_details->message = 'Updating result for ' . $details->hostname . ' (System ID ' . $details->system_id . ')';
-            stdlog($log_details);
-            unset($log_details);
-            $details->original_last_seen_by = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'last_seen_by');
-            $details->original_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'timestamp');
-            $this->m_system->update_system($details);
-            echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->system_id . "'>" . $details->system_id . "</a>.<br />\n";
-        }
-        $details->first_timestamp = $this->m_devices_components->read($details->system_id, 'y', 'system', '', 'first_timestamp');
-        $temp_user = '';
-        if (isset($this->user->full_name)) {
-            $temp_user = $this->user->full_name;
-        }
-        $this->m_audit_log->create($details->system_id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->timestamp);
-        unset($temp_user);
-
-        $this->m_audit_log->update('debug', 'san', $details->system_id, $details->last_seen);
-        $this->m_devices_components->process_component('san', $details, $san);
-
-        $this->m_audit_log->update('debug', 'network', $details->system_id, $details->last_seen);
-        $this->m_devices_components->process_component('network', $details, $network);
-
-        $this->m_audit_log->update('debug', 'disk', $details->system_id, $details->last_seen);
-        $this->m_devices_components->process_component('disk', $details, $disk);
-
-        $this->m_audit_log->update('debug', 'ip address', $details->system_id, $details->last_seen);
-        $this->m_devices_components->process_component('ip', $details, $ip);
-
-        // Finally, update any groups for this system if config item is set
-        $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
-        if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
-            # don't run the update group routine
-        } else {
-            $this->m_audit_log->update('debug', 'system groups', $details->system_id, $details->last_seen);
-            $this->m_oa_group->update_system_groups($details);
-        }
-        $this->m_audit_log->update('debug', '', $details->system_id, $details->last_seen);
-
-        $this->benchmark->mark('code_end');
-        #$log_details->message = 'Processing completed for ' . $details->man_ip_address . ' (System ID ' . $details->system_id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
-        #stdlog($log_details);
-
-        unset($log_details);
         } else {
             # nothing sent, sending the form html input page
             $this->load->view('v_san_add');
@@ -770,19 +789,19 @@ class San extends CI_Controller
         $size = $string;
         if (stripos($string, 'TB') !== false) {
             $temp_size = trim(str_replace(' TB', '', $string));
-            $size = intval($temp_size * 1000 * 1000 * 1000 * 1000);
+            $size = intval($temp_size * 1024);
         }
         if (stripos($string, 'GB') !== false) {
             $temp_size = trim(str_replace(' GB', '', $string));
-            $size = intval($temp_size * 1000 * 1000 * 1000);
+            $size = intval($temp_size);
         }
         if (stripos($string, 'MB') !== false) {
             $temp_size = trim(str_replace(' MB', '', $string));
-            $size = intval($temp_size * 1000 * 1000);
+            $size = intval($temp_size / 1024);
         }
         if (stripos($string, 'KB') !== false) {
             $temp_size = trim(str_replace(' KB', '', $string));
-            $size = intval($temp_size * 1000);
+            $size = intval($temp_size / 1024 / 1024);
         }
         unset($temp_size);
         return intval($size);

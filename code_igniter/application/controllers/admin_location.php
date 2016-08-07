@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.6
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -60,6 +61,10 @@ class Admin_location extends MY_Controller
 
     public function delete_location()
     {
+        if ($this->data['id'] == 0) {
+            # Do not allow deleting the defult Location
+            redirect('admin_location/list_locations');
+        }
         $this->load->model("m_oa_location");
         $this->load->model("m_oa_group");
         $id = $this->data['id'];
@@ -133,7 +138,7 @@ class Admin_location extends MY_Controller
         $group->group_description = "Items in ".$name;
         $group->group_icon = 'location';
         $group->group_category = 'location';
-        $group->group_dynamic_select = "SELECT distinct(system.system_id) FROM system WHERE (system.man_location_id = '".$id."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $name)."%')) AND system.man_status = 'production'";
+        $group->group_dynamic_select = "SELECT distinct(system.id) FROM system WHERE (system.location_id = '".$id."' OR LOWER(system.sysLocation) LIKE LOWER('%".str_replace("'", "\'", $name)."%')) AND system.status = 'production'";
         $group->group_parent = '';
         $group->group_display_sql = '';
         if (!empty($group_id)) {
