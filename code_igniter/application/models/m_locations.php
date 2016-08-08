@@ -86,7 +86,7 @@ class M_locations extends MY_Model
                         (string)$CI->response->meta->received_data->attributes->level,
                         (string)$CI->response->meta->received_data->attributes->address,
                         (string)$CI->response->meta->received_data->attributes->city,
-                        (string)$CI->response->meta->received_data->attributes->stats,
+                        (string)$CI->response->meta->received_data->attributes->state,
                         (string)$CI->response->meta->received_data->attributes->postcode,
                         (string)$CI->response->meta->received_data->attributes->country,
                         (string)$CI->response->meta->received_data->attributes->phone,
