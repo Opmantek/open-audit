@@ -4983,7 +4983,7 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
 
-            $sql_indexes = "SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = 'openaudit' AND  REFERENCED_TABLE_NAME = 'system' and REFERENCED_COLUMN_NAME = 'system_id'";
+            $sql_indexes = "SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = '" . $this->db->database . "' AND  REFERENCED_TABLE_NAME = 'system' and REFERENCED_COLUMN_NAME = 'system_id'";
             $query = $this->db->query($sql_indexes);
             $result = $query->result();
             foreach ($result as $item) {
@@ -5124,7 +5124,7 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_group_sys ADD CONSTRAINT oa_group_sys_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE optical ADD CONSTRAINT optical_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE pagefile ADD CONSTRAINT pagefile_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
-            $sql[] = "ALTER TABLE partition ADD CONSTRAINT partition_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE `partition` ADD CONSTRAINT partition_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE print_queue ADD CONSTRAINT print_queue_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE processor ADD CONSTRAINT processor_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
             $sql[] = "ALTER TABLE route ADD CONSTRAINT route_system_id FOREIGN KEY (system_id) REFERENCES system (id) ON DELETE CASCADE";
@@ -5238,7 +5238,7 @@ class admin extends MY_Controller
             $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             # fix a previous missed item
-            $sql[] = "ALTER TABLE partition CHANGE `type` `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
+            $sql[] = "ALTER TABLE `partition` CHANGE `type` `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
 
             $sql[] = "DROP TABLE IF EXISTS `scripts`";
             $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
@@ -5284,8 +5284,15 @@ class admin extends MY_Controller
             // update any leftover group definitions by changing man_icon to icon
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
             $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
-            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
-            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_dynamic_select, 'man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.ip_address', 'system.ip')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.system_id', 'system.id')";
+            $sql[] = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.timestamp', 'system.last_seen')";
+
+            $sql[] = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'man_', 'system.')";
+            $sql[] = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.ip_address', 'system.ip')";
+            $sql[] = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.system_id', 'system.id')";
+            $sql[] = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.timestamp', 'system.last_seen')";
 
             $sql[] = "DROP TABLE IF EXISTS `nmap`";
             $sql[] = "CREATE TABLE `nmap` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL,`current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '', `ip` varchar(45) NOT NULL DEFAULT '', `port` int(5) NOT NULL DEFAULT '0', `program` varchar(250) NOT NULL DEFAULT '', PRIMARY KEY (`id`), KEY `system_id` (`system_id`),CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
@@ -5298,6 +5305,8 @@ class admin extends MY_Controller
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8' WHERE config_name = 'display_version'";
 
             foreach ($sql as $this_query) {
+                $log->message = $this_query;
+                stdlog($log);
                 $this->data['output'] .= $this_query."<br /><br />\n";
                 $query = $this->db->query($this_query);
             }
