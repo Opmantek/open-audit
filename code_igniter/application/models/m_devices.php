@@ -481,6 +481,7 @@ class M_devices extends MY_Model
         if (!empty($CI->response->meta->limit)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
+        $result = $this->format_data($result, 'devices');
         return($result);
     }
 
