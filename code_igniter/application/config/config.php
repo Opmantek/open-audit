@@ -3,7 +3,7 @@ if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 $config['web_internal_version'] = '20160620';
-$config['web_display_version'] = '1.14';
+$config['web_display_version'] = '1.12.8';
 # $config['debug'] = FALSE;
 /*
 |--------------------------------------------------------------------------
