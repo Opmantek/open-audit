@@ -1128,7 +1128,7 @@ if ($data['system']->type == 'computer') {
 ?>
 
 <?php
-if (! function_exists('insert_additional_fields')) {
+#if (! function_exists('insert_additional_fields')) {
   function insert_additional_fields($section = '', $additional_fields)
   {
       foreach ($additional_fields as $field) {
@@ -1172,5 +1172,5 @@ if (! function_exists('insert_additional_fields')) {
           }
       }
   }
-}
+#}
 ?>
