@@ -4977,6 +4977,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.8 commenced';
+            $log_details->log_level = 7;
             stdlog($log_details);
 
             # initialise our $sql array
@@ -5305,8 +5306,8 @@ class admin extends MY_Controller
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8' WHERE config_name = 'display_version'";
 
             foreach ($sql as $this_query) {
-                $log->message = $this_query;
-                stdlog($log);
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $this->data['output'] .= $this_query."<br /><br />\n";
                 $query = $this->db->query($this_query);
             }
