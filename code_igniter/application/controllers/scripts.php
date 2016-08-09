@@ -124,10 +124,17 @@ class scripts extends MY_Controller
         }
         # Include a list of Orgs
         $this->load->model('m_orgs');
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        $temp = $this->m_orgs->collection();
+        if (!empty($temp)) {
+            $this->response->included = array_merge($this->response->included, $temp);
+        }
         # Include our list of files
         $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+        unset($temp);
+        $temp = @$this->m_files->collection();
+        if (!empty($temp)) {
+            $this->response->included = array_merge($this->response->included, $temp);
+        }
         output($this->response);
     }
 

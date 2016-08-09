@@ -197,21 +197,23 @@
               </ul>
             </li>
 
+            <?php if ($this->config->config['nmis'] == 'y') { ?>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">NMIS <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/nmis?action=import'><?php echo __('Import')?></a></li>
                 </ul>
             </li>
+            <?php } ?>
 
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/about'><?php echo __('About')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_about'><?php echo __('About')?></a></li>
                     <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
                     <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/statistics'><?php echo __('Statistics')?></a></li>
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/support'><?php echo __('Support')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_statistics'><?php echo __('Statistics')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_support'><?php echo __('Support')?></a></li>
                 </ul>
             </li>
 
