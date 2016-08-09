@@ -54,7 +54,7 @@ if ($query) { ?>
         } ?>
         <tr>
             <td align='center'><img src="<?php echo str_replace("index.php", "", site_url()); ?>theme-tango/tango-images/16_<?php echo $key->icon; ?>.png" style='border-width:0px;' title="" alt="" /></td>
-            <td><a class="SystemPopupTrigger" rel="<?php echo intval($key->system_id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->system_id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
+            <td><a class="SystemPopupTrigger" rel="<?php echo intval($key->id); ?>" href="<?php echo site_url(); ?>/main/system_display/<?php echo intval($key->id); ?>"><?php echo htmlentities($key->hostname); ?></a></td>
             <td><?php echo htmlentities($key->domain)?></td>
             <td><span style="display:none;"><?php echo htmlentities($key->ip)?></span><?php echo htmlentities(ip_address_from_db($key->ip))?></td>
             <td><?php echo htmlentities($key->type)?></td>

@@ -2679,7 +2679,7 @@ if item > "" then
 	result.WriteText "	</ip>" & vbcrlf
 end if
 
-if audit_dns = "n" then
+if audit_dns = "y" then
     if debugging > "0" then wscript.echo "DNS info" end if
     item = ""
     on error resume next

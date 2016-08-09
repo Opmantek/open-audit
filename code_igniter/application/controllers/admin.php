@@ -4988,7 +4988,7 @@ class admin extends MY_Controller
             $query = $this->db->query($sql_indexes);
             $result = $query->result();
             foreach ($result as $item) {
-                $sql[] = "ALTER TABLE " . $item->TABLE_NAME . " DROP FOREIGN KEY " . $item->CONSTRAINT_NAME;
+                $sql[] = "ALTER TABLE `" . $item->TABLE_NAME . "` DROP FOREIGN KEY " . $item->CONSTRAINT_NAME;
             }
             unset($sql_indexes);
 
