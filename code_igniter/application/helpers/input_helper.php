@@ -112,6 +112,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->internal = new stdClass();
         $CI->response->meta->received_data = array();
         $CI->response->links = array();
+        $CI->response->included = array();
 
         $actions = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';

@@ -36,8 +36,8 @@
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Devices</span>
-      <span class="pull-right">Count: <?php echo @count($this->response->data); ?></span>
+      <span class="text-left">Locations</span>
+      <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
     </h3>
   </div>
   <div class="panel-body">
