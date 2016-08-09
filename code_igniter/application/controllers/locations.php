@@ -87,7 +87,11 @@ class locations extends MY_Controller
         }
         $this->response->data = $this->m_locations->read();
         $this->response->meta->sub_resource = 'devices';
-        $this->response->included = $this->m_locations->sub_resource();
+        $this->response->included = array();
+        $temp = $this->m_locations->sub_resource();
+        if (is_array($temp)) {
+            $this->response->included = array_merge($this->response->included, $temp);
+        }
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
