@@ -17,7 +17,7 @@
 			<column_variable>system.icon</column_variable>
 			<column_type>image</column_type>
 			<column_link></column_link>
-			<column_secondary>system.os_family</column_secondary>
+			<column_secondary>system.type</column_secondary>
 			<column_ternary></column_ternary>
 			<column_align>center</column_align>
 		</column>
