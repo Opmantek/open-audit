@@ -14,13 +14,13 @@
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>Device Name</column_name>
-			<column_variable>system.name</column_variable>
-			<column_type>link</column_type>
-			<column_link>/devices/</column_link>
-			<column_secondary>system.id</column_secondary>
+			<column_name>Icon</column_name>
+			<column_variable>system.icon</column_variable>
+			<column_type>image</column_type>
+			<column_link></column_link>
+			<column_secondary>system.type</column_secondary>
 			<column_ternary></column_ternary>
-			<column_align>left</column_align>
+			<column_align>center</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
