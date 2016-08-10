@@ -227,13 +227,16 @@ class main extends MY_Controller
             }
             $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
-                $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
+                $temp = $this->m_devices_components->read($system_id, 'y', $table);
+                if (!empty($temp)) {
+                    $document[$table] = $temp;
+                }
             }
 
             if (!empty($document['ip'])) {
                 foreach($document['ip'] as $row) {
-                    $row->ip_padded = $row->ip;
-                    $row->ip = ip_address_from_db($row->ip);
+                    $row->attributes->ip_padded = $row->attributes->ip;
+                    $row->attributes->ip = ip_address_from_db($row->attributes->ip);
                 }
             }
 
