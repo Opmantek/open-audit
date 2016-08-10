@@ -145,6 +145,33 @@ class M_fields extends MY_Model
         }
     }
 
+    public function create()
+    {
+        $CI = & get_instance();
+        # check to see if we already have a file with the same name
+        $sql = "SELECT COUNT(id) AS count FROM `additional_field` WHERE `name` = ?";
+        $data = array($CI->response->meta->received_data->attributes->name);
+        $result = $this->run_sql($sql, $data);
+        if (intval($result[0]->count) != 0) {
+            log_error('ERR-0010', 'm_fields::create');
+            return false;
+        }
+        $sql = "INSERT INTO `additional_field` VALUES (NULL, ?, ?, ?, ?, ?)";
+        if (empty($CI->response->meta->received_data->attributes->group_id)) {
+            $CI->response->meta->received_data->attributes->group_id = 1;
+        }
+        if (empty($CI->response->meta->received_data->attributes->values)) {
+            $CI->response->meta->received_data->attributes->values = '';
+        }
+        $data = array($CI->response->meta->received_data->attributes->group_id,
+            $CI->response->meta->received_data->attributes->name,
+            $CI->response->meta->received_data->attributes->type,
+            $CI->response->meta->received_data->attributes->values,
+            $CI->response->meta->received_data->attributes->placement);
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
+    }
+
     public function update()
     {
         $CI = & get_instance();
