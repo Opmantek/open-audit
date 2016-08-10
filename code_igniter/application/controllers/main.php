@@ -273,6 +273,19 @@ class main extends MY_Controller
         } else {
             $document = $this->m_systems->api_index('list');
         }
+        if (count($document) == 0) {
+            $document['errors'] = array();
+            $error = new stdClass();
+            $error->code = "ERR-0002";
+            $error->status = "HTTP/1.1 404 Not Found";
+            $error->severity = 3;
+            $error->title = "No object could be retrieved when devices called read.";
+            $error->detail = "When calling this function an identifier (usually but not always an integer based id) should be supplied. The supplied item was either blank, not an integer based id or we could not determine the corresponding object (or the object does not exist) based on the details provided.";
+            $error->severity_text = "error";
+            $error->link = "/open-audit/index.php/errors/ERR-0002";
+            $document['errors'][] = $error;
+            #header("HTTP/1.1 404 Not Found");
+        }
         echo json_encode($document);
         header('Content-Type: application/json');
         header('Cache-Control: max-age=0');
