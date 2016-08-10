@@ -32,7 +32,11 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
+if (php_uname('s') != 'Windows NT') {
+  include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
+} else {
+  include(str_replace('views\\theme-bootstrap\\v_devices_read.php', 'controllers\\include_device_types.php', __FILE__));
+}
 
 # put our linked and data JSON objects into the $data array
 # ensure each JSON include is in it's own $type key in the $data array

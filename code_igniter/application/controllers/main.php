@@ -230,9 +230,11 @@ class main extends MY_Controller
                 $document[$table] = $this->m_devices_components->read($system_id, 'y', $table);
             }
 
-            foreach($document['ip'] as $row) {
-                $row->ip_padded = $row->ip;
-                $row->ip = ip_address_from_db($row->ip);
+            if (!empty($document['ip'])) {
+                foreach($document['ip'] as $row) {
+                    $row->ip_padded = $row->ip;
+                    $row->ip = ip_address_from_db($row->ip);
+                }
             }
 
             # special SQL for backwards compat with opAddress
