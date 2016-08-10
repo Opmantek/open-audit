@@ -168,7 +168,9 @@ class devices extends MY_Controller
                 $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id));
             }
         }
-
+        if (is_null($this->response->data)) {
+            log_error('ERR-0002');
+        }
         output($this->response);
     }
 
