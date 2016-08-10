@@ -1631,8 +1631,8 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
 	PREVIFS=$IFS
 	IFS="$NEWLINEIFS";
-	#for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
-	for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ | sed -e "s/ (/_(/g" ); do
+	for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
+	#for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ | sed -e "s/ (/_(/g" ); do
 		if [ -n "$partition" ] && [ "$partition" != "$disk" ]; then
 
 			# partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
@@ -1656,8 +1656,7 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
 			#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
 			#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
-			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | sed -e "s/ (/_(/g" | grep "^$partition " | rev | cut -d" " -f1 | rev)
+			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
 			partition_size=$((partition_size / 1024 / 1024))
 
 			#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
