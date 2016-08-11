@@ -256,3 +256,5 @@
       -->
     </div><!-- /.navbar-collapse -->
 </nav>
+
+<?php include('include_modal.php'); ?>
