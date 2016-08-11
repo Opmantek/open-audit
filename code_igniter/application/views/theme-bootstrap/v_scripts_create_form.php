@@ -39,9 +39,6 @@ foreach ($this->response->included as $item) {
         $data['script_option'][$item->id] = $item->attributes;
     }
 }
-// echo "<pre>\n";
-// print_r($data);
-// echo "</pre>\n";
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
 <div class="panel panel-default">
@@ -159,6 +156,7 @@ foreach ($this->response->included as $item) {
                         </tr>
                     </thead>
                     <tbody>
+                    <?php if (!empty($data['files'])) { ?>
                     <?php foreach ($data['files'] as $file): ?>
                     <?php # TODO - enable per script file retrieval ?>
                     <?php # TODO - Maybe only display files per based_on ?>
@@ -168,6 +166,7 @@ foreach ($this->response->included as $item) {
                             <td><?php echo htmlentities($file->path); ?></td>
                         </tr>
                     <?php endforeach; ?>
+                    <?php } ?>
                     </tbody>
                 </table>
                 </div>
@@ -182,8 +181,10 @@ foreach ($this->response->included as $item) {
 
 
 <?php
-foreach ($data['script_option'] as $key => $value) {
-    $script_options[$key] = generate_options($value, $data['option'], '', $data['orgs']);
+if (!empty($data['script_option'])) {
+    foreach ($data['script_option'] as $key => $value) {
+        $script_options[$key] = generate_options($value, $data['option'], '', $data['orgs']);
+    }
 }
 ?>
 
@@ -249,10 +250,6 @@ function generate_options($option_list, $options, $files, $orgs) {
             }
         }
     }
-    // if ($files != '') {
-    //     $return .= '<tr><td colspan="3"><b>Custom Fields</b></td></tr>' . $files;
-    // }
-    // $return .= '</table>';
     return($return);
 }
 ?>
