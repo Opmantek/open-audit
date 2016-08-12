@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,168 +24,241 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   1.12.8
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object Connections.
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
+* @return   NULL
  */
-class credentials extends MY_Controller
+class Credentials extends MY_Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-        // log the attempt
-        stdlog();
+	/**
+	* Constructor
+	*
+	* @access    public
+	* @return    NULL
+	*/
+	public function __construct()
+	{
+		parent::__construct();
+		// log the attempt
+		stdlog();
+		// ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
+		$this->load->helper('url');
+		if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
+			redirect(uri_string());
+		}
+		$this->load->helper('input');
+		$this->load->helper('output');
+		$this->load->helper('error');
+		$this->load->model('m_credentials');
+		$this->load->model('m_orgs');
+		inputRead();
+		$this->output->url = $this->config->item('oa_web_index');
+	}
 
-        # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
-        $this->load->helper('url');
-        if (strrpos($_SERVER['REQUEST_URI'], '/') === strlen($_SERVER['REQUEST_URI'])-1) {
-            redirect(uri_string());
-        }
+	/**
+	* Index that is unused
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function index()
+	{
+	}
 
-        $this->load->helper('input');
-        $this->load->helper('output');
-        $this->load->helper('error');
-        $this->load->model('m_credentials');
-        inputRead();
-        $this->output->url = $this->config->item('oa_web_index');
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-    }
+	/**
+	* Our remap function to override the inbuilt controller->method functionality
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function _remap()
+	{
+		if ( ! empty($this->response->meta->action)) {
+			$this->{$this->response->meta->action}();
+		}
+		else {
+			$this->collection();
+		}
+		exit();
+	}
 
-    public function index()
-    {
-    }
+	/**
+	* Process the supplied data and create a new object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function create()
+	{
+		// Only admin's
+		if ($this->user->admin !== 'y') {
+			log_error('ERR-0008');
+			output($this->response);
+			exit();
+		}
+		$this->response->meta->id = $this->m_credentials->create();
+		if ( ! empty($this->response->meta->id)) {
+			if ($this->response->meta->format === 'json') {
+				$this->response->data = $this->m_credentials->read();
+				output($this->response);
+			}
+			else {
+				redirect('/credentials');
+			}
+		}
+		else {
+			log_error('ERR-0009');
+			output($this->response);
+			exit();
+		}
+	}
 
-    public function _remap()
-    {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
-    }
+	/**
+	* Read a single object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function read()
+	{
+		// Only admin's
+		if ($this->user->admin !== 'y') {
+			log_error('ERR-0008');
+			output($this->response);
+			exit();
+		}
+		$this->response->data = $this->m_credentials->read();
+		$this->response->meta->filtered = count($this->response->data);
+		output($this->response);
+	}
 
-    private function collection()
-    {
-        $this->response->data = $this->m_credentials->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
+	/**
+	* Process the supplied data and update an existing object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function update()
+	{
+		// Only admin's
+		if ($this->user->admin !== 'y') {
+			log_error('ERR-0008');
+			output($this->response);
+			exit();
+		}
+		$this->m_credentials->update();
+		if ($this->response->meta->format === 'json') {
+			$this->response->data = $this->m_credentials->read();
+			output($this->response);
+		}
+		else {
+			redirect('credentials');
+		}
+	}
 
-    private function read()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = $this->m_credentials->read();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
+	/**
+	* Delete an existing object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function delete()
+	{
+		// Only admin's
+		if ($this->user->admin !== 'y') {
+			log_error('ERR-0008');
+			output($this->response);
+			exit();
+		}
+		if ($this->m_credentials->delete()) {
+			$this->response->data = array();
+			$temp = new stdClass();
+			$temp->type = $this->response->meta->collection;
+			$this->response->data[] = $temp;
+			unset($temp);
+		}
+		else {
+			log_error('ERR-0013');
+		}
+		if ($this->response->meta->format === 'json') {
+			output($this->response);
+		}
+		else {
+			redirect($this->response->meta->collection);
+		}
+	}
 
-    private function delete()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        if ($this->m_credentials->delete()) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-        } else {
-            log_error('ERR-0013');
-        }
-        if ($this->response->meta->format == 'json') {
-            output($this->response);
-        } else {
-            redirect($this->response->meta->collection);
-        }
-    }
+	/**
+	* Collection of objects
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function collection()
+	{
+		$this->response->data = $this->m_credentials->collection();
+		$this->response->meta->filtered = count($this->response->data);
+		output($this->response);
+	}
 
-    private function create_form()
-    {       
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = array();
-        $temp = new stdClass();
-        $temp->type = $this->response->meta->collection;
-        $this->response->data[] = $temp;
-        unset($temp);
-        output($this->response);
-    }
+	/**
+	* Supply a HTML form for the user to create an object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function create_form()
+	{       
+		// Only admin's
+		if ($this->user->admin !== 'y') {
+			log_error('ERR-0008');
+			output($this->response);
+			exit();
+		}
+		$this->response->data = array();
+		$temp = new stdClass();
+		$temp->type = $this->response->meta->collection;
+		$this->response->data[] = $temp;
+		unset($temp);
+		output($this->response);
+	}
 
-    private function create()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->id = $this->m_credentials->create();
-        if (!empty($this->response->meta->id)) {
-            if ($this->response->meta->format == 'json') {
-                $this->response->data = $this->m_credentials->read();
-                output($this->response);
-            } else {
-                redirect('/credentials');
-            }
-        } else {
-            log_error('ERR-0009');
-            output($this->response);
-            exit();
-        }
-    }
+	/**
+	* Supply a HTML form for the user to update an object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function update_form()
+	{
+		// Only admin's
+		if ($this->user->admin !== 'y') {
+			log_error('ERR-0008');
+			output($this->response);
+			exit();
+		}
+		$this->response->data = $this->m_credentials->read();
+		output($this->response);
+	}
 
-    private function update_form()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = $this->m_credentials->read();
-        output($this->response);
-    }
-
-    private function update()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->m_credentials->update();
-        if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_credentials->read();
-            output($this->response);
-        } else {
-            redirect('credentials');
-        }
-    }
 
 }
+// End of file credentials.php
+// Location: ./controllers/credentials.php

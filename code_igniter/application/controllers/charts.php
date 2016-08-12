@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,77 +24,106 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   1.12.8
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object Connections.
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
+* @return   NULL
  */
-class charts extends MY_Controller
+class Charts extends MY_Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-        // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+	/**
+	* Constructor
+	*
+	* @access    public
+	* @return    NULL
+	*/
+	public function __construct()
+	{
+		parent::__construct();
+		// log the attempt
+		stdlog();
+		// ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
+		$this->load->helper('url');
+		if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
+			redirect(uri_string());
+		}
+		$this->load->helper('input');
+		$this->load->helper('output');
+		$this->load->helper('error');
+		$this->load->model('m_charts');
+		$this->load->model('m_orgs');
+		inputRead();
+		$this->output->url = $this->config->item('oa_web_index');
+	}
 
-        # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
-        $this->load->helper('url');
-        if (strrpos($_SERVER['REQUEST_URI'], '/') === strlen($_SERVER['REQUEST_URI'])-1) {
-            redirect(uri_string());
-        }
+	/**
+	* Index that is unused
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function index()
+	{
+	}
 
-        $this->load->helper('output');
-        $this->load->helper('error');
-        $this->load->helper('input');
-        $this->load->model('m_charts');
-        $this->load->model('m_orgs');
+	/**
+	* Our remap function to override the inbuilt controller->method functionality
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function _remap()
+	{
+		if ( ! empty($this->response->meta->action)) {
+			$this->{$this->response->meta->action}();
+		}
+		else {
+			$this->collection();
+		}
+		exit();
+	}
 
-        $this->response = new stdClass();
-        inputRead();
+	/**
+	* Read a single object
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function read()
+	{
+		$this->response->data = $this->m_charts->read_chart();
+		$this->response->meta->filtered = count($this->response->data);
+		output($this->response);
+	}
 
-        $this->response->meta->total = 0;
-        $this->response->meta->filtered = 0;
-        if ($this->response->meta->format == 'screen') {
-            $this->response->meta->heading = 'Charts';
-            $this->response->meta->include = 'v_charts';
-        }
-        $this->output->url = $this->config->item('oa_web_index');
-    }
-
-    public function index()
-    {
-    }
-
-    public function _remap($method)
-    {
-        $action = $this->response->meta->action;
-        if ($action != '') {
-            $this->$action();
-        } else {
-            $this->collection();
-        }
-        exit();
-    }
-
-    private function collection()
-    {
-        $this->response->data = $this->m_charts->read_charts();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
-
-    private function read()
-    {
-        $this->response->data = $this->m_charts->read_chart();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
+	/**
+	* Collection of objects
+	*
+	* @access public
+	* @return NULL
+	*/
+	public function collection()
+	{
+		$this->response->data = $this->m_charts->read_charts();
+		$this->response->meta->filtered = count($this->response->data);
+		output($this->response);
+	}
 }
+// End of file charts.php
+// Location: ./controllers/charts.php
