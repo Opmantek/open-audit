@@ -50,7 +50,7 @@ $upgrade_message = "";
 if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->user->admin == 'y')) {
     $upgrade_message = "<span style='font-size:20px;'>Please <a style='color:red; text-decoration:underline;' href='".site_url()."/admin/upgrade'>click here</a> to upgrade your database.</span>";
     if ($this->config->item('internal_version') < 20160104) {
-        $upgrade_message .= "<p style='font-size:18px; font-style:italic;'><span style='font-wieght:bold;'>NOTE</span>- If you have a large dataset, the upgrade to 1.10 may take a while. Please do not refresh the page. Watch your browser page indicator to determine when the upgrade has completed. Do not press the 'stop' button on your browser.<br />It may take a while, but it will complete.</p>";
+        $upgrade_message .= "<p style='font-size:18px; font-style:italic;'><span style='font-weight:bold;'>NOTE</span>- If you have a large dataset, the upgrade to 1.10 may take a while. Please do not refresh the page. Watch your browser page indicator to determine when the upgrade has completed. Do not press the 'stop' button on your browser.<br />It may take a while, but it will complete.</p>";
     }
 }
 if (($this->config->item('display_version') != $this->config->item('web_display_version')) and ($this->user->admin != 'y')) {
@@ -96,11 +96,11 @@ if (($this->config->item('display_version') != $this->config->item('web_display_
 </form>
 <table>
 	<tr style="height:200px;">
-		<td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-agpl.png' style='width:120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-php.png' style='width:120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-agpl.png' style='width:120px' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-php.png' style='width:120ps' alt=''/></a></td>
 		<td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-code_igniter.png' style='width:120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-jquery.png' style='width:120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-w3c.png' style='width:120' alt=''/></a></td>
-		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-miclogo-88x31.gif' style='width:120' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-jquery.png' style='width:120px' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-w3c.png' style='width:120px' alt=''/></a></td>
+		<td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>
 	</tr>
 </table>

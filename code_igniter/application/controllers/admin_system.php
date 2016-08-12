@@ -269,7 +269,7 @@ class Admin_system extends MY_Controller
 		</head>
 		<body>
 		<h3 style='text-align: center'>Open-AudIT SNMP Scan</h3>
-		<p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",Sans-Serif; font-size: 12px;'>
+		<p style='font-family: \"Verdana\",\"Lucida Sans Unicode\",\"Lucida Sans\",sans-serif; font-size: 12px;'>
 		<pre>";
 
         # audit the device via snmp

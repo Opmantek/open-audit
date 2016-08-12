@@ -44,7 +44,7 @@
 			<div style="float:right; width: 120px; text-align:center">
 				<img class='section_image' src='<?php echo $oa_theme_images; ?>/48_credentials.png' alt='' title='' />
 				<?php if ($access_level > 7) { ?>
-					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' style='width:24' />
+					<br /><input type="button" onclick="display_credentials();" value='Edit' title='Edit' name='credentials_edit' alt='Edit' style='width:24px' />
 				<?php } ?>
 			</div>
 			<div id="credentials">

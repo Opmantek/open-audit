@@ -386,7 +386,6 @@ if (!function_exists('snmp_audit')) {
         } else {
             $log->message = 'snmp_helper::snmp_audit function received ip ' . $ip;
             stdlog($log);
-            $ip = $ip;
         }
 
         if (empty($credentials) or !is_object($credentials)) {

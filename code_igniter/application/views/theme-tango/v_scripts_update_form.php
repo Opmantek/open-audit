@@ -112,7 +112,6 @@ function based_on ()
         break;
     }
     document.getElementById("options").innerHTML = based_on_text;
-    return;
 }
 </script>
 <?php

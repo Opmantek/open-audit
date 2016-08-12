@@ -438,8 +438,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     </thead>
                     <tbody>
                     <?php $partition_count = 0; ?>
-                    <?php foreach ($partition as $item): ?>
-                    <?php $key_partition = $item->attributes; ?>
+                    <?php foreach ($partition as $item_partition): ?>
+                    <?php $key_partition = $item_partition->attributes; ?>
                         <?php if ($key_partition->hard_drive_index == $key->hard_drive_index): ?>
                         <?php $partition_count++; ?>
                         <?php if ($key_partition->type == $key_partition->mount_type) {
@@ -472,8 +472,8 @@ $images_directory = $_SERVER['DOCUMENT_ROOT'].$oa_theme_images.'/';
                     <!-- mounted volumes - not associated with any particular disk -->
                     <?php 
                     $volumes = 0;
-                    foreach ($partition as $item) {
-                        $key_partition = $item->attributes;
+                    foreach ($partition as $item_partition) {
+                        $key_partition = $item_partition->attributes;
                         if ($key_partition->hard_drive_index == '') {
                             $volumes = 1;
                         } else {

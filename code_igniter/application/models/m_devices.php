@@ -201,8 +201,6 @@ class M_devices extends MY_Model
 
         if ($sub_resource == '') {
             $sub_resource = $CI->response->meta->sub_resource;
-        } else {
-            $sub_resource = $sub_resource;
         }
         if (empty($sub_resource)) {
             $log->message = 'No sub_resource, returning false';

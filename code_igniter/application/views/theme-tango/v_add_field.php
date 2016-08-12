@@ -37,7 +37,7 @@ echo form_open('admin_field/add_field')."\n"; ?>
 <fieldset id="field_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Field Details')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' />
-	<table style='width:780' cellpadding='0' cellspacing='0'>
+	<table style='width:780px' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td style='width:100%'>
 				<p><label for='name'><?php echo __('Name'); ?>: </label><input type='text' id='name' name='name' tabindex='1' title='Field Name' /></p>

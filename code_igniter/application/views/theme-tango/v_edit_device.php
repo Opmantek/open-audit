@@ -46,7 +46,7 @@ echo form_open('admin_location/edit_location')."\n";
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<?php foreach ($location as $key) {
     ?>
-	<table style='width:780' cellpadding='0' cellspacing='0'>
+	<table style='width:780px' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td style='width:50%'>
 				<p><label for='name'><?php echo __("Name")?>: </label><input type='text' id='name' name='name' tabindex='1' title='Location Name' value="<?php echo print_something($key->name); ?>"/><?php echo $error_message; ?></p>

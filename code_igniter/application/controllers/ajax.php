@@ -439,7 +439,7 @@ class ajax extends MY_Controller
                 // }
 
                 echo "<div class=\"SystemPopupResult\">\n";
-                echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
+                echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans',sans-serif;\">\n";
                 echo "<tr>\n";
                 echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->icon."\" width=\"100\"/></td>\n";
                 echo "  <td valign=\"top\" align=\"right\"><b>Status</b> <br /><b>Manufacturer</b> <br /><b>Model</b> <br /><b>Serial</b> <br /><b>Form Factor</b> </td>\n";
@@ -450,7 +450,7 @@ class ajax extends MY_Controller
             }
         } else {
             echo "<div class=\"SystemPopupResult\">\n";
-            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
+            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans',sans-serif;\">\n";
             echo "<tr>\n";
             echo "  <td>Not Authorised.</td>\n";
             echo "</tr>\n";
@@ -472,7 +472,7 @@ class ajax extends MY_Controller
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) < '1') {
             // not even VIEW permission - output "Not Authorised"
             echo "<div class=\"TagPopupResult\">\n";
-            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
+            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans',sans-serif;\">\n";
             echo "<tr>\n";
             echo "  <td>Not Authorised. $auth</td>\n";
             echo "</tr>\n";
@@ -482,7 +482,7 @@ class ajax extends MY_Controller
             // authorised - now get the data
             $query = $this->m_system->get_system_groups($this->data['system_id'], $this->user->id);
             echo "<div class=\"TagPopupResult\">\n";
-            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans','Sans-Serif';\">\n";
+            echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans',sans-serif;\">\n";
             foreach ($query as $group) {
                 echo "<tr>\n";
                 echo "  <td><a href=\"".site_url()."/main/list_devices/".intval($group->group_id)."\">".htmlentities($group->group_name)."</a></td>\n";

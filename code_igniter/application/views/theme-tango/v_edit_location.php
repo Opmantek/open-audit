@@ -161,11 +161,10 @@ function getlatlong() {
 }
 
 function creategeo() {
-	var geo = document.getElementById("address").value + ", " +
+	document.getElementById("geo").value = document.getElementById("address").value + ", " +
 	document.getElementById("city").value + ", " +
 	document.getElementById("state").value + ", " +
 	document.getElementById("postcode").value + ", " +
 	document.getElementById("country").value;
-	document.getElementById("geo").value = geo;
 }
 </script>

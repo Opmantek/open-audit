@@ -228,7 +228,7 @@ class Admin_report extends MY_Controller
     function activate_all_report_definitions()
     {
         $this->load->helper('report');
-        $this->data['query'] = activate_all_report_definitions();
+        activate_all_report_definitions();
         $this->data['heading'] = 'Update reports';
         $this->data['include'] = 'v_general';
         $this->data['sortcolumn'] = '0';

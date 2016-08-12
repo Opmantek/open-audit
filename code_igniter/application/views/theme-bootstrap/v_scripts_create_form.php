@@ -199,7 +199,6 @@ function based_on(){
         <?php } ?>
     }
     document.getElementById("options").innerHTML = based_on_text;
-    return;
 };
 </script>
 

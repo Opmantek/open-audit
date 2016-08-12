@@ -39,7 +39,7 @@ echo form_open('admin_field/edit_field')."\n"; ?>
     <img class='section_image' src='<?php echo $oa_theme_images;?>/48_audit_log.png' alt='' title='' />
     <?php foreach ($field as $key) {
     ?>
-    <table style='width:780' cellpadding='0' cellspacing='0'>
+    <table style='width:780px' cellpadding='0' cellspacing='0'>
         <tr>
             <td style='width:100%'>
                 <p><label for='field_name'><?php echo __('Name')?>: </label><input type='text' id='field_name' name='field_name' tabindex='1' title='<?php echo __('Field Name'); ?>' value='<?php echo $key->field_name; ?>' /></p>

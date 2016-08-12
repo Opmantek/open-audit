@@ -44,7 +44,7 @@ echo form_open('admin_connection/add_connection')."\n";
 <fieldset id="connection_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Connection Details')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
-	<table style='width:780' cellpadding='0' cellspacing='0'>
+	<table style='width:780px' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td style='width:100%'>
 				<p><label for="connection_org_id"><?php echo __('Organisation Name'); ?>: </label><select id="connection_org_id" name="connection_org_id" tabindex='1' title='Organisation Name'><option value="">&nbsp;</option>

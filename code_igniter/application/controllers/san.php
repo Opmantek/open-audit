@@ -599,11 +599,9 @@ class San extends CI_Controller
                         if (stripos(trim($input[$i]), 'IP address:') === 0 and (!isset($item_ip->ip) or $item_ip->ip == '')) {
                             $item_ip->ip = trim(str_ireplace('IP address:', '', $input[$i]));
                             if (!filter_var($item_ip->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-                                $item_ip->ip = $item_ip->ip;
                                 $item_ip->version = 4;
                             }
                             if (!filter_var($item_ip->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-                                $item_ip->ip = $item_ip->ip;
                                 $item_ip->version = 6;
                             }
                         }

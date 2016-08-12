@@ -34,7 +34,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<table cellspacing='1' class='tablesorter' style='width:900'>
+<table cellspacing='1' class='tablesorter' style='width:900px'>
 	<thead>
 		<tr>
 			<th><?php echo __('Package Name')?></th>

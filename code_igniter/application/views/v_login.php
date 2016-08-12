@@ -46,7 +46,7 @@
     #container { width: 950px; margin: 0 auto; padding: 10px 0; border: 1px solid #555; border-radius: 5px;}
     a { color: #101010; text-decoration: none }
     a:hover { color: #729FCF; }
-    body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #fff; font-size:12px; color:#111;}
+    body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",sans-serif; background: #fff; font-size:12px; color:#111;}
     h2 { border-color:#DBD9C5; border-style:solid; border-width:0pt 0pt 1px; color:#555555; font-size:22px; font-weight:bold; padding:0px 0px 1px; }
     img {border:0;}
     </style>
@@ -85,7 +85,7 @@ if (isset($form_url) and $form_url != '') {
     <div id="header" style='height: 200px; width: 950px; margin-left: auto; margin-right: auto; padding: 20px; border: 10px;' align='left'>
         <?php $attributes = array('name' => 'myform'); ?>
         <?php echo form_open($form_url, $attributes)."\n"; ?>
-                <div align='left' style="height: 150px; width:60%; float: left; valign: center; text-align: center;">
+                <div align='left' style="height: 150px; width:60%; float: left; vertical-align: center; text-align: center;">
                     <img src='<?php echo $this->config->config['oa_web_folder'] . '/images/'.$this->config->config['logo']; ?>.png' alt='logo' border='0' /><br />
                     <?php
                     if ((file_exists($filename)) and $show == 'y') {
