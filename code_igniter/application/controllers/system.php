@@ -589,7 +589,7 @@ class System extends CI_Controller
                     }
 
                     if (isset($details->id) and !empty($details->id)) {
-                        // we have a system_id and snmp details to update
+                        // we have a system.id and snmp details to update
                         $log_details = new stdClass();
                         $log_details->severity = 7;
                         $log_details->file = 'system';

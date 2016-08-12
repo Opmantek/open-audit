@@ -336,7 +336,7 @@ if (! function_exists('inputRead')) {
 
         # get the action
         # valid values are typically - create, read, update, delete, list, execute
-        # TODO - request_method == post and body contains system_id, then update, not create
+        # TODO - request_method == post and body contains system.id, then update, not create
         if ($CI->input->get('action')) {
             $action = $CI->input->get('action');
             $log->message = 'Set action to ' . $action . ', according to GET.';

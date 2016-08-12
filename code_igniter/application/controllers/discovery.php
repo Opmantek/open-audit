@@ -69,7 +69,7 @@ class discovery extends CI_Controller
 
     public function discover_list($ids = '')
     {
-        // take a list of system_id's and run discovery on them
+        // take a list of system.id's and run discovery on them
         // do not wait for the return result, go back to the webpage ASAP
         //
         // ids should be a comma separated list of device id's (integers) - no spaces
@@ -117,7 +117,7 @@ class discovery extends CI_Controller
             return;
         }
 
-        // spawn a discovery process for each system_id
+        // spawn a discovery process for each system.id
         foreach ($system_ids as $key => $value) {
             $timestamp = date('Y-m-d H:i:s');
             $system_id = $value;
@@ -1360,7 +1360,7 @@ class discovery extends CI_Controller
                                         $output = null;
                                         $return_var = null;
                                     } else {
-                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->system_id;
+                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->id;
                                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
                                         pclose(popen($command_string, "r"));
                                     }

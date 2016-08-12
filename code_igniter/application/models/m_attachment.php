@@ -42,7 +42,7 @@ class M_attachment extends MY_Model
 
     public function create_system_attachment($system_id, $title, $name)
     {
-        $sql = "INSERT INTO attachment (id, system_id, user_id, title, filename, timestamp) VALUES (NULL, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `attachment` (`id`, `system_id`, `user_id`, `title`, `filename`, `timestamp`) VALUES (NULL, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id", $this->session->userdata['user_id'], "$title", "$name", date('Y-m-d H:i:s'));
         $query = $this->db->query($sql, $data);
@@ -52,7 +52,7 @@ class M_attachment extends MY_Model
 
     public function get_system_attachment($system_id)
     {
-        $sql = "SELECT * FROM attachment WHERE system_id = ?";
+        $sql = "SELECT * FROM `attachment` WHERE `attachment`.`system_id` = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);

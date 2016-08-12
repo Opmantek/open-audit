@@ -798,7 +798,7 @@ class M_system extends MY_Model
         $details = (object) $details;
         $details = (array) $details;
         $details = (object) $details;
-        # this is an insert - we do NOT want a system_id
+        # this is an insert - we do NOT want a system.id
         unset($details->id);
 
         // set a ip if not already 1.5.6
@@ -1021,7 +1021,7 @@ class M_system extends MY_Model
                 $temp_vm_id = $row->id;
                 $details->vm_system_id = $row->vm_system_id;
                 $details->vm_server_name = $row->vm_server_name;
-                $sql = "SELECT icon , 'vm' FROM system WHERE system_id = ?";
+                $sql = "SELECT icon , 'vm' FROM system WHERE system.id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($details->id);
                 $query = $this->db->query($sql, $data);
@@ -1071,7 +1071,7 @@ class M_system extends MY_Model
     public function update_system($details, $display = 'n')
     {
         if (!isset($details->id) or $details->id == '') {
-            # this is an update - we need a system_id
+            # this is an update - we need a system.id
             return;
         }
 
@@ -1337,7 +1337,7 @@ class M_system extends MY_Model
                 $temp_vm_id = $row->id;
                 $details->vm_system_id = $row->vm_system_id;
                 $details->vm_server_name = $row->vm_server_name;
-                $sql = "SELECT icon  FROM system WHERE system_id = ?";
+                $sql = "SELECT icon  FROM system WHERE system.id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($details->id);
                 $query = $this->db->query($sql, $data);

@@ -233,7 +233,7 @@ class M_additional_fields extends MY_Model
      *
      * @access  public
      *
-     * @param   system_id
+     * @param   group_id
      *
      * @return array
      */

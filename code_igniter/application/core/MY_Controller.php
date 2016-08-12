@@ -765,7 +765,7 @@ class MY_Controller extends CI_Controller
         if (strpos($col_link, '/') === 0) {
             $col_link = substr($col_link, 1);
         }
-        // NOTE - For most reports, $col_var_name_sec is normally system_id expressed as an int
+        // NOTE - For most reports, $col_var_name_sec is normally system.id expressed as an int
         // NOTE - Relative Index is normally like                      - /open-audit/index.php/
         // NOTE - For an Enterprise report, $col_link is normally like - /omk/oae/device_details/
         // NOTE - For a Community report, $col_link is normally like   - /main/system_display/

@@ -294,7 +294,7 @@ class test extends CI_Controller
 
         $instring = implode(',', $org_id_list) . "\n";
         echo $instring . "\n";
-        // $sql = "SELECT system_id, hostname, type, org_id, org_name FROM system LEFT JOIN oa_org ON system.org_id = oa_org.org_id WHERE org_id IN (" . $instring . ")";
+        // $sql = "SELECT system.id, hostname, type, org_id, org_name FROM system LEFT JOIN oa_org ON system.org_id = oa_org.org_id WHERE org_id IN (" . $instring . ")";
         // echo $sql . "\n";
         // $query = $this->db->query($sql);
         // $result = $query->result();
@@ -552,7 +552,7 @@ class test extends CI_Controller
         }
 
 
-        $sql = "SELECT first_seen FROM $table WHERE system_id = ? ORDER BY first_seen LIMIT 1";
+        $sql = "SELECT first_seen FROM $table WHERE system.id = ? ORDER BY first_seen LIMIT 1";
         $data = array($system_id);
         $query = $this->db->query($sql, $data);
             echo $this->db->last_query() . "\n";
@@ -563,11 +563,11 @@ class test extends CI_Controller
         }
         if ($first_seen != '') {
             if ($type == 'delta') {
-                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system_id = ? and (current = 'y' or first_seen = ?)";
+                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system.id = ? and (current = 'y' or first_seen = ?)";
                 $data = array("$first_seen", $system_id, "$first_seen");
             }
             if ($type == 'full') {
-                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system_id = ?";
+                $sql = "SELECT $table.*, IF(($table.first_seen = ?), 'y', 'n') as original_install, IF($table.current = 'y', 'y', 'n') as current_install FROM $table WHERE system.id = ?";
                 $data = array("$first_seen", $system_id);
             }
             $query = $this->db->query($sql, $data);
@@ -575,7 +575,7 @@ class test extends CI_Controller
             echo $this->db->last_query() . "\n";
             print_r($result);
         } else {
-            # no data in this table for the system_id
+            # no data in this table for the system.id
             return;
         }
     }

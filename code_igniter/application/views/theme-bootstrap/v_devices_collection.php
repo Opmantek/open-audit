@@ -136,7 +136,7 @@ if (!empty($this->response->data)) { ?>
 # for every returned row
   foreach ($this->response->data as $item) {
 
-    # grab the system_id if it exists
+    # grab the system.id if it exists
     $system_id = '';
     if (!empty($item->attributes->{'system.id'})) {
       $system_id = $item->attributes->{'system.id'};

@@ -150,7 +150,7 @@ class M_change_log extends MY_Model
      */
     public function create($system_id, $db_table, $db_row, $db_action, $details, $timestamp)
     {
-        $sql = "INSERT INTO change_log ( system_id, db_table, db_row, db_action, details, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
+        $sql = "INSERT INTO change_log (`system_id`, `db_table`, `db_row`, `db_action`, `details`, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id", "$db_table", "$db_row", "$db_action", "$details", "$timestamp");
         $query = $this->db->query($sql, $data);

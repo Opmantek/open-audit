@@ -64,7 +64,7 @@ class M_oa_general extends MY_Model
         }
         $sql = '';
         if ($table == 'system') {
-            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system_id = ?';
+            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system.id = ?';
             $sql = $this->clean_sql($sql);
         }
         if ($sql != '') {

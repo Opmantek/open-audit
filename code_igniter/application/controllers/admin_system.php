@@ -653,7 +653,7 @@ class Admin_system extends MY_Controller
                         }
                     }
 
-                    # first test to see if we have a system_id -
+                    # first test to see if we have a system.id -
                     # if not, make a system key and find (or not) the device
                     if (!isset($details->id) or $details->id == '') {
 

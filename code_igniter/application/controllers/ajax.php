@@ -228,7 +228,7 @@ class ajax extends MY_Controller
                 # 2 - additional_field_item.additional_field_id
                 # 3 - additional_field.field_id
 
-                # TODO - should test if system_id is part of additional_field.group_id
+                # TODO - should test if system.id is part of additional_field.group_id
                 # The code below assumes the view has done this (and it has), but it doesn't verify it.
                 # Could call this directly using a URL and set a custom field on a device that is not supposed to have it
 
