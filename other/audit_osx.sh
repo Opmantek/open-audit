@@ -44,6 +44,7 @@ org_id=""
 terminal_print="n"
 debugging="3"
 system_id=""
+last_seen_by="audit"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
@@ -159,6 +160,7 @@ echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
 echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
 echo  "     <os_installation_date>$system_pc_date_os_installation</os_installation_date>" >> $xml_file
 echo  "     <org_id>$org_id</org_id>" >> $xml_file
+echo  "     <last_seen_by>$last_seen_by</last_seen_by>" >> $xml_file
 echo  " </sys>" >> $xml_file
 
 

@@ -296,15 +296,15 @@ class cli extends CI_Controller
                             // update an existing device with snmp
                             $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
                             $device->original_last_seen_by = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen_by');
-                            $device->last_seen_by = 'snmp nmis import';
+                            $device->last_seen_by = 'snmp';
                             $this->m_system->update_system($device);
                             $log_details->message = 'NMIS import, update SNMP for '.$device->ip.' ('.$device->hostname.')';
                             $log_details->severity = 7;
                             stdlog($log_details);
                         } else {
                             // insert a new device
-                            $device->last_seen_by = 'snmp nmis import';
-                            $device->original_last_seen_by = 'snmp nmis import';
+                            $device->last_seen_by = 'snmp';
+                            $device->original_last_seen_by = 'snmp';
                             $device->system_id = $this->m_system->insert_system($device);
                             $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
                             $log_details->message = 'NMIS import, insert SNMP for '.$device->ip.' ('.$device->hostname.')';

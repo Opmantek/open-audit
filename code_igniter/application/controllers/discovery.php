@@ -1307,7 +1307,7 @@ class discovery extends CI_Controller
 
                             if (php_uname('s') != 'Windows NT') {
                                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
-                                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id;
+                                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id." last_seen_by=audit_wmi";
                                 if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
                                     if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
                                         # All complete!
@@ -1340,7 +1340,7 @@ class discovery extends CI_Controller
                                         unset($temp);
 
                                     if ($display == 'y') {
-                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->id;
+                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->id." last_seen_by=audit_wmi";
                                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
                                         exec($command_string, $output, $return_var);
                                         $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
@@ -1360,7 +1360,7 @@ class discovery extends CI_Controller
                                         $output = null;
                                         $return_var = null;
                                     } else {
-                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->id;
+                                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=0  system_id=".$details->id." last_seen_by=audit_wmi";
                                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
                                         pclose(popen($command_string, "r"));
                                     }
@@ -1375,7 +1375,7 @@ class discovery extends CI_Controller
                                     $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                                     $source = 'audit_windows_' . $ts . '.vbs';
-                                    $command = "cscript \\\\" . $details->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id . " self_delete=y";
+                                    $command = "cscript \\\\" . $details->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id . " self_delete=y last_seen_by=audit_wmi";
                                     if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
                                         if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
                                             # All complete!
@@ -1397,13 +1397,14 @@ class discovery extends CI_Controller
                         if ($details->ssh_status == "true" and $details->os_family != 'DD-WRT' and $credentials_ssh) {
                             $log_details->message = "Starting ssh audit for $details->ip (System ID $details->id)";
                             stdlog($log_details);
-                            $command = 'uname';
-                            $ssh_result = ssh_command($details->ip, $credentials_ssh, $command, $display);
-                            if ($ssh_result['status'] == 0) {
-                                $remote_os = $ssh_result['output'][0];
-                            }
+                            // $command = 'uname';
+                            // $ssh_result = ssh_command($details->ip, $credentials_ssh, $command, $display);
+                            // if ($ssh_result['status'] == 0) {
+                            //     $remote_os = $ssh_result['output'][0];
+                            // }
 
-                            switch (strtolower($remote_os)) {
+                            // switch (strtolower($remote_os)) {
+                            switch (strtolower($details->os_group)) {
                                 
                                 case 'aix':
                                     $audit_script = 'audit_aix.sh';
@@ -1421,7 +1422,7 @@ class discovery extends CI_Controller
                                     $audit_script = 'audit_osx.sh';
                                     break;
                                 
-                                case 'windowsnt':
+                                case 'windows':
                                     $audit_script = '';
                                     break;
                                 
@@ -1508,9 +1509,9 @@ class discovery extends CI_Controller
                                 if (!empty($credentials_ssh->sudo)) {
                                     # run the audit script as a normal user
                                 #$command = 'echo "'.escapeshellarg($credentials_ssh->credentials->password).'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
-                                $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
+                                $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
                                 } else {
-                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
+                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
                                 }
                                 $result = ssh_command($details->ip, $credentials_ssh, $command, $display);
                                 if ($unlink != '') {
@@ -1519,7 +1520,7 @@ class discovery extends CI_Controller
                             }
                             # audit ESX
                             if ($audit_script == 'audit_esxi.sh') {
-                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n debugging=0 echo_output=y system_id='.$details->id.'" 2>/dev/null';
+                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y last_seen_by=audit_ssh create_file=n debugging=0 echo_output=y system_id='.$details->id.' 2>/dev/null';
                                 if ($result = ssh_command($details->ip, $credentials_ssh, $command, $display)) {
                                     if ($result['status'] == 0) {
                                         $script_result = '';

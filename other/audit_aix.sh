@@ -62,6 +62,7 @@ org_id=""
 system_id=""
 help=""
 version="1.14"
+last_seen_by="audit"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
@@ -80,6 +81,7 @@ for arg; do
 		man_org_id)    man_org_id="$VAL";;
 		url)           url="$VAL";;
 		system_id)     system_id="$VAL";;
+		last_seen_by)  last_seen_by="$VAL";;
 		*) ;;
 	esac
 done
@@ -249,6 +251,7 @@ cat >"$xml_file" <<EndOfFile
 		<org_id>$(escape_xml "$org_id")</org_id>
 		<class>server</class>
 		<id>$(escape_xml "$system_id")</id>
+		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>
 	</sys>
 EndOfFile
 FINISH=$((SECONDS-START))

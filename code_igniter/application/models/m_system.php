@@ -1736,6 +1736,8 @@ class M_system extends MY_Model
                 break;
 
             case 'audit':
+            case 'audit_ssh':
+            case 'audit_wmi':
             case 'ssh':
             case 'windows':
             case 'wmi':
@@ -1751,6 +1753,7 @@ class M_system extends MY_Model
                 break;
 
             case 'ad':
+            case 'active directory':
                 $weight = 5000;
                 break;
 

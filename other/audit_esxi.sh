@@ -82,6 +82,7 @@ help="n"
 
 # set by the Discovery function - do not normally set this manually
 system_id=""
+last_seen_by="audit"
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
@@ -231,6 +232,8 @@ for arg in "$@"; do
 			help="y" ;;
 		"ldap" )
 			ldap="$parameter_value" ;;
+		"last_seen_by" )
+			last_seen_by="$parameter_value" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
 		"self_delete" )
@@ -375,8 +378,7 @@ echo "		<processor_count>"$(escape_xml "$system_pc_processors")"</processor_coun
 echo "		<os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
 echo "		<org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
 echo "		<id>"$(escape_xml "$system_id")"</id>" >> $xml_file
-echo "		<last_seen_by>audit</last_seen_by>" >> $xml_file
-echo "		<class>hypervisor</class>" >> $xml_file
+echo "		<last_seen_by>"$(escape_xml "$last_seen_by")"</last_seen_by>" >> $xml_file
 echo "	</sys>" >> $xml_file
 
 

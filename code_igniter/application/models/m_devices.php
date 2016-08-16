@@ -175,6 +175,7 @@ class M_devices extends MY_Model
         $this->load->model('m_devices_components');
         $this->load->model('m_system');
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
+        $sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
         $sql = $this->clean_sql($sql);
         $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'devices');
@@ -431,6 +432,23 @@ class M_devices extends MY_Model
         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $this->count_data($result);
+
+        $sql = "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type)) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
+        $seen_by = $this->run_sql($sql, array());
+        $seen_by_temp = array();
+
+        foreach ($seen_by as $seen) {
+            $seen_by_temp[$seen->id] = $seen->seen_by;
+        }
+        unset($seen_by);
+        for ($i=0; $i < count($result); $i++) { 
+            if ( ! empty($seen_by_temp[$result[$i]->{'system.id'}] )) {
+                $result[$i]->seen_by = $seen_by_temp[$result[$i]->{'system.id'}];
+            } else {
+                $result[$i]->seen_by = '';
+            }
+        }
+        unset($seen_by_temp);
         $result = $this->format_data($result, 'devices');
         return $result;
     }
@@ -634,6 +652,8 @@ class M_devices extends MY_Model
                 break;
 
             case 'audit':
+            case 'audit_ssh':
+            case 'audit_wmi':
             case 'ssh':
             case 'windows':
             case 'wmi':
@@ -649,6 +669,7 @@ class M_devices extends MY_Model
                 break;
 
             case 'ad':
+            case 'active directory':
                 $weight = 5000;
                 break;
 

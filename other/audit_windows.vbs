@@ -112,6 +112,7 @@ ping_target = "n"
 
 ' set by the Discovery function - do not normally set this manually
 system_id = ""
+last_seen_by = "audit"
 
 details_to_lower = "y"
 
@@ -212,6 +213,9 @@ For Each strArg in objArgs
 
 	case "san_discover"
 	san_discover = argvalue
+
+	case "last_seen_by"
+	last_seen_by = argvalue
 
 	end select
 	else
@@ -1265,6 +1269,7 @@ result.WriteText "		<processor_count>" & escape_xml(system_pc_num_processor) & "
 result.WriteText "		<os_installation_date>" & escape_xml(system_pc_date_os_installation) & "</os_installation_date>" & vbcrlf
 result.WriteText "		<org_id>" & escape_xml(org_id) & "</org_id>" & vbcrlf
 result.WriteText "		<cluster_name>" & escape_xml(man_cluster_name) & "</cluster_name>" & vbcrlf
+result.WriteText "		<last_seen_by>" & escape_xml(last_seen_by) & "</last_seen_by>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 
