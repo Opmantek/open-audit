@@ -1432,11 +1432,6 @@ class discovery extends CI_Controller
                             }
 
 
-
-
-
-                            $log_details->message = "Starting ssh audit for $details->ip (System ID $details->id)";
-                            stdlog($log_details);
                             $destination = $audit_script;
                             if ($display = 'y') {
                                 $debugging = 3;
@@ -1507,11 +1502,11 @@ class discovery extends CI_Controller
                             if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
                                 # successfully copied and chmodded the audit script
                                 if (!empty($credentials_ssh->sudo)) {
-                                    # run the audit script as a normal user
-                                #$command = 'echo "'.escapeshellarg($credentials_ssh->credentials->password).'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display;
-                                $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                                    # run the audit script as a normal user, using sudo
+                                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
                                 } else {
-                                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                                    # run the script without using sudo
+                                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
                                 }
                                 $result = ssh_command($details->ip, $credentials_ssh, $command, $display);
                                 if ($unlink != '') {

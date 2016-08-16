@@ -97,6 +97,8 @@ IFS="$NEWLINEIFS";
 # we set this if we detect we're running on a BB shell
 busybox="n"
 
+last_seen_by="audit"
+
 display=""
 # This should only be set by Discovery when using the debug option
 
@@ -275,6 +277,8 @@ for arg in "$@"; do
 			help="y" ;;
 		"-h" )
 			help="y" ;;
+		"last_seen_by" )
+			last_seen_by="$parameter_value" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
 		"submit_online" )
@@ -765,6 +769,7 @@ echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_cou
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
 echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
+echo "		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>"
 echo "		<id>$(escape_xml "$system_id")</id>"
 echo "	</sys>"
 } > "$xml_file"
