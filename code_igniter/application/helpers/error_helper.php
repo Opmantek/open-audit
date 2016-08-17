@@ -127,7 +127,7 @@ if (! function_exists('getError')) {
         $error_array['ERR-0010']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0010']->severity = 3;
         $error_array['ERR-0010']->title = "Bad Request.";
-        $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a unique field is already used by another item in the collection.';
+        $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a reserved word has been used for a field name or there is already a field with this name.';
 
         $error_array['ERR-0011'] = new stdClass();
         $error_array['ERR-0011']->code = 'ERR-0011';
