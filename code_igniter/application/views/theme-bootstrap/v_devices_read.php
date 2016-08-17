@@ -187,7 +187,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user');
+        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -842,7 +842,7 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
   $list[] = 'disk';
 }
@@ -915,6 +915,12 @@ foreach ($list as $item) {
                                                     echo "<td>" . $value . "</td>\n";
                                                 }
                                             }
+                                        } elseif ($item == 'vm'and $key == 'guest_system_id') {
+                                          if ( ! empty($value)) {
+                                            echo "<td class=\"text-center\"><a href=\"#\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
+                                          } else {
+                                            echo "<td></td>\n";
+                                          }
                                         } else {
                                             # everything else
                                             if (is_int($value)) {
