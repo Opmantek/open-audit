@@ -130,12 +130,6 @@ class devices extends MY_Controller
                 $related = $this->m_devices->get_related_tables();
                 $this->response->data[0]->links->relationships = $related;
                 unset($related);
-                $item = new stdClass();
-                $item ->credentials = new stdClass();
-                $item->credentials->links = new stdClass();
-                $item->credentials->links->self = $this->config->config['base_url'] . 'index.php/devices/' . $this->response->meta->id . '/credentials';
-                $this->response->data[0]->links->relationships[] = $item;
-                unset($item);
             }
             # get any additionally included tables
             if (!empty($this->response->meta->include) and !empty($this->response->data)) {
