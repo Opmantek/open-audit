@@ -991,6 +991,9 @@ if ($data['system']->type == 'computer') {
                                 <thead>
                                     <tr>
                                         <?php
+                                        if ($sub_item == 'partition') {
+                                          echo "<th>Graph</th>\n";
+                                        }
                                         foreach ($data[$sub_item][0] as $sub_key => $sub_value) {
                                             if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                 ?>
@@ -1004,11 +1007,13 @@ if ($data['system']->type == 'computer') {
                                 <tbody>
                                     <?php
                                     foreach ($data[$sub_item] as $sub_row) {
-                                        if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or ($item == 'disk' and $item_row->hard_drive_index == $sub_row->hard_drive_index)) {
-                                        ?>
+                                        if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or ($item == 'disk' and $item_row->hard_drive_index == $sub_row->hard_drive_index)) { ?>
                                             <tr>
                                                 <?php
                                                 foreach ($sub_row as $sub_key => $sub_value) {
+                                                    if ($sub_item == 'partition' and $sub_key == 'id') {
+                                                      echo '<td><a href="' . base_url() . 'index.php/main/disk_graph/' . $data['system']->id . '/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
+                                                    }
                                                     if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                         if (is_int($sub_value)) {
                                                             echo "<td>" . number_format($sub_value) . "</td>\n";

@@ -65,7 +65,7 @@ $line1 = mb_substr($line1, 0, (mb_strlen($line1) - 2));
 $line1 = $line1."];";
 
 foreach ($partition_details as $partition) {
-    $graph_title = str_replace("\\", "\\\\", $partition->mount_point)." (".$partition->type . ' ' . $partition->mount_type.")";
+    $graph_title = $this->data['heading'];
 }
 ?>
 
