@@ -193,7 +193,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user', 'user_group', 'vm');
+        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user', 'user_group', 'variable', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -865,7 +865,7 @@ if (isset($data['additional_fields']) and count($data['additional_fields']) > 0)
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'user_group', 'video', 'vm');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
   $list[] = 'disk';
 }
