@@ -3765,6 +3765,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.8.4 commenced';
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -3778,6 +3779,8 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
@@ -3794,6 +3797,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.10 commenced';
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4544,6 +4548,8 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
@@ -4586,6 +4592,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.10.1 commenced';
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4597,6 +4604,8 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
@@ -4611,6 +4620,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12 commenced';
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4621,6 +4631,8 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
@@ -4709,12 +4721,16 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
             // update the network groups
             $this->data['output'] .= "Converting network groups.<br /><br />\n";
             $sql = "SELECT group_id, group_dynamic_select, group_name FROM oa_group WHERE group_category = 'network'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
             $result = $query->result();
             foreach ($result as $group) {
@@ -4727,28 +4743,37 @@ class admin extends MY_Controller
                 $dynamic_select = str_replace("oa_group_sys.group_id = ?", "oa_group_sys.group_id = @group", $dynamic_select);
                 $dynamic_select = str_replace("ip.ip_address_v4", "ip.ip", $dynamic_select);
                 $dynamic_select = str_replace("sys_hw_network_card_ip.system_id", "ip.system_id", $dynamic_select);
-                $sql = "UPDATE oa_group SET group_dynamic_select = ? WHERE group_id = ?";
-                $data = array("$dynamic_select", $group->group_id);
-                $query = $this->db->query($sql, $data);
+                $sql = "UPDATE oa_group SET group_dynamic_select = '" . $dynamic_select . "' WHERE group_id = " . intval($group->group_id);
+                $log_details->message = $sql;
+                stdlog($log_details);
+                $query = $this->db->query($sql);
                 $this->data['output'] .= $this->db->last_query()."<br /><br />\n";
             }
 
             # remove any groups that are using sys_hw_network_card_ip
             $sql = "SELECT group_name, group_dynamic_select from oa_group WHERE group_dynamic_select like '%sys_hw_network_card_ip%'";
             $query = $this->db->query($sql);
+            $log_details->message = $sql;
+            stdlog($log_details);
             $result = $query->result();
             foreach ($result as $row) {
                 $this->data['output'] .= 'WARNING - the folloing group has been deleted as it used incompatible SQL. We no longer have a table named sys_hw_network_ip_address (it is now \'ip\' with renamed columns). Please recreate this group: ' . $row->group_name . '\n<br />The SQL for this group was: ' . $row->group_dynamic_select . "<br /><br />\n";
             }
             $sql = "DELETE oa_group FROM oa_group WHERE group_dynamic_select like '%sys_hw_network_card_ip%'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
 
             # remove any incorrectly formatted netmasks
             $sql = "UPDATE ip SET netmask = '0.0.0.0' WHERE netmask = '000.000.000.000'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $this->db->query($sql);
 
             # get all our candidate ip addresses and add a network name and a CIDR
             $sql = "SELECT * FROM ip WHERE ip.ip != '' AND ip.netmask != '' AND ip.netmask != '0.0.0.0' AND ip.version = 4 and ip.network = ''";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
             $result = $query->result();
             foreach ($result as $row) {
@@ -4780,6 +4805,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.4 commenced';
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4799,6 +4825,8 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
@@ -4815,6 +4843,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.6 commenced';
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             unset($sql);
@@ -4941,25 +4970,42 @@ class admin extends MY_Controller
 
             foreach ($sql as $this_query) {
                 $this->data['output'] .= $this_query."<br /><br />\n";
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $query = $this->db->query($this_query);
             }
 
             // update any leftover group definitions by changing man_icon to icon
             $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
+
             $sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
 
             // update any leftover report definitions by changing man_icon to icon
             $sql = "UPDATE oa_report SET report_sql = REPLACE(report_sql, 'man_icon', 'icon')";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
+
             $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
 
             # have to re-run this as we left it in the original SQL script.
             $sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
+
             $sql = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
 
             foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
@@ -4977,7 +5023,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.8 commenced';
-            $log_details->log_level = 7;
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             # initialise our $sql array
@@ -5380,19 +5426,27 @@ class admin extends MY_Controller
             }
 
             $this_query = "DELETE FROM oa_config WHERE config_name IN ('default_ipmi_password', 'default_ipmi_username', 'default_snmp_community', 'default_ssh_password', 'default_ssh_username', 'default_windows_username', 'default_windows_domain', 'default_windows_password')";
+            $log_details->message = $this_query;
+            stdlog($log_details);
             $this->data['output'] .= $this_query."<br /><br />\n";
             $query = $this->db->query($this_query);
 
             # populate our new credential table with the system.access_details columns
             $sql = "SELECT NOW() as `timestamp`";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
             $result = $query->result();
             $timestamp = $result[0]->timestamp;
 
             $sql = "DELETE FROM `credential`";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
 
             $sql = "SELECT id, access_details FROM system WHERE access_details != ''";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
             $result = $query->result();
             foreach ($result as $device) {
@@ -5404,6 +5458,8 @@ class admin extends MY_Controller
                     $cred->community = $creds->snmp_community;
                     $credentials = (string)$this->encrypt->encode(json_encode($cred));
                     $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SNMP credentials.', 'Migrated from device upon upgrade.', 'snmp', ?, 'system', ?)";
+                    $log_details->message = $sql;
+                    stdlog($log_details);
                     $data = array(intval($device->id), (string)$credentials, "$timestamp");
                     $query = $this->db->query($sql, $data);
                     unset($cred);
@@ -5415,6 +5471,8 @@ class admin extends MY_Controller
                     $cred->password = $creds->windows_password;
                     $credentials = (string)$this->encrypt->encode(json_encode($cred));
                     $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device Windows credentials.', 'Migrated from device upon upgrade.', 'windows', ?, 'system', ?)";
+                    $log_details->message = $sql;
+                    stdlog($log_details);
                     $data = array(intval($device->id), (string)$credentials, "$timestamp");
                     $query = $this->db->query($sql, $data);
                     unset($cred);
@@ -5426,6 +5484,8 @@ class admin extends MY_Controller
                     $cred->password = $creds->ssh_password;
                     $credentials = (string)$this->encrypt->encode(json_encode($cred));
                     $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SSH credentials.', 'Migrated from device upon upgrade.', 'ssh', ?, 'system', ?)";
+                    $log_details->message = $sql;
+                    stdlog($log_details);
                     $data = array(intval($device->id), (string)$credentials, "$timestamp");
                     $query = $this->db->query($sql, $data);
                     unset($cred);
@@ -5434,13 +5494,13 @@ class admin extends MY_Controller
             }
 
             $sql = "ALTER TABLE `system` DROP access_details";
+            $log_details->message = $sql;
+            stdlog($log_details);
             $query = $this->db->query($sql);
 
             # reinitialise our $sql array
             unset($sql);
             $sql = array();
-
-
 
             $log_details->message = 'Upgrade database to 1.12.8 completed';
             stdlog($log_details);
@@ -5453,7 +5513,7 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.8.1 commenced';
-            $log_details->log_level = 7;
+            $log_details->log_level = 4;
             stdlog($log_details);
 
             # initialise our $sql array
@@ -5465,6 +5525,8 @@ class admin extends MY_Controller
             $fields = "'" . $fields . "'";
             $sql[] = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
             unset($fields);
+            $sql[] = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
 
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
@@ -5473,13 +5535,10 @@ class admin extends MY_Controller
                 $query = $this->db->query($this_query);
             }
 
-            $sql[] = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
-            $sql[] = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
-
+            $log_details->message = 'Upgrade database to 1.12.8.1 completed';
+            stdlog($log_details);
+            unset($log_details);
         }
-
-
-
 
 
         # refresh the icons
