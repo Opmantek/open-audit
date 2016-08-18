@@ -103,6 +103,12 @@ if ($data['system']->type != 'computer') {
                 <?php if (isset($data['windows'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
                 <?php } ?>
+                <?php if ($data['system']->type != 'computer' and ! empty($data['network'])) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/network.svg"/><a href="#" data-menuitem="network"><?php echo __('Network'); ?></a></li>
+                <?php } ?>
+                <?php if ($data['system']->type != 'computer' and ! empty($data['module'])) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/module.svg"/><a href="#" data-menuitem="module"><?php echo __('Module'); ?></a></li>
+                <?php } ?>
               </ul>
           </div>
         </div>
