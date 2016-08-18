@@ -193,7 +193,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user', 'user_group', 'variable', 'vm');
+        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
