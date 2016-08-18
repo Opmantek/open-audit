@@ -203,31 +203,17 @@ function clean_url($url)
 
 function display_custom_field($field_placement, $additional_fields, $edit)
 {
-    #echo "<pre>\n"; print_r($additional_fields); echo "</pre>\n";
     foreach ($additional_fields as $field) {
         if ($field->placement == $field_placement) {
             $width = "120";
             if ($field_placement == 'view_summary_windows') {
                 $width = '160';
             }
-
             # TODO: fix this string output hack with real html entities
             echo "<div style=\"float: left; width: 90%; \">\n";
-            echo "<label for=\"custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_outer\" >".htmlentities(__($field->name)).": </label>";
-
-            if ($field->type == 'list') {
-                echo "<span id=\"custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_outer\">";
-                    echo "<span id=\"custom_".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_inner\" onclick=\"display_additional_" . str_replace(' ', '_', $field->name) . "();\" >";
-                        echo @print_something($field->value);
-                    echo "</span>";
-                echo "</span>";
-            } else {
-                echo "<span id=\"custom_".htmlentities($field->type)."_".@htmlentities($field->{'additional_field.id'})."_".@htmlentities($field->id)."\" ".$edit.">".@print_something($field->value)."</span>";
-            }
-            if ($edit != '') {
-                # TODO - fix this hard coded path. Should be able to use global $oa_theme_images but it seems not to work :-(
-                echo '<img src="/open-audit/theme-tango/tango-images/16_edit_out.png" onmouseover="this.src=\'/open-audit/theme-tango/tango-images/16_edit_hover.png\'" onmouseout="this.src=\'/open-audit/theme-tango/tango-images/16_edit_out.png\'" alt="Click the blue text to edit!" title="Click the blue text to edit!" />';
-            }
+            echo "<label for=\"".htmlentities($field->type)."_".@htmlentities($field->id)."_".@htmlentities($field->{'additional_field.id'})."_outer\" >".htmlentities(__($field->name)).": </label>";
+            echo "<span id=\"".htmlentities($field->type)."_".@htmlentities($field->{'additional_field.id'})."_".@htmlentities($field->id)."\" >".@print_something($field->value)."</span>";
+            echo "<span> * Please use /devices/ to edit this field.</span>";
             echo "<br />&nbsp;\n";
             echo "</div>\n";
         }

@@ -431,7 +431,8 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST/PATCH/PUT, id and no action.';
             stdlog($log);
         }
-        if ($REQUEST_METHOD == 'PATCH' and is_null($CI->response->meta->id) and !empty($CI->response->meta->received_data->ids)) {
+
+        if ($REQUEST_METHOD == 'PATCH' and !empty($CI->response->meta->ids)) {
             // update several items
             $CI->response->meta->action = 'update';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';

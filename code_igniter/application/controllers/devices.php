@@ -222,9 +222,11 @@ class devices extends MY_Controller
 
         if ($this->response->meta->sub_resource == '') {
             $this->load->model('m_locations');
+            $this->load->model('m_fields');
             $this->response->included = array();
             $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+            $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             include 'include_device_types.php';
             # TODO - change the below to use this->response->included
             $this->response->types = $device_types;

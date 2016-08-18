@@ -87,15 +87,7 @@
                 <div class="col-sm-8 input-group">
                     <select class="form-control" id="data[attributes][placement]" name="data[attributes][placement]">
                         <option value="custom"><?php echo __('Custom'); ?></option>
-                        <option value="location"><?php echo __('Location'); ?></option>
-                        <option value="module"><?php echo __('Module'); ?></option>
-                        <option value="network"><?php echo __('Network Summary'); ?></option>
-                        <option value="san"><?php echo __('San'); ?></option>
-                        <option value="san_disk"><?php echo __('San Disk'); ?></option>
                         <option value="system"><?php echo __('System Details'); ?></option>
-                        <option value="phone"><?php echo __('Phone'); ?></option>
-                        <option value="purchase"><?php echo __('Purchase'); ?></option>
-                        <option value="windows"><?php echo __('Windows Details'); ?></option>
                     </select>
                 </div>
             </div>

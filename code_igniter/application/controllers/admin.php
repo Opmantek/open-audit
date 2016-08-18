@@ -5447,6 +5447,41 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
+        if (($db_internal_version < '201606810') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.8.1
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.8.1 commenced';
+            $log_details->log_level = 7;
+            stdlog($log_details);
+
+            # initialise our $sql array
+            unset($sql);
+            $sql = array();
+
+            $fields = $this->db->list_fields('system');
+            $fields = implode($fields,"','");
+            $fields = "'" . $fields . "'";
+            $sql[] = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
+            unset($fields);
+
+            foreach ($sql as $this_query) {
+                $log_details->message = $this_query;
+                stdlog($log_details);
+                $this->data['output'] .= $this_query."<br /><br />\n";
+                $query = $this->db->query($this_query);
+            }
+
+            $sql[] = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
+            $sql[] = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
+
+        }
+
+
+
+
+
         # refresh the icons
         $this->load->model('m_system');
         $this->m_system->reset_icons();

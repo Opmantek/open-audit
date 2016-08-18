@@ -156,6 +156,15 @@ class M_fields extends MY_Model
             log_error('ERR-0010', 'm_fields::create');
             return false;
         }
+
+        $system_fields = $this->db->list_fields('system');
+        foreach ($system_fields as $field) {
+            if ($CI->response->meta->received_data->attributes->name == $field) {
+                log_error('ERR-0010', 'm_fields::create');
+                return false;
+            }
+        }
+
         $sql = "INSERT INTO `additional_field` VALUES (NULL, ?, ?, ?, ?, ?)";
         if (empty($CI->response->meta->received_data->attributes->group_id)) {
             $CI->response->meta->received_data->attributes->group_id = 1;

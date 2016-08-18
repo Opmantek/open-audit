@@ -47,7 +47,6 @@ if (isset($this->user->access_level) and $this->user->access_level > '9') {
 if ($manual_edit == 'y') {
     echo "<div style=\"float:left; width:100%;\">\n";
     $attributes = array('id' => 'change_form', 'name' => 'change_form');
-    echo form_open('main/edit_systems', $attributes)."\n";
     echo "<input type=\"hidden\" name=\"group_id\" value=\"".intval($group_id)."\" />\n";
 }
 
@@ -68,8 +67,9 @@ foreach ($columns as $column) {
     }
 }
 if (($manual_edit == 'y') and ($system_id = "set")) {
-    echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
-    echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
+    #echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
+    echo "<th align=\"center\" class=\"{sorter: false}\"><button class=\"bulk_edit_button\">Edit</button>";
+    echo "<input type=\"checkbox\" id=\"ids[0]\" name=\"ids[0]\" value=\"0\" onchange=\"check_all_systems();\"/></th>";
 }
 echo "\t\t</tr>\n";
 echo "\t</thead>\n";
@@ -203,7 +203,7 @@ foreach ($query as $row) {
         }
     }
     if ($manual_edit == 'y') {
-        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_".intval($row->{'system.id'})."\" name=\"system_id_".intval($row->{'system.id'})."\" /></td>\n";
+        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"ids[".intval($row->{'system.id'})."]\" name=\"ids[".intval($row->{'system.id'})."]\" value=\"".intval($row->{'system.id'})."\"/></td>\n";
     }
     echo "\n\t\t</tr>\n";
 }
@@ -239,12 +239,12 @@ function show_modifier(oa_attribute, system_id)
 
 function check_all_systems()
 {
-	if (document.getElementById("system_id_0").checked == true)
+	if (document.getElementById("ids[0]").checked == true)
 	{
 		<?php
         foreach ($query as $key):
             if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = true;\n";
+                echo "\tdocument.getElementById(\"ids[".intval($key->{'system.id'})."]\").checked = true;\n";
             }
         endforeach;
         ?>
@@ -252,12 +252,28 @@ function check_all_systems()
 		<?php
         foreach ($query as $key):
             if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = false;\n";
+                echo "\tdocument.getElementById(\"ids[".intval($key->{'system.id'})."]\").checked = false;\n";
             }
         endforeach;
         ?>
 	}
 }
+
+/* Send to bulk edit form */
+$(document).ready(function () {
+    $(document).on('click', '.bulk_edit_button', function (e) {
+        var ids = "";
+        $("input:checked").each(function () {
+            if ($(this).attr("value") != 0) {
+                ids = ids + "," + $(this).attr("value");
+            }
+        });
+        ids = ids.substring(1);
+        var url = '/open-audit/index.php/devices?action=update&ids=' + ids;
+        window.location = url;
+    });
+});
+
 </script>
 
 <?php

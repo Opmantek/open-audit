@@ -103,15 +103,7 @@ $item = $this->response->data[0];
                 <div class="col-sm-8 input-group">
                     <select class="data_type form-control" id="placement" name="placement" disabled>
                         <option value="custom" <?php if ($item->attributes->placement == 'custom') { echo "selected"; } ?>><?php echo __('Custom'); ?></option>
-                        <option value="location" <?php if ($item->attributes->placement == 'location') { echo "selected"; } ?>><?php echo __('Location'); ?></option>
-                        <option value="module" <?php if ($item->attributes->placement == 'module') { echo "selected"; } ?>><?php echo __('Module'); ?></option>
-                        <option value="network" <?php if ($item->attributes->placement == 'network') { echo "selected"; } ?>><?php echo __('Network Summary'); ?></option>
-                        <option value="san" <?php if ($item->attributes->placement == 'san') { echo "selected"; } ?>><?php echo __('San'); ?></option>
-                        <option value="san_disk" <?php if ($item->attributes->placement == 'san_disk') { echo "selected"; } ?>><?php echo __('San Disk'); ?></option>
                         <option value="system" <?php if ($item->attributes->placement == 'system') { echo "selected"; } ?>><?php echo __('System Details'); ?></option>
-                        <option value="phone" <?php if ($item->attributes->placement == 'phone') { echo "selected"; } ?>><?php echo __('Phone'); ?></option>
-                        <option value="purchase" <?php if ($item->attributes->placement == 'purchase') { echo "selected"; } ?>><?php echo __('Purchase'); ?></option>
-                        <option value="windows" <?php if ($item->attributes->placement == 'windows') { echo "selected"; } ?>><?php echo __('Windows Details'); ?></option>
                     </select>
                     <?php if (!empty($edit)) { ?>
                     <span class="input-group-btn">

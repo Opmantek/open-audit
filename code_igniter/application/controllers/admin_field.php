@@ -82,6 +82,16 @@ class Admin_field extends MY_Controller
                 $this->data['include'] = 'v_add_field';
                 $this->load->view('v_template', $this->data);
             } else {
+                $system_fields = $this->db->list_fields('system');
+                foreach ($system_fields as $field) {
+                    if ($CI->response->meta->received_data->attributes->name == $field) {
+                        $this->data['error_message'] = "The supplied name is a reserved word.";
+                        $this->data['heading'] = 'Add Additional Field';
+                        $this->data['include'] = 'v_add_field';
+                        $this->load->view('v_template', $this->data);
+                        exit();
+                    }
+                }
                 # the field does not exist - good
                 if (!isset($field->values) or $field->type != 'list') {
                     $field->values = '';

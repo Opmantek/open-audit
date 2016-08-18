@@ -178,6 +178,11 @@ class M_devices extends MY_Model
         $sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
         $sql = $this->clean_sql($sql);
         $result = $this->run_sql($sql, array($id));
+        $sql = "SELECT additional_field.name, additional_field_item.value FROM additional_field_item RIGHT JOIN additional_field ON additional_field.id = additional_field_item.additional_field_id AND additional_field_item.system_id = ?";
+        $result_fields = $this->run_sql($sql, array($id));
+        foreach ($result_fields as $field) {
+            $result[0]->{$field->name} = $field->value;
+        }
         $result = $this->format_data($result, 'devices');
         return($result);
     }
@@ -501,7 +506,6 @@ class M_devices extends MY_Model
         return($result);
     }
 
-
     public function update()
     {
         $CI = & get_instance();
@@ -509,112 +513,101 @@ class M_devices extends MY_Model
         $this->db->db_debug = FALSE;
         $custom = 'n';
 
-        // $log_details = new stdClass();
-        // $log_details->severity = 7;
-        // $log_details->file = 'system';
-        // $log_details->message = 'System update start for ' . $CI->response->meta->id;
-        // stdlog($log_details);
+        $log_details = new stdClass();
+        $log_details->severity = 7;
+        $log_details->file = 'system';
+        $log_details->message = 'System update start';
+        stdlog($log_details);
 
-        # test to see if we're updating a field from additional_field_item table
-        # these fields will be prefixed with custom_
+        # account for a single id or multiple id's
+        $ids = array();
+        if (!empty($CI->response->meta->id)) {
+            $ids[] = $CI->response->meta->id;
+        } elseif (!empty($CI->response->meta->ids)) {
+            $ids = explode(',', $CI->response->meta->ids);
+        }
+
+        # set out last seen by
+        if (isset($CI->response->attributes->last_seen_by)) {
+            $source = $CI->response->attributes->last_seen_by;
+        } else {
+            $source = 'user';
+        }
+
+        $system_fields = implode(' ', $this->db->list_fields('system'));
+        $sql = "SELECT id, name FROM additional_field";
+        $additional_fields = $this->run_sql($sql, array());
+
+        // loop through our supplied data and test if it's a custom field or a system field,
+        // then update any supplied device id's
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (stripos($key, 'custom_') !== false) {
-                $custom = 'y';
-                $log_details->message = 'System update using custom fields for ' . $CI->response->meta->id;
-                stdlog($log_details);
-            }
-        }
+            $previous_value = '';
 
-        # update the field in additional_field_item (or insert it)
-        if ($custom == 'y') {
-            $field_name = '';
-            $field_value = '';
-            foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-                if (stripos($key, 'custom_') !== false) {
-                    $field_name = str_replace('custom_', '', $key);
-                    $field_name = str_replace('_', ' ', $field_name);
-                    $field_value = $value;
-                }
-            }
-            $id = $CI->response->meta->id;
-            if ($field_name != '' and $field_value != '') {
-                $sql = "SELECT * FROM additional_field WHERE name = ?";
-                $data = array((string)$field_name);
-                $result = $this->run_sql($sql, $data);
-                $additional_field = $result[0];
-                $sql = "SELECT * FROM additional_field_item WHERE system_id = ? AND additional_field_id = ?";
-                $data = array(intval($id), intval($additional_field->id));
-                $result = $this->run_sql($sql, $data);
-                if (count($result) > 0) {
-                    #update
-                    $sql = "UPDATE additional_field_item SET value = ?, timestamp = NOW() WHERE id = ?";
-                    $data = array("$field_value", intval($result[0]->id));
-                    $this->run_sql($sql, $data);
-                } else {
-                    #insert
-                    $sql = "INSERT INTO additional_field_item (id, system_id, additional_field_id, timestamp, value) VALUES (NULL, ?, ?, NOW(), ?)";
-                    $data = array(intval($id), intval($additional_field->id), "$field_value");
-                    $this->run_sql($sql, $data);
-                }
-            }
-        }
-
-        # update a standard field in the system table
-        if ($custom == 'n') {
-            if (isset($CI->response->attributes->last_seen_by)) {
-                $source = $CI->response->attributes->last_seen_by;
-            } else {
-                $source = 'user';
-            }
-            $fields = implode(' ', $this->db->list_fields('system'));
-
-            # account for a single id or multiple id's
-            $ids = array();
-            if (!empty($CI->response->meta->id)) {
-                $ids[] = $CI->response->meta->id;
-            } elseif (!empty($CI->response->meta->ids)) {
-                $ids = explode(',', $CI->response->meta->ids);
-            }
-
-            foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-                if ($key != 'id' and stripos($fields, ' '.$key.' ') !== false) {
-                    // OK, we have a valid attribute name ($key)
+            // check our custom fields
+            foreach ($additional_fields as $field) {
+                if ($key == $field->name) {
+                    # we have a custom field - get the original value (if it exists)
                     foreach ($ids as $id) {
-                        // get the current value
-                        $sql = "SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?";
-                        $data = array(intval($id));
-                        $result = $this->run_sql($sql, $data);
-                        $previous_value = $result[0]->{$key};
-                        # get the current entry in the edit_log
-                        $sql = "SELECT * FROM `edit_log` WHERE `system_id` = ? AND `db_table` = 'system' AND `db_column` = ? ORDER BY `timestamp` DESC LIMIT 1";
-                        $data = array(intval($id), "$key");
-                        $result = $this->run_sql($sql, $data);
-                        if (!empty($result[0]->weight)) {
-                            $previous_weight = intval($result[0]->weight);
+                        $sql = "SELECT id, value FROM additional_field_item WHERE system_id = ? AND additional_field_id = ?";
+                        $result = $this->run_sql($sql, array(intval($id), $field->id));
+                        if (!empty($result[0]->value)) {
+                            $previous_value = $result[0]->value;
+                            $sql = "UPDATE additional_field_item SET value = ?, timestamp = NOW() WHERE id = ?";
+                            $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
+                            // TODO - add an entry into the change log
                         } else {
-                            $previous_weight = 10000;
+                            $sql = "INSERT INTO additional_field_item VALUES (NULL, ?, ?, NOW(), ?)";
+                            $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
+                            $previous_value = '';
+                            // TODO - add an entry into the change log
                         }
-                        // calculate the weight
-                        $weight = intval($this->weight($source));
-                        if ($weight <= $previous_weight AND $value != $previous_value) {
-                            if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
-                                // update the system table
-                                $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
-                                $data = array((string)$value, intval($id));
-                                $this->run_sql($sql, $data);
-                                // insert an entry into the edit table
-                                $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                                $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
-                                $this->run_sql($sql, $data);
-                            }
-                        } else {
-                            # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
-                        }
+                        // insert an entry into the edit table
+                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                        $data = array(intval($CI->user->id), intval($id), (string)$source, 1000, (string)$key, (string)$value, (string)$previous_value);;
+                        $this->run_sql($sql, $data);
                     }
                 }
             }
+
+            // now check the regular system table fields
+            if ($key != 'id' and stripos($system_fields, ' '.$key.' ') !== false) {
+                // we have a field from the system table
+                foreach ($ids as $id) {
+                    // get the current value
+                    $sql = "SELECT `$key` AS `$key` FROM `system` WHERE `id` = ?";
+                    $data = array(intval($id));
+                    $result = $this->run_sql($sql, $data);
+                    $previous_value = @$result[0]->{$key};
+
+                    # get the current entry in the edit_log
+                    $sql = "SELECT * FROM `edit_log` WHERE `system_id` = ? AND `db_table` = 'system' AND `db_column` = ? ORDER BY `timestamp` DESC LIMIT 1";
+                    $data = array(intval($id), "$key");
+                    $result = $this->run_sql($sql, $data);
+                    if (!empty($result[0]->weight)) {
+                        $previous_weight = intval($result[0]->weight);
+                    } else {
+                        $previous_weight = 10000;
+                    }
+                    // calculate the weight
+                    $weight = intval($this->weight($source));
+                    if ($weight <= $previous_weight AND $value != $previous_value) {
+                        if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
+                            // update the system table
+                            $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
+                            $data = array((string)$value, intval($id));
+                            $this->run_sql($sql, $data);
+                            // insert an entry into the edit table
+                            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                            $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                            $this->run_sql($sql, $data);
+                        }
+                    } else {
+                        # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
+                    }
+
+                }
+            }
         }
-        $this->db->db_debug = $temp_debug;
     }
 
     private function count_data($result)

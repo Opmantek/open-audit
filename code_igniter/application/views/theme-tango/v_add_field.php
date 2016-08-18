@@ -49,15 +49,7 @@ echo form_open('admin_field/add_field')."\n"; ?>
 				<p><label for='placement'><?php echo __('Placement'); ?>: </label>
 					<select id='placement' name='placement' tabindex='3' title='Field Placement' >
 						<option value="custom"><?php echo __('Custom'); ?></option>
-						<option value="location"><?php echo __('Location'); ?></option>
-						<option value="module"><?php echo __('Module'); ?></option>
-						<option value="network"><?php echo __('Network Summary'); ?></option>
-						<option value="san"><?php echo __('San'); ?></option>
-						<option value="san_disk"><?php echo __('San Disk'); ?></option>
 						<option value="system"><?php echo __('System Details'); ?></option>
-						<option value="phone"><?php echo __('Phone'); ?></option>
-						<option value="purchase"><?php echo __('Purchase'); ?></option>
-						<option value="windows"><?php echo __('Windows Details'); ?></option>
 					</select></p>
 				<p><label for='group_id'><?php echo __('Group'); ?>: </label>
 					<select id='group_id' name='group_id' tabindex='4' title='Group' >
