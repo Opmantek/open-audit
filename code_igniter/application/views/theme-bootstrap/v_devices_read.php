@@ -55,7 +55,18 @@ if (empty($data['additional_fields'])) {
   $data['additional_fields'] = array();
 }
 
-#echo "<pre>\n"; print_r($data['additional_fields']); exit();
+$software_odbc_driver = false;
+$software_update = false;
+if ( ! empty($data['software'])) {
+  foreach ($data['software'] as $software) {
+    if ($software->type == 'odbc driver') {
+      $software_odbc = true;
+    }
+    if ($software->type == 'update') {
+      $software_update = true;
+    }
+  }
+}
 
 if (strtolower($data['system']->os_group) == 'windows') {
     $attributes['software'] = array('name' => 'Name', 'version' => 'Version', 'installed_on' => 'Installed On', 'installed_by' => 'Installed By', 'first_seen' => 'First Seen', 'location' => 'Location', 'type' => 'Type');
@@ -182,7 +193,12 @@ if ($data['system']->type != 'computer') {
                     <?php
                     }
                 }
-                ?>
+                if ($software_odbc) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver">Software ODBC Driver</a></li>
+                <?php }
+                if ($software_update) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update">Software Updates</a></li>
+                <?php } ?>
                 </ul>
               </div>
             </div>
@@ -862,10 +878,69 @@ if (isset($data['additional_fields']) and count($data['additional_fields']) > 0)
 	</div><!-- 1 -->
 </div><!-- 0 -->
 
+
+
+
+<?php
+// software installed / odbc / updates
+$list = array('', 'odbc driver', 'update');
+foreach ($list as $item) {
+    if (isset($data['software']) and count($data['software']) > 0) {
+      if ($item == '') {
+        $id = 'software';
+      } else {
+        $id = 'software_';
+      }
+        ?>
+        <div id="<?php echo $id . str_replace(' ', '_', $item); ?>" class="section">
+            <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title pull-left">Software <?php echo __(ucwords($item)); ?></h3>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_<?php echo $item; ?>"></span>
+            <div class="clearfix"></div>
+          </div>
+              <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                          <?php
+                          foreach ($attributes['software'] as $key => $value) {
+                              echo "<th>$value</th>";
+                          }
+                          ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                          foreach ($data['software'] as $row) {
+                            if ($row->type == $item) {
+                              echo "<tr>";
+                              foreach ($attributes['software'] as $key => $value) {
+                                  if (is_integer($row->$key)) {
+                                      echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                  } else {
+                                      echo "<td>" . $row->$key . "</td>\n";
+                                  }
+                              }
+                              echo "</tr>\n";
+                              }
+                            }
+                        ?>
+                    </tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+        <?php
+    }
+}
+?>
+
+
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
   $list[] = 'disk';
 }
@@ -884,7 +959,7 @@ foreach ($list as $item) {
                     <thead>
                         <tr>
                             <?php
-                            if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
+                            if ($item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
                                 foreach ($attributes[$item] as $key => $value) {
                                     echo "<th>$value</th>";
                                 }
@@ -912,7 +987,7 @@ foreach ($list as $item) {
                     </thead>
                     <tbody>
                         <?php
-                        if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
+                        if ($item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
                             foreach ($data[$item] as $row) {
                                 echo "<tr>";
                                 foreach ($attributes[$item] as $key => $value) {
