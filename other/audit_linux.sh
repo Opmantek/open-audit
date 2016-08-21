@@ -608,7 +608,10 @@ if [ -z "$system_model" ]; then
 fi
 
 # get the systemd identifier
-dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
+#dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
+# I had to remove this as it is NOT reset/re-generated when ESX clones a machine, hence false positive matching occurs
+# Also /etc/machine-id is the same - not recreated.
+dbus_identifier=""
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
