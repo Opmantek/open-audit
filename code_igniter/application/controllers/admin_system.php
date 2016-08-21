@@ -239,7 +239,7 @@ class Admin_system extends MY_Controller
         $details->id = $this->uri->segment(3, 0);
         $credentials = $this->m_devices_components->read($details->id, 'y', 'credential');
         foreach ($credentials as $credential) {
-            if (!empty($credential->type and $credential->type == 'snmp')) {
+            if (!empty($credential->type) and $credential->type == 'snmp') {
                 break;
             }
         }
