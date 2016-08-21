@@ -88,7 +88,7 @@ if (!function_exists('snmp_credentials')) {
         }
         $connected = array();
         foreach ($credentials as $credential) {
-            $from = ' ';
+            $from = '';
             if (!empty($credential->source)) {
                 $from = 'from ' . $credential->source;
             }
@@ -96,7 +96,7 @@ if (!function_exists('snmp_credentials')) {
                 $from = 'named ' . $credential->name;
             }
             if (!empty($credential->type) and $credential->type == 'snmp') {
-                if (@snmp2_get($ip, $credential->credentials->community, "1.3.6.1.2.1.1.2.0", $timeout, $retries)) {
+                if (@snmp2_get($ip, $credential->credentials->community, "1.3.6.1.2.1.1.1.0", $timeout, $retries)) {
                     $credential->credentials->version = 2;
                     $log->message = "Credential set for SNMPv2 " . $from . " working on " . $ip;
                     stdlog($log);
@@ -105,7 +105,7 @@ if (!function_exists('snmp_credentials')) {
                     $log->message = "Credential set for SNMPv2 " . $from . " not working on " . $ip;
                     stdlog($log);
                 }
-                if (@snmpget($ip, $credential->credentials->community, "1.3.6.1.2.1.1.2.0", $timeout, $retries)) {
+                if (@snmpget($ip, $credential->credentials->community, "1.3.6.1.2.1.1.1.0", $timeout, $retries)) {
                     $credential->credentials->version = 1;
                     $log->message = "Credential set for SNMPv1 " . $from . " working on " . $ip;
                     stdlog($log);
@@ -119,10 +119,10 @@ if (!function_exists('snmp_credentials')) {
         foreach ($credentials as $credential) {
             $from = ' ';
             if (!empty($credential->source)) {
-                $from = ' from ' . $credential->source . ' ';
+                $from = 'from ' . $credential->source;
             }
             if (!empty($credential->name)) {
-                $from = ' named ' . $credential->name . ' ';
+                $from = 'named ' . $credential->name;
             }
             if (!empty($credential->type) and $credential->type == 'snmp_v3') {
                 $sec_name = $credential->credentials->security_name ?: '';
