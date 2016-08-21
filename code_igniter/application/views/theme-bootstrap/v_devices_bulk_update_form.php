@@ -35,9 +35,11 @@
 $fields = explode(' ', 'asset_number attached_system_id cluster_name cluster_type comments contact_name description dns_domain dns_hostname domain environment form_factor fqdn function hostname ip lease_expiry_date locations location_latitude location_level location_longitude location_rack location_rack_position location_rack_size location_room location_suite manufacturer model name nmis_export nmis_group nmis_name nmis_role oae_manage orgs os_bit os_family os_group os_installation_date os_name os_version owner patch_panel patch_panel_port printer_color purchase_amount purchase_cost_center purchase_date purchase_invoice purchase_order_number purchase_service_contract_number purchase_vendor serial serial_imei serial_sim service_network service_number service_plan service_provider service_type status switch_port switch_system_id types unlock_pin uuid vm_group vm_server_name wall_port warranty_duration warranty_expires warranty_type');
 $field_count = intval(count($fields) / 2) + 1;
 # class   nmis_export oae_manage 
-foreach ($this->response->included as $item) {
-  $data[$item->type][] = $item->attributes;
-}
+#if ( ! empty($this->response->included)) {
+    foreach ($this->response->included as $item) {
+      $data[$item->type][] = $item->attributes;
+    }
+#}
 
 $special = array();
 
@@ -162,6 +164,7 @@ var id = 0;
     <div class="panel-body">
         <div class="form-group">
 <?php
+if ( ! empty($data['fields'])) {
     foreach ($data['fields'] as $field) {
             if ($field->{'type'} == 'varchar') {
                 echo '                    <div class="form-group">
@@ -194,6 +197,7 @@ var id = 0;
                 </div>' . "\n";
             }
     }
+}
 ?>
     </div>
     </div>
@@ -218,7 +222,7 @@ var id = 0;
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Run Discovery</label>
             <div class="col-sm-4 input-group">
-                <a href="discovery/discover_subnet?ids=<?php echo $this->response->meta->ids; ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align">Submit</button></a>
+                <a href="discovery/discover_list?ids=<?php echo $this->response->meta->ids; ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align">Submit</button></a>
             </div>
         </div>
         <div class="form-group">

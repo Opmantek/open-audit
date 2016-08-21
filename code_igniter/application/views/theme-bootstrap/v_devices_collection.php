@@ -125,9 +125,8 @@ if (!empty($this->response->data)) { ?>
       }
       ?>
             <th class="text-center">
-              <!--<button type="button" class="btn btn-primary" onclick="document.bulk_edit.submit();"><?php echo __('Edit') ?></button>&nbsp; -->
               <button type="button" class="btn btn-primary bulk_edit_button"><?php echo __('Edit') ?></button>&nbsp;
-              <input type="checkbox"/>
+              <input type="checkbox" name="select-all"/>
             </th>
           </tr>
         </thead>

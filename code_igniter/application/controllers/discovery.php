@@ -75,45 +75,57 @@ class discovery extends CI_Controller
         // ids should be a comma separated list of device id's (integers) - no spaces
         // this will be converted to an array (system_ids)
 
+        # enable the $_GET global
+        parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
+
         $log_details = new stdClass();
         $log_details->severity = 6;
+        $log_details->file = 'system';
 
         $this->load->model('m_devices_components');
         $this->load->model('m_system');
         $this->load->model('m_oa_user');
         $this->load->library('encrypt');
         $this->load->helper('url');
-        $system_ids = '';
+        $system_ids = array();
 
         // accept a list passed into the function from PHP
         if ($ids != '') {
             $ids = str_replace(' ', '', $ids);
             $system_ids = explode(',', $ids);
+            $log_details->message = "Accepted a list of system ids from PHP function call";
+            stdlog($log_details);
         }
 
         // accept the "ids" POST variable as a list
-        $test = @$this->input->post('ids');
-        if ($test != '' and $system_ids == '') {
-            $system_ids = explode(',', $test);
+        if (! empty($_POST['ids']) and count($system_ids) == 0) {
+            $system_ids = explode(',', $_GET['ids']);
+            $log_details->message = "Accepted a list of system ids from POST";
+            stdlog($log_details);
         }
         unset($test);
 
         // accept a GET variable that's a comma separated list
-        $test = @$this->uri->segment(3);
-        if ($test != '' and $system_ids == '') {
-            $system_ids = explode(',', $test);
+        if (! empty($_GET['ids']) and count($system_ids) == 0) {
+            $system_ids = explode(',', $_GET['ids']);
+            $log_details->message = "Accepted a list of system ids from GET";
+            stdlog($log_details);
         }
         unset($test);
 
         // accept a redirect from bulk credential update
         $test = @$this->session->flashdata('discover_list');
-        if (strlen($test) > 0 and $system_ids == '') {
+        if (strlen($test) > 0 and count($system_ids) == 0) {
             $system_ids = explode(',', $test);
+            $log_details->message = "Accepted a list of system ids from FLASHDATA";
+            stdlog($log_details);
         }
         unset($test);
 
         // make sure we have some ids
         if (count($system_ids) == 0) {
+            $log_details->message = "No system ids supplied, ending";
+            stdlog($log_details);
             return;
         }
 
@@ -121,15 +133,21 @@ class discovery extends CI_Controller
         foreach ($system_ids as $key => $value) {
             $timestamp = date('Y-m-d H:i:s');
             $system_id = $value;
-            $ip_address = ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'ip'));
-            $credentials = $this->m_system->get_credentials($system_id);
+            $credentials = new stdClass();
+            $ip = ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'ip'));
+            $log_details->message = 'Discovery subnet starting for '.$ip;
+            $log_details->severity = 7;
+            stdlog($log_details);
+            // $credentials = $this->m_system->get_credentials($system_id);
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
                 unset($temp);
                 $temp = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
-                $credentials->last_user = $temp[0]->user_full_name;
+                $credentials->last_user = $temp[0]->full_name;
             } else {
                 $credentials->last_user = '';
             }
+            $credentials->limit = 10;
+            $credentials->count = 1;
             $encoded = json_encode($credentials);
             $credentials = $this->encrypt->encode($encoded);
             // make sure we don't have any '/' characters as it breaks the SQL storage
@@ -142,9 +160,15 @@ class discovery extends CI_Controller
                 }
             } while ($i = 0);
             // store it in the DB
-            $sql = '/* discovery::discover_list */ INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (null, "Subnet Credentials - '.$ip_address.'", "'.$credentials.'", "'.$timestamp.'")';
+            $sql = '/* discovery::discover_list */ INSERT INTO oa_temp (temp_id, temp_name, temp_value, temp_timestamp) VALUES (null, "Subnet Credentials - '.$ip.'", "'.$credentials.'", "'.$timestamp.'")';
             $query = $this->db->query($sql);
-            $credentials = "";
+            // $credentials = "";
+
+
+            // TODO - check if this IP fits into any existing subnets
+            $temp = network_details($ip.'/30');
+            $this->m_oa_config->update_blessed($temp->network.'/'.$temp->network_slash);
+            unset($temp);
 
             if (php_uname('s') != 'Windows NT') {
                 $filepath = $this->config->config['base_path'] . '/other';
@@ -160,16 +184,44 @@ class discovery extends CI_Controller
             } else {
                 $nmap_os = 'n';
             }
-            if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
+            if (php_uname('s') != 'Windows NT') {
                 // run the script and continue (do not wait for result)
-                $command_string = "nohup $filepath/discover_subnet.sh subnet_range=$ip_address url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
-                @exec($command_string, $output, $return_var);
+                if (php_uname('s') == 'Darwin') {
+                    $nohup = '';
+                } else {
+                    $nohup = 'nohup ';
+                }
+                $command_string = "$nohup $filepath/discover_subnet.sh subnet_range=$ip url=".$url."index.php/discovery/process_subnet submit_online=y echo_output=n create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+
+                #$command_string =        "$filepath/discover_subnet.sh subnet_range=$ip url=".$url."index.php/discovery/process_subnet submit_online=n echo_output=y create_file=n debugging=0 subnet_timestamp=\"$timestamp\" os_scan=" . $nmap_os . " 2>&1";
+
+                exec($command_string, $output, $return_var);
                 if ($return_var != '0') {
-                    $error = 'Discovery subnet starting script discover_subnet.sh ('.$ip_address.') has failed';
-                    $log_details->message = $error;
+                    $log_details->message = 'Discovery subnet starting script discover_subnet.sh ('.$ip_address.') has failed';
                     $log_details->severity = 5;
                     stdlog($log_details);
+                } else {
+                    $log_details->message = $command_string;
+                    $log_details->severity = 7;
+                    stdlog($log_details);
                 }
+
+                // if ($return_var != '0') {
+                //     $error = 'Discovery subnet starting script discover_subnet.vbs ('.$subnet_range.') has failed';
+                //     $log_details->message = $error;
+                //     stdlog($log_details);
+                // } else {
+                //     $script_result = '';
+                //     foreach ($output as $line) {
+                //         $script_result .= $line;
+                //     }
+                //     $script_result = preg_replace('/\s+/', ' ', $script_result);
+                //     $script_result = str_replace("> <", "><", $script_result);
+                //     $_POST['form_details'] = $script_result;
+                //     $_POST['debug'] = true;
+                //     $this->process_subnet();
+                // }
+
                 $command_string = null;
                 $output = null;
                 $return_var = null;
@@ -256,7 +308,7 @@ class discovery extends CI_Controller
             error_reporting($error_reporting);
             unset($error_reporting);
             if (!$ad) {
-                // log the failed attempt to connect to AD 
+                // log the failed attempt to connect to AD
                 $log_details->severity = 5;
                 $log_details->message = 'Could not connect to AD ' . $_POST['windows_domain'] . ' at ' . $_POST['server'];
                 stdlog($log_details);
@@ -265,7 +317,7 @@ class discovery extends CI_Controller
                 // successful connect to AD, now try to bind using the credentials
                 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
                 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-                $bind = @ldap_bind( $ad, $ad_user, $_POST['windows_password']);
+                $bind = @ldap_bind($ad, $ad_user, $_POST['windows_password']);
                 if ($bind) {
                     $log_details->message = 'Retrieving subnets from AD ' . $_POST['windows_domain'] . ' at ' . $_POST['server'];
                     stdlog($log_details);
@@ -275,7 +327,7 @@ class discovery extends CI_Controller
                     $sr = ldap_search($ad, $dn, $filter, $justthese);
                     $info = ldap_get_entries($ad, $sr);
                     for ($i = 0; $i < count($info)-1; $i++) {
-                        if ( $info[$i]['name'][0] != 'Subnets') {
+                        if ($info[$i]['name'][0] != 'Subnets') {
                             $this->m_oa_config->update_blessed($info[$i]['name'][0]);
                         }
                     }
@@ -463,7 +515,7 @@ class discovery extends CI_Controller
             $row = $query->row();
             if (isset($row->count) and intval($row->count) == 0) {
                 $this->data['warning'] = 'You do not have any credentials stored. Please create some using menu -> Admin -> Credentials -> Add Credential Set.';
-            }            
+            }
             $this->data['include'] = "v_discover_subnet";
             $this->data['sortcolumn'] = '1';
             $this->data['heading'] = 'Discovery';
@@ -649,13 +701,13 @@ class discovery extends CI_Controller
                 $url = str_ireplace('http://', 'https://', $url);
             }
 
-             if (!empty($this->config->config['discovery_nmap_os'])) {
+            if (!empty($this->config->config['discovery_nmap_os'])) {
                 $nmap_os = $this->config->config['discovery_nmap_os'];
             } else {
                 $nmap_os = 'n';
             }
 
-            if ((php_uname('s') == 'Linux') or (php_uname('s') == 'Darwin')) {
+            if (php_uname('s') != 'Windows NT') {
                 if ($subnet_range != '') {
                     if ($display == 'y') {
                         // run the script and wait for the output so we can echo it.
@@ -854,7 +906,7 @@ class discovery extends CI_Controller
                     $query = $this->db->query($sql);
                 } else {
                     $skip = false;
-                    if (stripos(' ' . $this->config->config['discovery_ip_exclude'] . ' ', ' ' . $details->ip . ' ') !== false ) {
+                    if (stripos(' ' . $this->config->config['discovery_ip_exclude'] . ' ', ' ' . $details->ip . ' ') !== false) {
                         # Our ip address matched an ip in the discovery_ip_exclude list - exit
                         $log_details->message = $details->ip . ' is in the list of excluded ip addresses - skipping.';
                         stdlog($log_details);
@@ -1076,7 +1128,7 @@ class discovery extends CI_Controller
                         }
 
                         // new for 1.8.4 - if we have a non-computer, do not attempt to connect using SSH
-                        if ($details->type != 'computer' and $details->type != '' and $details->type != 'unknown' and $details->os_family != 'DD-WRT' and stripos($details->sysDescr, 'dd-wrt') === false ) {
+                        if ($details->type != 'computer' and $details->type != '' and $details->type != 'unknown' and $details->os_family != 'DD-WRT' and stripos($details->sysDescr, 'dd-wrt') === false) {
                             $log_details->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for '.$details->ip.' (System ID '.$details->id.')';
                             stdlog($log_details);
                             $details->ssh_status = 'false';
@@ -1127,10 +1179,7 @@ class discovery extends CI_Controller
 
 
                         # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
-                        if (empty($details->type) and 
-                            empty($details->snmp_oid) and 
-                            empty($details->uuid) and 
-                            stripos($details->nmap_result, '5060/') !== false) {
+                        if (empty($details->type) and empty($details->snmp_oid) and empty($details->uuid) and stripos($details->nmap_result, '5060/') !== false) {
                             $details->type = 'voip phone';
                         }
 
@@ -1329,15 +1378,15 @@ class discovery extends CI_Controller
                                     # We will loose the ability to retrieve certain items like files, netstat, tasks, etc
                                     $log_details->message = "Windows audit for $details->ip (System ID $details->id)";
                                     stdlog($log_details);
-                                        $username = $credentials_windows->credentials->username;
-                                        $temp = explode('@', $username);
-                                        $username = $temp[0];
-                                        if (count($temp) > 1) {
-                                            $domain = $temp[1] . '\\';
-                                        } else {
-                                            $domain = '';
-                                        }
-                                        unset($temp);
+                                    $username = $credentials_windows->credentials->username;
+                                    $temp = explode('@', $username);
+                                    $username = $temp[0];
+                                    if (count($temp) > 1) {
+                                        $domain = $temp[1] . '\\';
+                                    } else {
+                                        $domain = '';
+                                    }
+                                    unset($temp);
 
                                     if ($display == 'y') {
                                         $script_string = "$filepath\\" . $source_name . " strcomputer=".$details->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$url."index.php/system/add_system debugging=3 system_id=".$details->id." last_seen_by=audit_wmi";
@@ -1582,30 +1631,29 @@ class discovery extends CI_Controller
                                     }
                                 }
                             }
-
-                        $log_details->message = "Completed processing $details->ip (System ID $details->id)";
-                        stdlog($log_details);
-                    } // close the 'skip'
-                } // close the device / complete switch
-                unset($details);
-            } // close for each device in XML
-        } // close for form submission
-    } // close function
-}
-
-function echo_details ($details) {
-    // remove all the null, false and Empty Strings but leaves 0 (zero) values
-    $filtered_details = (object) array_filter((array) $details, 'strlen' );
-    foreach ($filtered_details as $key => $value) {
-        if (stripos($key, 'password') !== false) {
-            $filtered_details->$key = '******';
-        }
-        if ($key == 'snmp_community') {
-            $filtered_details->snmp_community = '******';
-        }
+                            $log_details->message = "Completed processing $details->ip (System ID $details->id)";
+                            stdlog($log_details);
+                        } // close the 'skip'
+                    } // close the device / complete switch
+                    unset($details);
+                } // close for each device in XML
+            } // close for form submission
+        } // close function
     }
-    print_r($filtered_details);
-    unset($filtered_details);
-}
 
+    public function echo_details ($details)
+    {
+        // remove all the null, false and Empty Strings but leaves 0 (zero) values
+        $filtered_details = (object) array_filter((array) $details, 'strlen');
+        foreach ($filtered_details as $key => $value) {
+            if (stripos($key, 'password') !== false) {
+                $filtered_details->$key = '******';
+            }
+            if ($key == 'snmp_community') {
+                $filtered_details->snmp_community = '******';
+            }
+        }
+        print_r($filtered_details);
+        unset($filtered_details);
+    }
 }

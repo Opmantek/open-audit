@@ -479,6 +479,12 @@ if (! function_exists('dns_validate')) {
             $log_details->message = 'Setting hostname to sysName because no entry for hostname, but valid sysName ' . @$details->sysName;
             stdlog($log_details);
         }
+        if (empty($details->dns_hostname) and ! empty($details->hostname)) {
+            $details->dns_hostname = $details->hostname;
+        }
+        if (empty($details->dns_domain) and ! empty($details->domain)) {
+            $details->dns_domain = $details->domain;
+        }
         $log_details->message = 'Finish DNS checking for ' . @$details->ip;
         stdlog($log_details);
         return $details;

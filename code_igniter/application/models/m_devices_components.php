@@ -734,7 +734,7 @@ class M_devices_components extends MY_Model
         // we have also unset any items that were inserted (from the audit set above) from the db set
         // any remaining rows in the db set should have their current flag set to n as they were not found in the audit set
         if (count($db_result) > 0) {
-            $log_details->message = 'Inserting change logs (' . $table . ') for '.ip_address_from_db($details->ip).' ('.$name.')';
+            $log_details->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log_details->severity = 7;
             stdlog($log_details);
         }

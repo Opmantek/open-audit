@@ -201,7 +201,7 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">NMIS <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/nmis?action=import'><?php echo __('Import')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/nmis/create'><?php echo __('Import')?></a></li>
                 </ul>
             </li>
             <?php } ?>

@@ -16,12 +16,22 @@ $(document).ready(function () {
     })
 });
 
+/* select all devices on /devices for bulk edit */
+$(document).ready(function() {
+    $(':checkbox[name=select-all]').click (function () {
+      $(':checkbox').prop('checked', this.checked);
+    });
+});
+
+
 /* Send to bulk edit form */
 $(document).ready(function () {
     $(document).on('click', '.bulk_edit_button', function (e) {
         var ids = "";
         $("input:checked").each(function () {
-            ids = ids + "," + $(this).attr("value");
+            if ($(this).attr("value")) {
+                ids = ids + "," + $(this).attr("value");
+            }
         });
         ids = ids.substring(1);
         var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;

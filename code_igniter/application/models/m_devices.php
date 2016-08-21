@@ -506,7 +506,7 @@ class M_devices extends MY_Model
         return($result);
     }
 
-    public function update()
+    public function update($device = NULL)
     {
         $CI = & get_instance();
         $temp_debug = $this->db->db_debug;
@@ -521,17 +521,33 @@ class M_devices extends MY_Model
 
         # account for a single id or multiple id's
         $ids = array();
-        if (!empty($CI->response->meta->id)) {
-            $ids[] = $CI->response->meta->id;
-        } elseif (!empty($CI->response->meta->ids)) {
-            $ids = explode(',', $CI->response->meta->ids);
-        }
 
-        # set out last seen by
-        if (isset($CI->response->attributes->last_seen_by)) {
-            $source = $CI->response->attributes->last_seen_by;
+        if ( ! is_null($device)) {
+            if (empty($device->id)) {
+                // TODO - throw an error
+                return;
+            } else {
+                $ids[] = $device->id;
+            }
+            if ( ! empty($device->last_seen_by)) {
+                $source = $device->last_seen_by;
+            } else {
+                $source = 'user';
+            }
+            $received_data = $device;
         } else {
-            $source = 'user';
+            if ( ! empty($CI->response->meta->id)) {
+                $ids[] = $CI->response->meta->id;
+            } elseif (!empty($CI->response->meta->ids)) {
+                $ids = explode(',', $CI->response->meta->ids);
+            }
+            # set out last seen by
+            if ( ! empty($CI->response->attributes->last_seen_by)) {
+                $source = $CI->response->attributes->last_seen_by;
+            } else {
+                $source = 'user';
+            }
+            $received_data = $CI->response->meta->received_data->attributes;
         }
 
         $system_fields = implode(' ', $this->db->list_fields('system'));
@@ -540,7 +556,8 @@ class M_devices extends MY_Model
 
         // loop through our supplied data and test if it's a custom field or a system field,
         // then update any supplied device id's
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+        #foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+        foreach ($received_data as $key => $value) {
             $previous_value = '';
 
             // check our custom fields
@@ -650,6 +667,7 @@ class M_devices extends MY_Model
             case 'ssh':
             case 'windows':
             case 'wmi':
+            case 'nmis':
                 $weight = 2000;
                 break;
 
@@ -746,8 +764,10 @@ class M_devices extends MY_Model
         stdlog($log_details);
 
         # remove some characters from the OS string
-        $details->os_name = str_ireplace("(r)", "", $details->os_name);
-        $details->os_name = str_ireplace("(tm)", "", $details->os_name);
+        if ( ! empty($details->os_name)) {
+            $details->os_name = str_ireplace("(r)", "", $details->os_name);
+            $details->os_name = str_ireplace("(tm)", "", $details->os_name);
+        }
 
 
         if (empty($details->status)) {
@@ -768,19 +788,29 @@ class M_devices extends MY_Model
         }
 
         # Set the form factor to virtual if required
-        if ((strripos($details->manufacturer, "vmware") !== false) or
-            (strripos($details->manufacturer, "parallels") !== false) or
-            (strripos($details->manufacturer, "virtual") !== false) or
-            (strripos($details->model, "bhyve") !== false)) {
-            if (!isset($details->class) or $details->class != 'hypervisor') {
-                $details->form_factor = 'Virtual';
+        if ( ! empty($details->manufacturer)) {
+            if ((strripos($details->manufacturer, "vmware") !== false) or
+                (strripos($details->manufacturer, "parallels") !== false) or
+                (strripos($details->manufacturer, "virtual") !== false)) {
+                if (!isset($details->class) or $details->class != 'hypervisor') {
+                    $details->form_factor = 'Virtual';
+                }
+            }
+        }
+        if ( ! empty($details->model)) {
+            if (strripos($details->model, "bhyve") !== false) {
+                if (!isset($details->class) or $details->class != 'hypervisor') {
+                    $details->form_factor = 'Virtual';
+                }
             }
         }
 
         # Pad the IP address
-        $details->ip = ip_address_to_db($details->ip);
+        if ( ! empty($details->ip)) {
+            $details->ip = ip_address_to_db($details->ip);
+        }
 
-        if (!empty($details->hostname) and !empty($details->domain) and empty($details->fqdn)) {
+        if ( ! empty($details->hostname) and  ! empty($details->domain) and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
         }
 
@@ -805,7 +835,7 @@ class M_devices extends MY_Model
             if ($key > '') {
                 foreach ($columns as $column) {
                     if ($key == $column->Field) {
-                        $sql .= "'".mysqli_real_escape_string(str_replace('"', '', $value))."', ";
+                        $sql .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
                     }
                 }
             }
@@ -821,10 +851,14 @@ class M_devices extends MY_Model
 
         // insert entries into the edit_log table for these $details columns
         foreach ($details as $key => $value) {
-            if (($key != '') and ($value != '')) {
-                $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
-                $data = array("$details->id", "$details->last_seen_by", "$weight", "$key", "$details->last_seen", "$value", "");
-                $query = $this->db->query($sql, $data);
+            if ($key > '') {
+                foreach ($columns as $column) {
+                    if ($key == $column->Field) {
+                        $sql = "INSERT INTO edit_log VALUES (NULL, 0, ?, '', ?, ?, 'system', ?, ?, ?, ?)";
+                        $data = array("$details->id", "$details->last_seen_by", "$weight", "$key", "$details->last_seen", "$value", "");
+                        $query = $this->db->query($sql, $data);
+                    }
+                }
             }
         }
 
