@@ -260,7 +260,7 @@ var modal_content_image = "";
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
         <ul>
-            <li><a href='<?php echo $oa_web_index?>/admin/import_nmis'><?php echo __('Import')?></a></li>
+            <li><a href='<?php echo $oa_web_index?>/nmis/create'><?php echo __('Import')?></a></li>
             <?php if (isset($group_id)) { ?>
             <li><a href='<?php echo $oa_web_index; ?>/admin/export_nmis/<?php echo intval($group_id); ?>'><?php echo __('Export')?></a></li>
             <?php } ?>
