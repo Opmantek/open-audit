@@ -1154,7 +1154,11 @@ if ($data['system']->type == 'computer') {
         ?>
         <div id="<?php echo $item; ?>" class="section">
             <div class="panel panel-default">
-              <div class="panel-heading"><h3 class="panel-title"><?php echo __('Network Interfaces'); ?></h3></div>
+              <div class="panel-heading">
+                <h3 class="panel-title pull-left"><?php echo __('Network Interfaces'); ?></h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $item; ?>"></span>
+                <div class="clearfix"></div>
+              </div>
               <div class="panel-body">
                 <table class="table">
                     <thead>
