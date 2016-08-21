@@ -114,6 +114,7 @@
     $device_types['terminal'] = 'Terminal';
     $device_types['terminal server'] = 'Terminal Server';
     $device_types['time clock'] = 'Time Clock';
+    $device_types['unknown'] = 'Unknown';
     $device_types['ups'] = 'UPS (Uninterruptible Power Supply)';
     $device_types['video conference'] = 'Video Conference';
     $device_types['voip adapter'] = 'VoIP Adapter';
