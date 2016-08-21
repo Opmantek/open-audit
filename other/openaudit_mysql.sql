@@ -2213,6 +2213,7 @@ CREATE TABLE `system` (
   `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `last_seen_by` varchar(150) NOT NULL DEFAULT '',
   `last_user` varchar(150) NOT NULL DEFAULT '',
+  `omk_uuid` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
