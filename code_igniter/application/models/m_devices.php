@@ -667,11 +667,11 @@ class M_devices extends MY_Model
             case 'ssh':
             case 'windows':
             case 'wmi':
-            case 'nmis':
                 $weight = 2000;
                 break;
 
             case 'snmp':
+            case 'nmis':
                 $weight = 3000;
                 break;
 
