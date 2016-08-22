@@ -193,7 +193,11 @@ class M_oa_user extends MY_Model
         $sql = $this->clean_sql($sql);
         $data = array("$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", );
         $query = $this->db->query($sql, $data);
-        return($this->db->insert_id());
+        $id = $this->db->insert_id();
+        // TODO - fix this for v2
+        $sql = "INSERT INTO oa_user_org VALUES (NULL, $id, 0, 10, '')";
+        $query = $this->db->query($sql);
+        return($id);
     }
 
     public function edit_user($user)
