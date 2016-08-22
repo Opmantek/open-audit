@@ -40,6 +40,13 @@ class M_oa_admin_database extends MY_Model
         parent::__construct();
     }
 
+    public function trim_oa_user_sessions()
+    {
+        $sql = "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+    }
+
     public function count_systems()
     {
         $sql = "SELECT count(*) as count FROM system";
