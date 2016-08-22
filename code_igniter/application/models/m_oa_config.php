@@ -153,6 +153,14 @@ class M_oa_config extends MY_Model
         $this->config->config['oa_web_folder'] = str_replace('/index.php', '', $basic_url);
         unset($i, $j, $temp, $basic_url);
 
+        # set the timestamp
+        $sql = "SELECT NOW() as `timestamp`";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $this->config->config['timestamp'] = $result[0]->timestamp;
+
+
         # get the server OS
         $this->config->config['server_os'] = php_uname('s');
 
