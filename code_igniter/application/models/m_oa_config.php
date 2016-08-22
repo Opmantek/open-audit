@@ -165,11 +165,12 @@ class M_oa_config extends MY_Model
         $this->config->config['server_os'] = php_uname('s');
 
         # get the total number of devices
-        if (isset($internal_version) and $internal_version >= '20160620') {
-            $sql = "SELECT count(id) as device_count FROM system WHERE status = 'production'";
-        } else {
-            $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
-        }
+        // if (isset($internal_version) and $internal_version >= '20160620') {
+        //     $sql = "SELECT count(id) as device_count FROM system WHERE status = 'production'";
+        // } else {
+        //     $sql = "SELECT count(system_id) as device_count FROM system WHERE man_status = 'production'";
+        // }
+        $sql = "SELECT count(*) as device_count FROM system";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
