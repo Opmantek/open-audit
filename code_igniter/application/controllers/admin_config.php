@@ -84,7 +84,7 @@ class Admin_config extends MY_Controller
             $config_value = '';
         }
 
-        $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, date('Y-m-d H:i:s'));
+        $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, $this->config->config['timestamp']);
 
         if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
             redirect($_SERVER['HTTP_REFERER']);

@@ -297,7 +297,7 @@ class Admin_system extends MY_Controller
         $modules = $temp_array['modules'];
 
         $details->last_seen_by = 'snmp';
-        $details->last_seen = date('Y-m-d G:i:s');
+        $details->last_seen = $this->config->config['timestamp'];
         $details->last_user = $this->user->full_name;
         $details->audits_ip = '127.0.0.1';
 
@@ -415,7 +415,7 @@ class Admin_system extends MY_Controller
                 $details->hostname = '';
             }
             $details->last_seen_by = 'web form';
-            $details->last_seen = date('Y-m-d G:i:s');
+            $details->last_seen = $this->config->config['timestamp'];
             $details->last_user = $this->user->full_name;
 
             if (($details->type == 'access token' or
@@ -470,7 +470,7 @@ class Admin_system extends MY_Controller
             if (isset($details->ip)) {
                 $details->ip = ip_address_to_db($details->ip);
             }
-            $details->last_seen = date('Y-m-d H:i:s');
+            $details->last_seen = $this->config->config['timestamp'];
             $details->first_seen = $details->last_seen;
             $details->last_seen_by = 'web form';
 
@@ -529,7 +529,7 @@ class Admin_system extends MY_Controller
         }
         if (isset($_POST['submit'])) {
             # we have an uploaded file - store and process
-            $last_seen = date("Y-m-d H:i:s");
+            $last_seen = $this->config->config['timestamp'];
             $target_path = BASEPATH."../application/uploads/".basename($_FILES['upload_file']['name']);
 
             if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path)) {

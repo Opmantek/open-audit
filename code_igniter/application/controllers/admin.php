@@ -214,9 +214,9 @@ class admin extends MY_Controller
                 stdlog($log_details);
                 foreach ($config as $name => $value) {
                     $value = urldecode($value);
-                    $log_details->message = 'admin::set_config name is: ' . $name . ' ,  value is: ' . $value;
+                    $log_details->message = 'admin::set_config name is: ' . $name . ' ,  value is: ' . $value . " at " . $this->config->config['timestamp'];
                     stdlog($log_details);
-                    $this->m_oa_config->update_config($name, $value, $this->user->id, date('Y-m-d H:i:s'));
+                    $this->m_oa_config->update_config($name, $value, $this->user->id, $this->config->config['timestamp']);
                 }
                 header(' ', true, 200);
             } else {
@@ -665,7 +665,7 @@ class admin extends MY_Controller
             $this->load->model("m_oa_group");
             $this->load->model("m_audit_log");
             $details = new stdClass();
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
             $ad_ldap_server = $_POST['ad_ldap_server'];
             $ad_ldap_connect = "ldap://".$ad_ldap_server;
             $ad_user = $_POST['ad_user'];
@@ -3318,7 +3318,7 @@ class admin extends MY_Controller
 
             $configs = array('default_ipmi_password', 'default_ssh_password', 'default_snmp_community', 'default_windows_password');
             $user_id = $this->user->id;
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
             foreach ($configs as $config_name) {
                 $config_value = $this->m_oa_config->get_config_item($config_name);
                 $this->m_oa_config->update_config($config_name, $config_value, $user_id, $timestamp);

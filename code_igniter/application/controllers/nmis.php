@@ -66,7 +66,6 @@ class Nmis extends MY_Controller
 		$this->load->helper('input');
 		$this->load->helper('output');
 		$this->load->helper('error');
-		#$this->load->model('m_Name');
 		$this->load->model('m_orgs');
 		inputRead();
 		$this->output->url = $this->config->item('oa_web_index');
@@ -174,7 +173,7 @@ class Nmis extends MY_Controller
 
 		$this->load->model('m_system');
 		$this->load->model('m_devices');
-		$timestamp = date('Y-m-d H:i:s');
+		$timestamp = $this->config->config['timestamp'];
 		$node_array = array();
 
 		$file_handle = fopen($file, 'r');

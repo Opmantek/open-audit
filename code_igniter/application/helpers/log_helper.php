@@ -143,7 +143,7 @@ if (! function_exists('stdlog')) {
         // We create a new object instead of simply populating the existing with defaults so we can set the attribute order
         // The original passed object is $log_details, the new object is $log
 
-        $CI->load->model('m_oa_config');
+        $CI->load->model('m_oa_config');        
 
         // set the line ending type
         if (php_uname('s') == 'Windows NT') {
@@ -173,13 +173,7 @@ if (! function_exists('stdlog')) {
         }
 
         if (!isset($log_details->timestamp) or $log_details->timestamp == '') {
-            $log->timestamp = date('Y-m-d H:i:s');
-            if ($log->style == 'json') {
-                $log->timestamp = date('Y-m-d H:i:s');
-            }
-            if ($log->style == 'syslog') {
-                $log->timestamp = date('M d H:i:s');
-            }
+            $log->timestamp = $CI->config->item('timestamp');
         } else {
             $log->timestamp = $log_details->timestamp;
         }

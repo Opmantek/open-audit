@@ -68,6 +68,8 @@ class System extends CI_Controller
         check_default_reports();
         $this->load->helper('group_helper');
         check_default_groups();
+        $this->load->model('m_oa_config');
+        $this->m_oa_config->load_config();
     }
 
     /**
@@ -157,7 +159,7 @@ class System extends CI_Controller
             foreach ($xml_post->children() as $child) {
                 $count++;
                 if ($child->getName() === 'computer') {
-                    $details->last_seen = date('Y-m-d H:i:s');
+                    $details->last_seen = $this->config->config['timestamp'];
                     $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
                     $details->last_seen_by = 'active directory';
                     $details->id = $this->m_system->process_system_from_ad($child);
@@ -311,7 +313,7 @@ class System extends CI_Controller
         unset($mac);
 
         $details = (object) $xml->sys;
-        $details->last_seen = date('Y-m-d H:i:s');
+        $details->last_seen = $this->config->config['timestamp'];
         $received_system_id = '';
         if (empty($details->id)) {
             $details->id = '';
@@ -515,7 +517,7 @@ class System extends CI_Controller
             $this->load->model('m_system');
             $this->load->model('m_oa_group');
             $this->load->model('m_audit_log');
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
             $xml_input = $_POST['form_nmap'];
 
             try {

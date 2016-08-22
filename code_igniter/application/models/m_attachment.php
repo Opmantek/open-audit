@@ -44,7 +44,7 @@ class M_attachment extends MY_Model
     {
         $sql = "INSERT INTO `attachment` (`id`, `system_id`, `user_id`, `title`, `filename`, `timestamp`) VALUES (NULL, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$system_id", $this->session->userdata['user_id'], "$title", "$name", date('Y-m-d H:i:s'));
+        $data = array("$system_id", $this->session->userdata['user_id'], "$title", "$name", $this->config->config['timestamp']);
         $query = $this->db->query($sql, $data);
         echo $this->db->last_query();
         return;

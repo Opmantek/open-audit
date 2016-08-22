@@ -50,11 +50,7 @@ class M_audit_log extends MY_Model
             $type = 'audit';
         }
         if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
-        }
-
-        if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
         }
         $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);

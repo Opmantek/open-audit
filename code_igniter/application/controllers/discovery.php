@@ -48,7 +48,7 @@ class discovery extends CI_Controller
         $this->load->model('m_system');
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
-        $timestamp = date('Y-m-d H:i:s');
+        $timestamp = $this->config->config['timestamp'];
         // log the attempt
         $this->load->helper('log');
         $log_details = new stdClass();
@@ -131,7 +131,7 @@ class discovery extends CI_Controller
 
         // spawn a discovery process for each system.id
         foreach ($system_ids as $key => $value) {
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
             $system_id = $value;
             $credentials = new stdClass();
             $ip = ip_address_from_db($this->m_devices_components->read($system_id, 'y', 'system', '', 'ip'));
@@ -529,7 +529,7 @@ class discovery extends CI_Controller
             $return_var = "";
             $output = "";
             $display = '';
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
 
             if ($this->input->post('debug') and strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
                 $display = 'y';
@@ -887,7 +887,7 @@ class discovery extends CI_Controller
             $this->load->model('m_change_log');
             $this->load->model('m_devices_components');
             $this->load->model('m_devices');
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
 
             $count = 0;
             foreach ($xml->children() as $details) {

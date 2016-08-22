@@ -177,7 +177,7 @@ class ajax extends MY_Controller
             $config_value = '';
         }
 
-       $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, date('Y-m-d H:i:s'));
+       $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, $this->config->config['timestamp']);
 
         $masked = str_pad('', strlen($config_value), '*');
         if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {

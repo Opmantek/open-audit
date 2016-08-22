@@ -68,6 +68,8 @@ class San extends CI_Controller
         check_default_reports();
         $this->load->helper('group_helper');
         check_default_groups();
+        $this->load->model('m_oa_config');
+        $this->m_oa_config->load_config();
     }
 
     /**
@@ -706,7 +708,7 @@ class San extends CI_Controller
             $log_details->message = 'Processing audit result for san at ' . $details->ip;
             stdlog($log_details);
 
-            $details->last_seen = date('Y-m-d H:i:s');
+            $details->last_seen = $this->config->config['timestamp'];
             $details->id = intval($this->m_system->find_system($details, 'y'));
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);

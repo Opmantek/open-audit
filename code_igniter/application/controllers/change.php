@@ -120,7 +120,7 @@ class change extends MY_Controller
 
         $details['alerts'] = $data['alerts'];
         $details['user_id'] = $this->user->id;
-        $details['alert_ack_time'] = date('Y-m-d H:i:s');
+        $details['alert_ack_time'] = $this->config->config['timestamp'];
         $this->load->model("m_change_log");
         $result = $this->m_change_log->updateChange($details);
         redirect('/');

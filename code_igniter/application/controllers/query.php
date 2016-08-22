@@ -95,15 +95,16 @@ class query extends MY_Controller
         }
 
         // make a default end date of today if none provided
-        $end_date = date('Y-m-d');
+        $temp = explode(' ', $this->config->config['timestamp']);
+        $end_date = $temp[0];
         // check if GET end date passed
         $get_end_date =  $this->uri->segment(5, 0);
-        if (isset($get_end_date) and date('Y-m-d', strtotime($get_end_date)) and $get_end_date != '0') {
+        if (isset($get_end_date) and date($end_date, strtotime($get_end_date)) and $get_end_date != '0') {
             $end_date = $get_end_date;
         }
         // check if POST end date passed
         $post_end_date = @$_POST['end_date'];
-        if (isset($post_end_date) and date('Y-m-d', strtotime($post_end_date)) and $post_end_date != '0' and $post_end_date != '') {
+        if (isset($post_end_date) and date($end_date, strtotime($post_end_date)) and $post_end_date != '0' and $post_end_date != '') {
             $end_date = $post_end_date;
         }
 

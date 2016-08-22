@@ -381,7 +381,7 @@ class M_system extends MY_Model
             #echo $this->db->last_query();
         } else {
             // this is a new system
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
             $sql = "INSERT INTO system (hostname, ip, domain, type, icon, os_group, os_family, os_name, os_group, os_family, os_name, last_seen, last_seen_by, timestamp, first_timestamp) VALUES (?, ?, ?, 'computer', ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active directory', ?, ?)";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", $this->ip_address_to_db($details->ip), "$details->domain", "$details->icon", "$details->os_group", "$details->os_family", "$details->os_name", "$details->os_group", "$details->os_family", "$details->os_name", "$details->last_seen", $timestamp, "$details->last_seen" );
@@ -807,7 +807,7 @@ class M_system extends MY_Model
         }
 
         if (empty($details->first_seen)) {
-            $details->first_seen = date('Y-m-d H:i:s');
+            $details->first_seen = $this->config->config['timestamp'];
         }
 
         $log_details = new stdClass();
@@ -824,7 +824,7 @@ class M_system extends MY_Model
 
         # ensure we have something not null for all the below
         if (!isset($details->timestamp) or $details->timestamp == '') {
-            $details->timestamp = date('Y-m-d H:i:s');
+            $details->timestamp = $this->config->config['timestamp'];
         }
         $details->first_timestamp = $details->timestamp;
 
@@ -1190,7 +1190,7 @@ class M_system extends MY_Model
         }
 
         if (!isset($details->timestamp) or $details->timestamp == '') {
-            $details->timestamp = date('Y-m-d H:i:s');
+            $details->timestamp = $this->config->config['timestamp'];
         }
 
         if (!isset($details->original_timestamp) or $details->original_timestamp == '') {
