@@ -93,6 +93,8 @@ class login extends CI_Controller
         $this->load->model('m_oa_admin_database');
         $this->load->model('m_oa_config');
         $data['systems'] = $this->m_oa_admin_database->count_systems();
+        // purge old user sessions (older than 7 days)
+        $this->m_oa_admin_database->trim_oa_user_sessions();
         $data['logo'] = 'logo.png';
         $data['oae_message'] = '';
         $license = '';
