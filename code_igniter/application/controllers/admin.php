@@ -3765,7 +3765,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.8.4 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -3797,7 +3796,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.10 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4592,7 +4590,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.10.1 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4620,7 +4617,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4744,6 +4740,7 @@ class admin extends MY_Controller
                 $dynamic_select = str_replace("ip.ip_address_v4", "ip.ip", $dynamic_select);
                 $dynamic_select = str_replace("sys_hw_network_card_ip.system_id", "ip.system_id", $dynamic_select);
                 $sql = "UPDATE oa_group SET group_dynamic_select = '" . $dynamic_select . "' WHERE group_id = " . intval($group->group_id);
+                $sql = "UPDATE oa_group SET group_dynamic_select = \"" . $dynamic_select . "\" WHERE group_id = " . intval($group->group_id);
                 $log_details->message = $sql;
                 stdlog($log_details);
                 $query = $this->db->query($sql);
@@ -4805,7 +4802,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.4 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             $sql = array();
@@ -4843,7 +4839,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.6 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             unset($sql);
@@ -5023,7 +5018,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.8 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             # initialise our $sql array
@@ -5513,7 +5507,6 @@ class admin extends MY_Controller
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.8.1 commenced';
-            $log_details->log_level = 4;
             stdlog($log_details);
 
             # initialise our $sql array
