@@ -1051,6 +1051,7 @@ class discovery extends CI_Controller
                         // On OSX we cannot run Nmap and get a UDP port result for 161 as 'You requested a scan type which requires root privileges.' So just set the snmp_status to true and attempt to snmp_audit the target device
                         if (php_uname('s') == 'Darwin') {
                             $details->snmp_status = 'true';
+                            $details->nmap_ports .= ',161/udp/snmp';
                         }
 
                         $log_details->message = 'SNMP Status is '.$details->snmp_status.' on '.$details->ip;
