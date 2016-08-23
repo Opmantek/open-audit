@@ -287,6 +287,7 @@ class M_devices_components extends MY_Model
     public function process_component($table = '', $details, $input, $display = 'n', $match_columns = array())
     {
         $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
+        $delete_noncurrent = @$this->m_oa_config->get_config_item('delete_noncurrent');
 
         $log_details = new stdClass();
         $log_details->message = '';
@@ -739,33 +740,41 @@ class M_devices_components extends MY_Model
             stdlog($log_details);
         }
         foreach ($db_result as $db_item) {
-            $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
-            $sql = $this->clean_sql($sql);
-            $data = array($db_item->id);
-            $query = $this->db->query($sql, $data);
-            if (strtolower($create_alerts) == 'y') {
-                $alert_details = '';
-                foreach ($match_columns as $key => $value) {
-                    $alert_details .= $value . ' is ' . $db_item->$value . ', ';
-                }
-                $alert_details = substr($alert_details, 0, -2);
-                $alert_details = "Item removed from $table - " . $alert_details;
-                if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                    $sql = "SELECT last_seen FROM `system` WHERE id = ?";
-                    $sql = $this->clean_sql($sql);
-                    $data = array($details->id);
-                    $query = $this->db->query($sql, $data);
-                    $result = $query->result();
-                    $details->last_seen = $result[0]->last_seen;
-                }
-                $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
+            if (strtolower($delete_noncurrent) == 'y') {
+                $sql = "DELETE FROM `$table` WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
-                $data = array("$details->id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
+                $data = array($db_item->id);
                 $query = $this->db->query($sql, $data);
-                # add a count to our chart table
-                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+
+            } else {
+                $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
                 $sql = $this->clean_sql($sql);
-                $query = $this->db->query($sql);
+                $data = array($db_item->id);
+                $query = $this->db->query($sql, $data);
+                if (strtolower($create_alerts) == 'y') {
+                    $alert_details = '';
+                    foreach ($match_columns as $key => $value) {
+                        $alert_details .= $value . ' is ' . $db_item->$value . ', ';
+                    }
+                    $alert_details = substr($alert_details, 0, -2);
+                    $alert_details = "Item removed from $table - " . $alert_details;
+                    if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
+                        $sql = "SELECT last_seen FROM `system` WHERE id = ?";
+                        $sql = $this->clean_sql($sql);
+                        $data = array($details->id);
+                        $query = $this->db->query($sql, $data);
+                        $result = $query->result();
+                        $details->last_seen = $result[0]->last_seen;
+                    }
+                    $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
+                    $sql = $this->clean_sql($sql);
+                    $data = array("$details->id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
+                    $query = $this->db->query($sql, $data);
+                    # add a count to our chart table
+                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                    $sql = $this->clean_sql($sql);
+                    $query = $this->db->query($sql);
+                }
             }
         }
         // update the audit log

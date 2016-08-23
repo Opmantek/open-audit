@@ -5519,6 +5519,7 @@ class admin extends MY_Controller
             $sql[] = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
             unset($fields);
             $sql[] = "ALTER TABLE system ADD omk_uuid text NOT NULL AFTER last_user";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y','0000-00-00 00:00:00',0,'Should we delete any attributes that are not present when we audit a device.')";
             $sql[] = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
 
