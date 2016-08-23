@@ -5501,7 +5501,7 @@ class admin extends MY_Controller
             unset($log_details);
         }
 
-        if (($db_internal_version < '201606810') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160810') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.8.1
 
             $log_details = new stdClass();
