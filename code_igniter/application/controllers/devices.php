@@ -226,7 +226,9 @@ class devices extends MY_Controller
             $this->response->included = array();
             $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-            if ( ! empty($this->m_fields->collection())) {
+            unset($temp);
+            $temp = @$this->m_fields->collection();
+            if ( ! empty($temp)) {
                 $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             }
             include 'include_device_types.php';
