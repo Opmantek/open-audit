@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -49,13 +50,9 @@ class M_audit_log extends MY_Model
             $type = 'audit';
         }
         if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
         }
-
-        if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
-        }
-        $sql = "INSERT INTO audit_log (system_id, username, type, ip, debug, wmi_fails, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
         $data = array($system_id, "$username", "$type", "$ip", "$debug", "$wmi_fails", "$timestamp");
         $query = $this->db->query($sql, $data);

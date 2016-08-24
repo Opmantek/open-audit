@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -54,7 +55,7 @@ if ($function == "list_devices") {
     $title .= " - ".ucwords(str_replace("_", " ", $function));
 }
 
-function print_something($string)
+function print_something($string = '')
 {
     if ((mb_strlen($string) == 0) or ($string == '0000-00-00')) {
         return '-';
@@ -114,6 +115,39 @@ function print_something($string)
 	</script>
 
 	<script type="text/javascript">
+<?php
+        if (!empty($data['system'][0]->id)) {
+            echo "        var system_id = '" . $data['system'][0]->id . "';\n";
+        }
+        if (!empty($this->response->meta->collection)) {
+            echo "        var collection = '" . $this->response->meta->collection . "';\n";
+        }
+?>
+
+    /* any Delete links */
+    $(document).ready(function(){
+        $('.delete_link').click(function() {
+            if (confirm('Are you sure?') != true) {
+                return;
+            }
+            var $id = $(this).attr('data-id');
+            var $name = $(this).attr('data-name');
+            var $url = '/open-audit/index.php/' + collection + '/' + $id;
+            $.ajax({
+                type: 'DELETE',
+                url: $url,
+                dataType: 'json',
+                success: function(data) {
+                    // alert($name + " has been deleted.");
+                    window.location = "/open-audit/index.php/" + collection;
+                },
+                error: function() {
+                    alert("An error occurred when deleting item:" + $name);
+                }
+           });
+        });
+    });
+
 	$(document).ready(function() {
 		$(function() {
             $("table").tablesorter({cancelSelection: false, widthFixed: true, sortList: [[<?php echo $sortcolumn?>,0],[<?php echo $sortcolumn?>,0]], widgets: ['zebra'] })
@@ -230,7 +264,7 @@ function print_something($string)
 	<style type="text/css">
 	a { color: #101010; text-decoration: none }
 	a:hover { color: #729FCF; }
-	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",Sans-Serif; background: #FBFAF9; font-size:12px; color:#111; margin:8px;}
+	body { font-family:"Verdana","Lucida Sans Unicode","Lucida Sans",sans-serif; background: #FBFAF9; font-size:12px; color:#111; margin:8px;}
 	h2 { border-color:#FFF; border-style:solid; border-width:0pt 0pt 1px; color:#555555; font-size:22px; font-weight:bold; padding:0px 0px 1px; }
 	img {border:0;}
 	</style>
@@ -256,7 +290,7 @@ function print_something($string)
 	}
 </style>
 
-<?php if ($this->user->user_admin == 'y') {
+<?php if ($this->user->admin == 'y') {
     echo "<script type=\"text/javascript\">\n";
     echo "function createRequestObject() \n";
     echo "{\n";
@@ -293,15 +327,25 @@ function print_something($string)
 	</div> <!-- end of topsection -->
 	<div id="content_container" style="float: left; width: 100%">
 	<?php
+    if (!empty($this->response->meta->filtered) and !empty($this->response->meta->total)) {
+        $total = $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results';
+        $query = '';
+    } else {
+        $total = '';
+    }
     if (isset($query) and $include != 'v_add_user') {
-        echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>".__($heading)."</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>".count($query)." ".__("results")."</h2></div>\n\t\t</div>\n";
+        if (empty($total)) {
+            $total = count($query) . ' ' . __("results");
+        }
+        echo "\t<div>\n\t\t\t<div style=\"float:left; width:50%;\"><h2>".__($heading)."</h2></div>\n\t\t\t<div style=\"float:left; width:50%; text-align: right;\"><h2>".$total."</h2></div>\n\t\t</div>\n";
     } else {
         echo "<h2>".htmlentities(__($heading))."</h2>\n";
     }
-    #$this->load->view("theme-" . $this->user->user_theme . "/" . $include);
-    include($include.'.php')
+    #$this->load->view("theme-" . $this->user->theme . "/" . $include);
+    include($include.'.php');
     ?>
 	</div><!-- end of content_container -->
 </div>
 </body>
 </html>
+<?php exit(); ?>

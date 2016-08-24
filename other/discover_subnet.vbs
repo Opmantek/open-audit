@@ -25,7 +25,8 @@
 
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
-' @version 1.12.4
+' 
+' @version 1.12.8
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -66,6 +67,10 @@ dim host_is_up
 dim snmp_status : snmp_status = "false"
 dim ssh_status : ssh_status = "false"
 dim wmi_status : wmi_status = "false"
+dim nmap_ports
+dim temp
+dim port
+dim program
 
 
 ' below we take any command line arguements
@@ -301,6 +306,7 @@ for each host in hosts_in_subnet
     exit_status = "y"
     host_is_up = "false"
     command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 " & host
+    nmap_ports = ""
     execute_command()
 
     Do Until objExecObject.Status = 0
@@ -309,6 +315,18 @@ for each host in hosts_in_subnet
 
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
+
+        temp = line
+        'temp = replace(temp, vbTab, " ")
+        Do While InStr(1, temp, "  ")
+            temp = Replace(temp, "  ", " ")
+        Loop
+        if instr(temp, "/tcp open ") then
+            temp = split(temp, " ")
+            port = temp(0)
+            program = temp(2)
+            nmap_ports = nmap_ports & "," & port & "/" & program
+        end if
 
         if instr(lcase(line), "host is up") then
             host_is_up = "true"
@@ -356,6 +374,7 @@ for each host in hosts_in_subnet
         line = objExecObject.StdOut.ReadLine
         if instr(lcase(line), "161/udp") then
             if instr(lcase(line), "open") then
+                nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
             end if
         end if
@@ -367,17 +386,19 @@ for each host in hosts_in_subnet
     end if
 
     if host_is_up = "true" then
+        nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
         result =          " <device>" & vbcrlf
         result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
-        result = result & "     <man_ip_address><![CDATA[" & host & "]]></man_ip_address>" & vbcrlf
+        result = result & "     <ip><![CDATA[" & host & "]]></ip>" & vbcrlf
         result = result & "     <mac_address><![CDATA[" & mac_address & "]]></mac_address>" & vbcrlf
         result = result & "     <manufacturer><![CDATA[" & manufacturer & "]]></manufacturer>" & vbcrlf
-        result = result & "     <description><![CDATA[" & description & "]]></description>" & vbcrlf
+        result = result & "     <description></description>" & vbcrlf
         result = result & "     <org_id><![CDATA[" & org_id & "]]></org_id>" & vbcrlf
         result = result & "     <snmp_status><![CDATA[" & snmp_status & "]]></snmp_status>" & vbcrlf
         result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
         result = result & "     <wmi_status><![CDATA[" & wmi_status & "]]></wmi_status>" & vbcrlf
         result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
+        result = result & "     <nmap_ports><![CDATA[" & nmap_ports & "]]></nmap_ports>" & vbcrlf
         result = result & " </device>" & vbcrlf
         result_file = result_file & result
 

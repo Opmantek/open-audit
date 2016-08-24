@@ -27,15 +27,16 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if (!isset($this->user->user_lang) or $this->user->user_lang == "") {
+if (!isset($this->user->lang) or $this->user->lang == "") {
     $GLOBALS["user_lang"] = 'en';
 } else {
-    $GLOBALS["user_lang"] = $this->user->user_lang;
+    $GLOBALS["user_lang"] = $this->user->lang;
 }
 
 $language_file = APPPATH."/views/lang/".$GLOBALS["user_lang"].".inc";

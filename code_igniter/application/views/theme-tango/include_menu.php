@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,7 +80,7 @@ var modal_content_image = "";
     $new_object->report_name = 'Partition Alerts';
     $menu[] = $new_object;
 
-    if ($this->user->user_sam > '0') {
+    if (isset($this->user->sam) and $this->user->sam > '0') {
         $new_object = new stdClass();
         $new_object->report_id = '';
         $new_object->report_name = 'Software Licensing';
@@ -118,7 +119,7 @@ var modal_content_image = "";
     -->
     <!--
     <?php
-    if ($this->user->user_sam > '2') {
+    if ($this->user->sam > '2') {
         ?>
         <li><a href='#'><?php echo mb_strtoupper(__('Licensing'))?></a>
             <ul>
@@ -130,16 +131,16 @@ var modal_content_image = "";
     } ?>
     -->
     <?php
-    if ($this->user->user_admin == 'y') {
+    if ($this->user->admin == 'y') {
         ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('Admin'))?></a>
         <ul>
 
-            <li><a href='javascript:void(0)'><?php echo __('Additional Fields')?></a>
+            <li><a href='javascript:void(0)'><?php echo __('Fields')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_field/list_fields'><?php echo __('List Fields')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_field/add_field'><?php echo __('Add Field')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/fields'><?php echo __('List Fields')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/fields/create'><?php echo __('Create Field')?></a></li>
                 </ul>
             </li>
 
@@ -152,6 +153,12 @@ var modal_content_image = "";
                 </ul>
             </li>
 
+            <li><a href='javascript:void(0)'><?php echo __('Credentials')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/credentials'><?php echo __('View Credentials')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/credentials?action=create'><?php echo __('Add Credential Set')?></a></li>
+                </ul>
+            </li>
             <li><a href='javascript:void(0)'><?php echo __('Database')?></a>
                 <ul>
                     <!--
@@ -161,8 +168,7 @@ var modal_content_image = "";
                     <?php
                     if (php_uname('s') == 'Linux') {
                         echo "                  <li><a href='".$oa_web_index."/admin_db/backup'>".__('Backup the Database')."</a></li>\n";
-                    }
-        ?>
+                    } ?>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/maintenance'><?php echo __('Database Maintenance')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
@@ -179,9 +185,7 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/windows'><?php echo __('Discover a Windows computer')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/linux'><?php echo __('Discover a device using SSH')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/snmp'><?php echo __('Discover a device using SNMP')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/device'><?php echo __('Discover a Device')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
@@ -211,6 +215,12 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin/purge_log/system'><?php echo __('Purge System Log')?></a></li>
                 </ul>
             </li>
+            <li><a href='javascript:void(0)'><?php echo __('Networks')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/networks'><?php echo __('List Networks')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/networks?action=create'><?php echo __('Add Network')?></a></li>
+                </ul>
+            </li>
             <li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/admin_org/list_orgs'><?php echo __('List Organisations')?></a></li>
@@ -229,7 +239,9 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Scripts')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li>
+                    <!-- <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li> -->
+                    <li><a href='<?php echo $oa_web_index?>/scripts'><?php echo __('View Scripts')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/scripts?action=create'><?php echo __('Add Script')?></a></li>
                 </ul>
             </li>
 
@@ -244,11 +256,11 @@ var modal_content_image = "";
     <?php } ?>
 
     <?php
-    if (($this->user->user_admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
+    if (($this->user->admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
         <ul>
-            <li><a href='<?php echo $oa_web_index?>/admin/import_nmis'><?php echo __('Import')?></a></li>
+            <li><a href='<?php echo $oa_web_index?>/nmis/create'><?php echo __('Import')?></a></li>
             <?php if (isset($group_id)) { ?>
             <li><a href='<?php echo $oa_web_index; ?>/admin/export_nmis/<?php echo intval($group_id); ?>'><?php echo __('Export')?></a></li>
             <?php } ?>
@@ -298,7 +310,7 @@ var modal_content_image = "";
 
     <?php if (isset($export_report)) { ?>
         <?php if (isset($group_id)) { ?>
-            <?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+            <?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) { ?>
                 <li style="float:right; position:relative; padding-right:4px;">
                     <form name="search_form" action="<?php echo $oa_web_index?>/main/search/<?php echo intval($group_id);?>/" method="post">
                         <table>
@@ -322,7 +334,7 @@ var modal_content_image = "";
             }
             if ($hit == 'y') {
                 ?>
-                <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url().'/username/'.$this->user->user_name?>/password/YOUR_PASSWORD/rss"><img src="<?php echo $oa_theme_images?>/16_rss.png" alt="RSS Link" title="RSS Link"/></a></li>
+                <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url().'/username/'.$this->user->name?>/password/YOUR_PASSWORD/rss"><img src="<?php echo $oa_theme_images?>/16_rss.png" alt="RSS Link" title="RSS Link"/></a></li>
             <?php }
             } ?>
         <li style="float: right; position: relative; top:-1px; padding-right: 6px;"><a href="<?php echo current_url()?>/xml"><img src="<?php echo $oa_theme_images?>/16_text-x-generic-template.png" alt="<?php echo __('Export as XML')?>" title="<?php echo __('Export as XML')?>"/></a></li>

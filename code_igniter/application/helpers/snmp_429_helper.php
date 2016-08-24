@@ -30,19 +30,19 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor 3Com
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.429.2.19') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.429.2.19') {
         $details->model = 'HiPer Access Router';
         $details->type = 'router';
     }
-
-
-
+    return($details);
 };

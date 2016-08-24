@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Sodipodi ("http://www.sodipodi.com/") -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1"
+   x="0"
+   y="0"
+   width="100"
+   height="100"
+   id="svg1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="mandriva.svg">
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="706"
+     id="namedview13"
+     showgrid="false"
+     inkscape:zoom="1.2686569"
+     inkscape:cx="351.58976"
+     inkscape:cy="80.629972"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs3">
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0"
+       id="linearGradient226"
+       gradientUnits="objectBoundingBox"
+       spreadMethod="pad">
+      <stop
+         style="stop-color:#ffd033;stop-opacity:1;"
+         offset="0"
+         id="stop227" />
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="1"
+         id="stop228" />
+    </linearGradient>
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="0"
+       id="linearGradient229"
+       xlink:href="#linearGradient226"
+       gradientUnits="objectBoundingBox"
+       spreadMethod="pad" />
+    <radialGradient
+       cx="0.5"
+       cy="0.5"
+       fx="0.5"
+       fy="0.5"
+       r="0.5"
+       id="radialGradient233"
+       xlink:href="#linearGradient226"
+       gradientUnits="objectBoundingBox"
+       spreadMethod="pad" />
+  </defs>
+  <g
+     transform="matrix(0.15975917,0,0,0.15975917,-11.594049,6.0100678)"
+     style="font-size:12px"
+     id="g132">
+    <path
+       d="m 708.297,259.259 c -17.619,2.787 -47.485,-1.286 -52.858,8.362 -5.394,9.685 31.784,63.59 20.558,49.637 -11.095,-13.79 -22.351,-41.579 -33.285,-41.372 -11.063,0.21 -39.115,59.345 -32.707,42.622 l 19.058,-49.735 c 1.836,-4.791 1.297,-10.637 -0.666,-15.377 -6.852,-16.546 -13.705,-33.091 -20.557,-49.637 -6.793,-16.403 22.548,41.579 33.542,41.372 11.09,-0.209 39.116,-59.345 32.708,-42.622 -6.353,16.578 -24.734,40.318 -19.058,49.735 5.726,9.499 70.953,4.217 53.265,7.015 z"
+       transform="translate(-13.75,-1.25)"
+       style="fill:#ffe600;fill-rule:evenodd;stroke-width:1pt"
+       id="path3951"
+       inkscape:connector-curvature="0" />
+    <path
+       d="M 394.217,440.036 C 85.056,707.637 8.31109,299.127 192.514,162.317 108.338,264.216 92.0425,620.229 394.217,440.036 Z"
+       transform="translate(-13.1135,-29.5055)"
+       style="fill:#5975bf;fill-rule:evenodd;stroke-width:1pt"
+       id="path219"
+       inkscape:connector-curvature="0" />
+    <polygon
+       points="389.739,375.804 240.726,439.019 318.401,297.007 212.232,174.822 371.297,204.812 454.694,66.0817 475.326,226.629 633.037,263.074 486.723,332.308 500.797,493.562 500.797,493.562 "
+       transform="matrix(1,-0.0207935,0,1,-1.25,6.91304)"
+       style="fill:#ffc600;fill-rule:evenodd;stroke-width:1pt"
+       id="polygon223" />
+  </g>
+</svg>

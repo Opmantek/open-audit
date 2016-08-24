@@ -3,49 +3,47 @@
 	<details>
 		<report_name>Installed - MS Office</report_name>
 		<report_display_in_menu>y</report_display_in_menu>
-		<report_sql><![CDATA[SELECT system.system_id, system.hostname, system.man_owner, windows.user_name, system.man_org_id, software.name, software.version, oa_org.org_name, windows.domain_short FROM software LEFT JOIN system ON (system.system_id = software.system_id AND software.current = 'y' AND (software.name LIKE 'Microsoft Office Basic%' OR software.name LIKE 'Microsoft Office Enterprise%' OR software.name LIKE 'Microsoft Office Home and Student%' OR software.name LIKE 'Microsoft Office Personal%' OR software.name LIKE 'Microsoft Office Professional%' OR software.name LIKE 'Microsoft Office Small Business Edition%' OR software.name LIKE 'Microsoft Office Standard%' OR software.name LIKE 'Microsoft Office Ultimate%' OR software.name LIKE 'Microsoft Office XP Media%' OR software.name LIKE 'Microsoft Office XP PIPC%' OR software.name LIKE 'Microsoft Office XP Professional%' OR software.name LIKE 'Microsoft Office XP Small Business%' OR software.name LIKE 'Microsoft Office XP Standard%' OR software.name LIKE 'Microsoft Office XP Web Server%')) LEFT JOIN oa_org ON (system.man_org_id = oa_org.org_id) LEFT JOIN windows ON (system.system_id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_group_sys ON system.system_id = oa_group_sys.system_id WHERE oa_group_sys.group_id = @group]]></report_sql>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND software.name LIKE 'Microsoft Office%') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group ORDER BY system.name, software.name]]></report_sql>
 		<report_view_file>v_report</report_view_file>
 		<report_view_contents></report_view_contents>
 		<report_processing></report_processing>
-		<report_sort_column>0</report_sort_column>
-		<report_description>Name, software name, software version where software_name like Office.</report_description>
+		<report_sort_column>1</report_sort_column>
+		<report_description>MS Office installations.</report_description>
 	</details>
 	<columns>
 		<column>
 			<column_order>0</column_order>
-			<column_name>System Name</column_name>
-			<column_variable>hostname</column_variable>
-			<column_type>link</column_type>
-			<column_link>/main/system_display/</column_link>
-			<column_secondary>system_id</column_secondary>
+			<column_name>Icon</column_name>
+			<column_variable>system.icon</column_variable>
+			<column_type>image</column_type>
+			<column_link></column_link>
+			<column_secondary>system.type</column_secondary>
 			<column_ternary></column_ternary>
-			<column_align>left</column_align>
+			<column_align>center</column_align>
 		</column>
 		<column>
 			<column_order>1</column_order>
-			<column_name>Software Name</column_name>
-			<column_variable>name</column_variable>
-			<column_type>text</column_type>
-			<column_link></column_link>
-			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
+			<column_name>Device Name</column_name>
+			<column_variable>system.name</column_variable>
+			<column_type>link</column_type>
+			<column_link>/devices/</column_link>
+			<column_secondary>system.id</column_secondary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>2</column_order>
-			<column_name>Version</column_name>
-			<column_variable>version</column_variable>
+			<column_name>Domain</column_name>
+			<column_variable>system.domain</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
 			<column_align>left</column_align>
 		</column>
 		<column>
 			<column_order>3</column_order>
-			<column_name>Owner</column_name>
-			<column_variable>man_owner</column_variable>
-			<column_type>text</column_type>
+			<column_name>IP Address</column_name>
+			<column_variable>system.ip</column_variable>
+			<column_type>ip_address</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
 			<column_ternary></column_ternary>
@@ -53,8 +51,8 @@
 		</column>
 		<column>
 			<column_order>4</column_order>
-			<column_name>Organisation</column_name>
-			<column_variable>org_name</column_variable>
+			<column_name>OS Family</column_name>
+			<column_variable>system.os_family</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -63,8 +61,8 @@
 		</column>
 		<column>
 			<column_order>5</column_order>
-			<column_name>User</column_name>
-			<column_variable>user_name</column_variable>
+			<column_name>Organisation</column_name>
+			<column_variable>oa_org.name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -73,8 +71,8 @@
 		</column>
 		<column>
 			<column_order>6</column_order>
-			<column_name>Domain</column_name>
-			<column_variable>domain_short</column_variable>
+			<column_name>User</column_name>
+			<column_variable>windows.user_name</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
@@ -83,13 +81,22 @@
 		</column>
 		<column>
 			<column_order>7</column_order>
-			<column_name>Tags</column_name>
-			<column_variable>tag</column_variable>
+			<column_name>Software Name</column_name>
+			<column_variable>software.name</column_variable>
+			<column_type>link</column_type>
+			<column_link>/report/specific_software/$group_id/</column_link>
+			<column_secondary>software.id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>8</column_order>
+			<column_name>Software Version</column_name>
+			<column_variable>software.version</column_variable>
 			<column_type>text</column_type>
 			<column_link></column_link>
 			<column_secondary></column_secondary>
-			<column_ternary></column_ternary>
-			<column_align>center</column_align>
+			<column_align>left</column_align>
 		</column>
 	</columns>
 </report>

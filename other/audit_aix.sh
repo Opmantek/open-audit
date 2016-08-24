@@ -35,7 +35,8 @@
 
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
-# @version 1.12.4
+# 
+# @version 1.12.8
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -56,12 +57,15 @@ url="http://localhost/open-audit/index.php/system/add_system"
 # 1 = basic debug
 # 2 = verbose debug
 # 3 = verbose debug and no safety
-debugging=3
-
-man_org_id=""
+debugging=1
+org_id=""
 system_id=""
 help=""
-version="1.2"
+version="1.14"
+last_seen_by="audit"
+
+# DO NOT REMOVE THE LINE BELOW
+# Configuration from web UI here
 
 for arg; do
 	VAR=$(echo $arg | cut -d'=' -f1)
@@ -77,6 +81,7 @@ for arg; do
 		man_org_id)    man_org_id="$VAL";;
 		url)           url="$VAL";;
 		system_id)     system_id="$VAL";;
+		last_seen_by)  last_seen_by="$VAL";;
 		*) ;;
 	esac
 done
@@ -115,7 +120,7 @@ if [[ $help = "y" ]]; then
 	echo "    *y - Create an XML file containing the audit result."
 	echo "     n - Do not create an XML result file."
 	echo ""
-	echo "  man_org_id"
+	echo "  org_id"
 	echo "     * - The Open-AudIT id of the orgganisation you would like this machine assigned to. This is not populated by default."
 	echo ""
 	echo ""
@@ -131,7 +136,7 @@ if [[ $version = "y" ]]; then
 	echo "Open-AudIT AIX audit script"
 	echo "(c) Opmantek, 2014."
 	echo "----------------------------"
-	echo "Version: 1.2"
+	echo "Version: 1.14"
 fi
 
 pwd=$(pwd)
@@ -224,7 +229,6 @@ cat >"$xml_file" <<EndOfFile
 <?xml version="1.0" encoding="UTF-8"?> 
 <system>
 	<sys>
-		<timestamp>$(escape_xml "$system_timestamp")</timestamp>
 		<uuid>$(escape_xml "$system_uuid")></uuid>
 		<hostname>$(escape_xml "$system_hostname")</hostname>
 		<domain>$(escape_xml "$system_domain")</domain>
@@ -240,14 +244,14 @@ cat >"$xml_file" <<EndOfFile
 		<manufacturer>IBM</manufacturer>
 		<uptime>$(escape_xml "$system_uptime")</uptime>
 		<form_factor></form_factor>
-		<pc_os_bit>$(escape_xml "$system_pc_os_bit")</pc_os_bit>
-		<pc_memory>$(escape_xml "$system_pc_memory")</pc_memory>
-		<pc_num_processor>$(escape_xml "$system_pc_num_processor")</pc_num_processor>
-		<pc_date_os_installation>$(escape_xml "$system_pc_date_os_installation")</pc_date_os_installation>
-		<man_org_id>$(escape_xml "$org_id")</man_org_id>
-		<man_class>server</man_class>
-		<man_icon>aix</man_icon>
-		<system_id>$(escape_xml "$system_id")</system_id>
+		<os_bit>$(escape_xml "$system_pc_os_bit")</os_bit>
+		<memory_count>$(escape_xml "$system_pc_memory")</memory_count>
+		<processor_count>$(escape_xml "$system_pc_num_processor")</processor_count>
+		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>
+		<org_id>$(escape_xml "$org_id")</org_id>
+		<class>server</class>
+		<id>$(escape_xml "$system_id")</id>
+		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>
 	</sys>
 EndOfFile
 FINISH=$((SECONDS-START))

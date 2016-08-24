@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -46,7 +47,16 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
     $timezone = '';
     $default = 'UTC';
 
-    if ((string) php_uname('s') !== 'Windows NT') {
+    if ((string) php_uname('s') == 'Darwin') {
+        $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
+        exec($command_string, $output, $return_var);
+        $timezone = @$output[0];
+        if ((string) $timezone === '') {
+            $timezone = $default;
+        }
+    }
+
+    if ((string) php_uname('s') == 'Linux') {
         // On many systems (Mac, for instance) "/etc/localtime" is a symlink
         // to the file with the timezone info
         if (@is_link('/etc/localtime')) {
@@ -67,7 +77,9 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
         if ((string) $timezone === '') {
             $timezone = $default;
         }
-    } else {
+    }
+
+    if ((string) php_uname('s') == 'Windows NT') {
         $wbem_locator = new COM('WbemScripting.SWbemLocator');
         $wbem_services = $wbem_locator->ConnectServer('.', 'root\\cimv2');
         $zones = $wbem_services->ExecQuery('Select * from Win32_TimeZone');

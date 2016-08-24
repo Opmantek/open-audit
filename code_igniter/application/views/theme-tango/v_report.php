@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,9 +36,9 @@
 $sortcolumn = 3;
 # check to see if user_access_level for this group is > 7
 $manual_edit = 'n';
-if (isset($this->user->user_access_level) and $this->user->user_access_level > '9') {
+if (isset($this->user->access_level) and $this->user->access_level > '9') {
     # check to see if "system_id" is present in report
-        if (isset($query[0]->system_id)) {
+        if (isset($query[0]->{'system.id'})) {
             # enable group manual editing column
             $manual_edit = 'y';
         }
@@ -46,7 +47,6 @@ if (isset($this->user->user_access_level) and $this->user->user_access_level > '
 if ($manual_edit == 'y') {
     echo "<div style=\"float:left; width:100%;\">\n";
     $attributes = array('id' => 'change_form', 'name' => 'change_form');
-    echo form_open('main/edit_systems', $attributes)."\n";
     echo "<input type=\"hidden\" name=\"group_id\" value=\"".intval($group_id)."\" />\n";
 }
 
@@ -57,7 +57,7 @@ echo "<table cellspacing=\"1\" class=\"tablesorter\">\n";
 echo "\t<thead>\n";
 echo "\t\t<tr>\n";
 foreach ($columns as $column) {
-    if ($column->column_type > '') {
+    if ($column->column_type != '') {
         if ($column->column_align == 'right') {
             $style = 'padding-right: 20px;';
         } else {
@@ -67,8 +67,9 @@ foreach ($columns as $column) {
     }
 }
 if (($manual_edit == 'y') and ($system_id = "set")) {
-    echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
-    echo "<input type=\"checkbox\" id=\"system_id_0\" name=\"system_id_0\" onchange=\"check_all_systems();\"/></th>";
+    #echo "<th align=\"center\" class=\"{sorter: false}\"><button onclick=\"document.change_form.submit();\">Edit</button>";
+    echo "<th align=\"center\" class=\"{sorter: false}\"><button class=\"bulk_edit_button\">Edit</button>";
+    echo "<input type=\"checkbox\" id=\"ids[0]\" name=\"ids[0]\" value=\"0\" onchange=\"check_all_systems();\"/></th>";
 }
 echo "\t\t</tr>\n";
 echo "\t</thead>\n";
@@ -87,13 +88,13 @@ foreach ($query as $row) {
         if ($column_align == '') {
             $column_align = 'left';
         }
-        if (!property_exists($row, 'system_id')) {
+        if (!property_exists($row, 'system_id') and !property_exists($row, 'system.id')) {
             $row->system_id = $i;
         }
         if (!isset($row->system_id)) {
             $row->system_id = $i;
         }
-        if (($column_variable_name == 'hostname') and ($row->$column_variable_name == '')) {
+        if (($column_variable_name == 'name') and ($row->$column_variable_name == '')) {
             $row->hostname = "-";
         }
 
@@ -105,7 +106,7 @@ foreach ($query as $row) {
                     if ($row->$column_variable_name == '') {
                         $row->$column_variable_name = '-';
                     }
-                    if (($column_variable_name_sec == 'system_id' or $column_variable_name_sec == 'linked_sys') and ($column_variable_name == 'hostname')) {
+                    if (($column_variable_name_sec == 'id' or $column_variable_name_sec == 'linked_sys') and ($column_variable_name == 'name')) {
                         $column_link = str_replace('$group_id', $group_id, $column_link);
                         echo "\t\t\t<td align=\"$column_align\"><a class=\"SystemPopupTrigger\" rel=\"".htmlentities($row->$column_variable_name_sec)."\" href=\"".site_url().htmlentities($column_link).htmlentities($row->$column_variable_name_sec)."\">".htmlentities($row->$column_variable_name)."</a></td>\n";
                     } else {
@@ -123,7 +124,7 @@ foreach ($query as $row) {
             case "text":
                 switch ($column_variable_name) {
                 case "tag":
-                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->system_id)."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
+                    echo "\t\t\t<td align=\"center\"><a class=\"TagPopupTrigger\" rel=\"".intval($row->{'system.id'})."\" href=\"#\"><img src=\"".$oa_theme_images."/16_link.png\" style='border-width:0px;' title=\"\" alt=\"\" /></a></td>\n";
                 break;
 
                 default:
@@ -160,7 +161,7 @@ foreach ($query as $row) {
                 break;
 
             case "ip_address":
-                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', $row->man_ip_address))."&nbsp;</span>".htmlentities(ip_address_from_db($row->man_ip_address))."</td>\n";
+                echo "\t\t\t<td style=\"text-align: $column_align;\"><span style=\"display: none;\">".htmlentities(str_replace(',', '', ip_address_to_db($row->$column_variable_name)))."&nbsp;</span>".htmlentities(ip_address_from_db($row->$column_variable_name))."</td>\n";
                 break;
 
             case "multi":
@@ -190,7 +191,7 @@ foreach ($query as $row) {
                 }
                 $href = str_replace(" ", "%20", $href);
                 if ($href > '') {
-                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
+                    echo "\t\t\t<td style=\"text-align: $column_align;\"><a target=\"_blank\" href=\"".$href."\"><img src=\"".$image."\" border=\"0\" title=\"\" alt=\"\" /></a></td>";
                 } else {
                     echo "\t\t\t<td style=\"text-align: $column_align;\"></td>\n";
                 }
@@ -202,7 +203,7 @@ foreach ($query as $row) {
         }
     }
     if ($manual_edit == 'y') {
-        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"system_id_".intval($row->system_id)."\" name=\"system_id_".intval($row->system_id)."\" /></td>\n";
+        echo "\t\t\t<td align=\"center\"><input type=\"checkbox\" id=\"ids[".intval($row->{'system.id'})."]\" name=\"ids[".intval($row->{'system.id'})."]\" value=\"".intval($row->{'system.id'})."\"/></td>\n";
     }
     echo "\n\t\t</tr>\n";
 }
@@ -238,12 +239,12 @@ function show_modifier(oa_attribute, system_id)
 
 function check_all_systems()
 {
-	if (document.getElementById("system_id_0").checked == true)
+	if (document.getElementById("ids[0]").checked == true)
 	{
 		<?php
         foreach ($query as $key):
             if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = true;\n";
+                echo "\tdocument.getElementById(\"ids[".intval($key->{'system.id'})."]\").checked = true;\n";
             }
         endforeach;
         ?>
@@ -251,12 +252,28 @@ function check_all_systems()
 		<?php
         foreach ($query as $key):
             if (isset($key->system_id)) {
-                echo "\tdocument.getElementById(\"system_id_".intval($key->system_id)."\").checked = false;\n";
+                echo "\tdocument.getElementById(\"ids[".intval($key->{'system.id'})."]\").checked = false;\n";
             }
         endforeach;
         ?>
 	}
 }
+
+/* Send to bulk edit form */
+$(document).ready(function () {
+    $(document).on('click', '.bulk_edit_button', function (e) {
+        var ids = "";
+        $("input:checked").each(function () {
+            if ($(this).attr("value") != 0) {
+                ids = ids + "," + $(this).attr("value");
+            }
+        });
+        ids = ids.substring(1);
+        var url = '/open-audit/index.php/devices?action=update&ids=' + ids;
+        window.location = url;
+    });
+});
+
 </script>
 
 <?php

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,23 +40,28 @@ class M_oa_admin_database extends MY_Model
         parent::__construct();
     }
 
+    public function trim_oa_user_sessions()
+    {
+        $sql = "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql);
+    }
+
     public function count_systems()
     {
         $sql = "SELECT count(*) as count FROM system";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
-
         return($row->count);
     }
 
     public function statistics()
     {
-        $sql = "SELECT type, os_family, COUNT(*) as count FROM system WHERE man_status = 'production' GROUP BY type, os_family ";
+        $sql = "SELECT type, os_family, COUNT(*) as count FROM system WHERE status = 'production' GROUP BY type, os_family ";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
@@ -69,24 +75,21 @@ class M_oa_admin_database extends MY_Model
             $returned[$count]['rows'] = $rows;
             $count++;
         }
-
         return ($returned);
     }
 
     public function export_table($table)
     {
-        $sql = "SELECT * FROM $table";
+        $sql = "SELECT * FROM `$table`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
     public function get_tables()
     {
         $result = $this->db->list_tables();
-
         return ($result);
     }
 
@@ -99,49 +102,45 @@ class M_oa_admin_database extends MY_Model
                 $result[] = $field_in_table;
             }
         }
-
         return ($result);
     }
 
     public function get_field_values($table, $field)
     {
-        $sql = "SELECT DISTINCT($field) AS value FROM $table ORDER BY value";
+        $sql = "SELECT DISTINCT($field) AS value FROM `$table` ORDER BY value";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
-
         return ($result);
     }
 
     public function backup_database()
     {
         // NOTE - this only works on Linux at the moment
-        $file = "/tmp/OAv2_database_backup_".date("Y_m_d_H_i_s").".sql";
-        $dump_command = 'mysqldump -h '.$this->db->hostname.' -u '.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' > '.$file;
-        exec($dump_command);
+        $directory = '/tmp/';
+        $filename = "open-audit_database_backup_".date("Y_m_d_H_i_s").".sql";
+        $command = 'mysqldump -h '.$this->db->hostname.' -u '.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' > '.$directory.$filename;
+        exec($command) or die("Failed to run mysqldump.");
         $this->load->helper('download');
-        $data = file_get_contents($file);
-        $name = "Open-AudIT_database_backup_".date("Y_m_d_H_i_s").".sql";
-        force_download($name, $data);
-        unlink($file);
+        $file_contents = file_get_contents($directory.$filename);
+        force_download($filename, $file_contents);
+        unlink($directory.$filename);
     }
 
     public function count_all_rows($table = 'oa_temp')
     {
-        $sql = "SELECT COUNT(*) AS count FROM $table";
+        $sql = "SELECT COUNT(*) AS count FROM `$table`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $row = $query->row();
-
         return ($row->count);
     }
 
     public function delete_all_rows($table = 'oa_temp')
     {
-        $sql = "DELETE FROM $table";
+        $sql = "DELETE FROM `$table`";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
-
         return($this->db->affected_rows());
     }
 }

@@ -30,29 +30,25 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Scientific-Atlanta, Inc.
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.1429.2.2.6.2') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.1429.2.2.6.2') {
         $details->model = 'D98xx Program Receiver';
         $details->type = 'satellite receiver';
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.7.0"));
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.1429.2.2.4.1.7.0");
     }
-
     # attempt to refine the model number
     $temp_model = '';
-    if ($details->snmp_version == '1') {
-        $temp_model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.6.0"));
-    }
-    if ($details->snmp_version == '2') {
-        $temp_model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.1429.2.2.4.1.6.0"));
-    }
-    if ($temp_model != '') {
+    $temp_model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.1429.2.2.4.1.6.0");
+    if (!empty($temp_model)) {
         $temp_array = explode('_', $temp_model);
         if ($temp_array[0] != '') {
             $details->model = $temp_array[0].' Program Receiver';
@@ -60,10 +56,9 @@ $get_oid_details = function ($details) {
     }
     unset($temp_model);
     unset($tmp_array);
-
-    if ($details->snmp_oid == '1.3.6.1.4.1.1429.2.1.6.1.0.2.0.1') {
+    if ($oid == '1.3.6.1.4.1.1429.2.1.6.1.0.2.0.1') {
         $details->model = 'WebSTAR DPC2100 Series';
         $details->type = 'cable modem';
     }
-
+    return($details);
 };

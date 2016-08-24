@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report>
+	<details>
+		<report_name>Changes - Settings</report_name>
+		<report_display_in_menu>y</report_display_in_menu>
+		<report_sql><![CDATA[SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id) WHERE oa_group_sys.group_id = @group AND change_log.ack_time = '0000-00-00 00:00:00' AND change_log.db_table in ('dns', 'ip', 'log', 'netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group', 'variable') ORDER BY system.name, change_log.id]]></report_sql>
+		<report_view_file>v_report_alerts</report_view_file>
+		<report_view_contents></report_view_contents>
+		<report_processing></report_processing>
+		<report_sort_column>0</report_sort_column>
+		<report_description>Any changes in the tables 'dns', 'ip', 'log', netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group' and 'variable'.</report_description>
+	</details>
+	<columns>
+		<column>
+			<column_order>0</column_order>
+			<column_name>Icon</column_name>
+			<column_variable>system.icon</column_variable>
+			<column_type>image</column_type>
+			<column_link></column_link>
+			<column_secondary>system.type</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>center</column_align>
+		</column>
+		<column>
+			<column_order>1</column_order>
+			<column_name>Device Name</column_name>
+			<column_variable>system.name</column_variable>
+			<column_type>link</column_type>
+			<column_link>/devices/</column_link>
+			<column_secondary>system.id</column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>2</column_order>
+			<column_name>IP Address</column_name>
+			<column_variable>system.ip</column_variable>
+			<column_type>ip_address</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>3</column_order>
+			<column_name>Timestamp</column_name>
+			<column_variable>change_log.timestamp</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>4</column_order>
+			<column_name>Table</column_name>
+			<column_variable>change_log.db_table</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>5</column_order>
+			<column_name>Action</column_name>
+			<column_variable>change_log.db_action</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>6</column_order>
+			<column_name>Details</column_name>
+			<column_variable>change_log.details</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+		<column>
+			<column_order>7</column_order>
+			<column_name>Tags</column_name>
+			<column_variable>tag</column_variable>
+			<column_type>text</column_type>
+			<column_link></column_link>
+			<column_secondary></column_secondary>
+			<column_ternary></column_ternary>
+			<column_align>left</column_align>
+		</column>
+	</columns>
+</report>

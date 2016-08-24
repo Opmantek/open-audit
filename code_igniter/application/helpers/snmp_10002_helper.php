@@ -30,58 +30,31 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Frogfoot Networks
 
-$get_oid_details = function ($details) {
-
-    # below is targetted at Ubiquiti devices
-    $temp_manufacturer = '';
-    $temp_os_name = 'unknown';
-    if ($details->snmp_version == '2') {
-        # manufacturer
-        $temp_manufacturer = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.2.5"));
-        $temp_os_name = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.4.5"));
-        # serial
-        if (!isset($details->serial) or $details->serial == '') {
-            $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.1.1.1.1.5"));
-        }
-        # model
-        if (!isset($details->model) or $details->model == '') {
-            $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.3.5"));
-        }
-    }
-
-    if ($details->snmp_version == '1') {
-        # manufacturer
-        $temp_manufacturer = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.2.5"));
-        $temp_os_name = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.4.5"));
-        # serial
-        if (!isset($details->serial) or $details->serial == '') {
-            $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.1.1.1.1.5"));
-        }
-        # model
-        if (!isset($details->model) or $details->model == '') {
-            $details->model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.2.840.10036.3.1.2.1.3.5"));
-        }
-    }
-
-    if (isset($temp_manufacturer) and $temp_manufacturer != '') {
-        $details->manufacturer = $temp_manufacturer;
-    }
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    $details = new stdClass();
+    # manufacturer
+    $details->manufacturer = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.2.5");
+    $details->os_name = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.4.5");
+    # serial
+    $details->serial = my_snmp_get($ip, $credentials, "1.2.840.10036.1.1.1.1.5");
+    # model
+    $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.5");
+    # maybe we have a Ubiquiti device
     if (stripos($details->manufacturer, 'ubiquiti') !== false) {
-        # we have a Ubiquiti device
-            $details->type = 'wap';
+        $details->type = 'wap';
         $details->icon = 'wap';
         $details->os_group = 'Linux';
         $details->os_family = 'Ubiquiti AirOS';
         $details->os_name = 'Ubiquiti AirOS version '.$temp_os_name;
     }
-    unset($temp_manufacturer);
-    unset($temp_os_name);
-
+    return($details);
 };

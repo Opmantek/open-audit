@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -70,22 +71,32 @@ class Admin_field extends MY_Controller
         } else {
             # process the form
             foreach ($_POST as $key => $value) {
-                $details->$key = $value;
+                $field->$key = $value;
             }
             $this->load->model("m_additional_fields");
             $i = array();
-            $i = $this->m_additional_fields->get_additional_field_id($details->field_name);
+            $i = $this->m_additional_fields->get_additional_field_id($field->name);
             if (count($i) > 0) {
                 $this->data['error_message'] = "A Field with that name already exists.";
                 $this->data['heading'] = 'Add Additional Field';
                 $this->data['include'] = 'v_add_field';
                 $this->load->view('v_template', $this->data);
             } else {
-                # the field does not exist - good
-                if (!isset($details->field_values) or $details->field_type != 'list') {
-                    $details->field_values = '';
+                $system_fields = $this->db->list_fields('system');
+                foreach ($system_fields as $field) {
+                    if ($CI->response->meta->received_data->attributes->name == $field) {
+                        $this->data['error_message'] = "The supplied name is a reserved word.";
+                        $this->data['heading'] = 'Add Additional Field';
+                        $this->data['include'] = 'v_add_field';
+                        $this->load->view('v_template', $this->data);
+                        exit();
+                    }
                 }
-                $this->m_additional_fields->add_additional_field($details);
+                # the field does not exist - good
+                if (!isset($field->values) or $field->type != 'list') {
+                    $field->values = '';
+                }
+                $this->m_additional_fields->add_additional_field($field);
             }
             unset($i);
             redirect('admin_field/list_fields');

@@ -30,14 +30,16 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Microsoft
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
     $details->type = 'computer';
     $details->model = '';
     $details->os_group = 'Windows';
@@ -45,20 +47,18 @@ $get_oid_details = function ($details) {
     $details->os_name = '';
     $details->icon = 'computer';
 
-    if ($details->snmp_version == '2') {
 
-        # try to determine if this is a VMware virtual machine
-        $i = @snmp2_walk($details->man_ip_address, $details->snmp_community, "1.3.6.1.2.1.25.6.3.1.2");
-        if (count($i) > 0) {
-            for ($k = 0; $k < count($i); $k++) {
-                if (mb_strpos($i[$k], "VMware Tools") !== false) {
-                    $details->model = 'VMware Virtual Platform';
-                    $details->manufacturer = 'VMware, Inc.';
-                }
+    # try to determine if this is a VMware virtual machine
+    $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.25.6.3.1.2");
+    if (count($i) > 0) {
+        for ($k = 0; $k < count($i); $k++) {
+            if (mb_strpos($i[$k], "VMware Tools") !== false) {
+                $details->model = 'VMware Virtual Platform';
+                $details->manufacturer = 'VMware, Inc.';
             }
         }
-
-        $details->description = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.77.1.2.1.0"));
     }
 
+    $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.77.1.2.1.0");
+    return($details);
 };

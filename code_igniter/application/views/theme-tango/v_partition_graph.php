@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -64,7 +65,7 @@ $line1 = mb_substr($line1, 0, (mb_strlen($line1) - 2));
 $line1 = $line1."];";
 
 foreach ($partition_details as $partition) {
-    $graph_title = str_replace("\\", "\\\\", $partition->mount_point)." (".$partition->type . ' ' . $partition->mount_type.")";
+    $graph_title = $this->data['heading'];
 }
 ?>
 

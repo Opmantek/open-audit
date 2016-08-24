@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,14 +41,14 @@ if (isset($error_message)) {
 
 echo form_open('admin_location/add_location')."\n";
 ?>
-<fieldset id="location_details" class='niceforms'>
+<fieldset id="details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Location Details')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
 	<table cellpadding = "0" cellspacing="0">
 		<tr>
 			<td valign="top">
-				<p><label for='location_name'><?php echo __('Name'); ?>: </label><input type='text' id='location_name' name='location_name' tabindex='1' title='<?php echo __('Location Name'); ?>' /><?php echo $error_message; ?></p>
-				<p><label for='location_type' title="<?php echo __('Server Room, Office, etc'); ?>"><?php echo __('Type'); ?>: </label><select id='location_type' name='location_type' tabindex='2' title='Type' />
+				<p><label for='name'><?php echo __('Name'); ?>: </label><input type='text' id='name' name='name' tabindex='1' title='<?php echo __('Location Name'); ?>' /><?php echo $error_message; ?></p>
+				<p><label for='type' title="<?php echo __('Server Room, Office, etc'); ?>"><?php echo __('Type'); ?>: </label><select id='type' name='type' tabindex='2' title='Type' />
 					<option value=''></option>
 					<option value='Airforce'><?php echo __('Airforce'); ?></option>
 					<option value='Airport'><?php echo __('Airport'); ?></option>
@@ -98,26 +99,20 @@ echo form_open('admin_location/add_location')."\n";
 					<option value='Warehouse'><?php echo __('Warehouse'); ?></option>
 					<option value='Workshop'><?php echo __('Workshop'); ?></option>
 				</select></p>
-				<p><label for='location_room'><?php echo __('Room'); ?>: </label><input type='text' id='location_room' name='location_room' tabindex='3' title='<?php echo __('Room'); ?>' /></p>
-				<p><label for='location_suite'><?php echo __('Suite'); ?>: </label><input type='text' id='location_suite' name='location_suite' tabindex='4' title='<?php echo __('Suite'); ?>' /></p>
-				<p><label for='location_level'><?php echo __('Level'); ?>: </label><input type='text' id='location_level' name='location_level' tabindex='5' title='<?php echo __('Level'); ?>' /></p>
-				<p><label for='location_address'><?php echo __('Street Address'); ?>: </label><input type='text' id='location_address' name='location_address' tabindex='6' title='<?php echo __('Street Address'); ?>' /></p>
-				<!-- <p><label for='location_suburb'><?php echo __('Suburb'); ?>: </label><input type='text' id='location_suburb' name='location_suburb' tabindex='7' title='<?php echo __('Suburb'); ?>' /></p>-->
-				<p><label for='location_city'><?php echo __('City'); ?>: </label><input type='text' id='location_city' name='location_city' tabindex='8' title='<?php echo __('City'); ?>' /></p>
+				<p><label for='room'><?php echo __('Room'); ?>: </label><input type='text' id='room' name='room' tabindex='3' title='<?php echo __('Room'); ?>' /></p>
+				<p><label for='suite'><?php echo __('Suite'); ?>: </label><input type='text' id='suite' name='suite' tabindex='4' title='<?php echo __('Suite'); ?>' /></p>
+				<p><label for='level'><?php echo __('Level'); ?>: </label><input type='text' id='level' name='level' tabindex='5' title='<?php echo __('Level'); ?>' /></p>
+				<p><label for='address'><?php echo __('Street Address'); ?>: </label><input type='text' id='address' name='address' tabindex='6' title='<?php echo __('Street Address'); ?>' /></p>
+				<p><label for='city'><?php echo __('City'); ?>: </label><input type='text' id='city' name='city' tabindex='8' title='<?php echo __('City'); ?>' /></p>
 			</td>
 			<td valign="top">
-				<p><label for='location_postcode'><?php echo __('Postcode'); ?>: </label><input type='text' id='location_postcode' name='location_postcode' tabindex='9' title='<?php echo __('Postcode'); ?>' /></p>
-				<p><label for='location_state'><?php echo __('State'); ?>: </label><input type='text' id='location_state' name='location_state' tabindex='10' title='<?php echo __('State'); ?>' /></p>
-				<p><label for='location_country'><?php echo __('Country'); ?>: </label><input type='text' id='location_country' name='location_country' tabindex='11' title='C<?php echo __('ountry'); ?>' /></p>
-				<p><label for='location_phone'><?php echo __('Phone'); ?>: </label><input type='text' id='location_phone' name='location_phone' tabindex='11' title='<?php echo __('Phone'); ?>' /></p>
-				<p><label for='location_geo'><?php echo __('GeoCode'); ?>: </label><input type='text' id='location_geo' name='location_geo' tabindex='12' title='<?php echo __('GeoCode'); ?>' /></p>
-				<!-- <p><label for='location_district'><?php echo __('District'); ?>: </label><input type='text' id='location_district' name='location_district' tabindex='11' title='<?php echo __('District'); ?>' /></p>	-->
-				<!-- <p><label for='location_region'><?php echo __('Region'); ?>: </label><input type='text' id='location_region' name='location_region' tabindex='11' title='<?php echo __('Region'); ?>' /></p>	-->
-				<!-- <p><label for='location_area'><?php echo __('Area'); ?>: </label><input type='text' id='location_area' name='location_area' tabindex='11' title='<?php echo __('Area'); ?>' /></p>	-->
-				<!-- <p><label for='location_tags'><?php echo __('Tags'); ?>: </label><input type='text' id='location_tags' name='location_tags' tabindex='11' title='<?php echo __('Tags'); ?>' /></p>	-->
-				<!-- <p><label for='location_picture'><?php echo __('Picture'); ?>: </label><input type='text' id='location_picture' name='location_picture' tabindex='11' title='<?php echo __('Picture'); ?>' /></p>	-->
-				<p><label for='location_latitude'><?php echo __('Latitude'); ?>: </label><input type='text' id='location_latitude' name='location_latitude' tabindex='13' title='<?php echo __('Latitude'); ?>' /></p>
-				<p><label for='location_longitude'><?php echo __('Longitude'); ?>: </label><input type='text' id='location_longitude' name='location_longitude' tabindex='14' title='<?php echo __('Longitude'); ?>' /></p>
+				<p><label for='postcode'><?php echo __('Postcode'); ?>: </label><input type='text' id='postcode' name='postcode' tabindex='9' title='<?php echo __('Postcode'); ?>' /></p>
+				<p><label for='state'><?php echo __('State'); ?>: </label><input type='text' id='state' name='state' tabindex='10' title='<?php echo __('State'); ?>' /></p>
+				<p><label for='country'><?php echo __('Country'); ?>: </label><input type='text' id='country' name='country' tabindex='11' title='<?php echo __('Country'); ?>' /></p>
+				<p><label for='phone'><?php echo __('Phone'); ?>: </label><input type='text' id='phone' name='phone' tabindex='11' title='<?php echo __('Phone'); ?>' /></p>
+				<p><label for='geo'><?php echo __('GeoCode'); ?>: </label><input type='text' id='geo' name='geo' tabindex='12' title='<?php echo __('GeoCode'); ?>' /></p>
+				<p><label for='latitude'><?php echo __('Latitude'); ?>: </label><input type='text' id='latitude' name='latitude' tabindex='13' title='<?php echo __('Latitude'); ?>' /></p>
+				<p><label for='longitude'><?php echo __('Longitude'); ?>: </label><input type='text' id='longitude' name='longitude' tabindex='14' title='<?php echo __('Longitude'); ?>' /></p>
 			</td>
 			<td valign="top">
 				<p> <br /></p>
@@ -125,9 +120,9 @@ echo form_open('admin_location/add_location')."\n";
 				<p> <br /></p>
 				<p> <br /></p>
 				<p> <br /></p>
-				<p><label style="width: 30px;" for='location_create_geo'></label><input id="location_create_geo" type="button" name="location_create_geo" value="<?php echo __('Create GeoCode'); ?>" onclick="creategeo();" /></p>
-				<p><label style="width: 30px;" for='location_get_lat_long'></label><input id="location_get_lat_long" type="button" name="location_get_lat_long" value="<?php echo __('Get Lat / Long'); ?>" onclick="getlatlong();" /></p>
-				<p><label style="width: 30px;" for='location_group'></label><?php echo __('Activate Group'); ?>: <input type='checkbox' id='location_group' name='location_group' tabindex='14' title='<?php echo __('Activate Group'); ?>' checked /></p>
+				<p><label style="width: 30px;" for='create_geo'></label><input id="create_geo" name="create_geo" type="button" value="<?php echo __('Create GeoCode'); ?>" onclick="creategeo();" /></p>
+				<p><label style="width: 30px;" for='get_lat_long'></label><input id="get_lat_long" name="get_lat_long" type="button" value="<?php echo __('Get Lat / Long'); ?>" onclick="getlatlong();" /></p>
+				<p><label style="width: 30px;" for='group'></label><?php echo __('Activate Group'); ?>: <input type='checkbox' id='group' name='group' tabindex='14' title='<?php echo __('Activate Group'); ?>' checked /></p>
 				<p><label style="width: 30px;" for='submit'></label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
@@ -140,28 +135,27 @@ echo form_open('admin_location/add_location')."\n";
 
 <script type="text/javascript">
 function getlatlong() {
-	if (document.getElementById("location_geo").value > "") {
-		var address = document.getElementById("location_geo").value;
+	if (document.getElementById("geo").value > "") {
+		var address = document.getElementById("geo").value;
 	} else {
-		var address = document.getElementById("location_address").value + ", " + document.getElementById("location_city").value + ", " + document.getElementById("location_state").value + ", " + document.getElementById("location_postcode").value + ", " + document.getElementById("location_country").value;
+		var address = document.getElementById("address").value + ", " + document.getElementById("city").value + ", " + document.getElementById("state").value + ", " + document.getElementById("postcode").value + ", " + document.getElementById("country").value;
 	}
 	var geocoder = new google.maps.Geocoder();
 	if (geocoder) {
 		geocoder.geocode({ 'address': address }, function (results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
-				document.getElementById("location_latitude").value = results[0].geometry.location.lat();
-				document.getElementById("location_longitude").value = results[0].geometry.location.lng();
+				document.getElementById("latitude").value = results[0].geometry.location.lat();
+				document.getElementById("longitude").value = results[0].geometry.location.lng();
 			}
 		});
 	}
 }
 
 function creategeo() {
-	var geo = document.getElementById("location_address").value + ", " +
-	document.getElementById("location_city").value + ", " +
-	document.getElementById("location_state").value + ", " +
-	document.getElementById("location_postcode").value + ", " +
-	document.getElementById("location_country").value;
-	document.getElementById("location_geo").value = geo;
+	document.getElementById("geo").value = document.getElementById("address").value + ", " +
+	document.getElementById("city").value + ", " +
+	document.getElementById("state").value + ", " +
+	document.getElementById("postcode").value + ", " +
+	document.getElementById("country").value;
 }
 </script>

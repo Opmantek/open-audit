@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -48,7 +49,7 @@ if (isset($error_message)) {
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('User Details')?></span></legend>
 	<?php
     foreach ($user as $key) {
-        if ($key->user_admin == 'y') {
+        if ($key->admin == 'y') {
             $value_admin = 'checked="checked"';
         } else {
             $value_admin = '';
@@ -57,39 +58,39 @@ if (isset($error_message)) {
 	<table width="100%">
 		<tr>
 			<td style="width:50%;">
-				<p><label for='user_name'><?php echo __('User Name'); ?>: </label><input type='text' id='user_name' name='user_name' tabindex='1' title='User Name' value="<?php echo htmlentities($key->user_name); ?>"/></p>
-				<p><label for='user_full_name'><?php echo __('Full Name'); ?>: </label><input type='text' id='user_full_name' name='user_full_name' tabindex='2' title='Full Name'  value="<?php echo htmlentities($key->user_full_name); ?>"/></p>
-				<p><label for='user_password'><?php echo __('Password'); ?>: </label><input type='password' id='user_password' name='user_password' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password')); ?>"/></p>
-				<p><label for='user_password_confirm'><?php echo __('Confirm Password'); ?>: </label><input type='password' id='user_password_confirm' name='user_password_confirm' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('user_password_confirm')); ?>"/></p>
-				<p><label for='user_email'><?php echo __('Email Address'); ?>: </label><input type='text' id='user_email' name='user_email' tabindex='4' title='Email Address'  value="<?php echo htmlentities($key->user_email); ?>"/></p>
+				<p><label for='name'><?php echo __('User Name'); ?>: </label><input type='text' id='name' name='name' tabindex='1' title='User Name' value="<?php echo htmlentities($key->name); ?>"/></p>
+				<p><label for='full_name'><?php echo __('Full Name'); ?>: </label><input type='text' id='full_name' name='full_name' tabindex='2' title='Full Name'  value="<?php echo htmlentities($key->full_name); ?>"/></p>
+				<p><label for='password'><?php echo __('Password'); ?>: </label><input type='password' id='password' name='password' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('password')); ?>"/></p>
+				<p><label for='password_confirm'><?php echo __('Confirm Password'); ?>: </label><input type='password' id='password_confirm' name='password_confirm' tabindex='3' title='Password'  value="<?php echo htmlentities(set_value('password_confirm')); ?>"/></p>
+				<p><label for='email'><?php echo __('Email Address'); ?>: </label><input type='text' id='email' name='email' tabindex='4' title='Email Address'  value="<?php echo htmlentities($key->email); ?>"/></p>
 			</td>
 			<td style="width:50%;">
-				<p><label for='user_lang'><?php echo __('Language'); ?>: </label>
-					<select id='user_lang' name='user_lang' tabindex='5' title='Is Admin' />
-						<option value="en"<?php if ($key->user_lang == 'en') { echo ' selected'; } ?>>English</option>
-						<option value="pt-br"<?php if ($key->user_lang == 'pt-br') { echo ' selected'; } ?>>Brazilian Portuguese</option>
-						<option value="fr"<?php if ($key->user_lang == 'fr') { echo ' selected'; } ?>>French</option>
-						<option value="de"<?php if ($key->user_lang == 'de') { echo ' selected'; } ?>>German</option>
-						<option value="es"<?php if ($key->user_lang == 'es') { echo ' selected'; } ?>>Spanish</option>
+				<p><label for='lang'><?php echo __('Language'); ?>: </label>
+					<select id='lang' name='lang' tabindex='5' title='Is Admin' />
+						<option value="en"<?php if ($key->lang == 'en') { echo ' selected'; } ?>>English</option>
+						<option value="pt-br"<?php if ($key->lang == 'pt-br') { echo ' selected'; } ?>>Brazilian Portuguese</option>
+						<option value="fr"<?php if ($key->lang == 'fr') { echo ' selected'; } ?>>French</option>
+						<option value="de"<?php if ($key->lang == 'de') { echo ' selected'; } ?>>German</option>
+						<option value="es"<?php if ($key->lang == 'es') { echo ' selected'; } ?>>Spanish</option>
 					</select></p>
-				<p><label for='user_theme'><?php echo __('Theme'); ?>: </label><input type='text' id='user_theme' name='user_theme' tabindex='7' title='Theme' value="<?php echo htmlentities($key->user_theme); ?>"/></p>
-				<?php if ($this->user->user_admin == 'y') { ?>
-					<p><label for='user_admin'><?php echo __('User is Admin'); ?>: </label><input type='checkbox' id='user_admin' name='user_admin' tabindex='8' title='Is Admin' <?php echo htmlentities($value_admin)?> /></p>
+				<p><label for='theme'><?php echo __('Theme'); ?>: </label><input type='text' id='theme' name='theme' tabindex='7' title='Theme' value="<?php echo htmlentities($key->theme); ?>"/></p>
+				<?php if ($this->user->admin == 'y') { ?>
+					<p><label for='admin'><?php echo __('User is Admin'); ?>: </label><input type='checkbox' id='admin' name='admin' tabindex='8' title='Is Admin' <?php echo htmlentities($value_admin)?> /></p>
 				<?php } else { ?>
 					<p></p>
 				<?php } ?>
-				<p><label for='user_sam'><?php echo __('User SAM Access Level'); ?>: </label>
-					<select id='user_sam' name='user_sam' tabindex='8' title='Is Admin'>
-						<option value="0"<?php if ($key->user_sam == '0') { echo " selected=\"selected\""; } ?>>No Access</option>
-						<option value="1"<?php if ($key->user_sam == '1') { echo " selected=\"selected\""; } ?>>View Reports Only</option>
-						<option value="2"<?php if ($key->user_sam == '2') { echo " selected=\"selected\""; } ?>>Update Counts</option>
-						<option value="3"<?php if ($key->user_sam == '3') { echo " selected=\"selected\""; } ?>>Create Licenses</option>
+				<p><label for='sam'><?php echo __('User SAM Access Level'); ?>: </label>
+					<select id='sam' name='sam' tabindex='8' title='Is Admin'>
+						<option value="0"<?php if ($key->sam == '0') { echo " selected=\"selected\""; } ?>>No Access</option>
+						<option value="1"<?php if ($key->sam == '1') { echo " selected=\"selected\""; } ?>>View Reports Only</option>
+						<option value="2"<?php if ($key->sam == '2') { echo " selected=\"selected\""; } ?>>Update Counts</option>
+						<option value="3"<?php if ($key->sam == '3') { echo " selected=\"selected\""; } ?>>Create Licenses</option>
 					</select></p>
 				<p><label for='submit'></label><?php echo form_submit(array('id' => 'submit', 'name' => 'submit'), __('Submit') ); ?></p>
 			</td>
 		</tr>
 	</table>
-	<input type="hidden" value="<?php echo $key->user_id; ?>" name="user_id" id="user_id" />
+	<input type="hidden" value="<?php echo $key->id; ?>" name="id" id="id" />
 	<?php } ?>
 	<p><?php echo $error_message; ?>&nbsp;</p>
 	<p><?php echo $this->session->flashdata('message'); ?>&nbsp;</p>
@@ -191,7 +192,7 @@ function group_dropdown($group_id, $access_level)
 }
 ?>
 
-<?php if ($this->user->user_admin == 'y') { ?>
+<?php if ($this->user->admin == 'y') { ?>
     <script type="text/javascript">
     function alter_all_groups() {
     	totalArray = new Array();

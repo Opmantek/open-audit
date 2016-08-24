@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,10 +40,7 @@ class devices extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+        stdlog();
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -55,27 +53,27 @@ class devices extends MY_Controller
         $this->load->helper('error');
         $this->load->helper('input');
         $this->load->model('m_devices');
+        $this->load->model('m_orgs');
 
-        $this->error = new stdClass();
-        $this->error->controller = '';
-
-        $this->response = new stdClass();
         inputRead();
-
-        $this->response->total = 0;
-        $this->response->filtered = 0;
-        if ($this->response->format == 'screen') {
-            $this->response->heading = 'Devices';
-            $this->response->include = 'v_devices';
-        }
-
         $this->output->url = $this->config->item('oa_web_index');
 
-        if ($this->response->id != '') {
-            $access_level = $this->m_devices->getUserDeviceAccess($this->response->id, $this->user->user_id);
-            if ($access_level == 0) {
-                // TODO - output JSON or SCREEN with appropriate header
-                echo "Insufficient device access.";
+        if ($this->response->meta->id != '') {
+            $access_level = $this->m_devices->get_user_device_org_access();
+            if ($access_level < 1) {
+                // we should determine if the device does actually exist or not
+                // then we can throw the correct status code of 404 or 403
+                $sql = "SELECT system.id FROM system WHERE system.id = ?";
+                $data = array($this->response->meta->id);
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+                if (count($result) == 0) {
+                    $this->response->errors[] = getError('ERR-0007');
+                } else {
+                    $this->response->errors[] = getError('ERR-0008');
+                }
+                $this->response->meta->header = $this->response->errors[0]->status;
+                output($this->response);
                 exit();
             }
         }
@@ -85,11 +83,10 @@ class devices extends MY_Controller
     {
     }
 
-    public function _remap($method)
+    public function _remap()
     {
-        $action = $this->response->action;
-        if ($action != '') {
-            $this->$action();
+        if (!empty($this->response->meta->action)) {
+            $this->{$this->response->meta->action}();
         } else {
             $this->collection();
         }
@@ -98,93 +95,204 @@ class devices extends MY_Controller
 
     private function collection()
     {
-        if (empty($_GET['properties']) and empty($_POST['properties'])) {
-            $this->response->properties = 'icon, man_type, system_id, hostname, man_domain, man_ip_address, ip, ip_padded, man_description, os_family';
-        }
-        if ($this->response->subresource != '') {
-            $this->response->data = $this->m_devices->readDevicesSubresource();
+        if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource != 'report') {
+            $this->response->data = $this->m_devices->collection_sub_resource();
+
+        } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
+            $this->response->data = $this->m_devices->report();
+
         } else {
-            $this->response->data = $this->m_devices->readDevices($this->response->id);
+            $this->response->data = $this->m_devices->collection();
         }
-        $this->response->filtered = count($this->response->data);
-        $this->response->query = $this->response->data;
-        $this->response->include = 'v_devices';
+
+        $this->response->meta->filtered = count($this->response->data);
         output($this->response);
     }
 
     private function read()
     {
-        if ($this->response->subresource != '') {
-            $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-            $this->response->filtered = count($this->response->data);
+        $this->load->model('m_orgs');
+        $this->load->model('m_locations');
+        $this->load->model('m_devices_components');
+        $this->response->included = array();
+        // if we're displaying a web page, get ALL the data
+        if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
+            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credential,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+        }
+
+        if ($this->response->meta->sub_resource != '') {
+            $this->response->data = $this->m_devices->read_sub_resource( $this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+            $this->response->meta->format = 'json';
         } else {
-            $this->response->data = $this->m_devices->readDevice($this->response->id);
-            $this->response->include = 'v_display_device';
+            $this->response->data = $this->m_devices->read();
+            # create the related links
+            if (!empty($this->response->data)) {
+                $related = $this->m_devices->get_related_tables();
+                $this->response->data[0]->links->relationships = $related;
+                unset($related);
+            }
+            # get any additionally included tables
+            if (!empty($this->response->meta->include) and !empty($this->response->data)) {
+                $temp = explode(',', $this->response->meta->include);
+                foreach ($temp as $table) {
+                    $result = false;
+                    $result = $this->m_devices->read_sub_resource( $this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+                    if ($result) {
+                        $this->response->included = array_merge($this->response->included, $result);
+                    }
+                }
+            }
+        }
+        $this->response->meta->total = count($this->response->data);
+        $this->response->meta->filtered = count($this->response->data);
+        if ($this->response->meta->format == 'screen') {
+            // return a list of all orgs and locations so we can create the edit functionality on the web page
+            if (isset($this->response->data[0]->attributes->org_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+            }
+            if (isset($this->response->data[0]->attributes->location_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+            }
+        } else {
+            // return only the details of the linked org and location
+            if (isset($this->response->data[0]->attributes->org_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+            }
+            if (isset($this->response->data[0]->attributes->location_id)) {
+                $this->response->included = array_merge($this->response->included, $this->m_locations->read($this->response->data[0]->attributes->location_id));
+            }
+        }
+        if (is_null($this->response->data)) {
+            log_error('ERR-0002');
         }
         output($this->response);
     }
 
-    // because we're using JSON API style URLs and not CodeIgniter style
-    // JSON style: index.php/{resource}/{id}/{sub_resource}/{sub_resource_id}?{options}
-    // CI style: index.php/controller/function/{option name #1}/{option value #1}
-    // and because we also need to take the request method (GET/POST/etc) into account (which CodeIgniter does not do)
-    // we need to make our own routing table
-    // public function _remap($method)
-    // {
-    //     // the details of this specific device
-    //     if ($this->response->id != '' and $this->response->subresource != '') {
-    //         $this->readDeviceSubresource();
-    //         exit();
-    //     }
-    //     if ($this->response->subresource != '') {
-    //         $this->readDevicesSubresource();
-    //         exit();
-    //     }
-    //     // the details of this specific device
-    //     if ($this->response->id != '') {
-    //         $this->readDevice($this->response->id);
-    //         exit();
-    //     }
-    //     // the details of this specific group
-    //     if ($this->response->action == 'read') {
-    //         $this->readDevices();
-    //         exit();
-    //     }
-    // }
+    private function create()
+    {
+        $this->m_devices->update();
+        if ($this->response->meta == 'json') {
+            output($this->response);
+        } else {
+            redirect('devices');
+        }
+    }
 
-    // private function readDevices()
-    // {
-    //     $this->response->data = $this->m_devices->readDevices($this->response->id);
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function update()
+    {
+        $this->m_devices->update();
+        # TODO - replace this old function
+        $details = new stdClass();
+        $details->id = $this->response->meta->id;
+        $this->load->model("m_oa_group");
+        $this->m_oa_group->update_system_groups($details);
 
-    // private function readDevice()
-    // {
-    //     $this->response->data = $this->m_devices->readDevice($this->response->id);
-    //     $this->response->total = count($this->response->data);
-    //     unset($this->response->filtered);
-    //     unset($this->response->limit);
-    //     unset($this->response->offset);
-    //     $this->response->include = 'v_display_device';
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+        if ($this->response->meta->format == 'json') {
+            $this->response->data = $this->m_devices->read();
+            output($this->response);
+        }
+        exit();
+    }
 
-    // private function readDeviceSubresource()
-    // {
-    //     $this->response->data = $this->m_devices->readDeviceSubresource($this->response->id, $this->response->subresource);
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function create_form()
+    {
+        output($this->response);
+    }
 
-    // private function readDevicesSubresource()
-    // {
-    //     $this->response->data = $this->m_devices->readDevicesSubresource();
-    //     $this->response->filtered = count($this->response->data);
-    //     $this->response->header = 'HTTP/1.1 200 OK';
-    //     output($this->response);
-    // }
+    private function execute()
+    {
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
+        output($this->response);
+    }
+
+    private function update_form()
+    {
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
+        output($this->response);
+    }
+
+    private function bulk_update_form()
+    {
+        $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in (" . $this->response->meta->ids . ")";
+        $query = $this->db->query($sql);
+        # TODO - change the below to use this->response->included
+        $this->response->devices = $query->result();
+
+        if (empty($this->response->meta->sub_resource)) {
+            $this->load->model('m_locations');
+            $this->load->model('m_fields');
+            $this->response->included = array();
+            $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+            $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+            unset($temp);
+            $temp = @$this->m_fields->collection();
+            if ( ! empty($temp)) {
+                $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
+            }
+            include 'include_device_types.php';
+            # TODO - change the below to use this->response->included
+            $this->response->types = $device_types;
+        } elseif ($this->response->meta->sub_resource == 'credential') {
+            $this->response->meta->action = 'create_form_credentials';
+        }
+        output($this->response);
+    }
+
+    private function sub_resource_delete()
+    {
+        # Only admin's
+        if ($this->user->admin != 'y') {
+            log_error('ERR-0008');
+            output($this->response);
+            exit();
+        }
+        $this->m_devices->sub_resource_delete($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            redirect('devices');
+        }
+    }
+
+    private function sub_resource_create_form()
+    {
+        if ($this->response->meta->sub_resource == 'credential') {
+            $this->response->meta->action = 'create_form_credentials';
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            output($this->response);
+        } else {
+            redirect('devices');
+        }
+    }
+
+    private function sub_resource_create()
+    {
+        if ($this->m_devices->sub_resource_create()) {
+            $this->response->meta->succeeded = true;
+        } else {
+            $this->response->meta->succeeded = false;
+        }
+        if ($this->response->meta->format == 'json') {
+            output($this->response);
+        } else {
+            if (!empty($this->response->meta->id)) {
+                redirect('devices/' . $this->response->meta->id);
+            } else {
+                redirect('devices');
+            }
+        }
+    }
+
+    private function delete()
+    {
+        $this->response->meta->format = 'json';
+        $this->response->meta->debug = true;
+        output($this->response);
+    }
 }

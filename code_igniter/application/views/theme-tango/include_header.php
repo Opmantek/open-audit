@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -53,13 +54,13 @@
 		</a>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
-		<br /><a href="<?php echo $oa_web_index; ?>/main/edit_user"><?php echo htmlentities($this->user->user_full_name); ?><br /></a>
+		<br /><a href="<?php echo $oa_web_index; ?>/main/edit_user"><?php echo htmlentities($this->user->full_name); ?><br /></a>
 		<a href="<?php echo $oa_web_index; ?>/login/logout">
 			<img id="logout_button" src="<?php echo $oa_theme_images; ?>/28_button_logout.png" onmouseover="this.src='<?php echo $oa_theme_images; ?>/28_button_logout_over.png'" onmouseout="this.src='<?php echo $oa_theme_images; ?>/28_button_logout.png'" alt="" style='border-width:0px;' />
 		</a>
 	</div>
-	<?php if ($this->user->user_admin == 'y') {
-        if (isset($this->user->user_debug) and $this->user->user_debug == 'y') {
+	<?php if ($this->user->admin == 'y') {
+        if (isset($this->user->debug) and $this->user->debug == 'y') {
             $image = '<a href="'.current_url().'/user_debug/n"><img alt="" src="'.$oa_theme_images.'/16_delete.png" /></a>';
         } else {
             $image = '<a href="'.current_url().'/user_debug/y"><img alt="" src="'.$oa_theme_images.'/16_true.png" /></a>';
@@ -70,7 +71,7 @@
 	<?php } ?>
 	<div style="width:100px; float: right; text-align: center;">
 		<br />Version<br /><?php echo htmlentities($this->config->item('display_version')); ?>
-		<?php if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->user_admin == 'y')) {
+		<?php if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->admin == 'y')) {
         echo '<br /><a href="'.$oa_web_index.'/main/help_about" style="color: red;">upgrade</a>'; } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">

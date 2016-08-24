@@ -30,135 +30,121 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Dell
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
     # http://www.oidview.com/mibs/674/DELL-RAC-MIB.html
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10892.2') {
+    if ($oid == '1.3.6.1.4.1.674.10892.2') {
         $details->model = 'DRAC 4/P';
         $details->type = 'remote access controller';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10892.2') {
+    if ($oid == '1.3.6.1.4.1.674.10892.2') {
         $details->model = 'DRAC 4/P';
         $details->type = 'remote access controller';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.1') {
+    if ($oid == '1.3.6.1.4.1.674.10895.1') {
         $details->model = 'PowerConnect 3024';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.1000') {
+    if ($oid == '1.3.6.1.4.1.674.10895.1000') {
         $details->model = 'PowerConnect 5212';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3') {
         $details->model = 'PowerConnect 3248';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3000') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3000') {
         $details->model = 'PowerConnect 6024';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3002') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3002') {
         $details->model = 'PowerConnect 3324';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3003') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3003') {
         $details->model = 'PowerConnect 3348';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3004') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3004') {
         $details->model = 'PowerConnect 5324';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3005') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3005') {
         $details->model = 'PowerConnect 5316M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3006') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3006') {
         $details->model = 'PowerConnect 3400';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3007') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3007') {
         $details->model = 'PowerConnect 3400';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3008') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3008') {
         $details->model = 'PowerConnect 3424';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3009') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3009') {
         $details->model = 'PowerConnect 3448P';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3010') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3010') {
         $details->model = 'PowerConnect 6224';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3011') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3011') {
         $details->model = 'PowerConnect 6248';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3013') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3013') {
         $details->model = 'PowerConnect 6248P';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3015') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3015') {
         $details->model = 'PowerConnect 6220M';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3018') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3018') {
         $details->model = 'PowerConnect 3524P';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3022') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3022') {
         $details->model = 'PowerConnect M8024';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3024') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3024') {
         $details->model = 'PowerConnect 8024F';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.3025') {
+    if ($oid == '1.3.6.1.4.1.674.10895.3025') {
         $details->model = 'PowerConnect M6348';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.4') {
+    if ($oid == '1.3.6.1.4.1.674.10895.4') {
         $details->model = 'PowerConnect 5224';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10895.5') {
+    if ($oid == '1.3.6.1.4.1.674.10895.5') {
         $details->model = 'PowerConnect 3048';
         $details->type = 'switch';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.674.10899.100.1.1') {
+    if ($oid == '1.3.6.1.4.1.674.10899.100.1.1') {
         $details->model = 'Dell 5100MP Projector';
         $details->type = 'projector';
     }
-
-
-
-    if ($details->snmp_version == '2') {
-        # model
-        $temp_model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.2.0"));
-
-        # serial
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.11.0"));
-    }
-
-    if ($details->snmp_version == '1') {
-        # model
-        $temp_model = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.2.0"));
-
-        # serial
-        $details->serial = snmp_clean(@snmpget($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.674.10892.2.1.1.11.0"));
-    }
-
-    if (isset($temp_model) and $temp_model > '') {
+    $temp_model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.674.10892.2.1.1.2.0");
+    if (!empty($temp_model)) {
         $details->model = $temp_model;
     }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.674.10892.2.1.1.11.0");
+    return($details);
 };

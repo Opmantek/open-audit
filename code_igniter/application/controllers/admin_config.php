@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -48,7 +49,7 @@ class Admin_config extends MY_Controller
         redirect('/');
     }
 
-    # Same function aqs ahax::update_config except with a redirect to the homepage after submission.
+    # Same function as ajax::update_config except with a redirect to the homepage after submission.
     # TODO - replace this or add the redirect function to the ajax::update_config function.
     # Use the new JSON api going forward.
     # This was written specifically for the licensing modal to update the oae_prompt data
@@ -56,7 +57,7 @@ class Admin_config extends MY_Controller
     {
 
         // must be an admin to access this function
-        if ($this->user->user_admin != 'y') {
+        if ($this->user->admin != 'y') {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
@@ -83,7 +84,7 @@ class Admin_config extends MY_Controller
             $config_value = '';
         }
 
-        $this->m_oa_config->update_config($config_name, $config_value, $this->user->user_id, date('Y-m-d H:i:s'));
+        $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, $this->config->config['timestamp']);
 
         if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
             redirect($_SERVER['HTTP_REFERER']);

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -41,18 +42,18 @@ class M_oa_licensing extends MY_Model
 
     public function software_licensing_report($id)
     {
-        $sql = "SELECT COUNT(DISTINCT system.system_id) AS software_count,
+        $sql = "SELECT COUNT(DISTINCT system.id) AS software_count,
     				software.name,
     				software.version,
     				software.publisher,
     				software.id,
     				software.type,
-    				round(sum(oa_asset_select.group_amount)/COUNT(DISTINCT system.system_id), 0) as software_licenses,
+    				round(sum(oa_asset_select.group_amount)/COUNT(DISTINCT system.id), 0) as software_licenses,
     				oa_asset_select.select_id
 				FROM
 				    software
-				LEFT JOIN system ON (software.system_id = system.system_id and software.current = 'y')
-				LEFT JOIN oa_group_sys ON (system.system_id = oa_group_sys.system_id)
+				LEFT JOIN system ON (software.system_id = system.id and software.current = 'y')
+				LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id)
 				LEFT JOIN oa_asset_select ON (software.name = oa_asset_select.select_name AND oa_asset_select.group_id = ? )
 				WHERE
 				    oa_group_sys.group_id = ?

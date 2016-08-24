@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -68,7 +69,7 @@
 			<select id='dynamic_other_table' name='dynamic_other_table' onchange='retrieve_fields();' style='width:250px;'>
 				<option value='' selected='selected'>Choose a table from the DB</option>
 				<?php
-                $tables = array ('bios', 'disk', 'dns', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+                $tables = array ('bios', 'disk', 'dns', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'system', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
                 foreach ($tables as $table) {
                 	echo "	<option value='".$table."'>".$table."</option>\n";
                 } ?>
@@ -113,7 +114,7 @@
 </fieldset>
 <p><br /></p>
 <p><br /></p>
-<?php $display_sql = "SELECT system.system_id, system.hostname, system.man_description, system.man_ip_address, system.man_type, system.man_os_family, system.man_os_name, system.man_icon FROM system, oa_group_sys WHERE system.system_id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.man_status = 'production' GROUP BY system.system_id"; ?>
+<?php $display_sql = "SELECT system.id, system.hostname, system.description, system.ip, system.type, system.os_family, system.os_name, system.icon FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? AND system.status = 'production' GROUP BY system.id"; ?>
 <fieldset id="group_display_sql_fieldset" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Group Display SQL'); ?></span></legend>
 	<p><label for='group_display_sql'><?php echo __('Display SQL'); ?>: </label><textarea name='group_display_sql' id='group_display_sql' rows='12' cols='120'><?php echo $display_sql; ?></textarea></p>
@@ -139,7 +140,7 @@
 		<tr>
 			<td><input type='text' id='column_order_1' name='column_order_1' 		value='1' size='5' /></td>
 			<td><input type='text' id='column_name_1' name='column_name_1' 			value='Icon' size='10' /></td>
-			<td><input type='text' id='column_variable_1' name='column_variable_1' 	value='man_icon' size='10' /></td>
+			<td><input type='text' id='column_variable_1' name='column_variable_1' 	value='icon' size='10' /></td>
 			<td><select id='column_type_1' name='column_type_1' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __('Link'); ?></option>
@@ -150,7 +151,7 @@
 				<option value='url'><?php echo __('URL'); ?></option>
 			</select></td>
 			<td><input type='text' id='column_link_1' name='column_link_1' value='' /></td>
-			<td><input type='text' id='column_secondary_1' name='column_secondary_1' value='man_os_family' size='10' /></td>
+			<td><input type='text' id='column_secondary_1' name='column_secondary_1' value='os_family' size='10' /></td>
 			<td><input type='text' id='column_ternary_1' name='column_ternary_1' value='' size='10' /></td>
 			<td><select id='column_align_1' name='column_align_1' title='Column Alignment' >
 				<option value='left'><?php echo __('Left'); ?></option>
@@ -185,7 +186,7 @@
 		<tr>
 			<td><input type='text' id='column_order_3' name='column_order_3' 		value='3' size='5' /></td>
 			<td><input type='text' id='column_name_3' name='column_name_3' 			value='IP Address' size='10' /></td>
-			<td><input type='text' id='column_variable_3' name='column_variable_3' 	value='man_ip_address' size='10' /></td>
+			<td><input type='text' id='column_variable_3' name='column_variable_3' 	value='ip' size='10' /></td>
 			<td><select id='column_type_3' name='column_type_3' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __('Link'); ?></option>
@@ -208,7 +209,7 @@
 		<tr>
 			<td><input type='text' id='column_order_4' name='column_order_4' 		value='4' size='5' /></td>
 			<td><input type='text' id='column_name_4' name='column_name_4' 			value='Type' size='10' /></td>
-			<td><input type='text' id='column_variable_4' name='column_variable_4' 	value='man_type' size='10' /></td>
+			<td><input type='text' id='column_variable_4' name='column_variable_4' 	value='type' size='10' /></td>
 			<td><select id='column_type_4' name='column_type_4' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __('Link'); ?></option>
@@ -231,7 +232,7 @@
 		<tr>
 			<td><input type='text' id='column_order_5' name='column_order_5'		value='5' size='5' /></td>
 			<td><input type='text' id='column_name_5' name='column_name_5' 			value='Description' size='10' /></td>
-			<td><input type='text' id='column_variable_5' name='column_variable_5' 	value='man_description' size='10' /></td>
+			<td><input type='text' id='column_variable_5' name='column_variable_5' 	value='description' size='10' /></td>
 			<td><select id='column_type_5' name='column_type_5' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __('Link'); ?></option>
@@ -254,7 +255,7 @@
 		<tr>
 			<td><input type='text' id='column_order_6' name='column_order_6' 		value='6' size='5' /></td>
 			<td><input type='text' id='column_name_6' name='column_name_6' 			value='OS / Device' size='10' /></td>
-			<td><input type='text' id='column_variable_6' name='column_variable_6' 	value='man_os_name' size='10' /></td>
+			<td><input type='text' id='column_variable_6' name='column_variable_6' 	value='os_name' size='10' /></td>
 			<td><select id='column_type_6' name='column_type_6' title='Column Type' >
 				<option value=''>&nbsp;</option>
 				<option value='link'><?php echo __('Link'); ?></option>

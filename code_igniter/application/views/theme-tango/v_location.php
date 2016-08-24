@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -40,22 +41,22 @@
 		<table cellpadding = "0" cellspacing="0">
 			<tr>
 				<td valign="top">
-					<p><label for='location_name'><?php echo __("Name")?>: </label><span id='location_name' name='location_name'>&nbsp;<?php echo htmlentities($location->location_name)?></span></p>
-					<p><label for='location_devices'># <?php echo __("Devices")?>: </label><span id='location_devices' name='location_devices'>&nbsp;<?php echo htmlentities($location->total)?></span></p>
-					<p><label for='location_type'><?php echo __("Type")?>: </label><span id='location_type' name='location_type'>&nbsp;<?php echo htmlentities($location->location_type)?></span></p>
-					<p><label for='location_room'><?php echo __("Room")?>: </label><span id='location_room' name='location_room'>&nbsp;<?php echo htmlentities($location->location_room)?></span></p>
-					<p><label for='location_suite'><?php echo __("Suite")?>: </label><span id='location_suite' name='location_suite'>&nbsp;<?php echo htmlentities($location->location_suite)?></span></p>
-					<p><label for='location_level'><?php echo __("Level")?>: </label><span id='location_level' name='location_level'>&nbsp;<?php echo htmlentities($location->location_level)?></span></p>
-					<p><label for='location_address'><?php echo __("Street Address")?>: </label><span id='location_address' name='location_address'>&nbsp;<?php echo htmlentities($location->location_address)?></span></p>
+					<p><label for='name'><?php echo __("Name")?>: </label><span id='name' name='name'>&nbsp;<?php echo htmlentities($location->name)?></span></p>
+					<p><label for='devices'># <?php echo __("Devices")?>: </label><span id='devices' name='devices'>&nbsp;<?php echo htmlentities($location->total)?></span></p>
+					<p><label for='type'><?php echo __("Type")?>: </label><span id='type' name='type'>&nbsp;<?php echo htmlentities($location->type)?></span></p>
+					<p><label for='room'><?php echo __("Room")?>: </label><span id='room' name='room'>&nbsp;<?php echo htmlentities($location->room)?></span></p>
+					<p><label for='suite'><?php echo __("Suite")?>: </label><span id='suite' name='suite'>&nbsp;<?php echo htmlentities($location->suite)?></span></p>
+					<p><label for='level'><?php echo __("Level")?>: </label><span id='level' name='level'>&nbsp;<?php echo htmlentities($location->level)?></span></p>
+					<p><label for='address'><?php echo __("Street Address")?>: </label><span id='address' name='address'>&nbsp;<?php echo htmlentities($location->address)?></span></p>
 				</td valign="top"><td>
-					<p><label for='location_city'><?php echo __("City")?>: </label><span id='location_city' name='location_city'>&nbsp;<?php echo htmlentities($location->location_city)?></span></p>
-					<p><label for='location_state'><?php echo __("State")?>: </label><span id='location_state' name='location_state'>&nbsp;<?php echo htmlentities($location->location_state)?></span></p>
-					<p><label for='location_country'><?php echo __("Country")?>: </label><span id='location_country' name='location_country'>&nbsp;<?php echo htmlentities($location->location_country)?></span></p>
-					<p><label for='location_phone'><?php echo __("Phone")?>: </label><span id='location_phone' name='location_phone'>&nbsp;<?php echo htmlentities($location->location_phone)?></span></p>
-					<p><label for='location_geo'><?php echo __("Geocode")?>: </label><span id='location_geo' name='location_geo'>&nbsp;<?php echo htmlentities($location->location_geo)?></span></p>
-					<p><label for='location_latitude'><?php echo __("Latitude")?>: </label><span id='location_latitude' name='location_latitude'>&nbsp;<?php echo htmlentities($location->location_latitude)?></span></p>
-					<p><label for='location_longitude'><?php echo __("Longitude")?>: </label><span id='location_longitude' name='location_longitude'>&nbsp;<?php echo htmlentities($location->location_longitude)?></span></p>
-					<p><label for='location_comments'><?php echo __("Comments")?>: </label><span id='location_comments' name='location_comments'>&nbsp;<?php echo htmlentities($location->location_comments)?></span></p>
+					<p><label for='city'><?php echo __("City")?>: </label><span id='city' name='city'>&nbsp;<?php echo htmlentities($location->city)?></span></p>
+					<p><label for='state'><?php echo __("State")?>: </label><span id='state' name='state'>&nbsp;<?php echo htmlentities($location->state)?></span></p>
+					<p><label for='country'><?php echo __("Country")?>: </label><span id='country' name='country'>&nbsp;<?php echo htmlentities($location->country)?></span></p>
+					<p><label for='phone'><?php echo __("Phone")?>: </label><span id='phone' name='phone'>&nbsp;<?php echo htmlentities($location->phone)?></span></p>
+					<p><label for='geo'><?php echo __("Geocode")?>: </label><span id='geo' name='geo'>&nbsp;<?php echo htmlentities($location->geo)?></span></p>
+					<p><label for='latitude'><?php echo __("Latitude")?>: </label><span id='latitude' name='latitude'>&nbsp;<?php echo htmlentities($location->latitude)?></span></p>
+					<p><label for='longitude'><?php echo __("Longitude")?>: </label><span id='longitude' name='longitude'>&nbsp;<?php echo htmlentities($location->longitude)?></span></p>
+					<p><label for='comments'><?php echo __("Comments")?>: </label><span id='comments' name='comments'>&nbsp;<?php echo htmlentities($location->comments)?></span></p>
 				</td>
 			</tr>
 		</table>

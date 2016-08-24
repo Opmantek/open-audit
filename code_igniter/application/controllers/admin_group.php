@@ -28,7 +28,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -50,6 +51,7 @@ class Admin_group extends MY_Controller
 
     public function activate_group()
     {
+        $log_details = new stdClass();
         if ($handle = opendir(BASEPATH.'../application/controllers/groups')) {
             $i = 0;
             $this->load->model("m_oa_group");
@@ -59,9 +61,14 @@ class Admin_group extends MY_Controller
                     $file_handle = fopen(BASEPATH.'../application/controllers/groups/'.$file, "rb");
                     $contents = fread($file_handle, filesize(BASEPATH.'../application/controllers/groups/'.$file));
                     try {
-                        $xml = new SimpleXMLElement($contents);
-                    } catch (Exception $e) {
-                        echo $e;
+                        $xml = @new SimpleXMLElement($contents);
+                    } catch (Exception $error) {
+                        // $errors = libxml_get_errors();
+                        // print_r($errors);
+                        $log_details->message = "Invalid XML for group in file " . BASEPATH.'../application/controllers/groups/'.$file;
+                        $log_details->file = 'system';
+                        stdlog($log_details);
+                        continue;
                     }
                     $group_name = $xml->details->group_name;
                     $group_icon = $xml->details->group_icon;
@@ -310,10 +317,12 @@ class Admin_group extends MY_Controller
                 if (($details->dynamic_other_text == '') and ($details->dynamic_field_value != '')) {
                     $selection = $details->dynamic_field_value;
                 }
-                if ($details->dynamic_other_table == 'sys_man_additional_fields' or $details->dynamic_other_table == 'sys_man_additional_fields_data') {
-                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.system_id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production'";
+                if ($details->dynamic_other_table == 'additional_fields' or $details->dynamic_other_table == 'additional_fields_data') {
+                    $details->group_dynamic_select = "SELECT distinct(system.id) FROM ".$details->dynamic_other_table.$system_table." WHERE ".$details->dynamic_other_table.".system_id = system.id AND ".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.status = 'production'";
+                } elseif ($details->dynamic_other_table == 'system') {
+                    $details->group_dynamic_select = "SELECT distinct(system.id) FROM system WHERE system.".$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.status = 'production'";
                 } else {
-                    $details->group_dynamic_select = "SELECT distinct(system.system_id) FROM ".$details->dynamic_other_table." LEFT JOIN system ON ".$details->dynamic_other_table.".system_id = system.system_id WHERE ".$details->dynamic_other_table.'.'.$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.man_status = 'production' AND ".$details->dynamic_other_table.".current = 'y'";
+                    $details->group_dynamic_select = "SELECT distinct(system.id) FROM ".$details->dynamic_other_table." LEFT JOIN system ON ".$details->dynamic_other_table.".system_id = system.id WHERE ".$details->dynamic_other_table.'.'.$details->dynamic_other_field." ".$condition." '".$like_wildcard.$selection.$like_wildcard."' AND system.status = 'production' AND ".$details->dynamic_other_table.".current = 'y'";
                 }
             }
         }

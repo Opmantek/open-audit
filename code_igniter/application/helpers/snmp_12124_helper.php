@@ -30,21 +30,21 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Isilon
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
 
-    if ($details->snmp_oid == '1.3.6.1.4.1.12124.1') {
+    if ($oid == '1.3.6.1.4.1.12124.1') {
         $details->type = 'storage misc';
     }
-
-    if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12124.2.51.1.3.1"));
-        $details->model = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.12124.2.51.1.4.1"));
-    }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.3.1");
+    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.4.1");
+    return($details);
 };

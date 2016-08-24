@@ -30,60 +30,60 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Palo Alto
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.25461.2.3.1') {
         $details->model = 'PA-4050 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.2') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.2') {
         $details->model = 'PA-4020 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.3') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.3') {
         $details->model = 'PA-2050 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.4') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.4') {
         $details->model = 'PA-2020 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.5') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.5') {
         $details->model = 'PA-4060 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.6') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.6') {
         $details->model = 'PA-500 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.7') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.7') {
         $details->model = 'Panorama firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.8') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.8') {
         $details->model = 'PA-5060 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.9') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.9') {
         $details->model = 'PA-5050 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.11') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.11') {
         $details->model = 'PA-5020 firewall';
         $details->type = 'firewall';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.25461.2.3.12') {
+    if ($oid == '1.3.6.1.4.1.25461.2.3.12') {
         $details->model = 'PA-200 firewall';
         $details->type = 'firewall';
     }
-
-    if ($details->snmp_version == '2') {
-        $details->serial = snmp_clean(@snmp2_get($details->man_ip_address, $details->snmp_community, "1.3.6.1.4.1.25461.2.1.2.1.3.0"));
-    }
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.25461.2.1.2.1.3.0");
+    return($details);
 };

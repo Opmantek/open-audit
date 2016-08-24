@@ -30,16 +30,19 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Compaq
 
-$get_oid_details = function ($details) {
-    if (strpos($details->snmp_oid, '1.3.6.1.4.1.232.9.4.10') == 0) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if (strpos($oid, '1.3.6.1.4.1.232.9.4.10') == 0) {
         $details->model = 'Compaq iLO';
         $details->type = 'remote access controller';
     }
+    return($details);
 };

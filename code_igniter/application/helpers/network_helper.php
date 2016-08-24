@@ -30,7 +30,8 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -50,7 +51,7 @@ if (! function_exists('network_details')) {
 
         if (preg_match('/\//', $my_net_info)) {
             //if cidr type mask
-        $dq_host = strtok("$my_net_info", "/");
+            $dq_host = strtok("$my_net_info", "/");
             $cdr_nmask = strtok("/");
             if (!($cdr_nmask >= 0 && $cdr_nmask <= 32)) {
                 $details->error = "Invalid CIDR value. Try an integer 0 - 32.";
@@ -61,7 +62,7 @@ if (! function_exists('network_details')) {
             $bin_wmask = binnmtowm($bin_nmask);
         } else {
             //Dotted quad mask?
-        $dqs = explode(" ", $my_net_info);
+            $dqs = explode(" ", $my_net_info);
             $dq_host = $dqs[0];
             $bin_nmask = dqtobin($dqs[1]);
             $bin_wmask = binnmtowm($bin_nmask);
@@ -326,7 +327,7 @@ if (! function_exists('dns_validate')) {
         }
         #$this->load->helper('log_helper');
         $log_details = new stdClass();
-        $log_details->message = 'Start DNS checking for ' . @$details->man_ip_address;
+        $log_details->message = 'Start DNS checking for ' . @$details->ip;
         $log_details->severity = 7;
         $log_details->file = 'system';
         if ($display != 'y') {
@@ -336,38 +337,38 @@ if (! function_exists('dns_validate')) {
         unset($display);
         stdlog($log_details);
 
-        if (!isset($details->man_ip_address)) {
-            $details->man_ip_address = '';
+        if (!isset($details->ip)) {
+            $details->ip = '';
             $log_details->message = 'No ip set for ' . @$details->hostname;
             stdlog($log_details);
         } else {
-            if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+            if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
                 # we have something in the ip address that is not an ip
-                $log_details->message = 'Invalid entry in ip is ' . @$details->man_ip_address;
+                $log_details->message = 'Invalid entry in ip is ' . @$details->ip;
                 stdlog($log_details);
                 if (empty($details->hostname)) {
-                    $log_details->message = 'Hostname is empty so filling with ip for ' . @$details->man_ip_address;
+                    $log_details->message = 'Hostname is empty so filling with ip for ' . @$details->ip;
                     stdlog($log_details);
-                    $details->hostname = $details->man_ip_address;
-                    $details->man_ip_address = '';
+                    $details->hostname = $details->ip;
+                    $details->ip = '';
                 }
             }
         }
 
         if (!isset($details->hostname)) {
             $details->hostname = '';
-            $log_details->message = 'No hostname set for ' . @$details->man_ip_address;
+            $log_details->message = 'No hostname set for ' . @$details->ip;
             stdlog($log_details);
         } else {
             if (filter_var($details->hostname, FILTER_VALIDATE_IP)) {
                 # we have an ip in the hostname field
                 $log_details->message = 'Hostname contains an ip ' . @$details->hostname;
                 stdlog($log_details);
-                if ($details->man_ip_address == '') {
-                    # man_ip_address is empty, set it to the ip address from the hostname
+                if ($details->ip == '') {
+                    # ip is empty, set it to the ip address from the hostname
                     $log_details->message = 'IP is empty so filling with hostname for ' . @$details->hostname;
                     stdlog($log_details);
-                    $details->man_ip_address = $details->hostname;
+                    $details->ip = $details->hostname;
                 }
                 $details->hostname = '';
             } elseif (strpos($details->hostname, '.') !== false) {
@@ -395,16 +396,16 @@ if (! function_exists('dns_validate')) {
 
         if (!isset($details->domain)) {
             $details->domain = '';
-            $log_details->message = 'No domain set for ' . @$details->man_ip_address;
+            $log_details->message = 'No domain set for ' . @$details->ip;
             stdlog($log_details);
         } else {
             if (filter_var($details->domain, FILTER_VALIDATE_IP)) {
                  # we have an ip in the domain field
                 $log_details->message = 'Domain contains an ip ' . @$details->domain;
                 stdlog($log_details);
-                if (empty($details->man_ip_address)) {
-                    # man_ip_address is empty, set it to the ip address from the domain
-                    $details->man_ip_address = $details->domain;
+                if (empty($details->ip)) {
+                    # ip is empty, set it to the ip address from the domain
+                    $details->ip = $details->domain;
                     $log_details->message = 'IP is empty so filling with hostname for ' . @$details->hostname;
                     stdlog($log_details);
                 }
@@ -414,16 +415,16 @@ if (! function_exists('dns_validate')) {
 
         if (!isset($details->fqdn)) {
             $details->fqdn = '';
-            $log_details->message = 'No FQDN set for ' . @$details->man_ip_address;
+            $log_details->message = 'No FQDN set for ' . @$details->ip;
             stdlog($log_details);
         } else {
             if (filter_var($details->fqdn, FILTER_VALIDATE_IP)) {
                  # we have an ip in the fqdn field
                 $log_details->message = 'FQDN contains an ip ' . @$details->fqdn;
                 stdlog($log_details);
-                if (empty($details->man_ip_address)) {
-                    # man_ip_address is empty, set it to the ip address from the fqdn
-                    $details->man_ip_address = $details->fqdn;
+                if (empty($details->ip)) {
+                    # ip is empty, set it to the ip address from the fqdn
+                    $details->ip = $details->fqdn;
                     $log_details->message = 'IP is empty so filling with fqdn for ' . @$details->fqdn;
                     stdlog($log_details);
                 }
@@ -437,17 +438,17 @@ if (! function_exists('dns_validate')) {
             }
         } 
 
-        if ($details->hostname == '' and filter_var($details->man_ip_address, FILTER_VALIDATE_IP)) {
+        if ($details->hostname == '' and filter_var($details->ip, FILTER_VALIDATE_IP)) {
             # we have nothing for a hostname and a valid ip
             # try getting the dns hostname
-            $log_details->message = 'Using gethostbyaddr because no hostname set but IP is set for ' . @$details->man_ip_address;
+            $log_details->message = 'Using gethostbyaddr because no hostname set but IP is set for ' . @$details->ip;
             stdlog($log_details);
-            $details->hostname = strtolower(gethostbyaddr($details->man_ip_address));
+            $details->hostname = strtolower(gethostbyaddr($details->ip));
             # make sure we use the hostname and not a fqdn if returned
             if (strpos($details->hostname, ".") !== false) {
                 if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
                     # we got a FQDN back from DNS - split it up
-                    $log_details->message = 'Received a FQDN back from gethostbyaddr for ' . @$details->man_ip_address;
+                    $log_details->message = 'Received a FQDN back from gethostbyaddr for ' . @$details->ip;
                     stdlog($log_details);
                     $details->fqdn = strtolower($details->hostname);
                     $i = explode(".", $details->hostname);
@@ -466,8 +467,8 @@ if (! function_exists('dns_validate')) {
             }
         }
 
-        if (!filter_var($details->man_ip_address, FILTER_VALIDATE_IP) and $details->hostname != '') {
-            $details->man_ip_address = gethostbyname($details->hostname);
+        if (!filter_var($details->ip, FILTER_VALIDATE_IP) and $details->hostname != '') {
+            $details->ip = gethostbyname($details->hostname);
             $log_details->message = 'Using gethostbyname because no valid ip address, but valid hostname ' . @$details->sysName;
             stdlog($log_details);
         }
@@ -478,7 +479,13 @@ if (! function_exists('dns_validate')) {
             $log_details->message = 'Setting hostname to sysName because no entry for hostname, but valid sysName ' . @$details->sysName;
             stdlog($log_details);
         }
-        $log_details->message = 'Finish DNS checking for ' . @$details->man_ip_address;
+        if (empty($details->dns_hostname) and ! empty($details->hostname)) {
+            $details->dns_hostname = $details->hostname;
+        }
+        if (empty($details->dns_domain) and ! empty($details->domain)) {
+            $details->dns_domain = $details->domain;
+        }
+        $log_details->message = 'Finish DNS checking for ' . @$details->ip;
         stdlog($log_details);
         return $details;
     }

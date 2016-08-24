@@ -30,44 +30,53 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('log_error')) {
-    function log_error($error)
+
+    function log_error($error_code, $model = '')
     {
-        if (!isset($error)) {
-            $error = new stdClass();
+        $CI = & get_instance();
+        # ensure we have an array in the $response object to hold our error
+        if (!empty($CI->response)) {
+            if (!isset($CI->response->errors) or is_null($CI->response->errors)) {
+                $CI->response->errors = array();
+            }
         }
-        if (!isset($error->controller) or $error->controller == '') {
-            $router = & load_class('Router', 'core');
-            $error->controller = $router->fetch_class() . ' ::' . $router->fetch_method();
+
+        # this object will hold this specific error data and be added to the above array at the end
+        $error = new stdClass();
+        $error->code = $error_code;
+        $error->file = 'system';
+        $error->model = $model;
+        if (function_exists('getError')) {
+            $error = getError($error->code);
+            $error->message = $error->title;
         }
-        if (!isset($error->model)) {
-            $error->model = '';
-        }
-        if (!isset($error->code)) {
-            $error->code = '';
-        }
-        // get the details of the error from the error helper
-        $log_details = getError($error);
-        $log_details->file = 'system';
 
         // log the details of the error to the log file
-        stdlog($log_details);
+        stdlog($error);
+        if (!empty($error->controller) and !empty($eror->function)) {
+            $error->controller = $error->controller . '::' . $error->function;
+        } else {
+            $error->controller = '';
+        }
+        unset($error->function);
         // if the error is severe enough, set the error in the response object
-        if ($log_details->severity <= 3) {
+        if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
-            $CI = & get_instance();
-            unset($log_details->extended_message);
-            unset($log_details->file);
-            unset($log_details->controller);
-            unset($log_details->model);
-            $log_details->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $log_details->code;
-            $CI->response->header = $log_details->type;
-            $CI->response->error = $log_details;
+            unset($error->file); # we don't care about where this was logged (into which file)
+            unset($error->message); # this is for logging only and is already contained in the $error->title
+            $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
+            if (!empty($CI->response)) {
+                $CI->response->errors[] = $error;
+                $CI->response->meta->header = $error->status;
+            }
         }
     }
+
 }
 
 if (! function_exists('stdlog')) {
@@ -84,7 +93,7 @@ if (! function_exists('stdlog')) {
      *
      * @return NULL [logs the provided string to the log file]
      */
-    function stdlog($log_details)
+    function stdlog($log_details = NULL)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -134,7 +143,7 @@ if (! function_exists('stdlog')) {
         // We create a new object instead of simply populating the existing with defaults so we can set the attribute order
         // The original passed object is $log_details, the new object is $log
 
-        $CI->load->model('m_oa_config');
+        $CI->load->model('m_oa_config');        
 
         // set the line ending type
         if (php_uname('s') == 'Windows NT') {
@@ -164,13 +173,7 @@ if (! function_exists('stdlog')) {
         }
 
         if (!isset($log_details->timestamp) or $log_details->timestamp == '') {
-            $log->timestamp = date('Y-m-d H:i:s');
-            if ($log->style == 'json') {
-                $log->timestamp = date('Y-m-d H:i:s');
-            }
-            if ($log->style == 'syslog') {
-                $log->timestamp = date('M d H:i:s');
-            }
+            $log->timestamp = $CI->config->item('timestamp');
         } else {
             $log->timestamp = $log_details->timestamp;
         }
@@ -194,9 +197,7 @@ if (! function_exists('stdlog')) {
             $log->display = $log_details->display;
         }
         if ($log->display == 'y') {
-            echo "LOG   - ".$log->message."\n".str_pad("", 1024, " ")."\n";
-            ob_flush();
-            flush();
+            echo "LOG   - ".$log->message."\n";
         }
 
         // check the requested logging level and if not met, exit
@@ -255,6 +256,8 @@ if (! function_exists('stdlog')) {
             $router = & load_class('Router', 'core');
             $log->controller = $router->fetch_class();
             unset($router);
+        } else {
+            $log->controller = $log_details->controller;
         }
         if (!isset($log->controller) or $log->controller == '') {
             $log->controller = '-';
@@ -264,6 +267,8 @@ if (! function_exists('stdlog')) {
             $router = & load_class('Router', 'core');
             $log->function = $router->fetch_method();
             unset($router);
+        } else {
+            $log->function = $log_details->function;
         }
 
         if (!isset($log->function) or $log->function == '') {
@@ -271,8 +276,8 @@ if (! function_exists('stdlog')) {
         }
 
         if (!isset($log_details->user) or $log_details->user == '') {
-            if (isset($CI->user->user_full_name)) {
-                $log->user = @$CI->user->user_full_name;
+            if (isset($CI->user->full_name)) {
+                $log->user = @$CI->user->full_name;
             } else {
                 $log->user = '-';
             }
@@ -300,11 +305,10 @@ if (! function_exists('stdlog')) {
             $log->file = $log_details->file;
         }
 
-        if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-            $file = "/usr/local/open-audit/other/log_".$log->file.".log";
-            //$file = '../../other/log_'.$log->file.'.log';
+        if (php_uname('s') == 'Windows NT') {
+            $file = $CI->config->item('base_path') . '\other\log_' . $log->file . '.log';
         } else {
-            $file = 'c:\xampplite\open-audit\other\log_'.$log->file.'.log';
+            $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
         }
 
         // log the page view
@@ -329,11 +333,7 @@ if (! function_exists('stdlog')) {
             if ($log->style == 'syslog') {
                 $extra_log_line = $log->timestamp.' '.$log->hostname.' '.$log->severity.' '.$log->user.' '.$log->controller.' '.$log->function.' '.$message;
             }
-            if ((string) php_uname('s') === 'Linux' or (string) php_uname('s') === 'Darwin') {
-                $file = '/usr/local/open-audit/other/open-audit.log';
-            } else {
-                $file = 'c:\xampplite\open-audit\other\open-audit.log';
-            }
+            $file = $CI->config->item('base_path') . '/other/open-audit.log';
             $handle = @fopen($file, 'a');
         }
         if (!$handle) {

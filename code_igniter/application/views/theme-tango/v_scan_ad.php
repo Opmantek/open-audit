@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -37,7 +38,7 @@
 <fieldset id="group_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Scanning An Active Directory Domain')?></span></legend>
 	<img class='section_image' src='<?php echo $oa_theme_images;?>/48_home.png' alt='' title='' />
-	<table style='width:780' cellpadding='0' cellspacing='0'>
+	<table style='width:780px' cellpadding='0' cellspacing='0'>
 		<tr>
 			<td style='width:100%'>
 				<p><label for='ad_ldap_server'><?php echo __("Active Directory Server"); ?>: </label><input type='text' id="ad_ldap_server" name="ad_ldap_server" tabindex='1' title='Active Directory Server'> ex: 192.168.61.200 (IP Address is best).</p>

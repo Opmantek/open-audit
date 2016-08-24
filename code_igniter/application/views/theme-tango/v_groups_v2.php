@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,7 +53,7 @@ if ($query) {
                 echo "			<th align=\"center\" style=\"width:120px;\">".__('Systems')."</th>\n";
                 echo "			<th style=\"width:300px;\">".__('Name')."</th>\n";
                 echo "			<th>".__('Description')."</th>\n";
-                if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) {
+                if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) {
                     echo "			<th align=\"center\" style=\"width:120px;\">".__('Search')."</th>\n";
                 }
                 echo "			<th align=\"center\" style=\"width:120px;\">".__('Reports')."</th>\n";
@@ -70,7 +71,7 @@ if ($query) {
                 echo "			<td><a href=\"".base_url()."index.php/main/list_devices/".intval($key->group_id)."\">".htmlentities($key->group_name)."</a></td>\n";
             }
             echo "			<td>".htmlentities($key->group_description)."</td>\n";
-            if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) {
+            if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) {
                 echo "			<td align=\"center\"><a class=\"SearchPopupTrigger\" rel=\"".intval($key->group_id)."\" href=\"#\" ><img src=\"".$oa_theme_images."/16_find.png\" style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
             }
             echo "			<td align=\"center\"><a class=\"ReportPopupTrigger\" rel=\"".intval($key->group_id)."\" href=\"#\" ><img src=\"".$oa_theme_images."/16_csv.png\"  style=\"border-width:0px;\" title=\"\" alt=\"\" /></a></td>\n";
@@ -85,7 +86,7 @@ if ($query) {
 			<th align="center" style="width:120px;"><?php echo __('Systems')?></th>
 			<th><?php echo __('Name')?></th>
 			<th><?php echo __('Description')?></th>
-			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) { ?>
 			<th align="center"><?php echo __('Search')?></th>
 			<?php } ?>
 			<th align="center"><?php echo __('Reports')?></th>
@@ -103,7 +104,7 @@ if ($query) {
 				<td><a href="<?php echo base_url()?>index.php/groups/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
 			<?php } ?>
 			<td><?php echo htmlentities($key->group_description)?></td>
-			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) { ?>
 			<td align="center"><a class="SearchPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
 			<?php } ?>
 			<td align="center"><a class="ReportPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
@@ -121,7 +122,7 @@ if ($query) {
 			<th align="center" style="width:120px;"><?php echo __('Systems')?></th>
 			<th><?php echo __('Name')?></th>
 			<th><?php echo __('Description')?></th>
-			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) { ?>
 			<th align="center"><?php echo __('Search')?></th>
 			<?php } ?>
 			<th align="center"><?php echo __('Reports')?></th>
@@ -142,7 +143,7 @@ if ($query) {
 				<td><a href="<?php echo base_url()?>index.php/groups/<?php echo intval($key->group_id)?>"><?php echo htmlentities($key->group_name)?></a></td>
 			<?php } ?>
 			<td><?php echo htmlentities($key->group_description)?></td>
-			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+			<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) { ?>
 			<td align="center"><a class="SearchPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_find.png"  style="border-width:0px;" title="" alt="" /></a></td>
 			<?php } ?>
 			<td align="center"><a class="ReportPopupTrigger" rel="<?php echo intval($key->group_id)?>" href="#" ><img src="<?php echo $oa_theme_images; ?>/16_csv.png"  style="border-width:0px;" title="" alt="" /></a></td>
@@ -150,7 +151,7 @@ if ($query) {
 		<?php } ?>
 		<?php endforeach; ?>
 		<?php if ($i == 0) { ?>
-    		<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->user_admin == 'y')) { ?>
+    		<?php if (($this->config->config['non_admin_search'] == 'y') or ($this->user->admin == 'y')) { ?>
     		<tr>
     			<td></td><td></td><td></td><td></td><td></td><td></td>
     		</tr>

@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -54,18 +55,20 @@ class M_edit_log extends MY_Model
                 $db_table = 'system';
             }
             if ($timestamp == '') {
-                $timestamp = date('Y-m-d H:i:s');
+                $timestamp = $this->config->config['timestamp'];
             }
-            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (?, ?, ?, 'user', 1000, ?, ?, ?, ?, ?)";
+            #$sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (?, ?, ?, 'user', 1000, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (?, ?, ?, 'user', 1000, ?, ?, NOW(), ?, ?)";
             $sql = $this->clean_sql($sql);
-            $data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$timestamp", "$value", "$previous_value");
+            #$data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$timestamp", "$value", "$previous_value");
+            $data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$value", "$previous_value");
             $query = $this->db->query($sql, $data);
         }
     }
 
     public function read($system_id)
     {
-        $sql = "SELECT edit_log.*, oa_user.user_full_name FROM edit_log, oa_user WHERE edit_log.system_id = ? AND oa_user.user_id = edit_log.user_id";
+        $sql = "SELECT edit_log.*, oa_user.full_name FROM edit_log, oa_user WHERE edit_log.system_id = ? AND oa_user.id = edit_log.user_id";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);

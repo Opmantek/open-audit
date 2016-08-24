@@ -30,24 +30,27 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Alcatel
 
-$get_oid_details = function ($details) {
-    if ($details->snmp_oid == '1.3.6.1.4.1.3003.2.2.2.1') {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.3003.2.2.2.1') {
         $details->model = 'OmniCore 5052';
         $details->type = '';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3003.2.2.2.2') {
+    if ($oid == '1.3.6.1.4.1.3003.2.2.2.2') {
         $details->model = 'OmniCore 5022';
         $details->type = '';
     }
-    if ($details->snmp_oid == '1.3.6.1.4.1.3003.2.2.2.3') {
+    if ($oid == '1.3.6.1.4.1.3003.2.2.2.3') {
         $details->model = 'OmniCore 5010';
         $details->type = '';
     }
+    return($details);
 };

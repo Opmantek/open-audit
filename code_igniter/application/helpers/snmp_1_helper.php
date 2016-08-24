@@ -30,14 +30,16 @@
 /*
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- * @version 1.12.4
+ * 
+ * @version 1.12.8
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor NxNetworks
 
-$get_oid_details = function ($details) {
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
 
     # TP-LINK adsl modem
     if ($details->sysDescr == 'TD-W8951ND') {
@@ -45,5 +47,5 @@ $get_oid_details = function ($details) {
         $details->manufacturer = 'TP-Link Technology Co.,Ltd';
         $details->type = 'adsl modem';
     }
-
+    return($details);
 };
