@@ -1,1 +1,1 @@
-type,name,hour,minute,day,network_address,subnet_range
+type,name,hour,minute,day,network_address,subnet_range,period_type,org,location
