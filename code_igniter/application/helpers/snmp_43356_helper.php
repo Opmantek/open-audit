@@ -1,5 +1,5 @@
 <?php  if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
+    exit('No direct script access allowed');
  }
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
@@ -36,36 +36,33 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-# Vendor Frogfoot Networks
-# Ubiquiti / Airfiber tend to use this OID :-(
+# Vendor Mimosa
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    $details = new stdClass();
-
-    # manufacturer
-    $details->manufacturer = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.2.5");
-    $details->os_name = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.4.5");
+    if ($oid == '1.3.6.1.4.1.43356.1.1.1') {
+        $details->model = 'Mimosa B5';
+        $details->type = 'wireless link';
+    }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.2') {
+        $details->model = 'Mimosa B5 Lite';
+        $details->type = 'wireless link';
+    }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.3') {
+        $details->model = 'Mimosa A5';
+        $details->type = 'wireless link';
+    }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.4') {
+        $details->model = 'Mimosa C5';
+        $details->type = 'wireless link';
+    }
 
     # serial
-    $details->serial = my_snmp_get($ip, $credentials, "1.2.840.10036.1.1.1.1.5");
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.2.0");
+    $details->location_longitude = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.2.1.0");
+    $details->location_latitude = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.2.2.0");
+    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.3.0");
+    $details->os_installation_date = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.4.0");
 
-    # model
-    $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.5");
-    if (empty($details->model)) {
-        $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.10");
-    }
-    if (empty($details->model)) {
-        $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.7");
-    }
-
-    # maybe we have a Ubiquiti device
-    if (stripos($details->manufacturer, 'ubiquiti') !== false) {
-        $details->type = 'wap';
-        $details->icon = 'wap';
-        $details->os_group = 'Linux';
-        $details->os_family = 'Ubiquiti AirOS';
-        $details->os_name = 'Ubiquiti AirOS version '.$temp_os_name;
-    }
     return($details);
 };

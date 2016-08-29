@@ -126,6 +126,7 @@
     $device_types['wdm'] = 'WDM (Wavelength Division Multiplexer)';
     $device_types['web cache'] = 'Web Cache';
     $device_types['webcam'] = 'Web Camera';
+    $device_types['wireless link'] = 'Wireless Link';
     $device_types['wireless router'] = 'Wireless Router';
 
     $device_class = array();

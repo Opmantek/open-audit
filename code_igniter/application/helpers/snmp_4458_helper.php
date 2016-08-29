@@ -36,36 +36,26 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-# Vendor Frogfoot Networks
-# Ubiquiti / Airfiber tend to use this OID :-(
+# Vendor Radwin
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    $details = new stdClass();
+    
+    $details->type = 'wap';
 
-    # manufacturer
-    $details->manufacturer = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.2.5");
-    $details->os_name = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.4.5");
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.3.2.1.5.0");
+    if (empty($details->serial)) {
+        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.29.0");
+    }
 
-    # serial
-    $details->serial = my_snmp_get($ip, $credentials, "1.2.840.10036.1.1.1.1.5");
-
-    # model
-    $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.5");
+    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.1.0");
     if (empty($details->model)) {
-        $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.10");
-    }
-    if (empty($details->model)) {
-        $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.7");
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.30");
     }
 
-    # maybe we have a Ubiquiti device
-    if (stripos($details->manufacturer, 'ubiquiti') !== false) {
-        $details->type = 'wap';
-        $details->icon = 'wap';
-        $details->os_group = 'Linux';
-        $details->os_family = 'Ubiquiti AirOS';
-        $details->os_name = 'Ubiquiti AirOS version '.$temp_os_name;
-    }
+    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.3.0");
+
+
+
     return($details);
 };
