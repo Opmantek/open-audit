@@ -53,6 +53,7 @@
                 <th><?php echo __('City')?></th>
                 <th><?php echo __('State')?></th>
                 <th><?php echo __('Country')?></th>
+                <th style="text-align:center;"><?php echo __('Devices')?></th>
                 <th style="text-align:center;"><?php echo __('Edit')?></th>
                 <th style="text-align:center;"><?php echo __('Delete')?></th>
                 </tr>
@@ -67,6 +68,7 @@
                     <td><?php echo htmlentities($item->attributes->city)?></td>
                     <td><?php echo htmlentities($item->attributes->state)?></td>
                     <td><?php echo htmlentities($item->attributes->country)?></td>
+                    <td style='text-align:center;'><a href="devices?location_id=<?php echo intval($item->id); ?>"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a></td>
                     <td style='text-align:center;'><a class="btn btn-sm btn-info" href="<?php echo htmlentities($item->links->self); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                     <?php if ($item->id != 0) { ?>
                     <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" data-id="<?php echo htmlentities($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
