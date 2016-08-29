@@ -148,15 +148,15 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Connections')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_connection/list_connections'><?php echo __('List Connections')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_connection/add_connection'><?php echo __('Add Connection')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/connections'><?php echo __('List Connections')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/connections/create'><?php echo __('Add Connection')?></a></li>
                 </ul>
             </li>
 
             <li><a href='javascript:void(0)'><?php echo __('Credentials')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/credentials'><?php echo __('View Credentials')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/credentials?action=create'><?php echo __('Add Credential Set')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/credentials/create'><?php echo __('Add Credential Set')?></a></li>
                 </ul>
             </li>
             <li><a href='javascript:void(0)'><?php echo __('Database')?></a>
@@ -202,8 +202,8 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Locations')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_location/list_locations'><?php echo __('List Locations')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_location/add_location'><?php echo __('Add Location')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/locations'><?php echo __('List Locations')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/locations/create'><?php echo __('Add Location')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_location/add_locations'><?php echo __('Add Multiple Locations')?></a></li>
                 </ul>
             </li>
@@ -218,13 +218,13 @@ var modal_content_image = "";
             <li><a href='javascript:void(0)'><?php echo __('Networks')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/networks'><?php echo __('List Networks')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/networks?action=create'><?php echo __('Add Network')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/networks/create'><?php echo __('Add Network')?></a></li>
                 </ul>
             </li>
             <li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_org/list_orgs'><?php echo __('List Organisations')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_org/add_org'><?php echo __('Add Organisation')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/orgs'><?php echo __('List Organisations')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/orgs/create'><?php echo __('Add Organisation')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_org/add_orgs'><?php echo __('Add Multiple Organisations')?></a></li>
                 </ul>
             </li>
@@ -239,9 +239,8 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Scripts')?></a>
                 <ul>
-                    <!-- <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li> -->
                     <li><a href='<?php echo $oa_web_index?>/scripts'><?php echo __('View Scripts')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/scripts?action=create'><?php echo __('Add Script')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/scripts/create'><?php echo __('Add Script')?></a></li>
                 </ul>
             </li>
 
