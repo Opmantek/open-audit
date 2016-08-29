@@ -37,12 +37,11 @@ if ($this->config->config['internal_version'] < $this->config->config['web_inter
     $include = "v_help_about";
     $heading = "You must upgrade";
 }
-if (!isset($this->user->theme) or $this->user->theme == '') {
-    $this->user->theme = 'tango';
-}
 
 if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php', __FILE__))) {
     $this->user->theme = 'bootstrap';
+} else {
+    $this->user->theme = 'tango';
 }
 
 
