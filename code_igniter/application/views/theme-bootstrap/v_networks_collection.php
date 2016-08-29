@@ -66,7 +66,7 @@
                         <td><?php echo htmlentities($item->attributes->edited_date)?></td>
                         <td style='text-align:center;'><a href="devices?ip.network=<?php echo $item->attributes->name; ?>"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a></td>
                         <td style='text-align:center;'><a class="btn btn-sm btn-info" href="networks/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
+                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
