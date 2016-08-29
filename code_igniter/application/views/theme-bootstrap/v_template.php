@@ -45,26 +45,28 @@ include "v_lang.php";
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-table.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-dropdown.css">
-    <?php if ($this->response->meta->collection == 'locations' and ($this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
+<?php
+if ($this->response->meta->collection == 'locations' and ($this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
         <script src="http://maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>
-    <?php } ?>
+    <?php
+} ?>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-table.min.js"></script>
     <!-- Open-AudIT specific items -->
     <script>
 <?php
-        if (!is_null($this->response->meta->id)) {
-            echo "        var id = '" . $this->response->meta->id . "';\n";
-        }
-        if (!empty($this->response->meta->collection)) {
-            echo "        var collection = '" . $this->response->meta->collection . "';\n";
-        }
-        if (!empty($this->response->meta->baseurl)) {
-            echo "        var baseurl = '" . $this->response->meta->baseurl . "';\n";
-        } else {
-            echo "        var baseurl = '';\n";
-        }
+if (!is_null($this->response->meta->id)) {
+    echo "        var id = '" . $this->response->meta->id . "';\n";
+}
+if (!empty($this->response->meta->collection)) {
+    echo "        var collection = '" . $this->response->meta->collection . "';\n";
+}
+if (!empty($this->response->meta->baseurl)) {
+    echo "        var baseurl = '" . $this->response->meta->baseurl . "';\n";
+} else {
+    echo "        var baseurl = '';\n";
+}
 ?>
         var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
     </script>
@@ -76,13 +78,10 @@ include "v_lang.php";
 <?php 
 include "include_header.php";
 if (!empty($this->response->errors)) {
-  echo '</div></div><div class="alert alert-danger" role="alert"></div>';
-  echo "<pre>\n";
-  print_r($this->response->errors);
-  echo "</pre>\n";
-} else {
-    include($include.'.php');
+    echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->title . "</div>\n";
+    unset($this->response->errors);
 }
+include($include.'.php');
 ?>
 </div>
 <div id="json_response">
