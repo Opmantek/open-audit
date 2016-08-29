@@ -46,6 +46,18 @@ if (! function_exists('refresh_group_definitions')) {
         # - yes, delete the DB group (which also deletes the group columns)
         #   and insert a new entry and update the updated flag, insert the group columns
         #
+
+        // Ensure we have an All Devices group with id = 1
+        $sql = "SELECT COUNT(*) AS `count` FROM oa_group WHERE group_id = 1";
+        $query = $CI->db->query($sql);
+        $result = $query->result();
+        if (intval($result[0]->count) != 1) {
+            $sql = "INSERT INTO oa_group VALUES (1, 'All Devices', '', \"SELECT distinct(system.id) FROM system WHERE system.status = 'production'\", 1, '', 'device', \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.os_name AS `system.os_name`, system.status AS `system.status`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial` FROM system, oa_group_sys WHERE system.id = oa_group_sys.system_id AND oa_group_sys.group_id = ? GROUP BY system.id\", 'devices')";
+        } else {
+            $sql = "UPDATE oa_group SET group_name = 'All Devices' WHERE group_id = 1";
+        }
+        $query = $CI->db->query($sql);
+
         // add an extra column so we can track which groups have been updated
         if (!$CI->db->field_exists('updated', 'oa_group')) {
             $sql = "ALTER TABLE oa_group ADD updated varchar(1) NOT NULL default ''";
