@@ -166,7 +166,7 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin_db/restore'><?php echo __('Restore Database')?></a></li>
                     -->
                     <?php
-                    if (php_uname('s') == 'Linux') {
+                    if (php_uname('s') != 'Windows') {
                         echo "                  <li><a href='".$oa_web_index."/admin_db/backup'>".__('Backup the Database')."</a></li>\n";
                     } ?>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
@@ -234,6 +234,13 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin_report/list_reports'><?php echo __('List Queries')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_report/activate_report'><?php echo __('Activate Query')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_report/import_report'><?php echo __('Import Query')?></a></li>
+                </ul>
+            </li>
+
+            <li><a href='javascript:void(0)'><?php echo __('Roles')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/roles'><?php echo __('List Roles')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/roles/create'><?php echo __('Add Role')?></a></li>
                 </ul>
             </li>
 

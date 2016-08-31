@@ -181,6 +181,13 @@
                     </ul>
                 </li>
                 <li class="dropdown-submenu">
+                    <a href="#">Roles</a>
+                    <ul class="dropdown-menu" style="min-width:250px;">
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles'>List Roles</a></li>
+                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles/create'>Create Role</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown-submenu">
                     <a href="#">Scripts</a>
                     <ul class="dropdown-menu" style="min-width:250px;">
                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'>List Scripts</a></li>
