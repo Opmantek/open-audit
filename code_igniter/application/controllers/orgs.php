@@ -71,151 +71,88 @@ class orgs extends MY_Controller
         exit();
     }
 
-    private function collection()
-    {
-        $this->response->data = $this->m_orgs->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
-
-    private function read()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_orgs->read_sub_resource();
-            $this->response->meta->format = 'json';
-            output($this->response);
-            exit();
-        } else {
-            $this->response->data = $this->m_orgs->read();
-        }
-        if (!empty($this->response->data)) {
-            $this->response->meta->filtered = count($this->response->data);
-            if ($this->response->meta->format == 'screen') {
-                $this->response->included = array();
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-                if ($this->m_orgs->read_sub_resource()) {
-                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
-                }
-            }
-        }
-        output($this->response);
-    }
-
-    private function create_form()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        # TODO - check this - should likely use included not data.
-        $this->response->data = $this->m_orgs->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
-
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
     private function create()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->id = $this->m_orgs->create();
-        if (!empty($this->response->meta->id)) {
-            if ($this->response->meta->format == 'json') {
-                $this->response->data = $this->m_orgs->read();
-                output($this->response);
-            } else {
-                redirect('/orgs');
-            }
-        } else {
-            log_error('ERR-0009');
-            output($this->response);
-            exit();
-        }
+        include 'include_create.php';
     }
 
-    private function update_form()
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    private function read()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
         $this->response->included = array();
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        if ($this->m_orgs->read_sub_resource()) {
-            $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
-        }
-        $this->response->data = $this->m_orgs->read();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_read.php';
     }
 
-    private function update()
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->m_orgs->update();
-        if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_orgs->read();
-            output($this->response);
-        } else {
-            redirect('orgs');
-        }
+        include 'include_update.php';
     }
 
-    private function delete()
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        # do not allow deletion of default Org
-        if ($this->response->meta->id == 0) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-            log_error('ERR-0014');
-            if ($this->response->meta->format == 'json') {
-                output($this->response);
-            } else {
-                redirect($this->response->meta->collection);
-            }
-            exit();
-        }
+        include 'include_delete.php';
+    }
 
-        if ($this->m_orgs->delete()) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-        } else {
-            log_error('ERR-0013');
-        }
-        if ($this->response->meta->format == 'json') {
-            output($this->response);
-        } else {
-            redirect($this->response->meta->collection);
-        }
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        include 'include_collection.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
+    private function create_form()
+    {
+        $this->response->included = array();
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        include 'include_update_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    private function update_form()
+    {
+        $this->response->included = array();
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        include 'include_update_form.php';
     }
 }
+// End of file orgs.php
+// Location: ./controllers/orgs.php
