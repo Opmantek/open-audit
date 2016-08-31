@@ -90,7 +90,7 @@ class M_scripts extends MY_Model
         $data = array($CI->response->meta->received_data->name);
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_scripts::create_script');
+            log_error('ERR-0010', 'm_scripts::create');
             return false;
         }
         $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
