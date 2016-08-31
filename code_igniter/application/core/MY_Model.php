@@ -47,7 +47,7 @@ class MY_Model extends CI_Model
     {
         if (empty($result)) {
             # TODO - thorw an error here
-            return null;
+            return array();
         }
         if (gettype($result) == 'string') {
             # TODO - this ws being provided through Discovery some how.
