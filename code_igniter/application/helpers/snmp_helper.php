@@ -556,6 +556,18 @@ if (!function_exists('snmp_audit')) {
             snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
             $details->mac_address = format_mac($details->mac_address);
         }
+        if (empty($details->mac_address)) {
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.2");
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            $details->mac_address = format_mac($details->mac_address);
+        }
+        if (empty($details->mac_address)) {
+            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+            $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.3");
+            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+            $details->mac_address = format_mac($details->mac_address);
+        }
         $log->message = 'snmp_helper::snmp_audit MAC Address for '.$ip.' is '.$details->mac_address;
         stdlog($log);
 
