@@ -105,20 +105,21 @@ class M_connections extends MY_Model
                     $limit = $limit . ', ' . intval($CI->response->meta->offset);
                 }
             }
+            # get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `oa_connection`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($CI->response->meta->total)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         } else {
             $properties = '*';
             $filter = '';
             $sort = '';
             $limit = '';
         }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `oa_connection`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
-        }
+
         # get a list of Orgs and Locations so we can populate the names
         $sql = "SELECT id, name FROM oa_org";
         $result = $this->run_sql($sql, array());
@@ -126,11 +127,10 @@ class M_connections extends MY_Model
         $sql = "SELECT id, name FROM oa_location";
         $result = $this->run_sql($sql, array());
         $locations = $result;
-
         # get the response data
         $sql = "SELECT " . $properties . " FROM `oa_connection` " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
-        for ($i=0; $i < count($result); $i++) { 
+        for ($i=0; $i < count($result); $i++) {
             foreach ($orgs as $org) {
                 if ($org->id == $result[$i]->org_id) {
                     $result[$i]->org_name = $org->name;
@@ -203,5 +203,4 @@ class M_connections extends MY_Model
             return false;
         }
     }
-
 }

@@ -106,10 +106,10 @@ class M_networks extends MY_Model
                 $result = $this->format_data($result, 'devices');
                 return $result;
             } else {
-                return false;
+                return array();
             }
         } else {
-            return false;
+            return array();
         }
     }
 
@@ -158,19 +158,19 @@ class M_networks extends MY_Model
                     $limit = $limit . ', ' . intval($CI->response->meta->offset);
                 }
             }
+            # get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `networks`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($CI->response->meta->total)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         } else {
             $properties = '*';
             $filter = '';
             $sort = '';
             $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `networks`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
         }
         # get the response data
         $sql = "SELECT " . $properties . " FROM `networks` " . $filter . " " . $sort . " " . $limit;

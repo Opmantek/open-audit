@@ -124,19 +124,19 @@ class M_orgs extends MY_Model
                     $limit = $limit . ', ' . intval($CI->response->meta->offset);
                 }
             }
+            # get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `oa_org`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($CI->response->meta->total)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         } else {
             $properties = '*';
             $filter = '';
             $sort = '';
             $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `oa_org`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
         }
         # get the response data
         $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY o1.id " . $sort . " " . $limit;

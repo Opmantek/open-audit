@@ -70,12 +70,16 @@ class M_scripts extends MY_Model
     }
 
 
-    public function read()
+    public function read($id = '')
     {
-        $CI = & get_instance();
-        $return_data = array();
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $sql = "SELECT * FROM scripts WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result[0]->options = json_decode($result[0]->options);
         $result = $this->format_data($result, 'scripts');
@@ -123,19 +127,19 @@ class M_scripts extends MY_Model
                     $limit = $limit . ', ' . intval($CI->response->meta->offset);
                 }
             }
+            # get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `scripts`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($CI->response->meta->total)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         } else {
             $properties = '*';
             $filter = '';
             $sort = '';
             $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `scripts`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
         }
         # get the response data
         $sql = "SELECT " . $properties . " FROM `scripts` " . $filter . " " . $sort . " " . $limit;
@@ -264,11 +268,23 @@ class M_scripts extends MY_Model
         } else {
             $id = intval($id);
         }
-        $CI = & get_instance();
-        $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
-        $data = array(intval($id));
-        $this->run_sql($sql, $data);
-        return true;
+
+        # do not allow deletion of default Scripts
+        $script = $this->m_scripts->read();
+        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+            $CI->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            return false;
+        } else {
+            $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
+            $data = array(intval($id));
+            $this->run_sql($sql, $data);
+            return true;
+        }
     }
 
     private function count_data($result)

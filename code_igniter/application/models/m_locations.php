@@ -149,20 +149,19 @@ class M_locations extends MY_Model
                     $limit = $limit . ', ' . intval($CI->response->meta->offset);
                 }
             }
+            # get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `oa_location`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($CI->response->meta->total)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         } else {
             $properties = '*';
             $filter = '';
             $sort = '';
             $limit = '';
-        }
-
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `oa_location`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
         }
         # get the response data
         $sql = "SELECT " . $properties . " FROM `oa_location` " . $filter . " " . $sort . " " . $limit;
@@ -205,6 +204,7 @@ class M_locations extends MY_Model
             $this->run_sql($sql, $data);
             return true;
         } else {
+            log_error('ERR-0013', 'm_locations::delete');
             return false;
         }
     }

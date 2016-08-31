@@ -105,19 +105,19 @@ class M_fields extends MY_Model
                     $limit = $limit . ', ' . intval($CI->response->meta->offset);
                 }
             }
+            # get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($CI->response->meta->total)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         } else {
             $properties = '*';
             $filter = '';
             $sort = '';
             $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
         }
         # get the response data
         $sql = "SELECT " . $properties . ", oa_group.group_name as `group_name` FROM `additional_field` LEFT JOIN `oa_group` ON (`additional_field`.`group_id` = `oa_group`.`group_id`) GROUP BY `additional_field`.`id` " . $filter . " " . $sort . " " . $limit;
