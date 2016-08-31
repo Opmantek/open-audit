@@ -178,6 +178,7 @@ class M_orgs extends MY_Model
             $this->run_sql($sql, $data);
             return true;
         } else {
+            log_error('ERR-0013', 'm_orgs::delete');
             return false;
         }
     }
