@@ -85,6 +85,7 @@ $item = $this->response->data[0];
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
                     <select class="data_type form-control" id="parent_id" name="parent_id" disabled>
+                        <option value='' label=' '></option>
                     <?php foreach ($this->response->included as $org) {
                         if ($org->type == 'orgs' and $org->attributes->id != $item->attributes->id) { ?>
                             <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->parent_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
@@ -99,32 +100,5 @@ $item = $this->response->data[0];
             </div>
         </div>
     </form>
-  </div>
-</div>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">Devices assigned to <?php echo $item->attributes->name; ?></span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-    <table class="table table-condensed table-hover">
-        <thead>
-            <tr>
-                <th>Count</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            if (!empty($this->response->included)) {
-            foreach ($this->response->included as $device) { ?><tr>
-                <?php if ($device->type == 'devices') { ?>
-                <td><a class="btn btn-sm btn-success" href="../../devices?system.type=<?php echo $device->attributes->type; ?>&system.org_id=<?php echo intval($item->id); ?>"><?php echo intval($device->attributes->count); ?></a></td>
-                <td><?php echo $device->attributes->type; ?></td>
-            </tr><?php } } } ?>
-        </tbody>
-    </table>
   </div>
 </div>
