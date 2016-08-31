@@ -174,9 +174,6 @@ foreach ($this->response->included as $item) {
         </div>
     </div>
 </div>
-
-
-
 </form>
 
 

@@ -146,17 +146,19 @@ if (!empty($edit)) {
             </h3>
           </div>
           <div class="panel-body">
-          <?php if (!empty($item->attributes->options->files)) { ?>
-          <?php foreach ($item->attributes->options->files as $key => $value) { ?>
-                <div class="form-group">
-                    <label for="edited_date" class="col-md-2 control-label"><?php echo htmlentities($key); ?></label>
-                    <div class="col-md-10">
-                        <div class="col-md-10 input-group">
-                            <input type="text" class="form-control" id="options.<?php echo htmlentities($key); ?>" name="options.<?php echo htmlentities($key); ?>" value="<?php echo htmlentities($value); ?>" disabled>
-                        </div>
-                    </div>
-                </div>
-          <?php } ?>
+          <?php if (!empty($this->response->included)) { ?>
+            <?php foreach ($this->response->included as $included) { ?>
+              <?php if ($included->type == 'files') { ?>
+                  <div class="form-group">
+                      <label for="edited_date" class="col-md-2 control-label"><?php echo htmlentities($included->attributes->description); ?></label>
+                      <div class="col-md-10">
+                          <div class="col-md-10 input-group">
+                              <input type="text" class="form-control" id="options.<?php echo htmlentities($included->attributes->description); ?>" name="options.<?php echo htmlentities($included->attributes->description); ?>" value="<?php echo htmlentities($included->attributes->path); ?>" disabled>
+                          </div>
+                      </div>
+                  </div>
+              <?php } ?>
+            <?php } ?>
           <?php } ?>
           </div>
         </div>

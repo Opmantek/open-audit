@@ -51,6 +51,7 @@ class scripts extends MY_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
+        $this->load->model('m_orgs');
         $this->load->model('m_scripts');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
@@ -70,42 +71,77 @@ class scripts extends MY_Controller
         exit();
     }
 
-    private function collection()
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
     {
-        $this->response->data = $this->m_scripts->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_create.php';
     }
 
-    private function read()
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function read()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
+        $this->load->model('m_files');
+        unset($temp);
+        $temp = @$this->m_files->collection();
+        if (!empty($temp)) {
+            $this->response->included = array_merge($this->response->included, $temp);
         }
-        $this->response->data = $this->m_scripts->read();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_read.php';
     }
 
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
+    {
+        include 'include_update.php';
+    }
+
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        include 'include_collection.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
     private function create_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = array();
-        $temp = new stdClass();
-        $temp->type = $this->response->meta->collection;
-        $this->response->data[] = $temp;
-        unset($temp);
         # include our scripts options
         include 'include_scripts_options.php';
-        $this->response->included = array();
         foreach ($options as $item) {
             $option = new stdClass();
             $option->id = $item->name;
@@ -122,116 +158,32 @@ class scripts extends MY_Controller
             $this->response->included[] = $option;
             unset($option);
         }
-        # Include a list of Orgs
-        $this->load->model('m_orgs');
-        $temp = $this->m_orgs->collection();
-        if (!empty($temp)) {
-            $this->response->included = array_merge($this->response->included, $temp);
-        }
-        # Include our list of files
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         $this->load->model('m_files');
-        unset($temp);
-        $temp = @$this->m_files->collection();
-        if (!empty($temp)) {
-            $this->response->included = array_merge($this->response->included, $temp);
-        }
-        output($this->response);
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+        include 'include_create_form.php';
     }
 
-    private function create()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->id = $this->m_scripts->create();
-        if (!empty($this->response->meta->id)) {
-            if ($this->response->meta->format == 'json') {
-                $this->response->data = $this->m_scripts->read();
-                output($this->response);
-            } else {
-                redirect('scripts');
-            }
-        } else {
-            log_error('ERR-0009');
-            output($this->response);
-            exit();
-        }
-    }
-
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
     private function update_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = $this->m_scripts->read();
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         $this->load->model('m_files');
-        $this->response->data['files'] = $this->m_files->collection();
-        output($this->response);
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+        include 'include_update_form.php';
     }
 
-    private function update()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->m_scripts->update();
-        if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_scripts->read();
-            output($this->response);
-        } else {
-            redirect('scripts');
-        }
-    }
-
-    private function delete()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        # do not allow deletion of default Scripts
-        $script = $this->m_scripts->read();
-        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-            log_error('ERR-0014');
-            if ($this->response->meta->format == 'json') {
-                output($this->response);
-            } else {
-                redirect($this->response->meta->collection);
-            }
-            exit();
-        }
-        if ($this->m_scripts->delete()) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-        } else {
-            log_error('ERR-0013');
-        }
-        if ($this->response->meta->format == 'json') {
-            output($this->response);
-        } else {
-            redirect($this->response->meta->collection);
-        }
-    }
-
+    /**
+    * Supply a file for download which is the script with the injected configuration
+    *
+    * @access public
+    * @return NULL
+    */
     private function download()
     {
         $this->response->meta->format = 'json';
@@ -250,3 +202,5 @@ class scripts extends MY_Controller
         echo $script;
     }
 }
+// End of file scripts.php
+// Location: ./controllers/scripts.php
