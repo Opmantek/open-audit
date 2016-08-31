@@ -65,7 +65,7 @@
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
                     <select id="data[attributes][parent_id]" name="data[attributes][parent_id]" class="form-control">
-                        <?php foreach ($this->response->data as $item) { ?>
+                        <?php foreach ($this->response->included as $item) { ?>
                         <option value="<?php echo intval($item->attributes->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
                         <?php } ?>
                     </select>
