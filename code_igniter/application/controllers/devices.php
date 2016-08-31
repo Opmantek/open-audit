@@ -114,14 +114,13 @@ class devices extends MY_Controller
         $this->load->model('m_orgs');
         $this->load->model('m_locations');
         $this->load->model('m_devices_components');
-        $this->response->included = array();
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
             $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credential,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
 
         if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_devices->read_sub_resource( $this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+            $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
             $this->response->meta->format = 'json';
         } else {
             $this->response->data = $this->m_devices->read();
@@ -136,7 +135,7 @@ class devices extends MY_Controller
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
                     $result = false;
-                    $result = $this->m_devices->read_sub_resource( $this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+                    $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
                     if ($result) {
                         $this->response->included = array_merge($this->response->included, $result);
                     }
@@ -223,7 +222,6 @@ class devices extends MY_Controller
         if (empty($this->response->meta->sub_resource)) {
             $this->load->model('m_locations');
             $this->load->model('m_fields');
-            $this->response->included = array();
             $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             unset($temp);
