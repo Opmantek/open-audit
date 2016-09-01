@@ -1441,13 +1441,11 @@ CREATE TABLE `oa_user` (
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0'
+  `roles` text NOT NULL,
+  `orgs` text NOT NULL,
   `lang` varchar(100) NOT NULL,
-  `display_count` smallint(6) NOT NULL DEFAULT '10',
-  `theme` varchar(100) NOT NULL,
-  `admin` varchar(1) NOT NULL,
   `active` varchar(1) NOT NULL DEFAULT 'y',
-  `sam` int(10) NOT NULL DEFAULT '1',
-  `permissions` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -1459,43 +1457,10 @@ CREATE TABLE `oa_user` (
 
 LOCK TABLES `oa_user` WRITE;
 /*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (1,'admin','0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','en',10,'tango','y','y',3,'');
-INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise','43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','en',10,'tango','y','y',1,'');
-INSERT INTO `oa_user` VALUES (3,'nmis','5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','en',10,'tango','y','y',3,'');
+INSERT INTO `oa_user` VALUES (1,'admin','0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit',0,'["admin","org_admin"]','[0]','en','y');
+INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise','43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','',0,'["admin","org_admin"]','[0]','en','y');
+INSERT INTO `oa_user` VALUES (3,'nmis','5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','',0,'["admin","org_admin"]','[0]','en','y');
 /*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_user_org`
---
-
-DROP TABLE IF EXISTS `oa_user_org`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_user_org` (
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `access_level` int(10) unsigned NOT NULL,
-  `permissions` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `org_id` (`org_id`),
-  CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `oa_user` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `oa_org` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_user_org`
---
-
-LOCK TABLES `oa_user_org` WRITE;
-/*!40000 ALTER TABLE `oa_user_org` DISABLE KEYS */;
-INSERT INTO `oa_user_org` VALUES (1,1,0,10,'');
-INSERT INTO `oa_user_org` VALUES (2,2,0,10,'');
-INSERT INTO `oa_user_org` VALUES (3,3,0,10,'');
-/*!40000 ALTER TABLE `oa_user_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
