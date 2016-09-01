@@ -290,7 +290,7 @@ function print_something($string = '')
 	}
 </style>
 
-<?php if ($this->user->admin == 'y') {
+<?php if (!empty($this->user->roles['admin'])) {
     echo "<script type=\"text/javascript\">\n";
     echo "function createRequestObject() \n";
     echo "{\n";

@@ -131,7 +131,7 @@ var modal_content_image = "";
     } ?>
     -->
     <?php
-    if ($this->user->admin == 'y') {
+    if (!empty($this->user->roles['admin'])) {
         ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('Admin'))?></a>
@@ -262,7 +262,7 @@ var modal_content_image = "";
     <?php } ?>
 
     <?php
-    if (($this->user->admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
+    if (!empty($this->user->roles['admin']) and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
         <ul>

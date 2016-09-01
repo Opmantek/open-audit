@@ -59,7 +59,7 @@
 			<img id="logout_button" src="<?php echo $oa_theme_images; ?>/28_button_logout.png" onmouseover="this.src='<?php echo $oa_theme_images; ?>/28_button_logout_over.png'" onmouseout="this.src='<?php echo $oa_theme_images; ?>/28_button_logout.png'" alt="" style='border-width:0px;' />
 		</a>
 	</div>
-	<?php if ($this->user->admin == 'y') {
+	<?php if (!empty($this->user->roles['admin'])) {
         if (isset($this->user->debug) and $this->user->debug == 'y') {
             $image = '<a href="'.current_url().'/user_debug/n"><img alt="" src="'.$oa_theme_images.'/16_delete.png" /></a>';
         } else {

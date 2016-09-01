@@ -35,7 +35,7 @@
 
 
     <div class="col-md-1" style="text-align:center;">
-        <?php if ($this->user->admin == 'y') {
+        <?php if (!empty($this->user->roles['admin'])) {
             // if (strpos(current_url(), '?') !== false) {
                 echo '<a href="' . current_url() . '?' . $this->response->meta->query_string . '&format=json&debug=true&limit=100">Debug</a>';
             // } else {
