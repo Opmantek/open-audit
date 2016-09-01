@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -49,7 +50,6 @@ if (! function_exists('log_error')) {
         # this object will hold this specific error data and be added to the above array at the end
         $error = new stdClass();
         $error->code = $error_code;
-        $error->file = 'system';
         $error->model = $model;
         if (function_exists('getError')) {
             $error = getError($error->code);
@@ -57,7 +57,9 @@ if (! function_exists('log_error')) {
         }
 
         // log the details of the error to the log file
+        $error->file = 'system';
         stdlog($error);
+
         if (!empty($error->controller) and !empty($eror->function)) {
             $error->controller = $error->controller . '::' . $error->function;
         } else {
@@ -93,7 +95,7 @@ if (! function_exists('stdlog')) {
      *
      * @return NULL [logs the provided string to the log file]
      */
-    function stdlog($log_details = NULL)
+    function stdlog($log_details = null)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -143,7 +145,7 @@ if (! function_exists('stdlog')) {
         // We create a new object instead of simply populating the existing with defaults so we can set the attribute order
         // The original passed object is $log_details, the new object is $log
 
-        $CI->load->model('m_oa_config');        
+        $CI->load->model('m_oa_config');
 
         // set the line ending type
         if (php_uname('s') == 'Windows NT') {

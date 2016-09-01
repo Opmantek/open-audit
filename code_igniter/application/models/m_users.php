@@ -306,4 +306,61 @@ class M_users extends MY_Model
         log_error('ERR-0015', $endpoint . ':' . $permission);
         return false;
     }
+
+    public function get_user_collection_org_permission($collection, $id)
+    {
+        if ($collection == '') {
+            return false;
+        }
+        if ($id == '') {
+            return false;
+        } else {
+            $id = intval($id);
+        }
+
+        $CI = & get_instance();
+        $user_id = intval($CI->user->id);
+        $user_orgs = $CI->user->org_list;
+
+        $org_id_name = 'org_id';
+        $table = $collection;
+        $id_name = 'id';
+
+        if ($collection == 'devices') {
+            $table = 'system';
+        }
+        if ($collection == 'orgs') {
+            $table = 'oa_org';
+            $org_id_name = 'id';
+        }
+        if ($collection == 'users') {
+            $table = 'oa_user';
+        }
+
+        if ($table == '') {
+            return false;
+        }
+
+        $sql = "SELECT $org_id_name AS `org_id` FROM $table WHERE $id_name = ?";
+        $data = array(intval($id));
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (count($result) == 0) {
+            log_error('ERR-0007', '');
+            return false;
+        } else {
+            $permitted = false;
+            $temp = explode(',', str_replace('"', '', $CI->user->org_list));
+            foreach ($temp as $key => $value) {
+                if ($result[0]->org_id == $value) {
+                    $permitted = true;
+                }
+            }
+            if (!$permitted) {
+                log_error('ERR-0008', '');
+                return false;
+            }
+        }
+        return true;
+    }
 }

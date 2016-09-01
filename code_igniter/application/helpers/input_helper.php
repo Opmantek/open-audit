@@ -768,18 +768,23 @@ if (! function_exists('inputRead')) {
         $permission['update_form'] = 'u';
 
         if (empty($CI->response->meta->action)) {
+            $log->severity = 5;
+            $log->message = 'No action determined, setting to collection.';
+            stdlog($log);
             $CI->response->meta->action = 'collection';
         }
 
         $CI->load->model('m_users');
-        if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
-            return;
-        } else {
-            $log->severity = 3;
-            $log->message = 'User ' . $CI->user->name . ' attempted to perform an operation for which they are not authorised - ' . $CI->response->meta->collection . '::' . $CI->response->meta->action;
-            stdlog($log);
+        if (! $CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
             output();
             exit();
+        }
+
+        if (!empty($CI->response->meta->id) and $CI->response->meta->collection != 'roles') {
+            if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
+                output();
+                exit();
+            }
         }
     }
 }
