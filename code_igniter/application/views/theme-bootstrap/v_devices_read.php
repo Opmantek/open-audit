@@ -165,7 +165,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the software categories
-        $software = array('software', 'service');
+        $software = array('software', 'service', 'software_key');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -189,7 +189,7 @@ if ($data['system']->type != 'computer') {
                 foreach ($software as $item) {
                     if (isset($data[$item])) {
                     ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                     <?php
                     }
                 }
@@ -859,6 +859,19 @@ if (isset($data['additional_fields']) and count($data['additional_fields']) > 0)
             </span>
           </div><!-- 6 -->
         </div><!-- 5 -->
+
+<div class="form-group"><!-- 5 -->
+          <label for="org_id" class="col-sm-4 control-label">Organisation ID</label>
+          <div class="col-sm-8 input-group"><!-- 6 -->
+            <input type="text" class="form-control" id="org_id" placeholder="" value="<?php echo $data['system']->org_id; ?>" disabled>
+            <span class="input-group-btn">
+              <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+              </button>
+            </span>
+          </div><!-- 6 -->
+        </div><!-- 5 -->
+
           <div class="form-group"><!-- 5 -->
           <label for="owner" class="col-sm-4 control-label">Comments</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
@@ -940,7 +953,7 @@ foreach ($list as $item) {
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
+$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
   $list[] = 'disk';
 }
