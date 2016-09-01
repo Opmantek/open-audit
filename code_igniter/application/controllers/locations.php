@@ -90,12 +90,7 @@ class Locations extends MY_Controller
     */
     public function _remap()
     {
-        if (! empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
 

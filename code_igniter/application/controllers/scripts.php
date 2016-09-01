@@ -61,14 +61,15 @@ class scripts extends MY_Controller
     {
     }
 
+    /**
+    * Our remap function to override the inbuilt controller->method functionality
+    *
+    * @access public
+    * @return NULL
+    */
     public function _remap()
     {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
     /**
@@ -91,11 +92,7 @@ class scripts extends MY_Controller
     public function read()
     {
         $this->load->model('m_files');
-        unset($temp);
-        $temp = @$this->m_files->collection();
-        if (!empty($temp)) {
-            $this->response->included = array_merge($this->response->included, $temp);
-        }
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
         include 'include_read.php';
     }
 

@@ -57,26 +57,6 @@ class devices extends MY_Controller
 
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
-
-        if ($this->response->meta->id != '') {
-            $access_level = $this->m_devices->get_user_device_org_access();
-            if ($access_level < 1) {
-                // we should determine if the device does actually exist or not
-                // then we can throw the correct status code of 404 or 403
-                $sql = "SELECT system.id FROM system WHERE system.id = ?";
-                $data = array($this->response->meta->id);
-                $query = $this->db->query($sql, $data);
-                $result = $query->result();
-                if (count($result) == 0) {
-                    $this->response->errors[] = getError('ERR-0007');
-                } else {
-                    $this->response->errors[] = getError('ERR-0008');
-                }
-                $this->response->meta->header = $this->response->errors[0]->status;
-                output($this->response);
-                exit();
-            }
-        }
     }
 
     public function index()
@@ -85,12 +65,7 @@ class devices extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
     private function collection()
