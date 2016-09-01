@@ -64,6 +64,7 @@ class MY_Controller extends CI_Controller
         $this->load->model('m_oa_config');
         $this->m_oa_config->load_config();
         $this->load->model('m_oa_user');
+        $this->load->model('m_users');
 
         // set the 'admin' flag if required when testing
         // any controllers named admin_* will require an Admin level of access
@@ -109,12 +110,9 @@ class MY_Controller extends CI_Controller
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
         }
         set_time_limit(600);
-        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
-        $temp = array();
-        foreach ($this->user->orgs as $key => $value) {
-            $temp[] = $key;
-        }
-        $this->user->org_list = implode(',', $temp);
+        $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
+        $this->user->roles = json_decode($this->user->roles);
+        $this->user->orgs = json_decode($this->user->orgs);
         unset($temp);
 
     }

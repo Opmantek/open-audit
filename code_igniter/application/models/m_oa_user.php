@@ -40,71 +40,6 @@ class M_oa_user extends MY_Model
         parent::__construct();
     }
 
-    public function get_orgs($user_id)
-    {
-        $end = array();
-
-        # only run if post 1.12.6
-        if ($this->db->table_exists('oa_user_org')) {
-            $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
-            $sql = $this->clean_sql($sql);
-            $data = array(intval($user_id));
-            $query = $this->db->query($sql, $data);
-            $user_orgs = $query->result();
-        }
-
-        $sql = "SELECT * FROM oa_org";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $this->orgs = $query->result();
-
-        # only run if post 1.12.6
-        if ($this->db->table_exists('oa_user_org')) {
-            foreach ($this->orgs as $org) {
-                # need to allow for pre 1.12.6 DB structure
-                if (!isset($org->id) and isset($org->org_id)) {
-                    $org->id = $org->org_id;
-                }
-                # need to allow for pre 1.12.6 DB structure
-                if (!isset($org->parent_id) and isset($org->org_parent_id)) {
-                    $org->parent_id = $org->org_parent_id;
-                }
-                foreach ($user_orgs as $user_org) {
-                    if ($user_org->org_id == $org->id) {
-                        $end[$org->id] = $user_org->access_level;
-                    }
-                }
-            }
-        }
-        # TODO - get a list of user_org.org_id's with perms like '%r%' and
-        # feed it into the array below
-        $org_id_list = array();
-        foreach ($end as $key => $value) {
-            $org_id_list[$key] = $value;
-            foreach ($this->get_org($key, $value) as $key2 => $value2) {
-                $org_id_list[$key2] = $value2;
-            }
-        }
-        return($org_id_list);
-    }
-
-
-    private function get_org($org_id, $access_level)
-    {
-        $org_id_list = array();
-        foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 0) {
-                $org_id_list[$org->id] = $access_level;
-                #echo "Set OrgId: " . $org->id . " AccessLevel: $access_level\n-----\n";
-                foreach ($this->get_org($org->id, $access_level) as $key2 => $value2) {
-                    $org_id_list[$key2] = $value2;
-                }
-            }
-        }
-        return($org_id_list);
-    }
-
-
     public function select_user($name)
     {
         $sql = "SELECT id FROM oa_user WHERE name = ? LIMIT 1";
@@ -279,17 +214,17 @@ class M_oa_user extends MY_Model
                     $CI->user->id = $CI->user->user_id;
                     $CI->user->name = $CI->user->user_name;
                     $CI->user->password = $CI->user->user_password;
-                    $CI->user->theme = $CI->user->user_theme;
-                    $CI->user->admin = $CI->user->user_admin;
+                    #$CI->user->theme = $CI->user->user_theme;
+                    #$CI->user->admin = $CI->user->user_admin;
                     $CI->user->full_name = $CI->user->user_full_name;
-                    $CI->user->sam = $CI->user->user_sam;
+                    #$CI->user->sam = $CI->user->user_sam;
                 }
-
-                if ($CI->user->admin == 'y') {
-                    $CI->user->debug = $temp_debug;
-                } else {
-                    $CI->user->debug = 'n';
-                }
+$CI->user->debug = 'n';
+                // if ($CI->user->admin == 'y') {
+                //     $CI->user->debug = $temp_debug;
+                // } else {
+                //     $CI->user->debug = 'n';
+                // }
 
                 if ($admin == 'y') {
                     if ($CI->user->admin == 'y') {

@@ -157,6 +157,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0014']->title = "Bad Request.";
         $error_array['ERR-0014']->detail = 'Could not delete default resource.';
 
+        $error_array['ERR-0015'] = new stdClass();
+        $error_array['ERR-0015']->code = 'ERR-0015';
+        $error_array['ERR-0015']->status = 'HTTP/1.1 403 Forbidden';
+        $error_array['ERR-0015']->severity = 3;
+        $error_array['ERR-0015']->title = "User not authorised.";
+        $error_array['ERR-0015']->detail = 'User attempted to perform an operation for which they are not authorised.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';

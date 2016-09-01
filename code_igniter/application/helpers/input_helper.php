@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+       }
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -94,7 +94,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->format = '';
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
-        $CI->response->meta->id = NULL;
+        $CI->response->meta->id = null;
         $CI->response->meta->ids = 0;
         $CI->response->meta->include = '';
         $CI->response->meta->limit = '';
@@ -117,7 +117,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts connections credentials devices fields files locations networks nmis orgs roles scripts ';
+        $collections = ' charts connections credentials devices fields files locations networks nmis orgs roles scripts users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -208,35 +208,35 @@ if (! function_exists('inputRead')) {
             stdlog($log);
             $sql = '';
             switch ($CI->response->meta->collection) {
-            case 'devices':
-                $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
-                $table = 'system';
-                break;
-            case 'groups':
-                $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
-                $table = 'oa_group';
-                break;
-            case 'orgs':
-                $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
-                $table = 'oa_org';
-                break;
-            case 'users':
-                $sql = "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
-                $table = 'oa_user';
-                break;
-            case 'reports':
-                $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
-                $table = 'oa_report';
-                break;
-            case 'scripts':
-                $sql = "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
-                $table = 'scripts';
-                break;
-            case 'charts':
-                $sql = '';
-                $CI->response->meta->id = 1;
-                $CI->response->meta->sub_resource = $CI->uri->segment(2);
-                break;
+                case 'devices':
+                    $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
+                    $table = 'system';
+                    break;
+                case 'groups':
+                    $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
+                    $table = 'oa_group';
+                    break;
+                case 'orgs':
+                    $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
+                    $table = 'oa_org';
+                    break;
+                case 'users':
+                    $sql = "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
+                    $table = 'oa_user';
+                    break;
+                case 'reports':
+                    $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
+                    $table = 'oa_report';
+                    break;
+                case 'scripts':
+                    $sql = "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
+                    $table = 'scripts';
+                    break;
+                case 'charts':
+                    $sql = '';
+                    $CI->response->meta->id = 1;
+                    $CI->response->meta->sub_resource = $CI->uri->segment(2);
+                    break;
             }
             if ($sql != '') {
                 $data = array($CI->uri->segment(2));
@@ -626,7 +626,7 @@ if (! function_exists('inputRead')) {
 
         if ($CI->response->meta->properties == '') {
             # set some defaults
-            if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') { 
+            if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') {
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
                     $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status';
@@ -721,7 +721,7 @@ if (! function_exists('inputRead')) {
                 $operator = array_shift($query);
                 if (stripos(' = != > >= < <= not like ', ' '.$operator.' ') !== false) {
                     $filter->operator = $operator;
-                    if (stripos($filter->operator , 'like') !== false) {
+                    if (stripos($filter->operator, 'like') !== false) {
                         $filter->value = '%'.array_shift($query).'%';
                     } else {
                         $filter->value = array_shift($query);
@@ -746,14 +746,42 @@ if (! function_exists('inputRead')) {
         if ($CI->response->meta->sub_resource_id != '') {
             $CI->response->links->self .= '/' . $CI->response->meta->sub_resource_id;
         }
-        $CI->response->links->first = NULL;
-        $CI->response->links->last = NULL;
-        $CI->response->links->next = NULL;
-        $CI->response->links->prev = NULL;
+        $CI->response->links->first = null;
+        $CI->response->links->last = null;
+        $CI->response->links->next = null;
+        $CI->response->links->prev = null;
         $CI->response->errors = array();
-        return;
+
+        $permission['bulk_update_form'] = 'c';
+        $permission['collection'] = 'r';
+        $permission['create'] = 'c';
+        $permission['create_form'] = 'c';
+        $permission['delete'] = 'd';
+        $permission['download'] = 'r';
+        $permission['import'] = 'c';
+        $permission['import_form'] = 'c';
+        $permission['read'] = 'r';
+        $permission['sub_resource_create'] = 'c';
+        $permission['sub_resource_create_form'] = 'c';
+        $permission['sub_resource_delete'] = 'd';
+        $permission['update'] = 'u';
+        $permission['update_form'] = 'u';
+
+        if (empty($CI->response->meta->action)) {
+            $CI->response->meta->action = 'collection';
+        }
+
+        $CI->load->model('m_users');
+        if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
+            return;
+        } else {
+            $log->severity = 3;
+            $log->message = 'User ' . $CI->user->name . ' attempted to perform an operation for which they are not authorised - ' . $CI->response->meta->collection . '::' . $CI->response->meta->action;
+            stdlog($log);
+            output();
+            exit();
+        }
     }
 }
-
 /* End of file input_helper.php */
 /* Location: ./system/application/helpers/input_helper.php */
