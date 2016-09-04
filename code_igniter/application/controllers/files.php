@@ -146,6 +146,7 @@ class Files extends MY_Controller
     */
     public function collection()
     {
+        redirect('devices');
         include 'include_collection.php';
     }
 }

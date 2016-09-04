@@ -91,7 +91,6 @@ class orgs extends MY_Controller
     */
     private function read()
     {
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         include 'include_read.php';
     }
 

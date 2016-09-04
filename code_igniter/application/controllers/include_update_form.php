@@ -32,6 +32,38 @@ if (count($this->response->data) == 0) {
     log_error('ERR-0002', $this->response->meta->collection . ':read');
     $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called update.');
 }
+$collection = $this->response->meta->collection;
+if ($collection == 'credentials' or
+    $collection == 'connections' or
+    $collection == 'fields' or
+    $collection == 'files' or
+    $collection == 'licenses' or
+    $collection == 'locations' or
+    $collection == 'networks' or
+    $collection == 'orgs' or
+    $collection == 'queries' or
+    $collection == 'scripts' or
+    $collection == 'users') {
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+}
+
+if ($collection == 'connections') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+}
+
+if ($collection == 'fields') {
+        $this->load->model('m_groups');
+        $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+}
+
+if ($collection == 'scripts') {
+        $this->load->model('m_files');
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+}
+
+unset($collection);
+
 if ($this->response->meta->format === 'json') {
     output($this->response);
 } else {

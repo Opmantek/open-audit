@@ -27,6 +27,19 @@
 
 
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+
+if ($collection == 'scripts') {
+        $this->load->model('m_files');
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+}
+
+if (isset($this->response->data[0]->attributes->org_id) and $this->response->data[0]->attributes->org_id != '') {
+    $this->load->model('m_orgs');
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
+}
+if ($this->response->meta->collection == 'orgs') {
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
+}
 $this->response->meta->filtered = count($this->response->data);
 if (count($this->response->data) == 0) {
     log_error('ERR-0002', $this->response->meta->collection . ':read');

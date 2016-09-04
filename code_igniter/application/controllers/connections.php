@@ -112,10 +112,6 @@ class Connections extends MY_Controller
     */
     public function read()
     {
-        $this->load->model('m_orgs');
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        $this->load->model('m_locations');
-        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
         include 'include_read.php';
     }
 
@@ -160,10 +156,6 @@ class Connections extends MY_Controller
     */
     public function create_form()
     {
-        $this->load->model('m_orgs');
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        $this->load->model('m_locations');
-        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
         include 'include_create_form.php';
     }
 
@@ -175,10 +167,6 @@ class Connections extends MY_Controller
     */
     public function update_form()
     {
-        $this->load->model('m_orgs');
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        $this->load->model('m_locations');
-        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
         include 'include_update_form.php';
     }
 }

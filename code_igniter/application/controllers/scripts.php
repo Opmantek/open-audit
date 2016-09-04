@@ -91,8 +91,6 @@ class scripts extends MY_Controller
     */
     public function read()
     {
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
         include 'include_read.php';
     }
 
@@ -155,9 +153,6 @@ class scripts extends MY_Controller
             $this->response->included[] = $option;
             unset($option);
         }
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
         include 'include_create_form.php';
     }
 
@@ -169,9 +164,6 @@ class scripts extends MY_Controller
     */
     private function update_form()
     {
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
         include 'include_update_form.php';
     }
 

@@ -90,7 +90,7 @@ class networks extends MY_Controller
     */
     public function read()
     {
-        $this->response->included = $this->m_networks->sub_resource();
+        #$this->response->included = $this->m_networks->sub_resource();
         include 'include_read.php';
     }
 

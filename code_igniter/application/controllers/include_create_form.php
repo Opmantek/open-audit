@@ -31,4 +31,39 @@ $temp = new stdClass();
 $temp->type = $this->response->meta->collection;
 $this->response->data[] = $temp;
 unset($temp);
+
+$collection = $this->response->meta->collection;
+if ($collection == 'credentials' or
+    $collection == 'connections' or
+    $collection == 'fields' or
+    $collection == 'files' or
+    $collection == 'licenses' or
+    $collection == 'locations' or
+    $collection == 'networks' or
+    $collection == 'orgs' or
+    $collection == 'queries' or
+    $collection == 'scripts' or
+    $collection == 'users') {
+    $this->load->model('m_orgs');
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+}
+
+if ($collection == 'connections') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+}
+
+if ($collection == 'fields') {
+        $this->load->model('m_groups');
+        $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+}
+
+if ($collection == 'scripts') {
+        $this->load->model('m_files');
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+}
+
+unset($collection);
+
+
 output($this->response);
