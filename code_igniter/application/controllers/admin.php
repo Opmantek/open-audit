@@ -5575,6 +5575,17 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
             $sql[] = "ALTER TABLE `oa_user` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
 
+            $sql[] = "DROP TABLE oa_user_org";
+            $sql[] = "ALTER TABLE oa_user DROP permissions";
+            $sql[] = "ALTER TABLE oa_user DROP sam";
+            $sql[] = "ALTER TABLE oa_user DROP admin";
+            $sql[] = "ALTER TABLE oa_user DROP display_count";
+            $sql[] = "ALTER TABLE oa_user DROP theme";
+            $sql[] = "ALTER TABLE oa_user ADD roles text NOT NULL default '' AFTER email";
+            $sql[] = "ALTER TABLE oa_user ADD orgs text NOT NULL default '' AFTER roles";
+            $sql[] = "ALTER TABLE oa_user ADD org_id int(10) unsigned NOT NULL DEFAULT '0' AFTER email";
+
+
             $sql[] = "UPDATE oa_config SET config_value = '20160904' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.10' WHERE config_name = 'display_version'";
 
