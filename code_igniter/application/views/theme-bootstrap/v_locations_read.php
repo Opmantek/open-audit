@@ -47,7 +47,7 @@ $item = $this->response->data[0];
             <div class="col-md-6">
                 <div class="form-group">
                     <label for="id" class="col-sm-2 control-label">ID</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="id" name="id" placeholder="<?php echo htmlentities($item->id); ?>" value="<?php echo htmlentities($item->id); ?>" disabled>
                         </div>
@@ -56,7 +56,7 @@ $item = $this->response->data[0];
 
                 <div class="form-group">
                     <label for="name" class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -70,7 +70,7 @@ $item = $this->response->data[0];
 
                 <div class="form-group">
                     <label for="type" class="col-sm-2 control-label">Type</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
                         <select class="form-control" name="type" id="type" disabled>
                                 <option value=''<?php if ($item->attributes->type == '') { echo ' selected '; }?>></option>
@@ -132,12 +132,12 @@ $item = $this->response->data[0];
                     </div>
                 </div>
                 <?php
-                $attributes = array('room', 'suite', 'level', 'address');
+                $attributes = array('room', 'suite', 'level', 'address', 'city');
                 foreach ($attributes as $attribute) {
                 ?>
                 <div class="form-group">
                     <label for="<?php echo $attribute; ?>" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlentities($item->attributes->{$attribute}); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -148,34 +148,16 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                 </div>
-                <?php } ?>
-                <?php if (!empty($edit)) { ?>
-                    <div class="form-group">
-                        <label for="locations_latlong" class="col-sm-2 control-label">Get Latitude and Longitude</label>
-                        <div class="col-sm-8">
-                            <div class="col-sm-12 input-group">
-                                <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-primary">Get</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="locations_geocode" class="col-sm-2 control-label">Create GeoCode</label>
-                        <div class="col-sm-8">
-                            <div class="col-sm-12 input-group">
-                                <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary">Create</button>
-                            </div>
-                        </div>
-                    </div>
                 <?php } ?>
             </div>
             <div class="col-md-6">
                 <?php
-                $attributes = array('city', 'state', 'postcode', 'country', 'phone', 'geo', 'latitude', 'longitude');
+                $attributes = array('state', 'postcode', 'country', 'phone', 'latitude', 'longitude', 'geo');
                 foreach ($attributes as $attribute) {
                 ?>
                 <div class="form-group">
                     <label for="<?php echo $attribute; ?>" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
                             <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlentities($item->attributes->{$attribute}); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -185,8 +167,37 @@ $item = $this->response->data[0];
                             <?php } ?>
                         </div>
                     </div>
+                    <?php if ($attribute == 'geo') { ?>
+                        <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode btn btn-primary">Create</button>
+                    <?php } ?>
+                    <?php if ($attribute == 'latitude') { ?>
+                        <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong btn btn-primary">Get Lat/Long</button>
+                    <?php } ?>
                 </div>
                 <?php } ?>
+
+                <div class="form-group">
+                    <label for="org_id" class="col-sm-2 control-label">Organisation</label>
+                    <div class="col-sm-6">
+                        <div class="col-sm-12 input-group">
+                            <select class="data_type form-control" id="org_id" name="org_id" disabled>
+                                <option value='' label=' '></option>
+                                <?php foreach ($this->response->included as $org) {
+                                if ($org->type == 'orgs') { ?>
+                                    <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                <?php } } ?>
+                            </select>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+
+
+
             </div>
         </form>
     </div> <!-- /row -->
