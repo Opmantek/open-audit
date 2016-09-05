@@ -5558,6 +5558,7 @@ class admin extends MY_Controller
               `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
             $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboard\":\"r\",\"devices\":\"crud\",\"discovery\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
@@ -5565,6 +5566,14 @@ class admin extends MY_Controller
             $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_reporter', 'system', NOW())";
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'user', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
+
+            $sql[] = "ALTER TABLE `additional_field` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            $sql[] = "ALTER TABLE `oa_group` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `group_id`";
+            $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            $sql[] = "ALTER TABLE `oa_report` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `report_id`";
+            $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            $sql[] = "ALTER TABLE `oa_user` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
 
             $sql[] = "UPDATE oa_config SET config_value = '20160904' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.10' WHERE config_name = 'display_version'";

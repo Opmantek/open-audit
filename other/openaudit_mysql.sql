@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS `additional_field`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `additional_field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `group_id` int(10) unsigned NOT NULL,
   `name` varchar(100) NOT NULL DEFAULT '',
   `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
@@ -504,6 +505,7 @@ DROP TABLE IF EXISTS `graph`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `system_id` int(10) unsigned DEFAULT NULL,
   `linked_table` varchar(100) NOT NULL DEFAULT '',
   `linked_row` varchar(100) NOT NULL DEFAULT '',
@@ -897,6 +899,7 @@ DROP TABLE IF EXISTS `networks`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -1078,11 +1081,11 @@ INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00
 INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y','0000-00-00 00:00:00',0,'Should we use DNS for looking up the hostname and domain.');
-INSERT INTO `oa_config` VALUES ('display_version','1.12.8.1','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
+INSERT INTO `oa_config` VALUES ('display_version','1.12.10','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
 INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','0000-00-00 00:00:00',0,'The API key for Google Maps.');
-INSERT INTO `oa_config` VALUES ('internal_version','20160810','n','0000-00-00 00:00:00',0,'The internal numerical version.');
+INSERT INTO `oa_config` VALUES ('internal_version','20160904','n','0000-00-00 00:00:00',0,'The internal numerical version.');
 INSERT INTO `oa_config` VALUES ('logo','logo-banner-oae','y','2016-05-20 10:46:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `oa_config` VALUES ('log_style','syslog','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
@@ -1152,6 +1155,7 @@ DROP TABLE IF EXISTS `oa_group`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group` (
   `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `group_name` varchar(100) NOT NULL DEFAULT '',
   `group_padded_name` varchar(100) NOT NULL DEFAULT '',
   `group_dynamic_select` text NOT NULL,
@@ -1275,6 +1279,7 @@ DROP TABLE IF EXISTS `oa_location`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_location` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT '',
   `room` varchar(100) NOT NULL DEFAULT '',
@@ -1348,6 +1353,7 @@ DROP TABLE IF EXISTS `oa_report`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_report` (
   `report_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `report_name` varchar(100) NOT NULL DEFAULT '',
   `report_description` text NOT NULL,
   `report_display_in_menu` enum('y','n') NOT NULL DEFAULT 'y',
@@ -1437,6 +1443,7 @@ DROP TABLE IF EXISTS `oa_user`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL,
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
@@ -1785,6 +1792,7 @@ DROP TABLE IF EXISTS `scripts`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(250) NOT NULL DEFAULT '',
   `options` text NOT NULL,
   `description` varchar(200) NOT NULL DEFAULT '',
