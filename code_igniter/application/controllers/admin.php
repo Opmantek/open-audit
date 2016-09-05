@@ -5584,6 +5584,8 @@ class admin extends MY_Controller
             $sql[] = "ALTER TABLE oa_user ADD roles text NOT NULL default '' AFTER email";
             $sql[] = "ALTER TABLE oa_user ADD orgs text NOT NULL default '' AFTER roles";
             $sql[] = "ALTER TABLE oa_user ADD org_id int(10) unsigned NOT NULL DEFAULT '0' AFTER email";
+            $sql[] = "ALTER TABLE oa_user ADD `edited_by` varchar(200) NOT NULL DEFAULT '' after active";
+            $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
 
 
             $sql[] = "UPDATE oa_config SET config_value = '20160904' WHERE config_name = 'internal_version'";

@@ -1453,6 +1453,8 @@ CREATE TABLE `oa_user` (
   `orgs` text NOT NULL,
   `lang` varchar(100) NOT NULL,
   `active` varchar(1) NOT NULL DEFAULT 'y',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
