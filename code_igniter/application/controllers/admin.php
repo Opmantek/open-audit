@@ -5522,6 +5522,22 @@ class admin extends MY_Controller
             $sql[] = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y','0000-00-00 00:00:00',0,'Should we delete any attributes that are not present when we audit a device.')";
             $sql[] = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
+            //----------
+            $sql[] = "DROP TABLE IF EXISTS roles";
+            $sql[] = "CREATE TABLE `roles` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `name` varchar(100) NOT NULL DEFAULT '',
+              `permissions` text NOT NULL DEFAULT '',
+              `ad_group` varchar(100) NOT NULL DEFAULT '',
+              `edited_by` varchar(200) NOT NULL DEFAULT '',
+              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', '{"configuration":"crud","database":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', '{"charts":"crud","connections":"crud","credentials":"crud","dashboard":"r","devices":"crud","discovery":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW())";
+            //----------
 
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
