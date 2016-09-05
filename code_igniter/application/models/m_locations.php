@@ -66,7 +66,7 @@ class M_locations extends MY_Model
         }
         if ($filter != '') {
             $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
+            #$filter = ' WHERE ' . $filter;
         }
         return($filter);
     }
@@ -158,13 +158,13 @@ class M_locations extends MY_Model
                 $CI->response->meta->total = intval($result[0]->count);
             }
         } else {
-            $properties = '*';
+            $properties = 'oa_location.*';
             $filter = '';
             $sort = '';
             $limit = '';
         }
         # get the response data
-        $sql = "SELECT " . $properties . " FROM `oa_location` " . $filter . " " . $sort . " " . $limit;
+        $sql = "SELECT " . $properties . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `oa_location` LEFT JOIN system ON (oa_location.id = system.location_id) LEFT JOIN oa_org ON (oa_location.org_id = oa_org.id) WHERE oa_location.org_id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY oa_location.id " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'locations');
         return ($result);
@@ -174,7 +174,7 @@ class M_locations extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name type room suite level address city state postcode country phone geo latitude longitude ';
+        $fields = ' name type room suite level address city state postcode country phone geo latitude longitude org_id ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
