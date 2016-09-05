@@ -7,11 +7,14 @@
     <div class="col-md-2"></div>
 
     <div class="col-md-1" style="text-align:center;">
-        <?php if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") { ?>
+        <?php
+        if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") { ?>
             Map<br /><a href="<?php echo htmlentities($this->config->item('maps_url')); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
-        <?php } else { ?>
+        <?php
+        } else { ?>
             Map<br /><a href="<?php echo $this->config->config['oa_web_index']; ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
-        <?php } ?>
+        <?php
+        } ?>
     </div>
 
   <div class="col-md-1" style="text-align:center;">
@@ -19,29 +22,27 @@
   </div>
 
   <div class="col-md-1" style="text-align:center;">
-    <?php if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") { ?>
+    <?php
+    if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") { ?>
         NMIS<br /><a href="<?php echo htmlentities($this->config->item('nmis_url')); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
-    <?php } else { ?>
+    <?php
+    } else { ?>
         NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
-    <?php } ?>
+    <?php
+    } ?>
   </div>
 
   <div class="col-md-1" style="text-align:center;">
     Version<br /><?php echo htmlentities($this->config->item('display_version')); ?>
-    <?php if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->admin == 'y')) {
+    <?php
+    if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->admin == 'y')) {
         echo '<br /><a href="'.$this->config->config['oa_web_index'].'/main/help_about" style="color: red;">upgrade</a>';
     } ?>
   </div>
 
 
     <div class="col-md-1" style="text-align:center;">
-        <?php if (!empty($this->user->roles['admin'])) {
-            // if (strpos(current_url(), '?') !== false) {
-                echo '<a href="' . current_url() . '?' . $this->response->meta->query_string . '&format=json&debug=true&limit=100">Debug</a>';
-            // } else {
-            //     echo '<a href="'.current_url().'?format=json&debug=true&limit=100">Debug</a>';
-            // }
-        } ?>
+        <a href="<?php echo current_url(); ?>?<?php echo $this->response->meta->query_string; ?>&format=json&debug=true&limit=100">Debug</a>
     </div>
 
     <div class="col-md-1" style="text-align:center;">
@@ -73,136 +74,259 @@
                 </ul>
             </li>
 
+
+
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Resources <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'credentials', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Credentials</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>List Credentials</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'credentials', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'>Create Credentials</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'connections', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Connections</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'connections', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'devices', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Devices</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices'>List Devices</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'devices', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_system/add_system'>Add Device Manually</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/system'>Add Device (using audit result)</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_system/add_systems'>Add Multiple Devices</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'discovery', 'c')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Discovery</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_subnet/device'>Discover a Device</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_active_directory'>Discover Active Directory</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/scan_ad'>Import Active Directory</a></li>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'fields', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Fields</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields'>List Fields</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'fields', 'c')) { ?>
+                                <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields/create'>Create Field</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'groups', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Groups</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/list_groups'>List Groups</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'fields', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/add_group'>Create Group</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/import_group'>Import Group</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/activate_group'>Activate Group</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'locations', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Locations</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations'>List Locations</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'locations', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_location'>Create Location</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_locations'>Import Multiple Locations</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'networks', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Networks</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>List Networks</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'networks', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks/create'>Create Network</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'orgs', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Organisations</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs'>List Organisations</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'orgs', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs/create'>Create Organisation</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_org/add_orgs'>Import Multiple Organisations</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'queries', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Queries</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/list_reports'>List Queries</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'queries', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/activate_report'>Activate Query</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/import_report'>Import Query</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'scripts', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Scripts</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'>List Scripts</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'scripts', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts/create'>Create Script</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'users', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Users</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_user/list_users'>List Users</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'users', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_user/add_user'>Create User</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                </ul>
+            </li>
+
+
+
+            <?php
+            if ($this->m_users->get_user_permission('', 'configuration', 'r') or $this->m_users->get_user_permission('', 'database', 'r') or $this->m_users->get_user_permission('', 'logs', 'r') or $this->m_users->get_user_permission('', 'roles', 'r')) { ?>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li class="dropdown-submenu">
-                    <a href="#">Configuration</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/edit_config'>Config</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Credentials</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>List Credentials</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'>Create Credentials</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Connections</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Database</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <?php
-                        if (php_uname('s') == 'Darwin' or php_uname('s') == 'Linux') {
-                            echo "<li><a href='".$this->config->config['oa_web_index']."/admin_db/backup'>Backup the Database</a></li>\n"; } ?>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_db/export_table'>Export Table</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_db/maintenance'>Maintenance</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/reset_icons'>Reset Device Icons</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Devices</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices'>List Devices</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_system/add_system'>Add Device Manually</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/system'>Add Device (using audit result)</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_system/add_systems'>Add Multiple Devices</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Discovery</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_subnet/device'>Discover a Device</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_active_directory'>Discover Active Directory</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/scan_ad'>Import Active Directory</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Fields</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields'>List Fields</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields/create'>Create Field</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Groups</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/list_groups'>List Groups</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/add_group'>Create Group</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/import_group'>Import Group</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/activate_group'>Activate Group</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Locations</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations'>List Locations</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_location'>Create Location</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_locations'>Import Multiple Locations</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Logs</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/view_log/access'>View Access Log</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/view_log/system'>View System Log</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/purge_log/access'>Purge Access Log</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/purge_log/system'>Purge System Log</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Networks</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>List Networks</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks/create'>Create Network</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Organisations</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs'>List Organisations</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs/create'>Create Organisation</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_org/add_orgs'>Import Multiple Organisations</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Queries</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/list_reports'>List Queries</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/activate_report'>Activate Query</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/import_report'>Import Query</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Roles</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles'>List Roles</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles/create'>Create Role</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Scripts</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'>List Scripts</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts/create'>Create Script</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown-submenu">
-                    <a href="#">Users</a>
-                    <ul class="dropdown-menu" style="min-width:250px;">
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_user/list_users'>List Users</a></li>
-                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_user/add_user'>Create User</a></li>
-                    </ul>
-                </li>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Configuration</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/edit_config'>Config</a></li>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'database', 'u')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Database</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <?php
+                            if (php_uname('s') == 'Darwin' or php_uname('s') == 'Linux') {
+                                echo "<li><a href='".$this->config->config['oa_web_index']."/admin_db/backup'>Backup the Database</a></li>\n"; } ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_db/export_table'>Export Table</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_db/maintenance'>Maintenance</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/reset_icons'>Reset Device Icons</a></li>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'logs', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Logs</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/view_log/access'>View Access Log</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/view_log/system'>View System Log</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'logs', 'd')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/purge_log/access'>Purge Access Log</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/purge_log/system'>Purge System Log</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'roles', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Roles</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles'>List Roles</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'roles', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles/create'>Create Role</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
               </ul>
             </li>
+            <?php
+            } ?>
 
             <?php if ($this->config->config['nmis'] == 'y') { ?>
             <li class="dropdown">
