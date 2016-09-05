@@ -48,6 +48,7 @@
                 <tr>
                     <th style='text-align:center;'><?php echo __('ID')?></th>
                     <th><?php echo __('Name')?></th>
+                    <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Description')?></th>
                     <th><?php echo __('Edited By')?></th>
                     <th><?php echo __('Edited Date')?></th>
@@ -58,16 +59,17 @@
             </thead>
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
-                    <tr>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                        <td><?php echo htmlentities($item->attributes->name)?></td>
-                        <td><?php echo htmlentities($item->attributes->description)?></td>
-                        <td><?php echo htmlentities($item->attributes->edited_by)?></td>
-                        <td><?php echo htmlentities($item->attributes->edited_date)?></td>
-                        <td style='text-align:center;'><a href="devices?ip.network=<?php echo $item->attributes->name; ?>"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><span class="glyphicon glyphicon-blackboard" aria-hidden="true"></span></button></a></td>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-info" href="networks/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
-                    </tr>
+                <tr>
+                    <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                    <td><?php echo htmlentities($item->attributes->name)?></td>
+                    <td><?php echo htmlentities($item->attributes->org_name)?></td>
+                    <td><?php echo htmlentities($item->attributes->description)?></td>
+                    <td><?php echo htmlentities($item->attributes->edited_by)?></td>
+                    <td><?php echo htmlentities($item->attributes->edited_date)?></td>
+                    <td style='text-align:center;'><a href="devices?ip.network=<?php echo $item->attributes->name; ?>"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlentities($item->attributes->device_count)?></button></a></td>
+                    <td style='text-align:center;'><a class="btn btn-sm btn-info" href="networks/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>

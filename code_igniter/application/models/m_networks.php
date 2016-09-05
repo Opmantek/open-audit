@@ -83,7 +83,7 @@ class M_networks extends MY_Model
             $id = intval($id);
         }
         $return_data = array();
-        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count` FROM networks LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) WHERE networks.id = 1 AND networks.org_id IN (" . $CI->user->org_list . ")";
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) WHERE networks.id = 1 AND networks.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
@@ -178,7 +178,7 @@ class M_networks extends MY_Model
         }
         # get the response data
         #$sql = "SELECT " . $properties . " FROM `networks` " . $filter . " " . $sort . " " . $limit;
-        $sql = "SELECT " . $properties . ", COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) WHERE networks.org_id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY networks.id " . $sort . " " . $limit;
+        $sql = "SELECT " . $properties . ", COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) WHERE networks.org_id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY networks.id " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $CI->response->meta->sql = $this->db->last_query();
         $result = $this->format_data($result, 'networks');
