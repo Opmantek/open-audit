@@ -281,7 +281,12 @@ class M_users extends MY_Model
                 return false;
             } else {
                 $user_roles = $CI->user->roles;
-                $roles = $CI->roles;
+                if (!empty($CI->roles)) {
+                    $roles = $CI->roles;
+                } else {
+                    $CI->load->model('m_roles');
+                    $roles = $CI->m_roles->collection();
+                }
             }
         } else {
             $user_id = intval($user_id);
@@ -299,8 +304,10 @@ class M_users extends MY_Model
             foreach ($roles as $role) {
                 if ($role->attributes->name == $user_role) {
                     $permissions = json_decode($role->attributes->permissions);
-                    if (!empty($permissions->$endpoint) and stripos($permissions->$endpoint, $permission) !== false) {
-                        return true;
+                    if (!empty($permissions->$endpoint)) {
+                        if (stripos($permissions->$endpoint, $permission) !== false) {
+                            return true;
+                        }
                     }
                 }
             }
