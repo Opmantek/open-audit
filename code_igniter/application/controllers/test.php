@@ -42,7 +42,7 @@ class test extends CI_Controller
         // must be an admin to access this page
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
-        if ($this->user->admin != 'y') {
+        if (stripos($this->user->roles, '"admin"') === false) {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
@@ -67,6 +67,13 @@ class test extends CI_Controller
     public function index()
     {
         redirect('/');
+    }
+
+    public function user()
+    {
+        echo "<pre>\n";
+        var_dump($this->user);
+        exit();
     }
 
     function options()
