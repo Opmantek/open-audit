@@ -81,6 +81,26 @@ $item = $this->response->data[0];
         </div>
 
         <div class="form-group">
+            <label for="org_id" class="col-sm-2 control-label">Organisation</label>
+            <div class="col-sm-4">
+                <div class="col-sm-8 input-group">
+                    <select class="data_type form-control" id="org_id" name="org_id" disabled>
+                        <option value='' label=' '></option>
+                        <?php foreach ($this->response->included as $org) {
+                        if ($org->type == 'orgs') { ?>
+                            <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                        <?php } } ?>
+                    </select>
+                    <?php if (!empty($edit)) { ?>
+                    <span class="input-group-btn">
+                        <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                    </span>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label for="edited_by" class="col-sm-2 control-label">Edited By</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
@@ -98,45 +118,5 @@ $item = $this->response->data[0];
             </div>
         </div>
     </form>
-  </div>
-</div>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">Devices in Network <?php echo $item->attributes->name; ?></span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-    <table class="table table-condensed table-hover">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th style="text-align: center;">Icon</th>
-                <th>Type</th>
-                <th>Name</th>
-                <th>Domain</th>
-                <th>IP</th>
-                <th>Description</th>
-                <th>OS Family</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php 
-            if (!empty($this->response->included)) {
-            foreach ($this->response->included as $item) { ?><tr>
-                <td><?php echo $item->attributes->{'system.id'}; ?></td>
-                <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->{'system.icon'}))).".svg"; ?>" style="border-width:0px; width:24px;" title="<?php echo htmlentities($item->attributes->{'system.icon'}); ?>" alt="<?php echo htmlentities($item->attributes->{'system.icon'}); ?>"/></td>
-                <td><?php echo $item->attributes->{'system.type'}; ?></td>
-                <td><?php echo $item->attributes->{'system.name'}; ?></td>
-                <td><?php echo $item->attributes->{'system.domain'}; ?></td>
-                <td><?php echo $item->attributes->{'ip.ip'}; ?></td>
-                <td><?php echo $item->attributes->{'system.description'}; ?></td>
-                <td><?php echo $item->attributes->{'system.os_family'}; ?></td>
-                <td><?php echo $item->attributes->{'system.status'}; ?></td>
-            </tr><?php } ?><?php } ?>
-        </tbody>
-    </table>
   </div>
 </div>
