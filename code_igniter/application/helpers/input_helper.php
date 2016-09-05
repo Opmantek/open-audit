@@ -117,7 +117,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts connections credentials devices fields files locations networks nmis orgs roles scripts users ';
+        $collections = ' charts connections credentials dashboard devices fields files locations networks nmis orgs roles scripts users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -774,8 +774,12 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->action = 'collection';
         }
 
+        $CI->load->model('m_roles');
+        $CI->roles = $CI->m_roles->collection();
+
         $CI->load->model('m_users');
         if (! $CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
+            log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
             output();
             exit();
         }
