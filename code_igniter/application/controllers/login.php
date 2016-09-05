@@ -398,7 +398,7 @@ class login extends CI_Controller
         // attempt use the internal database to validate user
         $data = $this->m_userlogin->validate_user($username, $password);
         if (isset($data) and $data != 'fail') {
-            if ($data['user_admin'] == 'y') {
+            if (stripos($data['roles'], '"admin"') !== false) {
                 // SUCCESS
                 $this->session->set_userdata($data);
                 header('Content-Type: application/json');
