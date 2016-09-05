@@ -40,7 +40,8 @@ class M_users extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
+    private function build_properties()
+    {
         $CI = & get_instance();
         $properties = '';
         $temp = explode(',', $CI->response->meta->properties);
@@ -55,7 +56,8 @@ class M_users extends MY_Model
         return($properties);
     }
 
-    private function build_filter() {
+    private function build_filter()
+    {
         $CI = & get_instance();
         $reserved = ' properties limit resource action sort current offset format ';
         $filter = '';
@@ -272,14 +274,14 @@ class M_users extends MY_Model
         if ($permission == '') {
             return false;
         }
-        if ($user_id == '') {
-            $CI = & get_instance();
-            $user_id = intval($CI->user->id);
+        $CI = & get_instance();
+        if (empty($user_id)) {
+            $user_id = @intval($CI->user->id);
             if (empty($user_id)) {
                 return false;
             } else {
                 $user_roles = $CI->user->roles;
-                $user_roles = '"' . implode('","', $user_roles) .'"';
+                $roles = $CI->roles;
             }
         } else {
             $user_id = intval($user_id);
@@ -287,23 +289,23 @@ class M_users extends MY_Model
             $data = array($user_id);
             $result = $this->run_sql($sql, $data);
             $user_roles = json_decode($result[0]->roles);
-            $user_roles = '"' . implode('","', $user_roles) .'"';
+            $roles = $CI->m_roles->collection();
         }
         if (empty($user_roles)) {
             return false;
         }
-        if (empty($user_id)) {
-            return false;
-        }
-        $sql = "SELECT * FROM roles WHERE name in ($user_roles)";
-        $roles = $this->run_sql($sql, array());
-        foreach ($roles as $role) {
-            $permissions = json_decode($role->permissions);
-            if (!empty($permissions->$endpoint) and stripos($permissions->$endpoint, $permission) !== false) {
-                return true;
+
+        foreach ($user_roles as $user_role) {
+            foreach ($roles as $role) {
+                if ($role->attributes->name == $user_role) {
+                    $permissions = json_decode($role->attributes->permissions);
+                    if (!empty($permissions->$endpoint) and stripos($permissions->$endpoint, $permission) !== false) {
+                        return true;
+                    }
+                }
             }
         }
-        log_error('ERR-0015', $endpoint . ':' . $permission);
+        //log_error('ERR-0015', $endpoint . ':' . $permission);
         return false;
     }
 
@@ -326,8 +328,18 @@ class M_users extends MY_Model
         $table = $collection;
         $id_name = 'id';
 
+
+        if ($collection == 'connections') {
+            $table = 'oa_connection';
+        }
         if ($collection == 'devices') {
             $table = 'system';
+        }
+        if ($collection == 'fields') {
+            $table = 'additional_field';
+        }
+        if ($collection == 'locations') {
+            $table = 'oa_location';
         }
         if ($collection == 'orgs') {
             $table = 'oa_org';
