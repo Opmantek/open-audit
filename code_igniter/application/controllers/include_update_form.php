@@ -44,6 +44,7 @@ if ($collection == 'credentials' or
     $collection == 'queries' or
     $collection == 'scripts' or
     $collection == 'users') {
+    $this->load->model('m_orgs');
     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
