@@ -1441,7 +1441,7 @@ CREATE TABLE `oa_user` (
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0'
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `roles` text NOT NULL,
   `orgs` text NOT NULL,
   `lang` varchar(100) NOT NULL,
@@ -1698,6 +1698,10 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO roles VALUES (NULL, 'admin', '{"configuration":"crud","database":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'org_admin', '{"charts":"crud","connections":"crud","credentials":"crud","dashboard":"r","devices":"crud","discovery":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'reporter', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'user', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW());
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
