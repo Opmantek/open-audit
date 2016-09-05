@@ -187,14 +187,14 @@ $(document).ready(function () {
         }
         $('#latitude').val('');
         $('#longitude').val('');
-        $('#latitude').attr("disabled", false);
-        $('#longitude').attr("disabled", false);
         var geocoder = new google.maps.Geocoder();
         if (geocoder) {
             geocoder.geocode({'address': address}, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
-                   $('#latitude').val(results[0].geometry.location.lat());
-                   $('#longitude').val(results[0].geometry.location.lng());
+                    $('#longitude').val(results[0].geometry.location.lng());
+                    $('#edit_longitude').click();
+                    $('#latitude').val(results[0].geometry.location.lat());
+                    $('#edit_latitude').click();
                 }
             });
         }
@@ -207,6 +207,7 @@ $(document).ready(function () {
         $('#geo').val('');
         $('#geo').attr("disabled", false);
         $('#geo').val(address);
+        $('#edit_geo').click();
     });
 });
 
