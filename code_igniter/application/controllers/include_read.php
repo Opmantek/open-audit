@@ -28,7 +28,7 @@
 
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
 
-if ($collection == 'scripts') {
+if ($this->response->meta->collection == 'scripts') {
         $this->load->model('m_files');
         $this->response->included = array_merge($this->response->included, $this->m_files->collection());
 }
