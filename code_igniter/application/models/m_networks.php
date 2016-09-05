@@ -121,11 +121,15 @@ class M_networks extends MY_Model
         $CI = & get_instance();
         # ensure we have a valid subnet
         $this->load->helper('network');
+
         if (!empty($CI->response->meta->received_data->attributes->name)) {
             $test = network_details($CI->response->meta->received_data->attributes->name);
         } else {
             log_error('ERR-0009', 'm_networks::create_network');
             return false;
+        }
+        if (empty($CI->response->meta->received_data->attributes->org_id)) {
+            $CI->response->meta->received_data->attributes->org_id = 0;
         }
         # check to see if we already have a network with the same name
         $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
@@ -136,8 +140,8 @@ class M_networks extends MY_Model
             log_error('ERR-0010', 'm_networks::create_network');
             return false;
         }
-        $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";
-        $data = array("$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
+        $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, ?, NOW())";
+        $data = array($CI->response->meta->received_data->attributes->org_id, "$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }

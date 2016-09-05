@@ -79,7 +79,11 @@ class M_locations extends MY_Model
         } else {
             $name = $CI->response->meta->received_data->attributes->name;
         }
-        $data = array((string)$name,
+        if (empty($CI->response->meta->received_data->attributes->org_id)) {
+            $CI->response->meta->received_data->attributes->org_id = 0;
+        }
+        $data = array((string)$CI->response->meta->received_data->attributes->org_id, 
+                        (string)$name,
                         (string)$CI->response->meta->received_data->attributes->type,
                         (string)$CI->response->meta->received_data->attributes->room,
                         (string)$CI->response->meta->received_data->attributes->suite,
@@ -94,7 +98,7 @@ class M_locations extends MY_Model
                         (string)$CI->response->meta->received_data->attributes->longitude,
                         (string)$CI->response->meta->received_data->attributes->geo);
 
-        $sql = "INSERT INTO `oa_location` VALUES (NULL, ?, ?, ?, ?, ?, ?, '', ?, '', '', '', ?, ?, ?, '', ?, '', ?, ?, ?, '', '', 0)";
+        $sql = "INSERT INTO `oa_location` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, '', ?, '', '', '', ?, ?, ?, '', ?, '', ?, ?, ?, '', '', 0)";
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
