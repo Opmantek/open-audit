@@ -46,6 +46,9 @@ class M_networks extends MY_Model
         $temp = explode(',', $CI->response->meta->properties);
         for ($i=0; $i<count($temp); $i++) {
             $temp[$i] = trim($temp[$i]);
+            if (strpos($temp[$i], '.') === false) {
+                $temp[$i] = 'networks.' . $temp[$i];
+            }
         }
         $properties = implode(',', $temp);
         return($properties);
@@ -58,11 +61,12 @@ class M_networks extends MY_Model
         foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {
                 if (!empty($item->name)) {
-                    if ($filter != '') {
-                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    } else {
-                        $filter = ' WHERE ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    }
+                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    // if ($filter != '') {
+                    //     $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    // } else {
+                    //     $filter = ' WHERE ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    // }
                 }
             }
         }
@@ -79,7 +83,7 @@ class M_networks extends MY_Model
             $id = intval($id);
         }
         $return_data = array();
-        $sql = "SELECT networks.* FROM networks WHERE id = ?";
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count` FROM networks LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) WHERE networks.id = 1 AND networks.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
@@ -146,7 +150,7 @@ class M_networks extends MY_Model
             $filter = $this->build_filter();
             $properties = $this->build_properties();
             if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
+                $sort = 'ORDER BY networks.id';
             } else {
                 $sort = 'ORDER BY ' . $CI->response->meta->sort;
             }
@@ -173,8 +177,10 @@ class M_networks extends MY_Model
             $limit = '';
         }
         # get the response data
-        $sql = "SELECT " . $properties . " FROM `networks` " . $filter . " " . $sort . " " . $limit;
+        #$sql = "SELECT " . $properties . " FROM `networks` " . $filter . " " . $sort . " " . $limit;
+        $sql = "SELECT " . $properties . ", COUNT(DISTINCT system.id) as `device_count` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) WHERE networks.org_id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY networks.id " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
+        $CI->response->meta->sql = $this->db->last_query();
         $result = $this->format_data($result, 'networks');
         return ($result);
     }
