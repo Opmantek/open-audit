@@ -44,6 +44,10 @@ class main extends MY_Controller
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
+
+        $this->load->model('m_users');
+        $this->load->model('m_roles');
+        $this->roles = $this->m_roles->collection();
     }
 
     public function index()
