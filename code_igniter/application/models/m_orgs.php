@@ -79,7 +79,7 @@ class M_orgs extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM oa_org WHERE id = ?";
+        $sql = "SELECT oa_org.*, COUNT(DISTINCT system.id) as `device_count` FROM oa_org LEFT JOIN system ON (oa_org.id = system.org_id) WHERE oa_org.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'orgs');
@@ -139,7 +139,7 @@ class M_orgs extends MY_Model
             $limit = '';
         }
         # get the response data
-        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY o1.id " . $sort . " " . $limit;
+        $sql = "SELECT o1.*, o2.name as parent_name, count(DISTINCT system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY o1.id " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'orgs');
         return ($result);
