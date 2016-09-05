@@ -146,7 +146,6 @@ class networks extends MY_Controller
     */
     public function update_form()
     {
-        $this->response->included = $this->m_networks->sub_resource();
         include 'include_update_form.php';
     }
 }
