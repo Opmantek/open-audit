@@ -306,7 +306,6 @@ $(document).ready(function () {
 /* Debug button */
 $(document).ready(function () {
     $('.debug').click(function (e) {
-        alert("firing");
-        $('.json_response').css('display', 'block');
+        $('#json_response').css('display', 'block');
     })
 });
