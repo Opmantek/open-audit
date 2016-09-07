@@ -66,10 +66,6 @@ class M_users extends MY_Model
                 $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
             }
         }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
-        }
         return($filter);
     }
 
@@ -81,31 +77,12 @@ class M_users extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM oa_user WHERE id = ?";
+        $sql = "SELECT oa_user.*, oa_org.name AS `org_name` FROM oa_user LEFT JOIN oa_org ON (oa_user.org_id = oa_org.id) WHERE oa_user.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'users');
         return ($result);
     }
-
-    // public function read_sub_resource($id = '')
-    // {
-    //     if ($id == '') {
-    //         $CI = & get_instance();
-    //         $id = intval($CI->response->meta->id);
-    //     } else {
-    //         $id = intval($id);
-    //     }
-    //     $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
-    //     $data = array($id);
-    //     $result = $this->run_sql($sql, $data);
-    //     if (count($result) == 0) {
-    //         return false;
-    //     } else {
-    //         $result = $this->format_data($result, 'devices');
-    //         return ($result);
-    //     }
-    // }
 
     public function collection()
     {
@@ -114,7 +91,7 @@ class M_users extends MY_Model
             $filter = $this->build_filter();
             $properties = $this->build_properties();
             if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
+                $sort = 'ORDER BY oa_user.id';
             } else {
                 $sort = 'ORDER BY ' . $CI->response->meta->sort;
             }
@@ -140,8 +117,16 @@ class M_users extends MY_Model
             $sort = '';
             $limit = '';
         }
+
+        if ($filter != '') {
+            $filter = substr($filter, 5);
+            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ') AND ' . $filter;
+        } else {
+            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ')';
+        }
+        
         # get the response data
-        $sql = "SELECT " . $properties . " FROM `oa_user` " . $filter . " " . $sort . " " . $limit;
+        $sql = "SELECT " . $properties . ", oa_org.name AS `org_name` FROM `oa_user` LEFT JOIN oa_org ON (oa_user.org_id = oa_org.id) " . $filter . " " . $sort . " " . $limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'users');
         return ($result);
@@ -149,11 +134,23 @@ class M_users extends MY_Model
 
     public function update()
     {
+        #sleep(3);
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name permissions ';
+        $fields = ' name permissions password org_id full_name email lang active roles orgs ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($key == 'password') {
+                    $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
+                    $hash = hash("sha256", $salt.$value); # prepend the salt, then hash
+                    $value = $salt.$hash;
+                }
+                if ($key == 'roles') {
+                    $value = json_encode($value);
+                }
+                if ($key == 'orgs') {
+                    $value = json_encode($value);
+                }
                 if ($sql == '') {
                     $sql = "SET `" . $key . "` = '" . $value . "'";
                 } else {
@@ -161,8 +158,9 @@ class M_users extends MY_Model
                 }
             }
         }
+        $sql .= ", `edited_by` = ?, `edited_date` = NOW()";
         $sql = "UPDATE `oa_user` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
+        $this->run_sql($sql, array((string)$this->user->full_name));
         return;
     }
 
@@ -175,14 +173,6 @@ class M_users extends MY_Model
             $id = intval($id);
         }
         if ($id != 0) {
-            // // do NOT allow deleting the default users
-            // $sql = "SELECT name FROM oa_user WHERE id = ?";
-            // $data = array($id);
-            // $result = $this->run_sql($sql, $data);
-            // if ($result[0]->name == 'admin' or $result[0]->name == 'org_admin' or $result[0]->name == 'reporter' or $result[0]->name == 'user') {
-            //     log_error('ERR-0013', 'm_roles::delete');
-            //     return false;
-            // }
             // attempt to delete the item
             $sql = "DELETE FROM `oa_user` WHERE id = ?";
             $data = array($id);
@@ -209,30 +199,36 @@ class M_users extends MY_Model
             log_error('ERR-0010', 'm_users::create');
             return false;
         }
-
-        // $permissions = new stdClass();
-        // if (empty($CI->response->meta->received_data->attributes->permissions)) {
-        //     $permissions = '';
-        // } else {
-        //     foreach ($CI->response->meta->received_data->attributes->permissions as $endpoint => $object) {
-        //         $permissions->{$endpoint} = '';
-        //         foreach ($object as $key => $value) {
-        //             $permissions->{$endpoint} .= $key;
-        //         }
-        //     }
-        //     $permissions = json_encode($permissions);
-        // }
-
-
-        if (empty($CI->user->name)) {
-            $user = '';
-        } else {
-            $user = $CI->user->name;
+        if (empty($CI->response->meta->received_data->attributes->password)) {
+            $CI->response->meta->received_data->attributes->password = "";
         }
-        $sql = "INSERT INTO `oa_user` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array("$name", $permissions, $ad_group, $user);
-        #$this->run_sql($sql, $data);
-        #return $this->db->insert_id();
+        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
+        $hash = hash("sha256", $salt.$CI->response->meta->received_data->attributes->password); # prepend the salt, then hash
+        $password = $salt.$hash;
+        $edited_by = $CI->user->full_name;
+        if (!isset($this->response->meta->received_data->attributes->roles)) {
+            $this->response->meta->received_data->attributes->roles = '';
+        }
+        $this->response->meta->received_data->attributes->roles = json_encode($this->response->meta->received_data->attributes->roles);
+        if (!isset($this->response->meta->received_data->attributes->orgs)) {
+            $this->response->meta->received_data->attributes->orgs = '';
+        }
+        for ($i=0; $i < count($this->response->meta->received_data->attributes->orgs); $i++) {
+            $this->response->meta->received_data->attributes->orgs[$i] = intval($this->response->meta->received_data->attributes->orgs[$i]);
+        }
+        $this->response->meta->received_data->attributes->orgs = json_encode($this->response->meta->received_data->attributes->orgs);
+        # TODO - finish the insert
+        // echo "<pre>\n";
+        // print_r($this->response);
+        // exit();
+        $sql = "INSERT INTO `oa_user` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $data = array((string)$name, (string)$password, (string)$this->response->meta->received_data->attributes->full_name,
+            (string)$this->response->meta->received_data->attributes->email, intval($this->response->meta->received_data->attributes->org_id),
+            (string)$this->response->meta->received_data->attributes->roles, (string)$this->response->meta->received_data->attributes->orgs,
+            (string)$this->response->meta->received_data->attributes->lang, (string)$this->response->meta->received_data->attributes->active,
+            (string)$this->user->full_name);
+        $this->run_sql($sql, $data);
+        return $this->db->insert_id();
     }
 
     public function get_orgs($user_id)

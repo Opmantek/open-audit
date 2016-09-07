@@ -63,6 +63,11 @@ if ($collection == 'scripts') {
         $this->response->included = array_merge($this->response->included, $this->m_files->collection());
 }
 
+if ($collection == 'users') {
+        $this->load->model('m_roles');
+        $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
+}
+
 unset($collection);
 
 if ($this->response->meta->format === 'json') {

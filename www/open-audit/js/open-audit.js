@@ -236,3 +236,77 @@ $(document).ready(function () {
         document.getElementById("data[attributes][geo]").value = document.getElementById("data[attributes][address]").value + ", " + document.getElementById("data[attributes][city]").value + ", " + document.getElementById("data[attributes][state]").value + ", " + document.getElementById("data[attributes][postcode]").value + ", " + document.getElementById("data[attributes][country]").value;
     });
 });
+
+/* Button Edit for JSON list items */
+/* Orgs on the users::update_form a good example */
+$(document).ready(function () {
+    $(document).on('click', '.edit_list', function (e) {
+        var action = $(this).attr("data-action");
+        var attribute = $(this).attr("data-attribute");
+        if (action === "edit") {
+            $(':checkbox[name='+attribute+']').attr("disabled", false);
+            $(this).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+            $(this).attr("data-action", "submit");
+            $(this).attr("class", "btn btn-success edit_list");
+            $(this).parent().append('<button type="button" class="btn btn-danger edit_list" data-attribute="'+attribute+'" data-action="cancel" id="cancel_'+attribute+'" name="cancel_'+attribute+'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+        }
+        if (action === "cancel") {
+            var item = document.getElementById('edit_'+attribute);
+            $(item).attr("data-action", "edit");
+            $(item).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+            $(item).attr("class", "btn btn-default edit_list");
+            $(':checkbox[name='+attribute+']').attr("disabled", true);
+            document.getElementById('cancel_'+attribute).remove();
+        }
+        if (action === "submit") {
+            var item = $(this);
+            $(this).html('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
+            var value =  $("input[name='orgs']:checked").map(function(){
+                return parseInt(this.value);
+            }).get()
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = id;
+            data["data"]["type"] = collection;
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"][attribute] = value;
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: id,
+                contentType: "application/json",
+                data: {data},
+                success: function (data) {
+                    /* alert( 'success' ); */
+                    item.attr("data-action", "edit");
+                    item.html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+                    item.attr("class", "btn btn-default edit_list");
+                    $(':checkbox[name='+attribute+']').attr("disabled", true);
+                    //alert('Failed to remove cancel_'+item.attr("data-attribute"));
+                    document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                },
+                error: function (data) {
+                    document.getElementById('cancel_'+attribute).remove();
+                    item.attr("data-action", "edit");
+                    item.html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+                    item.attr("class", "btn btn-default edit_list");
+                    document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    $(':checkbox[name='+attribute+']').attr("disabled", true);
+                    data = JSON.parse(data.responseText);
+                    alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+                }
+            });
+
+
+        }
+    });
+});
+
+
+/* Debug button */
+$(document).ready(function () {
+    $('.debug').click(function (e) {
+        alert("firing");
+        $('.json_response').css('display', 'block');
+    })
+});
