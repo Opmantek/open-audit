@@ -131,7 +131,9 @@ var modal_content_image = "";
     } ?>
     -->
     <?php
-    if (!empty($this->user->roles['admin'])) {
+    #if (!empty($this->user->roles['admin'])) {
+    if ($this->m_users->get_user_permission($this->user->id, 'database', 'u')) {
+
         ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('Admin'))?></a>
