@@ -90,13 +90,24 @@ if (!empty($this->session->flashdata('success'))) {
 include($include.'.php');
 ?>
 </div>
-<div id="json_response">
-    <!--
-    <?php unset($this->response->data); ?>
-    <?php unset($this->response->meta->user); ?>
-    <?php print_r(json_encode($this->response->meta, JSON_PRETTY_PRINT)); ?>
-    <?php echo "\n"; ?>
-    -->
+
+<?php
+unset($this->response->meta->user->password);
+unset($this->response->data);
+?>
+
+<div id="json_response" style="display:none;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="text-left">Debug</span>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <h3>Request Object (without data)</h3>
+            <pre><?php print_r(json_encode($this->response->meta, JSON_PRETTY_PRINT)); ?></pre>
+        </div>
+    </div>
 </div>
 
 </body>

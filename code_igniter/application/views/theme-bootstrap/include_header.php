@@ -42,11 +42,12 @@
 
 
     <div class="col-md-1" style="text-align:center;">
-        <a href="<?php echo current_url(); ?>?<?php echo $this->response->meta->query_string; ?>&format=json&debug=true&limit=100">Debug</a>
+        <!-- <a href="<?php echo current_url(); ?>?<?php echo $this->response->meta->query_string; ?>&format=json&debug=true&limit=100">Debug</a> -->
+        <button class="btn btn-default debug">Debug</button>
     </div>
 
     <div class="col-md-1" style="text-align:center;">
-        <a href="<?php echo $this->config->config['oa_web_index']; ?>/main/edit_user"><?php echo htmlentities($this->user->name); ?></a><br />
+        <a href="<?php echo $this->config->config['oa_web_index']; ?>/main/edit_user"><?php echo htmlentities($this->user->full_name); ?></a><br />
         <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index']; ?>/login/logout" role="button">Logout</a>
     </div>
 </div>
@@ -246,9 +247,9 @@
                     <li class="dropdown-submenu">
                         <a href="#">Users</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_user/list_users'>List Users</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users'>List Users</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'users', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_user/add_user'>Create User</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users/create'>Create User</a></li>
                             <?php } ?>
                         </ul>
                     </li>
