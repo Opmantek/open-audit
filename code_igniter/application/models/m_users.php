@@ -217,10 +217,6 @@ class M_users extends MY_Model
             $this->response->meta->received_data->attributes->orgs[$i] = intval($this->response->meta->received_data->attributes->orgs[$i]);
         }
         $this->response->meta->received_data->attributes->orgs = json_encode($this->response->meta->received_data->attributes->orgs);
-        # TODO - finish the insert
-        // echo "<pre>\n";
-        // print_r($this->response);
-        // exit();
         $sql = "INSERT INTO `oa_user` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $data = array((string)$name, (string)$password, (string)$this->response->meta->received_data->attributes->full_name,
             (string)$this->response->meta->received_data->attributes->email, intval($this->response->meta->received_data->attributes->org_id),
