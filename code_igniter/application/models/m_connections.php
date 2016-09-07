@@ -170,7 +170,7 @@ class M_connections extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = 'org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b';
+        $fields = ' org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
@@ -181,7 +181,7 @@ class M_connections extends MY_Model
             }
         }
         $sql = "UPDATE `oa_connection` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
+        $this->run_sql($sql);
         return;
     }
 
