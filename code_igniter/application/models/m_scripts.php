@@ -97,8 +97,12 @@ class M_scripts extends MY_Model
             log_error('ERR-0010', 'm_scripts::create');
             return false;
         }
-        $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array(  $CI->response->meta->received_data->name,
+        if (empty($CI->response->meta->received_data->org_id)) {
+            $CI->response->meta->received_data->org_id = 0;
+        }
+        $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $data = array(  $CI->response->meta->received_data->org_id,
+                        $CI->response->meta->received_data->name,
                         json_encode($CI->response->meta->received_data->options),
                         $CI->response->meta->received_data->description,
                         $CI->response->meta->received_data->based_on,

@@ -124,9 +124,9 @@ class M_oa_user extends MY_Model
         $hash = hash("sha256", $salt.$user->password); # prepend the salt, then hash
         # store the salt and hash in the same string, so only 1 DB column is needed
         $encrypted_password = $salt.$hash;
-        $sql = "INSERT INTO oa_user (name, full_name, email, password, theme, lang, admin, sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO oa_user (org_id, name, full_name, email, password, theme, lang, admin, sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", );
+        $data = array("0", "$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", );
         $query = $this->db->query($sql, $data);
         $id = $this->db->insert_id();
         // TODO - fix this for v2

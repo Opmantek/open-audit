@@ -82,7 +82,7 @@ class M_networks extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) WHERE networks.id = 1 AND networks.org_id IN (" . $CI->user->org_list . ")";
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) WHERE networks.id = ? AND networks.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
@@ -121,11 +121,15 @@ class M_networks extends MY_Model
         $CI = & get_instance();
         # ensure we have a valid subnet
         $this->load->helper('network');
+
         if (!empty($CI->response->meta->received_data->attributes->name)) {
             $test = network_details($CI->response->meta->received_data->attributes->name);
         } else {
             log_error('ERR-0009', 'm_networks::create_network');
             return false;
+        }
+        if (empty($CI->response->meta->received_data->attributes->org_id)) {
+            $CI->response->meta->received_data->attributes->org_id = 0;
         }
         # check to see if we already have a network with the same name
         $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
@@ -134,10 +138,10 @@ class M_networks extends MY_Model
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
             log_error('ERR-0010', 'm_networks::create_network');
-            return false;
+            return false;   
         }
-        $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";
-        $data = array("$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
+        $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, ?, NOW())";
+        $data = array($CI->response->meta->received_data->attributes->org_id, "$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
