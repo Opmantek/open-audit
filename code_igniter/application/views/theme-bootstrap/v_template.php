@@ -89,7 +89,7 @@ if (!empty($this->session->flashdata('success'))) {
 }
 include($include.'.php');
 ?>
-</div>
+
 
 <?php
 unset($this->response->meta->user->password);
@@ -110,6 +110,7 @@ unset($this->response->data);
     </div>
 </div>
 
+</div>
 </body>
 </html>
 <?php exit(); ?>
