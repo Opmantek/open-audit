@@ -51,35 +51,42 @@ $permissions = array('c', 'r', 'u', 'd');
                     <div class="form-group">
                         <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][ad_group]" class="col-sm-3 control-label">AD Broup</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][ad_group]" name="data[attributes][ad_group]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][ad_group]" name="data[attributes][ad_group]">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" disabled>
                         </div>
                     </div>
                 </div>
@@ -106,7 +113,7 @@ $permissions = array('c', 'r', 'u', 'd');
             </h3>
         </div>
         <div class="panel-body">
-            <table class="table table-condensed table-hover">
+            <table class="table table-condensed table-hover table-striped">
                 <thead>
                     <tr>
                         <th>Endpoint</th>

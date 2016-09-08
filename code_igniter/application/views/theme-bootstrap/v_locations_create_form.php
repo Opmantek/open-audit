@@ -149,46 +149,42 @@
                     foreach ($attributes as $attribute) {
                     ?>
                     <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucfirst($attribute); ?></label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" placeholder="" value="">
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12 input-group">
+                                <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" placeholder="" value="">
+                            </div>
                         </div>
+                        <?php if ($attribute == 'geo') { ?>
+                            <button type="button" id="locations_geocode_c" name="locations_geocode_c" class="locations_geocode_c btn btn-primary">Create</button>
+                        <?php } ?>
+                        <?php if ($attribute == 'latitude') { ?>
+                            <button type="button" id="locations_latlong_c" name="locations_latlong_c" class="locations_latlong_c btn btn-primary">Get Lat/Long</button>
+                        <?php } ?>
                     </div>
                     <?php } ?>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>
+                        <label for="data[attributes][edited_by]" class="col-sm-2 control-label">Edited By</label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12 input-group">
+                                <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>
+                            </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="" value="" disabled>
+                        <label for="data[attributes][edited_date]" class="col-sm-2 control-label">Edited Date</label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12 input-group">
+                                <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="" value="" disabled>
+                            </div>
                         </div>
                     </div>
 
                 </div>
             </div>
             <div class="row">
-                <div class="form-group">
-                    <label for="locations_latlong" class="col-sm-2 control-label">Get Latitude and Longitude</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <button type="button" id="locations_latlong" name="locations_latlong" class="locations_latlong_c btn btn-primary">Get</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="locations_geocode" class="col-sm-2 control-label">Create GeoCode</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <button type="button" id="locations_geocode" name="locations_geocode" class="locations_geocode_c btn btn-primary">Create</button>
-                        </div>
-                    </div>
-                </div>
                 <div class="form-group">
                     <label for="submit" class="col-sm-2 control-label"></label>
                     <div class="col-sm-4">

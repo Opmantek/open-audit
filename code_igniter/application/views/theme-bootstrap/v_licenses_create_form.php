@@ -81,6 +81,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][match_string]" class="col-sm-3 control-label">Match String</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][match_string]" name="data[attributes][match_string]">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][type]" name="data[attributes][type]">
