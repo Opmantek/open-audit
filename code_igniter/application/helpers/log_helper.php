@@ -52,7 +52,7 @@ if (! function_exists('log_error')) {
         $error->code = $error_code;
         $error->model = $model;
         if (function_exists('getError')) {
-            $error = getError($error->code);
+            $error = getError($error->code, $model);
             $error->message = $error->title;
         }
 
