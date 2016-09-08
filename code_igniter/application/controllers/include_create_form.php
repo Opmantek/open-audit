@@ -40,6 +40,7 @@ if ($collection == 'credentials' or
     $collection == 'licenses' or
     $collection == 'locations' or
     $collection == 'networks' or
+    $collection == 'nmis' or
     $collection == 'orgs' or
     $collection == 'queries' or
     $collection == 'scripts' or
@@ -48,7 +49,8 @@ if ($collection == 'credentials' or
     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
-if ($collection == 'connections') {
+if ($collection == 'connections' or
+    $collection == 'nmis') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
 }

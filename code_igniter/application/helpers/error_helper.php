@@ -48,7 +48,7 @@ if (! function_exists('getError')) {
      *
      * @return NULL [logs the provided string to the log file]
      */
-    function getError ($error_id = '') {
+    function getError ($error_id = '', $extra = '') {
 
         $error = new stdClass();
         $CI = & get_instance();
@@ -58,7 +58,11 @@ if (! function_exists('getError')) {
 
         $error_array = array();
         $CI = & get_instance();
-        $extra = ' (User:' . $CI->user->id . ', Collection:' . $CI->response->meta->collection . ', Action:' . $CI->response->meta->action;
+        if (empty($extra)) {
+            $extra = ' (User:' . $CI->user->id . ', Collection:' . $CI->response->meta->collection . ', Action:' . $CI->response->meta->action;
+        } else {
+            $extra = ' (' . $extra;
+        }
         if (!empty($CI->response->meta->id)) {
             $extra .= ', ID:' . $CI->response->meta->id;
         }
@@ -168,6 +172,20 @@ if (! function_exists('getError')) {
         $error_array['ERR-0015']->severity = 3;
         $error_array['ERR-0015']->title = "User not authorised" . $extra;
         $error_array['ERR-0015']->detail = 'User attempted to perform an operation for which they are not authorised' . $extra;
+
+        $error_array['ERR-0016'] = new stdClass();
+        $error_array['ERR-0016']->code = 'ERR-0016';
+        $error_array['ERR-0016']->status = 'HTTP/1.1 404 Not Found';
+        $error_array['ERR-0016']->severity = 3;
+        $error_array['ERR-0016']->title = "File does not exist" . $extra;
+        $error_array['ERR-0016']->detail = 'A user attempted to access an file which does not exist, could not be read or is incorrectly formatted.';
+
+        $error_array['ERR-0017'] = new stdClass();
+        $error_array['ERR-0017']->code = 'ERR-0017';
+        $error_array['ERR-0017']->status = 'HTTP/1.1 404 Not Found';
+        $error_array['ERR-0017']->severity = 3;
+        $error_array['ERR-0017']->title = "File not writable" . $extra;
+        $error_array['ERR-0017']->detail = 'A user attempted to write to an file which does not have write permissions set.';
 
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
