@@ -135,7 +135,6 @@ class orgs extends MY_Controller
     */
     private function create_form()
     {
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         include 'include_create_form.php';
     }
 
@@ -147,7 +146,6 @@ class orgs extends MY_Controller
     */
     private function update_form()
     {
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         include 'include_update_form.php';
     }
 }
