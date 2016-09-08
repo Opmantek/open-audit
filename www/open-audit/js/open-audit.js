@@ -177,8 +177,10 @@ $(document).ready(function () {
     });
 });
 
+/* Get Lat/Long from Google Maps API on update locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_latlong', function (e) {
+        alert("fired");
         var address = "";
         if ($('#geo').val() > "") {
             address = $('#geo').val();
@@ -201,6 +203,7 @@ $(document).ready(function () {
     });
 });
 
+/* Make Geo on update locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_geocode', function (e) {
         var address = $('#address').val() + ", " + $('#city').val() + ", " + $('#state').val() + ", " + $('#postcode').val() + ", " + $('#country').val();
@@ -211,6 +214,7 @@ $(document).ready(function () {
     });
 });
 
+/* Get Lat/Long from Google Maps API on create locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_latlong_c', function (e) {
         var address = "";
@@ -230,12 +234,13 @@ $(document).ready(function () {
         }
     });
 });
-
+/* Make Geo on create locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_geocode_c', function (e) {
         document.getElementById("data[attributes][geo]").value = document.getElementById("data[attributes][address]").value + ", " + document.getElementById("data[attributes][city]").value + ", " + document.getElementById("data[attributes][state]").value + ", " + document.getElementById("data[attributes][postcode]").value + ", " + document.getElementById("data[attributes][country]").value;
     });
 });
+
 
 /* Button Edit for JSON list items */
 /* Orgs on the users::update_form a good example */
