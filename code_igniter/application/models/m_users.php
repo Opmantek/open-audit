@@ -286,6 +286,7 @@ class M_users extends MY_Model
             $data = array($user_id);
             $result = $this->run_sql($sql, $data);
             $user_roles = json_decode($result[0]->roles);
+            $CI->load->model('m_roles');
             $roles = $CI->m_roles->collection();
         }
         if (empty($user_roles)) {
