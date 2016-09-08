@@ -684,7 +684,7 @@ class admin extends MY_Controller
                 $sr = ldap_search($ad, $dn, $filter, $justthese);
                 $info = ldap_get_entries($ad, $sr);
                 for ($i = 0; $i < count($info)-1; $i++) {
-                    if ( $info[$i]['name'][0] != 'Subnets') {
+                    if ($info[$i]['name'][0] != 'Subnets') {
                         //echo "Subnet: " . $info[$i]['name'][0] . "\n";
                         $this->m_oa_config->update_blessed($info[$i]['name'][0]);
                     }
@@ -4776,7 +4776,7 @@ class admin extends MY_Controller
             foreach ($result as $row) {
                 $temp_long = ip2long($row->netmask);
                 $temp_base = ip2long('255.255.255.255');
-                $temp_cidr = 32-log(($temp_long ^ $temp_base)+1,2);
+                $temp_cidr = 32-log(($temp_long ^ $temp_base)+1, 2);
                 $network_details = network_details($row->ip.'/'.$temp_cidr);
                 if (isset($network_details) and isset($network_details->network) and $network_details->network != '') {
                     $temp_network = $network_details->network.' / '.$temp_cidr;
@@ -5514,7 +5514,7 @@ class admin extends MY_Controller
             $sql = array();
 
             $fields = $this->db->list_fields('system');
-            $fields = implode($fields,"','");
+            $fields = implode($fields, "','");
             $fields = "'" . $fields . "'";
             $sql[] = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
             unset($fields);
@@ -5553,6 +5553,7 @@ class admin extends MY_Controller
             $sql[] = "CREATE TABLE `roles` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `name` varchar(100) NOT NULL DEFAULT '',
+              `description` text NOT NULL,
               `permissions` text NOT NULL DEFAULT '',
               `ad_group` varchar(100) NOT NULL DEFAULT '',
               `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -5560,13 +5561,13 @@ class admin extends MY_Controller
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboard\":\"r\",\"devices\":\"crud\",\"discovery\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboard\":\"r\",\"devices\":\"crud\",\"discovery\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_reporter', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the \"user\" role.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_reporter', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
 
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";
@@ -5582,6 +5583,9 @@ class admin extends MY_Controller
             if (!$this->db->field_exists('edited_date', 'additional_field')) {
                 $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
             }
+            if (!$this->db->field_exists('group_id', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` DROP `group_id`";
+            }
 
             # invoice
             if (!$this->db->field_exists('edited_by', 'invoice')) {
@@ -5592,15 +5596,15 @@ class admin extends MY_Controller
             }
 
             # licenses
-            if (!$this->db->table_exists('licenses')){
-                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            if (!$this->db->table_exists('licenses')) {
+                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`match_string` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
                 
             }
-            if ($this->db->table_exists('oa_asset_select')){
+            if ($this->db->table_exists('oa_asset_select')) {
                 if ($this->db->count_all('oa_asset_select') > 0) {
                     if ($this->db->count_all('licenses') == 0) {
-                        $sql[] = "INSERT INTO licenses VALUES (SELECT NULL AS `id`, 0 AS `org_id`, 0 AS `invoice_id`, 0 AS `invoice_item_id`, `select_name` AS `name`, '' AS `description`, 'software' AS `type`, 'system' AS `edited_by`, NOW() AS `edited_on` FROM oa_asset_select)";
+                        $sql[] = "INSERT INTO licenses (SELECT NULL AS `id`, 0 AS `org_id`, 0 AS `invoice_id`, 0 AS `invoice_item_id`, `select_name` AS `name`, '' AS `description`, `select_name` AS `match_string`, 'software' AS `type`, 'system' AS `edited_by`, NOW() AS `edited_on` FROM oa_asset_select)";
                     }
                 }
             }

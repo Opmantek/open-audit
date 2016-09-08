@@ -25,7 +25,6 @@ DROP TABLE IF EXISTS `additional_field`;
 CREATE TABLE `additional_field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `group_id` int(10) unsigned NOT NULL,
   `name` varchar(100) NOT NULL DEFAULT '',
   `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
   `values` varchar(100) NOT NULL DEFAULT '',
@@ -677,6 +676,7 @@ CREATE TABLE `licenses` (
   `invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
+  `match_string` text NOT NULL,
   `type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1766,6 +1766,7 @@ DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
   `permissions` text NOT NULL DEFAULT '',
   `ad_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
