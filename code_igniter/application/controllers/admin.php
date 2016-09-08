@@ -5568,6 +5568,10 @@ class admin extends MY_Controller
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'user', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
 
+            # discoveries
+            $sql[] = "DROP TABLE IF EXISTS discoveries";
+            $sql[] = "CREATE TABLE `discoveries` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `name` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `credentials` text NOT NULL, `device_count` int(10) unsigned NOT NULL DEFAULT '0', `system_id` int(10) unsigned NOT NULL DEFAULT '0', `created_by` varchar(200) NOT NULL DEFAULT '', `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `updated_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `complete` enum('y','n') NOT NULL DEFAULT 'y', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
             # additional field
             if (!$this->db->field_exists('org_id', 'additional_field')) {
                 $sql[] = "ALTER TABLE `additional_field` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
