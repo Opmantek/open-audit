@@ -5548,7 +5548,7 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
 
-            $sql[] = "DROP TABLE oa_user_org";
+            $sql[] = "DROP TABLE IF EXISTS oa_user_org";
             $sql[] = "DROP TABLE IF EXISTS roles";
             $sql[] = "CREATE TABLE `roles` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -5570,7 +5570,7 @@ class admin extends MY_Controller
 
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";
-            $sql[] = "CREATE TABLE `discoveries` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `name` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `credentials` text NOT NULL, `device_count` int(10) unsigned NOT NULL DEFAULT '0', `system_id` int(10) unsigned NOT NULL DEFAULT '0', `created_by` varchar(200) NOT NULL DEFAULT '', `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `updated_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `complete` enum('y','n') NOT NULL DEFAULT 'y', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            $sql[] = "CREATE TABLE `discoveries` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `name` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `credentials` text NOT NULL, `device_count` int(10) unsigned NOT NULL DEFAULT '0', `system_id` int(10) unsigned NOT NULL DEFAULT '0', `created_by` varchar(200) NOT NULL DEFAULT '', `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `updated_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `complete` enum('y','n') NOT NULL DEFAULT 'y', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             # additional field
             if (!$this->db->field_exists('org_id', 'additional_field')) {
@@ -5589,6 +5589,20 @@ class admin extends MY_Controller
             }
             if (!$this->db->field_exists('edited_date', 'invoice')) {
                 $sql[] = "ALTER TABLE `invoice` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
+
+            # licenses
+            if (!$this->db->table_exists('licenses')){
+                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+                
+            }
+            if ($this->db->table_exists('oa_asset_select')){
+                if ($this->db->count_all('oa_asset_select') > 0) {
+                    if ($this->db->count_all('licenses') == 0) {
+                        $sql[] = "INSERT INTO licenses VALUES (SELECT NULL AS `id`, 0 AS `org_id`, 0 AS `invoice_id`, 0 AS `invoice_item_id`, `select_name` AS `name`, '' AS `description`, 'software' AS `type`, 'system' AS `edited_by`, NOW() AS `edited_on` FROM oa_asset_select)";
+                    }
+                }
             }
 
             # networks

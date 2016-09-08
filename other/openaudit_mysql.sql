@@ -663,6 +663,37 @@ LOCK TABLES `ip` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `licenses`
+--
+
+DROP TABLE IF EXISTS `licenses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `licenses` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `invoice_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `licenses`
+--
+
+LOCK TABLES `licenses` WRITE;
+/*!40000 ALTER TABLE `licenses` DISABLE KEYS */;
+/*!40000 ALTER TABLE `licenses` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `log`
 --
 
