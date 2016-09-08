@@ -30,6 +30,8 @@ CREATE TABLE `additional_field` (
   `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
   `values` varchar(100) NOT NULL DEFAULT '',
   `placement` varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -547,6 +549,8 @@ CREATE TABLE `invoice` (
   `date_paid` varchar(100) NOT NULL DEFAULT '',
   `supplier` varchar(100) NOT NULL DEFAULT '',
   `filename` varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1133,6 +1137,8 @@ CREATE TABLE `oa_connection` (
   `ip_address_external_b` varchar(30) NOT NULL,
   `ip_address_internal_a` varchar(30) NOT NULL,
   `ip_address_internal_b` varchar(30) NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1302,7 +1308,8 @@ CREATE TABLE `oa_location` (
   `geo` varchar(200) NOT NULL DEFAULT '',
   `comments` varchar(100) NOT NULL DEFAULT '',
   `icon` varchar(100) NOT NULL DEFAULT '',
-  `group_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1328,8 +1335,9 @@ CREATE TABLE `oa_org` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `parent_id` int(10) unsigned DEFAULT '0',
-  `group_id` int(10) unsigned DEFAULT '0',
   `comments` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1363,6 +1371,8 @@ CREATE TABLE `oa_report` (
   `report_view_contents` text NOT NULL,
   `report_processing` text NOT NULL,
   `report_sort_column` int(10) unsigned NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`report_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

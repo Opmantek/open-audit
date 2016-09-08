@@ -5548,6 +5548,7 @@ class admin extends MY_Controller
             unset($sql);
             $sql = array();
 
+            $sql[] = "DROP TABLE oa_user_org";
             $sql[] = "DROP TABLE IF EXISTS roles";
             $sql[] = "CREATE TABLE `roles` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -5567,26 +5568,118 @@ class admin extends MY_Controller
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'user', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboard\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
 
-            $sql[] = "ALTER TABLE `additional_field` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
-            $sql[] = "ALTER TABLE `oa_group` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `group_id`";
-            $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
-            $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
-            $sql[] = "ALTER TABLE `oa_report` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `report_id`";
-            $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
-            $sql[] = "ALTER TABLE `oa_user` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            # additional field
+            if (!$this->db->field_exists('org_id', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            }
+            if (!$this->db->field_exists('edited_by', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `placement`";
+            }
+            if (!$this->db->field_exists('edited_date', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
 
-            $sql[] = "DROP TABLE oa_user_org";
-            $sql[] = "ALTER TABLE oa_user DROP permissions";
-            $sql[] = "ALTER TABLE oa_user DROP sam";
-            $sql[] = "ALTER TABLE oa_user DROP admin";
-            $sql[] = "ALTER TABLE oa_user DROP display_count";
-            $sql[] = "ALTER TABLE oa_user DROP theme";
-            $sql[] = "ALTER TABLE oa_user ADD roles text NOT NULL default '' AFTER email";
-            $sql[] = "ALTER TABLE oa_user ADD orgs text NOT NULL default '' AFTER roles";
-            $sql[] = "ALTER TABLE oa_user ADD org_id int(10) unsigned NOT NULL DEFAULT '0' AFTER email";
-            $sql[] = "ALTER TABLE oa_user ADD `edited_by` varchar(200) NOT NULL DEFAULT '' after active";
-            $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            # invoice
+            if (!$this->db->field_exists('edited_by', 'invoice')) {
+                $sql[] = "ALTER TABLE `invoice` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `filename`";
+            }
+            if (!$this->db->field_exists('edited_date', 'invoice')) {
+                $sql[] = "ALTER TABLE `invoice` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
 
+            # networks
+            if (!$this->db->field_exists('org_id', 'networks')) {
+                $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            }
+
+            # oa_connection
+            if (!$this->db->field_exists('edited_by', 'oa_connection')) {
+                $sql[] = "ALTER TABLE `oa_connection` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_b`";
+            }
+            if (!$this->db->field_exists('edited_date', 'oa_connection')) {
+                $sql[] = "ALTER TABLE `oa_connection` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
+
+            # oa_group
+            if (!$this->db->field_exists('org_id', 'oa_group')) {
+                $sql[] = "ALTER TABLE `oa_group` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `group_id`";
+            }
+
+            # oa_location
+            if (!$this->db->field_exists('org_id', 'oa_location')) {
+                $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            }
+            if (!$this->db->field_exists('edited_by', 'oa_location')) {
+                $sql[] = "ALTER TABLE `oa_location` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `icon`";
+            }
+            if (!$this->db->field_exists('edited_date', 'oa_location')) {
+                $sql[] = "ALTER TABLE `oa_location` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
+            if ($this->db->field_exists('group_id', 'oa_location')) {
+                $sql[] = "ALTER TABLE `oa_location` DROP `group_id`";
+            }
+
+            # oa_org
+            if (!$this->db->field_exists('edited_by', 'oa_org')) {
+                $sql[] = "ALTER TABLE `oa_org` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `comments`";
+            }
+            if (!$this->db->field_exists('edited_date', 'oa_org')) {
+                $sql[] = "ALTER TABLE `oa_org` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
+            if ($this->db->field_exists('group_id', 'oa_org')) {
+                $sql[] = "ALTER TABLE `oa_org` DROP `group_id`";
+            }
+
+            # oa_report
+            if (!$this->db->field_exists('org_id', 'oa_report')) {
+                $sql[] = "ALTER TABLE `oa_report` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `report_id`";
+            }
+            if (!$this->db->field_exists('edited_by', 'oa_report')) {
+                $sql[] = "ALTER TABLE `oa_report` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `report_sort_column`";
+            }
+            if (!$this->db->field_exists('edited_date', 'oa_report')) {
+                $sql[] = "ALTER TABLE `oa_report` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
+
+            # oa_user
+            if (!$this->db->field_exists('org_id', 'oa_user')) {
+                $sql[] = "ALTER TABLE `oa_user` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            }
+            if ($this->db->field_exists('permissions', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user DROP permissions";
+            }
+            if ($this->db->field_exists('sam', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user DROP sam";
+            }
+            if ($this->db->field_exists('admin', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user DROP admin";
+            }
+            if ($this->db->field_exists('display_count', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user DROP display_count";
+            }
+            if ($this->db->field_exists('theme', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user DROP theme";
+            }
+            if (!$this->db->field_exists('roles', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user ADD roles text NOT NULL default '' AFTER email";
+            }
+            if (!$this->db->field_exists('orgs', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user ADD orgs text NOT NULL default '' AFTER roles";
+            }
+            if (!$this->db->field_exists('org_id', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user ADD org_id int(10) unsigned NOT NULL DEFAULT '0' AFTER email";
+            }
+            if (!$this->db->field_exists('edited_by', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user ADD `edited_by` varchar(200) NOT NULL DEFAULT '' after active";
+            }
+            if (!$this->db->field_exists('edited_date', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            }
+
+            # scripts
+            if (!$this->db->field_exists('org_id', 'scripts')) {
+                $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+            }
 
             $sql[] = "UPDATE oa_config SET config_value = '20160904' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.10' WHERE config_name = 'display_version'";
