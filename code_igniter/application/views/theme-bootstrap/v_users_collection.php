@@ -67,7 +67,7 @@
                         <td><?php echo htmlentities($item->attributes->email)?></td>
                         <td><?php echo htmlentities($roles)?></td>
                         <td style='text-align:center;'><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

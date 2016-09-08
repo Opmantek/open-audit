@@ -1,10 +1,10 @@
     <div class="panel panel-default pull-right">
       <div class="panel-body">
         <div class="btn-group" role="group" aria-label="...">
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a></button>
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a></button>
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a></button>
-          <button type="button" class="btn btn-default"><a href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a></button>
+          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a>
+          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a>
+          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a>
+          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a>
         </div>
       </div>
     </div>

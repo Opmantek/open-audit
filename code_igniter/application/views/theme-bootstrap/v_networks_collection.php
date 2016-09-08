@@ -66,9 +66,9 @@
                     <td><?php echo htmlentities($item->attributes->description)?></td>
                     <td><?php echo htmlentities($item->attributes->edited_by)?></td>
                     <td><?php echo htmlentities($item->attributes->edited_date)?></td>
-                    <td style='text-align:center;'><a href="devices?ip.network=<?php echo $item->attributes->name; ?>"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlentities($item->attributes->device_count)?></button></a></td>
-                    <td style='text-align:center;'><a class="btn btn-sm btn-info" href="networks/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <td style='text-align:center;'><a role="button" class="btn btn-sm btn-primary" href="devices?ip.network=<?php echo $item->attributes->name; ?>"><?php echo htmlentities($item->attributes->device_count)?></a></td>
+                    <td style='text-align:center;'><a role="button" class="btn btn-sm btn-info" href="networks/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <td style='text-align:center;'><a role="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

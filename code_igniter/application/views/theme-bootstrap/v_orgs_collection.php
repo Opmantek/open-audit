@@ -65,10 +65,10 @@
                             <td><?php echo htmlentities($item->attributes->name)?></td>
                             <td><?php echo htmlentities($item->attributes->comments)?></td>
                             <td><?php echo htmlentities($item->attributes->parent_name)?></td>
-                            <td class="text-center"><a href="devices?org_id=<?php echo intval($item->id); ?>"><button type="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlentities($item->attributes->device_count)?></button></a></td>
-                            <td class="text-center"><a href="<?php echo htmlentities($item->links->self); ?>/update"><button type="button" class="btn btn-sm btn-info" aria-label="Left Align"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></a></td>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->device_count)?></a></td>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="<?php echo htmlentities($item->links->self); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                             <?php if ($item->attributes->id != 0) { ?>
-                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                             <?php } else { ?>
                                 <td></td>
                             <?php } ?>

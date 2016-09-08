@@ -177,7 +177,8 @@ if (!empty($this->response->data)) { ?>
 
                 } elseif ($property == 'id' or $property == 'system.id') {
                     #echo "            <td><a href='" . $item->links->self . "'>" . $item->attributes->$property . "</a></td>\n";
-                    echo "<td><a href=" . htmlentities($item->links->self) . "><button type=\"button\" class=\"btn btn-sm btn-success\" aria-label=\"Left Align\">" . htmlentities($item->id) . "</button></a></td>";
+                    #echo "<td><a href=" . htmlentities($item->links->self) . "><button type=\"button\" class=\"btn btn-sm btn-success\" aria-label=\"Left Align\">" . htmlentities($item->id) . "</button></a></td>";
+                    echo '<td><a href="' . htmlentities($item->links->self) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
 
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
                     echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
@@ -208,5 +209,4 @@ if (!empty($this->response->data)) { ?>
 }
     ?>
   </div>
-</div>
 </div>
