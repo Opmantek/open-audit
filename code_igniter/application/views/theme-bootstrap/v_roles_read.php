@@ -33,7 +33,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $item = $this->response->data[0];
-$endpoints = array('charts','configuration','connections','credentials','database','devices','discovery','fields','files','graphs','groups','invoices','licenses','locations','logs','networks','nmis','orgs','queries','roles','scripts','sessions','users');
+$endpoints = array('charts','configuration','connections','credentials','database','devices','discoveries','fields','files','graphs','groups','invoices','licenses','locations','logs','networks','nmis','orgs','queries','roles','scripts','sessions','users');
 $permissions = array('c', 'r', 'u', 'd');
 $item_permissions = json_decode($item->attributes->permissions);
 ?>

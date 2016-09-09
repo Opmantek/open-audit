@@ -32,7 +32,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-$endpoints = array('charts','configuration','connections','credentials','database','devices','discovery','fields','files','graphs','groups','invoices','licenses','locations','logs','networks','nmis','orgs','queries','roles','scripts','sessions','users');
+$endpoints = array('charts','configuration','connections','credentials','database','devices','discoveries','fields','files','graphs','groups','invoices','licenses','locations','logs','networks','nmis','orgs','queries','roles','scripts','sessions','users');
 $permissions = array('c', 'r', 'u', 'd');
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
