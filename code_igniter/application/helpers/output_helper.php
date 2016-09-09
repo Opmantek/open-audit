@@ -147,7 +147,16 @@ if (! function_exists('output')) {
             $CI->response->meta->user = $CI->user;
         } else {
             unset($CI->response->meta->internal);
+            unset($CI->response->meta->sql);
         }
+        // foreach ($CI->response->meta as $key => $value) {
+        //     if ($value == '') {
+        //         unset($CI->response->meta->$key);
+        //     }
+        //     if (count($key) == 0) {
+        //         unset($CI->response->meta->$key);
+        //     }
+        // }
         echo json_encode($CI->response);
     }
 
@@ -183,7 +192,6 @@ if (! function_exists('output')) {
         // if (!$CI->response->meta->debug) {
         //     unset($CI->response->meta->internal);
         // }
-
         $CI->load->view('v_template', $CI->response);
     }
 

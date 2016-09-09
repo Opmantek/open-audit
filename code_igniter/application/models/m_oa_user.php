@@ -219,7 +219,7 @@ class M_oa_user extends MY_Model
                     $CI->user->full_name = $CI->user->user_full_name;
                     #$CI->user->sam = $CI->user->user_sam;
                 }
-$CI->user->debug = 'n';
+$CI->user->debug = 'y';
                 // if ($CI->user->admin == 'y') {
                 //     $CI->user->debug = $temp_debug;
                 // } else {

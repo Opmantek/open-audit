@@ -111,6 +111,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->filter = array();
         $CI->response->meta->internal = new stdClass();
         $CI->response->meta->received_data = array();
+        $CI->response->meta->sql = array();
         $CI->response->links = array();
         $CI->response->included = array();
 
@@ -176,8 +177,10 @@ if (! function_exists('inputRead')) {
         }
         if (strtolower($CI->response->meta->debug) == 'true') {
             $CI->response->meta->debug = true;
+            $CI->output->enable_profiler(true);
         } else {
             $CI->response->meta->debug = false;
+            $CI->output->enable_profiler(false);
         }
 
         # get the id of the collection item in question

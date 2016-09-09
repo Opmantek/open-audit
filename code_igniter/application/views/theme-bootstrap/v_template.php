@@ -79,7 +79,7 @@ if (!empty($this->response->meta->baseurl)) {
 include "include_header.php";
 if (!empty($this->response->errors)) {
     echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
-    unset($this->response->errors);
+    #unset($this->response->errors);
 }
 if (!empty($this->session->flashdata('error'))) {
     echo '<div class="alert alert-danger" role="alert">' . $this->session->flashdata('error') . "</div>\n";
@@ -94,6 +94,7 @@ include($include.'.php');
 <?php
 unset($this->response->meta->user->password);
 unset($this->response->data);
+unset($this->response->meta->sql);
 ?>
 
 <div id="json_response" style="display:none;">
@@ -104,8 +105,24 @@ unset($this->response->data);
             </h3>
         </div>
         <div class="panel-body">
-            <h3>Request Object (without data)</h3>
+            <?php if (!empty($this->response->errors)) { ?>
+                <h3>Error</h3>
+                <pre><?php print_r(json_encode($this->response->errors, JSON_PRETTY_PRINT)); ?></pre>
+            <?php } ?>
+            <h3>User</h3>
+            <pre><?php print_r(json_encode($this->response->meta->user, JSON_PRETTY_PRINT)); ?></pre>
+            <?php unset($this->response->meta->user); ?>
+            <h3>Meta</h3>
             <pre><?php print_r(json_encode($this->response->meta, JSON_PRETTY_PRINT)); ?></pre>
+            <h3>SQL Queries</h3>
+            <pre><?php
+                $CI =& get_instance();
+                $times = $CI->db->query_times;
+                foreach ($CI->db->queries as $key=>$query) {
+                    echo "Query: " . str_replace("\n", " ", $query) . "\n";
+                    echo "Time: " . $times[$key] . "\n\n";
+                }
+            ?>
         </div>
     </div>
 </div>

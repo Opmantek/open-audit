@@ -147,6 +147,7 @@ class MY_Model extends CI_Model
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
         $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
+        $sql = trim($sql);
         return $sql;
     }
 
@@ -156,10 +157,16 @@ class MY_Model extends CI_Model
         if ($sql == '') {
             return;
         }
+        // clean our SQL (usually adding the running model, etc)
         $trace = debug_backtrace();
         $caller = $trace[1];
-        // clean our SQL (usually adding the running model, etc)
-        $sql = $this->clean_sql($sql);
+        $function = @$caller['function'];
+        $model = @$caller['class'];
+        $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
+        $sql = preg_replace('!\s+!', ' ', $sql);
+        $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
+        $sql = trim($sql);
+
         // store the current setting of db_debug
         $temp_debug = $this->db->db_debug;
         // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
@@ -167,11 +174,9 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
-        // if we have debug set to TRUE, store the last run query
-        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug) {
-            $CI->response->meta->sql = $this->db->last_query();
-        }
-        // restore the origin setting to db_debug
+        // store the query in our response object
+        $CI->response->meta->sql[] = $this->db->last_query();
+        // restore the original setting to db_debug
         $this->db->db_debug = $temp_debug;
         // do we have an error?
         if ($this->db->_error_message()) {
