@@ -35,6 +35,7 @@ if (count($this->response->data) == 0) {
 $collection = $this->response->meta->collection;
 if ($collection == 'credentials' or
     $collection == 'connections' or
+    $collection == 'discoveries' or
     $collection == 'fields' or
     $collection == 'files' or
     $collection == 'licenses' or
@@ -48,7 +49,8 @@ if ($collection == 'credentials' or
     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
-if ($collection == 'connections') {
+if ($collection == 'connections' or
+    $collection == 'discoveries') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
 }
