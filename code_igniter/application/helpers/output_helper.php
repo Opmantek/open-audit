@@ -138,6 +138,7 @@ if (! function_exists('output')) {
     function output_json()
     {
         $CI = & get_instance();
+        $CI->output->enable_profiler(false);
         header('Content-Type: application/json');
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
@@ -163,6 +164,7 @@ if (! function_exists('output')) {
     function output_json_data()
     {
         $CI = & get_instance();
+        $CI->output->enable_profiler(false);
         header('Content-Type: application/json');
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
@@ -216,10 +218,10 @@ if (! function_exists('output')) {
                         if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                             $row->attributes->$key = intval($value);
                         
-                        } elseif ((strrpos($key, 'id') === strlen($key)-2) or
-                                  (strrpos($key, 'count') === strlen($key)-5) or
-                                  (strrpos($key, 'percent') === strlen($key)-7) or
-                                  (strrpos($key, 'size') === strlen($key)-4)) {
+                        } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                  (strrpos($key, '_count') === strlen($key)-6) or
+                                  (strrpos($key, '_percent') === strlen($key)-8) or
+                                  (strrpos($key, '_size') === strlen($key)-5)) {
                             $row->attributes->$key = intval($value);
                         
                         } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
