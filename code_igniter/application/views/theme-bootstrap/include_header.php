@@ -126,7 +126,7 @@
                 } ?>
 
                 <?php
-                if ($this->m_users->get_user_permission('', 'discovery', 'c')) { ?>
+                if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                     <li class="dropdown-submenu">
                         <a href="#">Discovery</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
