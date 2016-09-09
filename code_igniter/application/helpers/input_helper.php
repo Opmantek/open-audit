@@ -114,10 +114,10 @@ if (! function_exists('inputRead')) {
         $CI->response->links = array();
         $CI->response->included = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts connections credentials devices fields files licenses locations networks nmis orgs roles scripts users ';
+        $collections = ' charts connections credentials devices discovery discoveries fields files licenses locations networks nmis orgs roles scripts users ';
         $collection = '';
 
         # Allow for URLs thus:
