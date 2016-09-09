@@ -330,6 +330,8 @@ CREATE TABLE `discoveries` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT '',
+  `subnet` varchar(100) NOT NULL DEFAULT '',
+  `network_address` varchar(100) NOT NULL DEFAULT '',
   `credentials` text NOT NULL,
   `device_count` int(10) unsigned NOT NULL DEFAULT '0',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1781,10 +1783,10 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO roles VALUES (NULL, 'admin', '{"configuration":"crud","database":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'org_admin', '{"charts":"crud","connections":"crud","credentials":"crud","dashboard":"r","devices":"crud","discovery":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'reporter', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'user', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","dashboard":"r","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW());
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
