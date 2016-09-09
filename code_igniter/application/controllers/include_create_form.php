@@ -35,6 +35,7 @@ unset($temp);
 $collection = $this->response->meta->collection;
 if ($collection == 'credentials' or
     $collection == 'connections' or
+    $collection == 'discoveries' or
     $collection == 'fields' or
     $collection == 'files' or
     $collection == 'licenses' or
@@ -50,6 +51,7 @@ if ($collection == 'credentials' or
 }
 
 if ($collection == 'connections' or
+    $collection == 'discoveries' or
     $collection == 'nmis') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
