@@ -48,10 +48,10 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM oa_connection WHERE id = ?";
+        $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'connections');
+        $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
 
@@ -68,15 +68,16 @@ class M_discoveries extends MY_Model
     {
         $CI = & get_instance();
         if (empty($CI->response->meta->received_data->attributes->name)) {
-            log_error('ERR-0010', 'm_connections::create');
+            log_error('ERR-0010', 'm_discoveries::create');
             return false;
         }
-        $attributes = array('org_id', 'name', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed', 'location_id_a', 'location_id_b', 'system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
+        $attributes = array('name', 'org_id', 'location_id', 'network_address', 'subnet');
         $data = array();
         foreach ($attributes as $attribute) {
             $data[] = $CI->response->meta->received_data->attributes->{$attribute};
         }
-        $sql = "INSERT INTO `oa_connection` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $data[] = $this->user->full_name;
+        $sql = "INSERT INTO `discoveries` VALUES (NULL, ?, ?, ?, ?, 'subnet', ?, 0, '', 0, ?, NOW(), '', 'n')";
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -85,7 +86,7 @@ class M_discoveries extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = ' org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ';
+        $fields = ' name org_id location_id network_address type subnet system_id other device_count updated_on complete ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
@@ -95,7 +96,7 @@ class M_discoveries extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `oa_connection` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `discoveries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql);
         return;
     }

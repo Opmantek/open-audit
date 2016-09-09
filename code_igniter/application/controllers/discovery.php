@@ -462,17 +462,18 @@ class discovery extends CI_Controller
         if (!isset($_POST['submit'])) {
             // must be an admin to access this page
             $this->load->model('m_oa_user');
+            $this->load->model('m_users');
             $this->m_oa_user->validate_user();
-            if ($this->user->admin != 'y') {
-                if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                    redirect($_SERVER['HTTP_REFERER']);
-                } else {
-                    redirect('main/list_groups');
-                }
-            }
+            // if ($this->user->admin != 'y') {
+            //     if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
+            //         redirect($_SERVER['HTTP_REFERER']);
+            //     } else {
+            //         redirect('main/list_groups');
+            //     }
+            // }
 
             $this->data['apppath'] = APPPATH;
-            $this->data['image_path'] = base_url().'theme-'.$this->user->theme.'/'.$this->user->theme.'-images/';
+            $this->data['image_path'] = base_url().'theme-tango/tango-images/';
             $this->load->model("m_oa_report");
             $this->load->model('m_devices_components');
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();

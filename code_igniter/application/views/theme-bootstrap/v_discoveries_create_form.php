@@ -49,14 +49,14 @@
                     <div class="form-group">
                         <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][subnet]" class="col-sm-3 control-label">Subnet</label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][subnet]" name="data[attributes][subnet]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
                         </div>
                     </div>
 
@@ -74,6 +74,20 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][subnet]" class="col-sm-3 control-label">Subnet</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][subnet]" name="data[attributes][subnet]" placeholder="192.168.1.0/24" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][network_address]" class="col-sm-3 control-label">Network Address</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="http://<?php echo $this->config->config['default_network_address']; ?>/open-audit/">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][location_id]" class="col-sm-3 control-label">Location</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
@@ -87,16 +101,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][use_https]" class="col-sm-3 control-label">Use HTTPS</label>
+                        <label for="data[attributes][created_by]" class="col-sm-3 control-label">Created By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="checkbox" class="form-control" id="data[attributes][use_https]" name="data[attributes][use_https]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][created_by]" name="data[attributes][created_by]" placeholder="<?php echo htmlentities($this->user->full_name); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][debug]" class="col-sm-3 control-label">Debug</label>
+                        <label for="data[attributes][created_on]" class="col-sm-3 control-label">Created On</label>
                         <div class="col-sm-8 input-group">
-                            <input type="checkbox" class="form-control" id="data[attributes][debug]" name="data[attributes][debug]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][created_on]" name="data[attributes][created_on]" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][updated_on]" class="col-sm-3 control-label">Updated On</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][updated_on]" name="data[attributes][updated_on]" disabled>
                         </div>
                     </div>
 

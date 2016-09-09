@@ -327,18 +327,19 @@ DROP TABLE IF EXISTS `discoveries`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `discoveries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `location_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `network_address` varchar(100) NOT NULL DEFAULT '',
   `type` varchar(100) NOT NULL DEFAULT '',
   `subnet` varchar(100) NOT NULL DEFAULT '',
-  `network_address` varchar(100) NOT NULL DEFAULT '',
-  `credentials` text NOT NULL,
-  `device_count` int(10) unsigned NOT NULL DEFAULT '0',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `other` text NOT NULL,
+  `device_count` int(10) unsigned NOT NULL DEFAULT '0',
   `created_by` varchar(200) NOT NULL DEFAULT '',
   `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `complete` enum('y','n') NOT NULL DEFAULT 'y',
+  `complete` enum('y','n') NOT NULL DEFAULT 'n',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
