@@ -164,7 +164,7 @@ class MY_Model extends CI_Model
         $temp_debug = $this->db->db_debug;
         // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
         // to output a nice formatted page with the $error object
-        $this->db->db_debug = FALSE;
+        $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
         // if we have debug set to TRUE, store the last run query
@@ -185,5 +185,204 @@ class MY_Model extends CI_Model
         $result = $query->result();
         // return what we have
         return ($result);
+    }
+
+    public function collection_sql($endpoint = '', $type = 'sql')
+    {
+        $return = array();
+        $CI = & get_instance();
+
+        if ($type != 'sql') {
+            $type = 'array';
+        }
+
+        if ($endpoint == '') {
+            $endpoint = $CI->response->meta->collection;
+        }
+
+        $table = $endpoint;
+        if ($table == 'users') {
+            $table = 'oa_user';
+        }
+        if ($table == 'connections') {
+            $table = 'oa_connection';
+        }
+        if ($table == 'fields') {
+            $table = 'additional_field';
+        }
+        if ($table == 'locations') {
+            $table = 'oa_location';
+        }
+        if ($table == 'orgs') {
+            $table = 'oa_org';
+        }
+
+        // total count
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            // get the total count
+            if ($endpoint == 'orgs') {
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
+            } else {
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
+            }
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+
+        // properties
+        $properties = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            $temp = explode(',', $CI->response->meta->properties);
+            for ($i=0; $i<count($temp); $i++) {
+                if (strpos($temp[$i], '.') === false) {
+                    $temp[$i] = $table.'.'.trim($temp[$i]);
+                } else {
+                    $temp[$i] = trim($temp[$i]);
+                }
+            }
+            $properties = implode(',', $temp);
+        } else {
+            $properties = $table . '.*';
+        }
+        $return['properties'] = $properties;
+        if ($endpoint == 'locations') {
+            $return['properties'] .= ', COUNT(DISTINCT system.id) AS `device_count`';
+        }
+
+        // filter
+        $filter = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            $reserved = ' properties limit resource action sort current offset format ';
+            foreach ($CI->response->meta->filter as $item) {
+                if (strpos(' '.$item->name.' ', $reserved) === false) {
+                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                }
+            }
+        }
+        if ($filter != '') {
+            $filter = substr($filter, 5);
+            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ') AND ' . $filter;
+        } else {
+            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ')';
+        }
+        $return['filter'] = $filter;
+
+        // sort
+        $sort = '';
+        if ($CI->response->meta->collection == $endpoint) {
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY ' . $table . '.id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+        }
+        $return['sort'] = $sort;
+
+        // limit
+        $limit = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            if (!empty($CI->response->meta->limit)) {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            }
+            if (!empty($CI->response->meta->offset)) {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+            }
+        }
+        $return['limit'] = $limit;
+        if ($type == 'sql') {
+            
+            if ($endpoint == 'locations') {
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `oa_location` LEFT JOIN system ON (oa_location.id = system.location_id) LEFT JOIN oa_org ON (oa_location.org_id = oa_org.id) " . $return['filter'] . " GROUP BY oa_location.id " . $return['sort'] . " " . $return['limit'];
+            
+            } else if ($endpoint == 'networks') {
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+            
+            } else if ($endpoint == 'orgs') {
+                $sql = "SELECT oa_org.*, o2.name as parent_name, count(DISTINCT system.id) as device_count FROM oa_org LEFT JOIN oa_org o2 ON oa_org.parent_id = o2.id LEFT JOIN system ON (oa_org.id = system.org_id) " . $return['filter'] . " GROUP BY oa_org.id " . $return['sort'] . " " . $return['limit'];
+            
+            } else {
+                $sql = "SELECT " . $return['properties'] . ", oa_org.name AS `org_name` FROM `" . $table . "` LEFT JOIN oa_org ON (`" . $table . "`.org_id = oa_org.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
+            }
+            return($sql);
+        } else {
+            return($return);
+        }
+    }
+
+    public function collection_query_objects($endpoint = '')
+    {
+        $return = array();
+        $CI = & get_instance();
+
+        if ($endpoint == '') {
+            $endpoint = $CI->response->meta->collection;
+        }
+
+        $table = $endpoint;
+        if ($table == 'users') {
+            $table = 'oa_user';
+        }
+
+        // properties
+        $properties = '';
+        if ($CI->response->meta->collection == $endpoint) {
+            $temp = explode(',', $CI->response->meta->properties);
+            for ($i=0; $i<count($temp); $i++) {
+                if (strpos($temp[$i], '.') === false) {
+                    $temp[$i] = $table.'.'.trim($temp[$i]);
+                } else {
+                    $temp[$i] = trim($temp[$i]);
+                }
+            }
+            $properties = implode(',', $temp);
+        } else {
+            $properties = $table . '.*';
+        }
+        $return['properties'] = $properties;
+
+        // filter
+        $filter = '';
+        if ($CI->response->meta->collection == $endpoint) {
+            $reserved = ' properties limit resource action sort current offset format ';
+            foreach ($CI->response->meta->filter as $item) {
+                if (strpos(' '.$item->name.' ', $reserved) === false) {
+                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                }
+            }
+        }
+        if ($filter != '') {
+            $filter = substr($filter, 5);
+            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ') AND ' . $filter;
+        } else {
+            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ')';
+        }
+        $return['filter'] = $filter;
+
+        // sort
+        $sort = '';
+        if ($CI->response->meta->collection == $endpoint) {
+            if ($CI->response->meta->sort == '') {
+                $sort = 'ORDER BY ' . $table . '.id';
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+        }
+        $return['sort'] = $sort;
+
+        // limit
+        $limit = '';
+        if ($CI->response->meta->collection == $endpoint) {
+            if (!empty($CI->response->meta->limit)) {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            }
+            if (!empty($CI->response->meta->offset)) {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+            }
+        }
+        $return['limit'] = $limit;
+
+        return($return);
     }
 }

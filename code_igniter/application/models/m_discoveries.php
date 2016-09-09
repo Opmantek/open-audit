@@ -58,9 +58,7 @@ class M_discoveries extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        $query_objects = $this->collection_query_objects('discoveries');
-        $sql = "SELECT " . $query_objects['properties'] . ", oa_org.name AS `org_name` FROM `discoveries` LEFT JOIN oa_org ON (discoveries.org_id = oa_org.id) " . $query_objects['filter'] . " " . $query_objects['sort'] . " " . $query_objects['limit'];
-        $CI->response->meta->sql = $sql;
+        $sql = $this->collection_sql('discoveries', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'discoveries');
         return ($result);

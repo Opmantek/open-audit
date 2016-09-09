@@ -40,37 +40,6 @@ class M_locations extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'oa_location.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter($filter = '') {
-        $CI = & get_instance();
-        $reserved = ' properties limit resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-            }
-        }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            #$filter = ' WHERE ' . $filter;
-        }
-        return($filter);
-    }
-
     public function create()
     {
         $CI = & get_instance();
@@ -136,39 +105,7 @@ class M_locations extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'locations') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-            # get the total count
-            $sql = "SELECT COUNT(*) as `count` FROM `oa_location`";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if (!empty($CI->response->meta->total)) {
-                $CI->response->meta->total = intval($result[0]->count);
-            }
-        } else {
-            $properties = 'oa_location.*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `oa_location` LEFT JOIN system ON (oa_location.id = system.location_id) LEFT JOIN oa_org ON (oa_location.org_id = oa_org.id) WHERE oa_location.org_id IN (" . $CI->user->org_list . ") " . $filter . " GROUP BY oa_location.id " . $sort . " " . $limit;
+        $sql = $this->collection_sql('locations', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'locations');
         return ($result);

@@ -40,36 +40,6 @@ class M_groups extends MY_Model
         parent::__construct();
     }
 
-    // private function build_properties() {
-    //     $CI = & get_instance();
-    //     $properties = '';
-    //     $temp = explode(',', $CI->response->meta->properties);
-    //     for ($i=0; $i<count($temp); $i++) {
-    //         $temp[$i] = trim($temp[$i]);
-    //     }
-    //     $properties = implode(',', $temp);
-    //     return($properties);
-    // }
-
-    // private function build_filter() {
-    //     $CI = & get_instance();
-    //     $reserved = ' properties limit sub_resource action sort current offset format ';
-    //     $filter = '';
-    //     foreach ($CI->response->meta->filter as $item) {
-    //         if (strpos(' '.$item->name.' ', $reserved) === false) {
-    //             if (!empty($item->name)) {
-    //                 if ($filter != '') {
-    //                     $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-    //                 } else {
-    //                     $filter = ' WHERE ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     return($filter);
-    // }
-
-
     // public function read($id = '')
     // {
     //     if ($id == '') {
@@ -142,15 +112,10 @@ class M_groups extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        # get the total number
-        $sql = "SELECT count(*) AS count FROM `oa_group` ";
-        $result = $this->run_sql($sql, array());
-        $CI->response->meta->total = intval($result[0]->count);
-
-        $sql = "SELECT oa_group.* FROM oa_group";
+        $sql = $this->collection_sql('groups', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'groups');
-        return $result;
+        return ($result);
     }
 
     // public function update()

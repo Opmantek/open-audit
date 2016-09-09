@@ -40,37 +40,6 @@ class M_fields extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'additional_field.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-            }
-        }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
-        }
-        return($filter);
-    }
-
     public function read($id = '')
     {
         if ($id == '') {
@@ -89,38 +58,7 @@ class M_fields extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'fields') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-            # get the total count
-            $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
-            $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
-            if (!empty($CI->response->meta->total)) {
-                $CI->response->meta->total = intval($result[0]->count);
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . ", oa_group.group_name as `group_name` FROM `additional_field` LEFT JOIN `oa_group` ON (`additional_field`.`group_id` = `oa_group`.`group_id`) GROUP BY `additional_field`.`id` " . $filter . " " . $sort . " " . $limit;
+        $sql = $this->collection_sql('fields', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'fields');
         return ($result);
