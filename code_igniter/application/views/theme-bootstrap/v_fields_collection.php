@@ -48,9 +48,9 @@
                     <tr>
                         <th style='text-align:center;'><?php echo __('ID')?></th>
                         <th><?php echo __('Name')?></th>
+                        <th><?php echo __('Organisation')?></th>
                         <th><?php echo __('Type')?></th>
                         <th><?php echo __('Placement')?></th>
-                        <th><?php echo __('Group Name')?></th>
                         <th style='text-align:center;'><?php echo __('Edit')?></th>
                         <th style='text-align:center;'><?php echo __('Delete')?></th>
                     </tr>
@@ -60,9 +60,9 @@
                     <tr>
                         <td style='text-align:center;'><a class="btn btn-sm btn-success" href="fields/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                         <td><?php echo htmlentities($item->attributes->name)?></td>
+                        <td><?php echo htmlentities($item->attributes->org_name)?></td>
                         <td><?php echo htmlentities($item->attributes->type)?></td>
                         <td><?php echo htmlentities($item->attributes->placement)?></td>
-                        <td><?php echo htmlentities($item->attributes->group_name)?></td>
                         <td style='text-align:center;'><a class="btn btn-sm btn-info" href="fields/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         
                         <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>

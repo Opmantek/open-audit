@@ -48,6 +48,7 @@
                     <tr>
                       <th style="text-align:center;"><?php echo __('ID')?></th>
                       <th><?php echo __('Name')?></th>
+                      <th><?php echo __('Organisation')?></th>
                       <th><?php echo __('Description')?></th>
                       <th><?php echo __('Based On')?></th>
                       <th><?php echo __('Edited By')?></th>
@@ -63,6 +64,7 @@
                     <tr>
                           <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
                                 <td><?php echo htmlentities($item->attributes->name)?></td>
+                          <td><?php echo htmlentities($item->attributes->org_name)?></td>
                           <td><?php echo htmlentities($item->attributes->description)?></td>
                           <td><?php echo htmlentities($item->attributes->based_on)?></td>
                                 <td><?php echo htmlentities($item->attributes->edited_by)?></td>
