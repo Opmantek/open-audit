@@ -86,25 +86,6 @@ class M_roles extends MY_Model
         return ($result);
     }
 
-    // public function read_sub_resource($id = '')
-    // {
-    //     if ($id == '') {
-    //         $CI = & get_instance();
-    //         $id = intval($CI->response->meta->id);
-    //     } else {
-    //         $id = intval($id);
-    //     }
-    //     $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
-    //     $data = array($id);
-    //     $result = $this->run_sql($sql, $data);
-    //     if (count($result) == 0) {
-    //         return false;
-    //     } else {
-    //         $result = $this->format_data($result, 'devices');
-    //         return ($result);
-    //     }
-    // }
-
     public function collection()
     {
         $CI = & get_instance();
@@ -221,11 +202,7 @@ class M_roles extends MY_Model
             $permissions = json_encode($permissions);
         }
 
-        if (empty($CI->response->meta->received_data->attributes->ad_group)) {
-            $ad_group = '';
-        } else {
-            $ad_group = $CI->response->meta->received_data->attributes->ad_group;
-        }
+        $ad_group = 'open-audit_' . strtolower(str_replace(' ', '_', $CI->response->meta->received_data->attributes->name));
 
         if (empty($CI->user->name)) {
             $user = '';
