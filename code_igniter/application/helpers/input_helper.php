@@ -389,6 +389,12 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'execute') {
+            // Execute the discovery / report / etc
+            $CI->response->meta->action = 'execute';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
+            stdlog($log);
+        }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id)  and $action == 'update' and !empty($CI->response->meta->ids)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'bulk_update_form';
@@ -761,6 +767,7 @@ if (! function_exists('inputRead')) {
         $permission['create_form'] = 'c';
         $permission['delete'] = 'd';
         $permission['download'] = 'r';
+        $permission['execute'] = 'u';
         $permission['import'] = 'c';
         $permission['import_form'] = 'c';
         $permission['read'] = 'r';
@@ -769,6 +776,7 @@ if (! function_exists('inputRead')) {
         $permission['sub_resource_delete'] = 'd';
         $permission['update'] = 'u';
         $permission['update_form'] = 'u';
+        $permission['unknown'] = 'unknown action';
 
         if (empty($CI->response->meta->action)) {
             $log->severity = 5;
@@ -777,11 +785,18 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->action = 'collection';
         }
 
+        if (empty($permission[$CI->response->meta->action])) {
+            $log->severity = 5;
+            $log->message = 'No permission determined for '  . $CI->response->meta->action;
+            stdlog($log);
+            $CI->response->meta->action = 'unknown';
+        }
+
         $CI->load->model('m_roles');
         $CI->roles = $CI->m_roles->collection();
 
         $CI->load->model('m_users');
-        if (! $CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
+        if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
             log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
             output();
             exit();
