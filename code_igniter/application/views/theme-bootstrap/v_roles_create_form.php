@@ -72,7 +72,7 @@ $permissions = array('c', 'r', 'u', 'd');
                     <div class="form-group">
                         <label for="data[attributes][ad_group]" class="col-sm-3 control-label">AD Broup</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][ad_group]" name="data[attributes][ad_group]">
+                            <input type="text" class="form-control" id="data[attributes][ad_group]" name="data[attributes][ad_group]" disabled>
                         </div>
                     </div>
 
