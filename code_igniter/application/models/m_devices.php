@@ -175,7 +175,7 @@ class M_devices extends MY_Model
         $this->load->model('m_devices_components');
         $this->load->model('m_system');
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
-        $sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
+        #$sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
         $sql = $this->clean_sql($sql);
         $result = $this->run_sql($sql, array($id));
         $sql = "SELECT additional_field.name, additional_field_item.value FROM additional_field_item RIGHT JOIN additional_field ON additional_field.id = additional_field_item.additional_field_id AND additional_field_item.system_id = ?";
@@ -464,6 +464,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'devices/' . $CI->response->meta->sub_resource);
         return $result;
     }
 
