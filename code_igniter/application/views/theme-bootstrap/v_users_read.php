@@ -50,7 +50,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="id" name="id" placeholder="" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
@@ -65,6 +65,24 @@ $item = $this->response->data[0];
                             <?php } ?>
                         </div>
                     </div>
+
+                <div class="form-group">
+                    <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                    <div class="col-sm-8 input-group">
+                        <select class="data_type form-control" id="org_id" name="org_id" disabled>
+                            <option value='' label=' '></option>
+                            <?php foreach ($this->response->included as $org) {
+                            if ($org->type == 'orgs') { ?>
+                                <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                            <?php } } ?>
+                        </select>
+                        <?php if (!empty($edit)) { ?>
+                        <span class="input-group-btn">
+                            <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                        </span>
+                        <?php } ?>
+                    </div>
+                </div>
 
                     <div class="form-group">
                         <label for="full_name" class="col-sm-3 control-label">Full Name</label>
@@ -115,24 +133,6 @@ $item = $this->response->data[0];
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_lang" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="lang"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                        </span>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="org_id" class="col-sm-3 control-label">Organisation</label>
-                    <div class="col-sm-8 input-group">
-                        <select class="data_type form-control" id="org_id" name="org_id" disabled>
-                            <option value='' label=' '></option>
-                            <?php foreach ($this->response->included as $org) {
-                            if ($org->type == 'orgs') { ?>
-                                <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
-                            <?php } } ?>
-                        </select>
-                        <?php if (!empty($edit)) { ?>
-                        <span class="input-group-btn">
-                            <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                         </span>
                         <?php } ?>
                     </div>

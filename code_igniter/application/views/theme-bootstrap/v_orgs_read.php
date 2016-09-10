@@ -76,9 +76,11 @@ $item = $this->response->data[0];
                                     <option value="<?php echo intval($org->attributes->id); ?>"<?php if ($org->attributes->id == $item->attributes->parent_id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
                                 <?php } } ?>
                             </select>
+                            <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_parent_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="parent_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
+                            <?php } ?>
                         </div>
                     </div>
 

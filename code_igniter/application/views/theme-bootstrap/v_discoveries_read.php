@@ -78,9 +78,11 @@ $item = $this->response->data[0];
                                     }
                                 } ?>
                                 </select>
-                            <span class="input-group-btn">
-                                <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
                         </div>
                     </div>
 
@@ -109,20 +111,44 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="location_id" class="col-sm-3 control-label">Location</label>
+                        <label for="devices_assigned_to_org" class="col-sm-3 control-label">Assign devices to Org</label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="location_id" name="location_id" disabled>
+                            <select class="form-control" id="devices_assigned_to_org" name="devices_assigned_to_org" disabled>
+                                <option value="" label=" "></option>
                                 <?php
-                                foreach ($this->response->included as $location) {
-                                    if ($location->type == 'locations') { ?>
-                                        <option value="<?php echo intval($location->id); ?>"<?php if ($item->attributes->location_id == $location->id) { echo " selected"; } ?>><?php echo htmlentities($location->attributes->name); ?></option>
+                                foreach ($this->response->included as $org) {
+                                    if ($org->type == 'orgs') { ?>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
                                 <?php
                                     }
                                 } ?>
                                 </select>
-                            <span class="input-group-btn">
-                                <button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="devices_assigned_to_location" class="col-sm-3 control-label">Assign devices to Location</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="devices_assigned_to_location" name="devices_assigned_to_location" disabled>
+                                <option value="" label=" "></option>
+                                <?php
+                                foreach ($this->response->included as $location) {
+                                    if ($location->type == 'locations') { ?>
+                                        <option value="<?php echo intval($location->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo htmlentities($location->attributes->name); ?></option>
+                                <?php
+                                    }
+                                } ?>
+                                </select>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
                         </div>
                     </div>
 
