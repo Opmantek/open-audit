@@ -182,9 +182,11 @@ $item = $this->response->data[0];
                             <?php if (!empty($edit)) { ?>
                             <?php } ?>
                         </div>
+                        <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_roles" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="roles"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                         </span>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
