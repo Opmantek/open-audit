@@ -808,6 +808,40 @@ if (! function_exists('inputRead')) {
                 exit();
             }
         }
+
+        // check (if we're supplying data) that the OrgID is one we're allowed to supply
+        if ($CI->response->meta->action == 'create' or $CI->response->meta->action == 'update' or $CI->response->meta->action == 'import') {
+            $temp = explode(',', $CI->user->org_list);
+            // org_id
+            if (!empty($CI->meta->received_data->org_id)) {
+                $allowed = false;
+                foreach ($temp as $key => $value) {
+                    if ($CI->meta->received_data->org_id == $value) {
+                        $allowed = true;
+                    }
+                }
+                if (!$allowed) {
+                    log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                    output();
+                    exit();
+                }
+            }
+            // devices_assigned_to_org
+            if (!empty($CI->meta->received_data->devices_assigned_to_org)) {
+                $allowed = false;
+                foreach ($temp as $key => $value) {
+                    if ($CI->meta->received_data->devices_assigned_to_org == $value) {
+                        $allowed = true;
+                    }
+                }
+                if (!$allowed) {
+                    log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                    output();
+                    exit();
+                }
+            }
+            unset($temp);
+        }
     }
 }
 /* End of file input_helper.php */

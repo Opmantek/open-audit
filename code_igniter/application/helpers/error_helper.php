@@ -187,6 +187,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0017']->title = "File not writable" . $extra;
         $error_array['ERR-0017']->detail = 'A user attempted to write to an file which does not have write permissions set.';
 
+        $error_array['ERR-0018'] = new stdClass();
+        $error_array['ERR-0018']->code = 'ERR-0018';
+        $error_array['ERR-0018']->status = 'HTTP/1.1 403 Forbidden';
+        $error_array['ERR-0018']->severity = 3;
+        $error_array['ERR-0018']->title = "User not authorised to use Org" . $extra;
+        $error_array['ERR-0018']->detail = 'A user attempted to write to an org_id to an object for which they do not have permission.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
