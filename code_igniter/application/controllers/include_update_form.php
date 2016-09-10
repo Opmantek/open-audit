@@ -56,18 +56,18 @@ if ($collection == 'connections' or
 }
 
 if ($collection == 'fields') {
-        $this->load->model('m_groups');
-        $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+    $this->load->model('m_groups');
+    $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
 }
 
 if ($collection == 'scripts') {
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+    $this->load->model('m_files');
+    $this->response->included = array_merge($this->response->included, $this->m_files->collection());
 }
 
 if ($collection == 'users') {
-        $this->load->model('m_roles');
-        $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
+    $this->load->model('m_roles');
+    $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
 }
 
 unset($collection);
