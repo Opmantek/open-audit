@@ -56,7 +56,7 @@
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="192.168.1.0/24" value="">
                         </div>
                     </div>
 
