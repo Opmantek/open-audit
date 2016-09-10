@@ -79,18 +79,39 @@
                             <input type="text" class="form-control" id="data[attributes][subnet]" name="data[attributes][subnet]" placeholder="192.168.1.0/24" value="">
                         </div>
                     </div>
-
+<?php
+if (empty($this->config->config['default_network_address'])) {
+    $address = 'http://YOUR_SERVER/open-audit/';
+} else {
+    $address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
+}
+?>
                     <div class="form-group">
                         <label for="data[attributes][network_address]" class="col-sm-3 control-label">Network Address</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="http://<?php echo $this->config->config['default_network_address']; ?>/open-audit/">
+                            <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="<?php echo $address; ?>">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][location_id]" class="col-sm-3 control-label">Location</label>
+                        <label for="data[attributes][devices_assigned_to_org]" class="col-sm-3 control-label">Assign devices to Org</label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
+                            <select class="form-control" id="data[attributes][devices_assigned_to_org]" name="data[attributes][org_id]">
+                                <option value="" label=" "></option>
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][devices_assigned_to_location]" class="col-sm-3 control-label">Assign devices to Location</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][devices_assigned_to_location]" name="data[attributes][devices_assigned_to_location]">
+                                <option value="" label=" "></option>
                             <?php
                             foreach ($this->response->included as $item) {
                                 if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
