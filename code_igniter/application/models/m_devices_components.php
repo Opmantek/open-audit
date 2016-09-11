@@ -716,9 +716,12 @@ class M_devices_components extends MY_Model
                 // insert an entry into the graph table
                 $used_percent = @intval(($input_item->used / $input_item->size) * 100);
                 $free_percent = @intval(100 - $used_percent);
-                $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                if (empty($details->org_id)) {
+                    $details->org_id = 0;
+                }
+                $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
-                $data = array(intval($details->id), "$table", intval($id), "$table", intval($used_percent),
+                $data = array(intval($details->org_id), intval($details->id), "$table", intval($id), "$table", intval($used_percent),
                         intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
