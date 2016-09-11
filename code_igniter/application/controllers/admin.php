@@ -5628,7 +5628,7 @@ class admin extends MY_Controller
 
             # networks
             if (!$this->db->field_exists('org_id', 'networks')) {
-                $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+                $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
             }
 
             # oa_connection
@@ -5646,7 +5646,7 @@ class admin extends MY_Controller
 
             # oa_location
             if (!$this->db->field_exists('org_id', 'oa_location')) {
-                $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+                $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
             }
             if (!$this->db->field_exists('edited_by', 'oa_location')) {
                 $sql[] = "ALTER TABLE `oa_location` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `icon`";

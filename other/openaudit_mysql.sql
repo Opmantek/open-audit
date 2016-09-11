@@ -970,8 +970,8 @@ DROP TABLE IF EXISTS `networks`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `description` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1352,8 +1352,8 @@ DROP TABLE IF EXISTS `oa_location`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_location` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `type` varchar(100) NOT NULL DEFAULT '',
   `room` varchar(100) NOT NULL DEFAULT '',
   `suite` varchar(100) NOT NULL DEFAULT '',
@@ -1387,7 +1387,7 @@ CREATE TABLE `oa_location` (
 
 LOCK TABLES `oa_location` WRITE;
 /*!40000 ALTER TABLE `oa_location` DISABLE KEYS */;
-INSERT INTO `oa_location` VALUES (0,'Default Location','Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office',0);
+INSERT INTO `oa_location` VALUES (0,'Default Location',0,'Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office','system',NOW());
 /*!40000 ALTER TABLE `oa_location` ENABLE KEYS */;
 UNLOCK TABLES;
 
