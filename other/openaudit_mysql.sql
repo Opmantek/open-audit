@@ -1415,7 +1415,7 @@ CREATE TABLE `oa_org` (
 
 LOCK TABLES `oa_org` WRITE;
 /*!40000 ALTER TABLE `oa_org` DISABLE KEYS */;
-INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,0,'');
+INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,'','system',NOW());
 /*!40000 ALTER TABLE `oa_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
