@@ -655,9 +655,9 @@ class M_oa_group extends MY_Model
         $group_id = $this->db->insert_id();
 
         // insert an entry into oa_group_user for any Admin level user
-        $sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
-        $data = array("$group_id");
-        $result = $this->db->query($sql, $data);
+        #$sql = "INSERT INTO oa_group_user (SELECT NULL, id, ?, '10' FROM oa_user WHERE admin = 'y')";
+        #$data = array("$group_id");
+        #$result = $this->db->query($sql, $data);
 
         // insert the group columns
         if (!empty($group_definition->columns)) {
