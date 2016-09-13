@@ -77,7 +77,7 @@ if (!empty($this->response->meta->baseurl)) {
 <div class="container-fluid">
 <?php 
 include "include_header.php";
-if (!empty($this->response->errors)) {
+if (!empty($this->response->errors) and !empty($this->response->errors[0]->title) and !empty($this->response->errors[0]->detail)) {
     echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
 }
 if (!empty($this->session->flashdata('error'))) {
@@ -86,14 +86,12 @@ if (!empty($this->session->flashdata('error'))) {
 if (!empty($this->session->flashdata('success'))) {
     echo '<div class="alert alert-success" role="alert">' . $this->session->flashdata('success') . "</div>\n";
 }
-if (empty($this->session->flashdata('error')) and !empty($this->response->errors[0]->detail)) {
+
+if (!empty($this->session->flashdata('error')) and !empty($this->response->errors[0]->detail)) {
     echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->detail . "</div>\n";
 }
 include($include.'.php');
-?>
 
-
-<?php
 unset($this->response->meta->user->password);
 unset($this->response->data);
 unset($this->response->meta->sql);
@@ -133,4 +131,3 @@ unset($this->response->meta->sql);
 </div>
 </body>
 </html>
-<?php exit(); ?>

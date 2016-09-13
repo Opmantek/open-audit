@@ -33,9 +33,8 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_help_about' and $include != 'v_upgrade') {
-    $include = "v_database_update_form";
-    $heading = "You must upgrade";
+if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_database_update' and $include != 'v_database_update_form') {
+    redirect('database?action=update');
 }
 
 if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php', __FILE__))) {

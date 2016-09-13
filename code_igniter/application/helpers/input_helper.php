@@ -389,6 +389,13 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
+        // Special case for the database endpoint
+        if ($REQUEST_METHOD == 'GET' and $action == 'update' and $CI->response->meta->collection == 'database') {
+            // show a HTML form for updating an existing item
+            $CI->response->meta->action = 'update_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+            stdlog($log);
+        }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'execute') {
             // Execute the discovery / report / etc
             $CI->response->meta->action = 'execute';
@@ -806,7 +813,6 @@ if (! function_exists('inputRead')) {
             $CI->load->model('m_users');
             if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
                 log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
                 output();
                 exit();
             }
@@ -817,11 +823,9 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->collection != 'configuration' and
             $CI->response->meta->collection != 'database') {
             if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
-                #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
                 output();
                 exit();
             }
-
             // check (if we're supplying data) that the OrgID is one we're allowed to supply
             if ($CI->response->meta->action == 'create' or $CI->response->meta->action == 'update' or $CI->response->meta->action == 'import') {
                 $temp = explode(',', $CI->user->org_list);
@@ -835,7 +839,6 @@ if (! function_exists('inputRead')) {
                     }
                     if (!$allowed) {
                         log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
-                        #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
                         output();
                         exit();
                     }
@@ -850,16 +853,13 @@ if (! function_exists('inputRead')) {
                     }
                     if (!$allowed) {
                         log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
-                        #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
                         output();
                         exit();
                     }
                 }
                 unset($temp);
             }
-
         }
-
 
     }
 }

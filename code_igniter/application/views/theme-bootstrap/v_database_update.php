@@ -33,6 +33,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
+<div class="alert alert-success" role="alert"><?php echo $success; ?></div>
 <form class="form-horizontal" id="form_update" method="post" action="database">
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -40,9 +41,7 @@
         </div>
 
         <div class="panel-body">
-            <pre>
-            <?php echo $output; ?>
-            </pre>
+            <pre style="white-space: pre-wrap;"><?php echo $output; ?></pre>
         </div>
     </div>
 </form>

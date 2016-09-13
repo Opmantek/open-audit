@@ -116,17 +116,6 @@ class Database extends MY_Controller
     // }
 
     /**
-    * Process the supplied data and update an existing object
-    *
-    * @access public
-    * @return NULL
-    */
-    // public function update()
-    // {
-    //     include 'include_update.php';
-    // }
-
-    /**
     * Delete an existing object
     *
     * @access public
@@ -165,10 +154,10 @@ class Database extends MY_Controller
     * @access public
     * @return NULL
     */
-    // public function update_form()
-    // {
-    //     include 'include_update_form.php';
-    // }
+    public function update_form()
+    {
+        output($this->response);
+    }
 
     public function update()
     {
@@ -4547,7 +4536,7 @@ class Database extends MY_Controller
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
                 stdlog($log_details);
-                $this->data['output'] .= $this_query."<br /><br />\n";
+                $this->data['output'] .= $this_query.";\n\n";
                 $query = $this->db->query($this_query);
             }
 
@@ -4621,11 +4610,13 @@ class Database extends MY_Controller
             $this_query = "DELETE FROM oa_config WHERE config_name IN ('default_ipmi_password', 'default_ipmi_username', 'default_snmp_community', 'default_ssh_password', 'default_ssh_username', 'default_windows_username', 'default_windows_domain', 'default_windows_password')";
             $log_details->message = $this_query;
             stdlog($log_details);
-            $this->data['output'] .= $this_query."<br /><br />\n";
+            $this->data['output'] .= $this_query.";\n\n";
             $query = $this->db->query($this_query);
+            $this->data['output'] .= $this->db->last_query() . ";\n\n";
 
             # populate our new credential table with the system.access_details columns
             $sql = "SELECT NOW() as `timestamp`";
+            $this->data['output'] .= $sql.";\n\n";
             $log_details->message = $sql;
             stdlog($log_details);
             $query = $this->db->query($sql);
@@ -4633,11 +4624,13 @@ class Database extends MY_Controller
             $timestamp = $result[0]->timestamp;
 
             $sql = "DELETE FROM `credential`";
+            $this->data['output'] .= $sql.";\n\n";
             $log_details->message = $sql;
             stdlog($log_details);
             $query = $this->db->query($sql);
 
             $sql = "SELECT id, access_details FROM system WHERE access_details != ''";
+            $this->data['output'] .= $sql.";\n\n";
             $log_details->message = $sql;
             stdlog($log_details);
             $query = $this->db->query($sql);
@@ -4655,6 +4648,7 @@ class Database extends MY_Controller
                     stdlog($log_details);
                     $data = array(intval($device->id), (string)$credentials, "$timestamp");
                     $query = $this->db->query($sql, $data);
+                    $this->data['output'] .= $this->db->last_query() . ";\n\n";
                     unset($cred);
                     unset($credentials);
                 }
@@ -4668,6 +4662,7 @@ class Database extends MY_Controller
                     stdlog($log_details);
                     $data = array(intval($device->id), (string)$credentials, "$timestamp");
                     $query = $this->db->query($sql, $data);
+                    $this->data['output'] .= $this->db->last_query() . ";\n\n";
                     unset($cred);
                     unset($credentials);
                 }
@@ -4681,6 +4676,7 @@ class Database extends MY_Controller
                     stdlog($log_details);
                     $data = array(intval($device->id), (string)$credentials, "$timestamp");
                     $query = $this->db->query($sql, $data);
+                    $this->data['output'] .= $this->db->last_query() . ";\n\n";
                     unset($cred);
                     unset($credentials);
                 }
@@ -4725,7 +4721,7 @@ class Database extends MY_Controller
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
                 stdlog($log_details);
-                $this->data['output'] .= $this_query."<br /><br />\n";
+                $this->data['output'] .= $this_query.";\n\n";
                 $query = $this->db->query($this_query);
             }
 
@@ -4936,7 +4932,7 @@ class Database extends MY_Controller
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
                 stdlog($log_details);
-                $this->data['output'] .= $this_query."<br /><br />\n";
+                $this->data['output'] .= $this_query.";\n\n";
                 $query = $this->db->query($this_query);
             }
 
@@ -4967,7 +4963,7 @@ class Database extends MY_Controller
         $this->m_configuration->load();
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
-        $this->session->set_flashdata('success', "Database upgraded successfully.<br />New (now current) database version: ".$this->config->item('display_version')." (".$this->config->item('internal_version').")<br />Don't forget to use the new audit scripts!");
+        $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->item('display_version')." (".$this->config->item('internal_version').")";
         $this->load->view('v_template', $this->data);
     }
 }

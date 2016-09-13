@@ -227,6 +227,9 @@ class M_users extends MY_Model
             if (!empty($result[0]->roles)) {
                 $user_roles = json_decode($result[0]->roles);
             } else {
+                if (intval($this->config->config['internal_version']) < 20160904) {
+                    unset ($this->response->errors);
+                }
                 $user_roles = array();
             }
             $CI->load->model('m_roles');

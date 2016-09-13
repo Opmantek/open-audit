@@ -35,16 +35,18 @@
   <div class="col-md-1" style="text-align:center;">
     Version<br /><?php echo htmlentities($this->config->item('display_version')); ?>
     <?php
-    if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and ($this->user->admin == 'y')) {
+    if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and $this->m_users->get_user_permission('', 'database', 'u')) {
         echo '<br /><a href="'.$this->config->config['oa_web_index'].'/main/help_about" style="color: red;">upgrade</a>';
     } ?>
   </div>
 
-
+    <?php
+    if ($this->m_users->get_user_permission('', 'configuration', 'u') or $this->m_users->get_user_permission('', 'discoveries', 'u')) {
+        ?>
     <div class="col-md-1" style="text-align:center;">
-        <!-- <a href="<?php echo current_url(); ?>?<?php echo $this->response->meta->query_string; ?>&format=json&debug=true&limit=100">Debug</a> -->
-        <button class="btn btn-default debug">Debug</button>
+        Show<br /><button class="btn btn-default btn-sm debug">Debug</button>
     </div>
+    <?php } ?>
 
     <div class="col-md-1" style="text-align:center;">
         <a href="<?php echo $this->config->config['oa_web_index']; ?>/main/edit_user"><?php echo htmlentities($this->user->full_name); ?></a><br />
