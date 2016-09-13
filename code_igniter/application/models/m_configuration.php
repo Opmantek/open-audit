@@ -81,6 +81,17 @@ class M_configuration extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
+
+        // total count
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
+            // get the total count
+            $sql = "SELECT COUNT(*) as `count` FROM `configuration`";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+
         $sql = "SELECT * FROM configuration";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'configuration');
