@@ -286,8 +286,9 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $display = 'n', $match_columns = array())
     {
-        $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
-        $delete_noncurrent = @$this->m_oa_config->get_config_item('delete_noncurrent');
+
+        $create_alerts = $this->config->config['discovery_create_alerts'];
+        $delete_noncurrent = $this->config->config['delete_noncurrent'];
 
         $log_details = new stdClass();
         $log_details->message = '';
@@ -361,6 +362,7 @@ class M_devices_components extends MY_Model
 
         ### IP ADDRESS ###
         if ((string)$table == 'ip') {
+            $CI->load->model('m_networks');
             for ($i=0; $i<count($input->item); $i++) {
                 # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
                 $input->item[$i]->mac = strtolower($input->item[$i]->mac);
@@ -414,7 +416,15 @@ class M_devices_components extends MY_Model
                 }
                 # ensure we add the network to the networks list
                 if (!empty($input->item[$i]->network)) {
-                    $this->m_oa_config->update_blessed($input->item[$i]->network);
+                    $network = new stdClass();
+                    $network->name = $input->item[$i]->network;
+                    if (!empty($details->org_id)) {
+                        $network->org_id = intval($details->org_id);
+                    } else {
+                        $network->org_id = 0;
+                    }
+                    $network->description = 'Inserted from audit result.';
+                    $CI->m_networks->upsert($network);
                 }
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
