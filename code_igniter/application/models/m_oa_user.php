@@ -214,17 +214,8 @@ class M_oa_user extends MY_Model
                     $CI->user->id = $CI->user->user_id;
                     $CI->user->name = $CI->user->user_name;
                     $CI->user->password = $CI->user->user_password;
-                    #$CI->user->theme = $CI->user->user_theme;
-                    #$CI->user->admin = $CI->user->user_admin;
                     $CI->user->full_name = $CI->user->user_full_name;
-                    #$CI->user->sam = $CI->user->user_sam;
                 }
-$CI->user->debug = 'y';
-                // if ($CI->user->admin == 'y') {
-                //     $CI->user->debug = $temp_debug;
-                // } else {
-                //     $CI->user->debug = 'n';
-                // }
 
                 if ($admin == 'y') {
                     if ($CI->user->admin == 'y') {
@@ -263,7 +254,8 @@ $CI->user->debug = 'y';
                         }
                     }
                 } else {
-                    $userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
+                    #$userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
+                    $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
                     $this->session->set_userdata($userdata);
                     return;
                 }
@@ -336,7 +328,7 @@ $CI->user->debug = 'y';
         if (empty($username) or empty($password)) {
             // incomplete credentials supplied
             $status = 'fail';
-            if (@$username == '') {
+            if (empty($username)) {
                 $username = 'UNKNOWN USER';
             }
             if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
@@ -498,7 +490,7 @@ $CI->user->debug = 'y';
             }
         }
 
-         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+        if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
             $CI->user->id = $CI->user->user_id;
             $CI->user->name = $CI->user->user_name;
             $CI->user->password = $CI->user->user_password;
