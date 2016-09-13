@@ -308,9 +308,17 @@ if (! function_exists('stdlog')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $file = $CI->config->item('base_path') . '\other\log_' . $log->file . '.log';
+            if (empty($CI->config->item('base_path'))) {
+                $file = 'c:\\xampplite\\open-audit\\other\\log_' . $log->file . '.log';
+            } else {
+                $file = $CI->config->item('base_path') . '\\other\\log_' . $log->file . '.log';
+            }
         } else {
-            $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
+            if (empty($CI->config->item('base_path'))) {
+                $file = '/usr/local/open-audit/other/log_' . $log->file . '.log';
+            } else {
+                $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
+            }
         }
 
         // log the page view
