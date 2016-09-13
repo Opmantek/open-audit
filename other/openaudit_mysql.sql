@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `additional_field`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `additional_field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
   `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
   `values` varchar(100) NOT NULL DEFAULT '',
   `placement` varchar(100) NOT NULL DEFAULT '',
@@ -1113,69 +1113,70 @@ INSERT INTO `oa_change` VALUES (1,'Default Change.','','0000-00-00 00:00:00','00
 UNLOCK TABLES;
 
 --
--- Table structure for table `oa_config`
+-- Table structure for table `configuration`
 --
 
-DROP TABLE IF EXISTS `oa_config`;
+DROP TABLE IF EXISTS `configuration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_config` (
-  `config_name` varchar(45) NOT NULL DEFAULT '',
-  `config_value` varchar(250) NOT NULL DEFAULT '',
-  `config_editable` varchar(1) NOT NULL DEFAULT 'n',
-  `config_edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `config_edited_by` int(10) unsigned NOT NULL DEFAULT '0',
-  `config_description` varchar(200) NOT NULL DEFAULT '',
-  PRIMARY KEY (`config_name`)
+CREATE TABLE `configuration` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL DEFAULT '',
+  `value` varchar(250) NOT NULL DEFAULT '',
+  `editable` varchar(1) NOT NULL DEFAULT 'n',
+  `edited_by`varchar(100) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `description` varchar(200) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `oa_config`
+-- Dumping data for table `configuration`
 --
 
-LOCK TABLES `oa_config` WRITE;
-/*!40000 ALTER TABLE `oa_config` DISABLE KEYS */;
-INSERT INTO `oa_config` VALUES ('ad_domain','','y','0000-00-00 00:00:00',0,'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org');
-INSERT INTO `oa_config` VALUES ('ad_server','','y','0000-00-00 00:00:00',0,'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1');
-INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.');
-INSERT INTO `oa_config` VALUES ('default_network_address','','y','0000-00-00 00:00:00',0,'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
-INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y','0000-00-00 00:00:00',0,'Should we delete any attributes that are not present when we audit a device.');
-INSERT INTO `oa_config` VALUES ('discovery_create_alerts','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT create an entry in the alert table if a change is detected.');
-INSERT INTO `oa_config` VALUES ('discovery_ip_exclude','','y','0000-00-00 00:00:00',0,'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
-INSERT INTO `oa_config` VALUES ('discovery_ip_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its ip during discovery.');
-INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y','0000-00-00 00:00:00',0,'The directory the script is copied into on the target device.');
-INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y','0000-00-00 00:00:00',0,'The permissions set on the audit_linux.sh script when it is copied to the target device.');
-INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.');
-INSERT INTO `oa_config` VALUES ('discovery_name_match','y','y','0000-00-00 00:00:00',0,'Should we match a device based only on its hostname during discovery.');
-INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
-INSERT INTO `oa_config` VALUES ('discovery_update_groups','y','y','0000-00-00 00:00:00',0,'Should Open-AudIT update the device groups after discovering a device.');
-INSERT INTO `oa_config` VALUES ('discovery_use_ipmi','y','y','0000-00-00 00:00:00',0,'Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y','0000-00-00 00:00:00',0,'Should we use DNS for looking up the hostname and domain.');
-INSERT INTO `oa_config` VALUES ('display_version','1.12.10','n','0000-00-00 00:00:00',0,'The version shown on the web pages.');
-INSERT INTO `oa_config` VALUES ('distinct_groups','y','y','0000-00-00 00:00:00',0,'Display Groups on the homepage, separated into the type of each Group.');
-INSERT INTO `oa_config` VALUES ('download_reports','download','y','0000-00-00 00:00:00',0,'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','0000-00-00 00:00:00',0,'The API key for Google Maps.');
-INSERT INTO `oa_config` VALUES ('internal_version','20160904','n','0000-00-00 00:00:00',0,'The internal numerical version.');
-INSERT INTO `oa_config` VALUES ('logo','logo-banner-oae','y','2016-05-20 10:46:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
-INSERT INTO `oa_config` VALUES ('log_level','5','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which severity of event (at least) should be logged.');
-INSERT INTO `oa_config` VALUES ('log_style','syslog','y','0000-00-00 00:00:00',0,'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
-INSERT INTO `oa_config` VALUES ('maps_url','/omk/oae/map','y','0000-00-00 00:00:00',0,'The web server address of opMaps.');
-INSERT INTO `oa_config` VALUES ('network_group_auto_create','y','y','0000-00-00 00:00:00',0,'Have Open-AudIT automatically create Groups based on Subnet.');
-INSERT INTO `oa_config` VALUES ('network_group_homepage_limit','20','y','0000-00-00 00:00:00',0,'The number of network groups to display on the homepage.');
-INSERT INTO `oa_config` VALUES ('network_group_subnet','30','y','0000-00-00 00:00:00',0,'If the netmask is equal to or greater than this number, do not create a network group.');
-INSERT INTO `oa_config` VALUES ('nmis','n','y','0000-00-00 00:00:00',0,'Enable import / export to NMIS functions.');
-INSERT INTO `oa_config` VALUES ('nmis_url','','y','0000-00-00 00:00:00',0,'The web server address of NMIS.');
-INSERT INTO `oa_config` VALUES ('non_admin_search','y','y','0000-00-00 00:00:00',0,'Enable or disable search for non-Administrators');
-INSERT INTO `oa_config` VALUES ('oae_license','commercial','n','2016-05-20 10:46:00',0,'License status of Open-AudIT Enterprise.');
-INSERT INTO `oa_config` VALUES ('oae_prompt','2015-06-01','n','0000-00-00 00:00:00',0,'Prompt to activate a license for Open-AudIT Enterprise.');
-INSERT INTO `oa_config` VALUES ('oae_url','/omk/oae','y','0000-00-00 00:00:00',0,'The web server address of Open-AudIT Enterprise.');
-INSERT INTO `oa_config` VALUES ('page_refresh','300','y','0000-00-00 00:00:00',0,'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
-INSERT INTO `oa_config` VALUES ('rss_enable','y','y','0000-00-00 00:00:00',0,'Enable the RSS feed.');
-INSERT INTO `oa_config` VALUES ('rss_url','https://community.opmantek.com/rss/OA.xml','y','0000-00-00 00:00:00',0,'The RSS feed URL.');
-INSERT INTO `oa_config` VALUES ('show_passwords','n','y','0000-00-00 00:00:00',0,'Show any passwords on forms.');
-INSERT INTO `oa_config` VALUES ('show_snmp_community','n','y','0000-00-00 00:00:00',0,'Show the SNMP community string on forms.');
-/*!40000 ALTER TABLE `oa_config` ENABLE KEYS */;
+LOCK TABLES `configuration` WRITE;
+/*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
+INSERT INTO `configuration` VALUES (NULL, 'ad_domain','','y','system',NOW(),'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org');
+INSERT INTO `configuration` VALUES (NULL, 'ad_server','','y','system',NOW(),'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1');
+INSERT INTO `configuration` VALUES (NULL, 'blessed_subnets_use','y','y','system',NOW(),'Should we only accept data from the blessed subnets list.');
+INSERT INTO `configuration` VALUES (NULL, 'default_network_address','','y','system',NOW(),'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
+INSERT INTO `configuration` VALUES (NULL, 'delete_noncurrent','n','y','system',NOW(),'Should we delete any attributes that are not present when we audit a device.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_create_alerts','y','y','system',NOW(),'Should Open-AudIT create an entry in the alert table if a change is detected.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_ip_exclude','','y','system',NOW(),'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_ip_match','n','y','system',NOW(),'Should we match a device based only on its ip during discovery.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_linux_script_directory','/tmp/','y','system',NOW(),'The directory the script is copied into on the target device.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_linux_script_permissions','700','y','system',NOW(),'The permissions set on the audit_linux.sh script when it is copied to the target device.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_mac_match','n','y','system',NOW(),'Should we match a device based only on its mac address during discovery.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_name_match','y','y','system',NOW(),'Should we match a device based only on its hostname during discovery.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_nmap_os','n','y','system',NOW(),'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_update_groups','y','y','system',NOW(),'Should Open-AudIT update the device groups after discovering a device.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_use_ipmi','y','y','system',NOW(),'Should we use ipmitool for discovering management ports if ipmitool is installed.');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_use_dns','y','y','system',NOW(),'Should we use DNS for looking up the hostname and domain.');
+INSERT INTO `configuration` VALUES (NULL, 'display_version','1.12.10','n','system',NOW(),'The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL, 'distinct_groups','y','y','system',NOW(),'Display Groups on the homepage, separated into the type of each Group.');
+INSERT INTO `configuration` VALUES (NULL, 'download_reports','download','y','system',NOW(),'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
+INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system',NOW(),'The API key for Google Maps.');
+INSERT INTO `configuration` VALUES (NULL, 'internal_version','20160904','n','system',NOW(),'The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL, 'logo','logo-banner-oae','y','2016-05-20 10:46:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
+INSERT INTO `configuration` VALUES (NULL, 'log_level','5','y','system',NOW(),'Tells Open-AudIT which severity of event (at least) should be logged.');
+INSERT INTO `configuration` VALUES (NULL, 'log_style','syslog','y','system',NOW(),'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
+INSERT INTO `configuration` VALUES (NULL, 'maps_url','/omk/oae/map','y','system',NOW(),'The web server address of opMaps.');
+INSERT INTO `configuration` VALUES (NULL, 'network_group_auto_create','y','y','system',NOW(),'Have Open-AudIT automatically create Groups based on Subnet.');
+INSERT INTO `configuration` VALUES (NULL, 'network_group_homepage_limit','20','y','system',NOW(),'The number of network groups to display on the homepage.');
+INSERT INTO `configuration` VALUES (NULL, 'network_group_subnet','30','y','system',NOW(),'If the netmask is equal to or greater than this number, do not create a network group.');
+INSERT INTO `configuration` VALUES (NULL, 'nmis','n','y','system',NOW(),'Enable import / export to NMIS functions.');
+INSERT INTO `configuration` VALUES (NULL, 'nmis_url','','y','system',NOW(),'The web server address of NMIS.');
+INSERT INTO `configuration` VALUES (NULL, 'non_admin_search','y','y','system',NOW(),'Enable or disable search for non-Administrators');
+INSERT INTO `configuration` VALUES (NULL, 'oae_license','commercial','n','2016-05-20 10:46:00',0,'License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL, 'oae_prompt','2015-06-01','n','system',NOW(),'Prompt to activate a license for Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL, 'oae_url','/omk/oae','y','system',NOW(),'The web server address of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL, 'page_refresh','300','y','system',NOW(),'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
+INSERT INTO `configuration` VALUES (NULL, 'rss_enable','y','y','system',NOW(),'Enable the RSS feed.');
+INSERT INTO `configuration` VALUES (NULL, 'rss_url','https://community.opmantek.com/rss/OA.xml','y','system',NOW(),'The RSS feed URL.');
+INSERT INTO `configuration` VALUES (NULL, 'show_passwords','n','y','system',NOW(),'Show any passwords on forms.');
+INSERT INTO `configuration` VALUES (NULL, 'show_snmp_community','n','y','system',NOW(),'Show the SNMP community string on forms.');
+/*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
