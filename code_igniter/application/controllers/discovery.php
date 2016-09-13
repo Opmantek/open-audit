@@ -1,41 +1,58 @@
 <?php
+/**
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
-//  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
 #
-//  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#  This file is part of Open-AudIT.
 #
-//  This file is part of Open-AudIT.
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
 #
-//  Open-AudIT is free software: you can redistribute it and/or modify
-//  it under the terms of the GNU Affero General Public License as published
-//  by the Free Software Foundation, either version 3 of the License, or
-//  (at your option) any later version.
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
 #
-//  Open-AudIT is distributed in the hope that it will be useful,
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of
-//  MERCHANTABILITY or FITNESS For A PARTICULAR PURPOSE.  See the
-//  GNU Affero General Public License for more details.
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
 #
-//  You should have received a copy of the GNU Affero General Public License
-//  along with Open-AudIT (most likely in a file named LICENSE).
-//  If not, see <http://www.gnu.org/licenses/>
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
 #
-//  For further information on Open-AudIT or for a license other than AGPL please see
-//  www.opmantek.com or email contact@opmantek.com
-#
-// *****************************************************************************
+# *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   1.12.8
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object discovery
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
+* @return   NULL
  */
 class discovery extends CI_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+    * @return    NULL
+    */
     public function __construct()
     {
         parent::__construct();
@@ -46,8 +63,8 @@ class discovery extends CI_Controller
         $this->load->helper('wmi');
         $this->load->library('session');
         $this->load->model('m_system');
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
         $timestamp = $this->config->config['timestamp'];
         // log the attempt
         $this->load->helper('log');
@@ -167,8 +184,13 @@ class discovery extends CI_Controller
 
             // TODO - check if this IP fits into any existing subnets
             $temp = network_details($ip.'/30');
-            $this->m_oa_config->update_blessed($temp->network.'/'.$temp->network_slash);
+            $network = new stdClass();
+            $network->name = $temp->network.'/'.$temp->network_slash;
+            $network->id = 0;
+            $this->load->model('m_networks');
+            $this->m_networks->upsert($network);
             unset($temp);
+            unset($network);
 
             if (php_uname('s') != 'Windows NT') {
                 $filepath = $this->config->config['base_path'] . '/other';
@@ -326,9 +348,15 @@ class discovery extends CI_Controller
                     $justthese = array("distinguishedName", "name");
                     $sr = ldap_search($ad, $dn, $filter, $justthese);
                     $info = ldap_get_entries($ad, $sr);
+                    $this->load->model('m_networks');
                     for ($i = 0; $i < count($info)-1; $i++) {
                         if ($info[$i]['name'][0] != 'Subnets') {
-                            $this->m_oa_config->update_blessed($info[$i]['name'][0]);
+                            $network = new stdClass();
+                            $network->name = $info[$i]['name'][0];
+                            $network->description = "Inserted from discover active directory";
+                            $network->id = 0;
+                            $this->m_networks->upsert($network);
+                            unset($network);
                         }
                     }
                 } else {
@@ -523,8 +551,8 @@ class discovery extends CI_Controller
             $this->load->view('v_template', $this->data);
         } else {
             // process the scan details and call the discovery script
-            $this->load->model('m_oa_config');
-            $this->m_oa_config->load_config();
+            $this->load->model('m_configuration');
+            $this->m_configuration->load();
             $this->load->helper('network_helper');
 
             $return_var = "";
@@ -564,11 +592,21 @@ class discovery extends CI_Controller
 
             // add to the list of blessed subnets
             if (strpos($subnet_range, '/') !== false) {
-                $this->m_oa_config->update_blessed($subnet_range);
+                $network = new stdClass();
+                $network->name = $subnet_range;
+                $network->org_id = 0;
+                $network->description = 'Inserted from discover subnet';
+                $this->m_networks->upsert($network);
+                unset($network);
             } else {
                 if (filter_var($subnet_range, FILTER_VALIDATE_IP) !== false) {
                     $temp = network_details($subnet_range.'/30');
-                    $this->m_oa_config->update_blessed($temp->network.'/'.$temp->network_slash);
+                    $network = new stdClass();
+                    $network->name = $temp->network.'/'.$temp->network_slash;
+                    $network->org_id = 0;
+                    $network->description = 'Inserted from discover subnet';
+                    $this->m_networks->upsert($network);
+                    unset($network);
                 }
             }
 
@@ -830,6 +868,7 @@ class discovery extends CI_Controller
 
             $this->load->model('m_oa_user');
             $this->load->model('m_scripts');
+            $this->load->model('m_networks');
 
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
                 $this->user = $this->m_oa_user->get_user_details($this->session->userdata['user_id']);
@@ -841,7 +880,7 @@ class discovery extends CI_Controller
             $log_details->file = 'system';
             $log_details->display = $display;
 
-            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+            if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
                 if ($display == 'y') {
                     $log_details->message = "Audit submission from an IP (" . $_SERVER['REMOTE_ADDR'] . ") not in the list of blessed subnets, exiting.";
                     echo "\n" . $log_details->message . "\n";
@@ -989,10 +1028,6 @@ class discovery extends CI_Controller
                         unset($credentials);
                         $credentials = $creds;
                         unset($creds);
-
-                        // default Open-AudIT credentials
-                        // $default = $this->m_oa_config->get_credentials();
-                        // unset($default);
 
                         if (intval($details->count) >= intval($details->limit)) {
                             # we have discovered the requested number of devcies
