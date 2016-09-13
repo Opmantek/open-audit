@@ -100,6 +100,7 @@ class login extends CI_Controller
         $license = '';
 
         foreach ($this->m_configuration->read_subnet() as $subnet) {
+            $this->load->model('m_networks');
             $network = new stdClass();
             $network->name = $subnet;
             $network->org_id = 0;
