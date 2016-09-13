@@ -175,11 +175,11 @@ class M_networks extends MY_Model
             $caller = $trace[1];
             $function = @$caller['function'];
             $model = @$caller['class'];
-            $log_details = new stdClass();
-            $log_details->severity = 7;
-            $log_details->file = 'system';
-            $log_details->message = "Inserting " . $network . ' into blessed subnet list.';
-            stdlog($log_details);
+            $log = new stdClass();
+            $log->severity = 7;
+            $log->file = 'system';
+            $log->message = "Inserting " . $network->name . ' into blessed subnet list.';
+            stdlog($log);
             unset($log);
             if (!empty($network->description)) {
                 $description = $network->description;
@@ -201,7 +201,8 @@ class M_networks extends MY_Model
     function check_ip($ip = '')
     {
         if (empty($this->config)) {
-            $this->load_config();
+            $this->load->model('m_configuration');
+            $this->m_configuration->load();
         }
         if (empty($this->config->config['blessed_subnets_use']) or trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
             return true;
