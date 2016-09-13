@@ -118,7 +118,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts connections credentials devices discovery discoveries fields files licenses locations networks nmis orgs roles scripts users ';
+        $collections = ' charts configuration connections credentials database devices discovery discoveries fields files licenses locations networks nmis orgs roles scripts users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -430,6 +430,11 @@ if (! function_exists('inputRead')) {
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'update' and !empty($CI->response->meta->ids)) {
             $CI->response->meta->action = 'update';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, ids, no id and action = update.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'update' and $CI->response->meta->collection == 'database') {
+            $CI->response->meta->action = 'update';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, collection is database and action = update.';
             stdlog($log);
         }
         if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
@@ -792,56 +797,70 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->action = 'unknown';
         }
 
-        $CI->load->model('m_roles');
-        $CI->roles = $CI->m_roles->collection();
-
-        $CI->load->model('m_users');
-        if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
-            log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-            output();
-            exit();
+        if (empty($CI->roles) and $CI->config->config['internal_version'] >= 20160904) {
+            $CI->load->model('m_roles');
+            $CI->roles = $CI->m_roles->collection();
         }
 
-        if (!empty($CI->response->meta->id) and $CI->response->meta->collection != 'roles') {
-            if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
+        if ($CI->config->config['internal_version'] >= 20160904) {
+            $CI->load->model('m_users');
+            if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
+                log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
+                #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
                 output();
                 exit();
             }
         }
 
-        // check (if we're supplying data) that the OrgID is one we're allowed to supply
-        if ($CI->response->meta->action == 'create' or $CI->response->meta->action == 'update' or $CI->response->meta->action == 'import') {
-            $temp = explode(',', $CI->user->org_list);
-            // org_id
-            if (!empty($CI->meta->received_data->org_id)) {
-                $allowed = false;
-                foreach ($temp as $key => $value) {
-                    if ($CI->meta->received_data->org_id == $value) {
-                        $allowed = true;
+        if (!empty($CI->response->meta->id) and
+            $CI->response->meta->collection != 'roles' and
+            $CI->response->meta->collection != 'configuration' and
+            $CI->response->meta->collection != 'database') {
+            if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
+                #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                output();
+                exit();
+            }
+
+            // check (if we're supplying data) that the OrgID is one we're allowed to supply
+            if ($CI->response->meta->action == 'create' or $CI->response->meta->action == 'update' or $CI->response->meta->action == 'import') {
+                $temp = explode(',', $CI->user->org_list);
+                // org_id
+                if (!empty($CI->meta->received_data->org_id)) {
+                    $allowed = false;
+                    foreach ($temp as $key => $value) {
+                        if ($CI->meta->received_data->org_id == $value) {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                        #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                        output();
+                        exit();
                     }
                 }
-                if (!$allowed) {
-                    log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
-                    output();
-                    exit();
-                }
-            }
-            // devices_assigned_to_org
-            if (!empty($CI->meta->received_data->devices_assigned_to_org)) {
-                $allowed = false;
-                foreach ($temp as $key => $value) {
-                    if ($CI->meta->received_data->devices_assigned_to_org == $value) {
-                        $allowed = true;
+                // devices_assigned_to_org
+                if (!empty($CI->meta->received_data->devices_assigned_to_org)) {
+                    $allowed = false;
+                    foreach ($temp as $key => $value) {
+                        if ($CI->meta->received_data->devices_assigned_to_org == $value) {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                        #$CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                        output();
+                        exit();
                     }
                 }
-                if (!$allowed) {
-                    log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
-                    output();
-                    exit();
-                }
+                unset($temp);
             }
-            unset($temp);
+
         }
+
+
     }
 }
 /* End of file input_helper.php */
