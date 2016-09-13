@@ -160,6 +160,12 @@ class M_networks extends MY_Model
         if (empty($network)) {
             return false;
         }
+        if (empty($network->name)) {
+            return false;
+        }
+        if (empty($network->org_id)) {
+            $network->org_id = 0;
+        }
         $sql = "SELECT * FROM networks WHERE networks.org_id = ? AND networks.name = ?";
         $data = array(intval($networks->org_id), (string)$network->name);
         $result = $this->run_sql($sql, $data);
