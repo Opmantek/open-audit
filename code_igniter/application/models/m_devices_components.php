@@ -362,7 +362,7 @@ class M_devices_components extends MY_Model
 
         ### IP ADDRESS ###
         if ((string)$table == 'ip') {
-            $CI->load->model('m_networks');
+            $this->load->model('m_networks');
             for ($i=0; $i<count($input->item); $i++) {
                 # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
                 $input->item[$i]->mac = strtolower($input->item[$i]->mac);
@@ -424,7 +424,7 @@ class M_devices_components extends MY_Model
                         $network->org_id = 0;
                     }
                     $network->description = 'Inserted from audit result.';
-                    $CI->m_networks->upsert($network);
+                    $this->m_networks->upsert($network);
                 }
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
