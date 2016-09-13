@@ -89,6 +89,9 @@ class M_roles extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
+        if (!$this->db->table_exists('roles')) {
+            return;
+        }
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'roles') {
             $filter = $this->build_filter();
             $properties = $this->build_properties();
