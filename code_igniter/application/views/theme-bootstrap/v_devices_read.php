@@ -38,6 +38,13 @@ if (php_uname('s') != 'Windows NT') {
   include(str_replace('views\\theme-bootstrap\\v_devices_read.php', 'controllers\\include_device_types.php', __FILE__));
 }
 
+# Check and set the $edit variable
+if ($this->m_users->get_user_permission('', 'devices', 'u')) {
+  $edit = true;
+} else {
+  $edit = false;
+}
+
 # put our linked and data JSON objects into the $data array
 # ensure each JSON include is in it's own $type key in the $data array
 unset($data);
@@ -251,7 +258,6 @@ if ($data['system']->type != 'computer') {
 
 <div class="col-md-9">
 
-
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Device Details</h3>
@@ -263,68 +269,82 @@ if ($data['system']->type != 'computer') {
                     <div class="col-md-5">
                         <div class="form-group">
                             <label for="name" class="col-sm-4 control-label"><?php echo __('Name')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system']->name; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="domain" class="col-sm-4 control-label"><?php echo __('Domain')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="domain" name="domain" value="<?php echo $data['system']->domain; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('DNS Domain')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system']->dns_domain; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('FQDN')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="fqdn" name="fqdn" value="<?php echo $data['system']->fqdn; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="fqdn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="ip" class="col-sm-4 control-label"><?php echo __('IP')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="ip" name="ip" value="<?php echo $data['system']->ip; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
@@ -346,7 +366,9 @@ if ($data['system']->type != 'computer') {
                                 ?>
                                 
                                 </select>
+                              <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                              <?php } ?>
                             </div>
                         </div>
 
@@ -368,7 +390,9 @@ if ($data['system']->type != 'computer') {
                                 }
                                 ?>
                                 </select>
+                              <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                              <?php } ?>
                             </div>
                         </div>
                         <?php
@@ -377,11 +401,13 @@ if ($data['system']->type != 'computer') {
 
                         <div class="form-group">
                             <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system']->function; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
@@ -401,7 +427,9 @@ if ($data['system']->type != 'computer') {
                                 }
                                 ?>
                                 </select>
+                              <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                              <?php } ?>
                             </div>
                         </div>
 
@@ -422,47 +450,57 @@ if ($data['system']->type != 'computer') {
                                 }
                                 ?>
                                 </select>
+                              <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system']->description; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="os_group" class="col-sm-4 control-label"><?php echo __('OS Group')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="os_group" name="os_group" value="<?php echo $data['system']->os_group; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="os_family" class="col-sm-4 control-label"><?php echo __('OS Family')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="os_family" name="os_family" value="<?php echo $data['system']->os_family; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
-                            <div class="input-group">
+                            <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control" placeholder="" id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
 <?php insert_additional_fields('system', $data['additional_fields']); ?>
@@ -473,27 +511,33 @@ if ($data['system']->type != 'computer') {
                             <label for="manufacturer" class="col-sm-4 control-label"><?php echo __('Manufacturer')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="manufacturer" placeholder="" value="<?php echo $data['system']->manufacturer; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="model" class="col-sm-4 control-label"><?php echo __('Model')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="model" placeholder="" value="<?php echo $data['system']->model; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="serial" class="col-sm-4 control-label"><?php echo __('Serial')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system']->serial; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <?php
@@ -503,9 +547,11 @@ if ($data['system']->type != 'computer') {
                             <label for="form_factor" class="col-sm-4 control-label"><?php echo __('Form Factor')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="form_factor" placeholder="" value="<?php echo $data['system']->form_factor; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <?php
@@ -550,9 +596,11 @@ if ($data['system']->type != 'computer') {
                             <label for="cluster_name" class="col-sm-4 control-label"><?php echo __('Cluster Name')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system']->cluster_name; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <?php
@@ -565,18 +613,22 @@ if ($data['system']->type != 'computer') {
                             <label for="vm_host" class="col-sm-4 control-label"><?php echo __('VM Host')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="vm_host" placeholder="" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="vm_group" class="col-sm-4 control-label"><?php echo __('VM Group')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system']->vm_group; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                         <?php
@@ -588,13 +640,13 @@ if ($data['system']->type != 'computer') {
                         <div class="form-group">
                             <label for="printer_duplex" class="col-sm-4 control-label"><?php echo __('Printer Duplex')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_duplex" placeholder="" value="<?php echo $data['system']->printer_duplex; ?>" disabled>
+                                <input type="text" class="form-control" id="printer_duplex" placeholder="" value="<?php echo $data['system']->printer_duplex; ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="printer_colour" class="col-sm-4 control-label"><?php echo __('Printer Colour')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_colour" placeholder="" value="<?php echo $data['system']->printer_color; ?>" disabled>
+                                <input type="text" class="form-control" id="printer_colour" placeholder="" value="<?php echo $data['system']->printer_color; ?>" readonly>
                             </div>
                         </div>
                         <?php
@@ -617,7 +669,9 @@ if ($data['system']->type != 'computer') {
                                 <option value='y' <?php echo $selected_y; ?>>Yes</option>
                                 <option value='n' <?php echo $selected_n; ?>>No</option>
                                 </select>
+                              <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                              <?php } ?>
                             </div>
                         </div>
                     </div>
