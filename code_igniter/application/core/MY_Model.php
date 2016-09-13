@@ -180,9 +180,17 @@ class MY_Model extends CI_Model
         $this->db->db_debug = $temp_debug;
         // do we have an error?
         if ($this->db->_error_message()) {
+            $this->load->helper('log');
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
             if (!empty($CI->response)) {
-                $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+                if (!empty($CI->response->errors)) {
+                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+                } else {
+                    $CI->response->errors = array();
+                    $item = new stdClass();
+                    $item->detail_specific = $this->db->_error_message();
+                    $CI->response->errors[0] = $item;
+                }
             }
             return false;
         }
@@ -201,8 +209,12 @@ class MY_Model extends CI_Model
             $type = 'array';
         }
 
-        if ($endpoint == '') {
+        if ($endpoint == '' and !empty($CI->response->meta->collection)) {
             $endpoint = $CI->response->meta->collection;
+        }
+
+        if (empty($endpoint)) {
+            return;
         }
 
         $table = $endpoint;
@@ -268,15 +280,15 @@ class MY_Model extends CI_Model
         }
         if ($filter != '') {
             $filter = substr($filter, 5);
-            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ') AND ' . $filter;
+            $filter = ' WHERE oa_org.id IN (' . $CI->user->org_list . ') AND ' . $filter;
         } else {
-            $filter = ' WHERE oa_org.id IN (' . $this->user->org_list . ')';
+            $filter = ' WHERE oa_org.id IN (' . $CI->user->org_list . ')';
         }
         $return['filter'] = $filter;
 
         // sort
         $sort = '';
-        if ($CI->response->meta->collection == $endpoint) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
             if ($CI->response->meta->sort == '') {
                 $sort = 'ORDER BY ' . $table . '.id';
             } else {
