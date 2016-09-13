@@ -465,7 +465,7 @@ class System extends CI_Controller
         $this->load->model('m_oa_group');
 
         // Update any groups for this system if config item is set
-        if (empty($this->config->config['discovery_update_groups']) or strtolower($discovery_update_groups) != 'y') {
+        if (empty($this->config->config['discovery_update_groups']) or strtolower($this->config->config['discovery_update_groups']) != 'y') {
             # don't run the update group routine
         } else {
             $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
