@@ -71,8 +71,8 @@ class M_scripts extends MY_Model
             $CI->response->meta->received_data->org_id = 0;
         }
         $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array(  $CI->response->meta->received_data->org_id,
-                        $CI->response->meta->received_data->name,
+        $data = array(  $CI->response->meta->received_data->name,
+                        $CI->response->meta->received_data->org_id,
                         json_encode($CI->response->meta->received_data->options),
                         $CI->response->meta->received_data->description,
                         $CI->response->meta->received_data->based_on,
