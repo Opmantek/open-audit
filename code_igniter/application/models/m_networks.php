@@ -167,7 +167,7 @@ class M_networks extends MY_Model
             $network->org_id = 0;
         }
         $sql = "SELECT * FROM networks WHERE networks.org_id = ? AND networks.name = ?";
-        $data = array(intval($networks->org_id), (string)$network->name);
+        $data = array(intval($network->org_id), (string)$network->name);
         $result = $this->run_sql($sql, $data);
         if (count($result) == 0) {
             # the network does not exist. Log it and insert it
