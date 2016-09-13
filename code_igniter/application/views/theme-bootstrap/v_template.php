@@ -46,7 +46,7 @@ include "v_lang.php";
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-dropdown.css">
 <?php
-if ($this->response->meta->collection == 'locations' and ($this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
+if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'locations' and ($this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
         <script src="http://maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>
     <?php
 } ?>
@@ -79,13 +79,15 @@ if (!empty($this->response->meta->baseurl)) {
 include "include_header.php";
 if (!empty($this->response->errors)) {
     echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
-    #unset($this->response->errors);
 }
 if (!empty($this->session->flashdata('error'))) {
     echo '<div class="alert alert-danger" role="alert">' . $this->session->flashdata('error') . "</div>\n";
 }
 if (!empty($this->session->flashdata('success'))) {
     echo '<div class="alert alert-success" role="alert">' . $this->session->flashdata('success') . "</div>\n";
+}
+if (empty($this->session->flashdata('error')) and !empty($this->response->errors[0]->detail)) {
+    echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->detail . "</div>\n";
 }
 include($include.'.php');
 ?>
@@ -123,6 +125,7 @@ unset($this->response->meta->sql);
                     echo "Time: " . $times[$key] . "\n\n";
                 }
             ?>
+            </pre>
         </div>
     </div>
 </div>
