@@ -273,11 +273,11 @@
               <ul class="dropdown-menu">
 
                 <?php
-                if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
+                if ($this->m_users->get_user_permission('', 'configuration', 'r')) { ?>
                     <li class="dropdown-submenu">
                         <a href="#">Configuration</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/edit_config'>Config</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/configuration'>List Configuration</a></li>
                         </ul>
                     </li>
                 <?php
