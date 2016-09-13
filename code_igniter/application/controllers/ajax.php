@@ -34,7 +34,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-class ajax extends MY_Controller
+class ajax1 extends MY_Controller
 {
     public function __construct()
     {
@@ -109,90 +109,6 @@ class ajax extends MY_Controller
     public function index()
     {
         # redirect('/');
-    }
-
-    public function update_config()
-    {
-        $log_details = new stdClass();
-        $log_details->severity = 5;
-        $log_details->file = 'system';
-
-
-        // must be an admin to access this function
-        if ($this->user->admin != 'y') {
-            $log_details->message = "A non-admin user attempted to use ajax/update_config.";
-            stdlog($log_details);
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('main/list_groups');
-            }
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $log_details->message = "GET request received to ajax/update_config. This is deprecated.";
-            stdlog($log_details);
-            $url = str_replace("%3A", ":", current_url());
-            $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
-            $url_array = explode('/', $url);
-
-            if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
-                # we have a GET style request from the Bootstrap theme.
-                $i = explode('&', $_SERVER['QUERY_STRING']);
-                # get the config name
-                $config_name = urldecode(str_replace('name=', '', $i[0]));
-                # get the new config value
-                $config_value = urldecode(str_replace('value=', '', $i[1]));
-            } else {
-                for ($i = 0; $i<count($url_array); $i++) {
-                    if ($url_array[$i] == "update_config") {
-                        $config_name = $url_array[$i+1];
-                    }
-                }
-                $config_name = str_replace("%5E%5E%5E", "/", $config_name);
-                $location = strpos($url, $config_name);
-                $config_value = substr($url, $location);
-                $location = strpos($config_value, "/");
-                $config_value = substr($config_value, $location);
-                $config_value = substr($config_value, 1);
-            }
-
-            $config_value = str_replace("%5E%5E%5E", "/", $config_value);
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            # these are set in the constructor
-            $config_name = $this->data['field_name'];
-            $config_value = $this->data['field_data'];
-        }
-
-        if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
-
-        if (empty($config_name)) {
-            return;
-        }
-
-        $this->load->model("m_oa_config");
-        if ($config_value == '-') {
-            $config_value = '';
-        }
-
-       $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, $this->config->config['timestamp']);
-
-        $masked = str_pad('', strlen($config_value), '*');
-        if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
-            $config_value = $masked;
-        }
-        if ($config_name == 'default_ssh_password' and $this->config->config['show_passwords'] == 'n') {
-            $config_value = $masked;
-        }
-        if ($config_name == 'default_ipmi_password' and $this->config->config['show_passwords'] == 'n') {
-            $config_value = $masked;
-        }
-        if ($config_name == 'default_snmp_community' and $this->config->config['show_snmp_community'] == 'n') {
-            $config_value = $masked;
-        }
-        echo htmlentities(urldecode($config_value));
     }
 
     # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]
