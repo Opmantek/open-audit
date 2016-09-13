@@ -96,6 +96,7 @@ class input extends CI_Controller
         $this->load->library('session');
         $this->load->model('m_system');
         $this->load->model('m_configuration');
+        $this->load->model('m_networks');
         $this->m_configuration->load();
         $timestamp = $this->config->config['timestamp'];
         // log the attempt
