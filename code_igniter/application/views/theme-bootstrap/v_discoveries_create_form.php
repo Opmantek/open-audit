@@ -96,7 +96,7 @@ if (empty($this->config->config['default_network_address'])) {
                     <div class="form-group">
                         <label for="data[attributes][devices_assigned_to_org]" class="col-sm-3 control-label">Assign devices to Org</label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][devices_assigned_to_org]" name="data[attributes][org_id]">
+                            <select class="form-control" id="data[attributes][devices_assigned_to_org]" name="data[attributes][devices_assigned_to_org]">
                                 <option value="" label=" "></option>
                             <?php
                             foreach ($this->response->included as $item) {

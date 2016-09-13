@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object discoveries
 *
 * @access   public
 * @category Object
@@ -179,11 +179,54 @@ class Discoveries extends MY_Controller
     */
     public function execute()
     {
-        echo "<pre>\n";
-        print_r($this->response);
-        exit();
-    }
+        $this->response->data = $this->m_discoveries->read();
+        $this->m_discoveries->execute();
+        if (!empty($this->config->config['discovery_nmap_os'])) {
+            $nmap_os = $this->config->config['discovery_nmap_os'];
+        } else {
+            $nmap_os = 'n';
+        }
 
+        // Unix based discovery
+        if (php_uname('s') != 'Windows NT') {
+            $filepath = $this->config->config['base_path'] . '/other';
+            $command_string = "$filepath/discover_subnet.sh" .
+                                " subnet_range=" .  $this->response->data->attributes->subnet .
+                                " url=".            $this->response->data->attributes->network_address . "index.php/input/discoveries" .
+                                " submit_online=y" .
+                                " echo_output=n" .
+                                " create_file=n" .
+                                " debugging=0" .
+                                " subnet_timestamp=" . $this->response->data->attributes->id .
+                                " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+            if (php_uname('s') == 'Linux') {
+                $command_string = 'nohup ' . $command_string;
+            }
+            @exec($command_string, $output, $return_var);
+            if ($return_var != '0') {
+                $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has failed';
+                $log_details->message = $error;
+                stdlog($log_details);
+            } else {
+                $error = 'Discovery subnet starting script discover_subnet.sh ('.$subnet_range.') has started';
+                $log_details->message = $error;
+                stdlog($log_details);
+            }
+        }
+
+        // Windows based discovery
+        if (php_uname('s') != 'Windows NT') {
+            $filepath = $this->config->config['base_path'] . '\\other';
+        }
+
+        if ($this->response->meta->format === 'json') {
+            output($this->response);
+        } else {
+            $this->session->set_flashdata('success', 'Discovery ' . $this->response->data[0]->attributes->name . ' has been started.');
+            redirect($this->response->meta->collection);
+        }
+
+    }
 }
 // End of file discoveries.php
 // Location: ./controllers/discoveries.php

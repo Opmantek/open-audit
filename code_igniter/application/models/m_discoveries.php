@@ -71,15 +71,38 @@ class M_discoveries extends MY_Model
             log_error('ERR-0010', 'm_discoveries::create');
             return false;
         }
-        $attributes = array('name', 'org_id', 'location_id', 'network_address', 'subnet');
+        $attributes = array('name', 'org_id', 'devices_assigned_to_org', 'devices_assigned_to_location', 'network_address', 'subnet');
         $data = array();
         foreach ($attributes as $attribute) {
-            $data[] = $CI->response->meta->received_data->attributes->{$attribute};
+            if (!empty($CI->response->meta->received_data->attributes->{$attribute})) {
+                $data[] = $CI->response->meta->received_data->attributes->{$attribute};
+            } else {
+                $data[] = '';
+            }
         }
         $data[] = $this->user->full_name;
-        $sql = "INSERT INTO `discoveries` VALUES (NULL, ?, ?, ?, ?, 'subnet', ?, 0, '', 0, ?, NOW(), '', 'n')";
+        $sql = "INSERT INTO `discoveries` VALUES (NULL, ?, ?, ?, ?, ?, 'subnet', ?, 0, '', 0, ?, NOW(), '', 'n')";
         $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = $this->db->insert_id();
+        if (strpos($CI->response->meta->received_data->attributes->subnet, '/') !== false) {
+            $CI->load->model('m_networks');
+            $network = new stdClass();
+            $network->name = $CI->response->meta->received_data->attributes->subnet;
+            $network->org_id = $CI->response->meta->received_data->attributes->org_id;
+            $network->description = $CI->response->meta->received_data->attributes->name;
+            $CI->m_networks->upsert($network);
+        } else {
+            if (filter_var($CI->response->meta->received_data->attributes->subnet, FILTER_VALIDATE_IP) !== false) {
+                $CI->load->model('m_networks');
+                $CI->load->helper('network');
+                $temp = network_details($CI->response->meta->received_data->attributes->subnet.'/30');
+                $network = new stdClass();
+                $network->name = $temp->network.'/'.$temp->network_slash;
+                $network->org_id = $CI->response->meta->received_data->attributes->org_id;
+                $CI->m_networks->upsert($network);
+            }
+        }
+        return $id;
     }
 
     public function update()
@@ -111,12 +134,26 @@ class M_discoveries extends MY_Model
         }
         if ($id != 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `oa_connection` WHERE id = ?";
+            $sql = "DELETE FROM `discoveries` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
         } else {
             return false;
         }
+    }
+
+    public function execute($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "UPDATE discoveries SET device_count = 0, updated_on = NOW() WHERE id = ?";
+        $data = array(intval($id));
+        $this->run_sql($sql, $data);
+        return;
     }
 }
