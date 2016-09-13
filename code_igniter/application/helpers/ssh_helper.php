@@ -440,6 +440,7 @@ if (! function_exists('ssh_audit')) {
         }
 
         $details = new stdClass();
+        $details->os_group = '';
 
         $command = 'uname';
         $ssh_result = ssh_command($ip, $credentials, $command, $display);
@@ -465,6 +466,13 @@ if (! function_exists('ssh_audit')) {
         if ($details->os_group == 'Windows') {
             # We don't support SSH auditing to Windows at the moment
             return($details);
+        }
+
+        if ($details->os_group == '') {
+            $log->severity = 5;
+            $log->message = 'uname command failed for ' . $details->ip . ' (System ID ' . $details->id . ')';
+            stdlog($log);
+            $log->severity = 7;
         }
 
         # DD-WRT specific test
