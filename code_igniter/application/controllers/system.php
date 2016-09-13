@@ -68,8 +68,8 @@ class System extends CI_Controller
         check_default_reports();
         $this->load->helper('group_helper');
         check_default_groups();
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
     }
 
     /**
@@ -124,7 +124,8 @@ class System extends CI_Controller
         if (isset($_POST['form_systemXML']) and $_POST['form_systemXML'] > '') {
 
             // check if the submitting IP is in the list of allowable subnets
-            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+            $this->load->model('m_networks');
+            if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
                 exit;
             }
 
@@ -183,7 +184,8 @@ class System extends CI_Controller
     {
 
         // check if the submitting IP is in the list of allowable subnets
-        if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+        $this->load->model('m_networks');
+        if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
             exit;
         }
 
@@ -198,7 +200,7 @@ class System extends CI_Controller
         } else {
             $user_full_name = '';
         }
-        $this->load->model('m_oa_config');
+        $this->load->model('m_configuration');
         $this->load->helper('url');
         set_time_limit(600);
         $this->load->helper('html');
@@ -463,8 +465,7 @@ class System extends CI_Controller
         $this->load->model('m_oa_group');
 
         // Update any groups for this system if config item is set
-        $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
-        if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+        if (empty($this->config->config['discovery_update_groups']) or strtolower($discovery_update_groups) != 'y') {
             # don't run the update group routine
         } else {
             $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
@@ -491,7 +492,8 @@ class System extends CI_Controller
             $this->load->view('v_system_add_nmap', $this->data);
         } else {
             // check if the submitting IP is in the list of allowable subnets
-            if (!$this->m_oa_config->check_blessed($_SERVER['REMOTE_ADDR'], '')) {
+            $this->load->model('m_networks');
+            if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
                 exit;
             }
             $log_details = new stdClass();
