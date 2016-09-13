@@ -135,7 +135,7 @@ class M_users extends MY_Model
             $CI->response->meta->received_data->attributes->password = "";
         }
         $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
-        $hash = hash("sha256", $salt.$CI->response->meta->received_data->attributes->password); # prepend the salt, then hash
+        $hash = hash("sha256", $salt.(string)$CI->response->meta->received_data->attributes->password); # prepend the salt, then hash
         $password = $salt.$hash;
         $edited_by = $CI->user->full_name;
         if (!isset($this->response->meta->received_data->attributes->roles)) {
@@ -150,17 +150,20 @@ class M_users extends MY_Model
         }
         $this->response->meta->received_data->attributes->orgs = json_encode($this->response->meta->received_data->attributes->orgs);
         $sql = "INSERT INTO `oa_user` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array((string)$name, (string)$password, (string)$this->response->meta->received_data->attributes->full_name,
-            (string)$this->response->meta->received_data->attributes->email, intval($this->response->meta->received_data->attributes->org_id),
-            (string)$this->response->meta->received_data->attributes->roles, (string)$this->response->meta->received_data->attributes->orgs,
-            (string)$this->response->meta->received_data->attributes->lang, (string)$this->response->meta->received_data->attributes->active,
-            (string)$this->user->full_name);
+        $data = array((string)$name, intval($this->response->meta->received_data->attributes->org_id),
+            (string)$password, (string)$this->response->meta->received_data->attributes->full_name,
+            (string)$this->response->meta->received_data->attributes->email, (string)$this->response->meta->received_data->attributes->roles,
+            (string)$this->response->meta->received_data->attributes->orgs,  (string)$this->response->meta->received_data->attributes->lang,
+            (string)$this->response->meta->received_data->attributes->active, (string)$this->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
 
     public function get_orgs($user_id)
     {
+        if (empty($this->user->orgs)) {
+            return array(0);
+        }
         $user_orgs = json_decode($this->user->orgs);
         $sql = "SELECT * FROM oa_org";
         $sql = $this->clean_sql($sql);
@@ -199,12 +202,16 @@ class M_users extends MY_Model
             return false;
         }
         $CI = & get_instance();
-        if (empty($user_id)) {
+        if ($user_id == '') {
             $user_id = @intval($CI->user->id);
             if (empty($user_id)) {
                 return false;
             } else {
-                $user_roles = $CI->user->roles;
+                if (!is_array($CI->user->roles)) {
+                    $user_roles = json_decode($CI->user->roles);
+                } else {
+                    $user_roles = $CI->user->roles;
+                }
                 if (!empty($CI->roles)) {
                     $roles = $CI->roles;
                 } else {
@@ -217,7 +224,11 @@ class M_users extends MY_Model
             $sql = "SELECT roles FROM oa_user WHERE id = ?";
             $data = array($user_id);
             $result = $this->run_sql($sql, $data);
-            $user_roles = json_decode($result[0]->roles);
+            if (!empty($result[0]->roles)) {
+                $user_roles = json_decode($result[0]->roles);
+            } else {
+                $user_roles = array();
+            }
             $CI->load->model('m_roles');
             $roles = $CI->m_roles->collection();
         }
@@ -225,13 +236,15 @@ class M_users extends MY_Model
             return false;
         }
 
-        foreach ($user_roles as $user_role) {
-            foreach ($roles as $role) {
-                if ($role->attributes->name == $user_role) {
-                    $permissions = json_decode($role->attributes->permissions);
-                    if (!empty($permissions->$endpoint)) {
-                        if (stripos($permissions->$endpoint, $permission) !== false) {
-                            return true;
+        if (!empty($user_roles) and !empty($roles)) {
+            foreach ($user_roles as $user_role) {
+                foreach ($roles as $role) {
+                    if ($role->attributes->name == $user_role) {
+                        $permissions = json_decode($role->attributes->permissions);
+                        if (!empty($permissions->$endpoint)) {
+                            if (stripos($permissions->$endpoint, $permission) !== false) {
+                                return true;
+                            }
                         }
                     }
                 }
