@@ -68,8 +68,8 @@ class San extends CI_Controller
         check_default_reports();
         $this->load->helper('group_helper');
         check_default_groups();
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
     }
 
     /**
@@ -764,8 +764,10 @@ class San extends CI_Controller
             $this->m_devices_components->process_component('ip', $details, $ip);
 
             // Finally, update any groups for this system if config item is set
-            $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
-            if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+            // $temp = @$this->m_configuration->read('discovery_update_groups');
+            // $discovery_update_groups = @$temp->attributes->value;
+            // if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
+            if (empty($this->config->config['discovery_update_groups']) or strtolower($this->config->config['discovery_update_groups']) != 'y') {
                 # don't run the update group routine
             } else {
                 $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
