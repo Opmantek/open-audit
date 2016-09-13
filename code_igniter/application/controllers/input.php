@@ -53,38 +53,6 @@ class input extends CI_Controller
     * @access    public
     * @return    NULL
     */
-    // public function construct111()
-    // {
-    //     parent::__construct();
-    //     $REQUEST_METHOD = strtoupper($this->input->server('REQUEST_METHOD'));
-    //     $this->load->helper('network');
-    //     $this->load->helper('ssh');
-    //     $this->load->helper('url');
-    //     $this->load->helper('wmi');
-    //     $this->load->helper('xml');
-    //     if (extension_loaded('snmp')) {
-    //         $this->load->helper('snmp');
-    //         $this->load->helper('snmp_oid');
-    //     }
-    //     $this->load->model('m_networks');
-    //     $this->load->model('m_credentials');
-    //     // log the attempt
-    //     $this->load->helper('log');
-    //     $log = new stdClass();
-    //     $log->severity = 6;
-    //     stdlog($log);
-    //     $log->file = 'system';
-    //     $log->severity = 7;
-    //     if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
-    //         exit;
-    //     }
-    //     if (php_uname('s') != 'Windows NT') {
-    //         $filepath = $this->config->config['base_path'] . '/other';
-    //     } else {
-    //         $filepath = $this->config->config['base_path'] . '\\other';
-    //     }
-    // }
-
     public function __construct()
     {
         parent::__construct();
@@ -904,7 +872,7 @@ class input extends CI_Controller
                 } // close the 'skip'
             }
         } else {
-            $log->message = "No 'form_details' sent.";
+            $log->message = "No 'form_details' sent to input.";
             $log->severity = 5;
             stdlog($log);
         }
