@@ -61,8 +61,9 @@ class MY_Controller extends CI_Controller
         $this->benchmark->mark('code_start');
 
         $this->load->library('session');
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        #$this->load->model('m_oa_config');
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
         $this->load->model('m_oa_user');
         $this->load->model('m_users');
 
@@ -111,10 +112,35 @@ class MY_Controller extends CI_Controller
         }
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
-        $this->user->roles = json_decode($this->user->roles);
-        $this->user->orgs = json_decode($this->user->orgs);
+        if (!empty($this->user->roles)) {
+            $this->user->roles = json_decode($this->user->roles);
+        } else {
+            if ($this->config->config['internal_version'] < 20160904) {
+                $this->user->roles = array('admin', 'org_admin');
+            } else {
+                $this->load->helper('log');
+                $log = new stdClass();
+                $log->severity = 4;
+                $log->file = 'system';
+                $log->message = "Could not determine roles for user.";
+                stdlog($log);
+            }
+        }
+        if (!empty($this->user->orgs)) {
+            $this->user->orgs = json_decode($this->user->orgs);
+        } else {
+            if ($this->config->config['internal_version'] < 20160904) {
+                $this->user->orgs = array(0);
+            } else {
+                $this->load->helper('log');
+                $log = new stdClass();
+                $log->severity = 4;
+                $log->file = 'system';
+                $log->message = "Could not determine orgs for user.";
+                stdlog($log);
+            }
+        }
         unset($temp);
-
     }
 
     /**
