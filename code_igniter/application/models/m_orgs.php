@@ -158,4 +158,23 @@ class M_orgs extends MY_Model
         return($result);
     }
 
+    public function get_children($org_id)
+    {
+        $org_list = array();
+        if (empty($this->orgs)) {
+            $sql = "SELECT * FROM oa_org";
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $this->orgs = $query->result();
+        }
+        foreach ($this->orgs as $org) {
+            if ($org->parent_id == $org_id and $org->id != 0) {
+                $org_list[] = intval($org->id);
+                foreach ($this->get_children($org->id) as $org) {
+                    $org_list[] = intval($org);
+                }
+            }
+        }
+        return($org_list);
+    }
 }
