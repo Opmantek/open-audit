@@ -35,14 +35,11 @@
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
-            <span class="text-left">Networks</span>
-            <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
-        </h3>
+        <?php include('include_collection_panel_header.php'); ?>
     </div>
     <div class="panel-body">
-    <?php include('include_collection_panel_header.php'); ?>
-    <?php if (!empty($this->response->data)) { ?>
+        <?php include('include_collection_panel_body_links.php'); ?>
+        <?php if (!empty($this->response->data)) { ?>
         <table class="table">
             <thead>
                 <tr>

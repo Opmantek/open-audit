@@ -1,38 +1,12 @@
-    <div class="panel panel-default pull-right">
-      <div class="panel-body">
-        <div class="btn-group" role="group" aria-label="...">
-          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->first; ?>"><?php echo __('first'); ?></a>
-          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->prev; ?>"><?php echo __('prev'); ?></a>
-          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->next; ?>"><?php echo __('next'); ?></a>
-          <a role="button" class="btn btn-default" href="<?php echo $this->response->links->last; ?>"><?php echo __('last'); ?></a>
-        </div>
-      </div>
-    </div>
-    <?php
-    if (count($this->response->meta->filter) > 0) {
-      echo '<div class="panel panel-default pull-left">';
-      echo '<div class="panel-body">';
-      foreach ($this->response->meta->filter as $item) {
-        if ($item->operator == '=') {
-          $label = 'label-success';
-        } else if ($item->operator == '!=') {
-          $label = 'label-danger';
-        } else {
-          $label = 'label-info';
-        }
-        if ($item->operator == '=') {
-          $operator = '';
-        } else {
-          $operator = $item->operator;
-        }
-        $link = str_replace($item->name . '=' . $operator . $item->value, '', $_SERVER["REQUEST_URI"]);
-        $link = str_replace($item->name . '=' . $operator . urlencode($item->value), '', $_SERVER["REQUEST_URI"]);
-        if ($item->name == 'status' and $item->operator == '=' and $item->value == 'production') {
-          $link = $refine_link . 'status=!=""';
-        }
-        $label = 'label-info';
-        echo '<big><span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span></big>&nbsp;';
-      }
-      echo '</div>';
-      echo '</div>';
-    } ?>
+        <h3 class="panel-title">
+            <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
+            <?php
+            if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'c') and $this->response->meta->collection != 'configuration') { ?>
+                <span class="pull-right" style="padding-left:10px;" >
+                    <a class="btn btn-xs btn-primary" href="<?php echo $this->response->meta->collection; ?>/create" role="button"><?php echo __('Add'); ?></a>
+                </span>
+            <?php } ?>
+            <span class="pull-right">
+                <?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?>&nbsp;
+            </span>
+        </h3>
