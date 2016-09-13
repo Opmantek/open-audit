@@ -278,8 +278,8 @@ class test extends CI_Controller
     {
         $this->output->enable_profiler(true);
 
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
         echo "<pre>\n";
         $user_org_id = array();
         $sql = "SELECT org_id FROM oa_user_org WHERE user_id = ?";
@@ -591,8 +591,8 @@ class test extends CI_Controller
     {
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
         echo "<pre>\n";
         echo "CONFIG\n";
         print_r($this->config);
