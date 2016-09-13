@@ -126,13 +126,18 @@
                 } ?>
 
                 <?php
-                if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
+                if ($this->m_users->get_user_permission('', 'discoveries', 'r')) { ?>
                     <li class="dropdown-submenu">
-                        <a href="#">Discovery</a>
+                        <a href="#">Discoveries</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_subnet/device'>Discover a Device</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'devices', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
+                            <!--
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_active_directory'>Discover Active Directory</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/scan_ad'>Import Active Directory</a></li>
+                            -->
+                            <?php } ?>
                         </ul>
                     </li>
                 <?php
