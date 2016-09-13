@@ -217,6 +217,7 @@ if (! function_exists('refresh_group_definitions')) {
 if (! function_exists('check_default_groups')) {
     function check_default_groups()
     {
+        return;
         $CI = get_instance();
         $CI->load->model('m_oa_group');
         # check to see if we have any groups activated - if not, activate the default set
