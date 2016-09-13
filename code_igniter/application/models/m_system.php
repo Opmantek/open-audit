@@ -153,17 +153,8 @@ class M_system extends MY_Model
             $details->mac_address = $details->mac;
         }
 
-        $mac_match = 'n';
-        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_mac_match'";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $row = $query->row();
-        $mac_match = @$row->config_value;
-        if (empty($mac_match) or (isset($mac_match) and $mac_match != 'n')) {
-            $mac_match = 'y';
-        }
-
-        if ($mac_match == 'y') {
+        
+        if (empty($this->config->config['discovery_mac_match']) or (isset($this->config->config['discovery_mac_match']) and $this->config->config['discovery_mac_match'] != 'n')) {
             # NOTE - the below mac address prefixes are used by VMware and resulting full mac addresses 'may' not be unique
             # AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%'
             # We may excule these as another option in future versions
@@ -205,17 +196,8 @@ class M_system extends MY_Model
             }
         }
 
-        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_ip_match'";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $row = $query->row();
-        $ip_match = @$row->config_value;
-        if (!isset($ip_match) or is_null($ip_match)) {
-            $ip_match = 'y';
-        }
-
         # check IP Address in system, then ip tables
-        if ($ip_match == 'y') {
+        if (empty($this->config->config['discovery_ip_match']) or (isset($this->config->config['discovery_ip_match']) and $this->config->config['discovery_ip_match'] != 'n')) {
             if (isset($details->ip) and
                     $details->ip > '' and
                     $details->ip != '0.0.0.0' and
@@ -253,16 +235,7 @@ class M_system extends MY_Model
             }
         }
 
-        $sql = "SELECT config_value FROM oa_config WHERE config_name = 'discovery_name_match'";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $row = $query->row();
-        $name_match = @$row->config_value;
-        if (!isset($name_match) or is_null($name_match)) {
-            $name_match = 'n';
-        }
-
-        if (isset($name_match) and $name_match == "y") {
+        if (empty($this->config->config['discovery_name_match']) or (isset($this->config->config['discovery_name_match']) and $this->config->config['discovery_name_match'] != 'n')) {
             # check hostname
             if (isset($details->hostname) and $details->hostname != '' and $details->id == '') {
                 # check if we have an ip address or a hostname (possibly a fqdn)
