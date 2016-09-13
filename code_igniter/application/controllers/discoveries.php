@@ -191,13 +191,13 @@ class Discoveries extends MY_Controller
         if (php_uname('s') != 'Windows NT') {
             $filepath = $this->config->config['base_path'] . '/other';
             $command_string = "$filepath/discover_subnet.sh" .
-                                " subnet_range=" .  $this->response->data->attributes->subnet .
-                                " url=".            $this->response->data->attributes->network_address . "index.php/input/discoveries" .
+                                " subnet_range=" .  $this->response->data[0]->attributes->subnet .
+                                " url=".            $this->response->data[0]->attributes->network_address . "index.php/input/discoveries" .
                                 " submit_online=y" .
                                 " echo_output=n" .
                                 " create_file=n" .
                                 " debugging=0" .
-                                " subnet_timestamp=" . $this->response->data->attributes->id .
+                                " subnet_timestamp=" . $this->response->data[0]->attributes->id .
                                 " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
             if (php_uname('s') == 'Linux') {
                 $command_string = 'nohup ' . $command_string;
