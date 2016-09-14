@@ -319,6 +319,44 @@ LOCK TABLES `credentials` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `dashboards`
+--
+
+DROP TABLE IF EXISTS `dashboards`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dashboards` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `table` varchar(100) NOT NULL DEFAULT '',
+  `column` varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dashboards`
+--
+
+LOCK TABLES `dashboards` WRITE;
+/*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
+INSERT INTO dashboards VALUES (NULL, 'Devices', 0, 'system', 'id', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Types', 0, 'system', 'type', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 0, 'system', 'os_family', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Status', 0, 'system', 'status', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 0, 'system', 'dns_domain', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Server Types', 0, 'server', 'type', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 0, 'system', 'manufacturer', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Locations', 0, 'oa_location', 'id', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Networks', 0, 'networks', 'id', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Organisations', 0, 'oa_org', 'id', 'system', NOW());
+/*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `discoveries`
 --
 
@@ -1786,9 +1824,9 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","dashboard":"r","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","dashboard":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","dashboards":"r","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","dashboards":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","dashboards":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW());
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
