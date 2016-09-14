@@ -343,16 +343,12 @@ CREATE TABLE `dashboards` (
 
 LOCK TABLES `dashboards` WRITE;
 /*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
-INSERT INTO dashboards VALUES (NULL, 'Devices', 0, 'system', 'id', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Device Types', 0, 'system', 'type', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 0, 'system', 'os_family', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Device Status', 0, 'system', 'status', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 0, 'system', 'dns_domain', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Server Types', 0, 'server', 'type', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 0, 'system', 'manufacturer', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Locations', 0, 'oa_location', 'id', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Networks', 0, 'networks', 'id', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Organisations', 0, 'oa_org', 'id', 'system', NOW());
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 

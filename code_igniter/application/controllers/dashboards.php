@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Dashboard extends MY_Controller
+class Dashboards extends MY_Controller
 {
     /**
     * Constructor
@@ -66,7 +66,7 @@ class Dashboard extends MY_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
-        $this->load->model('m_dashboard');
+        $this->load->model('m_dashboards');
         $this->load->model('m_orgs');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
@@ -94,6 +94,17 @@ class Dashboard extends MY_Controller
     }
 
     /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
+    {
+        include 'include_create.php';
+    }
+
+    /**
     * Read a single object
     *
     * @access public
@@ -105,6 +116,28 @@ class Dashboard extends MY_Controller
     }
 
     /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
+    {
+        include 'include_update.php';
+    }
+
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+    /**
     * Collection of objects
     *
     * @access public
@@ -113,6 +146,52 @@ class Dashboard extends MY_Controller
     public function collection()
     {
         include 'include_collection.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create_form()
+    {
+        $tables_temp = $this->db->list_tables();
+        $tables = array();
+        for ($i=0; $i < count($tables_temp); $i++) { 
+            $table = new stdClass();
+            $table->type = 'table';
+            $table->id = '';
+            $table->attributes = new stdClass();
+            $table->attributes->name = $tables_temp[$i];
+            $tables[] = $table;
+            unset($table);
+        }
+        $this->response->included = array_merge($this->response->included, $tables);
+        include 'include_create_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update_form()
+    {
+        include 'include_update_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function execute()
+    {
+        $this->response->data = $this->m_dashboards->execute();
+        output();
     }
 }
 // End of file dashboard.php

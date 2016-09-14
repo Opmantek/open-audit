@@ -35,6 +35,7 @@ if (count($this->response->data) == 0) {
 $collection = $this->response->meta->collection;
 if ($collection == 'credentials' or
     $collection == 'connections' or
+    $collection == 'dashboards' or
     $collection == 'discoveries' or
     $collection == 'fields' or
     $collection == 'files' or
