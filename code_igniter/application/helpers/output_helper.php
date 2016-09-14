@@ -214,25 +214,27 @@ if (! function_exists('output')) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 if (!empty($row->attributes)) {
-                    foreach ($row->attributes as $key => $value) {
-                        if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
-                            $row->attributes->$key = intval($value);
-                        
-                        } elseif ((strrpos($key, '_id') === strlen($key)-3) or
-                                  (strrpos($key, '_count') === strlen($key)-6) or
-                                  (strrpos($key, '_percent') === strlen($key)-8) or
-                                  (strrpos($key, '_size') === strlen($key)-5)) {
-                            $row->attributes->$key = intval($value);
-                        
-                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
-                                (strrpos($key, 'next_hop') === strlen($key)-8) or
-                                (strrpos($key, 'destination') === strlen($key)-11)) {
-                            $temp_name = $key . '_padded';
-                            $row->attributes->$temp_name = ip_address_from_db($value);
-                            $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
-                            $row->attributes->$key = ip_address_from_db($value);
-                            if ($row->attributes->$temp_name == $row->attributes->$key) {
-                                unset($row->attributes->$temp_name);
+                    if (!empty($row->attributes)) {
+                        foreach ($row->attributes as $key => $value) {
+                            if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
+                                $row->attributes->$key = intval($value);
+                            
+                            } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                      (strrpos($key, '_count') === strlen($key)-6) or
+                                      (strrpos($key, '_percent') === strlen($key)-8) or
+                                      (strrpos($key, '_size') === strlen($key)-5)) {
+                                $row->attributes->$key = intval($value);
+                            
+                            } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
+                                    (strrpos($key, 'next_hop') === strlen($key)-8) or
+                                    (strrpos($key, 'destination') === strlen($key)-11)) {
+                                $temp_name = $key . '_padded';
+                                $row->attributes->$temp_name = ip_address_from_db($value);
+                                $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
+                                $row->attributes->$key = ip_address_from_db($value);
+                                if ($row->attributes->$temp_name == $row->attributes->$key) {
+                                    unset($row->attributes->$temp_name);
+                                }
                             }
                         }
                     }
