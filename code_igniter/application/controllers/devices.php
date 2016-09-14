@@ -88,7 +88,11 @@ class devices extends MY_Controller
             $this->response->data = $this->m_devices->report();
 
         } else {
-            $this->response->data = $this->m_devices->collection();
+            if (!empty($this->response->meta->groupby)) {
+                $this->response->data = $this->m_devices->collection_group_by();
+            } else {
+                $this->response->data = $this->m_devices->collection();
+            }
         }
 
         $this->response->meta->filtered = count($this->response->data);
