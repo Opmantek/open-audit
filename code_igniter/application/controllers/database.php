@@ -4790,12 +4790,12 @@ class Database extends MY_Controller
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 0, 'system', 'type', 'system', NOW())";
-            $sql = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 0, 'system', 'os_family', 'system', NOW())";
-            $sql = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 0, 'system', 'status', 'system', NOW())";
-            $sql = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 0, 'system', 'dns_domain', 'system', NOW())";
-            $sql = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 0, 'server', 'type', 'system', NOW())";
-            $sql = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 0, 'system', 'manufacturer', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 0, 'system', 'type', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 0, 'system', 'os_family', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 0, 'system', 'status', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 0, 'system', 'dns_domain', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 0, 'server', 'type', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 0, 'system', 'manufacturer', 'system', NOW())";
 
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";
