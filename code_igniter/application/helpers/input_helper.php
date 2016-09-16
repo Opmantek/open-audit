@@ -211,6 +211,14 @@ if (! function_exists('inputRead')) {
             stdlog($log);
             $sql = '';
             switch ($CI->response->meta->collection) {
+                case "database":
+                    $sql = '';
+                    foreach ($CI->db->list_tables() as $key => $value) {
+                        if ($CI->uri->segment(2) == $value) {
+                            $CI->response->meta->id = $CI->uri->segment(2);
+                        }
+                    }
+                    break;
                 case 'devices':
                     $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
                     $table = 'system';
@@ -334,7 +342,9 @@ if (! function_exists('inputRead')) {
             unset($data);
         }
         if (isset($CI->response->meta->received_data->id)) {
-            $CI->response->meta->id = intval($CI->response->meta->received_data->id);
+            if ($CI->response->meta->collection != 'database') {
+                $CI->response->meta->id = intval($CI->response->meta->received_data->id);
+            }
         }
 
         # get the action
@@ -350,6 +360,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $action . ', according to POST.';
             stdlog($log);
         }
+
 
 
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == '') {
@@ -379,7 +390,9 @@ if (! function_exists('inputRead')) {
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == '') {
             // return a single item
             $CI->response->meta->action = 'read';
-            $CI->response->meta->id = intval($CI->response->meta->id);
+            if ($CI->response->meta->collection != 'database') {
+                $CI->response->meta->id = intval($CI->response->meta->id);
+            }
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
             stdlog($log);
         }
@@ -393,6 +406,12 @@ if (! function_exists('inputRead')) {
         if ($REQUEST_METHOD == 'GET' and $action == 'update' and $CI->response->meta->collection == 'database') {
             // show a HTML form for updating an existing item
             $CI->response->meta->action = 'update_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and $action == 'execute' and $CI->response->meta->collection == 'database' and $CI->response->meta->sub_resource != '') {
+            // show a HTML form for updating an existing item
+            $CI->response->meta->action = 'execute';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
             stdlog($log);
         }
@@ -471,7 +490,9 @@ if (! function_exists('inputRead')) {
             // delete an item
             $CI->response->meta->action = 'delete';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
-            $CI->response->meta->id = intval($CI->response->meta->id);
+            if ($CI->response->meta->collection != 'database') {
+                $CI->response->meta->id = intval($CI->response->meta->id);
+            }
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id.';
             stdlog($log);
         }
@@ -860,7 +881,6 @@ if (! function_exists('inputRead')) {
                 unset($temp);
             }
         }
-
     }
 }
 /* End of file input_helper.php */

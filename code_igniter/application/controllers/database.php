@@ -65,8 +65,9 @@ class Database extends MY_Controller
         }
         $this->load->helper('input');
         $this->load->helper('output');
+        $this->load->helper('log');
         $this->load->helper('error');
-        $this->load->model('m_roles');
+        $this->load->model('m_database');
         $this->load->model('m_orgs');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
@@ -110,10 +111,10 @@ class Database extends MY_Controller
     * @access public
     * @return NULL
     */
-    // public function read()
-    // {
-    //     include 'include_read.php';
-    // }
+    public function read()
+    {
+        include 'include_read.php';
+    }
 
     /**
     * Delete an existing object
@@ -121,10 +122,10 @@ class Database extends MY_Controller
     * @access public
     * @return NULL
     */
-    // public function delete()
-    // {
-    //     include 'include_delete.php';
-    // }
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
 
     /**
     * Collection of objects
@@ -134,7 +135,7 @@ class Database extends MY_Controller
     */
     public function collection()
     {
-        redirect('devices');
+        include 'include_collection.php';
     }
 
     /**
@@ -147,6 +148,30 @@ class Database extends MY_Controller
     // {
     //     include 'include_create_form.php';
     // }
+
+    public function execute()
+    {
+        $result = $this->m_database->execute();
+        foreach ($result as $entry) {
+            $item = new stdClass();
+            $item->id = '';
+            if (isset($entry->id) and $entry->id != '') {
+                $item->id = intval($entry->id);
+            } else if (!empty($entry->{'system.id'})) {
+                $item->id = intval($entry->{'system.id'});
+            } else if (!empty($entry->{$type.".id"})) {
+                $item->id = intval($entry->{$type.".id"});
+            }
+            $item->type = $type;
+            $item->attributes = $entry;
+            $item->links = new stdClass();
+            $item->links->self = $this->config->config['base_url'] . 'index.php/' . $link . '/' . $item->id;
+            $return[] = $item;
+            unset($item);
+        }
+
+        output($this->response);
+    }
 
     /**
     * Supply a HTML form for the user to update an object
@@ -4771,7 +4796,7 @@ class Database extends MY_Controller
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"r\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_reporter', 'system', NOW())";
 
@@ -4945,6 +4970,8 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
             }
             $sql[] = "UPDATE oa_user SET roles = '[\"admin\",\"org_admin\"]' WHERE name IN ('admin', 'nmis', 'open-audit_enterprise')";
+
+            $sql[] = "UPDATE oa_user SET orgs = '[\"0\"]'";
 
             # scripts
             if (!$this->db->field_exists('org_id', 'scripts')) {
