@@ -33,17 +33,31 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+
 $refine_link = $_SERVER["REQUEST_URI"];
 if (strpos($refine_link, '?') === false) {
     $refine_link .= '?';
 } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1) {
     $refine_link .= '&';
 }
+
+if (!empty($this->response->meta->groupby)) {
+    $refine_link = str_replace('?groupby=' . $this->response->meta->groupby, '?', $refine_link);
+    $refine_link = str_replace('&groupby=' . $this->response->meta->groupby, '', $refine_link);
+    if (strpos($refine_link, 'properties=') !== false) {
+
+        $refine_link = str_replace('properties=', 'properties=system.id,system.name,', $refine_link);
+    } else {
+        $refine_link .= '&properties=system.id,system.name';
+    }
+}
+
 if (!empty($this->response->meta->sub_resource_name)) {
     $title = ' - ' . $this->response->meta->sub_resource_name;
 } else {
     $title = '';
 }
+
 ?>
 
 <div class="panel panel-default">
@@ -108,7 +122,11 @@ if (!empty($this->response->data)) { ?>
         <thead>
           <tr>
     <?php
-    $properties = get_object_vars($this->response->data[0]->attributes);
+    if (!empty($this->response->data[0]->attributes)) {
+        $properties = get_object_vars($this->response->data[0]->attributes);
+    } else {
+        $properties = array();
+    }
     foreach ($properties as $key => $value) {
         if (strpos($key, '.') !== false) {
             $key = substr($key, strpos($key, '.')+1);
@@ -133,11 +151,16 @@ if (!empty($this->response->data)) { ?>
             echo "            <th>" . __($key) . "</th>\n";
         }
     }
+    foreach ($properties as $key => $value) {
+        if ($key == 'system.id') {
+            echo "            <th class=\"text-center\">\n";
+            echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
+            echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
+            echo "            </th>\n";
+        }
+    }
+
       ?>
-            <th class="text-center">
-              <button type="button" class="btn btn-primary bulk_edit_button"><?php echo __('Edit') ?></button>&nbsp;
-              <input type="checkbox" name="select-all"/>
-            </th>
           </tr>
         </thead>
         <tbody>

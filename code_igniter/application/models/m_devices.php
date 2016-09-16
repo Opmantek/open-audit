@@ -471,9 +471,29 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $filter = $this->build_filter();
+        if (!empty($CI->response->meta->groupby)) {
+            if (!empty($CI->response->meta->internal->properties)) {
+                $CI->response->meta->internal->properties .= ', COUNT(*) AS `count`';
+            } else {
+                $CI->response->meta->internal->properties = 'COUNT(*) AS `count`';
+            }
+            # get the total count (with a GROUPBY)
+            $sql = "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+            $result = $this->run_sql($sql, array());
+            $CI->response->meta->total = intval(COUNT($result));
+        } else {
+            # get the total count (without a LIMIT and GROUPBY)
+            $sql = "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter;
+            $result = $this->run_sql($sql, array());
+            $CI->response->meta->total = intval($result[0]->count);
+        }
         $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'devices/' . $CI->response->meta->sub_resource);
+        $result = $this->format_data($result, $CI->response->meta->sub_resource);
+        foreach ($result as &$item) {
+            $item->links->self = $CI->config->config['base_url'] . 'index.php/devices?sub_resource=' . $CI->response->meta->sub_resource;
+        }
+        #$result = $this->format_data($result, 'devices');
         return $result;
     }
 
