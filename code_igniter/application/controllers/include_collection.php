@@ -28,4 +28,7 @@
 
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 $this->response->meta->filtered = count($this->response->data);
+if (empty($this->response->meta->total) and !empty($this->response->meta->filtered)) {
+    $this->response->meta->total = $this->response->meta->filtered;
+}
 output($this->response);
