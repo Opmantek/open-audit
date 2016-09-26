@@ -103,7 +103,7 @@ class M_fields extends MY_Model
             }
         }
 
-        $sql = "INSERT INTO `additional_field` VALUES (NULL,?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO `additional_field` VALUES (NULL,?, ?, ?, ?, ?, ?, NOW())";
         if (empty($CI->response->meta->received_data->attributes->group_id)) {
             $CI->response->meta->received_data->attributes->group_id = 1;
         }
@@ -113,12 +113,13 @@ class M_fields extends MY_Model
         if (empty($CI->response->meta->received_data->attributes->org_id)) {
             $CI->response->meta->received_data->attributes->org_id = 0;
         }
-        $data = array($CI->response->meta->received_data->attributes->org_id,
-            $CI->response->meta->received_data->attributes->group_id,
+        $data = array(
             $CI->response->meta->received_data->attributes->name,
+            $CI->response->meta->received_data->attributes->org_id,
             $CI->response->meta->received_data->attributes->type,
             $CI->response->meta->received_data->attributes->values,
-            $CI->response->meta->received_data->attributes->placement);
+            $CI->response->meta->received_data->attributes->placement,
+            $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
