@@ -107,7 +107,7 @@ class M_networks extends MY_Model
             return false;   
         }
         $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array($CI->response->meta->received_data->attributes->org_id, "$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
+        $data = array("$name", $CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
