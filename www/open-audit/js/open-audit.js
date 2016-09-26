@@ -93,6 +93,7 @@ $(document).ready(function () {
     // disable the form fields by default
     // toggle the menu items -> display panels
     $('.list-group-item a').click(function (e) {
+        alert("clicked");
         var menuitem = e.target.dataset.menuitem;
         if (e.target.style.fontWeight === "bold") {
             e.target.style.fontWeight = "";
@@ -136,7 +137,8 @@ $(document).ready(function () {
             $(this).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(this).attr("data-action", "edit");
             $(this).attr("class", "btn btn-default edit_button");
-            document.getElementById('submit_'+attribute).remove();
+            //document.getElementById('submit_'+attribute).remove();
+            $('#submit_' + attribute).remove();
         }
         if (action === "submit") {
             var item = document.getElementById(attribute);
@@ -159,7 +161,7 @@ $(document).ready(function () {
                 type: "PATCH",
                 url: id,
                 contentType: "application/json",
-                data: {data},
+                data: {data : data},
                 success: function (data) {
                     /* alert( 'success' ); */
                 },
@@ -172,7 +174,8 @@ $(document).ready(function () {
             $(edit_button).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(edit_button).attr("data-action", "edit");
             $(edit_button).attr("class", "btn btn-default edit_button");
-            document.getElementById('submit_' + attribute).remove();
+            //document.getElementById('submit_'+attribute).remove();
+            $('#submit_' + attribute).remove();
         }
     });
 });
@@ -261,7 +264,8 @@ $(document).ready(function () {
             $(item).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(item).attr("class", "btn btn-default edit_list");
             $(':checkbox[name='+attribute+']').attr("disabled", true);
-            document.getElementById('cancel_'+attribute).remove();
+            //document.getElementById('cancel_'+attribute).remove();
+            $('#cancel_' + attribute).remove();
         }
         if (action === "submit") {
             var item = $(this);
@@ -280,22 +284,24 @@ $(document).ready(function () {
                 type: "PATCH",
                 url: id,
                 contentType: "application/json",
-                data: {data},
+                data: {data : data},
                 success: function (data) {
                     /* alert( 'success' ); */
                     item.attr("data-action", "edit");
                     item.html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
                     item.attr("class", "btn btn-default edit_list");
                     $(':checkbox[name='+attribute+']').attr("disabled", true);
-                    //alert('Failed to remove cancel_'+item.attr("data-attribute"));
-                    document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    //document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    $('#cancel_' + item.attr("data-attribute")).remove();
                 },
                 error: function (data) {
-                    document.getElementById('cancel_'+attribute).remove();
+                    //document.getElementById('cancel_'+attribute).remove();
+                    $('#cancel_' + attribute).remove();
                     item.attr("data-action", "edit");
                     item.html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
                     item.attr("class", "btn btn-default edit_list");
-                    document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    //document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    $('#cancel_' + item.attr("data-attribute")).remove();
                     $(':checkbox[name='+attribute+']').attr("disabled", true);
                     data = JSON.parse(data.responseText);
                     alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
