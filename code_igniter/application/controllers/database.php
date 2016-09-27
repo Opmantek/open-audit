@@ -149,28 +149,20 @@ class Database extends MY_Controller
     //     include 'include_create_form.php';
     // }
 
+    /**
+    * Execute one of various actions upon the database
+    *
+    * @access public
+    * @return NULL
+    */
     public function execute()
     {
-        $result = $this->m_database->execute();
-        foreach ($result as $entry) {
-            $item = new stdClass();
-            $item->id = '';
-            if (isset($entry->id) and $entry->id != '') {
-                $item->id = intval($entry->id);
-            } else if (!empty($entry->{'system.id'})) {
-                $item->id = intval($entry->{'system.id'});
-            } else if (!empty($entry->{$type.".id"})) {
-                $item->id = intval($entry->{$type.".id"});
-            }
-            $item->type = $type;
-            $item->attributes = $entry;
-            $item->links = new stdClass();
-            $item->links->self = $this->config->config['base_url'] . 'index.php/' . $link . '/' . $item->id;
-            $return[] = $item;
-            unset($item);
-        }
-
-        output($this->response);
+        $this->data = $this->m_database->execute();
+        $this->response->meta->action = 'read';
+        $this->response->meta->format = 'screen';
+        $this->response->errors = array();
+        include 'include_read.php';
+        #output($this->response);
     }
 
     /**
@@ -4729,6 +4721,7 @@ class Database extends MY_Controller
 
         if (($db_internal_version < '20160810') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.8.1
+            $upgrade_time = microtime(true);
 
             $log_details = new stdClass();
             $log_details->file = 'system';
@@ -4765,15 +4758,130 @@ class Database extends MY_Controller
         if (($db_internal_version < '201608904') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.10
 
-            $log_details = new stdClass();
-            $log_details->file = 'system';
-            $log_details->message = 'Upgrade database to 1.12.10 commenced';
-            stdlog($log_details);
+            $item_start = microtime(true);
+
+            # oa_user_org
+            $sql = "DROP TABLE IF EXISTS oa_user_org";
+            $query = $this->db->query($sql);
+
+            # our default Org and Locations are now id = 1
+
+            $org_1_id = 1;
+            $sql = "SELECT COUNT(*) AS `count` FROM oa_org WHERE id = 0";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if ($result[0]->count > 0) {
+                // OK, we have a default Org at id = 0, check to see if we have an Org at id = 1
+                $sql = "SELECT COUNT(*) AS `count` FROM oa_org WHERE id = 1";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if ($result[0]->count > 0) {
+                    // Move this Org
+                    $sql = "INSERT INTO oa_org (SELECT NULL, `name`, 0, `comments`, 'system', NOW() FROM oa_org WHERE id = 1)";
+                    $query = $this->db->query($sql);
+                    $org_1_id = $this->db->insert_id();
+                    $org_1_id = intval($org_1_id);
+                    $sql = "DELETE FROM oa_org WHERE id = 1";
+                    $query = $this->db->query($sql);
+                }
+                // Move our old id = 0 into id = 1
+                $sql = "UPDATE oa_org SET id = 1, parent_id = 1 WHERE id = 0";
+                $query = $this->db->query($sql);
+                // update any old Orgs that had 1 as a parent to the new inserted id
+                $sql = "UPDATE oa_org SET parent_id = $org_1_id WHERE parent_id = 1";
+                $query = $this->db->query($sql);
+                // update any orgs that had 0 as a parent to 1
+                $sql = "UPDATE oa_org SET parent_id = 1 WHERE parent_id = 0";
+                $query = $this->db->query($sql);
+            } else {
+                // Nothing at id = 0, check something is at id = 1
+                $sql = "SELECT COUNT(*) as `count` FROM oa_org WHERE id = 1";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if ($result[0]->count == 0) {
+                    // Insert the default Org
+                    $sql = "INSERT INTO `oa_org` VALUES (1,'Default Organisation',1,'','system',NOW())";
+                    $query = $this->db->query($sql);
+                }
+            }
+
+            $location_1_id =1;
+            $sql = "SELECT COUNT(*) AS `count` FROM oa_location WHERE id = 0";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if ($result[0]->count > 0) {
+                // OK, we have a default Org at id = 0, check to see if we have an Org at id = 1
+                $sql = "SELECT COUNT(*) AS `count` FROM oa_location WHERE id = 1";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if ($result[0]->count > 0) {
+                    // Move this Location
+                    if ($this->db->field_exists('org_id', 'oa_location')) {
+                        $sql = "INSERT INTO oa_location (SELECT NULL, `name`,`org_id`,`type`,`room`,`suite`,`level`,`address`,`suburb`,`city`,`district`,`region`,`area`,`state`,`postcode`,`country`,`tags`,`phone`,`picture`,`latitude`,`longitude`,`geo`,`comments`,`icon`,'system,NOW() FROM oa_location WHERE id = 1)";
+                    } else {
+                        $sql = "INSERT INTO oa_location (SELECT NULL, `name`,`type`,`room`,`suite`,`level`,`address`,`suburb`,`city`,`district`,`region`,`area`,`state`,`postcode`,`country`,`tags`,`phone`,`picture`,`latitude`,`longitude`,`geo`,`comments`,`icon`,'system,NOW() FROM oa_location WHERE id = 1)";
+                    }
+                    $query = $this->db->query($sql);
+                    $location_1_id = $this->db->insert_id();
+                    $location_1_id = intval($location_1_id);
+                    $sql = "DELETE FROM oa_location WHERE id = 1";
+                    $query = $this->db->query($sql);
+                }
+                $sql = "UPDATE oa_location SET id = 1 WHERE id = 0";
+                $query = $this->db->query($sql);
+            } else {
+                // Nothing at id = 0, check something is at id = 1
+                $sql = "SELECT COUNT(*) as `count` FROM oa_location WHERE id = 1";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if ($result[0]->count == 0) {
+                    // Insert the default Org
+                    $sql = "INSERT INTO `oa_location` VALUES (1,'Default Location',1,'Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office','system',NOW())";
+                    $query = $this->db->query($sql);
+                }
+            }
 
             # initialise our $sql array
             unset($sql);
             $sql = array();
 
+            # additional field
+            if (!$this->db->field_exists('org_id', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+            } else {
+                $sql[] = "ALTER TABLE `additional_field` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+                $sql[] = "UPDATE `additional_field` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `additional_field` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
+            if (!$this->db->field_exists('edited_by', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `placement`";
+            }
+            if (!$this->db->field_exists('edited_date', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+            }
+            if (!$this->db->field_exists('group_id', 'additional_field')) {
+                $sql[] = "ALTER TABLE `additional_field` DROP `group_id`";
+            }
+
+            # chart
+            if (!$this->db->field_exists('org_id', 'chart')) {
+                $sql[] = "ALTER TABLE `chart` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`";
+            } else {
+                $sql[] = "ALTER TABLE `chart` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`";
+                $sql[] = "UPDATE `chart` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `chart` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
+
+            # cluster
+            if (!$this->db->field_exists('org_id', 'cluster')) {
+                $sql[] = "ALTER TABLE `cluster` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `description`";
+            } else {
+                $sql[] = "ALTER TABLE `cluster` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `description`";
+                $sql[] = "UPDATE `cluster` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `cluster` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
+
+            # configuration
             $sql[] = "DROP TABLE IF EXISTS `configuration`";
             $sql[] = "CREATE TABLE `configuration` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -4787,33 +4895,21 @@ class Database extends MY_Controller
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO `configuration` (SELECT NULL, config_name, config_value, config_editable, 'system', NOW(), config_description FROM oa_config)";
 
-            $sql[] = "DROP TABLE IF EXISTS oa_user_org";
-            $sql[] = "DROP TABLE IF EXISTS roles";
-            $sql[] = "CREATE TABLE `roles` (
-              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-              `name` varchar(100) NOT NULL DEFAULT '',
-              `description` text NOT NULL,
-              `permissions` text NOT NULL DEFAULT '',
-              `ad_group` varchar(100) NOT NULL DEFAULT '',
-              `edited_by` varchar(200) NOT NULL DEFAULT '',
-              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-              PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
-
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
-
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_reporter', 'system', NOW())";
-
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
+            # credentials
+            if (!$this->db->field_exists('org_id', 'credentials')) {
+                $sql[] = "ALTER TABLE `credentials` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `credentials`";
+            } else {
+                $sql[] = "ALTER TABLE `credentials` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `credentials`";
+                $sql[] = "UPDATE `credentials` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `credentials` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
 
             # dashboards
             $sql[] = "DROP TABLE IF EXISTS dashboards";
             $sql[] = "CREATE TABLE `dashboards` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `name` varchar(100) NOT NULL DEFAULT '',
-              `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
               `table` varchar(100) NOT NULL DEFAULT '',
               `column` varchar(100) NOT NULL DEFAULT '',
               `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -4821,19 +4917,19 @@ class Database extends MY_Controller
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 0, 'system', 'type', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 0, 'system', 'os_family', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 0, 'system', 'status', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 0, 'system', 'dns_domain', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 0, 'server', 'type', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 0, 'system', 'manufacturer', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system', NOW())";
 
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";
             $sql[] = "CREATE TABLE `discoveries` (
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `name` varchar(100) NOT NULL DEFAULT '',
-              `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
               `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
               `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
               `network_address` varchar(100) NOT NULL DEFAULT '',
@@ -4849,26 +4945,53 @@ class Database extends MY_Controller
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            # additional field
-            if (!$this->db->field_exists('org_id', 'additional_field')) {
-                $sql[] = "ALTER TABLE `additional_field` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
-            }
-            if (!$this->db->field_exists('edited_by', 'additional_field')) {
-                $sql[] = "ALTER TABLE `additional_field` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `placement`";
-            }
-            if (!$this->db->field_exists('edited_date', 'additional_field')) {
-                $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
-            }
-            if (!$this->db->field_exists('group_id', 'additional_field')) {
-                $sql[] = "ALTER TABLE `additional_field` DROP `group_id`";
+            # discovery log
+            $sql[] = "DROP TABLE IF EXISTS `discovery_log`";
+            $sql[] = "CREATE TABLE `discovery_log` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `system_id` int(10) unsigned DEFAULT NULL,
+              `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `severity` int(1) unsigned NOT NULL DEFAULT '5',
+              `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
+              `pid` int(10) unsigned NOT NULL DEFAULT '0',
+              `file` varchar(100) NOT NULL DEFAULT '',
+              `function` varchar(100) NOT NULL DEFAULT '',
+              `message` text NOT NULL,
+              `command` text NOT NULL,
+              `command_complete` enum ('', 'y', 'n') DEFAULT '',
+              `command_time_to_execute` decimal(12,6) NOT NULL,
+              `command_error_message` text NOT NULL,
+              PRIMARY KEY (`id`),
+              KEY `system_id` (`system_id`),
+              KEY `pid` (`pid`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            # files
+            if (!$this->db->field_exists('org_id', 'files')) {
+                $sql[] = "ALTER TABLE `files` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+            } else {
+                $sql[] = "ALTER TABLE `files` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+                $sql[] = "UPDATE `files` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `files` SET `org_id` = 1 WHERE `org_id` = 0";
             }
 
             # graph
             if (!$this->db->field_exists('org_id', 'graph')) {
-                $sql[] = "ALTER TABLE `graph` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `id`";
+                $sql[] = "ALTER TABLE `graph` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+            } else {
+                $sql[] = "ALTER TABLE `graph` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+                $sql[] = "UPDATE `graph` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `graph` SET `org_id` = 1 WHERE `org_id` = 0";
             }
 
             # invoice
+            if (!$this->db->field_exists('org_id', 'invoice')) {
+                $sql[] = "ALTER TABLE `invoice` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+            } else {
+                $sql[] = "ALTER TABLE `invoice` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+                $sql[] = "UPDATE `invoice` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `invoice` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
             if (!$this->db->field_exists('edited_by', 'invoice')) {
                 $sql[] = "ALTER TABLE `invoice` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `filename`";
             }
@@ -4878,24 +5001,33 @@ class Database extends MY_Controller
 
             # licenses
             if (!$this->db->table_exists('licenses')) {
-                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`match_string` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-
-                
+                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '1',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`match_string` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             }
             if ($this->db->table_exists('oa_asset_select')) {
                 if ($this->db->count_all('oa_asset_select') > 0) {
                     if ($this->db->count_all('licenses') == 0) {
-                        $sql[] = "INSERT INTO licenses (SELECT NULL AS `id`, 0 AS `org_id`, 0 AS `invoice_id`, 0 AS `invoice_item_id`, `select_name` AS `name`, '' AS `description`, `select_name` AS `match_string`, 'software' AS `type`, 'system' AS `edited_by`, NOW() AS `edited_on` FROM oa_asset_select)";
+                        $sql[] = "INSERT INTO licenses (SELECT NULL AS `id`, 1 AS `org_id`, 0 AS `invoice_id`, 0 AS `invoice_item_id`, `select_name` AS `name`, '' AS `description`, `select_name` AS `match_string`, 'software' AS `type`, 'system' AS `edited_by`, NOW() AS `edited_on` FROM oa_asset_select)";
                     }
                 }
             }
 
             # networks
             if (!$this->db->field_exists('org_id', 'networks')) {
-                $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
+                $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+            } else {
+                $sql[] = "ALTER TABLE `networks` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+                $sql[] = "UPDATE `networks` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `networks` SET `org_id` = 1 WHERE `org_id` = 0";
             }
 
             # oa_connection
+            if (!$this->db->field_exists('org_id', 'oa_connection')) {
+                $sql[] = "ALTER TABLE `oa_connection` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+            } else {
+                $sql[] = "ALTER TABLE `oa_connection` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
+                $sql[] = "UPDATE `oa_connection` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `oa_connection` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
             if (!$this->db->field_exists('edited_by', 'oa_connection')) {
                 $sql[] = "ALTER TABLE `oa_connection` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_b`";
             }
@@ -4905,12 +5037,20 @@ class Database extends MY_Controller
 
             # oa_group
             if (!$this->db->field_exists('org_id', 'oa_group')) {
-                $sql[] = "ALTER TABLE `oa_group` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `group_id`";
+                $sql[] = "ALTER TABLE `oa_group` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `group_id`";
+            } else {
+                $sql[] = "ALTER TABLE `oa_group` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `group_id`";
+                $sql[] = "UPDATE `oa_group` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `oa_group` SET `org_id` = 1 WHERE `org_id` = 0";
             }
 
             # oa_location
             if (!$this->db->field_exists('org_id', 'oa_location')) {
-                $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
+                $sql[] = "ALTER TABLE `oa_location` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+            } else {
+                $sql[] = "ALTER TABLE `oa_location` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+                $sql[] = "UPDATE `oa_location` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `oa_location` SET `org_id` = 1 WHERE `org_id` = 0";
             }
             if (!$this->db->field_exists('edited_by', 'oa_location')) {
                 $sql[] = "ALTER TABLE `oa_location` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `icon`";
@@ -4935,7 +5075,11 @@ class Database extends MY_Controller
 
             # oa_report
             if (!$this->db->field_exists('org_id', 'oa_report')) {
-                $sql[] = "ALTER TABLE `oa_report` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `report_id`";
+                $sql[] = "ALTER TABLE `oa_report` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `report_id`";
+            } else {
+                $sql[] = "ALTER TABLE `oa_report` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `report_id`";
+                $sql[] = "UPDATE `oa_report` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `oa_report` SET `org_id` = 1 WHERE `org_id` = 0";
             }
             if (!$this->db->field_exists('edited_by', 'oa_report')) {
                 $sql[] = "ALTER TABLE `oa_report` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `report_sort_column`";
@@ -4946,7 +5090,11 @@ class Database extends MY_Controller
 
             # oa_user
             if (!$this->db->field_exists('org_id', 'oa_user')) {
-                $sql[] = "ALTER TABLE `oa_user` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
+                $sql[] = "ALTER TABLE `oa_user` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+            } else {
+                $sql[] = "ALTER TABLE `oa_user` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+                $sql[] = "UPDATE `oa_user` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `oa_user` SET `org_id` = 1 WHERE `org_id` = 0";
             }
             if ($this->db->field_exists('permissions', 'oa_user')) {
                 $sql[] = "ALTER TABLE oa_user DROP permissions";
@@ -4976,28 +5124,67 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
             }
             $sql[] = "UPDATE oa_user SET roles = '[\"admin\",\"org_admin\"]' WHERE name IN ('admin', 'nmis', 'open-audit_enterprise')";
+            $sql[] = "UPDATE oa_user SET orgs = '[1]'";
 
-            $sql[] = "UPDATE oa_user SET orgs = '[\"0\"]'";
+            # roles
+            $sql[] = "DROP TABLE IF EXISTS roles";
+            $sql[] = "CREATE TABLE `roles` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `name` varchar(100) NOT NULL DEFAULT '',
+              `description` text NOT NULL,
+              `permissions` text NOT NULL DEFAULT '',
+              `ad_group` varchar(100) NOT NULL DEFAULT '',
+              `edited_by` varchar(200) NOT NULL DEFAULT '',
+              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
+
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
+
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_reporter', 'system', NOW())";
+
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_user', 'system', NOW())";
 
             # scripts
             if (!$this->db->field_exists('org_id', 'scripts')) {
-                $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 0 AFTER `name`";
+                $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+            } else {
+                $sql[] = "ALTER TABLE `scripts` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
+                $sql[] = "UPDATE `scripts` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `scripts` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+
+            # system
+            if (!$this->db->field_exists('org_id', 'system')) {
+                $sql[] = "ALTER TABLE `system` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `owner`";
+            } else {
+                $sql[] = "ALTER TABLE `system` CHANGE `org_id` `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `owner`";
+                $sql[] = "UPDATE `system` SET `org_id` = $org_1_id WHERE `org_id` = 1";
+                $sql[] = "UPDATE `system` SET `org_id` = 1 WHERE `org_id` = 0";
+            }
+
+            $sql[] = "DELETE FROM `configuration` WHERE `name` = 'discovery_serial_match'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number discovery.')";
 
             $sql[] = "UPDATE configuration SET value = '20160904' WHERE name = 'internal_version'";
             $sql[] = "UPDATE configuration SET value = '1.12.10' WHERE name = 'display_version'";
 
+            $sql[] = "SELECT bling FROM expensive";
+
+            $temp_debug = $this->db->db_debug;
+            $this->db->db_debug = false;
             foreach ($sql as $this_query) {
-                $log_details->message = $this_query;
-                stdlog($log_details);
-                $this->data['output'] .= $this_query.";\n\n";
+                $item_start = microtime(true);
                 $query = $this->db->query($this_query);
+                $this->data['output'] .= $this_query.";\n\n";
+                if ($this->db->_error_message()) {
+                    $this->data['output'] .= 'ERROR - ' . $this->db->_error_message() . "\n\n";
+                }
             }
-
-            $log_details->message = 'Upgrade database to 1.12.10 completed';
-            stdlog($log_details);
-            unset($log_details);
-
+            $this->db->db_debug = $temp_debug;
+            $this->data['output'] .= 'Upgrade database to 1.12.10 completed';
             $this->config->config['internal_version'] = '20160904';
         }
 

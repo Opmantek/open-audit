@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `additional_field`;
 CREATE TABLE `additional_field` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
   `values` varchar(100) NOT NULL DEFAULT '',
   `placement` varchar(100) NOT NULL DEFAULT '',
@@ -213,7 +213,7 @@ DROP TABLE IF EXISTS `chart`;
 CREATE TABLE `chart` (
   `when` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `what` varchar(50) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `count` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`when`,`what`,`org_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -239,7 +239,7 @@ CREATE TABLE `cluster` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('high availability','load balancing','perforance','storage','other') DEFAULT NULL,
   `purpose` enum('application','database','file','virtualisation','web','other') DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -302,7 +302,7 @@ CREATE TABLE `credentials` (
   `description` text NOT NULL,
   `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',
   `credentials` text NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
@@ -315,6 +315,7 @@ CREATE TABLE `credentials` (
 
 LOCK TABLES `credentials` WRITE;
 /*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
+INSERT INTO credentials VALUES (NULL, 'Default SNMP', '', 'snmp', 'ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==', 1, 'system', NOW());
 /*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -328,7 +329,7 @@ DROP TABLE IF EXISTS `dashboards`;
 CREATE TABLE `dashboards` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `table` varchar(100) NOT NULL DEFAULT '',
   `column` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -343,12 +344,12 @@ CREATE TABLE `dashboards` (
 
 LOCK TABLES `dashboards` WRITE;
 /*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
-INSERT INTO dashboards VALUES (NULL, 'Device Types', 0, 'system', 'type', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 0, 'system', 'os_family', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Device Status', 0, 'system', 'status', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 0, 'system', 'dns_domain', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Server Types', 0, 'server', 'type', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 0, 'system', 'manufacturer', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system', NOW());
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -362,7 +363,7 @@ DROP TABLE IF EXISTS `discoveries`;
 CREATE TABLE `discoveries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `devices_assigned_to_org` int(10) unsigned DEFAULT NULL,
   `devices_assigned_to_location` int(10) unsigned DEFAULT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
@@ -386,6 +387,42 @@ CREATE TABLE `discoveries` (
 LOCK TABLES `discoveries` WRITE;
 /*!40000 ALTER TABLE `discoveries` DISABLE KEYS */;
 /*!40000 ALTER TABLE `discoveries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `discovery_log`
+--
+
+DROP TABLE IF EXISTS `discovery_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `discovery_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `severity` int(1) unsigned NOT NULL DEFAULT '5',
+  `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `file` varchar(100) NOT NULL DEFAULT '',
+  `function` varchar(100) NOT NULL DEFAULT '',
+  `message` text NOT NULL,
+  `command` text NOT NULL,
+  `command_complete` enum ('', 'y', 'n') DEFAULT '',
+  `command_time_to_execute` decimal(12,6) NOT NULL,
+  `command_error_message` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  KEY `pid` (`pid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `discovery_log`
+--
+
+LOCK TABLES `discovery_log` WRITE;
+/*!40000 ALTER TABLE `discovery_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `discovery_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -549,7 +586,7 @@ DROP TABLE IF EXISTS `files`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `path` varchar(45) NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -576,7 +613,7 @@ DROP TABLE IF EXISTS `graph`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `graph` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `system_id` int(10) unsigned DEFAULT NULL,
   `linked_table` varchar(100) NOT NULL DEFAULT '',
   `linked_row` varchar(100) NOT NULL DEFAULT '',
@@ -611,7 +648,7 @@ DROP TABLE IF EXISTS `invoice`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `invoice` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `purchase_order` varchar(100) NOT NULL DEFAULT '',
   `cost_center` varchar(100) NOT NULL DEFAULT '',
   `date_received` varchar(100) NOT NULL DEFAULT '',
@@ -709,7 +746,7 @@ DROP TABLE IF EXISTS `licenses`;
 
 CREATE TABLE `licenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `invoice_id` int(10) unsigned NOT NULL DEFAULT '0',
   `invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -1005,7 +1042,7 @@ DROP TABLE IF EXISTS `networks`;
 CREATE TABLE `networks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1133,7 +1170,7 @@ CREATE TABLE `oa_change` (
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1142,7 +1179,7 @@ CREATE TABLE `oa_change` (
 
 LOCK TABLES `oa_change` WRITE;
 /*!40000 ALTER TABLE `oa_change` DISABLE KEYS */;
-INSERT INTO `oa_change` VALUES (1,'Default Change.','','0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','',1,'0000-00-00 00:00:00');
+INSERT INTO `oa_change` VALUES (NULL,'Default Change.','','0000-00-00 00:00:00','0000-00-00 00:00:00','','','','','','','',1,'0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `oa_change` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1184,6 +1221,7 @@ INSERT INTO `configuration` VALUES (NULL, 'discovery_linux_script_permissions','
 INSERT INTO `configuration` VALUES (NULL, 'discovery_mac_match','n','y','system',NOW(),'Should we match a device based only on its mac address during discovery.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_name_match','y','y','system',NOW(),'Should we match a device based only on its hostname during discovery.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_nmap_os','n','y','system',NOW(),'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
+INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number discovery.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_update_groups','y','y','system',NOW(),'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_use_ipmi','y','y','system',NOW(),'Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_use_dns','y','y','system',NOW(),'Should we use DNS for looking up the hostname and domain.');
@@ -1222,7 +1260,7 @@ DROP TABLE IF EXISTS `oa_connection`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_connection` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(100) NOT NULL,
   `provider` varchar(100) NOT NULL,
   `service_type` varchar(100) NOT NULL,
@@ -1263,7 +1301,7 @@ DROP TABLE IF EXISTS `oa_group`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_group` (
   `group_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `group_name` varchar(100) NOT NULL DEFAULT '',
   `group_padded_name` varchar(100) NOT NULL DEFAULT '',
   `group_dynamic_select` text NOT NULL,
@@ -1388,7 +1426,7 @@ DROP TABLE IF EXISTS `oa_location`;
 CREATE TABLE `oa_location` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` varchar(100) NOT NULL DEFAULT '',
   `room` varchar(100) NOT NULL DEFAULT '',
   `suite` varchar(100) NOT NULL DEFAULT '',
@@ -1422,7 +1460,7 @@ CREATE TABLE `oa_location` (
 
 LOCK TABLES `oa_location` WRITE;
 /*!40000 ALTER TABLE `oa_location` DISABLE KEYS */;
-INSERT INTO `oa_location` VALUES (0,'Default Location',0,'Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office','system',NOW());
+INSERT INTO `oa_location` VALUES (1,'Default Location',1,'Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','Default location','office','system',NOW());
 /*!40000 ALTER TABLE `oa_location` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1450,7 +1488,7 @@ CREATE TABLE `oa_org` (
 
 LOCK TABLES `oa_org` WRITE;
 /*!40000 ALTER TABLE `oa_org` DISABLE KEYS */;
-INSERT INTO `oa_org` VALUES (0,'Default Organisation',0,'','system',NOW());
+INSERT INTO `oa_org` VALUES (1,'Default Organisation',1,'','system',NOW());
 /*!40000 ALTER TABLE `oa_org` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1463,7 +1501,7 @@ DROP TABLE IF EXISTS `oa_report`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `oa_report` (
   `report_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `report_name` varchar(100) NOT NULL DEFAULT '',
   `report_description` text NOT NULL,
   `report_display_in_menu` enum('y','n') NOT NULL DEFAULT 'y',
@@ -1556,7 +1594,7 @@ DROP TABLE IF EXISTS `oa_user`;
 CREATE TABLE `oa_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -1568,7 +1606,7 @@ CREATE TABLE `oa_user` (
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1577,9 +1615,9 @@ CREATE TABLE `oa_user` (
 
 LOCK TABLES `oa_user` WRITE;
 /*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (1,'admin',0,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','["admin","org_admin"]','[0]','en','y','system',NOW());
-INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise',0,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','["admin","org_admin"]','[0]','en','y','system',NOW());
-INSERT INTO `oa_user` VALUES (3,'nmis',0,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','["admin","org_admin"]','[0]','en','y','system',NOW());
+INSERT INTO `oa_user` VALUES (NULL,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','["admin","org_admin"]','[1]','en','y','system',NOW());
+INSERT INTO `oa_user` VALUES (NULL,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','["admin","org_admin"]','[1]','en','y','system',NOW());
+INSERT INTO `oa_user` VALUES (NULL,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','["admin","org_admin"]','[1]','en','y','system',NOW());
 /*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1907,7 +1945,7 @@ DROP TABLE IF EXISTS `scripts`;
 CREATE TABLE `scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(250) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `options` text NOT NULL,
   `description` varchar(200) NOT NULL DEFAULT '',
   `based_on` varchar(200) NOT NULL DEFAULT '',
@@ -1915,7 +1953,7 @@ CREATE TABLE `scripts` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1924,11 +1962,11 @@ CREATE TABLE `scripts` (
 
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
-INSERT INTO `scripts` VALUES (1,'audit_aix.sh',0,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (2,'audit_esx.sh',0,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit ESX config.','audit_esx.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (3,'audit_linux.sh',0,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (4,'audit_osx.sh',0,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (5,'audit_windows.vbs',0,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_aix.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_esx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit ESX config.','audit_esx.sh','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/system/add_system\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system',NOW());
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2274,7 +2312,7 @@ CREATE TABLE `system` (
   `class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','hypervisor','') NOT NULL DEFAULT '',
   `function` varchar(100) NOT NULL DEFAULT '',
   `owner` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `location_id` int(10) unsigned NOT NULL DEFAULT '0',
   `location_level` varchar(100) NOT NULL DEFAULT '',
   `location_suite` varchar(100) NOT NULL DEFAULT '',
