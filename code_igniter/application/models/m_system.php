@@ -135,16 +135,18 @@ class M_system extends MY_Model
             }
         }
 
-        if (empty($details->id) and !empty($details->serial) and !empty($details->type)) {
-            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production' LIMIT 1";
-            $sql = $this->clean_sql($sql);
-            $data = array("$details->serial", "$details->type");
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            if (count($row) > 0) {
-                $details->id = $row->id;
-                $log_details->message = 'HIT on serial + type for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+        if (!empty($this->config->config['discovery_serial_match']) and strtolower($this->config->config['discovery_serial_match']) == 'y') {
+            if (empty($details->id) and !empty($details->serial) and !empty($details->type)) {
+                $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production' LIMIT 1";
+                $sql = $this->clean_sql($sql);
+                $data = array("$details->serial", "$details->type");
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                if (count($row) > 0) {
+                    $details->id = $row->id;
+                    $log_details->message = 'HIT on serial + type for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
+                    stdlog($log_details);
+                }
             }
         }
 
@@ -859,6 +861,13 @@ class M_system extends MY_Model
         if (!isset($details->icon)) {
             $details->icon = '';
         }
+        if (empty($details->org_id)) {
+            unset($details->org_id);
+        }
+        if (!empty($details->man_org_id) and empty($details->org_id)) {
+            $details->org_id = intval($details->man_org_id);
+        }
+        unset($details->man_org_id);
 
         # we now set a default location - 0 the location id
         if (!isset($details->location_id)) {
