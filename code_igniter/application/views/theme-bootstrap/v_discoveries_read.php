@@ -173,8 +173,91 @@ $item = $this->response->data[0];
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label for="complete" class="col-sm-3 control-label">Complete</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlentities($item->attributes->complete); ?>" disabled>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+                    <?php
+                    if ($item->attributes->complete == 'n') { ?>
+                        <div class="form-group">
+                            <label for="refresh" class="col-sm-3 control-label">Not Complete</label>
+                            <div class="col-sm-8 input-group">
+                                <a class="btn btn-sm btn-warning" href="<?php echo htmlentities($item->id); ?>">Refresh</a>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    if (filter_var($item->attributes->subnet, FILTER_VALIDATE_IP)) {?>
+                        <div class="form-group">
+                            <label for="execute_with_debug" class="col-sm-3 control-label">Execute with debug</label>
+                            <div class="col-sm-8 input-group">
+                                <a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->id); ?>?action=execute&debug=true">Execute</a>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
+                    <div class="form-group">
+                        <label for="execute" class="col-sm-3 control-label">Execute</label>
+                        <div class="col-sm-8 input-group">
+                            <a class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute">Execute</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <span class="text-left">Log</span>
+            <span class="pull-right"></span>
+        </h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style='text-align:center;'><?php echo __('ID')?></th>
+                        <th>Timestamp</th>
+                        <th>File</th>
+                        <th>Function</th>
+                        <th>Title</th>
+                        <th>Message</th>
+                        <th>Duration</th>
+                        <th>Complete</th>
+                        <th>Error</th>
+                        <th>Command</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->response->included as $item) {
+                        if ($item->type == 'logs') {
+                            echo "<tr>\n"; ?>
+                        <td style='text-align:center;'><a class="btn btn-sm btn-success" href="discoveries/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                        <td><?php echo htmlentities($item->attributes->timestamp)?></td>
+                        <td><?php echo htmlentities($item->attributes->file)?></td>
+                        <td><?php echo htmlentities($item->attributes->function)?></td>
+                        <td><?php echo htmlentities($item->attributes->title)?></td>
+                        <td><?php echo htmlentities($item->attributes->message)?></td>
+                        <td><?php if ($item->attributes->command_time_to_execute != '0.000000') { echo htmlentities($item->attributes->command_time_to_execute); } ?></td>
+                        <td><?php echo htmlentities($item->attributes->command_complete)?></td>
+                        <td><?php echo htmlentities($item->attributes->command_error_message)?></td>
+                        <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlentities($item->attributes->command) . '</pre>'; } ?></td>
+                    </tr>
+                    <?php
+                    }
+                } ?></tbody>
+            </table>
+        </div>
+    </div>
+</div>

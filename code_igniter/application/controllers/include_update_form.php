@@ -71,6 +71,10 @@ if ($collection == 'users') {
     $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
 }
 
+if ($this->response->meta->collection == 'discoveries') {
+    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+}
+
 unset($collection);
 
 if ($this->response->meta->format === 'json') {

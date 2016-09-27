@@ -49,6 +49,7 @@ $(document).ready(function () {
         var $id = $(this).attr('data-id');
         var $name = $(this).attr('data-name');
         var $url = baseurl + 'index.php/' + collection + '/' + $id;
+        //alert($url);
         $.ajax({
             type: 'DELETE',
             url: $url,
@@ -93,7 +94,6 @@ $(document).ready(function () {
     // disable the form fields by default
     // toggle the menu items -> display panels
     $('.list-group-item a').click(function (e) {
-        alert("clicked");
         var menuitem = e.target.dataset.menuitem;
         if (e.target.style.fontWeight === "bold") {
             e.target.style.fontWeight = "";
@@ -183,7 +183,6 @@ $(document).ready(function () {
 /* Get Lat/Long from Google Maps API on update locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_latlong', function (e) {
-        alert("fired");
         var address = "";
         if ($('#geo').val() > "") {
             address = $('#geo').val();
