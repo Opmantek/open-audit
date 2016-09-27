@@ -86,9 +86,11 @@ if (!empty($this->session->flashdata('error'))) {
 if (!empty($this->session->flashdata('success'))) {
     echo '<div class="alert alert-success" role="alert">' . $this->session->flashdata('success') . "</div>\n";
 }
-
 if (!empty($this->session->flashdata('error')) and !empty($this->response->errors[0]->detail)) {
     echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->detail . "</div>\n";
+}
+if (!empty($this->response->meta->flash)) {
+    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
 }
 include($include.'.php');
 
@@ -124,10 +126,17 @@ unset($this->response->meta->sql);
                 }
             ?>
             </pre>
+            <?php
+            if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
+            ?>
+            <h3>User Session Data</h3>
+            <pre><?php print_r($this->session->all_userdata()); ?></pre>
+            <?php
+            }
+            ?>
         </div>
     </div>
 </div>
-
 </div>
 </body>
 </html>
