@@ -59,7 +59,7 @@ class M_licenses extends MY_Model
     {
         $CI = & get_instance();
         if (empty($CI->response->meta->received_data->org_id)) {
-            $CI->response->meta->received_data->org_id = 0;
+            $CI->response->meta->received_data->org_id = 1;
         }
         $CI->response->meta->received_data->attributes->invoice_id = 0;
         $CI->response->meta->received_data->attributes->invoice_item_id = 0;
