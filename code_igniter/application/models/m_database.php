@@ -40,29 +40,98 @@ class M_database extends MY_Model
         parent::__construct();
     }
 
-    public function execute($sub_resource = '', $attributes = '')
+    public function execute($table = '', $action = '', $format = '', $attributes = array())
     {
         $CI = & get_instance();
-        if ($sub_resource == '') {
-            $sub_resource = $CI->response->meta->sub_resource;
+        if ($table == '') {
+            $table = $CI->response->meta->id;
         }
-        if ($attributes == '') {
-            $attributes = $CI->response->meta->received_data;
+        if (!$this->db->table_exists($table)) {
+            return;
         }
-        switch ($sub_resource) {
+        if ($action == '') {
+            $action = $CI->response->meta->sub_resource;
+        }
+        if ($format == '') {
+            $format = $CI->response->meta->format;
+        }
+
+        $sql = '';
+
+        switch ($action) {
             case 'table and row count':
                 $sql = "SELECT TABLE_NAME AS `table`, TABLE_ROWS AS `count` FROM `information_schema`.`tables` WHERE `table_schema` = '". $this->db->database . "'";
                 $return = 'array';
                 break;
 
             case 'row count':
-                $sql = "SELECT COUNT(*) AS `count` FROM `@table`";
+                $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
                 $return = 'count';
                 break;
 
             case 'export table':
-                $sql = "SELECT * FROM `@table`";
-                $return = 'array';
+                $sql = "SELECT COUNT(*) AS `count` FROM `$table`";
+                $result = $this->run_sql($sql, array());
+                $count = intval($result[0]->count);
+                if ($format == 'csv') {
+                    $this->load->dbutil();
+                    $sql = "SELECT * FROM `" . $table . "`";
+                    $return = 'array';
+                    $delimiter = ",";
+                    $newline = "\r\n";
+                    $query = $this->db->query($sql);
+                    if ($count < 1001) {
+                        $return = $this->dbutil->csv_from_result($query, $delimiter, $newline);
+                        return $return;
+                    } else {
+                        $backup = $this->dbutil->csv_from_result($query, $delimiter, $newline);
+                        $this->load->helper('download');
+                        force_download('open-audit_' . $table . '.csv', $backup);
+                    }
+                    exit();
+                }
+                if ($format == 'xml') {
+                    $this->load->dbutil();
+                    $sql = "SELECT * FROM `" . $table . "`";
+                    $query = $this->db->query($sql);
+                    $config = array ('root' => 'root', 'element' => 'item', 'newline' => "\n", 'tab' => "\t");
+                    if ($count < 1001) {
+                        $return = $this->dbutil->xml_from_result($query, $config);
+                        return $return;
+                    } else {
+                        $backup = $this->dbutil->xml_from_result($query, $config);
+                        $this->load->helper('download');
+                        force_download('open-audit_' . $table . '.xml', $backup);
+                    }
+                    exit();
+                }
+                if ($format == 'sql') {
+                    if (php_uname('s') == 'Windows NT') {
+                        $mysqldump = 'c:\\xampplite\\mysql\\bim\\mysqldump.exe';
+                    }
+                    if (php_uname('s') == 'Darwin') {
+                        $mysqldump = '/usr/local/mysql/bin/mysqldump';
+                    }
+                    if (php_uname('s') == 'Linux') {
+                        exec('which mysqldump', $temp);
+                        $mysqldump = $temp[0];
+                        unset($temp);
+                    }
+                    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' ' . $CI->db->database . ' ' . $table;
+                    
+                    if ($count < 1001) {
+                        // echo "<pre>\n";
+                        // passthru($command);
+                        exec($command, $return);
+                        return implode("\n", $return);
+                    } else {
+                        exec($command, $backup);
+                        $backup = implode("\n", $backup);
+                        $this->load->helper('download');
+                        force_download('open-audit_' . $table . '.sql', $backup);
+                    }
+                    exit();
+                }
                 break;
             
             case 'tables':
@@ -71,17 +140,17 @@ class M_database extends MY_Model
                 break;
             
             case 'fields':
-                $sql = "SELECT COLUMN_NAME FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = '". $this->db->database . "' AND TABLE_NAME = '@table'";
+                $sql = "SELECT COLUMN_NAME FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = '". $this->db->database . "' AND TABLE_NAME = '" . $table . "'";
                 $return = 'array';
                 break;
             
             case 'distinct fields':
-                $sql = "SELECT DISTINCT(@field) AS `field` FROM `@table` ORDER BY `field`";
+                $sql = "SELECT DISTINCT(@field) AS `field` FROM `" . $table . "` ORDER BY `field`";
                 $return = 'array';
                 break;
             
             case 'delete non-current':
-                $sql = "DELETE FROM `@table` WHERE current = 'n'";
+                $sql = "DELETE FROM `" . $table . "` WHERE current = 'n'";
                 $return = 'delete_count';
                 break;
 
@@ -100,45 +169,31 @@ class M_database extends MY_Model
                 $sql = str_replace('@'.$key, $value, $sql);
             }
         }
+        if ($return != 'text') {
+            $result = $this->run_sql($sql, array());
+            switch ($return) {
+                case "array":
+                    return $result;
+                    break;
 
-        $result = $this->run_sql($sql, array());
-        switch ($return) {
-            case "array":
-                return $result;
-                break;
+                case "count":
+                    return intval($result[0]->count);
+                    break;
 
-            case "count":
-                return intval($result[0]->count);
-                break;
+                case "delete_count":
+                    return intval($this->db->affected_rows());
+                    break;
 
-            case "delete_count":
-                return intval($this->db->affected_rows());
-                break;
-
-            default:
-                return $result;
-                break;
+                default:
+                    return $result;
+                    break;
+            }
+        } else {
+            $result = shell_exec($command);
+            return $result;
         }
         #print_r($result);
     }
-
-    // public function create()
-    // {
-    //     $CI = & get_instance();
-    //     if (empty($CI->response->meta->received_data->attributes->name)) {
-    //         log_error('ERR-0010', 'm_dashboards::create');
-    //         return false;
-    //     }
-    //     $attributes = array('name', 'org_id', 'table', 'column');
-    //     $data = array();
-    //     foreach ($attributes as $attribute) {
-    //         $data[] = $CI->response->meta->received_data->attributes->{$attribute};
-    //     }
-    //     $data[] = $CI->user->full_name;
-    //     $sql = "INSERT INTO `dashboards` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
-    //     $this->run_sql($sql, $data);
-    //     return $this->db->insert_id();
-    // }
 
     public function read($id = '')
     {
@@ -210,39 +265,32 @@ class M_database extends MY_Model
         return ($return);
     }
 
-    // public function update()
-    // {
-    //     $CI = & get_instance();
-    //     $sql = '';
-    //     $fields = ' name org_id table column ';
-    //     foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-    //         if (strpos($fields, ' '.$key.' ') !== false) {
-    //             if ($sql == '') {
-    //                 $sql = "SET `" . $key . "` = '" . $value . "'";
-    //             } else {
-    //                 $sql .= ", `" . $key . "` = '" . $value . "'";
-    //             }
-    //         }
-    //     }
-    //     $sql = "UPDATE `dashboards` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-    //     $this->run_sql($sql);
-    //     return;
-    // }
-
-    public function delete($table = '', $current = 'n')
+    public function delete($table = '', $current = '')
     {
         if ($table == '') {
             $CI = & get_instance();
             $table = $CI->response->meta->id;
         }
+        if ($current == '') {
+            if (!empty($this->response->meta->current)) {
+                $current = $this->response->meta->current;
+            } else {
+                $current = 'n';
+            }
+        }
         if ($this->db->table_exists($table)) {
             if ($this->db->field_exists('current', $table)) {
                 $sql = "DELETE FROM `" . $table . "` WHERE current = '" . $current . "'";
-                $data = array();
-                $this->run_sql($sql, $data);
+                $this->run_sql($sql, array());
                 return true;
             } else {
-                return false;
+                if ($current == 'all') {
+                    $sql = "DELETE FROM `" . $table . "`";
+                    $this->run_sql($sql, array());
+                    return true;
+                } else {
+                    return false;
+                }
             }
         } else {
             return false;
@@ -295,64 +343,4 @@ class M_database extends MY_Model
 
         return $return;
     }
-
-    // public function execute($id = '')
-    // {
-    //     if ($id == '') {
-    //         $CI = & get_instance();
-    //         $id = intval($CI->response->meta->id);
-    //     } else {
-    //         $id = intval($id);
-    //     }
-    //     $sql = "SELECT * FROM dashboards WHERE id = ?";
-    //     $data = array($id);
-    //     $dashboard = $this->run_sql($sql, $data);
-
-    //     if ($dashboard[0]->table == 'oa_org') {
-    //         $org_id = 'id';
-    //     } else {
-    //         $org_id = 'org_id';
-    //     }
-    //     $tables = ' additional_field_item audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
-        
-    //     if (stripos($tables, $dashboard[0]->table) !== false) {
-    //         $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->table . "." . $dashboard[0]->column . " AS `name` FROM system LEFT JOIN " . $dashboard[0]->table . " ON (system.id = " . $dashboard[0]->table . ".system_id and " . $dashboard[0]->table . ".current = 'y') WHERE " . $dashboard[0]->table . "." . $dashboard[0]->column . " IS NOT NULL AND " . $dashboard[0]->table . "." . $dashboard[0]->column . " != '' AND system.org_id IN (" . $CI->user->org_list . ") GROUP BY " . $dashboard[0]->table . "." . $dashboard[0]->column;
-        
-    //     } else {
-    //         $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->column . " AS `name` FROM `" . $dashboard[0]->table . "` WHERE `$org_id` IN (" . $CI->user->org_list . ") GROUP BY `" . $dashboard[0]->column . "`";
-    //     }
-    //     $result = $this->run_sql($sql, array());
-    //     $result = $this->format_data($result, 'dashboards');
-
-    //     switch ($dashboard[0]->table) {
-
-    //         case 'oa_location':
-    //             $collection = 'locations';
-    //             break;
-
-    //         case 'networks':
-    //             $collection = 'networks';
-    //             break;
-
-    //         case 'oa_org':
-    //             $collection = 'orgs';
-    //             break;
-
-    //         case 'system':
-    //             $collection = 'devices';
-    //             break;
-            
-    //         default:
-    //             $collection = 'devices';
-    //             break;
-    //     }
-    //     $link = $CI->config->config['base_url'] . 'index.php/' . $collection . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
-    //     for ($i=0; $i < count($result); $i++) {
-    //         $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name);
-    //     }
-
-    //     return ($result);
-    // }
-
-
 }
