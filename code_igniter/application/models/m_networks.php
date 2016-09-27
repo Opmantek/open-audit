@@ -95,7 +95,7 @@ class M_networks extends MY_Model
             return false;
         }
         if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 0;
+            $CI->response->meta->received_data->attributes->org_id = 1;
         }
         # check to see if we already have a network with the same name
         $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
@@ -164,7 +164,7 @@ class M_networks extends MY_Model
             return false;
         }
         if (empty($network->org_id)) {
-            $network->org_id = 0;
+            $network->org_id = 1;
         }
         $sql = "SELECT * FROM networks WHERE networks.org_id = ? AND networks.name = ?";
         $data = array(intval($network->org_id), (string)$network->name);
