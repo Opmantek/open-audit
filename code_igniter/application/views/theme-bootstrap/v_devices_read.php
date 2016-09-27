@@ -200,10 +200,10 @@ if ($data['system']->type != 'computer') {
                     <?php
                     }
                 }
-                if ($software_odbc) { ?>
+                if (!empty($software_odbc)) { ?>
                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver">Software ODBC Driver</a></li>
                 <?php }
-                if ($software_update) { ?>
+                if (!empty($software_update)) { ?>
                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update">Software Updates</a></li>
                 <?php } ?>
                 </ul>
