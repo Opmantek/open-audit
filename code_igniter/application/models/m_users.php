@@ -104,7 +104,7 @@ class M_users extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($id != 0) {
+        if ($id != 1) {
             // attempt to delete the item
             $sql = "DELETE FROM `oa_user` WHERE id = ?";
             $data = array($id);
@@ -162,7 +162,7 @@ class M_users extends MY_Model
     public function get_orgs($user_id)
     {
         if (empty($this->user->orgs)) {
-            return array(0);
+            return array();
         }
         $user_orgs = json_decode($this->user->orgs);
         $sql = "SELECT * FROM oa_org";
@@ -183,7 +183,7 @@ class M_users extends MY_Model
     {
         $org_list = array();
         foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 0) {
+            if ($org->parent_id == $org_id and $org->id != 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->get_org($org->id) as $org) {
                     $org_list[] = intval($org);
@@ -301,7 +301,7 @@ class M_users extends MY_Model
             return false;
         }
 
-        $sql = "SELECT $org_id_name AS `org_id` FROM $table WHERE $id_name = ?";
+        $sql = "SELECT $org_id_name AS `org_id` FROM $table WHERE `$id_name` = ?";
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
