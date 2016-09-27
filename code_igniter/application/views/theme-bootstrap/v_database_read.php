@@ -65,6 +65,11 @@ $item = $this->response->data[0];
                         <label for="current" class="col-sm-3 control-label"><?php echo __('Current Rows'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="current" name="current" value="<?php echo htmlentities($item->attributes->current); ?>" disabled>
+                            <?php if ($this->m_users->get_user_permission('', 'database', 'd') and intval($item->attributes->current) > 0) { ?>
+                            <span class="input-group-btn">
+                                <button id="delete_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=y"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="form-group">
@@ -73,11 +78,42 @@ $item = $this->response->data[0];
                             <input type="text" class="form-control" id="non_current" name="non_current" value="<?php echo htmlentities($item->attributes->non_current); ?>" disabled>
                             <?php if ($this->m_users->get_user_permission('', 'database', 'd') and intval($item->attributes->non_current) > 0) { ?>
                             <span class="input-group-btn">
-                                <button id="delete_non_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button id="delete_non_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=n"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
                     </div>
+                    <?php } ?>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="export_csv" class="col-sm-3 control-label">Export Data</label>
+                        <div class="col-sm-8 input-group">
+                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute&format=csv&sub_resource=export table">to CSV</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="export_sql" class="col-sm-3 control-label">Export Data</label>
+                        <div class="col-sm-8 input-group">
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute&format=sql&sub_resource=export table">to SQL</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="export_sql" class="col-sm-3 control-label">Export Data</label>
+                        <div class="col-sm-8 input-group">
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute&format=xml&sub_resource=export table">to XML</a>
+                        </div>
+                    </div>
+                    <?php $tables = ' audit_log change_log chart credentials discoveries discovery_log edit_log graph networks oa_user_sessions '; ?>
+                    <?php if (strpos($tables, ' ' .$item->attributes->name . ' ')) { ?>
+                    <?php if ($this->m_users->get_user_permission('', 'database', 'd')) { ?>
+                    <div class="form-group">
+                        <label for="delete_all" class="col-sm-3 control-label">Delete All Data</label>
+                        <div class="col-sm-8 input-group">
+                                <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=all">Delete</button>
+                        </div>
+                    </div>
+                    <?php } ?>
                     <?php } ?>
                 </div>
             </div>
@@ -133,4 +169,34 @@ $item = $this->response->data[0];
             </div>
         </div>
     </div>
+
+<?php
+if (!empty($this->data) and is_string($this->data)) {
+?>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="text-left"><?php echo __('Data'); ?></span>
+            </h3>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <pre>
+<?php echo htmlentities($this->data); ?>
+                    </pre>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
+}
+?>
+
+
+
+
+
+
 </form>
