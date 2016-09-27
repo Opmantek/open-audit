@@ -68,7 +68,7 @@ class M_scripts extends MY_Model
             return false;
         }
         if (empty($CI->response->meta->received_data->org_id)) {
-            $CI->response->meta->received_data->org_id = 0;
+            $CI->response->meta->received_data->org_id = 1;
         }
         $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $data = array(  $CI->response->meta->received_data->name,
