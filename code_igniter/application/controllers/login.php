@@ -171,7 +171,7 @@ class login extends CI_Controller
             // user going to an internal page and OAE is installed with a valid license, set the logo and show the logon page
             $data['oae_message'] = ' ';
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->configuration->update('', 'logo', 'logo-banner-oae', 'system');
+                $this->m_configuration->update('', 'logo', 'logo-banner-oae', 'system');
                 $data['logo'] = 'logo-banner-oae';
             }
         }
