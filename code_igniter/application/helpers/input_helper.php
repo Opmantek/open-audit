@@ -597,7 +597,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set format to ' . $CI->response->meta->format . ', because default.';
             stdlog($log);
         }
-        $reserved_words = ' json json_data screen xml ';
+        $reserved_words = ' json json_data screen xml csv sql ';
         if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
             $CI->response->meta->format = 'json';
         }
@@ -844,7 +844,12 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->collection != 'configuration' and
             $CI->response->meta->collection != 'database') {
             if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
-                output();
+                if ($CI->response->meta->format == 'json') {
+                    echo json_encode($CI->response);
+                } else {
+                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                    redirect($CI->response->meta->collection);
+                }
                 exit();
             }
             // check (if we're supplying data) that the OrgID is one we're allowed to supply
