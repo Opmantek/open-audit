@@ -186,6 +186,17 @@ class M_credentials extends MY_Model
             return false;
         }
 
+        # Required
+        if (!empty($CI->response->meta->received_data->attributes->org_id)) {
+            $org_id = intval($CI->response->meta->received_data->attributes->org_id);
+            $log->message = "Using org_id from received_data.";
+            stdlog($log);
+        } else {
+            $log->message = "Org_id not supplied - exiting.";
+            stdlog($log);
+            return false;
+        }
+
         # Optional
         if (!empty($CI->response->meta->received_data->attributes->description)) {
             $description = (string)$CI->response->meta->received_data->attributes->description;
@@ -208,7 +219,7 @@ class M_credentials extends MY_Model
 
         # Insert the new item
         $sql = "INSERT INTO `credentials` (id, name, description, type, credentials, org_id, edited_by, edited_date) VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array($name, $description, $type, $credentials, "0", $CI->user->full_name);
+        $data = array($name, $description, $type, $credentials, $org_id, $CI->user->full_name);
         $this->run_sql($sql, $data);
         $id = @$this->db->insert_id();
         if (!empty($id)) {
