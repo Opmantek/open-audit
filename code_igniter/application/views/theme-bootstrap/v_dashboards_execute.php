@@ -47,16 +47,16 @@
                 <thead>
                     <tr>
                         <th><?php echo __('Name')?></th>
-                        <td style='text-align:center;'><?php echo __('Count'); ?></td>
-                        <th style='text-align:center;'><?php echo __('View')?></th>
+                        <td class="text-center"><?php echo __('Count'); ?></td>
+                        <th class="text-center"><?php echo __('View')?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
                         <td><?php echo ucwords($item->attributes->name)?></td>
-                        <td style='text-align:center;'><?php echo intval($item->attributes->count); ?></td>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-primary" href="<?php echo $item->attributes->link; ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><?php echo intval($item->attributes->count); ?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->attributes->link; ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>
