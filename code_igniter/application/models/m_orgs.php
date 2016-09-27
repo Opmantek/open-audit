@@ -110,7 +110,7 @@ class M_orgs extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($id != 0) {
+        if ($id != 1) {
             $sql = "DELETE FROM `oa_org` WHERE id = ?";
             $data = array($id);
             $this->run_sql($sql, $data);
@@ -130,7 +130,7 @@ class M_orgs extends MY_Model
             $name = $CI->response->meta->received_data->attributes->name;
         }
         if (empty($CI->response->meta->received_data->attributes->parent_id)) {
-            $parent_id = 0;
+            $parent_id = 1;
         } else {
             $parent_id = intval($CI->response->meta->received_data->attributes->parent_id);
         }
@@ -139,8 +139,9 @@ class M_orgs extends MY_Model
         } else {
             $comments = $CI->response->meta->received_data->attributes->comments;
         }
-        $sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, '', ?)";
-        $data = array("$name", $parent_id, $comments);
+        #$sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, ?, (string)$CI->user->full_name, NOW())";
+        $sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, ?, ?, NOW())";
+        $data = array("$name", $parent_id, $comments, (string)$CI->user->full_name);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -149,12 +150,13 @@ class M_orgs extends MY_Model
     {
         $CI = & get_instance();
         $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
-        $sql = $this->clean_sql($sql);
-        $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
-        $query = $this->db->query($sql);
-        $this->db->db_debug = $temp_debug;
-        $result = $query->result();
+        $result = $this->run_sql($sql, $data);
+        // $sql = $this->clean_sql($sql);
+        // $temp_debug = $this->db->db_debug;
+        // $this->db->db_debug = FALSE;
+        // $query = $this->db->query($sql);
+        // $this->db->db_debug = $temp_debug;
+        // $result = $query->result();
         return($result);
     }
 
@@ -168,7 +170,7 @@ class M_orgs extends MY_Model
             $this->orgs = $query->result();
         }
         foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 0) {
+            if ($org->parent_id == $org_id and $org->id != 1) {
                 $org_list[] = intval($org->id);
                 foreach ($this->get_children($org->id) as $org) {
                     $org_list[] = intval($org);
