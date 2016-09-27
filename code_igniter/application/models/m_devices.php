@@ -121,7 +121,7 @@ class M_devices extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (!isset($result[0]->org_id)) {
-            $org_id = 0;
+            $org_id = 1;
         } else {
             $org_id = intval($result[0]->org_id);
         }
@@ -438,7 +438,7 @@ class M_devices extends MY_Model
         $result = $this->run_sql($sql, array());
         $this->count_data($result);
 
-        $sql = "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type)) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
+        $sql = "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
         $seen_by = $this->run_sql($sql, array());
         $seen_by_temp = array();
 
