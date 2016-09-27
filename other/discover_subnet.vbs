@@ -398,6 +398,11 @@ for each host in hosts_in_subnet
         result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
         result = result & "     <wmi_status><![CDATA[" & wmi_status & "]]></wmi_status>" & vbcrlf
         result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
+        if debugging > 0 then
+            result = result & "     <debug>true</debug>" & vbcrlf
+        else
+            result = result & "     <debug>false</debug>" & vbcrlf
+        end if
         result = result & "     <nmap_ports><![CDATA[" & nmap_ports & "]]></nmap_ports>" & vbcrlf
         result = result & " </device>" & vbcrlf
         result_file = result_file & result
