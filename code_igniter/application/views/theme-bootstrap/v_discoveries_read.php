@@ -227,7 +227,7 @@ $item = $this->response->data[0];
             <table class="table">
                 <thead>
                     <tr>
-                        <th style='text-align:center;'><?php echo __('ID')?></th>
+                        <th class="text-center"><?php echo __('ID')?></th>
                         <th>Timestamp</th>
                         <th>File</th>
                         <th>Function</th>
@@ -243,7 +243,7 @@ $item = $this->response->data[0];
                     <?php foreach ($this->response->included as $item) {
                         if ($item->type == 'logs') {
                             echo "<tr>\n"; ?>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-success" href="discoveries/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="discoveries/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                         <td><?php echo htmlentities($item->attributes->timestamp)?></td>
                         <td><?php echo htmlentities($item->attributes->file)?></td>
                         <td><?php echo htmlentities($item->attributes->function)?></td>
