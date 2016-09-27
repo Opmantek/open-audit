@@ -13,6 +13,13 @@ body {margin: 8px;}
 .glyphicon:hover { 
     color: green;
 }
+th, td {
+    white-space: nowrap;
+}
+.wrap {
+    white-space: pre-wrap;
+}
+
 
 /* v_devices_read */
 .list-group-item img {
