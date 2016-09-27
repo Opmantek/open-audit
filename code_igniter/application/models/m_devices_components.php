@@ -421,7 +421,7 @@ class M_devices_components extends MY_Model
                     if (!empty($details->org_id)) {
                         $network->org_id = intval($details->org_id);
                     } else {
-                        $network->org_id = 0;
+                        $network->org_id = 1;
                     }
                     $network->description = 'Inserted from audit result.';
                     $this->m_networks->upsert($network);
@@ -727,7 +727,7 @@ class M_devices_components extends MY_Model
                 $used_percent = @intval(($input_item->used / $input_item->size) * 100);
                 $free_percent = @intval(100 - $used_percent);
                 if (empty($details->org_id)) {
-                    $details->org_id = 0;
+                    $details->org_id = 1;
                 }
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
