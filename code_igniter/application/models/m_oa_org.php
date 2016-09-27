@@ -151,7 +151,7 @@ class M_oa_org extends MY_Model
             return;
         }
         $data = array("$id");
-        $sql = "UPDATE system SET org_id = '0' WHERE org_id = ?";
+        $sql = "UPDATE system SET org_id = '1' WHERE org_id = ?";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
         $sql = "DELETE FROM oa_org WHERE id = ?";
