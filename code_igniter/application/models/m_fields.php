@@ -111,7 +111,7 @@ class M_fields extends MY_Model
             $CI->response->meta->received_data->attributes->values = '';
         }
         if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 0;
+            $CI->response->meta->received_data->attributes->org_id = 1;
         }
         $data = array(
             $CI->response->meta->received_data->attributes->name,
