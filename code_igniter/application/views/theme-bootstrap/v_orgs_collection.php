@@ -40,7 +40,7 @@
     <div class="panel-body">
         <?php include('include_collection_panel_body_links.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
-            <table class="table table-hover table-condensed">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th><?php echo __('ID')?></th>
@@ -57,7 +57,7 @@
                     <?php foreach ($this->response->data as $item):
                         ?>
                         <tr>
-                            <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo intval($item->id); ?></a></td>
+                            <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo intval($item->id); ?></a></td>
                             <td class="text-center"><?php echo $item->attributes->device_count?></td>
                             <td><?php echo htmlentities($item->attributes->name)?></td>
                             <td><?php echo htmlentities($item->attributes->comments)?></td>

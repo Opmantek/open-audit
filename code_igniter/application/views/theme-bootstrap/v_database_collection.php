@@ -40,12 +40,12 @@
     <div class="panel-body">
         <?php include('include_collection_panel_body_links.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
-            <table class="table">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <th><?php echo __('Name')?></th>
                         <th><?php echo __('Row Count')?></th>
-                        <th style='text-align:center;'><?php echo __('View')?></th>
+                        <th class="text-center"><?php echo __('View')?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,7 +53,7 @@
                     <tr>
                         <td><?php echo htmlentities($item->id)?></td>
                         <td><?php echo htmlentities($item->attributes->count)?></td>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

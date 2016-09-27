@@ -40,29 +40,29 @@
     <div class="panel-body">
         <?php include('include_collection_panel_body_links.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
-            <table class="table">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th style='text-align:center;'><?php echo __('ID')?></th>
+                        <th class="text-center"><?php echo __('ID')?></th>
                         <th><?php echo __('Name')?></th>
                         <th><?php echo __('Organisation')?></th>
                         <th><?php echo __('Type')?></th>
                         <th><?php echo __('Placement')?></th>
-                        <th style='text-align:center;'><?php echo __('Edit')?></th>
-                        <th style='text-align:center;'><?php echo __('Delete')?></th>
+                        <th class="text-center"><?php echo __('Edit')?></th>
+                        <th class="text-center"><?php echo __('Delete')?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-success" href="fields/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="fields/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                         <td><?php echo htmlentities($item->attributes->name)?></td>
                         <td><?php echo htmlentities($item->attributes->org_name)?></td>
                         <td><?php echo htmlentities($item->attributes->type)?></td>
                         <td><?php echo htmlentities($item->attributes->placement)?></td>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-info" href="fields/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-info" href="fields/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         
-                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

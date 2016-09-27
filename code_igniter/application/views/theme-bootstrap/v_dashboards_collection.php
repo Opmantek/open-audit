@@ -122,33 +122,33 @@ if ($this->m_users->get_user_permission('', 'users', 'r')) {
         <?php include('include_collection_panel_header.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
             <br />
-            <table class="table">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th style='text-align:center;'><?php echo __('ID')?></th>
+                        <th class="text-center"><?php echo __('ID')?></th>
                         <th><?php echo __('Name')?></th>
-                        <td style='text-align:center;'><?php echo __('Count'); ?></td>
-                        <td style='text-align:center;'><?php echo __('View'); ?></td>
+                        <td class="text-center"><?php echo __('Count'); ?></td>
+                        <td class="text-center"><?php echo __('View'); ?></td>
                         <?php if ($this->m_users->get_user_permission('', 'dashboards', 'u')) { ?>
-                        <th style='text-align:center;'><?php echo __('Edit')?></th>
+                        <th class="text-center"><?php echo __('Edit')?></th>
                         <?php } ?>
                         <?php if ($this->m_users->get_user_permission('', 'dashboards', 'd')) { ?>
-                        <th style='text-align:center;'><?php echo __('Delete')?></th>
+                        <th class="text-center"><?php echo __('Delete')?></th>
                         <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-success" href="dashboards/<?php echo intval($item->attributes->id); ?>"><?php echo intval($item->attributes->id); ?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="dashboards/<?php echo intval($item->attributes->id); ?>"><?php echo intval($item->attributes->id); ?></a></td>
                         <td><?php echo ucwords($item->attributes->name)?></td>
-                        <td style='text-align:center;'><?php echo ucwords($item->attributes->count)?></td>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-primary" href="dashboards/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
+                        <td class="text-center"><?php echo ucwords($item->attributes->count)?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="dashboards/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
                         <?php if ($this->m_users->get_user_permission('', 'dashboards', 'u')) { ?>
-                        <td style='text-align:center;'><a class="btn btn-sm btn-info" href="dashboards/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-info" href="dashboards/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         <?php } ?>
                         <?php if ($this->m_users->get_user_permission('', 'dashboards', 'd')) { ?>
-                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>
                     </tr>
                     <?php endforeach; ?>

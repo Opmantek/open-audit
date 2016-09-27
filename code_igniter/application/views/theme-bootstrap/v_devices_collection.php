@@ -118,49 +118,48 @@ if (count($this->response->meta->filter) > 0) {
 
 if (!empty($this->response->data)) { ?>
     <form action="devices?action=update" method="post" id="bulk_edit" name="bulk_edit">
-      <table class="table">
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
-    <?php
-    if (!empty($this->response->data[0]->attributes)) {
-        $properties = get_object_vars($this->response->data[0]->attributes);
-    } else {
-        $properties = array();
-    }
-    foreach ($properties as $key => $value) {
-        if (strpos($key, '.') !== false) {
-            $key = substr($key, strpos($key, '.')+1);
-        }
-        if (strrpos($key, 'ip_padded') === strlen($key)-9) {
-            continue;
-        }
-        if ($key == 'system.id' or $key == 'id') {
-            $key = 'ID';
-        }
-        $key = str_replace('_', ' ', $key);
-        $key = str_replace('os ', 'OS ', $key);
-        $key = str_replace(' id', ' ID', $key);
-        $key = str_replace(' ip', ' IP', $key);
-        $key = ucwords($key);
-        if ($key == 'Ip') {
-            $key = 'IP';
-        }
-        if (stripos($key, 'icon') !== false) {
-            echo "            <th style=\"text-align: center;\" >" . __($key) . "</th>\n";
-        } else {
-            echo "            <th>" . __($key) . "</th>\n";
-        }
-    }
-    foreach ($properties as $key => $value) {
-        if ($key == 'system.id') {
-            echo "            <th class=\"text-center\">\n";
-            echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
-            echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
-            echo "            </th>\n";
-        }
-    }
-
-      ?>
+            <?php
+            if (!empty($this->response->data[0]->attributes)) {
+                $properties = get_object_vars($this->response->data[0]->attributes);
+            } else {
+                $properties = array();
+            }
+            foreach ($properties as $key => $value) {
+                if (strpos($key, '.') !== false) {
+                    $key = substr($key, strpos($key, '.')+1);
+                }
+                if (strrpos($key, 'ip_padded') === strlen($key)-9) {
+                    continue;
+                }
+                if ($key == 'system.id' or $key == 'id') {
+                    $key = 'ID';
+                }
+                $key = str_replace('_', ' ', $key);
+                $key = str_replace('os ', 'OS ', $key);
+                $key = str_replace(' id', ' ID', $key);
+                $key = str_replace(' ip', ' IP', $key);
+                $key = ucwords($key);
+                if ($key == 'Ip') {
+                    $key = 'IP';
+                }
+                if (stripos($key, 'icon') !== false) {
+                    echo "            <th style=\"text-align: center;\" >" . __($key) . "</th>\n";
+                } else {
+                    echo "            <th>" . __($key) . "</th>\n";
+                }
+            }
+            foreach ($properties as $key => $value) {
+                if ($key == 'system.id') {
+                    echo "            <th class=\"text-center\">\n";
+                    echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
+                    echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
+                    echo "            </th>\n";
+                }
+            }
+            ?>
           </tr>
         </thead>
         <tbody>
@@ -206,13 +205,18 @@ if (!empty($this->response->data)) { ?>
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
                     echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
 
+                } elseif ($property == 'system.seen_by') {
+                    echo "            <td>" . htmlentities($item->attributes->$property) . "</td>\n";
+
                 } else {
                     if (strlen($item->attributes->$property) > 50) {
-                        $display = substr($item->attributes->$property, 0, 50) . '....';
+                        $display = substr($item->attributes->$property, 0, 50) . ' ....';
+                        $class = ' class="wrap"';
                     } else {
                         $display = $item->attributes->$property;
+                        $class = '';
                     }
-                    echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
+                    echo "            <td" . $class . "><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
                 }
             } else {
                 echo "            <td></td>\n";

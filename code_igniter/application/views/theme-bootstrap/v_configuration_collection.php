@@ -40,28 +40,28 @@
     <div class="panel-body">
         <?php include('include_collection_panel_body_links.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
-        <table class="table">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th style='text-align:center;'><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('ID')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Value')?></th>
                     <th><?php echo __('Edited By')?></th>
                     <th><?php echo __('Edited On')?></th>
-                    <th><?php echo __('Description')?></th>
-                    <th style='text-align:center;'><?php echo __('Edit')?></th>
+                    <th class="wrap"><?php echo __('Description')?></th>
+                    <th class="text-center"><?php echo __('Edit')?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td style='text-align:center;'><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                     <td><?php echo htmlentities($item->attributes->name)?></td>
                     <td><?php echo htmlentities($item->attributes->value)?></td>
                     <td><?php echo htmlentities($item->attributes->edited_by)?></td>
                     <td><?php echo htmlentities($item->attributes->edited_date)?></td>
-                    <td><?php echo htmlentities($item->attributes->description)?></td>
-                    <td style='text-align:center;'><a class="btn btn-sm btn-info" href="configuration/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <td class="wrap"><?php echo htmlentities($item->attributes->description)?></td>
+                    <td class="text-center"><a class="btn btn-sm btn-info" href="configuration/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
