@@ -32,16 +32,22 @@ if (! empty($this->response->meta->id)) {
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
         output($this->response);
     } else {
-        $this->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created.');
-        redirect($this->response->meta->collection);
+        $this->response->meta->flash = new stdClass();
+        $this->response->meta->flash->status = 'success';
+        $this->response->meta->flash->message = 'New object in ' . $this->response->meta->collection . ' created.';
+        $this->response->meta->action = 'collection';
+        include 'include_collection.php';
     }
 } else {
     if ($this->response->meta->format === 'json') {
         output($this->response);
     } else {
-        $this->session->set_flashdata('error', $this->response->errors[0]->detail);
+        $this->response->meta->flash = new stdClass();
+        $this->response->meta->flash->status = 'danger';
+        $this->response->meta->flash->message = $this->response->errors[0]->detail;
         unset($this->response->errors);
-        redirect($this->response->meta->collection);
+        $this->response->meta->action = 'collection';
+        include 'include_collection.php';
     }
     exit();
 }
