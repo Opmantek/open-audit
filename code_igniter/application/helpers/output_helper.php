@@ -53,7 +53,7 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
         if ($CI->response->meta->id == 888888888888) {
-            $CI->response->meta->id = NULL;
+            $CI->response->meta->id = null;
             unset($CI->response->data);
             $CI->response->data = array();
         }
@@ -65,7 +65,7 @@ if (! function_exists('output')) {
         }
         create_links();
         // if we have errors set, make sure we remove the data object / array
-        if (count($CI->response->errors) > 0) {
+        if (!empty($CI->response->errors) and count($CI->response->errors) > 0) {
             unset($CI->response->data);
         } else {
             unset($CI->response->errors);
@@ -89,6 +89,10 @@ if (! function_exists('output')) {
 
             case 'csv':
                 output_csv($CI->response);
+                break;
+
+            case 'sql':
+                output_sql($CI->response);
                 break;
 
             case 'html':
@@ -133,6 +137,39 @@ if (! function_exists('output')) {
                 output_screen($CI->response);
                 break;
         }
+    }
+
+    function output_csv()
+    {
+        $CI = & get_instance();
+        #print_r(json_encode($CI->response)); exit();
+
+        $output_csv = '';
+        foreach ($CI->response->data[0] as $attribute => $value) {
+            $output_csv .= '"'.trim($attribute).'",';
+        }
+        $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
+        $output_csv .= "\n";
+        foreach ($CI->response->data as $item) {
+            foreach ($item as $key => $value) {
+                $output_csv .= '"'.str_replace('"', '\"', $value).'",';
+            }
+            $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
+            $output_csv .= "\n";
+        }
+        echo $output_csv;
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.csv"');
+            header('Cache-Control: max-age=0');
+        }
+    }
+
+    function sql()
+    {
+        $CI = & get_instance();
+        print_r(json_encode($CI->response));
+        exit();
     }
 
     function output_json()
