@@ -49,10 +49,10 @@ class M_locations extends MY_Model
             $name = $CI->response->meta->received_data->attributes->name;
         }
         if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 0;
+            $CI->response->meta->received_data->attributes->org_id = 1;
         }
-        $data = array((string)$CI->response->meta->received_data->attributes->org_id, 
-                        (string)$name,
+        $data = array((string)$name,
+                        (string)$CI->response->meta->received_data->attributes->org_id, 
                         (string)$CI->response->meta->received_data->attributes->type,
                         (string)$CI->response->meta->received_data->attributes->room,
                         (string)$CI->response->meta->received_data->attributes->suite,
@@ -65,9 +65,10 @@ class M_locations extends MY_Model
                         (string)$CI->response->meta->received_data->attributes->phone,
                         (string)$CI->response->meta->received_data->attributes->latitude,
                         (string)$CI->response->meta->received_data->attributes->longitude,
-                        (string)$CI->response->meta->received_data->attributes->geo);
+                        (string)$CI->response->meta->received_data->attributes->geo,
+                        (string)$CI->user->full_name);
 
-        $sql = "INSERT INTO `oa_location` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, '', ?, '', '', '', ?, ?, ?, '', ?, '', ?, ?, ?, '', '', 0)";
+        $sql = "INSERT INTO `oa_location` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, '', ?, '', '', '', ?, ?, ?, '', ?, '', ?, ?, ?, '', '', ?, NOW())";
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -138,7 +139,7 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($id != 0) {
+        if ($id != 1) {
             $CI = & get_instance();
             $sql = "DELETE FROM `oa_location` WHERE id = ?";
             $data = array(intval($id));
