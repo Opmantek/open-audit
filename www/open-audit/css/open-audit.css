@@ -24,14 +24,14 @@ th.tablesorter-headerUnSorted {
     background-image: url(/open-audit/images/sort.svg);
     background-size: 16px 16px;
     background-repeat: no-repeat;
-    background-position: 0% 45%;
+    background-position: 0% 70%;
 }
 
 th.tablesorter-header {
     background-image: url(/open-audit/images/sort.svg);
     background-size: 16px 16px;
     background-repeat: no-repeat;
-    background-position: 0% 45%;
+    background-position: 0% 70%;
 }
 
 th.tablesorter-headerDesc {
