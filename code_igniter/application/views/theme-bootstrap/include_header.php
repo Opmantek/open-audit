@@ -290,12 +290,7 @@
                     <li class="dropdown-submenu">
                         <a href="#">Database</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <?php
-                            if (php_uname('s') == 'Darwin' or php_uname('s') == 'Linux') {
-                                echo "<li><a href='".$this->config->config['oa_web_index']."/admin_db/backup'>Backup the Database</a></li>\n"; } ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_db/export_table'>Export Table</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_db/maintenance'>Maintenance</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/reset_icons'>Reset Device Icons</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/database'>List Tables</a></li>
                         </ul>
                     </li>
                 <?php
