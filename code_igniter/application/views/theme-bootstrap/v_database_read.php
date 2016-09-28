@@ -105,7 +105,7 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <?php $tables = ' audit_log change_log chart credentials discoveries discovery_log edit_log graph networks oa_user_sessions '; ?>
-                    <?php if (strpos($tables, ' ' .$item->attributes->name . ' ')) { ?>
+                    <?php if (strpos($tables, ' ' . $item->attributes->name . ' ') !== false) { ?>
                     <?php if ($this->m_users->get_user_permission('', 'database', 'd')) { ?>
                     <div class="form-group">
                         <label for="delete_all" class="col-sm-3 control-label">Delete All Data</label>
@@ -130,15 +130,15 @@ $item = $this->response->data[0];
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table">
+                    <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <td><?php echo __('Name'); ?></td>
-                                <td><?php echo __('Type'); ?></td>
-                                <td><?php echo __('Default'); ?></td>
-                                <td><?php echo __('Max Length'); ?></td>
-                                <td><?php echo __('Primary Key'); ?></td>
-                                <td><?php echo __('Valid Values'); ?></td>
+                                <th><?php echo __('Name'); ?></th>
+                                <th><?php echo __('Type'); ?></th>
+                                <th><?php echo __('Default'); ?></th>
+                                <th><?php echo __('Max Length'); ?></th>
+                                <th><?php echo __('Primary Key'); ?></th>
+                                <th><?php echo __('Valid Values'); ?></th>
                             </tr>
                         </thead>
                         <tbody>
