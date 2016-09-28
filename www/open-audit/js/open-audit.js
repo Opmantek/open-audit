@@ -16,6 +16,12 @@ $(document).ready(function () {
     })
 });
 
+$(document).ready(function(){
+    $(function(){
+        $(".table").tablesorter();
+    });
+});
+
 /* select all devices on /devices for bulk edit */
 $(document).ready(function() {
     $(':checkbox[name=select-all]').click (function () {

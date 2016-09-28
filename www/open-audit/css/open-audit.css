@@ -20,6 +20,37 @@ th, td {
     white-space: pre-wrap;
 }
 
+th.tablesorter-headerUnSorted {
+    background-image: url(/open-audit/images/sort.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 45%;
+}
+
+th.tablesorter-header {
+    background-image: url(/open-audit/images/sort.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 45%;
+}
+
+th.tablesorter-headerDesc {
+    background-image: url(/open-audit/images/sort-desc.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 70%;
+}
+
+th.tablesorter-headerAsc {
+    background-image: url(/open-audit/images/sort-asc.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 70%;
+}
+
+.tablesorter-header-inner {
+    padding-left: 10px;
+}
 
 /* v_devices_read */
 .list-group-item img {

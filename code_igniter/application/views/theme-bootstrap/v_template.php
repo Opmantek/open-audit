@@ -53,8 +53,10 @@ if (!empty($this->response->meta->collection) and $this->response->meta->collect
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-table.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.tablesorter.min.js"></script>
     <!-- Open-AudIT specific items -->
     <script>
+
 <?php
 if (!is_null($this->response->meta->id)) {
     echo "        var id = '" . $this->response->meta->id . "';\n";
@@ -107,10 +109,13 @@ unset($this->response->meta->sql);
             </h3>
         </div>
         <div class="panel-body">
-            <?php if (!empty($this->response->errors)) { ?>
+            <?php
+            if (!empty($this->response->errors)) {
+                ?>
                 <h3>Error</h3>
                 <pre><?php print_r(json_encode($this->response->errors, JSON_PRETTY_PRINT)); ?></pre>
-            <?php } ?>
+            <?php
+            } ?>
             <h3>User</h3>
             <pre><?php print_r(json_encode($this->response->meta->user, JSON_PRETTY_PRINT)); ?></pre>
             <?php unset($this->response->meta->user); ?>
@@ -120,17 +125,17 @@ unset($this->response->meta->sql);
             <pre><?php
                 $CI =& get_instance();
                 $times = $CI->db->query_times;
-                foreach ($CI->db->queries as $key=>$query) {
-                    echo "Query: " . str_replace("\n", " ", $query) . "\n";
-                    echo "Time: " . $times[$key] . "\n\n";
-                }
+                 foreach ($CI->db->queries as $key => $query) {
+                     echo "Query: " . str_replace("\n", " ", $query) . "\n";
+                     echo "Time: " . $times[$key] . "\n\n";
+                 }
             ?>
             </pre>
             <?php
             if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
-            ?>
-            <h3>User Session Data</h3>
-            <pre><?php print_r($this->session->all_userdata()); ?></pre>
+                ?>
+                <h3>User Session Data</h3>
+                <pre><?php print_r($this->session->all_userdata()); ?></pre>
             <?php
             }
             ?>
