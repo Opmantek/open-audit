@@ -146,7 +146,7 @@ if (!empty($this->response->data)) { ?>
                     $key = 'IP';
                 }
                 if (stripos($key, 'icon') !== false) {
-                    echo "            <th style=\"text-align: center;\" >" . __($key) . "</th>\n";
+                    echo "            <th class=\"text-center\">" . __($key) . "</th>\n";
                 } else {
                     echo "            <th>" . __($key) . "</th>\n";
                 }
@@ -193,15 +193,14 @@ if (!empty($this->response->data)) { ?>
 
             if (!empty($item->attributes->$property)) {
 
-                if ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->attributes->{$property . '_padded'}))) {
+                if ($property == 'id' or $property == 'system.id') {
+                    echo '<td><a style="min-width:38px;" href="' . htmlentities($item->links->self) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
+
+                } elseif ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->attributes->{$property . '_padded'}))) {
                     echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
 
-
-                // } elseif ($property == 'id' or $property == 'system.id') {
-                //     echo '<td><a href="' . htmlentities($item->links->self) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
-
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
-                    echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px;' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
+                    echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px; height:24px' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
 
                 } elseif ($property == 'system.seen_by') {
                     echo "            <td>" . htmlentities($item->attributes->$property) . "</td>\n";
