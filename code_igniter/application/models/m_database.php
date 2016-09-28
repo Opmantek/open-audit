@@ -235,6 +235,13 @@ class M_database extends MY_Model
                     $item->attributes->org_id_row = false;
                 }
 
+                if ($table == 'system') {
+                    $item->attributes->status = array();
+                    $sql = "SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`";
+                    $query = $this->db->query($sql);
+                    $item->attributes->status = $query->result();
+                }
+
 
                 $item->attributes->columns = array();
                 $item->attributes->columns = $this->db->field_data($table);
@@ -265,7 +272,7 @@ class M_database extends MY_Model
         return ($return);
     }
 
-    public function delete($table = '', $current = '')
+    public function delete($table = '', $current = '', $status = '')
     {
         if ($table == '') {
             $CI = & get_instance();
@@ -278,11 +285,28 @@ class M_database extends MY_Model
                 $current = 'n';
             }
         }
+        if ($status == '') {
+            if (!empty($CI->response->meta->filter)) {
+                foreach ($CI->response->meta->filter as $filter) {
+                    if ($filter->name == 'status') {
+                        $status = $filter->value;
+                    }
+                }
+            }
+        }
         if ($this->db->table_exists($table)) {
             if ($this->db->field_exists('current', $table)) {
                 $sql = "DELETE FROM `" . $table . "` WHERE current = '" . $current . "'";
                 $this->run_sql($sql, array());
                 return true;
+            } elseif ($table == 'system') {
+                if ($status != '') {
+                    $sql = "DELETE FROM system WHERE status = ?";
+                    $this->run_sql($sql, array($status));
+                    return true;
+                } else {
+                    return false;
+                }
             } else {
                 if ($current == 'all') {
                     $sql = "DELETE FROM `" . $table . "`";

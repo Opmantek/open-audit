@@ -84,6 +84,21 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <?php } ?>
+                    <?php if ($item->attributes->name == 'system') { ?>
+                        <?php foreach ($item->attributes->status as $status) { ?>
+                            <div class="form-group">
+                                <label for="status_<?php echo $status->status; ?>" class="col-sm-3 control-label"><?php echo __('Device Status: ' . $status->status); ?></label>
+                                <div class="col-sm-8 input-group">
+                                    <input type="text" class="form-control" id="status_<?php echo $status->status; ?>" name="status_<?php echo $status->status; ?>" value="<?php echo htmlentities($status->count); ?>" disabled>
+                                    <?php if ($this->m_users->get_user_permission('', 'database', 'd') and $status->status != 'production') { ?>
+                                    <span class="input-group-btn">
+                                        <button id="delete_status_<?php echo $status->status; ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?status=<?php echo $status->status; ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                    </span>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        <?php } ?>
+                    <?php } ?>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
@@ -106,14 +121,14 @@ $item = $this->response->data[0];
                     </div>
                     <?php $tables = ' audit_log change_log chart credentials discoveries discovery_log edit_log graph networks oa_user_sessions '; ?>
                     <?php if (strpos($tables, ' ' . $item->attributes->name . ' ') !== false) { ?>
-                    <?php if ($this->m_users->get_user_permission('', 'database', 'd')) { ?>
-                    <div class="form-group">
-                        <label for="delete_all" class="col-sm-3 control-label">Delete All Data</label>
-                        <div class="col-sm-8 input-group">
-                                <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=all">Delete</button>
+                        <?php if ($this->m_users->get_user_permission('', 'database', 'd')) { ?>
+                        <div class="form-group">
+                            <label for="delete_all" class="col-sm-3 control-label">Delete All Data</label>
+                            <div class="col-sm-8 input-group">
+                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=all">Delete</button>
+                            </div>
                         </div>
-                    </div>
-                    <?php } ?>
+                        <?php } ?>
                     <?php } ?>
                 </div>
             </div>
