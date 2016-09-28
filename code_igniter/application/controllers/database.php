@@ -5164,6 +5164,13 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `system` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `system` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            if (!$this->db->field_exists('location_id', 'system')) {
+                $sql[] = "ALTER TABLE `system` ADD `location_id` int unsigned NOT NULL DEFAULT 1 AFTER `org_id`";
+            } else {
+                $sql[] = "ALTER TABLE `system` CHANGE `location_id` `location_id` int unsigned NOT NULL DEFAULT 1 AFTER `org_id`";
+                $sql[] = "UPDATE `system` SET `location_id` = $location_1_id WHERE `location_id` = 1";
+                $sql[] = "UPDATE `system` SET `location_id` = 1 WHERE `location_id` = 0";
+            }
 
             $sql[] = "DELETE FROM `configuration` WHERE `name` = 'discovery_serial_match'";
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number discovery.')";

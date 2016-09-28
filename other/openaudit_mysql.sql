@@ -2313,7 +2313,7 @@ CREATE TABLE `system` (
   `function` varchar(100) NOT NULL DEFAULT '',
   `owner` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `location_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `location_id` int(10) unsigned NOT NULL DEFAULT '1',
   `location_level` varchar(100) NOT NULL DEFAULT '',
   `location_suite` varchar(100) NOT NULL DEFAULT '',
   `location_room` varchar(100) NOT NULL DEFAULT '',
