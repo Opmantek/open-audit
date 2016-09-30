@@ -253,6 +253,10 @@ class M_devices extends MY_Model
             $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
 
+        } elseif ($sub_resource == 'discovery_log') {
+            $sql = "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
+            $data = array($id);
+
         } elseif ($sub_resource == 'additional_fields') {
             $sql = "SELECT additional_field.id as `additional_field.id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
             $data = array($id);
