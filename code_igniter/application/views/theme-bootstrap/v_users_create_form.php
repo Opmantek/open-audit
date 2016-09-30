@@ -167,7 +167,7 @@
             </h3>
         </div>
         <div class="panel-body">
-            <span>Note - Selecting a parent will automatically provide access to its children (although it won't be shown here).</span><br /><br />
+            <span>Note - Selecting a parent will automatically provide access to its children (although it won't be indicated here).</span><br /><br />
             <div class="col-md-12">
 <table class="table table-striped table-condensed">
      <thead>
