@@ -242,6 +242,7 @@ class M_database extends MY_Model
                     $item->attributes->status = $query->result();
                 }
 
+                # TODO - add in if the column has an index or is a foreign key
 
                 $item->attributes->columns = array();
                 $item->attributes->columns = $this->db->field_data($table);
