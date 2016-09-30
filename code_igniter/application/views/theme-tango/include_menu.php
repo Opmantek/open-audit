@@ -146,7 +146,7 @@ var modal_content_image = "";
                 </ul>
             </li>
 
-            <li><a href='<?php echo $oa_web_index?>/admin/edit_config'><?php echo __('Config')?></a></li>
+            <li><a href='<?php echo $oa_web_index?>/configuration'><?php echo __('Config')?></a></li>
 
             <li><a href='javascript:void(0)'><?php echo __('Connections')?></a>
                 <ul>
@@ -163,10 +163,10 @@ var modal_content_image = "";
             </li>
             <li><a href='javascript:void(0)'><?php echo __('Database')?></a>
                 <ul>
+                <li><a href='<?php echo $oa_web_index?>/database'><?php echo __('Database Tables')?></a></li>
                     <!--
                     # this will only work under Linux
                     <li><a href='<?php echo $oa_web_index?>/admin_db/restore'><?php echo __('Restore Database')?></a></li>
-                    -->
                     <?php
                     if (php_uname('s') != 'Windows') {
                         echo "                  <li><a href='".$oa_web_index."/admin_db/backup'>".__('Backup the Database')."</a></li>\n";
@@ -174,6 +174,7 @@ var modal_content_image = "";
                     <li><a href='<?php echo $oa_web_index?>/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/maintenance'><?php echo __('Database Maintenance')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
+                    -->
                 </ul>
             </li>
 
@@ -187,7 +188,7 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/device'><?php echo __('Discover a Device')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
                     <li><a href='<?php echo $oa_web_index?>/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
@@ -255,8 +256,8 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Users')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_user/list_users'><?php echo __('List Users')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_user/add_user'><?php echo __('Add a User')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/users'><?php echo __('List Users')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/users/create'><?php echo __('Add a User')?></a></li>
                 </ul>
             </li>
         </ul>
