@@ -54,6 +54,7 @@
             </thead>
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
+                <?php if ($item->attributes->name != 'web_internal_version') { ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
                     <td><?php echo htmlentities($item->attributes->name)?></td>
@@ -63,6 +64,7 @@
                     <td class="wrap"><?php echo htmlentities($item->attributes->description)?></td>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="configuration/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                 </tr>
+                <?php } ?>
                 <?php endforeach; ?>
             </tbody>
         </table>
