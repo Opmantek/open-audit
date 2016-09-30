@@ -92,13 +92,18 @@ class M_configuration extends MY_Model
             $CI->response->meta->total = intval($result[0]->count);
         }
 
-        $sql = "SELECT * FROM configuration";
+        $sql = "SELECT * FROM configuration ORDER BY `name`";
         $result = $this->run_sql($sql, array());
+        $item = new stdClass;
+        $item->id = 888888;
+        $item->name = 'web_internal_version';
+        $item->value = $this->config->config['web_internal_version'];
+        $result[] = $item;
         $result = $this->format_data($result, 'configuration');
         return ($result);
     }
 
-    public function update($id = '', $value, $edited_by = '')
+    public function update($id = '', $value = '', $edited_by = '')
     {
         $CI = & get_instance();
 
@@ -162,13 +167,14 @@ class M_configuration extends MY_Model
     {
     }
 
-    public function load() {
+    public function load()
+    {
 
-        #if ($this->db->table_exists('configuration')) {
+        if ($this->db->table_exists('configuration')) {
             $sql = "SELECT name, value FROM `configuration`";
             $sql = $this->clean_sql($sql);
             $result = $this->run_sql($sql, array());
-        #}
+        }
 
         if (empty($result) and $this->db->table_exists('oa_config')) {
             $sql = "SELECT config_name AS `name`, config_value AS `value` FROM `oa_config`";
@@ -199,7 +205,7 @@ class M_configuration extends MY_Model
         # ensure we have a trailing slash
         if (!empty($this->config->config['discovery_linux_script_directory']) and substr($this->config->config['discovery_linux_script_directory'], -1) !== '/') {
             $this->config->config['discovery_linux_script_directory'] .= '/';
-        } 
+        }
 
         $this->config->config['oa_web_index'] = $basic_url;
         $this->config->config['oa_web_folder'] = str_replace('/index.php', '', $basic_url);
@@ -209,7 +215,6 @@ class M_configuration extends MY_Model
         $sql = "SELECT NOW() as `timestamp`";
         $result = $this->run_sql($sql, array());
         $this->config->config['timestamp'] = $result[0]->timestamp;
-
 
         # get the server OS
         $this->config->config['server_os'] = php_uname('s');
@@ -364,5 +369,4 @@ class M_configuration extends MY_Model
         }
         return($result);
     }
-
 }
