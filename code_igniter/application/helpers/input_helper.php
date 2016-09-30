@@ -842,7 +842,9 @@ if (! function_exists('inputRead')) {
         if (!empty($CI->response->meta->id) and
             $CI->response->meta->collection != 'roles' and
             $CI->response->meta->collection != 'configuration' and
-            $CI->response->meta->collection != 'database') {
+            $CI->response->meta->collection != 'database' and
+            $CI->response->meta->collection != 'report' and
+            $CI->response->meta->collection != 'charts') {
             if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
                 if ($CI->response->meta->format == 'json') {
                     echo json_encode($CI->response);

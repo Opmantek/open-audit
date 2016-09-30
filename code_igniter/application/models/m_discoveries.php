@@ -57,17 +57,17 @@ class M_discoveries extends MY_Model
 
     public function read_sub_resource($id = '') {
         // Read our associated logs (if any)
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "/* m_discoveries::read_sub_resource */ SELECT * FROM logs WHERE name = 'discovery' AND collection_id = ? ORDER BY `timestamp`";
-        #$sql = "/* m_discoveries::read_sub_resource */ SELECT * FROM logs WHERE name = 'discovery' ORDER BY `timestamp`";
-        $result = $this->run_sql($sql, array(intval($id)));
-        $result = $this->format_data($result, 'logs');
-        return ($result);
+        // if ($id == '') {
+        //     $CI = & get_instance();
+        //     $id = intval($CI->response->meta->id);
+        // } else {
+        //     $id = intval($id);
+        // }
+        // $sql = "/* m_discoveries::read_sub_resource */ SELECT * FROM logs WHERE name = 'discovery' AND collection_id = ? ORDER BY `timestamp`";
+        // $result = $this->run_sql($sql, array(intval($id)));
+        // $result = $this->format_data($result, 'logs');
+        // return ($result);
+        return(array());
     }
 
     public function collection()
@@ -168,10 +168,6 @@ class M_discoveries extends MY_Model
         }
         // reset our device counter
         $sql = "UPDATE discoveries SET device_count = 0, updated_on = NOW() WHERE id = ?";
-        $data = array(intval($id));
-        $this->run_sql($sql, $data);
-        // delete any old log entries
-        $sql = "DELETE FROM logs WHERE name = 'discovery' AND collection_id = ?";
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return;

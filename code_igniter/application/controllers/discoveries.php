@@ -181,13 +181,6 @@ class Discoveries extends MY_Controller
     {
         $this->load->helper('log');
         $this->response->data = $this->m_discoveries->read();
-        $dblog = new stdClass();
-        $dblog->name = 'discovery';
-        $dblog->org_id = $this->response->data[0]->attributes->org_id;
-        $dblog->severity = 7;
-        $dblog->file = 'discoveries';
-        $dblog->function = 'execute';
-        $dblog->collection_id = $this->response->meta->id;
 
         $this->m_discoveries->execute();
         if (!empty($this->config->config['discovery_nmap_os'])) {
@@ -198,7 +191,6 @@ class Discoveries extends MY_Controller
 
         if ($this->response->meta->debug) {
             $debugging = 1;
-            $dblog->level = 7;
         } else {
             $debugging = 0;
         }
@@ -220,24 +212,16 @@ class Discoveries extends MY_Controller
             }
             @exec($command_string, $output, $return_var);
             if ($return_var != '0') {
-                $dblog->message = 'Discovery subnet starting script discover_subnet.sh ('.$this->response->data[0]->attributes->subnet.') has failed';
-                dblog($dblog);
-                $this->session->set_flashdata('error', $dblog->message);
+                $message = 'Discovery subnet starting script discover_subnet.sh ('.$this->response->data[0]->attributes->subnet.') has failed';
+                $this->session->set_flashdata('error', $message);
             } else {
-                $dblog->title = 'Discovery started';
-                $dblog->message =  'Discovery subnet starting script discover_subnet.sh ('.$this->response->data[0]->attributes->subnet.') has started';
-                dblog($dblog);
-                $this->session->set_flashdata('success', $dblog->message);
-                $dblog->title = '';
-                $dblog->message = "discover_subnet.sh started";
-                $dblog->command = $command_string;
-                dblog($dblog);
+                $message =  'Discovery subnet starting script discover_subnet.sh ('.$this->response->data[0]->attributes->subnet.') has started';
+                $this->session->set_flashdata('success', $message);
                 $sql = '/* discoveries::execute */ UPDATE `discoveries` SET `complete` = "n" WHERE id = ?';
                 $data = array($this->response->meta->id);
                 $query = $this->db->query($sql, $data);
             }
         }
-        
 
         // Windows based discovery
         if (php_uname('s') == 'Windows NT') {
@@ -247,7 +231,8 @@ class Discoveries extends MY_Controller
         if ($this->response->meta->format === 'json') {
             output($this->response);
         } else {
-            redirect($this->response->meta->collection . '/' . $this->response->meta->id);
+            redirect($this->response->meta->collection);
+            #redirect($this->response->meta->collection . '/' . $this->response->meta->id);
         }
 
     }

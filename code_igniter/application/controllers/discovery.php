@@ -555,6 +555,7 @@ class discovery extends CI_Controller
             $this->load->model('m_configuration');
             $this->m_configuration->load();
             $this->load->helper('network_helper');
+            $this->load->model('m_networks');
 
             $return_var = "";
             $output = "";
@@ -595,7 +596,7 @@ class discovery extends CI_Controller
             if (strpos($subnet_range, '/') !== false) {
                 $network = new stdClass();
                 $network->name = $subnet_range;
-                $network->org_id = 0;
+                $network->org_id = 1;
                 $network->description = 'Inserted from discover subnet';
                 $this->m_networks->upsert($network);
                 unset($network);
@@ -604,7 +605,7 @@ class discovery extends CI_Controller
                     $temp = network_details($subnet_range.'/30');
                     $network = new stdClass();
                     $network->name = $temp->network.'/'.$temp->network_slash;
-                    $network->org_id = 0;
+                    $network->org_id = 1;
                     $network->description = 'Inserted from discover subnet';
                     $this->m_networks->upsert($network);
                     unset($network);
@@ -855,6 +856,16 @@ class discovery extends CI_Controller
             $this->load->view('v_process_subnet', $this->data);
         } else {
 
+            $log = new stdClass();
+            $log->discovery_id = null;
+            $log->system_id = null;
+            $log->timestamp = null;
+            $log->severity = 7;
+            $log->pid = getmypid();
+            $log->file = 'discovery';
+            $log->function = 'process_subnet';
+            $log->message = '';
+
             $display = '';
             if ($this->input->post('debug') and strpos($_SERVER['HTTP_ACCEPT'], 'html')) {
                 $display = 'y';
@@ -954,9 +965,17 @@ class discovery extends CI_Controller
                         $skip = true;
                     }
                     if (!$skip) {
+                        $log->ip = (string)$details->ip;
                         $log_details->message = 'Start processing '.$details->ip;
                         stdlog($log_details);
                         $count++;
+                        // ensure we remove org_id / location_id if it's 0
+                        if (empty($details->org_id)) {
+                            unset($details->org_id);
+                        }
+                        if (empty($details->location_id)) {
+                            unset($details->location_id);
+                        }
                         $details->last_seen = $timestamp;
                         $details->last_user = '';
                         $details->last_seen_by = 'nmap';
@@ -980,7 +999,7 @@ class discovery extends CI_Controller
                         // If we find a device and we're in DEBUG, output a result line.
                         if ($display == 'y') {
                             if (!empty($details->id)) {
-                                echo 'DEBUG - Device found with ID: <a href=\''.base_url().'index.php/main/system_display/'.$details->id.'\'>'.$details->id."</a>.\n";
+                                echo 'DEBUG - Device found with ID: <a href=\''.base_url().'index.php/devices/'.$details->id.'\'>'.$details->id."</a>.\n";
                             }
                         }
 
@@ -996,6 +1015,8 @@ class discovery extends CI_Controller
                         }
 
                         // Credential Sets
+                        $this->user = new stdClass();
+                        $this->user->org_list = '1';
                         $temp = $this->m_credentials->collection();
                         if (count($temp) > 0) {
                             $credentials = array_merge($credentials, $temp);
@@ -1016,9 +1037,13 @@ class discovery extends CI_Controller
                             $details->limit = (int)@$supplied_credentials->limit;
                             $details->count = (int)@$supplied_credentials->count;
                             $details->org_id = (int)@$supplied_credentials->org;
+                            if (empty($details->org_id)) {
+                                unset($details->org_id);
+                            }
                             $details->location_id = (int)@$supplied_credentials->location;
-                            $details->org_id = (int)@$supplied_credentials->org;
-                            $details->location_id = (int)@$supplied_credentials->location;
+                            if (empty($details->location_id)) {
+                                unset($details->location_id);
+                            }
                             $details->use_https = (string)@$supplied_credentials->use_https;
                         }
                         # TODO - replace the ugly code below
@@ -1135,13 +1160,13 @@ class discovery extends CI_Controller
                         if (extension_loaded('snmp') and $details->snmp_status == 'true') {
                             $log_details->message = 'Testing SNMP credentials for '.$details->ip;
                             stdlog($log_details);
-                            $credentials_snmp = snmp_credentials($details->ip, $credentials, $display);
+                            $credentials_snmp = snmp_credentials($details->ip, $credentials, $log);
                         } else {
                             $credentials_snmp = false;
                         }
 
                         if ($credentials_snmp) {
-                            $temp_array = snmp_audit($details->ip, $credentials_snmp, $display);
+                            $temp_array = snmp_audit($details->ip, $credentials_snmp, $log);
                             if (!empty($temp_array['details'])) {
                                 foreach ($temp_array['details'] as $key => $value) {
                                     if (!empty($value)) {
@@ -1164,7 +1189,8 @@ class discovery extends CI_Controller
                                 $guests = $temp_array['guests'];
                             }
                         }
-
+                        $log->file = 'discovery';
+                        $log->function = 'process_subnet';
                         // new for 1.8.4 - if we have a non-computer, do not attempt to connect using SSH
                         if ($details->type != 'computer' and $details->type != '' and $details->type != 'unknown' and $details->os_family != 'DD-WRT' and stripos($details->sysDescr, 'dd-wrt') === false) {
                             $log_details->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for '.$details->ip.' (System ID '.$details->id.')';
@@ -1175,13 +1201,13 @@ class discovery extends CI_Controller
                         if ($details->ssh_status == 'true') {
                             $log_details->message = 'Testing SSH credentials for '.$details->ip;
                             stdlog($log_details);
-                            $credentials_ssh = ssh_credentials($details->ip, $credentials, $display);
+                            $credentials_ssh = ssh_credentials($details->ip, $credentials, $log);
                         } else {
                             $credentials_ssh = false;
                         }
                         # run SSH audit commands
                         if ($details->ssh_status == 'true' and $credentials_ssh) {
-                            $ssh_details = ssh_audit($details->ip, $credentials_ssh, $display);
+                            $ssh_details = ssh_audit($details->ip, $credentials_ssh, $log);
                             if (!empty($ssh_details)) {
                                 $details->last_seen_by = 'ssh';
                                 $details->audits_ip = '127.0.0.1';
@@ -1192,18 +1218,21 @@ class discovery extends CI_Controller
                                 }
                             }
                         }
-
+                        $log->file = 'discovery';
+                        $log->function = 'process_subnet';
                         // test for working Windows credentials
                         if ($details->wmi_status == 'true') {
                             $log_details->message = 'Testing Windows credentials for '.$details->ip;
                             stdlog($log_details);
-                            $credentials_windows = windows_credentials($details->ip, $credentials, $display);
+                            $credentials_windows = windows_credentials($details->ip, $credentials, $log);
                         } else {
                             $credentials_windows = false;
                         }
+                        $log->file = 'discovery';
+                        $log->function = 'process_subnet';
                         # run Windows audit commands
                         if ($details->wmi_status == 'true' and $credentials_windows) {
-                            $windows_details = wmi_audit($details->ip, $credentials_windows, $display);
+                            $windows_details = wmi_audit($details->ip, $credentials_windows, $log);
                             if (!empty($windows_details)) {
                                 $details->last_seen_by = 'windows';
                                 $details->audits_ip = '127.0.0.1';
@@ -1214,6 +1243,8 @@ class discovery extends CI_Controller
                                 }
                             }
                         }
+                        $log->file = 'discovery';
+                        $log->function = 'process_subnet';
 
 
                         # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
@@ -1251,6 +1282,39 @@ class discovery extends CI_Controller
                             stdlog($log_details);
                             $details->id = $this->m_system->insert_system($details, $display);
                         }
+
+                        $log->system_id = $details->id;
+
+                        // remove any old logs for this device
+                        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $details->id . " and pid != " . $log->pid;
+                        $log->message = 'Delete the previous log entries for this system_id';
+                        $log->command = $sql;
+                        $command_log_id = discovery_log($log);
+                        $command_start = microtime(true);
+                        $query = $this->db->query($sql);
+                        $command_end = microtime(true);
+                        $log->command = $this->db->last_query();
+                        $log->command_time_to_execute = $command_end - $command_start;
+                        $log->id = $command_log_id;
+                        discovery_log($log);
+                        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                        unset($log->id, $command_log_id);
+                        
+                        // update the previous log entries with our new system_id
+                        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $details->ip . "'";
+                        $log->message = 'Update the previous log entries with our new system_id';
+                        $log->command = $sql;
+                        $command_log_id = discovery_log($log);
+                        $command_start = microtime(true);
+                        $query = $this->db->query($sql);
+                        $command_end = microtime(true);
+                        $log->command = $this->db->last_query();
+                        $log->command_time_to_execute = $command_end - $command_start;
+                        $log->id = $command_log_id;
+                        discovery_log($log);
+                        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                        unset($log->id, $command_log_id);
+
                         // grab some timestamps
                         $details->last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
                         $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
@@ -1395,8 +1459,8 @@ class discovery extends CI_Controller
                             if (php_uname('s') != 'Windows NT') {
                                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
                                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$url."index.php/system/add_system debugging=" . $debugging . " system_id=".$details->id." last_seen_by=audit_wmi";
-                                if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $display)) {
-                                    if (execute_windows($details->ip, $credentials_windows, $command, $display)) {
+                                if (copy_to_windows($details->ip, $credentials_windows, $share, $source, $destination, $log)) {
+                                    if (execute_windows($details->ip, $credentials_windows, $command, $log)) {
                                         # All complete!
                                     } else {
                                         # run audit script failed
@@ -1573,10 +1637,10 @@ class discovery extends CI_Controller
                                     $destination .= '/';
                                 }
                                 $destination .= $audit_script;
-                                if ($ssh_result = scp($details->ip, $credentials_ssh, $source, $destination, $display)) {
+                                if ($ssh_result = scp($details->ip, $credentials_ssh, $source, $destination, $log)) {
                                     # Successfully copied the audit script
                                     $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
-                                    $temp = ssh_command($details->ip, $credentials_ssh, $command, $display);
+                                    $temp = ssh_command($details->ip, $credentials_ssh, $command, $log);
                                 }
                                 if ($display = 'y') {
                                     $debugging = 3;
@@ -1595,7 +1659,7 @@ class discovery extends CI_Controller
                                     # run the script without using sudo
                                     $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$url.'index.php/system/add_system debugging='.$debugging.' system_id='.$details->id.' display=' . $display . ' last_seen_by=audit_ssh';
                                 }
-                                $result = ssh_command($details->ip, $credentials_ssh, $command, $display);
+                                $result = ssh_command($details->ip, $credentials_ssh, $command, $log);
                                 if ($unlink != '') {
                                     unlink($unlink);
                                 }
@@ -1603,7 +1667,7 @@ class discovery extends CI_Controller
                             # audit ESX
                             if ($audit_script == 'audit_esxi.sh') {
                                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y last_seen_by=audit_ssh create_file=n debugging=0 echo_output=y system_id='.$details->id.' 2>/dev/null';
-                                if ($result = ssh_command($details->ip, $credentials_ssh, $command, $display)) {
+                                if ($result = ssh_command($details->ip, $credentials_ssh, $command, $log)) {
                                     if ($result['status'] == 0) {
                                         $script_result = '';
                                         foreach ($result['output'] as $line) {

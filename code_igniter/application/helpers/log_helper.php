@@ -106,8 +106,8 @@ if (! function_exists('discovery_log')) {
         if (empty($log->id)) {
             $log->id = null;
         }
-        if (empty($log->name)) {
-            $log->name = '';
+        if (empty($log->discovery_id)) {
+            $log->discovery_id = null;
         }
         if (empty($log->system_id)) {
             $log->system_id = null;
@@ -153,6 +153,9 @@ if (! function_exists('discovery_log')) {
         } else {
             $log->pid = intval($log->pid);
         }
+        if (empty($log->ip)) {
+            $log->ip = '';
+        }
         if (empty($log->file)) {
             $router = & load_class('Router', 'core');
             $log->file = $router->fetch_class();
@@ -169,48 +172,36 @@ if (! function_exists('discovery_log')) {
         if (empty($log->command)) {
             $log->command = '';
         }
-        if (empty($log->command_complete)) {
-            $log->command_complete = '';
+        if (empty($log->command_status)) {
+            $log->command_status = '';
         }
         if (empty($log->command_time_to_execute)) {
             $log->command_time_to_execute = '';
         }
-        if (empty($log->command_error_message)) {
-            $log->command_error_message = '';
+        if (empty($log->command_output)) {
+            $log->command_output = '';
         }
 
         if (!is_null($log->id)) {
-            if ($log->command != '') {
-                $sql = "/* log_helper::dblog */ " . "UPDATE logs SET command_complete = 'y', command_time_to_execute = ?, command = ? WHERE id = ?";
-                $data = array($log->command_time_to_execute, (string)$log->command, $log->id);
-                $query = $CI->db->query($sql, $data);
-                return($log->id);
-            } else {
-                $sql = "/* log_helper::dblog */ " . "UPDATE logs SET command_complete = 'y', command_time_to_execute = ? WHERE id = ?";
-                $data = array($log->command_time_to_execute, $log->id);
-                $query = $CI->db->query($sql, $data);
-                return($log->id);
-            }
+            $sql = "/* log_helper::discovery_log */ " . "UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?";
+            $data = array((string)$log->command, (string)$log->command_status, $log->command_time_to_execute, (string)$log->command_output, $log->id);
+            $query = $CI->db->query($sql, $data);
+            return($log->id);
         } else {
-            $sql = "/* log_helper::dblog */ " . "INSERT INTO logs VALUES (NULL, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $data = array($log->name,
-                        $log->system_id,
-                        $log->severity,
-                        $log->severity_text,
-                        $log->pid,
-                        $log->file,
-                        $log->function,
-                        $log->collection,
-                        $log->action,
-                        $log->collection_id,
-                        $log->message,
-                        $log->hostname,
-                        $log->ip,
-                        $log->user,
-                        $log->command,
-                        $log->command_complete,
-                        $log->command_time_to_execute,
-                        $log->command_error_message);
+            $sql = "/* log_helper::discovery_log */ " . "INSERT INTO discovery_log VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $data = array($log->discovery_id,
+                            $log->system_id,
+                            $log->severity,
+                            $log->severity_text,
+                            $log->pid,
+                            (string)$log->ip,
+                            $log->file,
+                            $log->function,
+                            $log->message,
+                            $log->command,
+                            $log->command_status,
+                            $log->command_time_to_execute,
+                            $log->command_output);
             $query = $CI->db->query($sql, $data);
             return($CI->db->insert_id());
         }

@@ -83,19 +83,15 @@ if (! function_exists('ssh_credentials')) {
      *
      * @param     credentials An array of credentials objects
      *
-     * @param     dblog       Our logging object
-     *
      * @return    FALSE || credentials object with an additional flag for 'sudo' and root
      */
-    function ssh_credentials($ip = '', $credentials = array(), $dblog = null)
+    function ssh_credentials($ip = '', $credentials = array(), $log)
     {
-        if (is_null($dblog)) {
-            $log = new stdClass();
-            $log->name = 'discovery';
-            $log->severity = 7;
-        }
         $log->file = 'ssh_helper';
         $log->function = 'ssh_credentials';
+        $log->command = '';
+        $log->message = 'SSH credentials starting';
+        discovery_log($log);
 
         if (empty($credentials)) {
             $log->message = 'No credentials array passed to ssh_credentials.';
@@ -126,7 +122,7 @@ if (! function_exists('ssh_credentials')) {
                 if (php_uname('s') != 'Windows NT') {
                     # try to connect
                     $result = false;
-                    $result = ssh_command($ip, $credential, 'uname', $display);
+                    $result = ssh_command($ip, $credential, 'uname', $log);
                     if ($result['status'] == 0) {
                         return($credential);
                     }
@@ -150,23 +146,24 @@ if (! function_exists('ssh_credentials')) {
                     $credential->root = false;
                 }
                 # initial attempt to connect
-                if ($result = ssh_command($ip, $credential, 'uname', $dblog)) {
+                if ($result = ssh_command($ip, $credential, 'uname', $log)) {
                     # Successful connect
                     if ($result['status'] == 0) {
                             # Did we use root?
                         if ($credential->root) {
                             # yes we did use root
-                            $log->message = "Credential set" . $from . "working on " . $ip;
+                            $log->function = 'ssh_credentials';
+                            $log->message = "SSH credentials complete. Credential set" . $from . "working on " . $ip;
                             discovery_log($log);
                             return $credential;
                         } else {
                             # no we didn't use root - is sudo on the box?
-                            if ($result = ssh_command($ip, $credential, 'which sudo', $dblog)) {
+                            if ($result = ssh_command($ip, $credential, 'which sudo', $log)) {
                                 # yes, sudo is present
                                 $sudo_binary = $result['output'][0];
                                 $command = 'echo ' . $credential->credentials->password . ' | sudo -S whoami';
                                 # can we use sudo?
-                                if ($result = ssh_command($ip, $credential, $command, $dblog)) {
+                                if ($result = ssh_command($ip, $credential, $command, $log)) {
                                     # yes, we can use sudo
                                     if ($result['status'] == 0) {
                                         # the command ran AND we got no returned error status - we can use sudo
@@ -197,10 +194,14 @@ if (! function_exists('ssh_credentials')) {
             if (!empty($connected[0]->name)) {
                 $from = ' named ' . $connected[0]->name . ' ';
             }
-            $log->message = "Credential set from" . $from . "working on " . $ip;
+            $log->function = 'ssh_credentials';
+            $log->message = "SSH credentials complete. Credential set from" . $from . "working on " . $ip;
             discovery_log($log);
             return $connected[0];
         } else {
+            $log->function = 'ssh_credentials';
+            $log->message = "SSH credentials complete. No credentials found for " . $ip;
+            discovery_log($log);
             return false;
         }
     }
@@ -222,18 +223,12 @@ if (! function_exists('ssh_command')) {
      *
      * @param     command   The command to be run using SSH
      *
-     * @param     dblog     Our logging object into the DB
-     *
      * @return    FALSE || $return array containing the output and status flag
      */
-    function ssh_command($ip = '', $credentials = '', $command = '', $dblog = null)
+    function ssh_command($ip = '', $credentials = '', $command = '', $log)
     {
-        if (is_null($dblog)) {
-            $log = new stdClass();
-            $log->name = 'discovery';
-            $log->severity = 7;
-            $log->level = 7;
-        }
+
+        $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'ssh_command';
         $item_start = microtime(true);
@@ -395,13 +390,19 @@ if (! function_exists('ssh_command')) {
         $log->command = $command_string;
         $log->command_time_to_execute = (microtime(true) - $item_start);
         if ($return['status'] != '0') {
-            $log->message = 'SSH command on ' . $ip . ' failed';
-            discovery_log($log);
+            $log->command_status = 'fail';
+            if (!empty($return['output'][0])) {
+                $log->command_output = trim($return['output'][0]);
+            }
         } else {
-            $log->message = 'SSH command on ' . $ip . ' succeeded';
-            discovery_log($log);
+            $log->command_status = 'success';
+            if (!empty($return['output'][0])) {
+                $log->command_output = trim($return['output'][0]);
+            }
         }
-        unset($log->command, $log->command_time_to_execute);
+        $log->message = 'SSH command';
+        discovery_log($log);
+        unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
 
         // if ($display == 'y') {
         //     echo 'DEBUG - Command Executed: '.$command_string."\n";
@@ -424,16 +425,14 @@ if (! function_exists('ssh_command')) {
 }
 
 if (! function_exists('ssh_audit')) {
-    function ssh_audit($ip = '', $credentials = '', $dblog = null)
+    function ssh_audit($ip = '', $credentials = '', $log)
     {
-        if (is_null($dblog)) {
-            $log = new stdClass();
-            $log->name = 'discovery';
-            $log->severity = 7;
-            $log->level = 7;
-        }
+        $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'ssh_audit';
+        $log->command = '';
+        $log->message = 'SSH audit starting';
+        discovery_log($log);
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to ssh_audit function.';
@@ -462,11 +461,9 @@ if (! function_exists('ssh_audit')) {
         $details->os_group = '';
 
         $command = 'uname';
-        $log->message = 'SSH command audit starting for '.$ip;
-        $log->command = '';
-        discovery_log($log);
 
-        $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+        $ssh_result = ssh_command($ip, $credentials, $command, $log);
+        $log->function = 'ssh_audit';
         if ($ssh_result['status'] == 0) {
             if (!empty($ssh_result['output'][0])) {
                 $details->os_group = $ssh_result['output'][0];
@@ -477,7 +474,8 @@ if (! function_exists('ssh_audit')) {
         } else {
             # Windows doesn't have a uname so the above may fail (it might have unix tools installed)
             $command = 'wmic os get name';
-            $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
+            $log->function = 'ssh_audit';
             foreach ($ssh_result['output'] as $line) {
                 if (stripos($line, 'Windows') !== false) {
                     $details->os_group = 'Windows';
@@ -492,6 +490,7 @@ if (! function_exists('ssh_audit')) {
         }
 
         if ($details->os_group == '') {
+            $log->function = 'ssh_audit';
             $log->severity = 5;
             $log->message = 'uname command failed for ' . $details->ip . ' (System ID ' . $details->id . ')';
             discovery_log($log);
@@ -500,7 +499,7 @@ if (! function_exists('ssh_audit')) {
 
         # DD-WRT specific test
         $command = 'cat /etc/motd | grep -i DD-WRT';
-        $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+        $ssh_result = ssh_command($ip, $credentials, $command, $log);
         if ($ssh_result['status'] == 0) {
             if (stripos($ssh_result['output'][0], 'dd-wrt') !== false) {
                 $details->os_family = 'DD-WRT';
@@ -511,14 +510,14 @@ if (! function_exists('ssh_audit')) {
 
         # Hostname
         $command = 'hostname -s';
-        $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+        $ssh_result = ssh_command($ip, $credentials, $command, $log);
         if ($ssh_result['status'] == 0) {
             $details->hostname = $ssh_result['output'][0];
         }
 
         # FQDN
         $command = 'hostname -f | grep -F .';
-        $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+        $ssh_result = ssh_command($ip, $credentials, $command, $log);
         if ($ssh_result['status'] == 0) {
             $details->fqdn = $ssh_result['output'][0];
         }
@@ -539,7 +538,7 @@ if (! function_exists('ssh_audit')) {
                 $command = '';
             }
             if ($command != '') {
-                $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+                $ssh_result = ssh_command($ip, $credentials, $command, $log);
                 if ($ssh_result['status'] == 0) {
                     $details->uuid = $ssh_result['output'][0];
                 }
@@ -556,7 +555,7 @@ if (! function_exists('ssh_audit')) {
                     $command = '';
                 }
                 if ($command != '') {
-                    $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+                    $ssh_result = ssh_command($ip, $credentials, $command, $log);
                     if ($ssh_result['status'] == 0) {
                         $details->uuid = $ssh_result['output'][0];
                     }
@@ -567,7 +566,7 @@ if (! function_exists('ssh_audit')) {
         # DBUS identifier on Linux (no need for sudo/root)
         if ($details->os_group == 'Linux') {
             $command = 'cat /var/lib/dbus/machine-id';
-            $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
             if ($ssh_result['status'] == 0) {
                 $details->dbus_identifier = $ssh_result['output'][0];
             }
@@ -576,7 +575,7 @@ if (! function_exists('ssh_audit')) {
         # UUID on ESX
         if ($details->os_group == 'VMkernel') {
             $command = "vim-cmd hostsvc/hostsummary | sed -n '/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p' | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\\\"//g'";
-            $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
             if ($ssh_result['status'] == 0) {
                 $details->uuid = $ssh_result['output'][0];
             }
@@ -585,7 +584,7 @@ if (! function_exists('ssh_audit')) {
         # UUID on OSX
         if ($details->os_group == 'Darwin') {
             $command = 'system_profiler SPHardwareDataType | grep UUID | cut -d: -f2';
-            $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
             if ($ssh_result['status'] == 0) {
                 $details->uuid = $ssh_result['output'][0];
             }
@@ -594,7 +593,7 @@ if (! function_exists('ssh_audit')) {
         # Model and Manufuacturer (maybe) on DD-WRT
         if (isset($details->os_family) and $details->os_family == 'DD-WRT') {
             $command = 'nvram get DD_BOARD';
-            $ssh_result = ssh_command($ip, $credentials, $command, $dblog);
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
             if ($ssh_result['status'] == 0) {
                 $details->model = $ssh_result['output'][0];
             }
@@ -602,6 +601,9 @@ if (! function_exists('ssh_audit')) {
                 $details->manufacturer = "TP-Link Technology";
             }
         }
+        $log->function = 'ssh_audit';
+        $log->message = 'SSH audit complete';
+        discovery_log($log);
         return $details;
     }
 }
@@ -624,19 +626,17 @@ if (! function_exists('scp')) {
      *
      * @param     destination
      *
-     * @param     dblog
-     *
      * @return    TRUE || FALSE [depending on if the file could be copied]
      */
-    function scp($ip = '', $credentials = '', $source = '', $destination = '', $dblog = null)
+    function scp($ip = '', $credentials = '', $source = '', $destination = '', $log)
     {
-        if (is_null($dblog)) {
-            $log = new stdClass();
-            $log->name = 'discovery';
-            $log->severity = 7;
-        }
+        $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'scp';
+        $log->command = '';
+        $log->message = 'SCP starting';
+        $item_start = microtime(true);
+        discovery_log($log);
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to ssh_helper::scp function.';
@@ -684,10 +684,6 @@ if (! function_exists('scp')) {
             $log->severity = 7;
             return false;
         }
-
-        $log->message = 'Starting scp to ' . $ip;
-        discovery_log($log);
-        $item_start = microtime(true);
 
         $return = array('output' => '', 'status' => '');
 
@@ -786,14 +782,14 @@ if (! function_exists('scp')) {
         $log->command = $command;
         $log->command_time_to_execute = (microtime(true) - $item_start);
         if ($return['status'] != '0') {
-            $log->message = 'SCP copy to ' . $ip . ' failed';
+            $log->message = 'SCP complete. Copy to ' . $ip . ' failed';
             $log->severity = 4;
             discovery_log($log);
             $log->severity = 7;
             unset($log->command);
             return false;
         } else {
-            $log->message = 'SCP copy to ' . $ip . ' succeeded';
+            $log->message = 'SCP complete. Copy to ' . $ip . ' succeeded';
             discovery_log($log);
             unset($log->command, $log->command_time_to_execute);
             return true;

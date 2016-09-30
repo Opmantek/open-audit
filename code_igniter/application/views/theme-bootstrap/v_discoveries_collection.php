@@ -47,9 +47,6 @@
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Orgsinsation')?></th>
                     <th><?php echo __('Subnet')?></th>
-                    <th><?php echo __('Network Address')?></th>
-                    <th><?php echo __('Created By')?></th>
-                    <th><?php echo __('Created On')?></th>
                     <th><?php echo __('Updated On')?></th>
                     <th><?php echo __('Complete')?></th>
                     <th class="text-center"><?php echo __('Execute')?></th>
@@ -64,9 +61,6 @@
                     <td><?php echo htmlentities($item->attributes->name)?></td>
                     <td><?php echo htmlentities($item->attributes->org_name)?></td>
                     <td><?php echo htmlentities($item->attributes->subnet)?></td>
-                    <td><?php echo htmlentities($item->attributes->network_address)?></td>
-                    <td><?php echo htmlentities($item->attributes->created_by)?></td>
-                    <td><?php echo htmlentities($item->attributes->created_on)?></td>
                     <td><?php echo htmlentities($item->attributes->updated_on)?></td>
                     <td><?php echo htmlentities($item->attributes->complete)?></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>

@@ -193,12 +193,12 @@ $item = $this->response->data[0];
                     <?php
                     }
                     if (filter_var($item->attributes->subnet, FILTER_VALIDATE_IP)) {?>
-                        <div class="form-group">
+                     <!--    <div class="form-group">
                             <label for="execute_with_debug" class="col-sm-3 control-label">Execute with debug</label>
                             <div class="col-sm-8 input-group">
                                 <a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->id); ?>?action=execute&debug=true">Execute</a>
                             </div>
-                        </div>
+                        </div> -->
                     <?php
                     }
                     ?>
@@ -213,7 +213,7 @@ $item = $this->response->data[0];
         </div>
     </div>
 </form>
-
+<!--
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -261,3 +261,4 @@ $item = $this->response->data[0];
         </div>
     </div>
 </div>
+-->
