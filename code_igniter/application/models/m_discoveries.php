@@ -57,17 +57,17 @@ class M_discoveries extends MY_Model
 
     public function read_sub_resource($id = '') {
         // Read our associated logs (if any)
-        // if ($id == '') {
-        //     $CI = & get_instance();
-        //     $id = intval($CI->response->meta->id);
-        // } else {
-        //     $id = intval($id);
-        // }
-        // $sql = "/* m_discoveries::read_sub_resource */ SELECT * FROM logs WHERE name = 'discovery' AND collection_id = ? ORDER BY `timestamp`";
-        // $result = $this->run_sql($sql, array(intval($id)));
-        // $result = $this->format_data($result, 'logs');
-        // return ($result);
-        return(array());
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "/* m_discoveries::read_sub_resource */ " . "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `timestamp`";
+        $result = $this->run_sql($sql, array(intval($id)));
+        $result = $this->format_data($result, 'discovery_log');
+        return ($result);
+        #return(array());
     }
 
     public function collection()

@@ -213,7 +213,7 @@ $item = $this->response->data[0];
         </div>
     </div>
 </form>
-<!--
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -231,27 +231,25 @@ $item = $this->response->data[0];
                         <th>Timestamp</th>
                         <th>File</th>
                         <th>Function</th>
-                        <th>Title</th>
                         <th>Message</th>
                         <th>Duration</th>
-                        <th>Complete</th>
-                        <th>Error</th>
+                        <th>Status</th>
+                        <th>Output</th>
                         <th>Command</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->included as $item) {
-                        if ($item->type == 'logs') {
+                        if ($item->type == 'discovery_log') {
                             echo "<tr>\n"; ?>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="discoveries/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
+                        <td class="text-center"><?php echo htmlentities($item->id); ?></td>
                         <td><?php echo htmlentities($item->attributes->timestamp)?></td>
                         <td><?php echo htmlentities($item->attributes->file)?></td>
                         <td><?php echo htmlentities($item->attributes->function)?></td>
-                        <td><?php echo htmlentities($item->attributes->title)?></td>
-                        <td><?php echo htmlentities($item->attributes->message)?></td>
+                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlentities($item->attributes->message)?></td>
                         <td><?php if ($item->attributes->command_time_to_execute != '0.000000') { echo htmlentities($item->attributes->command_time_to_execute); } ?></td>
-                        <td><?php echo htmlentities($item->attributes->command_complete)?></td>
-                        <td><?php echo htmlentities($item->attributes->command_error_message)?></td>
+                        <td><?php echo htmlentities($item->attributes->command_status)?></td>
+                        <td><?php echo htmlentities($item->attributes->command_output)?></td>
                         <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlentities($item->attributes->command) . '</pre>'; } ?></td>
                     </tr>
                     <?php
@@ -261,4 +259,4 @@ $item = $this->response->data[0];
         </div>
     </div>
 </div>
--->
+
