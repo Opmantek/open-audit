@@ -346,5 +346,11 @@ $config['rewrite_short_tags'] = false;
 */
 $config['proxy_ips'] = '';
 
+function __autoload($class) {
+    if(strpos($class, 'CI_') !== 0) {
+        @include_once( APPPATH . 'core/'. $class . EXT );
+    }
+}
+
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */
