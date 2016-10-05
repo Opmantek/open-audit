@@ -86,6 +86,7 @@ class login extends CI_Controller
         // set the form url so if nothing in the session and requested special login page, it has a default
         if ($form_url == '' and $uri_string == 'login/index/main/list_groups') {
             $form_url = 'main/list_groups';
+            $form_url = 'dashboards';
         }
 
         $data['form_url'] = $form_url;
