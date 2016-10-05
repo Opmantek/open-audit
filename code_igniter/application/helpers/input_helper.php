@@ -118,7 +118,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts configuration connections credentials dashboards database devices discovery discoveries fields files licenses locations networks nmis orgs roles scripts users ';
+        $collections = ' charts configuration connections credentials dashboards database devices discovery discoveries fields files ldap_servers licenses locations networks nmis orgs roles scripts users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -128,7 +128,7 @@ if (! function_exists('inputRead')) {
         # as well as /devices or
         # version={version} in the accept header
         # get the version
-        if ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2') {
+        if (!empty($CI->uri->segments[1]) and ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2')) {
             if ($CI->uri->segments[1] == 'api') {
                 $CI->response->meta->version = intval($CI->uri->segment(2));
                 unset ($CI->uri->segments[1]);
@@ -158,10 +158,14 @@ if (! function_exists('inputRead')) {
         $temp = $CI->uri->segment(1);
         if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
             $CI->response->meta->collection = (string)$temp;
-            $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
             $log->message = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
             stdlog($log);
+        } else {
+            $CI->response->meta->collection = 'dashboards';
+            $log->message = 'Set collection to dashboards as a default.';
+            stdlog($log);
         }
+        $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
         unset($temp);
 
         # get debug
@@ -843,6 +847,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->collection != 'roles' and
             $CI->response->meta->collection != 'configuration' and
             $CI->response->meta->collection != 'database' and
+            $CI->response->meta->collection != 'ldap_servers' and
             $CI->response->meta->collection != 'report' and
             $CI->response->meta->collection != 'charts') {
             if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
@@ -888,6 +893,7 @@ if (! function_exists('inputRead')) {
                 unset($temp);
             }
         }
+        # print_r(json_encode($CI->response));
     }
 }
 /* End of file input_helper.php */
