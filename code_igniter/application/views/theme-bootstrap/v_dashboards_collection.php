@@ -32,61 +32,6 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-$icons = array();
-if ($this->m_users->get_user_permission('', 'configuration', 'r')) {
-    $icons[] = 'configuration';
-}
-if ($this->m_users->get_user_permission('', 'connections', 'r')) {
-    $icons[] = 'connections';
-}
-if ($this->m_users->get_user_permission('', 'credentials', 'r')) {
-    $icons[] = 'credentials';
-}
-if ($this->m_users->get_user_permission('', 'dashboards', 'r')) {
-    $icons[] = 'dashboards';
-}
-if ($this->m_users->get_user_permission('', 'database', 'r')) {
-    $icons[] = 'database';
-}
-if ($this->m_users->get_user_permission('', 'devices', 'r')) {
-    $icons[] = 'devices';
-}
-if ($this->m_users->get_user_permission('', 'discoveries', 'r')) {
-    $icons[] = 'discoveries';
-}
-if ($this->m_users->get_user_permission('', 'fields', 'r')) {
-    $icons[] = 'fields';
-}
-if ($this->m_users->get_user_permission('', 'groups', 'r')) {
-    $icons[] = 'groups';
-}
-if ($this->m_users->get_user_permission('', 'licenses', 'r')) {
-    $icons[] = 'licenses';
-}
-if ($this->m_users->get_user_permission('', 'locations', 'r')) {
-    $icons[] = 'locations';
-}
-if ($this->m_users->get_user_permission('', 'logs', 'r')) {
-    $icons[] = 'logs';
-}
-if ($this->m_users->get_user_permission('', 'networks', 'r')) {
-    $icons[] = 'networks';
-}
-if ($this->m_users->get_user_permission('', 'orgs', 'r')) {
-    $icons[] = 'orgs';
-}
-if ($this->m_users->get_user_permission('', 'queries', 'r')) {
-    $icons[] = 'queries';
-}
-if ($this->m_users->get_user_permission('', 'roles', 'r')) {
-    $icons[] = 'roles';
-}
-if ($this->m_users->get_user_permission('', 'scripts', 'r')) {
-    $icons[] = 'scripts';
-}
-if ($this->m_users->get_user_permission('', 'users', 'r')) {
-    $icons[] = 'users';
-}
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -96,16 +41,14 @@ if ($this->m_users->get_user_permission('', 'users', 'r')) {
     </div>
     <div class="panel-body">
         <div class="row">
-        <?php for ($i=0; $i < count($icons); $i++) {
-            if ($icons[$i] == 'devices') {
-                $width = '85%';
-            } else {
-                $width = '70%';
-            }
-            echo '<div class="col-sm-1 text-center">' . ucfirst($icons[$i]) . '<br /><a href="' . $icons[$i] . '"><img src="/open-audit/icons/' . $icons[$i] . '.svg" width="' . $width . '" /></a></div>';
-            if ($i == 11) {
+        <?php
+        $i = 0;
+        foreach ($this->response->included as $endpoint) {
+            $i++;
+            echo '<div class="col-lg-1 text-center">' . __($endpoint['name']) . '<a class="btn btn-app" href="' . $endpoint['collection'] . '"><span class="badge">' . $endpoint['count'] . '</span><i class="fa fa-' . $endpoint['icon']  . ' fa-3x fa-fw" aria-hidden="true"></i></a></div>';
+            if ($i == 12) {
                 echo "</div><br /><br /><div class=\"row\">";
-            }  
+            }
         }
         ?>
         </div>
@@ -143,7 +86,7 @@ if ($this->m_users->get_user_permission('', 'users', 'r')) {
                         <td class="text-center"><a class="btn btn-sm btn-success" href="dashboards/<?php echo intval($item->attributes->id); ?>"><?php echo intval($item->attributes->id); ?></a></td>
                         <td><?php echo ucwords($item->attributes->name)?></td>
                         <td class="text-center"><?php echo ucwords($item->attributes->count)?></td>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="dashboards/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="dashboards/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                         <?php if ($this->m_users->get_user_permission('', 'dashboards', 'u')) { ?>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="dashboards/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         <?php } ?>

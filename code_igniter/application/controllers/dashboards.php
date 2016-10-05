@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Dashboards extends MY_Controller
+class Dashboards extends MY_Controller_new
 {
     /**
     * Constructor
@@ -68,6 +68,9 @@ class Dashboards extends MY_Controller
         $this->load->helper('error');
         $this->load->model('m_dashboards');
         $this->load->model('m_orgs');
+        if (empty($this->uri->segment(1))) {
+            redirect('dashboards');
+        }
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
     }
@@ -145,6 +148,9 @@ class Dashboards extends MY_Controller
     */
     public function collection()
     {
+        if ($this->response->meta->format == 'screen') {
+            $this->response->included = array_merge($this->response->included, $this->m_dashboards->read_sub_resource());
+        }
         include 'include_collection.php';
     }
 
