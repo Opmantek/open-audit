@@ -317,7 +317,7 @@ class MY_Model extends CI_Model
                 $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
             
             } else if ($endpoint == 'orgs') {
-                $sql = "SELECT oa_org.*, o2.name as parent_name, count(DISTINCT system.id) as device_count FROM oa_org LEFT JOIN oa_org o2 ON oa_org.parent_id = o2.id LEFT JOIN system ON (oa_org.id = system.org_id) " . $return['filter'] . " GROUP BY oa_org.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT oa_org.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM oa_org LEFT JOIN oa_org o2 ON oa_org.parent_id = o2.id LEFT JOIN system ON (oa_org.id = system.org_id) " . $return['filter'] . " GROUP BY oa_org.id " . $return['sort'] . " " . $return['limit'];
             
             } else {
                 $sql = "SELECT " . $return['properties'] . ", oa_org.name AS `org_name` FROM `" . $table . "` LEFT JOIN oa_org ON (`" . $table . "`.org_id = oa_org.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
