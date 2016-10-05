@@ -210,12 +210,14 @@ class M_oa_user extends MY_Model
                 // set the user object
                 $CI->user = $query->row();
 
-                 if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+                if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
                     $CI->user->id = $CI->user->user_id;
                     $CI->user->name = $CI->user->user_name;
                     $CI->user->password = $CI->user->user_password;
                     $CI->user->full_name = $CI->user->user_full_name;
                 }
+
+                $CI->user->admin = 'y';
 
                 if ($admin == 'y') {
                     if ($CI->user->admin == 'y') {
@@ -223,7 +225,7 @@ class M_oa_user extends MY_Model
                         $log_details->message = 'User validated as an admin';
                         stdlog($log_details);
                         unset($log_details);
-                        $userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
+                        $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
                         $this->session->set_userdata($userdata);
 
                         return;

@@ -238,7 +238,6 @@ class M_users extends MY_Model
         if (empty($user_roles)) {
             return false;
         }
-
         if (!empty($user_roles) and !empty($roles)) {
             foreach ($user_roles as $user_role) {
                 foreach ($roles as $role) {
@@ -322,5 +321,63 @@ class M_users extends MY_Model
             }
         }
         return true;
+    }
+
+    public function validate()
+    {
+        $CI = & get_instance();
+        $this->config = $CI->config;
+        $CI->user = new stdClass();
+        $this->load->library('session');
+        $this->load->helper('url');
+        $this->load->helper('log');
+        $user_prefix = '';
+        if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+            $user_prefix = 'user_';
+        }
+
+        if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
+            // user is logged in, return the $this->user object
+            $sql = "SELECT * FROM oa_user WHERE oa_user." . $user_prefix . "id = ? LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array(intval($this->session->userdata['user_id']));
+            $query = $this->db->query($sql, $data);
+            if ($query->num_rows() > 0) {
+                // set the user object
+                $CI->user = $query->row();
+                if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+                    $CI->user->id = $CI->user->user_id;
+                    $CI->user->name = $CI->user->user_name;
+                    $CI->user->password = $CI->user->user_password;
+                    $CI->user->full_name = $CI->user->user_full_name;
+                }
+                $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
+                $this->session->set_userdata($userdata);
+                return;
+            } else {
+                // the user_id stored in the session does not exist
+                log_error('ERR-0015', $CI->response->meta->collection . ':' . $CI->response->meta->action . ' Bad session data');
+                if ($CI->response->meta->format == 'json') {
+                    echo json_encode($CI->response);
+                    exit();
+                } else {
+                    if (strtoupper($CI->input->server('REQUEST_METHOD')) == 'GET') {
+                        $this->session->set_userdata('url', current_url());
+                    }
+                    redirect('logon');
+                }
+            }
+        } else {
+            log_error('ERR-0020', current_url());
+            if (!empty($CI->response->meta->format) and $CI->response->meta->format == 'json') {
+                echo json_encode($CI->response);
+                exit();
+            } else {
+                if (strtoupper($CI->input->server('REQUEST_METHOD')) == 'GET') {
+                    $this->session->set_userdata('url', current_url());
+                }
+                redirect('logon');
+            }
+        }
     }
 }
