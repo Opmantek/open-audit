@@ -739,6 +739,67 @@ LOCK TABLES `ip` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ldap_servers`
+--
+
+DROP TABLE IF EXISTS `ldap_servers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ldap_servers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `lang` varchar(200) NOT NULL DEFAULT '',
+  `host` varchar(200) NOT NULL DEFAULT '',
+  `domain` varchar(200) NOT NULL DEFAULT '',
+  `use_roles` enum('y','n') NOT NULL DEFAULT 'n',
+  `refresh` int(10) unsigned NOT NULL DEFAULT '24',
+  `refreshed` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ldap_servers`
+--
+
+LOCK TABLES `ldap_servers` WRITE;
+/*!40000 ALTER TABLE `ldap_servers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ldap_servers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+--
+-- Table structure for table `ldap_groups`
+--
+
+DROP TABLE IF EXISTS `ldap_groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ldap_groups` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ldap_servers_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `dn` text NOT NULL,
+  `primary_token` varchar(200) NOT NULL DEFAULT '',
+  `memberof` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ldap_groups`
+--
+
+LOCK TABLES `ldap_groups` WRITE;
+/*!40000 ALTER TABLE `ldap_groups` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ldap_groups` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `licenses`
 --
 
@@ -1210,8 +1271,6 @@ CREATE TABLE `configuration` (
 
 LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
-INSERT INTO `configuration` VALUES (NULL, 'ad_domain','','y','system',NOW(),'The domain name against which your users will validate to log on to Open-AudIT. EG - open-audit.org');
-INSERT INTO `configuration` VALUES (NULL, 'ad_server','','y','system',NOW(),'The IP Address of the domain controller your users will validate to log to Open-AudIT. EG - 192.168.0.1');
 INSERT INTO `configuration` VALUES (NULL, 'blessed_subnets_use','y','y','system',NOW(),'Should we only accept data from the blessed subnets list.');
 INSERT INTO `configuration` VALUES (NULL, 'default_network_address','','y','system',NOW(),'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
 INSERT INTO `configuration` VALUES (NULL, 'delete_noncurrent','n','y','system',NOW(),'Should we delete any attributes that are not present when we audit a device.');
@@ -1478,6 +1537,7 @@ CREATE TABLE `oa_org` (
   `name` varchar(100) NOT NULL DEFAULT '',
   `parent_id` int(10) unsigned DEFAULT '0',
   `comments` text NOT NULL,
+  `ad_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
@@ -1604,6 +1664,7 @@ CREATE TABLE `oa_user` (
   `orgs` text NOT NULL,
   `lang` varchar(100) NOT NULL,
   `active` varchar(1) NOT NULL DEFAULT 'y',
+  `ldap` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  
   PRIMARY KEY (`id`),
@@ -1859,7 +1920,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","ldap_servers":"crud","logs":"crud","nmis": "crud","roles": "crud","sessions":"crud"}', 'open-audit_admin', 'system', NOW());
 INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","dashboards":"crud","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","sessions":"crud","users":"crud"}', 'open-audit_org_admin', 'system', NOW());
 INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","dashboards":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","sessions":"crud"}', 'open-audit_reporter', 'system', NOW());
 INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","dashboards":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","sessions":"crud"}', 'open-audit_user', 'system', NOW());

@@ -5001,6 +5001,40 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `invoice` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
             }
 
+            # ldap groups
+            $sql[] = "DROP TABLE IF EXISTS `ldap_groups`";
+            $sql[] = "CREATE TABLE `ldap_groups` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `ldap_servers_id` int(10) unsigned NOT NULL DEFAULT '1',
+              `name` varchar(200) NOT NULL DEFAULT '',
+              `dn` text NOT NULL,
+              `primary_token` varchar(200) NOT NULL DEFAULT '',
+              `memberof` text NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            # ldap servers
+            $sql[] = "DROP TABLE IF EXISTS `ldap_servers`";
+            $sql[] = "CREATE TABLE `ldap_servers` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `name` varchar(200) NOT NULL DEFAULT '',
+              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+              `description` text NOT NULL,
+              `lang` varchar(200) NOT NULL DEFAULT '',
+              `host` varchar(200) NOT NULL DEFAULT '',
+              `domain` varchar(200) NOT NULL DEFAULT '',
+              `use_roles` enum('y','n') NOT NULL DEFAULT 'n',
+              `refresh` int(10) unsigned NOT NULL DEFAULT '24',
+              `refreshed` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `edited_by` varchar(200) NOT NULL DEFAULT '',
+              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            if (!empty($this->config->config['ad_domain']) and !empty($this->config->config['ad_server'])) {
+                $sql[] = "INSERT INTO `ldap_servers` VALUES (NULL, 'Default Domain', 1, 'Migrated by system', 'en', '" . $this->config->config['ad_server'] . "', '" . $this->config->config['ad_domain'] . "', 'n', 'system', NOW())";
+            }
+
             # licenses
             if (!$this->db->table_exists('licenses')) {
                 $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '1',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`match_string` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
@@ -5074,6 +5108,10 @@ class Database extends MY_Controller
             if ($this->db->field_exists('group_id', 'oa_org')) {
                 $sql[] = "ALTER TABLE `oa_org` DROP `group_id`";
             }
+            if (!$this->db->field_exists('ad_group', 'oa_org')) {
+                $sql[] = "ALTER TABLE `oa_org` ADD `ad_group` varchar(100) NOT NULL DEFAULT '' AFTER `comments`";
+            }
+            $sql[] = "UPDATE oa_org SET ad_group = CONCAT('open-audit_orgs_', LOWER(REPLACE(`name`, ' ', '_')))";
 
             # oa_report
             if (!$this->db->field_exists('org_id', 'oa_report')) {
@@ -5119,6 +5157,9 @@ class Database extends MY_Controller
             if (!$this->db->field_exists('orgs', 'oa_user')) {
                 $sql[] = "ALTER TABLE oa_user ADD orgs text NOT NULL default '' AFTER roles";
             }
+            if (!$this->db->field_exists('ldap', 'oa_user')) {
+                $sql[] = "ALTER TABLE oa_user ADD ldap text NOT NULL after active";
+            }
             if (!$this->db->field_exists('edited_by', 'oa_user')) {
                 $sql[] = "ALTER TABLE oa_user ADD `edited_by` varchar(200) NOT NULL DEFAULT '' after active";
             }
@@ -5141,7 +5182,7 @@ class Database extends MY_Controller
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_admin', 'system', NOW())";
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_org_admin', 'system', NOW())";
 
