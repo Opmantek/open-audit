@@ -9,7 +9,40 @@
 
 body {margin: 8px;}
 
-/* *_collection */
+/* dashboard icons */
+a i {
+    color: dimgrey;
+}
+.btn-app {
+    border-radius: 3px;
+    position: relative;
+    padding: 10px 5px;
+    margin: 0 0 10px 10px;
+    min-width: 80px;
+    height: 60px;
+    text-align: center;
+    color: #666;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    font-size: 12px;
+}
+.btn {
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid transparent;
+}
+.btn-app>.badge {
+    position: absolute;
+    top: 75%;
+    right: -2px;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+
+
+/* collection */
 .glyphicon:hover { 
     color: green;
 }
