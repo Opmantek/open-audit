@@ -49,8 +49,8 @@
     <?php } ?>
 
     <div class="col-md-1" style="text-align:center;">
-        <a href="<?php echo $this->config->config['oa_web_index']; ?>/main/edit_user"><?php echo htmlentities($this->user->full_name); ?></a><br />
-        <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index']; ?>/login/logout" role="button">Logout</a>
+        <a href="<?php echo $this->config->config['oa_web_index']; ?>/users/<?php echo intval($this->user->id); ?>/update"><?php echo htmlentities($this->user->full_name); ?></a><br />
+        <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index']; ?>/logon/logoff" role="button">Logout</a>
     </div>
 </div>
 
@@ -183,7 +183,7 @@
                         <ul class="dropdown-menu" style="min-width:250px;">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations'>List Locations</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'locations', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_location'>Create Location</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations/create'>Create Location</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_locations'>Import Multiple Locations</a></li>
                             <?php } ?>
                         </ul>
@@ -269,7 +269,11 @@
 
 
             <?php
-            if ($this->m_users->get_user_permission('', 'configuration', 'r') or $this->m_users->get_user_permission('', 'database', 'r') or $this->m_users->get_user_permission('', 'logs', 'r') or $this->m_users->get_user_permission('', 'roles', 'r')) { ?>
+            if ($this->m_users->get_user_permission('', 'configuration', 'r') !== false or 
+                $this->m_users->get_user_permission('', 'database', 'u') !== false or 
+                $this->m_users->get_user_permission('', 'ldap_servers', 'u') !== false or 
+                $this->m_users->get_user_permission('', 'logs', 'r') !== false or 
+                $this->m_users->get_user_permission('', 'roles', 'r') !== false) { ?>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -291,6 +295,17 @@
                         <a href="#">Database</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/database'>List Tables</a></li>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
+                if ($this->m_users->get_user_permission('', 'ldap_servers', 'u')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">LDAP Servers</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers'>List Servers</a></li>
                         </ul>
                     </li>
                 <?php
