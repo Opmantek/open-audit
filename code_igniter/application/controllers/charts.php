@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Charts extends MY_Controller
+class Charts extends MY_Controller_new
 {
 	/**
 	* Constructor
