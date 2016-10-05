@@ -39,6 +39,7 @@ if ($collection == 'credentials' or
     $collection == 'discoveries' or
     $collection == 'fields' or
     $collection == 'files' or
+    $collection == 'ldap_servers' or
     $collection == 'licenses' or
     $collection == 'locations' or
     $collection == 'networks' or

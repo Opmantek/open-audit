@@ -36,9 +36,11 @@ if ($this->response->meta->collection == 'scripts') {
 if ($this->response->meta->collection == 'users') {
         $this->load->model('m_roles');
         $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
+        $this->load->model('m_orgs');
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
-if (isset($this->response->data[0]->attributes->org_id) and $this->response->data[0]->attributes->org_id != '') {
+if (isset($this->response->data[0]->attributes->org_id) and $this->response->data[0]->attributes->org_id != '' and $this->response->meta->collection != 'users') {
     $this->load->model('m_orgs');
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
 }
