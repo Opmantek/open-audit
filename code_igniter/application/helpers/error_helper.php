@@ -194,6 +194,20 @@ if (! function_exists('getError')) {
         $error_array['ERR-0018']->title = "User not authorised to use Org" . $extra;
         $error_array['ERR-0018']->detail = 'A user attempted to write to an org_id to an object for which they do not have permission.';
 
+        $error_array['ERR-0019'] = new stdClass();
+        $error_array['ERR-0019']->code = 'ERR-0019';
+        $error_array['ERR-0019']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0019']->severity = 3;
+        $error_array['ERR-0019']->title = "Could not connect to LDAP" . $extra;
+        $error_array['ERR-0019']->detail = 'When attempting to connect to LDAP for Active Directory, could not.';
+
+        $error_array['ERR-0020'] = new stdClass();
+        $error_array['ERR-0020']->code = 'ERR-0019';
+        $error_array['ERR-0020']->status = 'HTTP/1.1 401 Unauthorized';
+        $error_array['ERR-0020']->severity = 3;
+        $error_array['ERR-0020']->title = "User not authorised, credentials required" . $extra;
+        $error_array['ERR-0020']->detail = 'When attempting to access a resource, credentials are required.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
