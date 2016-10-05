@@ -222,7 +222,7 @@ $item = $this->response->data[0];
         <?php
         foreach ($this->response->included as $org) {
             if ($org->type == 'orgs') {
-                if ($org->id == 0) {
+                if ($org->id == 1) {
                     $org->attributes->parent_name = '';
                 }
                 $checked = '';
