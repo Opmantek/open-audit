@@ -73,6 +73,7 @@ class login extends CI_Controller
      */
     public function index()
     {
+        redirect('logon');
         $data['title'] = 'Open-AudIT';
         $data['username'] = array('id' => 'username', 'name' => 'username');
         $data['password'] = array('id' => 'password', 'name' => 'password');
