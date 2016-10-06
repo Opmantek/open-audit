@@ -247,7 +247,7 @@ $item = $this->response->data[0];
                         <td><?php echo htmlentities($item->attributes->file)?></td>
                         <td><?php echo htmlentities($item->attributes->function)?></td>
                         <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlentities($item->attributes->message)?></td>
-                        <td><?php if ($item->attributes->command_time_to_execute != '0.000000') { echo htmlentities($item->attributes->command_time_to_execute); } ?></td>
+                        <td><?php if ($item->attributes->command_time != '0.000000') { echo htmlentities($item->attributes->command_time); } ?></td>
                         <td><?php echo htmlentities($item->attributes->command_status)?></td>
                         <td><?php echo htmlentities($item->attributes->command_output)?></td>
                         <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlentities($item->attributes->command) . '</pre>'; } ?></td>

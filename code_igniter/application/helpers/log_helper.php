@@ -183,7 +183,7 @@ if (! function_exists('discovery_log')) {
         }
 
         if (!is_null($log->id)) {
-            $sql = "/* log_helper::discovery_log */ " . "UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?";
+            $sql = "/* log_helper::discovery_log */ " . "UPDATE discovery_log SET command = ?, command_status = ?, command_time = ?, command_output = ? WHERE id = ?";
             $data = array((string)$log->command, (string)$log->command_status, $log->command_time_to_execute, (string)$log->command_output, $log->id);
             $query = $CI->db->query($sql, $data);
             return($log->id);

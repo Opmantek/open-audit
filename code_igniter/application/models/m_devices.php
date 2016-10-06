@@ -254,7 +254,7 @@ class M_devices extends MY_Model
             $data = array($id);
 
         } elseif ($sub_resource == 'discovery_log') {
-            $sql = "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
+            $sql = "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
             $data = array($id);
 
         } elseif ($sub_resource == 'additional_fields') {
