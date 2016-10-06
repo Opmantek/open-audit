@@ -81,6 +81,11 @@ if (! function_exists('inputRead')) {
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
 
+        # make sure we have the required header
+        if (empty($_SERVER['HTTP_ACCEPT'])) {
+            $_SERVER['HTTP_ACCEPT'] = '';
+        }
+
         # /collection/{id}/{sub_resource}
 
         # initialise our properties
