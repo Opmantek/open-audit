@@ -123,6 +123,10 @@ class logon extends CI_Controller
     {
         $this->load->model('m_logon');
         $this->m_logon->logon();
+        if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
+            redirect('database');
+            exit();
+        }
         if (!empty($this->session->userdata('url'))) {
             redirect($this->session->userdata('url'));
         } else {
