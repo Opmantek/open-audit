@@ -1,5 +1,5 @@
         <h3 class="panel-title">
-            <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
+            <span class="text-left"><?php echo ucwords(str_replace('_', ' ', ($this->response->meta->collection))); ?></span>
             <?php
             if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'c') and $this->response->meta->collection != 'configuration') { ?>
                 <span class="pull-right" style="padding-left:10px;" >
