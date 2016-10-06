@@ -106,11 +106,6 @@
 </div>
 </div>
 </form>
-<pre>
-<?php
-# print_r($this->session);
-?>
-</pre>
 <script type="text/javascript">
     function audit_my_pc()
     {
