@@ -176,14 +176,10 @@ class M_configuration extends MY_Model
 
         if ($this->db->table_exists('configuration')) {
             $sql = "SELECT name, value FROM `configuration`";
-            $sql = $this->clean_sql($sql);
             $result = $this->run_sql($sql, array());
-        }
-
-        if (empty($result) and $this->db->table_exists('oa_config')) {
+        } else if ($this->db->table_exists('oa_config')) {
             $this->load->library('encrypt');
             $sql = "SELECT config_name AS `name`, config_value AS `value` FROM `oa_config`";
-            $sql = $this->clean_sql($sql);
             $result = $this->run_sql($sql, array());
             foreach ($result as $key => $value) {
                 $config_item_name = $result[$key]->name;
