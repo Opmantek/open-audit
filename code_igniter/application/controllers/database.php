@@ -5250,6 +5250,7 @@ class Database extends MY_Controller
             $this->db->db_debug = $temp_debug;
             $this->data['output'] .= 'Upgrade database to 1.12.10 completed';
             $this->config->config['internal_version'] = '20160904';
+            $this->config->config['display_version'] = '1.12.10';
         }
 
         # refresh the icons
@@ -5268,11 +5269,11 @@ class Database extends MY_Controller
         // $this->load->helper('script_helper');
         // refresh_script_definitions();
 
-        $this->load->model('m_configuration');
-        $this->m_configuration->load();
+        // $this->load->model('m_configuration');
+        // $this->m_configuration->load();
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
-        $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->item('display_version')." (".$this->config->item('internal_version').")";
+        $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->config['display_version']." (".$this->config->config['internal_version'].")";
         $this->load->view('v_template', $this->data);
     }
 }
