@@ -5221,8 +5221,6 @@ class Database extends MY_Controller
             $sql[] = "UPDATE configuration SET value = '20160904' WHERE name = 'internal_version'";
             $sql[] = "UPDATE configuration SET value = '1.12.10' WHERE name = 'display_version'";
 
-            $sql[] = "SELECT bling FROM expensive";
-
             $temp_debug = $this->db->db_debug;
             $this->db->db_debug = false;
             foreach ($sql as $this_query) {
