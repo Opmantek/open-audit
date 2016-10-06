@@ -98,6 +98,10 @@ class M_configuration extends MY_Model
         $item->id = 888888;
         $item->name = 'web_internal_version';
         $item->value = $this->config->config['web_internal_version'];
+        $item->editable = 'n';
+        $item->edited_by = '';
+        $item->edited_date = '';
+        $item->description = 'The internal numerical version of the Open-AudIT files.';
         $result[] = $item;
         $result = $this->format_data($result, 'configuration');
         return ($result);
