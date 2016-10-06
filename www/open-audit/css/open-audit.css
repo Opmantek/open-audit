@@ -39,7 +39,9 @@ a i {
     font-size: 1em;
     font-weight: 400;
 }
-
+.btn-app:hover {
+    border-color: #aaa;
+}
 
 
 /* collection */
