@@ -152,7 +152,10 @@ class M_credentials extends MY_Model
         $CI = & get_instance();
         $log = new stdClass();
         $log->severity = 7;
+        $log->level = 7;
         $log->file = 'system';
+
+        $this->load->library('encrypt');
 
         if (!empty($CI->response->meta->received_data->attributes->type)) {
             $type = $CI->response->meta->received_data->attributes->type;
@@ -171,6 +174,7 @@ class M_credentials extends MY_Model
             stdlog($log);
         } else {
             $log->message = "Credentials not supplied - exiting." . json_encode($CI->response->meta);
+            $log->severity = 5;
             stdlog($log);
             return false;
         }
@@ -182,17 +186,19 @@ class M_credentials extends MY_Model
             stdlog($log);
         } else {
             $log->message = "Name not supplied - exiting.";
+            $log->severity = 5;
             stdlog($log);
             return false;
         }
 
         # Required
-        if (!empty($CI->response->meta->received_data->attributes->org_id)) {
+        if (isset($CI->response->meta->received_data->attributes->org_id)) {
             $org_id = intval($CI->response->meta->received_data->attributes->org_id);
             $log->message = "Using org_id from received_data.";
             stdlog($log);
         } else {
             $log->message = "Org_id not supplied - exiting.";
+            $log->severity = 5;
             stdlog($log);
             return false;
         }
@@ -212,6 +218,7 @@ class M_credentials extends MY_Model
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
             $log->message = "Duplicate name found - exiting.";
+            $log->severity = 5;
             stdlog($log);
             log_error('ERR-0010', 'm_credentials::create');
             return false;
@@ -228,6 +235,7 @@ class M_credentials extends MY_Model
             return $id;
         } else {
             $log->message = "Credentials NOT created.";
+            $log->severity = 5;
             stdlog($log);
             return false;
         }
