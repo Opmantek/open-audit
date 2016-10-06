@@ -128,15 +128,14 @@ if (!empty($_POST['form_details'])) {
         $data = array($input->subnet_timestamp);
         $query = $this->db->query($sql, $data);
 
-        $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE `id` = ?";
+        $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE `id` = " . intval($input->subnet_timestamp);
         $log->command = $sql;
         $log->message = "retrieve discoveries entry from DB";
         $command_log_id = discovery_log($log);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
 
-        $data = array(intval($input->subnet_timestamp));
         $command_start = microtime(true);
-        $query = $this->db->query($sql, $data);
+        $query = $this->db->query($sql, array());
         $command_end = microtime(true);
         $log->command = $this->db->last_query();
         $log->command_time_to_execute = $command_end - $command_start;
