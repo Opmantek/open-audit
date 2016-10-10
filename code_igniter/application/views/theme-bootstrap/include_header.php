@@ -1,7 +1,7 @@
 <div class="row" style="padding-bottom:5px;">
     <div class="col-md-4">
         <a href="<?php echo $this->config->config['oa_web_index']; ?>/dashboards">
-            <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/<?php echo htmlspecialchars($this->config->item('logo', REPLACE_FLAGS, CHARSET))?>.png' alt='logo' style='border-width:0px;' />
+            <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/<?php echo htmlspecialchars($this->config->item('logo'), REPLACE_FLAGS, CHARSET)?>.png' alt='logo' style='border-width:0px;' />
         </a>
     </div>
     <div class="col-md-2"></div>
@@ -9,7 +9,7 @@
     <div class="col-md-1" style="text-align:center;">
         <?php
         if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") { ?>
-            Map<br /><a href="<?php echo htmlspecialchars($this->config->item('maps_url', REPLACE_FLAGS, CHARSET)); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
+            Map<br /><a href="<?php echo htmlspecialchars($this->config->item('maps_url'), REPLACE_FLAGS, CHARSET); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
         <?php
         } else { ?>
             Map<br /><a href="<?php echo $this->config->config['oa_web_index']; ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
@@ -24,7 +24,7 @@
   <div class="col-md-1" style="text-align:center;">
     <?php
     if (isset($this->config->config['mis_url']) and $this->config->config['nmis_url'] > "") { ?>
-        NMIS<br /><a href="<?php echo htmlspecialchars($this->config->item('nmis_url', REPLACE_FLAGS, CHARSET)); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
+        NMIS<br /><a href="<?php echo htmlspecialchars($this->config->item('nmis_url'), REPLACE_FLAGS, CHARSET); ?>" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
     <?php
     } else { ?>
         NMIS<br /><a href="https://opmantek.com" target="_blank"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" /></a>
@@ -33,7 +33,7 @@
   </div>
 
   <div class="col-md-1" style="text-align:center;">
-    Version<br /><?php echo htmlspecialchars($this->config->item('display_version', REPLACE_FLAGS, CHARSET)); ?>
+    Version<br /><?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>
     <?php
     if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and $this->m_users->get_user_permission('', 'database', 'u')) {
         echo '<br /><a href="'.$this->config->config['oa_web_index'].'/main/help_about" style="color: red;">upgrade</a>';
@@ -43,10 +43,11 @@
     <?php
     if ($this->m_users->get_user_permission('', 'configuration', 'u') or $this->m_users->get_user_permission('', 'discoveries', 'u')) {
         ?>
-    <div class="col-md-1" style="text-align:center;">
+        <div class="col-md-1" style="text-align:center;">
         Show<br /><button class="btn btn-default btn-sm debug">Debug</button>
-    </div>
-    <?php } ?>
+        </div>
+    <?php
+    } ?>
 
     <div class="col-md-1" style="text-align:center;">
         <a href="<?php echo $this->config->config['oa_web_index']; ?>/users/<?php echo intval($this->user->id); ?>/update"><?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?></a><br />

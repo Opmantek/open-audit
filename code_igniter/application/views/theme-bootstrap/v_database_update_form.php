@@ -85,21 +85,21 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
                     <div class="form-group">
                         <label for="web_display_version" class="col-sm-3 control-label"><?php echo __('Open-AudIT Web Version'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="web_display_version" name="web_display_version" value="<?php echo htmlspecialchars($this->config->item('web_display_version', REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="web_display_version" name="web_display_version" value="<?php echo htmlspecialchars($this->config->item('web_display_version'), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="display_version" class="col-sm-3 control-label"><?php echo __('Open-AudIT Database Version'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="display_version" name="display_version" value="<?php echo htmlspecialchars($this->config->item('display_version', REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="display_version" name="display_version" value="<?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="hostname" class="col-sm-3 control-label"><?php echo __('Hostname'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="hostname" name="hostname" value="<?php echo htmlspecialchars(php_uname('n', REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="hostname" name="hostname" value="<?php echo htmlspecialchars(php_uname('n'), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -113,28 +113,28 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
                     <div class="form-group">
                         <label for="database_platform" class="col-sm-3 control-label"><?php echo __('Database Platform'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="database_platform" name="database_platform" value="<?php echo htmlspecialchars($this->db->platform(, REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="database_platform" name="database_platform" value="<?php echo htmlspecialchars($this->db->platform(), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="database_version" class="col-sm-3 control-label"><?php echo __('Database Version'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="database_version" name="database_version" value="<?php echo htmlspecialchars($this->db->version(, REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="database_version" name="database_version" value="<?php echo htmlspecialchars($this->db->version(), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="web_server" class="col-sm-3 control-label"><?php echo __('Web Server'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="web_server" name="web_server" value="<?php echo htmlspecialchars(getenv("SERVER_SOFTWARE", REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="web_server" name="web_server" value="<?php echo htmlspecialchars(getenv("SERVER_SOFTWARE"), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="php_server" class="col-sm-3 control-label"><?php echo __('PHP Server'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="php_server" name="php_server" value="<?php echo htmlspecialchars(phpversion(, REPLACE_FLAGS, CHARSET)); ?>" disabled>
+                            <input type="text" class="form-control" id="php_server" name="php_server" value="<?php echo htmlspecialchars(phpversion(), REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>
