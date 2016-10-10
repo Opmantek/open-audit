@@ -73,7 +73,7 @@ foreach ($this->response->included as $item) {
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -168,8 +168,8 @@ foreach ($this->response->included as $item) {
                             <?php # TODO - Maybe only display files per based_on ?>
                                 <tr>
                                     <td><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked disabled></td>
-                                    <td><?php echo htmlentities($file->description); ?></td>
-                                    <td><?php echo htmlentities($file->path); ?></td>
+                                    <td><?php echo htmlspecialchars($file->description, REPLACE_FLAGS, CHARSET); ?></td>
+                                    <td><?php echo htmlspecialchars($file->path, REPLACE_FLAGS, CHARSET); ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php } ?>

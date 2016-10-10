@@ -194,16 +194,16 @@ if (!empty($this->response->data)) { ?>
             if (!empty($item->attributes->$property)) {
 
                 if ($property == 'id' or $property == 'system.id') {
-                    echo '<td><a style="min-width:38px;" href="' . htmlentities($item->links->self) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
+                    echo '<td><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
 
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->attributes->{$property . '_padded'}))) {
                     echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
 
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
-                    echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlentities($item->attributes->$property))).".svg\" style='border-width:0px; width:24px; height:24px' title=\"".htmlentities($item->attributes->$property)."\" alt=\"".htmlentities($item->attributes->$property)."\"/></td>\n";
+                    echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET))).".svg\" style='border-width:0px; width:24px; height:24px' title=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\" alt=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\"/></td>\n";
 
                 } elseif ($property == 'system.seen_by') {
-                    echo "            <td>" . htmlentities($item->attributes->$property) . "</td>\n";
+                    echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
 
                 } else {
                     if (strlen($item->attributes->$property) > 60) {

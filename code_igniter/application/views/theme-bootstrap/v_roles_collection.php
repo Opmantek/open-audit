@@ -57,17 +57,17 @@ $nondelete = ' admin org_admin reporter user ';
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                        <td><?php echo htmlentities($item->attributes->name)?></td>
-                        <td class="wrap"><?php echo htmlentities($item->attributes->description)?></td>
-                        <td><?php echo htmlentities($item->attributes->ad_group)?></td>
-                        <td><?php echo htmlentities($item->attributes->edited_by)?></td>
-                        <td><?php echo htmlentities($item->attributes->edited_date)?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                        <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                        <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="roles/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         <?php if (strpos($nondelete, ' ' . $item->attributes->name . ' ') !== false) { ?>
                             <td></td>
                         <?php } else { ?>
-                            <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                            <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>
                     </tr>
                 <?php endforeach; ?>

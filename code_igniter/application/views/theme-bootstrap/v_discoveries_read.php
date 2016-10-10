@@ -57,7 +57,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -73,7 +73,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -89,7 +89,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="subnet" class="col-sm-3 control-label">Subnet</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="subnet" name="subnet" placeholder="" value="<?php echo htmlentities($item->attributes->subnet); ?>" disabled>
+                            <input type="text" class="form-control" id="subnet" name="subnet" placeholder="" value="<?php echo htmlspecialchars($item->attributes->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -101,7 +101,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="network_address" class="col-sm-3 control-label">Network Address</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="network_address" name="network_address" placeholder="" value="<?php echo htmlentities($item->attributes->network_address); ?>" disabled>
+                            <input type="text" class="form-control" id="network_address" name="network_address" placeholder="" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_network_address" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network_address"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -118,7 +118,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_org) and $item->attributes->devices_assigned_to_org == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -139,7 +139,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $location) {
                                     if ($location->type == 'locations') { ?>
-                                        <option value="<?php echo intval($location->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo htmlentities($location->attributes->name); ?></option>
+                                        <option value="<?php echo intval($location->id); ?>"<?php if (!is_null($item->attributes->devices_assigned_to_location) and $item->attributes->devices_assigned_to_location == $location->id) { echo " selected"; } ?>><?php echo htmlspecialchars($location->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -155,28 +155,28 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="created_by" class="col-sm-3 control-label">Created By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="created_by" name="created_by" value="<?php echo htmlentities($item->attributes->created_by); ?>" disabled>
+                            <input type="text" class="form-control" id="created_by" name="created_by" value="<?php echo htmlspecialchars($item->attributes->created_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="created_on" class="col-sm-3 control-label">Created On</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="created_on" name="created_on" value="<?php echo htmlentities($item->attributes->created_on); ?>" disabled>
+                            <input type="text" class="form-control" id="created_on" name="created_on" value="<?php echo htmlspecialchars($item->attributes->created_on, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="updated_on" class="col-sm-3 control-label">Updated On</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlentities($item->attributes->updated_on); ?>" disabled>
+                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->updated_on, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="complete" class="col-sm-3 control-label">Complete</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlentities($item->attributes->complete); ?>" disabled>
+                            <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -187,7 +187,7 @@ $item = $this->response->data[0];
                         <div class="form-group">
                             <label for="refresh" class="col-sm-3 control-label">Not Complete</label>
                             <div class="col-sm-8 input-group">
-                                <a class="btn btn-sm btn-warning" href="<?php echo htmlentities($item->id); ?>">Refresh</a>
+                                <a class="btn btn-sm btn-warning" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>">Refresh</a>
                             </div>
                         </div>
                     <?php
@@ -196,7 +196,7 @@ $item = $this->response->data[0];
                      <!--    <div class="form-group">
                             <label for="execute_with_debug" class="col-sm-3 control-label">Execute with debug</label>
                             <div class="col-sm-8 input-group">
-                                <a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->id); ?>?action=execute&debug=true">Execute</a>
+                                <a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&debug=true">Execute</a>
                             </div>
                         </div> -->
                     <?php
@@ -205,7 +205,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="execute" class="col-sm-3 control-label">Execute</label>
                         <div class="col-sm-8 input-group">
-                            <a class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute">Execute</a>
+                            <a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute">Execute</a>
                         </div>
                     </div>
                 </div>
@@ -242,15 +242,15 @@ $item = $this->response->data[0];
                     <?php foreach ($this->response->included as $item) {
                         if ($item->type == 'discovery_log') {
                             echo "<tr>\n"; ?>
-                        <td class="text-center"><?php echo htmlentities($item->id); ?></td>
-                        <td><?php echo htmlentities($item->attributes->timestamp)?></td>
-                        <td><?php echo htmlentities($item->attributes->file)?></td>
-                        <td><?php echo htmlentities($item->attributes->function)?></td>
-                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlentities($item->attributes->message)?></td>
-                        <td><?php if ($item->attributes->command_time != '0.000000') { echo htmlentities($item->attributes->command_time); } ?></td>
-                        <td><?php echo htmlentities($item->attributes->command_status)?></td>
-                        <td><?php echo htmlentities($item->attributes->command_output)?></td>
-                        <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlentities($item->attributes->command) . '</pre>'; } ?></td>
+                        <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->file, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->function, REPLACE_FLAGS, CHARSET)?></td>
+                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php if ($item->attributes->command_time != '0.000000') { echo htmlspecialchars($item->attributes->command_time, REPLACE_FLAGS, CHARSET); } ?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->command_output, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET) . '</pre>'; } ?></td>
                     </tr>
                     <?php
                     }

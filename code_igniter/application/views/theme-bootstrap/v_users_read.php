@@ -57,7 +57,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -73,7 +73,7 @@ $item = $this->response->data[0];
                             <option value='' label=' '></option>
                             <?php foreach ($this->response->included as $org) {
                             if ($org->type == 'orgs') { ?>
-                                <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == $item->attributes->org_id) { echo "selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php } } ?>
                         </select>
                         <?php if (!empty($edit)) { ?>
@@ -87,7 +87,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="full_name" class="col-sm-3 control-label">Full Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="full_name" name="full_name" placeholder="" value="<?php echo htmlentities($item->attributes->full_name); ?>" disabled>
+                            <input type="text" class="form-control" id="full_name" name="full_name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_full_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="full_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -111,7 +111,7 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label">Email</label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="email" name="email" placeholder="" value="<?php echo htmlentities($item->attributes->email); ?>" disabled>
+                        <input type="text" class="form-control" id="email" name="email" placeholder="" value="<?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_email" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="email"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -156,14 +156,14 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlentities($item->attributes->edited_by); ?>" disabled>
+                        <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlentities($item->attributes->edited_date); ?>" disabled>
+                        <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                     </div>
                 </div>
             </div>
@@ -176,7 +176,7 @@ $item = $this->response->data[0];
                             <select multiple size="6" class="data_type form-control" id="roles" name="roles" disabled>
                                 <?php foreach ($this->response->included as $role) {
                                 if ($role->type == 'roles') { ?>
-                                    <option value="<?php echo htmlentities($role->attributes->name); ?>" <?php if (strpos($item->attributes->roles, '"'.$role->attributes->name.'"') !== false) { echo "selected"; } ?>><?php echo htmlentities($role->attributes->name); ?></option>
+                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>" <?php if (strpos($item->attributes->roles, '"'.$role->attributes->name.'"') !== false) { echo "selected"; } ?>><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php } } ?>
                             </select>
                             <?php if (!empty($edit)) { ?>

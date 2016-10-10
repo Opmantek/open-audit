@@ -57,15 +57,15 @@
                     <?php foreach ($this->response->data as $item):
                         ?>
                         <tr>
-                            <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo intval($item->id); ?></a></td>
+                            <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo intval($item->id); ?></a></td>
                             <td class="text-center"><?php echo $item->attributes->device_count?></td>
-                            <td><?php echo htmlentities($item->attributes->name)?></td>
-                            <td><?php echo htmlentities($item->attributes->comments)?></td>
-                            <td><?php echo htmlentities($item->attributes->parent_name)?></td>
-                            <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->device_count)?></a></td>
-                            <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="<?php echo htmlentities($item->links->self); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                            <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->comments, REPLACE_FLAGS, CHARSET)?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->parent_name, REPLACE_FLAGS, CHARSET)?></td>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                             <?php if ($item->attributes->id != 0) { ?>
-                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                                <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                             <?php } else { ?>
                                 <td></td>
                             <?php } ?>

@@ -66,7 +66,7 @@
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -100,7 +100,7 @@ if (empty($this->config->config['default_network_address'])) {
                                 <option value="" label=" "></option>
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -114,7 +114,7 @@ if (empty($this->config->config['default_network_address'])) {
                                 <option value="" label=" "></option>
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -124,7 +124,7 @@ if (empty($this->config->config['default_network_address'])) {
                     <div class="form-group">
                         <label for="data[attributes][created_by]" class="col-sm-3 control-label">Created By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][created_by]" name="data[attributes][created_by]" placeholder="<?php echo htmlentities($this->user->full_name); ?>" disabled>
+                            <input type="text" class="form-control" id="data[attributes][created_by]" name="data[attributes][created_by]" placeholder="<?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 

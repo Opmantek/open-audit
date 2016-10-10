@@ -59,18 +59,18 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                    <td><?php echo htmlentities($item->attributes->name)?></td>
-                    <td><?php echo htmlentities($item->attributes->org_name)?></td>
-                    <td><?php echo htmlentities($item->attributes->type)?></td>
-                    <td><?php echo htmlentities($item->attributes->address)?></td>
-                    <td><?php echo htmlentities($item->attributes->city)?></td>
-                    <td><?php echo htmlentities($item->attributes->state)?></td>
-                    <td><?php echo htmlentities($item->attributes->country)?></td>
-                    <td class="text-center"><a href="devices?location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlentities($item->attributes->device_count)?></a></td>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlentities($item->links->self); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->address, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->city, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->state, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->country, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><a href="devices?location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                     <?php if ($item->id != 0) { ?>
-                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlentities($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } else { ?>
                     <td></td>
                     <?php } ?>

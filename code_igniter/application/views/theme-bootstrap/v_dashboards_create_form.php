@@ -66,7 +66,7 @@
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -79,7 +79,7 @@
                             <select class="form-control" id="data[attributes][table]" name="data[attributes][table]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'table') { ?>    <option value="<?php echo $item->attributes->name; ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'table') { ?>    <option value="<?php echo $item->attributes->name; ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>

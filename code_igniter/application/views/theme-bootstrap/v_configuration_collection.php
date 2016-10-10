@@ -56,12 +56,12 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <?php if ($item->attributes->name != 'web_internal_version') { ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                    <td><?php echo htmlentities($item->attributes->name)?></td>
-                    <td><?php echo htmlentities($item->attributes->value)?></td>
-                    <td><?php echo htmlentities($item->attributes->edited_by)?></td>
-                    <td><?php echo htmlentities($item->attributes->edited_date)?></td>
-                    <td class="wrap"><?php echo htmlentities($item->attributes->description)?></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="configuration/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                 </tr>
                 <?php } ?>

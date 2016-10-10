@@ -49,14 +49,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="count" class="col-sm-3 control-label"><?php echo __('Row Count'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="count" name="count" value="<?php echo htmlentities($item->attributes->count); ?>" disabled>
+                            <input type="text" class="form-control" id="count" name="count" value="<?php echo htmlspecialchars($item->attributes->count, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -64,10 +64,10 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="current" class="col-sm-3 control-label"><?php echo __('Current Rows'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="current" name="current" value="<?php echo htmlentities($item->attributes->current); ?>" disabled>
+                            <input type="text" class="form-control" id="current" name="current" value="<?php echo htmlspecialchars($item->attributes->current, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if ($this->m_users->get_user_permission('', 'database', 'd') and intval($item->attributes->current) > 0) { ?>
                             <span class="input-group-btn">
-                                <button id="delete_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=y"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button id="delete_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=y"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -75,10 +75,10 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="non_current" class="col-sm-3 control-label"><?php echo __('Noncurrent Rows'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="non_current" name="non_current" value="<?php echo htmlentities($item->attributes->non_current); ?>" disabled>
+                            <input type="text" class="form-control" id="non_current" name="non_current" value="<?php echo htmlspecialchars($item->attributes->non_current, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if ($this->m_users->get_user_permission('', 'database', 'd') and intval($item->attributes->non_current) > 0) { ?>
                             <span class="input-group-btn">
-                                <button id="delete_non_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=n"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                <button id="delete_non_current" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=n"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -89,10 +89,10 @@ $item = $this->response->data[0];
                             <div class="form-group">
                                 <label for="status_<?php echo $status->status; ?>" class="col-sm-3 control-label"><?php echo __('Device Status: ' . $status->status); ?></label>
                                 <div class="col-sm-8 input-group">
-                                    <input type="text" class="form-control" id="status_<?php echo $status->status; ?>" name="status_<?php echo $status->status; ?>" value="<?php echo htmlentities($status->count); ?>" disabled>
+                                    <input type="text" class="form-control" id="status_<?php echo $status->status; ?>" name="status_<?php echo $status->status; ?>" value="<?php echo htmlspecialchars($status->count, REPLACE_FLAGS, CHARSET); ?>" disabled>
                                     <?php if ($this->m_users->get_user_permission('', 'database', 'd') and $status->status != 'production') { ?>
                                     <span class="input-group-btn">
-                                        <button id="delete_status_<?php echo $status->status; ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?status=<?php echo $status->status; ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                        <button id="delete_status_<?php echo $status->status; ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?status=<?php echo $status->status; ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                                     </span>
                                     <?php } ?>
                                 </div>
@@ -104,19 +104,19 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="export_csv" class="col-sm-3 control-label">Export Data</label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute&format=csv&sub_resource=export table">to CSV</a>
+                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=csv&sub_resource=export table">to CSV</a>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="export_sql" class="col-sm-3 control-label">Export Data</label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute&format=sql&sub_resource=export table">to SQL</a>
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=sql&sub_resource=export table">to SQL</a>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="export_sql" class="col-sm-3 control-label">Export Data</label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlentities($item->id); ?>?action=execute&format=xml&sub_resource=export table">to XML</a>
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=xml&sub_resource=export table">to XML</a>
                         </div>
                     </div>
                     <?php $tables = ' audit_log change_log chart credentials discoveries discovery_log edit_log graph networks oa_user_sessions '; ?>
@@ -125,7 +125,7 @@ $item = $this->response->data[0];
                         <div class="form-group">
                             <label for="delete_all" class="col-sm-3 control-label">Delete All Data</label>
                             <div class="col-sm-8 input-group">
-                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlentities($item->attributes->name); ?>?current=all">Delete</button>
+                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=all">Delete</button>
                             </div>
                         </div>
                         <?php } ?>
@@ -159,10 +159,10 @@ $item = $this->response->data[0];
                         <tbody>
                         <?php foreach ($item->attributes->columns as $column) { ?>
                             <tr>
-                                <td><?php echo htmlentities($column->name); ?></td>
-                                <td><?php echo htmlentities($column->type); ?></td>
-                                <td><?php echo htmlentities($column->default); ?></td>
-                                <td><?php echo htmlentities($column->max_length); ?></td>
+                                <td><?php echo htmlspecialchars($column->name, REPLACE_FLAGS, CHARSET); ?></td>
+                                <td><?php echo htmlspecialchars($column->type, REPLACE_FLAGS, CHARSET); ?></td>
+                                <td><?php echo htmlspecialchars($column->default, REPLACE_FLAGS, CHARSET); ?></td>
+                                <td><?php echo htmlspecialchars($column->max_length, REPLACE_FLAGS, CHARSET); ?></td>
                                 <?php if ($column->primary_key) {
                                     echo "<td>true</td>\n";
                                 } else {
@@ -170,7 +170,7 @@ $item = $this->response->data[0];
                                 }
                                 ?>
                                 <?php if ($column->type == 'enum') {
-                                    echo "<td>" . htmlentities($column->values) . "</td>\n";
+                                    echo "<td>" . htmlspecialchars($column->values, REPLACE_FLAGS, CHARSET) . "</td>\n";
                                 } else {
                                     echo "<td></td>\n";
                                 }
@@ -199,7 +199,7 @@ if (!empty($this->data) and is_string($this->data)) {
             <div class="row">
                 <div class="col-md-12">
                     <pre>
-<?php echo htmlentities($this->data); ?>
+<?php echo htmlspecialchars($this->data, REPLACE_FLAGS, CHARSET); ?>
                     </pre>
                 </div>
             </div>

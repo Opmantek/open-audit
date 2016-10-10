@@ -66,7 +66,7 @@
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -79,7 +79,7 @@
                             <select class="form-control" id="data[attributes][location_id_a]" name="data[attributes][location_id_a]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -92,7 +92,7 @@
                             <select class="form-control" id="data[attributes][location_id_b]" name="data[attributes][location_id_b]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>

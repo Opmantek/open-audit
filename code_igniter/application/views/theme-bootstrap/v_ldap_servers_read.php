@@ -73,7 +73,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -89,7 +89,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlentities($item->attributes->description); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -117,7 +117,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="host" class="col-sm-3 control-label">Host</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="host" name="host" placeholder="" value="<?php echo htmlentities($item->attributes->host); ?>" disabled>
+                            <input type="text" class="form-control" id="host" name="host" placeholder="" value="<?php echo htmlspecialchars($item->attributes->host, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -129,7 +129,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="domain" class="col-sm-3 control-label">Domain</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="domain" name="domain" placeholder="" value="<?php echo htmlentities($item->attributes->domain); ?>" disabled>
+                            <input type="text" class="form-control" id="domain" name="domain" placeholder="" value="<?php echo htmlspecialchars($item->attributes->domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -166,21 +166,21 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="refreshed" class="col-sm-3 control-label">Refreshed</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="refreshed" name="refreshed" placeholder="" value="<?php echo htmlentities($item->attributes->refreshed); ?>" disabled>
+                            <input type="text" class="form-control" id="refreshed" name="refreshed" placeholder="" value="<?php echo htmlspecialchars($item->attributes->refreshed, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlentities($item->attributes->edited_by); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlentities($item->attributes->edited_date); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>

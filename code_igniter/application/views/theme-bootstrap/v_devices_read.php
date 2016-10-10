@@ -774,12 +774,12 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
                 <tbody>
                 <?php foreach ($data['credential'] as $item) { ?>
                 <tr>
-                  <td><?php echo htmlentities($item->id); ?></td>
-                  <td><?php echo htmlentities($item->type); ?></td>
-                  <td><?php echo htmlentities($item->name); ?></td>
-                  <td><?php echo htmlentities($item->description); ?></td>
-                  <td style="text-align:center;"><?php echo htmlentities($item->id); ?></td>
-                  <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlentities($item->name); ?>" aria-hidden="true"></span></button></td>
+                  <td><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                  <td><?php echo htmlspecialchars($item->type, REPLACE_FLAGS, CHARSET); ?></td>
+                  <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
+                  <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
+                  <td style="text-align:center;"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                  <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
                 <?php } ?>
                 </tbody>
             </table>

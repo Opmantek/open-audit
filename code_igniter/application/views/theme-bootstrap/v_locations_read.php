@@ -50,14 +50,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" placeholder="" value="<?php echo htmlentities($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" placeholder="" value="<?php echo htmlspecialchars($item->attributes->id, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -73,7 +73,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -154,7 +154,7 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="<?php echo $attribute; ?>" class="col-sm-3 control-label"><?php echo ucfirst($attribute); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlentities($item->attributes->{$attribute}); ?>" disabled>
+                        <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_<?php echo $attribute; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $attribute; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -173,7 +173,7 @@ $item = $this->response->data[0];
                     <label for="<?php echo $attribute; ?>" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
                     <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlentities($item->attributes->{$attribute}); ?>" disabled>
+                            <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" placeholder="" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_<?php echo $attribute; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $attribute; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -194,7 +194,7 @@ $item = $this->response->data[0];
                     <label for="edited_by" class="col-sm-2 control-label">Edited By</label>
                     <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlentities($item->attributes->edited_by); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -203,7 +203,7 @@ $item = $this->response->data[0];
                     <label for="edited_date" class="col-sm-2 control-label">Edited Date</label>
                     <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlentities($item->attributes->edited_date); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>

@@ -57,7 +57,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -73,7 +73,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -104,7 +104,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="values" class="col-sm-3 control-label">Values</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="values" name="values" placeholder="" value="<?php echo htmlentities($item->attributes->values); ?>" disabled>
+                            <input type="text" class="form-control" id="values" name="values" placeholder="" value="<?php echo htmlspecialchars($item->attributes->values, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_values" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="values"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

@@ -66,7 +66,7 @@
                             <select class="data_type form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                                 <?php foreach ($this->response->included as $org) {
                                 if ($org->type == 'orgs') { ?>
-                                    <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == 0) { echo "selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                    <option value="<?php echo intval($org->attributes->id); ?>" <?php if ($org->attributes->id == 0) { echo "selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php } } ?>
                             </select>
                         </div>
@@ -119,7 +119,7 @@
                     <div class="form-group">
                         <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="<?php echo htmlentities($this->user->full_name); ?>" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="<?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -149,7 +149,7 @@
                             <select multiple size="6" class="data_type form-control" id="data[attributes][roles][]" name="data[attributes][roles][]">
                                 <?php foreach ($this->response->included as $role) {
                                 if ($role->type == 'roles') { ?>
-                                    <option value="<?php echo htmlentities($role->attributes->name); ?>"><?php echo htmlentities($role->attributes->name); ?></option>
+                                    <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php } } ?>
                             </select>
                         </div> 

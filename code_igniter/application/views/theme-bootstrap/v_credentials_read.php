@@ -57,7 +57,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlentities($item->attributes->name); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -73,7 +73,7 @@ $item = $this->response->data[0];
                                 <?php
                                 foreach ($this->response->included as $org) {
                                     if ($org->type == 'orgs') { ?>
-                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlentities($org->attributes->name); ?></option>
+                                        <option value="<?php echo intval($org->id); ?>"<?php if ($item->attributes->org_id == $org->id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                     }
                                 } ?>
@@ -89,7 +89,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlentities($item->attributes->description); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -101,21 +101,21 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="type" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="type" name="type" placeholder="" value="<?php echo htmlentities($item->attributes->type); ?>" disabled>
+                            <input type="text" class="form-control" id="type" name="type" placeholder="" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlentities($item->attributes->edited_by); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlentities($item->attributes->edited_by); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.username" class="col-sm-3 control-label">Username</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="credentials.username" name="credentials.username" placeholder="" value="<?php echo htmlentities($item->attributes->credentials->username); ?>" disabled>
+                            <input type="text" class="form-control" id="credentials.username" name="credentials.username" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->username, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.username" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.username"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -140,7 +140,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.password" class="col-sm-3 control-label">Password</label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" placeholder="" value="<?php echo htmlentities($item->attributes->credentials->password); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->password, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -163,7 +163,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.community" class="col-sm-3 control-label">Community</label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.community" name="credentials.community" placeholder="" value="<?php echo htmlentities($item->attributes->credentials->community); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.community" name="credentials.community" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->community, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.community" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.community"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -177,7 +177,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.security_name" class="col-sm-3 control-label">Security Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="credentials.security_name" name="credentials.security_name" placeholder="" value="<?php echo htmlentities($item->attributes->credentials->security_name); ?>" disabled>
+                            <input type="text" class="form-control" id="credentials.security_name" name="credentials.security_name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->security_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.security_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.security_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -226,7 +226,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.authentication_passphrase" class="col-sm-3 control-label">Authentication Passphrase</label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" placeholder="" value="<?php echo htmlentities($item->attributes->credentials->authentication_passphrase); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->authentication_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.authentication_passphrase" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.authentication_passphrase"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -257,7 +257,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.privacy_passphrase" class="col-sm-3 control-label">Privacy Passphrase</label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" placeholder="" value="<?php echo htmlentities($item->attributes->credentials->privacy_passphrase); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->privacy_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.privacy_passphrase" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.privacy_passphrase"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

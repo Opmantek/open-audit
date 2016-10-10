@@ -51,8 +51,8 @@
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
-                        <td><?php echo htmlentities($item->id)?></td>
-                        <td><?php echo htmlentities($item->attributes->count)?></td>
+                        <td><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->count, REPLACE_FLAGS, CHARSET)?></td>
                         <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
                     </tr>
                     <?php endforeach; ?>

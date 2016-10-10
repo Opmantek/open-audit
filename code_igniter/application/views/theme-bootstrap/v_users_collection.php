@@ -57,14 +57,14 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <?php $roles = implode(', ', json_decode($item->attributes->roles)); ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                        <td><?php echo htmlentities($item->attributes->name)?></td>
-                        <td><?php echo htmlentities($item->attributes->org_name)?></td>
-                        <td><?php echo htmlentities($item->attributes->full_name)?></td>
-                        <td><?php echo htmlentities($item->attributes->email)?></td>
-                        <td><?php echo htmlentities($roles)?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                        <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($roles, REPLACE_FLAGS, CHARSET)?></td>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
