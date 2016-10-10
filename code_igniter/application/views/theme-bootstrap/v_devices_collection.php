@@ -206,8 +206,8 @@ if (!empty($this->response->data)) { ?>
                     echo "            <td>" . htmlentities($item->attributes->$property) . "</td>\n";
 
                 } else {
-                    if (strlen($item->attributes->$property) > 50) {
-                        $display = substr($item->attributes->$property, 0, 50) . ' ....';
+                    if (strlen($item->attributes->$property) > 60) {
+                        $display = substr($item->attributes->$property, 0, 60) . ' ....';
                         $class = ' class="wrap"';
                     } else {
                         $display = $item->attributes->$property;
