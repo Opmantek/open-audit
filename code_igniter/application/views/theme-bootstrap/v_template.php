@@ -77,7 +77,7 @@ if (!empty($this->response->meta->baseurl)) {
 </head>
 <body>
 <div class="container-fluid">
-<?php 
+<?php
 include "include_header.php";
 if (!empty($this->response->errors) and !empty($this->response->errors[0]->title) and !empty($this->response->errors[0]->detail)) {
     echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
@@ -113,14 +113,14 @@ unset($this->response->meta->sql);
             if (!empty($this->response->errors)) {
                 ?>
                 <h3>Error</h3>
-                <pre><?php print_r(json_encode($this->response->errors, JSON_PRETTY_PRINT)); ?></pre>
+                <pre><?php print_r(json_format(json_encode($this->response->errors))); ?></pre>
             <?php
             } ?>
             <h3>User</h3>
-            <pre><?php print_r(json_encode($this->response->meta->user, JSON_PRETTY_PRINT)); ?></pre>
+            <pre><?php print_r(json_format(json_encode($this->response->meta->user))); ?></pre>
             <?php unset($this->response->meta->user); ?>
             <h3>Meta</h3>
-            <pre><?php print_r(json_encode($this->response->meta, JSON_PRETTY_PRINT)); ?></pre>
+            <pre><?php print_r(json_format(json_encode($this->response->meta))); ?></pre>
             <h3>SQL Queries</h3>
             <pre><?php
                 $CI =& get_instance();
@@ -145,3 +145,69 @@ unset($this->response->meta->sql);
 </div>
 </body>
 </html>
+<?php
+function json_format($json)
+            {
+    $tab = "  ";
+    $new_json = "";
+    $indent_level = 0;
+    $in_string = false;
+
+    $json_obj = json_decode($json);
+
+    if ($json_obj === false) {
+        return false;
+    }
+
+    $json = json_encode($json_obj);
+    $len = strlen($json);
+
+    for ($c = 0; $c < $len; $c++) {
+        $char = $json[$c];
+        switch($char)
+        {
+            case '{':
+            case '[':
+                if (!$in_string) {
+                    $new_json .= $char . "\n" . str_repeat($tab, $indent_level+1);
+                    $indent_level++;
+                } else {
+                    $new_json .= $char;
+                }
+                break;
+            case '}':
+            case ']':
+                if (!$in_string) {
+                    $indent_level--;
+                    $new_json .= "\n" . str_repeat($tab, $indent_level) . $char;
+                } else {
+                    $new_json .= $char;
+                }
+                break;
+            case ',':
+                if (!$in_string) {
+                    $new_json .= ",\n" . str_repeat($tab, $indent_level);
+                } else {
+                    $new_json .= $char;
+                }
+                break;
+            case ':':
+                if (!$in_string) {
+                    $new_json .= ": ";
+                } else {
+                    $new_json .= $char;
+                }
+                break;
+            case '"':
+                if ($c > 0 && $json[$c-1] != '\\') {
+                    $in_string = !$in_string;
+                }
+                // fallthrough
+            default:
+                $new_json .= $char;
+                break;
+        }
+    }
+
+    return $new_json;
+}
