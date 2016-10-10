@@ -175,10 +175,10 @@ class Admin_connection extends MY_Controller
                             // we need to update an existing connection
                             $sql_query = 'UPDATE oa_connection SET ';
                             foreach ($details as $detail => $value) {
-                                $sql_query .= $detail." = '".mysql_real_escape_string($value)."', ";
+                                $sql_query .= $detail." = '".mysqli_real_escape_string($this->db->conn_id, $value)."', ";
                             }
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
-                            $sql_query .= " WHERE connection_name = '".mysql_real_escape_string($details['connection_name'])."'";
+                            $sql_query .= " WHERE connection_name = '".mysqli_real_escape_string($this->db->conn_id, $details['connection_name'])."'";
                         } else {
                             // this is a new connection (we don't have a name match)
                             $sql_query = 'INSERT INTO oa_connection ( ';
@@ -188,7 +188,7 @@ class Admin_connection extends MY_Controller
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                             $sql_query .= ' ) VALUES ( ';
                             foreach ($details as $detail => $value) {
-                                $sql_query .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
+                                $sql_query .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
                             }
                             $sql_query = mb_substr($sql_query, 0, mb_strlen($sql_query)-2);
                             $sql_query .= ')';
