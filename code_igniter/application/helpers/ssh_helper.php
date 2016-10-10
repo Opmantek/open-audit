@@ -83,7 +83,7 @@ if (! function_exists('ssh_credentials')) {
      *
      * @param     credentials An array of credentials objects
      *
-     * @return    FALSE || credentials object with an additional flag for 'sudo' and root
+     * @return    false || credentials object with an additional flag for 'sudo' and root
      */
     function ssh_credentials($ip = '', $credentials = array(), $log)
     {
@@ -223,7 +223,7 @@ if (! function_exists('ssh_command')) {
      *
      * @param     command   The command to be run using SSH
      *
-     * @return    FALSE || $return array containing the output and status flag
+     * @return    false || $return array containing the output and status flag
      */
     function ssh_command($ip = '', $credentials = '', $command = '', $log)
     {
@@ -626,7 +626,7 @@ if (! function_exists('scp')) {
      *
      * @param     destination
      *
-     * @return    TRUE || FALSE [depending on if the file could be copied]
+     * @return    true || false [depending on if the file could be copied]
      */
     function scp($ip = '', $credentials = '', $source = '', $destination = '', $log)
     {

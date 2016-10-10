@@ -335,6 +335,8 @@ class admin extends MY_Controller
     {
         if (!isset($_POST['submit'])) {
             # show the list
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
             $this->data['heading'] = 'Export to NMIS';
             $this->data['include'] = 'v_export_nmis';
             $this->data['export_report'] = 'y';
@@ -372,7 +374,7 @@ class admin extends MY_Controller
                     if (strrpos($this->data['query'][$i]->nmis_name, '.') == strlen($this->data['query'][$i]->nmis_name)-1) {
                         $this->data['query'][$i]->nmis_name = substr($this->data['query'][$i]->nmis_name, 0, strlen($this->data['query'][$i]->nmis_name)-1);
                     }
-                    $this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">".htmlentities($this->data['query'][$i]->nmis_name)."</span>";
+                    $this->data['query'][$i]->nmis_name = "<span style=\"color: blue;\">".htmlspecialchars($this->data['query'][$i]->nmis_name, REPLACE_FLAGS, CHARSET)."</span>";
                 }
 
                 # nmis host

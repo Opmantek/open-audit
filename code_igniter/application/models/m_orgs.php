@@ -153,7 +153,7 @@ class M_orgs extends MY_Model
         $result = $this->run_sql($sql, $data);
         // $sql = $this->clean_sql($sql);
         // $temp_debug = $this->db->db_debug;
-        // $this->db->db_debug = FALSE;
+        // $this->db->db_debug = false;
         // $query = $this->db->query($sql);
         // $this->db->db_debug = $temp_debug;
         // $result = $query->result();

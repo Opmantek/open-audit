@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -52,6 +53,8 @@ if (! function_exists('output')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
         if ($CI->response->meta->id == 888888888888) {
             $CI->response->meta->id = null;
             unset($CI->response->data);
@@ -345,6 +348,8 @@ if (! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
         $CI->response->table = '';
         $table = '';
         if (isset($CI->response->columns)) {
@@ -399,23 +404,23 @@ if (! function_exists('output')) {
                                 if (strrpos($column->link, '/')+1 != strlen($column->link)) {
                                     $column->link = $column->link . '/';
                                 }
-                                $table .= '<td style="text-align: '.$column->align.';"><a href="'.$column->link. $row->{$column->secondary} .'">'.htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8')."</a></td>\n";
+                                $table .= '<td style="text-align: '.$column->align.';"><a href="'.$column->link. $row->{$column->secondary} .'">'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET)."</a></td>\n";
                                 break;
 
                             case 'ip_address':
-                                $table .= '<td style="text-align: '.htmlentities($column->align).';">';
+                                $table .= '<td style="text-align: '.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).';">';
                                 $table .= '<span style="display:none;">' . $row->ip_padded . '</span>';
-                                $table .= htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8');
+                                $table .= htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET);
                                 echo "</td>\n";
                                 break;
 
                             case 'timestamp':
                             case 'text':
-                                $table .= '<td style="text-align: '.htmlentities($column->align).';">';
+                                $table .= '<td style="text-align: '.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).';">';
                                 if (is_int($row->{$column->variable})) {
                                     $table .= number_format($row->{$column->variable});
                                 } else {
-                                    $table .= htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8');
+                                    $table .= htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET);
                                 }
                                 echo "</td>\n";
                                 break;
@@ -425,17 +430,17 @@ if (! function_exists('output')) {
                                     $row->{$column->variable} = 'unknown';
                                 }
                                 if ((string) $column->name === 'Icon') {
-                                   $table .= '<td style="text-align:center;"><img width="20" src="' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlentities(str_replace(' ', '_', $row->{$column->variable})).'.svg" style="border-width:0px;" title="'.htmlentities($row->{$column->secondary}).'" alt="'.htmlentities($row->{$column->secondary})."\" /></td>\n";
+                                   $table .= '<td style="text-align:center;"><img width="20" src="' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlspecialchars(str_replace(' ', '_', $row->{$column->variable}), REPLACE_FLAGS, CHARSET).'.svg" style="border-width:0px;" title="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                                 }
                                 if ((string) $column->name === 'Picture') {
-                                    $table .= '<td style="text-align:center;"><img src=".' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlentities($row->{$column->variable}).'.jpg" style="border-width:0px; height:100px" title="'.htmlentities($row->{$column->secondary}).'" alt="'.htmlentities($row->{$column->secondary})."\" /></td>\n";
+                                    $table .= '<td style="text-align:center;"><img src=".' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET).'.jpg" style="border-width:0px; height:100px" title="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                                 }
                                 break;
 
                             case 'url':
                                 $href = '';
                                 if ((string) $column->ternary !== '') {
-                                    $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_'.htmlentities($column->ternary).'.png';
+                                    $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_'.htmlspecialchars($column->ternary, REPLACE_FLAGS, CHARSET).'.png';
                                 } else {
                                     $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_browser.png';
                                 }
@@ -444,10 +449,10 @@ if (! function_exists('output')) {
                                     $href = str_replace('&', '&amp;', str_replace('&amp;', '&', $row->{$column->variable}));
                                 }
                                 if (((string) $column->variable === '') and ($column->link > '')) {
-                                    $href = htmlentities($column->link, ENT_QUOTES, 'UTF-8');
+                                    $href = htmlspecialchars($column->link, REPLACE_FLAGS, CHARSET);
                                 }
                                 if ((string) $column->secondary !== '') {
-                                    $href .= htmlentities($row->{$column->secondary}, ENT_QUOTES, 'UTF-8');
+                                    $href .= htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET);
                                 }
                                 $href = str_replace(' ', '%20', $href);
                                 if ($href > '') {
@@ -458,7 +463,7 @@ if (! function_exists('output')) {
                                 break;
 
                             default:
-                                echo '<td align="'.htmlentities($column->align).'">'.htmlentities($row->{$column->variable}).'</td>';
+                                echo '<td align="'.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).'">'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET).'</td>';
                                 break;
                         }
                     }

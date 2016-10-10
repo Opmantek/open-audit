@@ -199,9 +199,9 @@ class PHPExcel_Calculation {
 
 
 	//	Constant conversion from text name/value to actual (datatyped) value
-	private static $_ExcelConstants = array('TRUE'	=> True,
-											'FALSE'	=> False,
-											'NULL'	=> Null
+	private static $_ExcelConstants = array('TRUE'	=> true,
+											'FALSE'	=> false,
+											'NULL'	=> null
 										   );
 
 	//	PHPExcel functions

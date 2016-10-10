@@ -53,7 +53,7 @@ if (! function_exists('windows_credentials')) {
      *
      * @param     display     Should we echo the output to te screen?
      *
-     * @return    FALSE || credentials object with an additional flag for 'sudo' and root
+     * @return    false || credentials object with an additional flag for 'sudo' and root
      */
     function windows_credentials($ip = '', $credentials = array(), $log)
     {
@@ -114,7 +114,7 @@ if (! function_exists('execute_windows')) {
      *
      * @param     display   Should we output to the screen or not?
      *
-     * @return    FALSE || $return array containing the output and status flag
+     * @return    false || $return array containing the output and status flag
      */
    function execute_windows($ip = '', $credentials, $command = '', $log)
     {
@@ -229,7 +229,7 @@ if (! function_exists('copy_to_windows')) {
      *
      * @param     display   Should we output to the screen or not?
      *
-     * @return    FALSE || $return array containing the output and status flag
+     * @return    false || $return array containing the output and status flag
      */
    function copy_to_windows($ip = '', $credentials, $share, $source = '', $destination, $log)
     {
@@ -433,7 +433,7 @@ if (! function_exists('wmi_command')) {
      *
      * @param     display   Should we output to the screen or not?
      *
-     * @return    FALSE || $return array containing the output and status flag
+     * @return    false || $return array containing the output and status flag
      */
    function wmi_command($ip = '', $credentials, $command = '', $log)
     {

@@ -121,6 +121,9 @@ class ajax1 extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $log_details->message = "GET request received to ajax/update_system_man. This is deprecated.";
             $log_details->severity = 5;
@@ -171,14 +174,14 @@ class ajax1 extends MY_Controller
                         $data = array($this->oa_urldecode($this->data['field_data']), intval($row->id));
                         $query = $this->db->query($sql, $data);
                         $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
-                        echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                        echo htmlspecialchars($this->oa_urldecode($this->data['field_data']), REPLACE_FLAGS, CHARSET);
                     } else {
                         # we have to insert a new record for a custom data value for this system
                         $sql = "/* ajax::update_system_man */ INSERT INTO additional_field_item ( id, system_id, additional_field_id, timestamp, value) VALUES ( NULL, ?, ?, NOW(), ?)";
                         $data = array(intval($this->data['system_id']), $data[3], $this->oa_urldecode($this->data['field_data']));
                         $query = $this->db->query($sql, $data);
                         $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
-                        echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                        echo htmlspecialchars($this->oa_urldecode($this->data['field_data']), REPLACE_FLAGS, CHARSET);
                     }
                 } else {
                     echo "This field not allowed for this device (see field groups).";
@@ -217,7 +220,7 @@ class ajax1 extends MY_Controller
                         if ((mb_substr_count($this->data['field_name'], 'location_id') > 0) || (mb_substr_count($this->data['field_name'], 'org_id') > 0)) {
                             # do nothing
                         } else {
-                            echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                            echo htmlspecialchars($this->oa_urldecode($this->data['field_data']), REPLACE_FLAGS, CHARSET);
                         }
                     } else {
                         # echo "error with update";
@@ -240,11 +243,11 @@ class ajax1 extends MY_Controller
                     if ($key->country == '') {
                         $key->country = '-';
                     }
-                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->name)."</span></span></p>\n";
-                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->address)."</span></p>\n";
-                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->city)."</span></p>\n";
-                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->state)."</span></p>\n";
-                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->country)."</span></p>\n";
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlspecialchars($key->name, REPLACE_FLAGS, CHARSET)."</span></span></p>\n";
+                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlspecialchars($key->address, REPLACE_FLAGS, CHARSET)."</span></p>\n";
+                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlspecialchars($key->city, REPLACE_FLAGS, CHARSET)."</span></p>\n";
+                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlspecialchars($key->state, REPLACE_FLAGS, CHARSET)."</span></p>\n";
+                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlspecialchars($key->country, REPLACE_FLAGS, CHARSET)."</span></p>\n";
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'org_id') > 0) {
@@ -254,7 +257,7 @@ class ajax1 extends MY_Controller
                     $key->name = '-';
                 }
                 echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->name."</span></span></p>\n";
-                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->parent_name)."</span></p>\n";
+                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlspecialchars($key->parent_name, REPLACE_FLAGS, CHARSET)."</span></p>\n";
             }
 
             # finally update any groups that this change has caused
@@ -275,6 +278,9 @@ class ajax1 extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+
         if ($this->user->admin == 'y') {
             $this->load->model("m_oa_group");
             $fields = $this->m_oa_group->get_fields($this->uri->segment(3, ''));
@@ -283,7 +289,7 @@ class ajax1 extends MY_Controller
             foreach ($fields as $field) {
                 $column = str_replace('_', ' ', $field);
                 $column = ucwords($column);
-                echo "<option value=\"".$field."\">".htmlentities($column)."</option>\n";
+                echo "<option value=\"".$field."\">".htmlspecialchars($column, REPLACE_FLAGS, CHARSET)."</option>\n";
             }
             echo "</select>\n";
         }
@@ -297,6 +303,9 @@ class ajax1 extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+
         if ($this->user->admin == 'y') {
             $this->load->model("m_oa_group");
             $table = $this->uri->segment(3, '');
@@ -304,7 +313,7 @@ class ajax1 extends MY_Controller
             $values = $this->m_oa_group->get_field_values($table, $field);
             echo "<select id='dynamic_field_value' name='dynamic_field_value' style='width:250px;'>\n";
             foreach ($values as $value) {
-                echo "<option value=\"".$value->value."\">".htmlentities($value->value)."</option>\n";
+                echo "<option value=\"".$value->value."\">".htmlspecialchars($value->value, REPLACE_FLAGS, CHARSET)."</option>\n";
             }
             echo "</select>\n";
         }
@@ -317,6 +326,9 @@ class ajax1 extends MY_Controller
         $log_details->severity = 7;
         stdlog($log_details);
         unset($log_details);
+
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 
         $this->load->model("m_system");
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) > 0) {
@@ -359,7 +371,7 @@ class ajax1 extends MY_Controller
                 echo "<tr>\n";
                 echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->icon."\" width=\"100\"/></td>\n";
                 echo "  <td valign=\"top\" align=\"right\"><b>Status</b> <br /><b>Manufacturer</b> <br /><b>Model</b> <br /><b>Serial</b> <br /><b>Form Factor</b> </td>\n";
-                echo "  <td valign=\"top\" >".htmlentities($system->status)."<br />".htmlentities($system->manufacturer)."<br />".htmlentities($system->model)."<br />".htmlentities($system->serial)."<br />".htmlentities($system->form_factor)."</td>\n";
+                echo "  <td valign=\"top\" >".htmlspecialchars($system->status, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->manufacturer, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->model, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->serial, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->form_factor, REPLACE_FLAGS, CHARSET)."</td>\n";
                 echo "</tr>\n";
                 echo "</table>\n";
                 echo "</div>";
@@ -384,6 +396,9 @@ class ajax1 extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+
         $this->load->model("m_system");
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) < '1') {
             // not even VIEW permission - output "Not Authorised"
@@ -401,7 +416,7 @@ class ajax1 extends MY_Controller
             echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans',sans-serif;\">\n";
             foreach ($query as $group) {
                 echo "<tr>\n";
-                echo "  <td><a href=\"".site_url()."/main/list_devices/".intval($group->group_id)."\">".htmlentities($group->group_name)."</a></td>\n";
+                echo "  <td><a href=\"".site_url()."/main/list_devices/".intval($group->group_id)."\">".htmlspecialchars($group->group_name, REPLACE_FLAGS, CHARSET)."</a></td>\n";
                 echo "</tr>\n";
             }
             echo "</table>\n";

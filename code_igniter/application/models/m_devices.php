@@ -548,7 +548,7 @@ class M_devices extends MY_Model
     {
         $CI = & get_instance();
         $temp_debug = $this->db->db_debug;
-        $this->db->db_debug = FALSE;
+        $this->db->db_debug = false;
         $custom = 'n';
 
         $log_details = new stdClass();

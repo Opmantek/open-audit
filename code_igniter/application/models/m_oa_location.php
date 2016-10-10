@@ -289,7 +289,7 @@ class M_oa_location extends MY_Model
      *
      * @param	details - the relevant location details object
      *
-     * @return TRUE
+     * @return true
      */
     public function edit_location($details)
     {

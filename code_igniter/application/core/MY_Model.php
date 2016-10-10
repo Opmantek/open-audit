@@ -169,7 +169,7 @@ class MY_Model extends CI_Model
 
         // store the current setting of db_debug
         $temp_debug = $this->db->db_debug;
-        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
+        // set the db_debug setting to false - this prevents the default CI error page and allows us
         // to output a nice formatted page with the $error object
         $this->db->db_debug = false;
         // run the query
