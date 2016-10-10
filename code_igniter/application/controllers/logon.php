@@ -109,7 +109,8 @@ class logon extends CI_Controller
             $this->response->meta->action = 'create';
             $this->load->view('v_logon', $this->response);
         } else {
-            $this->logon();
+            // NOTE - had to NOT use 'logon' as it confuses PHP checkers that think it's the constructor
+            $this->login();
         }
     }
 
@@ -119,7 +120,7 @@ class logon extends CI_Controller
     * @access public
     * @return NULL
     */
-    public function logon()
+    public function login()
     {
         $this->load->model('m_logon');
         $this->m_logon->logon();
