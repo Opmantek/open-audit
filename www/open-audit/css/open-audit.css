@@ -26,12 +26,14 @@ a i {
     background-color: #f4f4f4;
     font-size: 12px;
 }
+/*
 .btn {
     border-radius: 3px;
     -webkit-box-shadow: none;
     box-shadow: none;
     border: 1px solid transparent;
 }
+*/
 .btn-app>.badge {
     position: absolute;
     top: 75%;
