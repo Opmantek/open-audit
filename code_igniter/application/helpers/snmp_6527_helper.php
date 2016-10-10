@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #

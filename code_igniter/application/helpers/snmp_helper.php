@@ -54,7 +54,7 @@ if (!function_exists('snmp_credentials')) {
      *
      * @param     display     Should we echo the output to te screen?
      *
-     * @return    FALSE || credentials object with an additional flag for 'sudo' and root
+     * @return    false || credentials object with an additional flag for 'sudo' and root
      */
     function snmp_credentials($ip = '', $credentials = array(), $log)
     {
