@@ -246,104 +246,103 @@ class cli extends CI_Controller
                 //         }
                 //     }
 
-                    if ((string) $device->version === 'snmpv2c') {
-                        $device->version = '2c';
+                if ((string) $device->version === 'snmpv2c') {
+                    $device->version = '2c';
+                }
+
+                if (((string) $device->community !== '') and ((string) $device->version === '2c') and ((string) $device->ip !== '')) {
+                    $encode['ip_address'] = $device->ip;
+                    $encode['fqdn'] = $device->fqdn;
+                    $encode['hostname'] = $device->hostname;
+                    $encode['snmp_version'] = @$device->version;
+                    $encode['snmp_community'] = @$device->community;
+                    if ($device->version != '2c') {
+                        $encode['snmp_v3_sec_name'] = '';
+                        $encode['snmp_v3_sec_level'] = '';
+                        $encode['snmp_v3_auth_protocol'] = @$device->authprotocol;
+                        $encode['snmp_v3_auth_passphrase'] = @$device->authpassword;
+                        $encode['snmp_v3_priv_protocol'] = @$device->privprotocol;
+                        $encode['snmp_v3_priv_passphrase'] = @$device->privpassword;
+                    }
+                    $encoded = json_encode($encode);
+                    $encoded = $this->encrypt->encode($encoded);
+                    $device->snmp_version = $device->version;
+                    $device->snmp_community = $device->community;
+                    $device->snmp_port = '161';
+                    $temp_array = get_snmp($device);
+                    $details = $temp_array['details'];
+                    foreach ($details as $key => $value) {
+                        if ($device->$key == '') {
+                            $device->key = $value;
+                        }
                     }
 
-                    if (((string) $device->community !== '') and ((string) $device->version === '2c') and ((string) $device->ip !== '')) {
-                        $encode['ip_address'] = $device->ip;
-                        $encode['fqdn'] = $device->fqdn;
-                        $encode['hostname'] = $device->hostname;
-                        $encode['snmp_version'] = @$device->version;
-                        $encode['snmp_community'] = @$device->community;
-                        if ($device->version != '2c') {
-                            $encode['snmp_v3_sec_name'] = '';
-                            $encode['snmp_v3_sec_level'] = '';
-                            $encode['snmp_v3_auth_protocol'] = @$device->authprotocol;
-                            $encode['snmp_v3_auth_passphrase'] = @$device->authpassword;
-                            $encode['snmp_v3_priv_protocol'] = @$device->privprotocol;
-                            $encode['snmp_v3_priv_passphrase'] = @$device->privpassword;
-                        }
-                        $encoded = json_encode($encode);
-                        $encoded = $this->encrypt->encode($encoded);
-                        $device->snmp_version = $device->version;
-                        $device->snmp_community = $device->community;
-                        $device->snmp_port = '161';
-                        $temp_array = get_snmp($device);
-                        $details = $temp_array['details'];
-                        foreach ($details as $key => $value) {
-                            if ($device->$key == '') {
-                                $device->key = $value;
-                            }
-                        }
+                    $network_interfaces = $temp_array['interfaces'];
+                    $modules = $temp_array['modules'];
+                    $ip = $temp_array['ip'];
 
-                        $network_interfaces = $temp_array['interfaces'];
-                        $modules = $temp_array['modules'];
-                        $ip = $temp_array['ip'];
-
-                        $device->access_details = $encoded;
-                        $device->nmis_group = $device->group;
-                        $device->nmis_name = $device->name;
-                        $device->nmis_role = $device->roleType;
-                    }
+                    $device->access_details = $encoded;
+                    $device->nmis_group = $device->group;
+                    $device->nmis_name = $device->name;
+                    $device->nmis_role = $device->roleType;
+                }
 
                     $device->system_id = '';
                     $device->system_id = $this->m_system->find_system($device);
 
-                    if ((isset($device->sysObjectID)) and ((string) $device->sysObjectID !== '')) {
-                        // we received a result from snmp, use this data to update or insert
-                        if (isset($device->system_id) and (string) $device->system_id !== '') {
-                            // update an existing device with snmp
-                            $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
-                            $device->original_last_seen_by = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen_by');
-                            $device->last_seen_by = 'snmp';
-                            $this->m_system->update_system($device);
-                            $log_details->message = 'NMIS import, update SNMP for '.$device->ip.' ('.$device->hostname.')';
-                            $log_details->severity = 7;
-                            stdlog($log_details);
-                        } else {
-                            // insert a new device
-                            $device->last_seen_by = 'snmp';
-                            $device->original_last_seen_by = 'snmp';
-                            $device->system_id = $this->m_system->insert_system($device);
-                            $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
-                            $log_details->message = 'NMIS import, insert SNMP for '.$device->ip.' ('.$device->hostname.')';
-                            $log_details->severity = 7;
-                            stdlog($log_details);
-                        }
-                        // update any network interfaces and ip addresses retrieved by SNMP
-                        $device->last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
-                        $device->first_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_seen');
-                        if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-                            $this->m_devices_components->process_component('network', $details, $xml->network);
-                        }
-                        if (isset($ip->item) and count($ip->item) > 0) {
-                            $this->m_devices_components->process_component('ip', $details, $ip);
-                        }
-                        // and update all groups
-                        $this->m_oa_group->update_system_groups($device);
-                    } else {
-                        // just use hat we have from the nodes.nmis file
-                        if (isset($device->system_id) and (string) $device->system_id !== '') {
-                            // update an existing device
-                            $device->last_seen_by = 'nmis import';
-                            $this->m_system->update_system($device);
-                            $log_details->message = 'NMIS import, update basic result for '.$device->ip.' ('.$device->hostname.')';
-                            $log_details->severity = 7;
-                            stdlog($log_details);
-                        } else {
-                            // insert a new device
-                            $device->description = 'NMIS Imported, but not seen using SNMP';
-                            $device->last_seen_by = 'nmis import';
-                            $device->system_id = $this->m_system->insert_system($device);
-                            $log_details->message = 'NMIS import, insert basic result for '.$device->ip.' ('.$device->hostname.')';
-                            $log_details->severity = 7;
-                            stdlog($log_details);
-                        }
-                    }
+                if ((isset($device->sysObjectID)) and ((string) $device->sysObjectID !== '')) {
+                    // we received a result from snmp, use this data to update or insert
                     if (isset($device->system_id) and (string) $device->system_id !== '') {
-                        $this->m_oa_group->update_system_groups($device);
+                        // update an existing device with snmp
+                        $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
+                        $device->original_last_seen_by = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen_by');
+                        $device->last_seen_by = 'snmp';
+                        $this->m_system->update_system($device);
+                        $log_details->message = 'NMIS import, update SNMP for '.$device->ip.' ('.$device->hostname.')';
+                        $log_details->severity = 7;
+                        stdlog($log_details);
+                    } else {
+                        // insert a new device
+                        $device->last_seen_by = 'snmp';
+                        $device->original_last_seen_by = 'snmp';
+                        $device->system_id = $this->m_system->insert_system($device);
+                        $device->original_last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
+                        $log_details->message = 'NMIS import, insert SNMP for '.$device->ip.' ('.$device->hostname.')';
+                        $log_details->severity = 7;
+                        stdlog($log_details);
                     }
+                    // update any network interfaces and ip addresses retrieved by SNMP
+                    $device->last_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'last_seen');
+                    $device->first_seen = $this->m_devices_components->read($device->system_id, 'y', 'system', '', 'first_seen');
+                    if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                        $this->m_devices_components->process_component('network', $details, $xml->network);
+                    }
+                    if (isset($ip->item) and count($ip->item) > 0) {
+                        $this->m_devices_components->process_component('ip', $details, $ip);
+                    }
+                    // and update all groups
+                    $this->m_oa_group->update_system_groups($device);
+                } else {
+                    // just use hat we have from the nodes.nmis file
+                    if (isset($device->system_id) and (string) $device->system_id !== '') {
+                        // update an existing device
+                        $device->last_seen_by = 'nmis import';
+                        $this->m_system->update_system($device);
+                        $log_details->message = 'NMIS import, update basic result for '.$device->ip.' ('.$device->hostname.')';
+                        $log_details->severity = 7;
+                        stdlog($log_details);
+                    } else {
+                        // insert a new device
+                        $device->description = 'NMIS Imported, but not seen using SNMP';
+                        $device->last_seen_by = 'nmis import';
+                        $device->system_id = $this->m_system->insert_system($device);
+                        $log_details->message = 'NMIS import, insert basic result for '.$device->ip.' ('.$device->hostname.')';
+                        $log_details->severity = 7;
+                        stdlog($log_details);
+                    }
+                }
+                if (isset($device->system_id) and (string) $device->system_id !== '') {
+                    $this->m_oa_group->update_system_groups($device);
                 }
             }
         }
