@@ -593,7 +593,7 @@ class M_devices_components extends MY_Model
                 // loop through our match_columns array
                 for ($i = 0; $i < count($match_columns); $i++) {
                     // and test if the variables match
-                    if ((string)$input_item->$match_columns[$i] == (string)$output_item->$match_columns[$i]) {
+                    if ((string)$input_item->{$match_columns[$i]} === (string)$output_item->{$match_columns[$i]}) {
                         // they match so increment the count
                         $match_count ++;
                     }
@@ -624,7 +624,7 @@ class M_devices_components extends MY_Model
                 // check for a match against the columns in $match_columns
                 $match_count = 0;
                 for ($i = 0; $i < count($match_columns); $i++) {
-                    if ((string)$input_item->$match_columns[$i] == (string)$db_item->$match_columns[$i] and $db_item->updated != 'y') {
+                    if ((string)$input_item->{$match_columns[$i]} === (string)$db_item->{$match_columns[$i]} and $db_item->updated != 'y') {
                         $match_count ++;
                     }
                 }
