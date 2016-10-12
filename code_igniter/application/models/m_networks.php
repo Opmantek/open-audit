@@ -40,6 +40,39 @@ class M_networks extends MY_Model
         parent::__construct();
     }
 
+    public function create($data = null)
+    {
+        $CI = & get_instance();
+        $data_array = array();
+        $sql = "INSERT INTO `networks` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'networks::create');
+                return false;
+            }
+        }
+        foreach ($this->db->field_data('networks') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
+            log_error('ERR-0021', 'networks::create');
+            return false;
+        }
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
+        return $this->db->insert_id();
+    }
+
     public function read($id = '')
     {
         if ($id == '') {
@@ -80,36 +113,6 @@ class M_networks extends MY_Model
         } else {
             return array();
         }
-    }
-
-    public function create()
-    {
-        $CI = & get_instance();
-        # ensure we have a valid subnet
-        $this->load->helper('network');
-
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
-            $test = network_details($CI->response->meta->received_data->attributes->name);
-        } else {
-            log_error('ERR-0009', 'm_networks::create_network');
-            return false;
-        }
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 1;
-        }
-        # check to see if we already have a network with the same name
-        $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
-        $sql = "SELECT COUNT(id) AS count FROM `networks` WHERE `name` = ?";
-        $data = array($name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_networks::create_network');
-            return false;   
-        }
-        $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array("$name", $CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
     }
 
     public function collection()

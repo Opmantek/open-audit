@@ -148,4 +148,28 @@ class networks extends MY_Controller
     {
         include 'include_update_form.php';
     }
+
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
+    {
+        $this->load->model('m_database');
+        $this->response->data = $this->m_database->read('networks');
+        include 'include_import_form.php';
+    }
+
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import()
+    {
+        include 'include_import.php';
+    }
 }

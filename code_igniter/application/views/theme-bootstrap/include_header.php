@@ -201,6 +201,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks'>List Networks</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'networks', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks/create'>Create Network</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/networks/import'>Import Multiple Networks</a></li>
                             <?php } ?>
                         </ul>
                     </li>
