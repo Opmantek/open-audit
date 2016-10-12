@@ -380,4 +380,16 @@ class M_users extends MY_Model
             }
         }
     }
+    public function user_org($org_id = '')
+    {
+        $CI = & get_instance();
+        $temp = explode(',', $CI->user->org_list);
+        foreach ($temp as $key => $value) {
+            if ($org_id == $value) {
+                return true;
+            }
+        }
+        log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+        return false;
+    }
 }

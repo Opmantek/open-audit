@@ -185,7 +185,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations'>List Locations</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'locations', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations/create'>Create Location</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_location/add_locations'>Import Multiple Locations</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/locations/import'>Import Multiple Locations</a></li>
                             <?php } ?>
                         </ul>
                     </li>

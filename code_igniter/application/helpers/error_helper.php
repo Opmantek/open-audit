@@ -164,8 +164,8 @@ if (! function_exists('getError')) {
         $error_array['ERR-0014']->code = 'ERR-0014';
         $error_array['ERR-0014']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0014']->severity = 3;
-        $error_array['ERR-0014']->title = "Could not delete default resource.";
-        $error_array['ERR-0014']->detail = 'Could not delete default resource.';
+        $error_array['ERR-0014']->title = "Cannot delete default resource.";
+        $error_array['ERR-0014']->detail = 'Cannot delete default resource.';
 
         $error_array['ERR-0015'] = new stdClass();
         $error_array['ERR-0015']->code = 'ERR-0015';
@@ -203,11 +203,18 @@ if (! function_exists('getError')) {
         $error_array['ERR-0019']->detail = 'When attempting to connect to LDAP for Active Directory, could not.';
 
         $error_array['ERR-0020'] = new stdClass();
-        $error_array['ERR-0020']->code = 'ERR-0019';
+        $error_array['ERR-0020']->code = 'ERR-0020';
         $error_array['ERR-0020']->status = 'HTTP/1.1 401 Unauthorized';
         $error_array['ERR-0020']->severity = 3;
         $error_array['ERR-0020']->title = "User not authorised, credentials required" . $extra;
         $error_array['ERR-0020']->detail = 'When attempting to access a resource, credentials are required.';
+
+        $error_array['ERR-0021'] = new stdClass();
+        $error_array['ERR-0021']->code = 'ERR-0021';
+        $error_array['ERR-0021']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0021']->severity = 4;
+        $error_array['ERR-0021']->title = "Required attributes not supplied" . $extra;
+        $error_array['ERR-0021']->detail = 'When attempting to create a resource, some attributes are required but missing.';
 
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {

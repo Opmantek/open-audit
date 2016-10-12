@@ -40,37 +40,36 @@ class M_locations extends MY_Model
         parent::__construct();
     }
 
-    public function create()
+    public function create($data = null)
     {
         $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
+        $data_array = array();
+        $sql = "INSERT INTO `oa_location` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'm_locations::create');
+                return false;
+            }
+        }
+        foreach ($this->db->field_data('oa_location') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
+            log_error('ERR-0021', 'm_locations::create');
             return false;
-        } else {
-            $name = $CI->response->meta->received_data->attributes->name;
         }
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 1;
-        }
-        $data = array((string)$name,
-                        (string)$CI->response->meta->received_data->attributes->org_id,
-                        (string)$CI->response->meta->received_data->attributes->type,
-                        (string)$CI->response->meta->received_data->attributes->room,
-                        (string)$CI->response->meta->received_data->attributes->suite,
-                        (string)$CI->response->meta->received_data->attributes->level,
-                        (string)$CI->response->meta->received_data->attributes->address,
-                        (string)$CI->response->meta->received_data->attributes->city,
-                        (string)$CI->response->meta->received_data->attributes->state,
-                        (string)$CI->response->meta->received_data->attributes->postcode,
-                        (string)$CI->response->meta->received_data->attributes->country,
-                        (string)$CI->response->meta->received_data->attributes->phone,
-                        (string)$CI->response->meta->received_data->attributes->latitude,
-                        (string)$CI->response->meta->received_data->attributes->longitude,
-                        (string)$CI->response->meta->received_data->attributes->geo,
-                        strtolower((string)$CI->response->meta->received_data->attributes->type),
-                        (string)$CI->user->full_name);
-
-        $sql = "INSERT INTO `oa_location` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, '', ?, '', '', '', ?, ?, ?, '', ?, '', ?, ?, ?, '', ?, ?, NOW())";
-        $this->run_sql($sql, $data);
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
         return $this->db->insert_id();
     }
 
