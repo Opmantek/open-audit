@@ -79,41 +79,93 @@ class M_discoveries extends MY_Model
         return ($result);
     }
 
-    public function create()
+    // public function create()
+    // {
+    //     $CI = & get_instance();
+    //     if (empty($CI->response->meta->received_data->attributes->name)) {
+    //         log_error('ERR-0010', 'm_discoveries::create');
+    //         return false;
+    //     }
+    //     $attributes = array('name', 'org_id', 'devices_assigned_to_org', 'devices_assigned_to_location', 'network_address', 'subnet');
+    //     $data = array();
+    //     foreach ($attributes as $attribute) {
+    //         if (!empty($CI->response->meta->received_data->attributes->{$attribute})) {
+    //             $data[] = $CI->response->meta->received_data->attributes->{$attribute};
+    //         } else {
+    //             $data[] = '';
+    //         }
+    //     }
+    //     $data[] = $this->user->full_name;
+    //     $sql = "INSERT INTO `discoveries` VALUES (NULL, ?, ?, ?, ?, ?, 'subnet', ?, 0, '', 0, ?, NOW(), '', 'y')";
+    //     $this->run_sql($sql, $data);
+    //     $id = $this->db->insert_id();
+    //     if (strpos($CI->response->meta->received_data->attributes->subnet, '/') !== false) {
+    //         $CI->load->model('m_networks');
+    //         $network = new stdClass();
+    //         $network->name = $CI->response->meta->received_data->attributes->subnet;
+    //         $network->org_id = $CI->response->meta->received_data->attributes->org_id;
+    //         $network->description = $CI->response->meta->received_data->attributes->name;
+    //         $CI->m_networks->upsert($network);
+    //     } else {
+    //         if (filter_var($CI->response->meta->received_data->attributes->subnet, FILTER_VALIDATE_IP) !== false) {
+    //             $CI->load->model('m_networks');
+    //             $CI->load->helper('network');
+    //             $temp = network_details($CI->response->meta->received_data->attributes->subnet.'/30');
+    //             $network = new stdClass();
+    //             $network->name = $temp->network.'/'.$temp->network_slash;
+    //             $network->org_id = $CI->response->meta->received_data->attributes->org_id;
+    //             $CI->m_networks->upsert($network);
+    //         }
+    //     }
+    //     return $id;
+    // }
+
+    public function create($data = null)
     {
         $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            log_error('ERR-0010', 'm_discoveries::create');
-            return false;
-        }
-        $attributes = array('name', 'org_id', 'devices_assigned_to_org', 'devices_assigned_to_location', 'network_address', 'subnet');
-        $data = array();
-        foreach ($attributes as $attribute) {
-            if (!empty($CI->response->meta->received_data->attributes->{$attribute})) {
-                $data[] = $CI->response->meta->received_data->attributes->{$attribute};
+        $data_array = array();
+        $sql = "INSERT INTO `discoveries` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
             } else {
-                $data[] = '';
+                log_error('ERR-0010', 'm_discoveries::create');
+                return false;
             }
         }
-        $data[] = $this->user->full_name;
-        $sql = "INSERT INTO `discoveries` VALUES (NULL, ?, ?, ?, ?, ?, 'subnet', ?, 0, '', 0, ?, NOW(), '', 'y')";
-        $this->run_sql($sql, $data);
+        foreach ($this->db->field_data('discoveries') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->subnet) or empty($data->network_address)) {
+            log_error('ERR-0021', 'm_discoveries::create');
+            return false;
+        }
+        $sql .= 'created_by, created_on';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
         $id = $this->db->insert_id();
-        if (strpos($CI->response->meta->received_data->attributes->subnet, '/') !== false) {
+        if (strpos($data->subnet, '/') !== false) {
             $CI->load->model('m_networks');
             $network = new stdClass();
-            $network->name = $CI->response->meta->received_data->attributes->subnet;
-            $network->org_id = $CI->response->meta->received_data->attributes->org_id;
-            $network->description = $CI->response->meta->received_data->attributes->name;
+            $network->name = $data->subnet;
+            $network->org_id = $data->org_id;
+            $network->description = $data->name;
             $CI->m_networks->upsert($network);
         } else {
-            if (filter_var($CI->response->meta->received_data->attributes->subnet, FILTER_VALIDATE_IP) !== false) {
+            if (filter_var($data->subnet, FILTER_VALIDATE_IP) !== false) {
                 $CI->load->model('m_networks');
                 $CI->load->helper('network');
-                $temp = network_details($CI->response->meta->received_data->attributes->subnet.'/30');
+                $temp = network_details($data->subnet.'/30');
                 $network = new stdClass();
                 $network->name = $temp->network.'/'.$temp->network_slash;
-                $network->org_id = $CI->response->meta->received_data->attributes->org_id;
+                $network->org_id = $data->org_id;
                 $CI->m_networks->upsert($network);
             }
         }
