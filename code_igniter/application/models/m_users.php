@@ -380,6 +380,7 @@ class M_users extends MY_Model
             }
         }
     }
+
     public function user_org($org_id = '')
     {
         $CI = & get_instance();
