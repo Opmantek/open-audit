@@ -106,6 +106,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'connections', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/import'>Import Multiple Connection</a></li>
                             <?php } ?>
                         </ul>
                     </li>

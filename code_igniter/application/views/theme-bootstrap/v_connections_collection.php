@@ -61,8 +61,8 @@
                     <td class="text-center"><a class="btn btn-sm btn-success" href="connections/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                     <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->location_name_a, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->location_name_b, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo @htmlspecialchars($item->attributes->location_name_a, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo @htmlspecialchars($item->attributes->location_name_b, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->provider, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->service_type, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->speed, REPLACE_FLAGS, CHARSET)?></td>

@@ -63,9 +63,9 @@ class M_connections extends MY_Model
         $sql = "SELECT id, name FROM oa_org";
         $result = $this->run_sql($sql, array());
         $orgs = $result;
-        $sql = "SELECT id, name FROM oa_location";
+        $sql = "SELECT id, name FROM oa_connection";
         $result = $this->run_sql($sql, array());
-        $locations = $result;
+        $items = $result;
 
         $sql = $this->collection_sql('connections', 'sql');
         $result = $this->run_sql($sql, array());
@@ -76,12 +76,12 @@ class M_connections extends MY_Model
                     $result[$i]->org_name = $org->name;
                 }
             }
-            foreach ($locations as $location) {
-                if ($location->id == $result[$i]->location_id_a) {
-                    $result[$i]->location_name_a = $location->name;
+            foreach ($items as $item) {
+                if ($item->id == $result[$i]->location_id_a) {
+                    $result[$i]->location_name_a = $item->name;
                 }
-                if ($location->id == $result[$i]->location_id_b) {
-                    $result[$i]->location_name_b = $location->name;
+                if ($item->id == $result[$i]->location_id_b) {
+                    $result[$i]->location_name_b = $item->name;
                 }
             }
         }
@@ -90,20 +90,36 @@ class M_connections extends MY_Model
         return ($result);
     }
 
-    public function create()
+    public function create($data = null)
     {
         $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            log_error('ERR-0010', 'm_connections::create');
+        $data_array = array();
+        $sql = "INSERT INTO `oa_connection` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'm_connections::create');
+                return false;
+            }
+        }
+        foreach ($this->db->field_data('oa_connection') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
+            log_error('ERR-0021', 'm_connections::create');
             return false;
         }
-        $attributes = array('org_id', 'name', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed', 'location_id_a', 'location_id_b', 'system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
-        $data = array();
-        foreach ($attributes as $attribute) {
-            $data[] = $CI->response->meta->received_data->attributes->{$attribute};
-        }
-        $sql = "INSERT INTO `oa_connection` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $this->run_sql($sql, $data);
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
         return $this->db->insert_id();
     }
 
