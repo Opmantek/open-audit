@@ -82,8 +82,8 @@ $item = $this->response->data[0];
                     <p>Below is an example of the required csv format. The minimum required attributes for connections are name and org_id. You should not include the id, edited_by and edited_date fields. These will be automatically set. All other columns are optional.</p>
                     <p>You should use a header line containing the names of the columns you wish to populate, then your data lines below that.</p>
                     <samp>
-                        "name","org_id","type","level","address","city","state","postcode","country"<br />
-                        "YOUR NAME","THE ORG ID OF THE OWNER","THE TYPE","THE LEVEL","THE ADDRESS","THE CITY","THE STATE","THE POSTCODE","THE COUNTRY"
+                        "name","org_id","provider","service_type","product_name","service_identifier"<br />
+                        "YOUR NAME","THE ORG ID OF THE OWNER","THE PROVIDER","THE SERVICE TYPE","THE PRODUCT NAME","THE SERVICE IDENTIFIER"
                     </samp>
                 </div>
             </div>
