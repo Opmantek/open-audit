@@ -217,7 +217,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs'>List Organisations</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'orgs', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs/create'>Create Organisation</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_org/add_orgs'>Import Multiple Organisations</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/orgs/import'>Import Multiple Organisations</a></li>
                             <?php } ?>
                         </ul>
                     </li>

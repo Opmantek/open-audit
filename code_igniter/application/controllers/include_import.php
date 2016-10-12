@@ -43,12 +43,20 @@ foreach ($csv as $key => $value) {
         $item->{$header[$i]} = $value[$i];
     }
     $item->org_id = @intval($item->org_id);
-    if ($item->org_id == 0) {
+    if ($item->org_id == 0 and $this->response->meta->collection != 'orgs') {
         $this->log_helper->log_error('ERR-0011');
     } else {
         // Check user is auth on org_id
         unset($test);
-        $test = $this->m_users->user_org($item->org_id);
+        if ($this->response->meta->collection != 'orgs') {
+            $test = $this->m_users->user_org($item->org_id);
+        } else {
+            if (!empty($item->parent_id)) {
+                $test = $this->m_users->user_org($item->parent_id);
+            } else {
+                $test = $this->m_users->user_org('1');
+            }
+        }
         if (!$test) {
             break;
         }
@@ -59,7 +67,6 @@ foreach ($csv as $key => $value) {
             $this->response->meta->flash->message = 'New object(s) in ' . $this->response->meta->collection . ' created.';
         } else {
             // set an error
-            #echo "<pre>\n"; print_r($this->response); exit();
             $this->response->meta->flash = new stdClass();
             $this->response->meta->flash->status = 'danger';
             if (!empty($this->response->errors[0]->detail)) {

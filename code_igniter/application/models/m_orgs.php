@@ -40,6 +40,44 @@ class M_orgs extends MY_Model
         parent::__construct();
     }
 
+    public function create($data = null)
+    {
+        $CI = & get_instance();
+        $data_array = array();
+        $sql = "INSERT INTO `oa_org` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'orgs::create');
+                return false;
+            }
+        }
+        foreach ($this->db->field_data('oa_org') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->name)) {
+            log_error('ERR-0021', 'orgs::create');
+            return false;
+        }
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        #if (empty($data->ad_group)) {
+            $sql .= ',ad_group';
+            $sql_data .= ',?';
+            $data_array[] = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+        #}
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
+        return $this->db->insert_id();
+    }
+
     public function read($id = '')
     {
         if ($id == '') {
@@ -119,31 +157,6 @@ class M_orgs extends MY_Model
             log_error('ERR-0013', 'm_orgs::delete');
             return false;
         }
-    }
-
-    public function create()
-    {
-        $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            return false;
-        } else {
-            $name = $CI->response->meta->received_data->attributes->name;
-        }
-        if (empty($CI->response->meta->received_data->attributes->parent_id)) {
-            $parent_id = 1;
-        } else {
-            $parent_id = intval($CI->response->meta->received_data->attributes->parent_id);
-        }
-        if (empty($CI->response->meta->received_data->attributes->comments)) {
-            $comments = '';
-        } else {
-            $comments = $CI->response->meta->received_data->attributes->comments;
-        }
-        #$sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, ?, (string)$CI->user->full_name, NOW())";
-        $sql = "INSERT INTO `oa_org` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array("$name", $parent_id, $comments, (string)$CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
     }
 
     public function get_orgs()
