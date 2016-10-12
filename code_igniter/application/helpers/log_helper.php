@@ -67,7 +67,7 @@ if (! function_exists('log_error')) {
         }
         unset($error->function);
         // if the error is severe enough, set the error in the response object
-        if (isset($error->severity) and $error->severity <= 3) {
+        #if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
             unset($error->file); # we don't care about where this was logged (into which file)
             unset($error->message); # this is for logging only and is already contained in the $error->title
@@ -76,7 +76,7 @@ if (! function_exists('log_error')) {
                 $CI->response->errors[] = $error;
                 $CI->response->meta->header = $error->status;
             }
-        }
+        #}
     }
 
 }
