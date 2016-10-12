@@ -205,7 +205,7 @@ class M_roles extends MY_Model
             $permissions = json_encode($permissions);
         }
 
-        $ad_group = 'open-audit_' . strtolower(str_replace(' ', '_', $CI->response->meta->received_data->attributes->name));
+        $ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $CI->response->meta->received_data->attributes->name));
 
         if (empty($CI->user->name)) {
             $user = '';
