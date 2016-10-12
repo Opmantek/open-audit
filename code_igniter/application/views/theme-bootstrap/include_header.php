@@ -92,6 +92,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>List Credentials</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'credentials', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'>Create Credentials</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/import'>Import Multiple Credentials</a></li>
                             <?php } ?>
                         </ul>
                     </li>
