@@ -83,7 +83,8 @@ $item = $this->response->data[0];
                     <p>You should use a header line containing the names of the columns you wish to populate, then your data lines below that.</p>
                     <samp>
                         "name","org_id","provider","service_type","product_name","service_identifier"<br />
-                        "YOUR NAME","THE ORG ID OF THE OWNER","THE PROVIDER","THE SERVICE TYPE","THE PRODUCT NAME","THE SERVICE IDENTIFIER"
+                        "My Home Connection","1","Telstra","Cable","Bigpond Cable Extreme","123456"<br />
+                        "The Office Connection","1","Telstra","Cable","Bigpond Cable Extreme","567890"
                     </samp>
                 </div>
             </div>
@@ -121,7 +122,7 @@ $item = $this->response->data[0];
                                 <td><?php echo htmlspecialchars($column->default, REPLACE_FLAGS, CHARSET); ?></td>
                                 <td><?php echo htmlspecialchars($column->max_length, REPLACE_FLAGS, CHARSET); ?></td>
                                 <?php
-                                if (defined($column->primary_key) and $column->primary_key) {
+                                if (!empty($column->primary_key)) {
                                     echo "<td>true</td>\n";
                                 } else {
                                     echo "<td></td>\n";
