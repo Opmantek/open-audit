@@ -79,7 +79,8 @@ $item = $this->response->data[0];
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
-                    <p>Below is an example of the required csv format. The minimum required attributes for connections are name and org_id. You should not include the id, edited_by and edited_date fields. These will be automatically set. All other columns are optional. Note that roles and orgs are JSON arrays in string format.</p>
+                    <p>Below is an example of the required csv format. The minimum required attributes for connections are name and org_id. You should not include the id, edited_by and edited_date fields. These will be automatically set. All other columns are optional.</p>
+                    <p>Note that roles and orgs are JSON arrays in string format. You should use single quotes int he JSON (the import routine will convert them).</p>
                     <p>You should use a header line containing the names of the columns you wish to populate, then your data lines below that.</p>
                     <samp>
                         "name","org_id","full_name","password","email","language","roles","orgs"<br />
