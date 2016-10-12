@@ -45,7 +45,7 @@
         $i = 0;
         foreach ($this->response->included as $endpoint) {
             $i++;
-            echo '<div class="col-lg-1 text-center">' . __($endpoint['name']) . '<a class="btn btn-app" href="' . $endpoint['collection'] . '"><span class="badge">' . $endpoint['count'] . '</span><i class="fa fa-' . $endpoint['icon']  . ' fa-3x fa-fw" aria-hidden="true"></i></a></div>';
+            echo '<div class="col-lg-1 text-center">' . __($endpoint['name']) . '<br /><a class="btn btn-app" href="' . $endpoint['collection'] . '"><span class="badge">' . $endpoint['count'] . '</span><i class="fa fa-' . $endpoint['icon']  . ' fa-3x fa-fw" aria-hidden="true"></i></a></div>';
             if ($i == 12) {
                 echo "</div><br /><br /><div class=\"row\">";
             }
