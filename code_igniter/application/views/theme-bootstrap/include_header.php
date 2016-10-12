@@ -261,6 +261,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users'>List Users</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'users', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users/create'>Create User</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/users/import'>Import Multiple Users</a></li>
                             <?php } ?>
                         </ul>
                     </li>
