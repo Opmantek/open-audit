@@ -5633,6 +5633,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Cisco Ucs C24';
         $details->type = 'voip gateway';
     }
+    if ($oid == '1.3.6.1.4.1.9.1.1745') {
+        $details->model = 'Cisco 38xx Stack';
+        $details->type = 'switch';
+    }
 
     if ($oid == '1.3.6.1.4.1.9.1.1876') {
         $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)';

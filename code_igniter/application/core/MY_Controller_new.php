@@ -99,7 +99,6 @@ class MY_Controller_new extends CI_Controller
         }
         unset($temp);
     }
-
 }
 // End of file MY_Controller_new.php
 // Location: ./core/MY_Controller_new.php

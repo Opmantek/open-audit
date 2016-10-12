@@ -44,7 +44,7 @@ if (! empty($this->response->meta->id)) {
     } else {
         $this->response->meta->flash = new stdClass();
         $this->response->meta->flash->status = 'danger';
-        $this->response->meta->flash->message = $this->response->errors[0]->detail;
+        $this->response->meta->flash->message = @$this->response->errors[0]->detail;
         unset($this->response->errors);
         $this->response->meta->action = 'collection';
         include 'include_collection.php';

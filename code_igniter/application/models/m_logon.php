@@ -172,9 +172,11 @@ class M_logon extends MY_Model
                     $ldap_groups_query = $this->db->query($ldap_groups_sql, $ldap_groups_data);
                     unset($ldap_groups);
                     $ldap_groups = $ldap_groups_query->result();
-                    foreach ($ldap_groups as &$ldap_group) {
-                        $ldap_group->memberof = json_decode($ldap_group->memberof);
+                    unset($item);
+                    foreach ($ldap_groups as &$item) {
+                        $item->memberof = json_decode($item->memberof);
                     }
+                    unset($item);
                     // Update the user in our DB - first get the details from AD
                     $read = ldap_search($ldap->connection, $ldap->derived_dn, $ldap->derived_filter);
                     if (!$read) {

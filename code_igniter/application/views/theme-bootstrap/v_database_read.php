@@ -170,7 +170,7 @@ $item = $this->response->data[0];
                                 }
                                 ?>
                                 <?php if ($column->type == 'enum') {
-                                    echo "<td>" . htmlspecialchars($column->values, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                    echo "<td class=\"wrap\">" . htmlspecialchars(str_replace(',', ', ', $column->values), REPLACE_FLAGS, CHARSET) . "</td>\n";
                                 } else {
                                     echo "<td></td>\n";
                                 }

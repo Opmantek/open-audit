@@ -1454,15 +1454,17 @@ class M_devices_components extends MY_Model
     */
     public function from_db ($result)
     {
-        foreach ($result as &$row) {
-            foreach ($row as $key => $value) {
+        unset($item);
+        foreach ($result as &$item) {
+            foreach ($item as $key => $value) {
                 if ($key == 'id' or $key == 'free' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'used' or
                 strrpos($key, '_id') === strlen($key)-3 or strrpos($key, '_count') === strlen($key)-6 or
                 strrpos($key, '_percent') === strlen($key)-8 or strrpos($key, '_size') === strlen($key)-5 ) {
-                    $row->$key = (int) intval($value);
+                    $item->$key = (int) intval($value);
                 }
             }
         }
+        unset($item);
         return($result);
     }
 }
