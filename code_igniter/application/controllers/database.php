@@ -5113,6 +5113,9 @@ class Database extends MY_Controller
             if ($this->db->field_exists('group_id', 'oa_location')) {
                 $sql[] = "ALTER TABLE `oa_location` DROP `group_id`";
             }
+            $sql[] = "ALTER TABLE oa_location CHANGE `type` `type` enum ('Airforce','Airport','Ambulance Station','Army','Cloud','Conference Center','Court House','Data Center','Depot','District','Doctors Office','Embassy','Factory','Fire Station','Guard','Head Office','High School','Hospital','Hotel','House','Library','Light House','Marina','Mobile Phone Tower','Motel','Navy','Newsagent','Nursing Home','Observatory','Office','Oil Rig','Police','Power Plant','Power Substation','Prison','Radio Station','Regional','Resort','Retail','School','Security','Stadium','Train Station','Travel Agency','TV Station','University','Warehouse','Workshop') NOT NULL DEFAULT 'Office' AFTER `org_id`";
+            $sql[] = "ALTER TABLE oa_connection CHANGE `location_id_a` `location_id_a` int(10) unsigned NOT NULL DEFAULT '1'";
+            $sql[] = "ALTER TABLE oa_connection CHANGE `location_id_b` `location_id_b` int(10) unsigned NOT NULL DEFAULT '1'";
 
             # oa_org
             if (!$this->db->field_exists('edited_by', 'oa_org')) {
@@ -5127,6 +5130,7 @@ class Database extends MY_Controller
             if (!$this->db->field_exists('ad_group', 'oa_org')) {
                 $sql[] = "ALTER TABLE `oa_org` ADD `ad_group` varchar(100) NOT NULL DEFAULT '' AFTER `comments`";
             }
+            $sql[] = "ALTER TABLE `oa_org` CHANGE `parent_id` `parent_id` int(10) unsigned DEFAULT '1'";
             $sql[] = "UPDATE oa_org SET ad_group = CONCAT('open-audit_orgs_', LOWER(REPLACE(`name`, ' ', '_')))";
 
             # oa_report
