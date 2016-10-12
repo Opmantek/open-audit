@@ -55,7 +55,7 @@
             </thead>
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
-                <?php $roles = implode(', ', json_decode($item->attributes->roles)); ?>
+                <?php $roles = @implode(', ', json_decode($item->attributes->roles)); ?>
                     <tr>
                         <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                         <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>

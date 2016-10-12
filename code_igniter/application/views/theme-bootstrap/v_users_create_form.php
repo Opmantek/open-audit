@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><strong>*</strong> Organisation</label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                                 <?php foreach ($this->response->included as $org) {

@@ -40,6 +40,60 @@ class M_users extends MY_Model
         parent::__construct();
     }
 
+    public function create($data = null)
+    {
+        $CI = & get_instance();
+        $data_array = array();
+        $sql = "INSERT INTO `oa_user` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+                $data->roles = json_encode($data->roles);
+                $data->orgs = array();
+                if (isset($this->response->meta->received_data->attributes->orgs)) {
+                    for ($i=0; $i < count($this->response->meta->received_data->attributes->orgs); $i++) {
+                        $data->orgs[$i] = intval($this->response->meta->received_data->attributes->orgs[$i]);
+                    }
+                }
+                $data->orgs = json_encode($data->orgs);
+            } else {
+                log_error('ERR-0010', 'm_users::create');
+                return false;
+            }
+        } else {
+            $data->roles = str_replace("'", '"', $data->roles);
+        }
+        // hash and salt the password
+        if (empty($data->password)) {
+            $data->password = '';
+        }
+        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
+        $hash = hash("sha256", $salt.(string)$data->password); # prepend the salt, then hash
+        $data->password = $salt.$hash;
+        // assign the orgs
+        if (!isset($data->orgs)) {
+            $data->orgs = '';
+        }
+        foreach ($this->db->field_data('oa_user') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
+            log_error('ERR-0021', 'm_users::create');
+            return false;
+        }
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
+        return $this->db->insert_id();
+    }
+
     public function read($id = '')
     {
         if ($id == '') {
@@ -114,49 +168,6 @@ class M_users extends MY_Model
             log_error('ERR-0013', 'm_users::delete');
             return false;
         }
-    }
-
-    public function create()
-    {
-        $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            return false;
-        } else {
-            $name = $CI->response->meta->received_data->attributes->name;
-        }
-        $sql = "SELECT COUNT(*) AS `count` FROM oa_user WHERE oa_user.name = ?";
-        $data = array("$name");
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_users::create');
-            return false;
-        }
-        if (empty($CI->response->meta->received_data->attributes->password)) {
-            $CI->response->meta->received_data->attributes->password = "";
-        }
-        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
-        $hash = hash("sha256", $salt.(string)$CI->response->meta->received_data->attributes->password); # prepend the salt, then hash
-        $password = $salt.$hash;
-        $edited_by = $CI->user->full_name;
-        if (!isset($this->response->meta->received_data->attributes->roles)) {
-            $this->response->meta->received_data->attributes->roles = '';
-        }
-        $this->response->meta->received_data->attributes->roles = json_encode($this->response->meta->received_data->attributes->roles);
-        if (!isset($this->response->meta->received_data->attributes->orgs)) {
-            $this->response->meta->received_data->attributes->orgs = '';
-        }
-        for ($i=0; $i < count($this->response->meta->received_data->attributes->orgs); $i++) {
-            $this->response->meta->received_data->attributes->orgs[$i] = intval($this->response->meta->received_data->attributes->orgs[$i]);
-        }
-        $this->response->meta->received_data->attributes->orgs = json_encode($this->response->meta->received_data->attributes->orgs);
-        $sql = "INSERT INTO `oa_user` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array((string)$name, intval($this->response->meta->received_data->attributes->org_id),
-            (string)$password, (string)$this->response->meta->received_data->attributes->full_name,
-            (string)$this->response->meta->received_data->attributes->email, (string)$this->response->meta->received_data->attributes->roles,
-            (string)$this->response->meta->received_data->attributes->orgs,  (string)$this->response->meta->received_data->attributes->lang,
-            (string)$this->response->meta->received_data->attributes->active, (string)$this->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
     }
 
     public function get_orgs($user_id)
