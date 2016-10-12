@@ -50,6 +50,9 @@ class ajax1 extends MY_Controller
             $this->data['field_data'] = @$_POST['value'];
         }
 
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+
         $this->data['title'] = 'Open-AudIT';
 
         if (!isset($this->user->lang) or $this->user->lang == "") {
@@ -120,9 +123,6 @@ class ajax1 extends MY_Controller
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
-
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $log_details->message = "GET request received to ajax/update_system_man. This is deprecated.";
@@ -278,9 +278,6 @@ class ajax1 extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
-
         if ($this->user->admin == 'y') {
             $this->load->model("m_oa_group");
             $fields = $this->m_oa_group->get_fields($this->uri->segment(3, ''));
@@ -303,9 +300,6 @@ class ajax1 extends MY_Controller
         stdlog($log_details);
         unset($log_details);
 
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
-
         if ($this->user->admin == 'y') {
             $this->load->model("m_oa_group");
             $table = $this->uri->segment(3, '');
@@ -326,9 +320,6 @@ class ajax1 extends MY_Controller
         $log_details->severity = 7;
         stdlog($log_details);
         unset($log_details);
-
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 
         $this->load->model("m_system");
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) > 0) {
@@ -395,9 +386,6 @@ class ajax1 extends MY_Controller
         $log_details->severity = 7;
         stdlog($log_details);
         unset($log_details);
-
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 
         $this->load->model("m_system");
         if ($this->m_system->get_system_access_level($this->data['system_id'], $this->user->id) < '1') {

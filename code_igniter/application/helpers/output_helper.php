@@ -53,8 +53,6 @@ if (! function_exists('output')) {
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
         if ($CI->response->meta->id == 888888888888) {
             $CI->response->meta->id = null;
             unset($CI->response->data);
@@ -348,8 +346,10 @@ if (! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
         $CI->response->table = '';
         $table = '';
         if (isset($CI->response->columns)) {

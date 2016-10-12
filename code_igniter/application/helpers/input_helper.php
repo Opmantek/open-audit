@@ -78,6 +78,12 @@ if (! function_exists('inputRead')) {
             $CI->response = new stdClass();
         }
 
+        # Define our constans for use in htmlspecialchars
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
+        
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
 
@@ -534,11 +540,13 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sort = str_replace('+', '', $CI->response->meta->sort);
         if ($CI->response->meta->sort != '') {
             $temp = explode(',', $CI->response->meta->sort);
+            unset($item);
             foreach ($temp as &$item) {
                 if (substr($item, 0, 1) == '-') {
                     $item = substr($item, 1) . ' DESC';
                 }
             }
+            unset($item);
             $CI->response->meta->sort = implode(',', $temp);
         }
         if ($CI->response->meta->sort != '') {

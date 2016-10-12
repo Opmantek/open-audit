@@ -54,7 +54,6 @@ class MY_Controller extends CI_Controller
     /**
      * The custom default controller object.
      */
-    #public function MY_Controller()
     public function __construct()
     {
         parent::__construct();
@@ -67,8 +66,10 @@ class MY_Controller extends CI_Controller
         $this->load->model('m_oa_user');
         $this->load->model('m_users');
 
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
 
         // set the 'admin' flag if required when testing
         // any controllers named admin_* will require an Admin level of access

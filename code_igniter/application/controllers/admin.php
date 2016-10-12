@@ -335,8 +335,10 @@ class admin extends MY_Controller
     {
         if (!isset($_POST['submit'])) {
             # show the list
-            define('CHARSET', 'UTF-8');
-            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            if (!defined('CHARSET')) {
+                define('CHARSET', 'UTF-8');
+                define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            }
             $this->data['heading'] = 'Export to NMIS';
             $this->data['include'] = 'v_export_nmis';
             $this->data['export_report'] = 'y';
