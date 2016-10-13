@@ -1060,12 +1060,20 @@ for each objItem in colItems
 	windows_id_number = objItem.IdentifyingNumber
 next
 
+if system_manufacturer = "VMware, Inc." then
+	system_manufacturer = "VMware"
+end if
+
 set colItems = objWMIService.ExecQuery("Select * from Win32_SystemEnclosure",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SystemEnclosure)" : audit_wmi_fails = audit_wmi_fails & "Win32_SystemEnclosure " : end if
 for each objItem in colItems
    system_form_factor = form_factor(Join(objItem.ChassisTypes, ","))
    bios_asset_tag = objItem.SMBIOSAssetTag
 next
+
+if system_manufacturer = "VMware" then
+	system_form_factor = "Virtual"
+end if
 
 ' using "on error" because am getting some errors - breaking the script.
 ' occuring on Windows XP machines.
