@@ -112,7 +112,8 @@ class M_groups extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        $sql = $this->collection_sql('groups', 'sql');
+        #$sql = $this->collection_sql('groups', 'sql');
+        $sql = $this->collection_sql('oa_group', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'groups');
         return ($result);
