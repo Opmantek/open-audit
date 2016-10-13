@@ -5234,6 +5234,8 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `system` SET `location_id` = $location_1_id WHERE `location_id` = 1";
                 $sql[] = "UPDATE `system` SET `location_id` = 1 WHERE `location_id` = 0";
             }
+            $sql[] = "UPDATE system SET manufacturer = 'VMware' WHERE manufacturer like 'VMware%'";
+            $sql[] = "UPDATE system SET form_factor = 'Virtual' WHERE manufacturer = 'VMware' AND form_factor = 'Other'";
 
             $sql[] = "DELETE FROM `configuration` WHERE `name` = 'discovery_serial_match'";
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number discovery.')";
