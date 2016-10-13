@@ -4939,6 +4939,7 @@ class Database extends MY_Controller
             $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', 'system', NOW())";
             $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'system', NOW())";
             $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', 'system', NOW())";
 
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";

@@ -350,6 +350,7 @@ INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', 'sy
 INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'system', NOW());
 INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', 'system', NOW());
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
