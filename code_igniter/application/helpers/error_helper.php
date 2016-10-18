@@ -53,8 +53,8 @@ if (! function_exists('getError')) {
 
         $error = new stdClass();
         $CI = & get_instance();
-        $error->controller = $CI->response->meta->collection;
-        $error->function = $CI->response->meta->action;
+        $error->controller = @$CI->response->meta->collection;
+        $error->function = @$CI->response->meta->action;
         $error->code = $error_id;
 
         $error_array = array();
