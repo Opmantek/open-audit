@@ -240,7 +240,7 @@ class M_configuration extends MY_Model
         # get the total number of devices
         $sql = "SELECT count(*) as device_count FROM system";
         $result = $this->run_sql($sql, array());
-        $this->config->config['device_count'] = intval($result[0]->device_count);
+        $this->config->config['device_count'] = @intval($result[0]->device_count);
 
         if ((string) php_uname('s') === 'Windows NT') {
             $this->config->config['base_path'] = str_replace('\code_igniter\application\models\m_configuration.php', '', __FILE__);
