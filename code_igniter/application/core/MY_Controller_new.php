@@ -54,7 +54,6 @@ class MY_Controller_new extends CI_Controller
     /**
      * The custom default controller object.
      */
-    #public function MY_Controller()
     public function __construct()
     {
         parent::__construct();
