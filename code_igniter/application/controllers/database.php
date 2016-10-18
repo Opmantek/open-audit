@@ -3853,16 +3853,16 @@ class Database extends MY_Controller
             $sql[] = "UPDATE system SET man_class = 'virtual desktop' WHERE manufacturer LIKE '%vmware%' AND os_family IN ('Windows XP', 'Windows 7', 'Windows 8', 'Windows 10')";
 
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_mac_match'";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y','0000-00-00 00:00:00',0,'Should we match a device based only on its mac address during discovery.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y',NOW(),0,'Should we match a device based only on its mac address during discovery.')";
 
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_directory'";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y','0000-00-00 00:00:00',0,'The directory the script is copied into on the target device.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y',NOW(),0,'The directory the script is copied into on the target device.')";
 
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_permissions'";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y','0000-00-00 00:00:00',0,'The permissions set on the audit_linux.sh script when it is copied to the target device.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y',NOW(),0,'The permissions set on the audit_linux.sh script when it is copied to the target device.')";
 
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_nmap_os'";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y','0000-00-00 00:00:00',0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y',NOW(),0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).')";
 
             $sql[] = "ALTER TABLE oa_user ADD permissions text NOT NULL default ''";
 
@@ -3891,8 +3891,8 @@ class Database extends MY_Controller
               `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
               `system_id` int(10) unsigned DEFAULT NULL,
               `current` enum('y','n') NOT NULL DEFAULT 'y',
-              `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-              `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+              `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               `mac` varchar(200) NOT NULL DEFAULT '',
               `net_index` varchar(10) NOT NULL DEFAULT '',
               `ip` varchar(45) NOT NULL DEFAULT '',
@@ -4137,18 +4137,18 @@ class Database extends MY_Controller
 
             # our new blessed subnets config item
             $sql[] = "UPDATE `ip` SET `network` = REPLACE(`network`, ' ', '')";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y','0000-00-00 00:00:00',0,'Should we only accept data from the blessed subnets list.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y',NOW(),0,'Should we only accept data from the blessed subnets list.')";
 
             # new table for network descriptions and blessed subnets
             $sql[] = "DROP TABLE IF EXISTS `networks`";
-            $sql[] = "CREATE TABLE `networks` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `networks` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO `networks` SELECT NULL, REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', '')  AS name, TRIM(both '\t' from group_description) as description, 'system upgrade' as edited_by, NOW() as edited_date FROM oa_group WHERE group_category = 'network' AND SUBSTR(REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''),1,LOCATE('/',REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''))-1) != `group_description`";
 
             $sql[] = "INSERT INTO `networks` (SELECT NULL, ip.network as name, '' as description, 'system upgrade' as edited_by, NOW() as edited_date FROM ip WHERE network NOT IN (SELECT networks.name FROM networks) AND ip.network != '' GROUP BY ip.network)";
 
             $sql[] = "DROP TABLE IF EXISTS `chart`";
 
-            $sql[] = "CREATE TABLE `chart` ( `when` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `what` varchar(50) NOT NULL DEFAULT '', `org_id` int unsigned NOT NULL DEFAULT 0, `count` int unsigned NOT NULL DEFAULT 0, PRIMARY KEY (`when`, `what`, `org_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `chart` ( `when` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `what` varchar(50) NOT NULL DEFAULT '', `org_id` int unsigned NOT NULL DEFAULT 0, `count` int unsigned NOT NULL DEFAULT 0, PRIMARY KEY (`when`, `what`, `org_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             $sql[] = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'audit' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `new_count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'audit' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
 
@@ -4225,6 +4225,12 @@ class Database extends MY_Controller
             $log_details->message = 'Upgrade database to 1.12.8 commenced';
             stdlog($log_details);
 
+            if (!empty($this->data['output'])) {
+                $this->data['output'] .= 'Commencing 1.12.8 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            } else {
+                $this->data['output'] = 'Commencing 1.12.8 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            }
+
             # initialise our $sql array
             unset($sql);
             $sql = array();
@@ -4279,7 +4285,7 @@ class Database extends MY_Controller
             $sql[] = "ALTER TABLE system CHANGE pc_os_bit os_bit tinyint unsigned NOT NULL DEFAULT '0'";
             $sql[] = "ALTER TABLE system CHANGE pc_memory memory_count int unsigned NOT NULL DEFAULT '0'";
             $sql[] = "ALTER TABLE system CHANGE pc_num_processor processor_count tinyint unsigned NOT NULL DEFAULT '0'";
-            $sql[] = "ALTER TABLE system CHANGE pc_date_os_installation os_installation_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE pc_date_os_installation os_installation_date date NOT NULL DEFAULT '2000-01-01'";
             $sql[] = "UPDATE system SET printer_color = 'y' WHERE LOWER(printer_color) ='true' OR LOWER(printer_color) = 't'";
             $sql[] = "UPDATE system SET printer_color = 'n' WHERE LOWER(printer_color) ='false' OR LOWER(printer_color) = 'f'";
             $sql[] = "ALTER TABLE system CHANGE printer_color printer_color enum('y','n','') NOT NULL DEFAULT ''";
@@ -4313,12 +4319,12 @@ class Database extends MY_Controller
             $sql[] = "ALTER TABLE system CHANGE man_purchase_order_number purchase_order_number varchar(50) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE man_purchase_cost_center purchase_cost_center varchar(50) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE man_purchase_vendor purchase_vendor varchar(100) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE system CHANGE man_purchase_date purchase_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_purchase_date purchase_date date NOT NULL DEFAULT '2000-01-01'";
             $sql[] = "ALTER TABLE system CHANGE man_purchase_service_contract_number purchase_service_contract_number varchar(255) NOT NULL DEFAULT ''";
-            $sql[] = "ALTER TABLE system CHANGE man_lease_expiry_date lease_expiry_date date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_lease_expiry_date lease_expiry_date date NOT NULL DEFAULT '2000-01-01'";
             $sql[] = "ALTER TABLE system CHANGE man_purchase_amount purchase_amount varchar(50) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system CHANGE man_warranty_duration warranty_duration int(5) unsigned NOT NULL DEFAULT '0'";
-            $sql[] = "ALTER TABLE system CHANGE man_warranty_expires warranty_expires date NOT NULL DEFAULT '0000-00-00'";
+            $sql[] = "ALTER TABLE system CHANGE man_warranty_expires warranty_expires date NOT NULL DEFAULT '2000-01-01'";
             $sql[] = "ALTER TABLE system CHANGE man_warranty_type warranty_type enum('','24x7x365','9x5x5','Next Business Day') NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE system DROP man_terminal_number";
             $sql[] = "ALTER TABLE system DROP nmap_type";
@@ -4345,8 +4351,8 @@ class Database extends MY_Controller
             $sql[] = "ALTER TABLE system CHANGE man_oae_manage oae_manage enum('y','n') NOT NULL DEFAULT 'y' AFTER nmis_export";
             $sql[] = "ALTER TABLE system CHANGE snmp_oid snmp_oid text NOT NULL AFTER oae_manage";
             $sql[] = "ALTER TABLE system DROP last_seen";
-            $sql[] = "ALTER TABLE system CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER sysLocation";
-            $sql[] = "ALTER TABLE system CHANGE timestamp last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen";
+            $sql[] = "ALTER TABLE system CHANGE first_timestamp first_seen datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER sysLocation";
+            $sql[] = "ALTER TABLE system CHANGE timestamp last_seen datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER first_seen";
             $sql[] = "ALTER TABLE system CHANGE last_seen_by last_seen_by varchar(150) NOT NULL DEFAULT '' AFTER last_seen";
             $sql[] = "ALTER TABLE system CHANGE last_user last_user varchar(150) NOT NULL DEFAULT '' AFTER last_seen_by";
             $sql[] = "ALTER TABLE system ADD KEY ip (`ip`)";
@@ -4463,8 +4469,8 @@ class Database extends MY_Controller
             $sql[] = "ALTER TABLE `oa_change` CHANGE change_id id int(10) unsigned NOT NULL AUTO_INCREMENT";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_short_desc` `title` varchar(200) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_reason` `reason` text NOT NULL";
-            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_planned_date` `planned_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
-            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_implemented_date` `implemented_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_planned_date` `planned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `change_implemented_date` `implemented_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_external_id` `external_id` varchar(200) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_external_link` `external_link` varchar(200) NOT NULL DEFAULT ''";
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_authorising_person` `authorized_by` varchar(100) NOT NULL DEFAULT ''";
@@ -4474,7 +4480,7 @@ class Database extends MY_Controller
             $sql[] = "ALTER TABLE `oa_change` CHANGE `change_backout_plan` `backout_plan` text NOT NULL";
 
             $sql[] = "DROP TABLE IF EXISTS cluster";
-            $sql[] = "CREATE TABLE `cluster` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `type` enum('high availability', 'load balancing', 'perforance', 'storage', 'other'), `purpose` enum('application', 'database', 'file', 'virtualisation', 'web', 'other'), `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            $sql[] = "CREATE TABLE `cluster` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `type` enum('high availability', 'load balancing', 'perforance', 'storage', 'other'), `purpose` enum('application', 'database', 'file', 'virtualisation', 'web', 'other'), `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
             $sql[] = "UPDATE system SET hostname = name";
             $sql[] = "UPDATE system SET dns_hostname = name";
@@ -4484,16 +4490,16 @@ class Database extends MY_Controller
             $sql[] = "CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10))";
 
             $sql[] = "DROP TABLE IF EXISTS `files`";
-            $sql[] = "CREATE TABLE `files` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `path` varchar(45) NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            $sql[] = "CREATE TABLE `files` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `path` varchar(45) NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
             $sql[] = "DROP TABLE IF EXISTS `file`";
-            $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             # fix a previous missed item
             $sql[] = "ALTER TABLE `partition` CHANGE `type` `type` varchar(100) NOT NULL DEFAULT 'local' AFTER bootable";
 
             $sql[] = "DROP TABLE IF EXISTS `scripts`";
-            $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            $sql[] = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
             $options = array();
             $options['submit_online'] = 'y';
@@ -4526,10 +4532,10 @@ class Database extends MY_Controller
             $sql[] = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
 
             $sql[] = "DROP TABLE IF EXISTS `credential`";
-            $sql[] = "CREATE TABLE `credential` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other', `credentials` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `credential_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `credential` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other', `credentials` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `credential_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             $sql[] = "DROP TABLE IF EXISTS `credentials`";
-            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','impi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             $sql[] = "ALTER TABLE `oa_user_org` CHANGE `org_id` `org_id` int(10) unsigned NOT NULL DEFAULT '0'";
 
@@ -4547,12 +4553,12 @@ class Database extends MY_Controller
             $sql[] = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.timestamp', 'system.last_seen')";
 
             $sql[] = "DROP TABLE IF EXISTS `nmap`";
-            $sql[] = "CREATE TABLE `nmap` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL,`current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `last_seen` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '', `ip` varchar(45) NOT NULL DEFAULT '', `port` int(5) NOT NULL DEFAULT '0', `program` varchar(250) NOT NULL DEFAULT '', PRIMARY KEY (`id`), KEY `system_id` (`system_id`),CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+            $sql[] = "CREATE TABLE `nmap` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL,`current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '', `ip` varchar(45) NOT NULL DEFAULT '', `port` int(5) NOT NULL DEFAULT '0', `program` varchar(250) NOT NULL DEFAULT '', PRIMARY KEY (`id`), KEY `system_id` (`system_id`),CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             # set our versions
             $sql[] = "DELETE FROM `oa_config` WHERE config_name = 'discovery_use_dns'";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y','0000-00-00 00:00:00',0,'Should we use DNS for looking up the hostname and domain.')";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','0000-00-00 00:00:00',0,'The API key for Google Maps.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y',NOW(),0,'Should we use DNS for looking up the hostname and domain.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y',NOW(),0,'The API key for Google Maps.')";
             $sql[] = "UPDATE oa_config SET config_value = '20160620' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8' WHERE config_name = 'display_version'";
 
@@ -4577,7 +4583,7 @@ class Database extends MY_Controller
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default SNMP';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-                $this->response->meta->received_data->attributes->org_id = 0;
+                $this->response->meta->received_data->attributes->org_id = 1;
                 $this->response->meta->received_data->attributes->type = 'snmp';
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->credentials->community = $this->config->config['default_snmp_community'];
@@ -4596,7 +4602,7 @@ class Database extends MY_Controller
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default SSH';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-                $this->response->meta->received_data->attributes->org_id = 0;
+                $this->response->meta->received_data->attributes->org_id = 1;
                 $this->response->meta->received_data->attributes->type = 'ssh';
                 $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_ssh_username'];
                 $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_ssh_password'];
@@ -4614,7 +4620,7 @@ class Database extends MY_Controller
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default Windows';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-                $this->response->meta->received_data->attributes->org_id = 0;
+                $this->response->meta->received_data->attributes->org_id = 1;
                 $this->response->meta->received_data->attributes->type = 'windows';
                 $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_windows_username'] . '@' . $this->config->config['default_windows_domain'];
                 $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_windows_password'];
@@ -4730,6 +4736,11 @@ class Database extends MY_Controller
             unset($sql);
             $sql = array();
 
+            $sql_time = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql_time);
+            $result = $query->result();
+            $this->data['output'] .= 'Completing 1.12.8 upgrade at ' . $result[0]->timestamp . "\n\n";
+
             $log_details->message = 'Upgrade database to 1.12.8 completed';
             stdlog($log_details);
             unset($log_details);
@@ -4737,12 +4748,16 @@ class Database extends MY_Controller
 
         if (($db_internal_version < '20160810') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.8.1
-            $upgrade_time = microtime(true);
-
             $log_details = new stdClass();
             $log_details->file = 'system';
             $log_details->message = 'Upgrade database to 1.12.8.1 commenced';
             stdlog($log_details);
+
+            if (!empty($this->data['output'])) {
+                $this->data['output'] .= 'Commencing 1.12.8.1 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            } else {
+                $this->data['output'] = 'Commencing 1.12.8.1 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            }
 
             # initialise our $sql array
             unset($sql);
@@ -4754,7 +4769,7 @@ class Database extends MY_Controller
             $sql[] = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
             unset($fields);
             $sql[] = "ALTER TABLE system ADD omk_uuid text NOT NULL AFTER last_user";
-            $sql[] = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y','0000-00-00 00:00:00',0,'Should we delete any attributes that are not present when we audit a device.')";
+            $sql[] = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y',NOW(),0,'Should we delete any attributes that are not present when we audit a device.')";
             $sql[] = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
             $sql[] = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
 
@@ -4764,6 +4779,11 @@ class Database extends MY_Controller
                 $this->data['output'] .= $this_query.";\n\n";
                 $query = $this->db->query($this_query);
             }
+
+            $sql_time = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql_time);
+            $result = $query->result();
+            $this->data['output'] .= 'Completing 1.12.8.1 upgrade at ' . $result[0]->timestamp . "\n\n";
 
             $log_details->message = 'Upgrade database to 1.12.8.1 completed';
             stdlog($log_details);
@@ -4775,6 +4795,17 @@ class Database extends MY_Controller
             # upgrade for 1.12.10
 
             $item_start = microtime(true);
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->message = 'Upgrade database to 1.12.10 commenced';
+            stdlog($log_details);
+
+            if (!empty($this->data['output'])) {
+                $this->data['output'] .= 'Commencing 1.12.10 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            } else {
+                $this->data['output'] = 'Commencing 1.12.10 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            }
 
             # oa_user_org
             $sql = "DROP TABLE IF EXISTS oa_user_org";
@@ -4833,9 +4864,10 @@ class Database extends MY_Controller
                 if ($result[0]->count > 0) {
                     // Move this Location
                     if ($this->db->field_exists('org_id', 'oa_location')) {
-                        $sql = "INSERT INTO oa_location (SELECT NULL, `name`,`org_id`,`type`,`room`,`suite`,`level`,`address`,`suburb`,`city`,`district`,`region`,`area`,`state`,`postcode`,`country`,`tags`,`phone`,`picture`,`latitude`,`longitude`,`geo`,`comments`,`icon`,'system,NOW() FROM oa_location WHERE id = 1)";
+                        $sql = "INSERT INTO oa_location (SELECT NULL, `name`,`org_id`,`type`,`room`,`suite`,`level`,`address`,`suburb`,`city`,`district`,`region`,`area`,`state`,`postcode`,`country`,`tags`,`phone`,`picture`,`latitude`,`longitude`,`geo`,`comments`,`icon`,'system',NOW() FROM oa_location WHERE id = 1)";
+                        echo "here\n";
                     } else {
-                        $sql = "INSERT INTO oa_location (SELECT NULL, `name`,`type`,`room`,`suite`,`level`,`address`,`suburb`,`city`,`district`,`region`,`area`,`state`,`postcode`,`country`,`tags`,`phone`,`picture`,`latitude`,`longitude`,`geo`,`comments`,`icon`,'system,NOW() FROM oa_location WHERE id = 1)";
+                        $sql = "INSERT INTO oa_location (SELECT NULL, `name`,`type`,`room`,`suite`,`level`,`address`,`suburb`,`city`,`district`,`region`,`area`,`state`,`postcode`,`country`,`tags`,`phone`,`picture`,`latitude`,`longitude`,`geo`,`comments`,`icon`, `group_id` FROM oa_location WHERE id = 1)";
                     }
                     $query = $this->db->query($sql);
                     $location_1_id = $this->db->insert_id();
@@ -4873,11 +4905,25 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `additional_field` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `placement`";
             }
             if (!$this->db->field_exists('edited_date', 'additional_field')) {
-                $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+                $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
             if (!$this->db->field_exists('group_id', 'additional_field')) {
                 $sql[] = "ALTER TABLE `additional_field` DROP `group_id`";
             }
+
+            # attachment
+            $sql[] = "ALTER TABLE `attachment` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # audit log
+            $sql[] = "ALTER TABLE `audit_log` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # bios
+            $sql[] = "ALTER TABLE `bios` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `bios` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # change log
+            $sql[] = "ALTER TABLE `change_log` CHANGE `ack_time` `ack_time` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `change_log` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # chart
             if (!$this->db->field_exists('org_id', 'chart')) {
@@ -4887,6 +4933,7 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `chart` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `chart` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `chart` CHANGE `when` `when` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # cluster
             if (!$this->db->field_exists('org_id', 'cluster')) {
@@ -4896,6 +4943,7 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `cluster` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `cluster` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `cluster` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # configuration
             $sql[] = "DROP TABLE IF EXISTS `configuration`";
@@ -4905,11 +4953,14 @@ class Database extends MY_Controller
               `value` varchar(250) NOT NULL DEFAULT '',
               `editable` varchar(1) NOT NULL DEFAULT 'n',
               `edited_by`varchar(100) NOT NULL DEFAULT '',
-              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               `description` varchar(200) NOT NULL DEFAULT '',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO `configuration` (SELECT NULL, config_name, config_value, config_editable, 'system', NOW(), config_description FROM oa_config)";
+
+            # credential
+            $sql[] = "ALTER TABLE `credential` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # credentials
             if (!$this->db->field_exists('org_id', 'credentials')) {
@@ -4919,6 +4970,7 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `credentials` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `credentials` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `credentials` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # dashboards
             $sql[] = "DROP TABLE IF EXISTS dashboards";
@@ -4929,7 +4981,7 @@ class Database extends MY_Controller
               `table` varchar(100) NOT NULL DEFAULT '',
               `column` varchar(100) NOT NULL DEFAULT '',
               `edited_by` varchar(200) NOT NULL DEFAULT '',
-              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
@@ -4956,8 +5008,8 @@ class Database extends MY_Controller
               `other` text NOT NULL,
               `device_count` int(10) unsigned NOT NULL DEFAULT '0',
               `created_by` varchar(200) NOT NULL DEFAULT '',
-              `created_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-              `updated_on` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `created_on` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+              `updated_on` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               `complete` enum('y','n') NOT NULL DEFAULT 'n',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
@@ -4968,7 +5020,7 @@ class Database extends MY_Controller
                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                       `discovery_id` int(10) unsigned DEFAULT NULL,
                       `system_id` int(10) unsigned DEFAULT NULL,
-                      `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+                      `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
                       `severity` int(1) unsigned NOT NULL DEFAULT '5',
                       `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
                       `pid` int(10) unsigned NOT NULL DEFAULT '0',
@@ -4985,6 +5037,21 @@ class Database extends MY_Controller
                       KEY `pid` (`pid`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
+            # disk
+            $sql[] = "ALTER TABLE `disk` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `disk` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # dns
+            $sql[] = "ALTER TABLE `dns` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `dns` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # edit log
+            $sql[] = "ALTER TABLE `edit_lof` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # file
+            $sql[] = "ALTER TABLE `file` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `file` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
             # files
             if (!$this->db->field_exists('org_id', 'files')) {
                 $sql[] = "ALTER TABLE `files` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
@@ -4993,6 +5060,7 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `files` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `files` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `files` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # graph
             if (!$this->db->field_exists('org_id', 'graph')) {
@@ -5002,6 +5070,7 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `graph` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `graph` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `graph` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # invoice
             if (!$this->db->field_exists('org_id', 'invoice')) {
@@ -5015,8 +5084,12 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `invoice` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `filename`";
             }
             if (!$this->db->field_exists('edited_date', 'invoice')) {
-                $sql[] = "ALTER TABLE `invoice` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+                $sql[] = "ALTER TABLE `invoice` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
+
+            #ip
+            $sql[] = "ALTER TABLE `ip` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `ip` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # ldap groups
             $sql[] = "DROP TABLE IF EXISTS `ldap_groups`";
@@ -5042,9 +5115,9 @@ class Database extends MY_Controller
               `domain` varchar(200) NOT NULL DEFAULT '',
               `use_roles` enum('y','n') NOT NULL DEFAULT 'n',
               `refresh` int(10) unsigned NOT NULL DEFAULT '24',
-              `refreshed` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `refreshed` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               `edited_by` varchar(200) NOT NULL DEFAULT '',
-              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
@@ -5054,7 +5127,7 @@ class Database extends MY_Controller
 
             # licenses
             if (!$this->db->table_exists('licenses')) {
-                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '1',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`match_string` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                $sql[] = "CREATE TABLE `licenses` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT,`org_id` int(10) unsigned NOT NULL DEFAULT '1',`invoice_id` int(10) unsigned NOT NULL DEFAULT '0',`invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',`name` varchar(200) NOT NULL DEFAULT '',`description` text NOT NULL,`match_string` text NOT NULL,`type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',`edited_by` varchar(200) NOT NULL DEFAULT '',`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             }
             if ($this->db->table_exists('oa_asset_select')) {
                 if ($this->db->count_all('oa_asset_select') > 0) {
@@ -5064,6 +5137,34 @@ class Database extends MY_Controller
                 }
             }
 
+            # log
+            $sql[] = "ALTER TABLE `log` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `log` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # memory
+            $sql[] = "ALTER TABLE `memory` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `memory` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # module
+            $sql[] = "ALTER TABLE `module` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `module` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # monitor
+            $sql[] = "ALTER TABLE `monitor` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `monitor` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # motherboard
+            $sql[] = "ALTER TABLE `motherboard` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `motherboard` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # netstat
+            $sql[] = "ALTER TABLE `netstat` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `netstat` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # network
+            $sql[] = "ALTER TABLE `network` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `network` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
             # networks
             if (!$this->db->field_exists('org_id', 'networks')) {
                 $sql[] = "ALTER TABLE `networks` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
@@ -5072,6 +5173,27 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `networks` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `networks` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `networks` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # nmap
+            $sql[] = "ALTER TABLE `nmap` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `nmap` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # notes
+            if ($this->db->field_exists('user_id', 'notes')) {
+                $sql[] = "ALTER TABLE `notes` DROP `user_id`";
+            }
+            if ($this->db->field_exists('timestamp', 'notes')) {
+                $sql[] = "ALTER TABLE `notes` CHANGE `timestamp` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            }
+            if (!$this->db->field_exists('edited_by', 'notes')) {
+                $sql[] = "ALTER TABLE `notes` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `edited_date`";
+            }
+
+            # oa_change
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `planned_date` `planned_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `implemented_date` `implemented_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `oa_change` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # oa_connection
             if (!$this->db->field_exists('org_id', 'oa_connection')) {
@@ -5085,8 +5207,9 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `oa_connection` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `ip_address_internal_b`";
             }
             if (!$this->db->field_exists('edited_date', 'oa_connection')) {
-                $sql[] = "ALTER TABLE `oa_connection` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+                $sql[] = "ALTER TABLE `oa_connection` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
+            $sql[] = "ALTER TABLE `oa_connection` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # oa_group
             if (!$this->db->field_exists('org_id', 'oa_group')) {
@@ -5109,7 +5232,7 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `oa_location` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `icon`";
             }
             if (!$this->db->field_exists('edited_date', 'oa_location')) {
-                $sql[] = "ALTER TABLE `oa_location` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+                $sql[] = "ALTER TABLE `oa_location` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
             if ($this->db->field_exists('group_id', 'oa_location')) {
                 $sql[] = "ALTER TABLE `oa_location` DROP `group_id`";
@@ -5123,7 +5246,7 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `oa_org` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `comments`";
             }
             if (!$this->db->field_exists('edited_date', 'oa_org')) {
-                $sql[] = "ALTER TABLE `oa_org` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+                $sql[] = "ALTER TABLE `oa_org` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
             if ($this->db->field_exists('group_id', 'oa_org')) {
                 $sql[] = "ALTER TABLE `oa_org` DROP `group_id`";
@@ -5146,8 +5269,11 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE `oa_report` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `report_sort_column`";
             }
             if (!$this->db->field_exists('edited_date', 'oa_report')) {
-                $sql[] = "ALTER TABLE `oa_report` ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER `edited_by`";
+                $sql[] = "ALTER TABLE `oa_report` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
+
+            # oa_temp
+            $sql[] = "ALTER TABLE `oa_temp` CHANGE `temp_timestamp` `temp_timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # oa_user
             if (!$this->db->field_exists('org_id', 'oa_user')) {
@@ -5185,10 +5311,46 @@ class Database extends MY_Controller
                 $sql[] = "ALTER TABLE oa_user ADD `edited_by` varchar(200) NOT NULL DEFAULT '' after active";
             }
             if (!$this->db->field_exists('edited_date', 'oa_user')) {
-                $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'";
+                $sql[] = "ALTER TABLE oa_user ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             }
             $sql[] = "UPDATE oa_user SET roles = '[\"admin\",\"org_admin\"]' WHERE name IN ('admin', 'nmis', 'open-audit_enterprise')";
+            $sql[] = "UPDATE oa_user SET roles = '[\"user\"]' WHERE name NOT IN ('admin', 'nmis', 'open-audit_enterprise')";
             $sql[] = "UPDATE oa_user SET orgs = '[1]'";
+
+            # optical
+            $sql[] = "ALTER TABLE `optical` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `optical` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # pagefile
+            $sql[] = "ALTER TABLE `pagefile` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `pagefile` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # partition
+            $sql[] = "ALTER TABLE `partition` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `partition` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # print_queue
+            $sql[] = "ALTER TABLE `print_queue` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `print_queue` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # processor
+            $sql[] = "ALTER TABLE `processor` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `processor` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # queries
+            $sql[] = "DROP TABLE IF EXISTS `queries`";
+            $sql[] = "CREATE TABLE `queries` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+              `name` varchar(100) NOT NULL DEFAULT '',
+              `description` text NOT NULL,
+              `sql` text NOT NULL,
+              `link` text NOT NULL,
+              `expose` enum('y','n') NOT NULL DEFAULT 'y',
+              `edited_by` varchar(200) NOT NULL DEFAULT '',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             # roles
             $sql[] = "DROP TABLE IF EXISTS roles";
@@ -5199,7 +5361,7 @@ class Database extends MY_Controller
               `permissions` text NOT NULL DEFAULT '',
               `ad_group` varchar(100) NOT NULL DEFAULT '',
               `edited_by` varchar(200) NOT NULL DEFAULT '',
-              `edited_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
@@ -5211,6 +5373,14 @@ class Database extends MY_Controller
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"sessions\":\"crud\"}', 'open-audit_roles_user', 'system', NOW())";
 
+            # route
+            $sql[] = "ALTER TABLE `route` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `route` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # san
+            $sql[] = "ALTER TABLE `san` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `san` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
             # scripts
             if (!$this->db->field_exists('org_id', 'scripts')) {
                 $sql[] = "ALTER TABLE `scripts` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `name`";
@@ -5219,6 +5389,40 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `scripts` SET `org_id` = $org_1_id WHERE `org_id` = 1";
                 $sql[] = "UPDATE `scripts` SET `org_id` = 1 WHERE `org_id` = 0";
             }
+            $sql[] = "ALTER TABLE `scripts` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # scsi
+            $sql[] = "ALTER TABLE `scsi` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `scsi` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # server
+            $sql[] = "ALTER TABLE `server` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `server` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # server_item
+            $sql[] = "ALTER TABLE `server_item` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `server_item` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # service
+            $sql[] = "ALTER TABLE `service` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `service` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # share
+            $sql[] = "ALTER TABLE `share` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `share` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # software
+            $sql[] = "ALTER TABLE `software` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `software` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `software` CHANGE `installed_on` `installed_on` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # software_key
+            $sql[] = "ALTER TABLE `software_key` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `software_key` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # sound
+            $sql[] = "ALTER TABLE `sound` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `sound` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # system
             if (!$this->db->field_exists('org_id', 'system')) {
@@ -5235,11 +5439,51 @@ class Database extends MY_Controller
                 $sql[] = "UPDATE `system` SET `location_id` = $location_1_id WHERE `location_id` = 1";
                 $sql[] = "UPDATE `system` SET `location_id` = 1 WHERE `location_id` = 0";
             }
+            $sql[] = "ALTER TABLE `system` CHANGE `os_installation_date` `os_installation_date` date NOT NULL DEFAULT '2000-01-01'";
+            $sql[] = "ALTER TABLE `system` CHANGE `purchase_date` `purchase_date` date NOT NULL DEFAULT '2000-01-01'";
+            $sql[] = "ALTER TABLE `system` CHANGE `lease_expiry_date` `lease_expiry_date` date NOT NULL DEFAULT '2000-01-01'";
+            $sql[] = "ALTER TABLE `system` CHANGE `warranty_expires` `warranty_expires` date NOT NULL DEFAULT '2000-01-01'";
+            $sql[] = "ALTER TABLE `system` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `system` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             $sql[] = "UPDATE system SET manufacturer = 'VMware' WHERE manufacturer like 'VMware%'";
             $sql[] = "UPDATE system SET form_factor = 'Virtual' WHERE manufacturer = 'VMware' AND form_factor = 'Other'";
 
+            # task
+            $sql[] = "ALTER TABLE `task` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `task` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # user
+            $sql[] = "ALTER TABLE `user` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `user` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # user_group
+            $sql[] = "ALTER TABLE `user_group` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `user_group` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # variable
+            $sql[] = "ALTER TABLE `variable` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `variable` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # video
+            $sql[] = "ALTER TABLE `video` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `video` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # vm
+            $sql[] = "ALTER TABLE `vm` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `vm` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # warranty
+            $sql[] = "ALTER TABLE `warranty` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `warranty` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `warranty` CHANGE `start` `start` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `warranty` CHANGE `end` `end` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # windows
+            $sql[] = "ALTER TABLE `windows` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `windows` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
             $sql[] = "DELETE FROM `configuration` WHERE `name` = 'discovery_serial_match'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number discovery.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number.')";
 
             $sql[] = "UPDATE configuration SET value = '20160904' WHERE name = 'internal_version'";
             $sql[] = "UPDATE configuration SET value = '1.12.10' WHERE name = 'display_version'";
@@ -5247,9 +5491,10 @@ class Database extends MY_Controller
             $temp_debug = $this->db->db_debug;
             $this->db->db_debug = false;
             foreach ($sql as $this_query) {
-                $item_start = microtime(true);
-                $query = $this->db->query($this_query);
+                $log_details->message = $this_query;
+                stdlog($log_details);
                 $this->data['output'] .= $this_query.";\n\n";
+                $query = $this->db->query($this_query);
                 if ($this->db->_error_message()) {
                     $this->data['output'] .= 'ERROR - ' . $this->db->_error_message() . "\n\n";
                 }
@@ -5258,6 +5503,16 @@ class Database extends MY_Controller
             $this->data['output'] .= 'Upgrade database to 1.12.10 completed';
             $this->config->config['internal_version'] = '20160904';
             $this->config->config['display_version'] = '1.12.10';
+
+            $sql_time = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql_time);
+            $result = $query->result();
+            $this->data['output'] .= 'Completing 1.12.10 upgrade at ' . $result[0]->timestamp . "\n\n";
+
+            $log_details->message = 'Upgrade database to 1.12.10 completed';
+            stdlog($log_details);
+            unset($log_details);
+
         }
 
         # refresh the icons
