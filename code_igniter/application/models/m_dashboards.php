@@ -114,6 +114,9 @@ class M_dashboards extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
+        if (empty($CI->response->meta->sort)) {
+            $CI->response->meta->sort = 'name';
+        }
         $sql = $this->collection_sql('dashboards', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'dashboards');
@@ -146,8 +149,25 @@ class M_dashboards extends MY_Model
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
+            $set_count = true;
+            $limit = str_replace('LIMIT ', '', $CI->response->meta->internal->limit);
+            $limit = explode(',', $limit);
+            if (!empty($limit[0])) {
+                $limit_lower = @intval($limit[0]);
+            } else {
+                $limit_lower = 0;
+            }
+            if (!empty($limit[1])) {
+                $limit_upper = intval($limit[1]);
+            } else {
+                $limit_upper = 8888888888;
+            }
+            
+            unset($limit);
         } else {
             $id = intval($id);
+            $limit_lower = 0;
+            $limit_upper = 8888888888;
         }
         $sql = "SELECT * FROM dashboards WHERE id = ?";
         $data = array($id);
@@ -168,7 +188,6 @@ class M_dashboards extends MY_Model
         }
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'dashboards');
-
         switch ($dashboard[0]->table) {
 
             case 'oa_location':
@@ -191,11 +210,27 @@ class M_dashboards extends MY_Model
                 $collection = 'devices';
                 break;
         }
+        if (!empty($dashboard[0]->extra_columns)) {
+            $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.description,system.os_family,system.status,' . $dashboard[0]->extra_columns;
+        } else {
+            $properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status';
+        }
         $link = $CI->config->config['base_url'] . 'index.php/' . $collection . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
         for ($i=0; $i < count($result); $i++) {
-            $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name);
+            $result[$i]->attributes->link = $link . urlencode($result[$i]->attributes->name) . '&properties=' . $properties;
         }
-
+        if (!empty($set_count)) {
+            if ($limit_upper == 8888888888) {
+                $CI->response->meta->filtered = count($result);
+            }
+            $CI->response->meta->total = count($result);
+        }
+        if ($limit_upper != 8888888888) {
+            $result = array_slice($result, $limit_lower, $limit_upper);
+            if (!empty($set_count)) {
+                $CI->response->meta->filtered = count($result);
+            }
+        }
         return ($result);
     }
 
@@ -291,8 +326,14 @@ class M_dashboards extends MY_Model
             $data[] = array("name" => 'Orgs', "collection" => "orgs", "icon" => 'bank', "count" => $count[0]->count);
         }
 
+        // if ($this->m_users->get_user_permission('', 'queries', 'r')) {
+        //     $sql = "SELECT COUNT(*) AS `count` FROM `oa_report` WHERE report_view_file != 'v_help_oae' and org_id IN (" . $CI->user->org_list . ")";
+        //     $count = $this->run_sql($sql);
+        //     $data[] = array("name" => 'Queries', "collection" => "queries", "icon" => 'table', "count" => $count[0]->count);
+        // }
+
         if ($this->m_users->get_user_permission('', 'queries', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `oa_report` WHERE report_view_file != 'v_help_oae' and org_id IN (" . $CI->user->org_list . ")";
+            $sql = "SELECT COUNT(*) AS `count` FROM `queries` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Queries', "collection" => "queries", "icon" => 'table', "count" => $count[0]->count);
         }
