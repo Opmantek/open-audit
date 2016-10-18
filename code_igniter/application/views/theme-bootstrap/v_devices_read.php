@@ -173,7 +173,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the software categories
-        $software = array('software', 'service', 'software_key');
+        $software = array('software', 'service', 'software_key', 'server');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -1122,7 +1122,9 @@ foreach ($list as $item) {
 <?php
 // combo style displays
 if ($data['system']->type == 'computer') {
-    $list = array ('network' => 'ip', 'disk' => 'partition');
+    $list = array ('network' => 'ip',
+                   'disk' => 'partition',
+                   'server' => 'server_item');
     foreach ($list as $item => $sub_item) {
         if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -1183,7 +1185,9 @@ if ($data['system']->type == 'computer') {
                                 <tbody>
                                     <?php
                                     foreach ($data[$sub_item] as $sub_row) {
-                                        if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or ($item == 'disk' and $item_row->hard_drive_index == $sub_row->hard_drive_index)) { ?>
+                                        if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or 
+                                            ($item == 'disk' and $item_row->hard_drive_index == $sub_row->hard_drive_index) or
+                                            ($item == 'server' and $item_row->name == $sub_row->parent_name)) { ?>
                                             <tr>
                                                 <?php
                                                 foreach ($sub_row as $sub_key => $sub_value) {
@@ -1210,6 +1214,7 @@ if ($data['system']->type == 'computer') {
                             ?>
                         </div>
                     </div>
+                    <br /><br />
                     <?php
                     }
                     ?>
