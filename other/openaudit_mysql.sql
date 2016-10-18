@@ -398,6 +398,7 @@ CREATE TABLE `dashboards` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `table` varchar(100) NOT NULL DEFAULT '',
   `column` varchar(100) NOT NULL DEFAULT '',
+  `extra_columns` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -410,13 +411,14 @@ CREATE TABLE `dashboards` (
 
 LOCK TABLES `dashboards` WRITE;
 /*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
-INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', '', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW());
+INSERT INTO dashboards VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW());
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 

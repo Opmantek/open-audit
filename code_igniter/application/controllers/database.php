@@ -4980,18 +4980,20 @@ class Database extends MY_Controller
               `org_id` int(10) unsigned NOT NULL DEFAULT '1',
               `table` varchar(100) NOT NULL DEFAULT '',
               `column` varchar(100) NOT NULL DEFAULT '',
+              `extra_columns` text NOT NULL,
               `edited_by` varchar(200) NOT NULL DEFAULT '',
               `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', '', 'os_family', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', '', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW())";
+            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW())";
 
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";
