@@ -537,6 +537,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Web/SNMP Management Card';
         $details->type = 'ups';
     }
+    if ($oid == '1.3.6.1.4.1.318.1.3.4.4') {
+        $details->model = 'Switched MSP';
+        $details->type = 'ups';
+    }
     if ($oid == '1.3.6.1.4.1.318.1.3.4.5') {
         $details->model = 'Switched Rack PDU';
         $details->type = 'ups';
