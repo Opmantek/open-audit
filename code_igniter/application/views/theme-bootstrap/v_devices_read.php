@@ -951,7 +951,7 @@ if (isset($data['additional_fields']) and count($data['additional_fields']) > 0)
 
 <?php
 // software installed / odbc / updates
-$list = array('', 'odbc driver', 'update');
+$list = array('', 'odbc_driver', 'update');
 foreach ($list as $item) {
     if (isset($data['software']) and count($data['software']) > 0) {
       if ($item == '') {
@@ -964,7 +964,7 @@ foreach ($list as $item) {
             <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title pull-left">Software <?php echo __(ucwords($item)); ?></h3>
-            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_<?php echo $item; ?>"></span>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $id . $item; ?>"></span>
             <div class="clearfix"></div>
           </div>
               <div class="panel-body">
