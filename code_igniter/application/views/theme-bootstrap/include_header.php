@@ -230,10 +230,10 @@
                     <li class="dropdown-submenu">
                         <a href="#">Queries</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/list_reports'>List Queries</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/queries'>List Queries</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'queries', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/activate_report'>Activate Query</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_report/import_report'>Import Query</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/queries/create'>Create Query</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/queries/import'>Import Multiple Queries</a></li>
                             <?php } ?>
                         </ul>
                     </li>
@@ -272,6 +272,22 @@
                 </ul>
             </li>
 
+            <?php
+            if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'devices' and $this->response->meta->action == 'collection') { ?>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Queries'); ?> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                <?php
+                    foreach ($this->response->included as $item) {
+                        if ($item->type == 'queries') {
+                            echo "<li><a href='" . $this->config->config['oa_web_index'] . "/devices?sub_resource=query&sub_resource_id=" . intval($item->id) . "'>" . __($item->attributes->name) . "</a></li>";
+                        }
+                    }
+                ?>
+                </ul>
+            </li>
+            <?php
+            } ?>
 
 
             <?php

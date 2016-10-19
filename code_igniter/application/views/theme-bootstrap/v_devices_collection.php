@@ -59,34 +59,62 @@ if (!empty($this->response->meta->sub_resource_name)) {
 }
 
 ?>
-
+<div class="collapse" id="queries">
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">Devices <?php echo $title ?></span>
-      <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-
-    <div class="panel panel-default pull-right">
-        <div class="panel-body">
-            <div class="btn-group" role="group" aria-label="...">
-                <a class="btn btn-default" href="<?php echo $this->response->links->first; ?>" role="button">
-                    <?php echo __('first'); ?>
-                </a>
-                <a class="btn btn-default" href="<?php echo $this->response->links->prev; ?>" role="button">
-                    <?php echo __('prev'); ?>
-                </a>
-                <a class="btn btn-default" href="<?php echo $this->response->links->next; ?>" role="button">
-                    <?php echo __('next'); ?>
-                </a>
-                <a class="btn btn-default" href="<?php echo $this->response->links->last; ?>" role="button">
-                    <?php echo __('last'); ?>
-                </a>
-        </div>
+    <div class="panel-heading">
+        <h3 class="panel-title pull-left">Queries</h3>
+        <span class="glyphicon glyphicon-chevron-down pull-right myDownButton" data-menuitem="queries"></span>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <!-- <div class="form-group"> -->
+            <div class="row">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($this->response->included as $item) {
+                        if ($item->type == 'queries') {
+                            if (strpos($this->response->links->first, '?') !== false) {
+                                $link = $this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id;
+                            } else {
+                                $link = $this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id;
+                            }
+                            echo "<tr><td><a href=\"" . $link . "\">" . $item->attributes->name . "</a></td><td>" . $item->attributes->description . "</td></tr>";
+                        }
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+        <!-- </div> -->
     </div>
 </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+        <span class="text-left">Devices <?php echo $title ?></span>
+        <span class="pull-right"><button class="btn btn-xs btn-primary" type="button" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries">Queries</button></span>
+        <span class="pull-right" style="padding-right:20px;"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
+        </h3>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default pull-right">
+            <div class="panel-body">
+                <div class="btn-group" role="group" aria-label="...">
+                    <a class="btn btn-default" href="<?php echo $this->response->links->first; ?>" role="button"><?php echo __('first'); ?></a>
+                    <a class="btn btn-default" href="<?php echo $this->response->links->prev; ?>" role="button"><?php echo __('prev'); ?></a>
+                    <a class="btn btn-default" href="<?php echo $this->response->links->next; ?>" role="button"><?php echo __('next'); ?></a>
+                    <a class="btn btn-default" href="<?php echo $this->response->links->last; ?>" role="button"><?php echo __('last'); ?></a>
+                </div>
+            </div>
+        </div>
 <?php
 if (count($this->response->meta->filter) > 0) {
     echo '<div class="panel panel-default pull-left">';

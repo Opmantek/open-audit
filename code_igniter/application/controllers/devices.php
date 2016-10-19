@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class devices extends MY_Controller
+class devices extends MY_Controller_new
 {
     public function __construct()
     {
@@ -81,11 +81,14 @@ class devices extends MY_Controller
 
     private function collection()
     {
-        if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource != 'report') {
+        if ($this->response->meta->sub_resource != '' and ($this->response->meta->sub_resource != 'report' and $this->response->meta->sub_resource != 'query')) {
             $this->response->data = $this->m_devices->collection_sub_resource();
 
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
             $this->response->data = $this->m_devices->report();
+
+        } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'query') {
+            $this->response->data = $this->m_devices->query();
 
         } else {
             if (!empty($this->response->meta->groupby)) {
@@ -94,8 +97,11 @@ class devices extends MY_Controller
                 $this->response->data = $this->m_devices->collection();
             }
         }
-
         $this->response->meta->filtered = count($this->response->data);
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_queries');
+            $this->response->included = $this->m_queries->collection();
+        }
         output($this->response);
     }
 

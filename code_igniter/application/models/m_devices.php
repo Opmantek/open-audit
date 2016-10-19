@@ -442,26 +442,25 @@ class M_devices extends MY_Model
         $result = $this->run_sql($sql, array());
         $this->count_data($result);
 
-        $sql = "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
-        $seen_by = $this->run_sql($sql, array());
-        $seen_by_temp = array();
-
-        foreach ($seen_by as $seen) {
-            $seen_by_temp[$seen->id] = $seen->seen_by;
-        }
-        unset($seen_by);
-        for ($i=0; $i < count($result); $i++) {
-            if (!empty($result[$i]->{'system.id'})) {
-                if (!empty($seen_by_temp[$result[$i]->{'system.id'}] )) {
-                    $result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
-                } else {
-                    $result[$i]->seen_by = '';
-                }
-            } else {
-                $result[$i]->seen_by = '';
-            }
-        }
-        unset($seen_by_temp);
+        // $sql = "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
+        // $seen_by = $this->run_sql($sql, array());
+        // $seen_by_temp = array();
+        // foreach ($seen_by as $seen) {
+        //     $seen_by_temp[$seen->id] = $seen->seen_by;
+        // }
+        // unset($seen_by);
+        // for ($i=0; $i < count($result); $i++) {
+        //     if (!empty($result[$i]->{'system.id'})) {
+        //         if (!empty($seen_by_temp[$result[$i]->{'system.id'}] )) {
+        //             $result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
+        //         } else {
+        //             $result[$i]->seen_by = '';
+        //         }
+        //     } else {
+        //         $result[$i]->seen_by = '';
+        //     }
+        // }
+        // unset($seen_by_temp);
         $result = $this->format_data($result, 'devices');
         return $result;
     }
@@ -539,6 +538,60 @@ class M_devices extends MY_Model
 
         $result = $this->run_sql($report->report_sql, array());
         $CI->response->meta->total = count($result);
+        if (!empty($CI->response->meta->limit)) {
+            $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
+        }
+        $result = $this->format_data($result, 'devices');
+        return($result);
+    }
+
+    public function query()
+    {
+        $CI = & get_instance();
+        $filter = $this->build_filter();
+        $join = $this->build_join();
+
+        $sql = "SELECT * FROM queries WHERE id = " . intval($CI->response->meta->sub_resource_id);
+        $result = $this->run_sql($sql, array());
+        $query = $result[0];
+        $CI->response->meta->sub_resource_name = $query->name;
+        #$sql = "SELECT a.* FROM (" . $query->query . ") a WHERE a.`system.id` IN (" . $device_sql . ")";
+
+        // $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
+        // $sql = $query->query;
+        // if (stripos($sql, 'where ') !== false) {
+        //     $sql = str_replace('WHERE ', $device_sql . ' AND ', $sql);
+        // } else {
+        //     $sql .= ' ' . $device_sql;
+        // }
+
+        // $filter = 'WHERE system.id IN (' . $CI->user->org_list . ') AND ' . $filter . ' AND ';
+        // $sql = str_replace('WHERE ', $filter, $sql);
+
+        $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
+        $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+        $sql = $query->sql;
+        $sql = str_replace('WHERE @filter', $device_sql, $sql);
+        $result = $this->run_sql($sql, array());
+
+        for ($i=0; $i < count($result); $i++) {
+            foreach ($CI->response->meta->filter as $item) {
+                if (isset($result[$i]->{$item->name})) {
+                    if ($item->operator == '=') {
+                        if ($result[$i]->{$item->name} != $item->value) {
+                            unset($result[$i]);
+                        }
+                    }
+                    if ($item->operator == '!=') {
+                        if ($result[$i]->{$item->name} == $item->value) {
+                            unset($result[$i]);
+                        }
+                    }
+                }
+            }
+        }
+        $CI->response->meta->total = count($result);
+
         if (!empty($CI->response->meta->limit)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
