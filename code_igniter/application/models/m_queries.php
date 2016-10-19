@@ -54,14 +54,14 @@ class M_queries extends MY_Model
                 return false;
             }
         }
-        foreach ($this->db->field_data('oa_queries') as $field) {
+        foreach ($this->db->field_data('queries') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";
                 $sql_data .= "?, ";
                 $data_array[] = (string)$data->{$field->name};
             }
         }
-        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->query)) {
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->sql)) {
             log_error('ERR-0021', 'm_queries::create');
             return false;
         }
