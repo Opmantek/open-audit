@@ -817,7 +817,11 @@ if (! function_exists('inputRead')) {
         $permission['create_form'] = 'c';
         $permission['delete'] = 'd';
         $permission['download'] = 'r';
-        $permission['execute'] = 'u';
+        if ($CI->response->meta->collection == 'database' or $CI->response->meta->collection == 'discoveries') {
+            $permission['execute'] = 'u';
+        } else {
+            $permission['execute'] = 'r';
+        }
         $permission['import'] = 'c';
         $permission['import_form'] = 'c';
         $permission['read'] = 'r';
@@ -851,8 +855,13 @@ if (! function_exists('inputRead')) {
             $CI->load->model('m_users');
             if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
                 log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                output();
-                exit();
+                //output();
+                $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
+                    redirect($CI->response->meta->collection);
+                } else {
+                    redirect('dashboards');
+                }
             }
         }
 
