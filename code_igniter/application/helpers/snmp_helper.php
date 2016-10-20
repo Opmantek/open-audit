@@ -81,6 +81,35 @@ if (!function_exists('snmp_credentials')) {
             return false;
         }
         $connected = array();
+
+        foreach ($credentials as $credential) {
+            $from = ' ';
+            if (!empty($credential->source)) {
+                $from = 'from ' . $credential->source;
+            }
+            if (!empty($credential->name)) {
+                $from = 'named ' . $credential->name;
+            }
+            if (!empty($credential->type) and $credential->type == 'snmp_v3') {
+                $sec_name = $credential->credentials->security_name ?: '';
+                $sec_level = $credential->credentials->security_level ?: '';
+                $auth_protocol = $credential->credentials->authentication_protocol ?: '';
+                $auth_passphrase = $credential->credentials->authentication_passphrase ?: '';
+                $priv_protocol = $credential->credentials->privacy_protocol ?: '';
+                $priv_passphrase = $credential->credentials->privacy_passphrase ?: '';
+                $oid = "1.3.6.1.2.1.1.2.0";
+                if (@snmp3_get($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries)) {
+                    $credential->credentials->version = 3;
+                    $log->message = "Credential set for SNMPv3 from " . $from . " working on " . $ip;
+                    discovery_log($log);
+                    return $credential;
+                } else {
+                    $log->message = "Credential set for SNMPv3 from " . $from . " not working on " . $ip;
+                    discovery_log($log);
+                }
+            }
+        }
+
         foreach ($credentials as $credential) {
             $from = '';
             if (!empty($credential->source)) {
@@ -110,33 +139,7 @@ if (!function_exists('snmp_credentials')) {
                 }
             }
         }
-        foreach ($credentials as $credential) {
-            $from = ' ';
-            if (!empty($credential->source)) {
-                $from = 'from ' . $credential->source;
-            }
-            if (!empty($credential->name)) {
-                $from = 'named ' . $credential->name;
-            }
-            if (!empty($credential->type) and $credential->type == 'snmp_v3') {
-                $sec_name = $credential->credentials->security_name ?: '';
-                $sec_level = $credential->credentials->security_level ?: '';
-                $auth_protocol = $credential->credentials->authentication_protocol ?: '';
-                $auth_passphrase = $credential->credentials->authentication_passphrase ?: '';
-                $priv_protocol = $credential->credentials->privacy_protocol ?: '';
-                $priv_passphrase = $credential->credentials->privacy_passphrase ?: '';
-                $oid = "1.3.6.1.2.1.1.2.0";
-                if (@snmp3_get($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries)) {
-                    $credential->credentials->version = 3;
-                    $log->message = "Credential set for SNMPv3 from " . $from . " working on " . $ip;
-                    discovery_log($log);
-                    return $credential;
-                } else {
-                    $log->message = "Credential set for SNMPv3 from " . $from . " not working on " . $ip;
-                    discovery_log($log);
-                }
-            }
-        }
+
         $log->message = "No working SNMP credentials found for " . $ip;
         discovery_log($log);
         return false;
