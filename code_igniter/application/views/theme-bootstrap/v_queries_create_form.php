@@ -134,7 +134,7 @@ var warning = 0;
 $(document).ready(function() {
     $("form").submit(function(e){
         var sql = document.getElementById("data[attributes][sql]").value;
-        if (sql.toLowerCase().indexOf("WHERE @filter") >= 0) {
+        if (sql.toLowerCase().indexOf("where @filter") >= 0) {
             return true;
         } else {
             if (jQuery.inArray( "admin", roles) != -1) {
