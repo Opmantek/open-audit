@@ -278,6 +278,18 @@ $(document).ready(function () {
             var value =  $("input[name='orgs']:checked").map(function(){
                 return parseInt(this.value);
             }).get()
+            if (attribute == "sql") {
+                if (value.toLowerCase().indexOf("where @filter") == -1) {
+                    if (jQuery.inArray("admin", roles) == -1) {
+                        alert("You are required to have WHERE @filter in your SQL.");
+                        return;
+                    }
+                }
+            }
+
+
+
+
             var data = {};
             data["data"] = {};
             data["data"]["id"] = id;
