@@ -63,7 +63,7 @@ if (!empty($this->response->meta->sub_resource_name)) {
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title pull-left">Queries</h3>
-        <span class="glyphicon glyphicon-chevron-down pull-right myDownButton" data-menuitem="queries"></span>
+        <span class="glyphicon glyphicon-chevron-down pull-right myDownButton" data-menuitem="queries" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries"></span>
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
