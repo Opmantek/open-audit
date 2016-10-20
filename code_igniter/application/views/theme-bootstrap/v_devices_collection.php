@@ -224,8 +224,12 @@ if (!empty($this->response->data)) { ?>
                 if ($property == 'id' or $property == 'system.id') {
                     echo '<td><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
 
-                } elseif ((strrpos($property, 'ip') === strlen($property)-2) and (!empty($item->attributes->{$property . '_padded'}))) {
-                    echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
+                } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
+                    if (!empty($item->attributes->{$property . '_padded'})) {
+                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
+                    } else {
+                        echo "            <td>" . $item->attributes->$property . "</td>\n";
+                    }
 
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
                     echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET))).".svg\" style='border-width:0px; width:24px; height:24px' title=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\" alt=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\"/></td>\n";
@@ -234,14 +238,11 @@ if (!empty($this->response->data)) { ?>
                     echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
 
                 } else {
-                    if (strlen($item->attributes->$property) > 60) {
-                        $display = substr($item->attributes->$property, 0, 60) . ' ....';
-                        $class = ' class="wrap"';
+                    if (strlen($item->attributes->$property) > 30) {
+                        echo "            <td class=\"wrap\"><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span><span title=\"" . $item->attributes->$property . "\">&nbsp;" . substr($item->attributes->$property, 0, 30) . "...</span></td>\n";
                     } else {
-                        $display = $item->attributes->$property;
-                        $class = '';
+                        echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $item->attributes->$property . "</td>\n";
                     }
-                    echo "            <td" . $class . "><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $display . "</td>\n";
                 }
             } else {
                 echo "            <td></td>\n";
