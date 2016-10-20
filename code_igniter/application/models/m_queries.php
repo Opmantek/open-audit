@@ -123,7 +123,8 @@ class M_queries extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        $sql = $this->collection_sql('queries', 'sql');
+        #$sql = $this->collection_sql('queries', 'sql');
+        $sql = "SELECT queries.*, oa_org.name AS `org_name` FROM queries LEFT JOIN oa_org ON (queries.org_id = oa_org.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'queries');
         return ($result);
@@ -133,18 +134,44 @@ class M_queries extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name org_id query ';
+        $data_items = array();
+        $fields = ' name org_id description sql ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
+            if ($key == 'sql') {
+                // TODO - fix the second test below to use a regex to account for multiple spaces
+                if (stripos($value, 'where @filter') === false or stripos($value, 'where @filter or') !== false) {
+                    // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+                    // Ensure the user creating this query has the admin role
+                    $allowed = false;
+                    foreach ($CI->user->roles as $item => $string) {
+                        if ($string == 'admin') {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        unset($allowed);
+                        log_error('ERR-0022', 'm_queries::create');
+                        return false;
+                    }
+                    unset($allowed);
                 }
+            }
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                // if ($sql == '') {
+                //     $sql = "SET `" . $key . "` = '" . $value . "'";
+                // } else {
+                //     $sql .= ", `" . $key . "` = '" . $value . "'";
+                // }
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = ?";
+                } else {
+                    $sql .= ", `" . $key . "` = ?";
+                }
+                $data_items[] = $value;
             }
         }
         $sql = "UPDATE `queries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
+        $this->run_sql($sql, $data_items);
         return;
     }
 
