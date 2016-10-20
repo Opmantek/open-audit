@@ -85,6 +85,13 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
+                        <label for="ad_group" class="col-sm-3 control-label">AD Group</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="ad_group" name="ad_group" placeholder="" value="<?php echo $item->attributes->ad_group; ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="comments" class="col-sm-3 control-label">Comments</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="comments" name="comments" placeholder="" value="<?php echo htmlspecialchars($item->attributes->comments, REPLACE_FLAGS, CHARSET); ?>" disabled>

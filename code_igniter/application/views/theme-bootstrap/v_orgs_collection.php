@@ -48,6 +48,7 @@
                         <th><?php echo __('Organisation Name')?></th>
                         <th><?php echo __('Comment')?></th>
                         <th><?php echo __('Parent Name')?></th>
+                        <th><?php echo __('AD Group')?></th>
                         <th class="text-center"><?php echo __('Devices')?></th>
                         <th class="text-center"><?php echo __('Edit')?></th>
                         <th class="text-center"><?php echo __('Delete')?></th>
@@ -62,6 +63,7 @@
                             <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
                             <td><?php echo htmlspecialchars($item->attributes->comments, REPLACE_FLAGS, CHARSET)?></td>
                             <td><?php echo htmlspecialchars($item->attributes->parent_name, REPLACE_FLAGS, CHARSET)?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET)?></td>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                             <?php if ($item->attributes->id != 0) { ?>
