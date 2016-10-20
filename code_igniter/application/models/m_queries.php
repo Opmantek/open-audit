@@ -54,6 +54,23 @@ class M_queries extends MY_Model
                 return false;
             }
         }
+        // TODO - fix the second test below to use a regex to account for multiple spaces
+        if (stripos($data->sql, 'where @filter') === false or stripos($data->sql, 'where @filter or') !== false) {
+            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+            // Ensure the user creating this query has the admin role
+            $allowed = false;
+            foreach ($CI->user->roles as $key => $value) {
+                if ($value == 'admin') {
+                    $allowed = true;
+                }
+            }
+            if (!$allowed) {
+                unset($allowed);
+                log_error('ERR-0022', 'm_queries::create');
+                return false;
+            }
+            unset($allowed);
+        }
         foreach ($this->db->field_data('queries') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";

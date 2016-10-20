@@ -216,6 +216,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0021']->title = "Required attributes not supplied" . $extra;
         $error_array['ERR-0021']->detail = 'When attempting to create a resource, some attributes are required but missing.';
 
+        $error_array['ERR-0022'] = new stdClass();
+        $error_array['ERR-0022']->code = 'ERR-0022';
+        $error_array['ERR-0022']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0022']->severity = 4;
+        $error_array['ERR-0022']->title = "Required attributes not supplied (WHERE @filter)" . $extra;
+        $error_array['ERR-0022']->detail = 'When attempting to create a query, the supplied SQL did not contain the required WHERE @filter.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
