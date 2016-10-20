@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Roles.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Roles extends MY_Controller
+class Roles extends MY_Controller_new
 {
     /**
     * Constructor

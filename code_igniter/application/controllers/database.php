@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Database.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Database extends MY_Controller
+class Database extends MY_Controller_new
 {
     /**
     * Constructor

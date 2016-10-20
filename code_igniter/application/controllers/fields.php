@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object fields
+* Base Object Fields
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Fields extends MY_Controller
+class Fields extends MY_Controller_new
 {
     /**
     * Constructor

@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Licenses.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Licenses extends MY_Controller
+class Licenses extends MY_Controller_new
 {
     /**
     * Constructor

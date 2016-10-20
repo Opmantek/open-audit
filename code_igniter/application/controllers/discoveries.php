@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object discoveries
+* Base Object Discoveries
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Discoveries extends MY_Controller
+class Discoveries extends MY_Controller_new
 {
     /**
     * Constructor

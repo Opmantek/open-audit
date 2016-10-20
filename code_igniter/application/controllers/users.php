@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Users.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Users extends MY_Controller
+class Users extends MY_Controller_new
 {
     /**
     * Constructor

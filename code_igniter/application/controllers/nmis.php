@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Nmis.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Nmis extends MY_Controller
+class Nmis extends MY_Controller_new
 {
     /**
     * Constructor

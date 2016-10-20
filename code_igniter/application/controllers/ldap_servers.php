@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Ldap_servers.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Ldap_servers extends MY_Controller
+class Ldap_servers extends MY_Controller_new
 {
     /**
     * Constructor

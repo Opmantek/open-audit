@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Connections extends MY_Controller
+class Connections extends MY_Controller_new
 {
     /**
     * Constructor
