@@ -48,8 +48,12 @@
                 <th><?php echo __('Description')?></th>
                 <th><?php echo __('Organisation')?></th>
                 <th style="text-align:center;"><?php echo __('Execute')?></th>
+                <?php if ($this->m_users->get_user_permission('', 'queries', 'u')) { ?>
                 <th style="text-align:center;"><?php echo __('Edit')?></th>
+                <?php } ?>
+                <?php if ($this->m_users->get_user_permission('', 'queries', 'd')) { ?>
                 <th style="text-align:center;"><?php echo __('Delete')?></th>
+                <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -60,11 +64,11 @@
                     <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="devices?sub_resource=query&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                    <?php if ($this->m_users->get_user_permission('', 'queries', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php if ($item->id != 0) { ?>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'queries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
-                    <?php } else { ?>
-                    <td></td>
                     <?php } ?>
                 </tr>
                 <?php endforeach; ?>
