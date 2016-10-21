@@ -49,9 +49,13 @@
                     <th><?php echo __('Subnet')?></th>
                     <th><?php echo __('Updated On')?></th>
                     <th><?php echo __('Complete')?></th>
+                    <?php if ($this->m_users->get_user_permission('', 'discoveries', 'u')) { ?>
                     <th class="text-center"><?php echo __('Execute')?></th>
                     <th class="text-center"><?php echo __('Edit')?></th>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -63,9 +67,13 @@
                     <td><?php echo htmlspecialchars($item->attributes->subnet, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->updated_on, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php if ($this->m_users->get_user_permission('', 'discoveries', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="discoveries/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <?php } ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

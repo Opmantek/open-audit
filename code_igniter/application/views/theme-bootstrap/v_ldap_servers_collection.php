@@ -50,8 +50,12 @@
                     <th><?php echo __('Default Language')?></th>
                     <th><?php echo __('Host')?></th>
                     <th><?php echo __('Domain')?></th>
+                    <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'u')) { ?>
                     <th class="text-center"><?php echo __('Edit')?></th>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -64,8 +68,12 @@
                     <td><?php echo htmlspecialchars($item->attributes->lang, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->host, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->domain, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="ldap_servers/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <?php } ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

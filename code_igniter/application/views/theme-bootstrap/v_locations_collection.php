@@ -52,8 +52,12 @@
                 <th><?php echo __('State')?></th>
                 <th><?php echo __('Country')?></th>
                 <th style="text-align:center;"><?php echo __('Devices')?></th>
+                <?php if ($this->m_users->get_user_permission('', 'locations', 'u')) { ?>
                 <th style="text-align:center;"><?php echo __('Edit')?></th>
+                <?php } ?>
+                <?php if ($this->m_users->get_user_permission('', 'locations', 'd')) { ?>
                 <th style="text-align:center;"><?php echo __('Delete')?></th>
+                <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -68,11 +72,15 @@
                     <td><?php echo htmlspecialchars($item->attributes->state, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->country, REPLACE_FLAGS, CHARSET)?></td>
                     <td class="text-center"><a href="devices?location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
+                    <?php if ($this->m_users->get_user_permission('', 'locations', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'locations', 'd')) { ?>
                     <?php if ($item->id != 0) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } else { ?>
                     <td></td>
+                    <?php } ?>
                     <?php } ?>
                 </tr>
                 <?php endforeach; ?>

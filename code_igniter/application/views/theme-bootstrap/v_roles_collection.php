@@ -50,8 +50,12 @@ $nondelete = ' admin org_admin reporter user ';
                     <th><?php echo __('AD Group')?></th>
                     <th><?php echo __('Edited By')?></th>
                     <th><?php echo __('Edited Date')?></th>
+                    <?php if ($this->m_users->get_user_permission('', 'roles', 'u')) { ?>
                     <th class="text-center"><?php echo __('Edit')?></th>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'roles', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -63,11 +67,15 @@ $nondelete = ' admin org_admin reporter user ';
                         <td><?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
+                        <?php if ($this->m_users->get_user_permission('', 'roles', 'u')) { ?>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="roles/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                        <?php } ?>
+                        <?php if ($this->m_users->get_user_permission('', 'roles', 'd')) { ?>
                         <?php if (strpos($nondelete, ' ' . $item->attributes->name . ' ') !== false) { ?>
                             <td></td>
                         <?php } else { ?>
                             <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <?php } ?>
                         <?php } ?>
                     </tr>
                 <?php endforeach; ?>

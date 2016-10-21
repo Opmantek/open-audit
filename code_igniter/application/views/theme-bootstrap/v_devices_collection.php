@@ -179,12 +179,14 @@ if (!empty($this->response->data)) { ?>
                     echo "            <th>" . __($key) . "</th>\n";
                 }
             }
-            foreach ($properties as $key => $value) {
-                if ($key == 'system.id') {
-                    echo "            <th class=\"text-center\">\n";
-                    echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
-                    echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
-                    echo "            </th>\n";
+            if ($this->m_users->get_user_permission('', 'devices', 'u')) {
+                foreach ($properties as $key => $value) {
+                    if ($key == 'system.id') {
+                        echo "            <th class=\"text-center\">\n";
+                        echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
+                        echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
+                        echo "            </th>\n";
+                    }
                 }
             }
             ?>
@@ -248,9 +250,10 @@ if (!empty($this->response->data)) { ?>
                 echo "            <td></td>\n";
             }
         }
-
-        if (!empty($system_id)) {
-            echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . intval($system_id) . "]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
+        if ($this->m_users->get_user_permission('', 'devices', 'u')) {
+            if (!empty($system_id)) {
+                echo "            <td style=\"text-align: center;\"><input type='checkbox' id='ids[" . intval($system_id) . "]' value='" . intval($system_id) . "' name='ids[" . intval($system_id) . "]' /></td>\n";
+            }
         }
         echo "          </tr>\n";
     }

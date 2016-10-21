@@ -49,8 +49,12 @@
                     <th><?php echo __('Full Name')?></th>
                     <th><?php echo __('Email')?></th>
                     <th><?php echo __('Roles')?></th>
+                    <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
                     <th class="text-center"><?php echo __('Edit')?></th>
+                    <?php } ?>
+                    <?php if ($this->m_users->get_user_permission('', 'users', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
@@ -63,8 +67,12 @@
                         <td><?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($roles, REPLACE_FLAGS, CHARSET)?></td>
+                        <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                        <?php } ?>
+                        <?php if ($this->m_users->get_user_permission('', 'users', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                        <?php } ?>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
