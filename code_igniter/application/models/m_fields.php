@@ -83,44 +83,36 @@ class M_fields extends MY_Model
         }
     }
 
-    public function create()
+    public function create($data = null)
     {
         $CI = & get_instance();
-        # check to see if we already have a file with the same name
-        $sql = "SELECT COUNT(id) AS count FROM `additional_field` WHERE `name` = ?";
-        $data = array($CI->response->meta->received_data->attributes->name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_fields::create');
-            return false;
-        }
-
-        $system_fields = $this->db->list_fields('system');
-        foreach ($system_fields as $field) {
-            if ($CI->response->meta->received_data->attributes->name == $field) {
+        $data_array = array();
+        $sql = "INSERT INTO `additional_field` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
                 log_error('ERR-0010', 'm_fields::create');
                 return false;
             }
         }
-
-        $sql = "INSERT INTO `additional_field` VALUES (NULL,?, ?, ?, ?, ?, ?, NOW())";
-        if (empty($CI->response->meta->received_data->attributes->group_id)) {
-            $CI->response->meta->received_data->attributes->group_id = 1;
+        foreach ($this->db->field_data('additional_field') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
         }
-        if (empty($CI->response->meta->received_data->attributes->values)) {
-            $CI->response->meta->received_data->attributes->values = '';
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->type) or empty($data->placement)) {
+            log_error('ERR-0021', 'm_fields::create');
+            return false;
         }
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 1;
-        }
-        $data = array(
-            $CI->response->meta->received_data->attributes->name,
-            $CI->response->meta->received_data->attributes->org_id,
-            $CI->response->meta->received_data->attributes->type,
-            $CI->response->meta->received_data->attributes->values,
-            $CI->response->meta->received_data->attributes->placement,
-            $CI->user->full_name);
-        $this->run_sql($sql, $data);
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
         return $this->db->insert_id();
     }
 
