@@ -289,7 +289,11 @@ class MY_Model extends CI_Model
         $sort = '';
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
             if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY ' . $table . '.id';
+                if ($table == 'oa_org') {
+                    $sort = 'ORDER BY ' . $table . '.name';
+                } else {
+                    $sort = 'ORDER BY ' . $table . '.id';
+                }
             } else {
                 $sort = 'ORDER BY ' . $CI->response->meta->sort;
             }
