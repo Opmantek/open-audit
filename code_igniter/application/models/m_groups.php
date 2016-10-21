@@ -40,122 +40,139 @@ class M_groups extends MY_Model
         parent::__construct();
     }
 
-    // public function read($id = '')
-    // {
-    //     if ($id == '') {
-    //         $CI = & get_instance();
-    //         $id = intval($CI->response->meta->id);
-    //     } else {
-    //         $id = intval($id);
-    //     }
-    //     $return_data = array();
-    //     $sql = "SELECT networks.* FROM networks WHERE id = ?";
-    //     $data = array(intval($id));
-    //     $result = $this->run_sql($sql, $data);
-    //     $result = $this->format_data($result, 'networks');
-    //     return $result;
-    // }
-
-    // public function sub_resource($id = '')
-    // {
-    //     if ($id == '') {
-    //         $CI = & get_instance();
-    //         $id = intval($CI->response->meta->id);
-    //     } else {
-    //         $id = intval($id);
-    //     }
-    //     $sql = "SELECT `name` FROM `networks` WHERE `id` = ?";
-    //     $data = array($id);
-    //     $result = $this->run_sql($sql, $data);
-    //     $name = $result[0]->name;
-    //     if ($name != '') {
-    //         $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
-    //         $data = array((string)$name);
-    //         $result = $this->run_sql($sql, $data);
-    //         $result = $this->format_data($result, 'devices');
-    //         return $result;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
-    // public function create()
-    // {
-    //     $CI = & get_instance();
-    //     # ensure we have a valid subnet
-    //     $this->load->helper('network');
-    //     if (!empty($CI->response->meta->received_data->attributes->name)) {
-    //         $test = network_details($CI->response->meta->received_data->attributes->name);
-    //     } else {
-    //         log_error('ERR-0009', 'm_networks::create_network');
-    //         return false;
-    //     }
-    //     if (!empty($test->error)) {
-    //         log_error('ERR-0009', 'm_networks::create_network');
-    //         return false;
-    //     }
-    //     # check to see if we already have a network with the same name
-    //     $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
-    //     $sql = "SELECT COUNT(id) AS count FROM `networks` WHERE `name` = ?";
-    //     $data = array($name);
-    //     $result = $this->run_sql($sql, $data);
-    //     if (intval($result[0]->count) != 0) {
-    //         log_error('ERR-0010', 'm_networks::create_network');
-    //         return false;
-    //     }
-    //     $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";
-    //     $data = array("$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
-    //     $this->run_sql($sql, $data);
-    //     return $this->db->insert_id();
-    // }
-
-    public function collection()
+    public function create($data = null)
     {
         $CI = & get_instance();
-        #$sql = $this->collection_sql('groups', 'sql');
-        $sql = $this->collection_sql('oa_group', 'sql');
-        $result = $this->run_sql($sql, array());
+        $data_array = array();
+        $sql = "INSERT INTO `groups` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'm_groups::create');
+                return false;
+            }
+        }
+        // TODO - fix the second test below to use a regex to account for multiple spaces
+        if (stripos($data->sql, 'where @filter') === false or stripos($data->sql, 'where @filter or') !== false) {
+            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+            // Ensure the user creating this query has the admin role
+            $allowed = false;
+            foreach ($CI->user->roles as $key => $value) {
+                if ($value == 'admin') {
+                    $allowed = true;
+                }
+            }
+            if (!$allowed) {
+                unset($allowed);
+                log_error('ERR-0022', 'm_groups::create');
+                return false;
+            }
+            unset($allowed);
+        }
+        foreach ($this->db->field_data('groups') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->sql)) {
+            log_error('ERR-0021', 'm_groups::create');
+            return false;
+        }
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
+        return $this->db->insert_id();
+    }
+
+    public function read($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT * FROM groups WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'groups');
         return ($result);
     }
 
-    // public function update()
-    // {
-    //     $CI = & get_instance();
-    //     $sql = '';
-    //     $fields = ' name description ';
-    //     foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-    //         if (strpos($fields, ' '.$key.' ') !== false) {
-    //             if ($sql == '') {
-    //                 $sql = "SET `" . $key . "` = '" . $value . "'";
-    //             } else {
-    //                 $sql .= ", `" . $key . "` = '" . $value . "'";
-    //             }
-    //         }
-    //     }
-    //     $sql = "UPDATE `networks` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
-    //     $this->run_sql($sql, array());
-    //     return;
-    // }
+    public function collection()
+    {
+        $CI = & get_instance();
+        #$sql = $this->collection_sql('queries', 'sql');
+        $sql = "SELECT groups.*, oa_org.name AS `org_name` FROM groups LEFT JOIN oa_org ON (groups.org_id = oa_org.id) WHERE groups.org_id IN (" . $CI->user->org_list . ") GROUP BY groups.name";
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'queries');
+        return ($result);
+    }
 
-    // public function delete()
-    // {
-    //     $CI = & get_instance();
-    //     $sql = "DELETE FROM `networks` WHERE id = ?";
-    //     $data = array(intval($CI->response->meta->id));
-    //     $this->run_sql($sql, $data);
-    //     return;
-    // }
+    public function update()
+    {
+        $CI = & get_instance();
+        $sql = '';
+        $data_items = array();
+        $fields = ' name org_id description sql ';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if ($key == 'sql') {
+                // TODO - fix the second test below to use a regex to account for multiple spaces
+                if (stripos($value, 'where @filter') === false or stripos($value, 'where @filter or') !== false) {
+                    // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+                    // Ensure the user creating this query has the admin role
+                    $allowed = false;
+                    foreach ($CI->user->roles as $item => $string) {
+                        if ($string == 'admin') {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        unset($allowed);
+                        log_error('ERR-0022', 'm_groups::create');
+                        return false;
+                    }
+                    unset($allowed);
+                }
+            }
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = ?";
+                } else {
+                    $sql .= ", `" . $key . "` = ?";
+                }
+                $data_items[] = $value;
+            }
+        }
+        $sql = "UPDATE `groups` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql, $data_items);
+        return;
+    }
 
-    // private function count_data($result)
-    // {
-    //     // do we have any retrieved rows?
-    //     $CI = & get_instance();
-    //     $trace = debug_backtrace();
-    //     $caller = $trace[1];
-    //     if (count($result) == 0) {
-    //         log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-    //     }
-    // }
+    public function delete($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        if ($id != 1) {
+            $CI = & get_instance();
+            $sql = "DELETE FROM `groups` WHERE id = ?";
+            $data = array(intval($id));
+            $this->run_sql($sql, $data);
+            return true;
+        } else {
+            log_error('ERR-0013', 'm_groups::delete');
+            return false;
+        }
+    }
 
 }

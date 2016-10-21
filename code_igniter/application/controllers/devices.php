@@ -81,7 +81,10 @@ class devices extends MY_Controller_new
 
     private function collection()
     {
-        if ($this->response->meta->sub_resource != '' and ($this->response->meta->sub_resource != 'report' and $this->response->meta->sub_resource != 'query')) {
+        if ($this->response->meta->sub_resource != '' and 
+            ($this->response->meta->sub_resource != 'report' and 
+                $this->response->meta->sub_resource != 'query' and 
+                $this->response->meta->sub_resource != 'group')) {
             $this->response->data = $this->m_devices->collection_sub_resource();
 
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
@@ -89,6 +92,9 @@ class devices extends MY_Controller_new
 
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'query') {
             $this->response->data = $this->m_devices->query();
+
+        } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'group') {
+            $this->response->data = $this->m_devices->group();
 
         } else {
             if (!empty($this->response->meta->groupby)) {

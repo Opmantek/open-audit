@@ -5090,6 +5090,12 @@ class Database extends MY_Controller_new
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
+            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"All Devices\", \"All the devices a user is authorised to view.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter\", \"\", \"y\", \"system\", NOW())";
+
+            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Open-AudIT Enterprise Managed Devices\", \"Devices Managed by Open-AudIT Enterprise.\", \"SELECT distinct(system.id) FROM system WHERE @filter AND system.status = 'production' and oae_manage = 'y'\", \"\", \"y\", \"system\", NOW());";
+
+            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Public IP Devices\", \"Devices with a public IP address and a status of production.\", \"SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = 'y') WHERE @filter AND ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production'\", \"\", \"y\", \"system\", NOW())";
+
             # invoice
             if (!$this->db->field_exists('org_id', 'invoice')) {
                 $sql[] = "ALTER TABLE `invoice` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
@@ -5445,7 +5451,7 @@ class Database extends MY_Controller_new
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_admin', 'system', NOW())";
 
             $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_roles_org_admin', 'system', NOW())";
 
