@@ -715,6 +715,36 @@ LOCK TABLES `graph` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `groups`
+--
+
+DROP TABLE IF EXISTS `groups`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `groups` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
+  `sql` text NOT NULL,
+  `link` text NOT NULL,
+  `expose` enum('y','n') NOT NULL DEFAULT 'y',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `groups`
+--
+
+LOCK TABLES `groups` WRITE;
+/*!40000 ALTER TABLE `graph` DISABLE KEYS */;
+/*!40000 ALTER TABLE `graph` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `invoice`
 --
 

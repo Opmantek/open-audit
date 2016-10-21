@@ -5075,6 +5075,21 @@ class Database extends MY_Controller_new
             }
             $sql[] = "ALTER TABLE `graph` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
+            # groups
+            $sql[] = "DROP TABLE IF EXISTS `groups`";
+            $sql[] = "CREATE TABLE `groups` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+              `name` varchar(100) NOT NULL DEFAULT '',
+              `description` text NOT NULL,
+              `sql` text NOT NULL,
+              `link` text NOT NULL,
+              `expose` enum('y','n') NOT NULL DEFAULT 'y',
+              `edited_by` varchar(200) NOT NULL DEFAULT '',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
             # invoice
             if (!$this->db->field_exists('org_id', 'invoice')) {
                 $sql[] = "ALTER TABLE `invoice` ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `id`";
