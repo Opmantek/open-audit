@@ -149,9 +149,6 @@ class M_configuration extends MY_Model
                 $value = $CI->response->meta->received_data->attributes->value;
             }
         }
-        if (empty($value)) {
-            return;
-        }
 
         if (empty($edited_by)) {
             $edited_by = $this->user->full_name;
