@@ -201,7 +201,7 @@ class M_networks extends MY_Model
     # supply a standard ip address - 192.168.1.1
     # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
     # returns true if ip is contained in a subnet, false otherwise
-    function check_ip($ip = '')
+    public function check_ip($ip = '')
     {
         if (empty($this->config)) {
             $this->load->model('m_configuration');
@@ -217,6 +217,31 @@ class M_networks extends MY_Model
             return true;
         }
         if ($ip == '::1') {
+            return true;
+        }
+        if (stripos($ip, ':') !== false) {
+            // We have an IPv6 address. Try to convert it to a v4.
+            // Known prefix
+            $v4mapped_prefix_hex = '00000000000000000000ffff';
+            $v4mapped_prefix_bin = pack("H*", $v4mapped_prefix_hex);
+            // Or more readable when using PHP >= 5.4
+            # $v4mapped_prefix_bin = hex2bin($v4mapped_prefix_hex);
+            // Parse
+            $addr = $ip;
+            $addr_bin = inet_pton($addr);
+            if ($addr_bin === false) {
+              // Unparsable? How did they connect?!?
+            } else {
+                // Check prefix
+                if (substr($addr_bin, 0, strlen($v4mapped_prefix_bin)) == $v4mapped_prefix_bin) {
+                    // Strip prefix
+                    $addr_bin = substr($addr_bin, strlen($v4mapped_prefix_bin));
+                }
+                // Convert back to printable address in canonical form
+                $ip = inet_ntop($addr_bin);
+            }
+        }
+        if (stripos($ip, ':') !== false) {
             return true;
         }
         $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(name, LOCATE('/', name)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(name, 1, LOCATE('/', name)-1))";
@@ -248,5 +273,4 @@ class M_networks extends MY_Model
             log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
         }
     }
-
 }
