@@ -212,16 +212,62 @@ class M_discoveries extends MY_Model
 
     public function execute($id = '')
     {
+        $CI = & get_instance();
         if ($id == '') {
-            $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
         // reset our device counter
-        $sql = "UPDATE discoveries SET device_count = 0, updated_on = NOW() WHERE id = ?";
+        $sql = "/* discoveries::execute */ " . "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', updated_on = NOW() WHERE id = ?";
         $data = array(intval($id));
         $this->run_sql($sql, $data);
-        return;
+
+        $sql = "/* discoveries::execute */ " . "SELECT * FROM discoveries WHERE id = ?";
+        $data = array(intval($id));
+        $temp = $this->run_sql($sql, $data);
+        $discovery = $temp[0];
+
+        if (!empty($this->config->config['discovery_nmap_os'])) {
+            $nmap_os = $this->config->config['discovery_nmap_os'];
+        } else {
+            $nmap_os = 'n';
+        }
+
+        if ($CI->response->meta->debug) {
+            $debugging = 1;
+        } else {
+            $debugging = 0;
+        }
+
+        // Unix based discovery
+        if (php_uname('s') != 'Windows NT') {
+            $filepath = $this->config->config['base_path'] . '/other';
+            $command_string = "$filepath/discover_subnet.sh" .
+                                " subnet_range=" .  $discovery->subnet .
+                                " url=".            $discovery->network_address . "index.php/input/discoveries" .
+                                " submit_online=y" .
+                                " echo_output=n" .
+                                " create_file=n" .
+                                " debugging=" . $debugging .
+                                " subnet_timestamp=" . $discovery->id .
+                                " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+            if (php_uname('s') == 'Linux') {
+                $command_string = 'nohup ' . $command_string;
+            }
+            @exec($command_string, $output, $return_var);
+            if ($return_var != '0') {
+                $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->subnet.') has failed';
+                $this->session->set_flashdata('error', $message);
+            } else {
+                $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->subnet.') has started';
+                $this->session->set_flashdata('success', $message);
+            }
+        }
+
+        // Windows based discovery
+        if (php_uname('s') == 'Windows NT') {
+            $filepath = $this->config->config['base_path'] . '\\other';
+        }
     }
 }
