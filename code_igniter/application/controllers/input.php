@@ -59,6 +59,7 @@ class input extends CI_Controller
         $this->data['title'] = 'Open-AudIT';
         $this->load->helper('url');
         $this->load->helper('network');
+        $this->load->helper('output');
         $this->load->helper('ssh');
         $this->load->helper('wmi');
         $this->load->library('session');
@@ -108,8 +109,17 @@ class input extends CI_Controller
             $this->response->meta->query_string = '';
             $this->load->model('m_roles');
             $this->roles = $this->m_roles->collection();
-            $this->data['include'] = 'v_input_discoveries_create_form';
-            $this->load->view('v_template', $this->data);
+            $this->response->meta->collection = 'input';
+            $this->response->meta->action = 'discoveries_create_form';
+            $this->response->data = array();
+            $this->response->meta->id = null;
+            $this->response->meta->total = 0;
+            $this->response->meta->format = 'screen';
+            $this->response->meta->header = 'Input';
+            $this->response->meta->heading = 'Input';
+            output($this->response);
+            #$this->data['include'] = 'v_input_discoveries_create_form';
+            #$this->load->view('v_template', $this->data);
         } else {
             $this->discoveries();
         }

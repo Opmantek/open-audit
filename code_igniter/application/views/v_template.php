@@ -43,6 +43,10 @@ if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php'
     $this->user->theme = 'tango';
 }
 
+if (!defined('CHARSET')) {
+    define('CHARSET', 'UTF-8');
+    define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+}
 
 $oa_web_index    = htmlentities($this->config->item('oa_web_index'));
 $oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));
