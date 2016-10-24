@@ -93,11 +93,20 @@ if (!empty($_POST['form_details'])) {
         }
         $log->system_id = null;
         $log->ip = $input->ip;
-        // The end submit from the scriupt that indicates there are no more items to be submitted
+        // The end submit from the script that indicates there are no more items to be submitted
         if (isset($input->complete) and $input->complete == 'y') {
-            $sql = '/* input::discoveries */ UPDATE `discoveries` SET `complete` = "y" WHERE id = ?';
+            $sql = "/* input::discoveries */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
+            $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
+            $data = array($log->discovery_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            if ($result[0]->discard == 'y') {
+                $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
+                $data = array($log->discovery_id);
+                $query = $this->db->query($sql, $data);
+            }
             exit();
         }
         // check the IP isn't in the excluded list
