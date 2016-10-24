@@ -781,15 +781,16 @@ if (! function_exists('scp')) {
 
         $log->command = $command;
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->message = 'SCP command';
         if ($return['status'] != '0') {
-            $log->message = 'SCP complete. Copy to ' . $ip . ' failed';
+            $log->command_status = 'fail';
             $log->severity = 4;
             discovery_log($log);
             $log->severity = 7;
             unset($log->command);
             return false;
         } else {
-            $log->message = 'SCP complete. Copy to ' . $ip . ' succeeded';
+            $log->command_status = 'success';
             discovery_log($log);
             unset($log->command, $log->command_time_to_execute);
             return true;
