@@ -684,9 +684,7 @@ if ($data['system']->type != 'computer') {
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Downloads'); ?></a>
                         -->
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=credential&action=create" role="button"><?php echo __('Add Credentials'); ?></a>
-                        <a class="btn btn-default btn-block" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/discovery/discover_subnet/device/<?php echo $data['system']->id; ?>" role="button"><?php echo __('Discover'); ?></a>
-                        <a class="btn btn-default btn-block" href="#" onclick="window.open('<?php echo $this->config->config['oa_web_folder']; ?>/index.php/admin_system/system_snmp/<?php echo $data['system']->id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');"><?php echo __('SNMP Scan'); ?></a>
-
+                        <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=discovery&action=create" role="button"><?php echo __('Discover'); ?></a>
                     </div>
                 </div>
             </fieldset>
