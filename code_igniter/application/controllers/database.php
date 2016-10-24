@@ -5010,6 +5010,7 @@ class Database extends MY_Controller_new
               `system_id` int(10) unsigned NOT NULL DEFAULT '0',
               `other` text NOT NULL,
               `device_count` int(10) unsigned NOT NULL DEFAULT '0',
+              `discard` enum('y','n') NOT NULL DEFAULT 'n',
               `created_by` varchar(200) NOT NULL DEFAULT '',
               `created_on` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               `updated_on` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
