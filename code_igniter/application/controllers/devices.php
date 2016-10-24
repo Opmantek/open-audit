@@ -266,6 +266,19 @@ class devices extends MY_Controller_new
             $this->response->data[] = $temp;
             unset($temp);
             output($this->response);
+        } elseif ($this->response->meta->sub_resource == 'discovery') {
+            $this->response->data = $this->m_devices->read();
+            $data = new stdClass();
+            $data->name = $this->response->data[0]->attributes->name;
+            $data->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
+            $data->system_id = $this->response->data[0]->attributes->id;
+            $data->org_id = $this->response->data[0]->attributes->org_id;
+            $data->discard = 'y';
+            $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
+            $this->load->model('m_discoveries');
+            $discovery_id = $this->m_discoveries->create($data);
+            $this->m_discoveries->execute($discovery_id);
+            redirect('devices/'.$this->response->data[0]->attributes->id);
         } else {
             redirect('devices');
         }
