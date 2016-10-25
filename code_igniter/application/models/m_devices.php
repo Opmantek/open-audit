@@ -178,7 +178,7 @@ class M_devices extends MY_Model
         #$sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
         $sql = $this->clean_sql($sql);
         $result = $this->run_sql($sql, array($id));
-        $sql = "SELECT additional_field.name, additional_field_item.value FROM additional_field_item RIGHT JOIN additional_field ON additional_field.id = additional_field_item.additional_field_id AND additional_field_item.system_id = ?";
+        $sql = "/* m_devices::read */ " . "SELECT additional_field.name, additional_field_item.value FROM additional_field_item RIGHT JOIN additional_field ON additional_field.id = additional_field_item.additional_field_id AND additional_field_item.system_id = ?";
         $result_fields = $this->run_sql($sql, array($id));
         foreach ($result_fields as $field) {
             $result[0]->{$field->name} = $field->value;
@@ -246,19 +246,19 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
 
         if ($sub_resource == 'location') {
-            $sql = "SELECT location_id, oa_location.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT location_id, oa_location.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
             $data = array($id);
 
         } elseif ($sub_resource == 'purchase') {
-            $sql = "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
 
         } elseif ($sub_resource == 'discovery_log') {
-            $sql = "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
             $data = array($id);
 
         } elseif ($sub_resource == 'additional_fields') {
-            $sql = "SELECT additional_field.id as `additional_field.id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT additional_field.id as `additional_field.id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
             $data = array($id);
 
         } else {
@@ -274,7 +274,7 @@ class M_devices extends MY_Model
                 $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
             }
 
-            $sql = "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $sort;
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $sort;
             $data = array($CI->user->id);
         }
         $result = $this->run_sql($sql, $data);
@@ -322,7 +322,7 @@ class M_devices extends MY_Model
         if (empty($sub_resource_id)) {
             return false;
         }
-        $sql = "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
+        $sql = "/* m_devices::sub_resource_delete */ " . "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
         $data = array(intval($id), intval($sub_resource_id));
         $result = $this->run_sql($sql, $data);
         if ($this->db->affected_rows() > 0) {
@@ -401,11 +401,11 @@ class M_devices extends MY_Model
                 }
 
                 # we only store a SINGLE credential set of each type per device - delete any existing
-                $sql = "DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?";
+                $sql = "/* m_devices::sub_resource_create */ " . "DELETE FROM `credential` WHERE `system_id` = ? AND `type` = ?";
                 $data = array(intval($id), (string)$type);
                 $this->run_sql($sql, $data);
                 # insert the new credentials
-                $sql = "INSERT INTO `credential` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, NOW())";
+                $sql = "/* m_devices::sub_resource_create */ " . "INSERT INTO `credential` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, NOW())";
                 $data = array(intval($id), (string)$name, (string)$description, (string)$type, (string)$credentials, (string)$user);
                 $this->run_sql($sql, $data);
             }
@@ -428,7 +428,7 @@ class M_devices extends MY_Model
                 $CI->response->meta->internal->sort = 'ORDER BY system.id';
             }
         }
-        $sql = "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+        $sql = "/* m_devices::collection */ " . "SELECT count(*) as total FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
         $result = $this->run_sql($sql, array());
         if (!empty($result[0]->total)) {
             $CI->response->meta->total = intval($result[0]->total);
@@ -438,7 +438,7 @@ class M_devices extends MY_Model
             return false;
         }
         unset($result);
-        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        $sql = "/* m_devices::collection */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $this->count_data($result);
 
@@ -468,7 +468,7 @@ class M_devices extends MY_Model
     public function collection_group_by()
     {
         $CI = & get_instance();
-        $sql = "SELECT id, COUNT(*) AS `count`, `" . $CI->response->meta->groupby . "` FROM system " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        $sql = "/* m_devices::collection_group_by */ " . "SELECT id, COUNT(*) AS `count`, `" . $CI->response->meta->groupby . "` FROM system " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
         return $result;
@@ -485,16 +485,16 @@ class M_devices extends MY_Model
                 $CI->response->meta->internal->properties = 'COUNT(*) AS `count`';
             }
             # get the total count (with a GROUPBY)
-            $sql = "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+            $sql = "/* m_devices::collection_sub_resource */ " . "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
             $result = $this->run_sql($sql, array());
             $CI->response->meta->total = intval(COUNT($result));
         } else {
             # get the total count (without a LIMIT and GROUPBY)
-            $sql = "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter;
+            $sql = "/* m_devices::collection_sub_resource */ " . "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter;
             $result = $this->run_sql($sql, array());
             $CI->response->meta->total = intval($result[0]->count);
         }
-        $sql = "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        $sql = "/* m_devices::collection_sub_resource */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, $CI->response->meta->sub_resource);
         unset($item);
@@ -512,7 +512,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $join = $this->build_join();
 
-        $sql = "SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
+        $sql = "/* m_devices::report */ " . "SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby;
         $result = $this->run_sql($sql, array());
         foreach ($result as $temp) {
             $temp_ids[] = $temp->id;
@@ -535,6 +535,7 @@ class M_devices extends MY_Model
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id)', '', $report->report_sql);
         $report->report_sql = str_ireplace('oa_group_sys.group_id = @group', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
         $report->report_sql = str_ireplace('system.id = oa_group_sys.system_id', 'system.id IN (' . $system_id_list . ')', $report->report_sql);
+        $report->report_sql = "/* m_devices::report */ " .  $report->report_sql;
 
         $result = $this->run_sql($report->report_sql, array());
         $CI->response->meta->total = count($result);
@@ -551,7 +552,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $join = $this->build_join();
 
-        $sql = "SELECT * FROM queries WHERE id = " . intval($CI->response->meta->sub_resource_id);
+        $sql = "/* m_devices::query */ " . "SELECT * FROM queries WHERE id = " . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $query = $result[0];
         $CI->response->meta->sub_resource_name = $query->name;
@@ -572,6 +573,7 @@ class M_devices extends MY_Model
         $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
         $sql = $query->sql;
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
+        $sql = "/* m_devices::query */ " . $sql;
         $result = $this->run_sql($sql, array());
 
         for ($i=0; $i < count($result); $i++) {
@@ -605,7 +607,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
         $join = $this->build_join();
 
-        $sql = "SELECT * FROM groups WHERE id = " . intval($CI->response->meta->sub_resource_id);
+        $sql = "/* m_devices::group */ " . "SELECT * FROM groups WHERE id = " . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $group = $result[0];
         $CI->response->meta->sub_resource_name = $group->name;
@@ -616,7 +618,7 @@ class M_devices extends MY_Model
         if ($CI->response->meta->format == 'screen') {
             $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status`", $sql);
         }
-
+        $sql = "/* m_devices::group */ " . $sql;
         $result = $this->run_sql($sql, array());
 
         for ($i=0; $i < count($result); $i++) {
@@ -755,6 +757,12 @@ class M_devices extends MY_Model
                             $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
                             $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
                             $this->run_sql($sql, $data);
+                            // Special case the 'type' - set the icon to match
+                            if ($key == 'type') {
+                                $sql = "UPDATE `system` SET `icon` = '" . str_replace(' ', '_', $value) . "' WHERE id = ?";
+                                $data = array(intval($id));
+                                $this->run_sql($sql, $data);
+                            }
                         }
                     } else {
                         # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
