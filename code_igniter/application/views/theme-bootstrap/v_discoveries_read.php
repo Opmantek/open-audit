@@ -247,7 +247,7 @@ $item = $this->response->data[0];
                         <td><?php echo htmlspecialchars($item->attributes->file, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->function, REPLACE_FLAGS, CHARSET)?></td>
                         <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php if ($item->attributes->command_time != '0.000000') { echo htmlspecialchars($item->attributes->command_time, REPLACE_FLAGS, CHARSET); } ?></td>
+                        <td><?php if ($item->attributes->command_time_to_execute != '0.000000') { echo htmlspecialchars($item->attributes->command_time_to_execute, REPLACE_FLAGS, CHARSET); } ?></td>
                         <td><?php echo htmlspecialchars($item->attributes->command_status, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->command_output, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET) . '</pre>'; } ?></td>
