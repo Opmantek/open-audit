@@ -5021,25 +5021,26 @@ class Database extends MY_Controller_new
             # discovery log
             $sql[] = "DROP TABLE IF EXISTS `discovery_log`";
             $sql[] = "CREATE TABLE `discovery_log` (
-                      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                      `discovery_id` int(10) unsigned DEFAULT NULL,
-                      `system_id` int(10) unsigned DEFAULT NULL,
-                      `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-                      `severity` int(1) unsigned NOT NULL DEFAULT '5',
-                      `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
-                      `pid` int(10) unsigned NOT NULL DEFAULT '0',
-                      `ip` varchar(45) NOT NULL DEFAULT '',
-                      `file` varchar(100) NOT NULL DEFAULT '',
-                      `function` varchar(100) NOT NULL DEFAULT '',
-                      `message` text NOT NULL,
-                      `command` text NOT NULL,
-                      `command_status` varchar(100) NOT NULL DEFAULT '',
-                      `command_time` decimal(12,6) NOT NULL,
-                      `command_output` text NOT NULL,
-                      PRIMARY KEY (`id`),
-                      KEY `system_id` (`system_id`),
-                      KEY `pid` (`pid`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `discovery_id` int(10) unsigned DEFAULT NULL,
+              `system_id` int(10) unsigned DEFAULT NULL,
+              `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+              `severity` int(1) unsigned NOT NULL DEFAULT '5',
+              `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
+              `pid` int(10) unsigned NOT NULL DEFAULT '0',
+              `ip` varchar(45) NOT NULL DEFAULT '',
+              `file` varchar(100) NOT NULL DEFAULT '',
+              `function` varchar(100) NOT NULL DEFAULT '',
+              `message` text NOT NULL,
+              `command` text NOT NULL,
+              `command_status` varchar(100) NOT NULL DEFAULT '',
+              `command_time_to_execute` decimal(12,6) NOT NULL,
+              `command_output` text NOT NULL,
+              PRIMARY KEY (`id`),
+              KEY `system_id` (`system_id`),
+              KEY `pid` (`pid`),
+              CONSTRAINT `discovery_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
             # disk
             $sql[] = "ALTER TABLE `disk` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
