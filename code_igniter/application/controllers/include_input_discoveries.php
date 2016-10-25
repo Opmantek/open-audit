@@ -429,6 +429,7 @@ if (!empty($_POST['form_details'])) {
             $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
             discovery_log($log);
             $device->id = $this->m_system->insert_system($device, $display);
+            $log->system_id = $device->id;
             $log->file = 'input';
             $log->function = 'discoveries';
             $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip . ' (System ID ' . $device->id . ')';
@@ -929,11 +930,11 @@ if (!empty($_POST['form_details'])) {
                     }
                 }
             }
-            $log->file = 'input';
-            $log->function = 'discoveries';
-            $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but audit result may be incoming.";
-            discovery_log($log);
         } // close the 'skip'
+        $log->file = 'input';
+        $log->function = 'discoveries';
+        $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but audit result may be incoming.";
+        discovery_log($log);
     }
 } else {
     $log->message = "No 'form_details' sent to input.";
