@@ -242,12 +242,6 @@ class devices extends MY_Controller_new
 
     private function sub_resource_delete()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
         $this->m_devices->sub_resource_delete($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
         if ($this->response->meta->format == 'json') {
             output($this->response);
