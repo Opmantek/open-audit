@@ -235,33 +235,37 @@ if (! function_exists('inputRead')) {
                     }
                     break;
                 case 'devices':
-                    $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
+                    $sql = "/* input_helper::inputRead */" . "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
                     $table = 'system';
                     break;
                 case 'groups':
-                    $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */" . "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
                     $table = 'oa_group';
                     break;
                 case 'orgs':
-                    $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
                     $table = 'oa_org';
                     break;
                 case 'users':
-                    $sql = "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */" . "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
                     $table = 'oa_user';
                     break;
                 case 'reports':
-                    $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */" . "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
                     $table = 'oa_report';
                     break;
                 case 'scripts':
-                    $sql = "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
+                    $sql = "/* input_helper::inputRead */" . "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
                     $table = 'scripts';
                     break;
                 case 'charts':
                     $sql = '';
                     $CI->response->meta->id = 1;
                     $CI->response->meta->sub_resource = $CI->uri->segment(2);
+                    break;
+                case 'configuration':
+                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM configuration WHERE name = ?";
+                    $table = 'configuration';
                     break;
             }
             if ($sql != '') {
@@ -357,7 +361,7 @@ if (! function_exists('inputRead')) {
             unset($data);
         }
         if (isset($CI->response->meta->received_data->id)) {
-            if ($CI->response->meta->collection != 'database') {
+            if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'configuration') {
                 $CI->response->meta->id = intval($CI->response->meta->received_data->id);
             }
         }
