@@ -228,7 +228,7 @@ function imageModal(title, image) {
     modal_content_original = document.getElementById("modal_content").innerHTML;
     modal_content_image = '<div class="row"><div class="col-md-6"><h3>'+title+'</h3></div>';
     modal_content_image = modal_content_image+'<div class="col-md-6 text-right"><br /><a class="btn btn-default btn-sm" href="#" onclick="removeImageModal();">Back</a></div></div>';
-    modal_content_image = modal_content_image+'<a href="#" onclick="removeImageModal();"><img id="modalImage" src="/omk/img/'+image+'" style="width: 800px;" /></a>';
+    modal_content_image = modal_content_image+'<a href="#" onclick="removeImageModal();"><img id="modalImage" src="<?php echo str_replace("index.php", "", site_url()); ?>/images/'+image+'" style="width: 800px;" /></a>';
     document.getElementById("modal_content").innerHTML = modal_content_image;
     document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"#\" onclick=\"removeImageModal();\">Back</a>";
     document.getElementById("button_prompt_never").innerHTML = "";
@@ -236,8 +236,8 @@ function imageModal(title, image) {
 
 function removeImageModal() {
     document.getElementById("modal_content").innerHTML = modal_content_original;
-    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/1\">Ask me later</a>";
-    document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/-\">Do now show me again</a>";
+    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')); ?>\">Ask me later</a>";
+    document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"2100-01-01\">Do now show me again</a>";
 }
 
 
