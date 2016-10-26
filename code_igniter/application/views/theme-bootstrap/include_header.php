@@ -1,6 +1,6 @@
 <div class="row" style="padding-bottom:5px;">
     <div class="col-md-4">
-        <a href="<?php echo $this->config->config['oa_web_index']; ?>/dashboards">
+        <a href="<?php echo $this->config->config['oa_web_index']; ?>">
             <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/<?php echo htmlspecialchars($this->config->item('logo'), REPLACE_FLAGS, CHARSET)?>.png' alt='logo' style='border-width:0px;' />
         </a>
     </div>
@@ -58,7 +58,7 @@
 <nav class="navbar navbar-default">
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-            <li><a href="<?php echo $this->config->config['oa_web_index']; ?>/dashboards">Home</a></li>
+            <li><a href="<?php echo $this->config->config['oa_web_index']; ?>">Home</a></li>
 
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Enterprise <span class="caret"></span></a>

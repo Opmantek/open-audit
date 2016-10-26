@@ -33,7 +33,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-class M_dashboards extends MY_Model
+class M_summaries extends MY_Model
 {
     public function __construct()
     {
@@ -44,7 +44,7 @@ class M_dashboards extends MY_Model
     {
         $CI = & get_instance();
         if (empty($CI->response->meta->received_data->attributes->name)) {
-            log_error('ERR-0010', 'm_dashboards::create');
+            log_error('ERR-0010', 'm_summaries::create');
             return false;
         }
         $attributes = array('name', 'org_id', 'table', 'column');
@@ -53,7 +53,7 @@ class M_dashboards extends MY_Model
             $data[] = $CI->response->meta->received_data->attributes->{$attribute};
         }
         $data[] = $CI->user->full_name;
-        $sql = "INSERT INTO `dashboards` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO `summaries` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
@@ -66,10 +66,10 @@ class M_dashboards extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM dashboards WHERE id = ?";
+        $sql = "SELECT * FROM summaries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'dashboards');
+        $result = $this->format_data($result, 'summaries');
         return ($result);
     }
 
@@ -87,7 +87,7 @@ class M_dashboards extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `dashboards` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `summaries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql);
         return;
     }
@@ -102,7 +102,7 @@ class M_dashboards extends MY_Model
         }
         if ($id != 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `dashboards` WHERE id = ?";
+            $sql = "DELETE FROM `summaries` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
@@ -117,9 +117,9 @@ class M_dashboards extends MY_Model
         if (empty($CI->response->meta->sort)) {
             $CI->response->meta->sort = 'name';
         }
-        $sql = $this->collection_sql('dashboards', 'sql');
+        $sql = $this->collection_sql('summaries', 'sql');
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'dashboards');
+        $result = $this->format_data($result, 'summaries');
         $tables = ' additional_field_item audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
         for ($i=0; $i < count($result); $i++) {
             if ($result[$i]->attributes->table == 'oa_org') {
@@ -169,7 +169,7 @@ class M_dashboards extends MY_Model
             $limit_lower = 0;
             $limit_upper = 8888888888;
         }
-        $sql = "SELECT * FROM dashboards WHERE id = ?";
+        $sql = "SELECT * FROM summaries WHERE id = ?";
         $data = array($id);
         $dashboard = $this->run_sql($sql, $data);
 
@@ -187,7 +187,7 @@ class M_dashboards extends MY_Model
             $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->column . " AS `name` FROM `" . $dashboard[0]->table . "` WHERE `$org_id` IN (" . $CI->user->org_list . ") GROUP BY `" . $dashboard[0]->column . "`";
         }
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'dashboards');
+        $result = $this->format_data($result, 'summaries');
         switch ($dashboard[0]->table) {
 
             case 'oa_location':
@@ -258,10 +258,10 @@ class M_dashboards extends MY_Model
             $data[] = array("name" => 'Credentials', "collection" => "credentials", "icon" => 'shield', "count" => $count[0]->count);
         }
 
-        if ($this->m_users->get_user_permission('', 'dashboards', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `dashboards` WHERE org_id IN (" . $CI->user->org_list . ")";
+        if ($this->m_users->get_user_permission('', 'summaries', 'r')) {
+            $sql = "SELECT COUNT(*) AS `count` FROM `summaries` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Dashboards', "collection" => "dashboards", "icon" => 'file-image-o', "count" => $count[0]->count);
+            $data[] = array("name" => 'summaries', "collection" => "summaries", "icon" => 'file-image-o', "count" => $count[0]->count);
         }
 
         if ($this->m_users->get_user_permission('', 'database', 'r')) {

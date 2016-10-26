@@ -36,7 +36,7 @@
 ?>
 <div id="header" style='height: 70px; margin-left: auto; margin-right: auto; padding: 0px 0px 0px 0px; text-align: left;'>
 	<div style="width:260px; float: left; text-align: left;">
-		<a href="<?php echo $this->config->item('oa_web_index'); ?>/dashboards">
+		<a href="<?php echo $this->config->item('oa_web_index'); ?>">
 			<?php if (isset($this->config->config['logo']) and $this->config->config['logo'] != '') {
             if ($this->config->config['logo'] == 'oac') {
                 $this->config->config['logo'] = 'logo-banner-oac';

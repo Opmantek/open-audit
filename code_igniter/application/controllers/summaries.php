@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Summaries.
 *
 * @access   public
 * @category Object
@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Dashboards extends MY_Controller_new
+class Summaries extends MY_Controller_new
 {
     /**
     * Constructor
@@ -66,10 +66,10 @@ class Dashboards extends MY_Controller_new
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
-        $this->load->model('m_dashboards');
+        $this->load->model('m_summaries');
         $this->load->model('m_orgs');
         if (empty($this->uri->segment(1))) {
-            redirect('dashboards');
+            redirect('summaries');
         }
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
@@ -149,7 +149,7 @@ class Dashboards extends MY_Controller_new
     public function collection()
     {
         if ($this->response->meta->format == 'screen') {
-            $this->response->included = array_merge($this->response->included, $this->m_dashboards->read_sub_resource());
+            $this->response->included = array_merge($this->response->included, $this->m_summaries->read_sub_resource());
         }
         include 'include_collection.php';
     }
@@ -196,9 +196,9 @@ class Dashboards extends MY_Controller_new
     */
     public function execute()
     {
-        $this->response->data = $this->m_dashboards->execute();
+        $this->response->data = $this->m_summaries->execute();
         output();
     }
 }
-// End of file dashboard.php
-// Location: ./controllers/dashboard.php
+// End of file summaries.php
+// Location: ./controllers/summaries.php

@@ -33,5 +33,5 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $edit = true;
-include('v_dashboards_read.php');
+include('v_summaries_read.php');
 ?>

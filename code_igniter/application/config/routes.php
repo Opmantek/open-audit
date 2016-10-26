@@ -38,7 +38,7 @@
 |
 */
 
-$route['default_controller'] = "dashboards";
+$route['default_controller'] = "summaries";
 $route['404_override'] = '';
 
 $route['v(:num)/(:any)'] = "$2";

@@ -4972,30 +4972,6 @@ class Database extends MY_Controller_new
             }
             $sql[] = "ALTER TABLE `credentials` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
-            # dashboards
-            $sql[] = "DROP TABLE IF EXISTS dashboards";
-            $sql[] = "CREATE TABLE `dashboards` (
-              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-              `name` varchar(100) NOT NULL DEFAULT '',
-              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-              `table` varchar(100) NOT NULL DEFAULT '',
-              `column` varchar(100) NOT NULL DEFAULT '',
-              `extra_columns` text NOT NULL,
-              `edited_by` varchar(200) NOT NULL DEFAULT '',
-              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-              PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Form Factors', 1, 'system', 'form_factor', 'system.form_factor,system.class', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', '', 'system', NOW())";
-            $sql[] = "INSERT INTO dashboards VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW())";
-
             # discoveries
             $sql[] = "DROP TABLE IF EXISTS discoveries";
             $sql[] = "CREATE TABLE `discoveries` (
@@ -5453,13 +5429,13 @@ class Database extends MY_Controller_new
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{\"configuration\":\"crud\",\"database\":\"crud\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\"}', 'open-audit_roles_admin', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_roles_org_admin', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}', 'open-audit_roles_org_admin', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_reporter', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_reporter', 'system', NOW())";
 
-            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_user', 'system', NOW())";
+            $sql[] = "INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}', 'open-audit_roles_user', 'system', NOW())";
 
             # route
             $sql[] = "ALTER TABLE `route` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
@@ -5511,6 +5487,30 @@ class Database extends MY_Controller_new
             # sound
             $sql[] = "ALTER TABLE `sound` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             $sql[] = "ALTER TABLE `sound` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+
+            # summaries
+            $sql[] = "DROP TABLE IF EXISTS summaries";
+            $sql[] = "CREATE TABLE `summaries` (
+              `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+              `name` varchar(100) NOT NULL DEFAULT '',
+              `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+              `table` varchar(100) NOT NULL DEFAULT '',
+              `column` varchar(100) NOT NULL DEFAULT '',
+              `extra_columns` text NOT NULL,
+              `edited_by` varchar(200) NOT NULL DEFAULT '',
+              `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Form Factors', 1, 'system', 'form_factor', 'system.form_factor,system.class', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Server Types', 1, 'server', 'type', '', 'system', NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW())";
 
             # system
             if (!$this->db->field_exists('org_id', 'system')) {

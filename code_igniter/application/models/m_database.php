@@ -269,7 +269,7 @@ class M_database extends MY_Model
         // $item->id = $id;
         // $item->attributes = new stdClass();
         // $item->attributes->count = intval($result[0]->count);
-        // $result = $this->format_data($result, 'dashboards');
+        // $result = $this->format_data($result, 'summaries');
         return ($return);
     }
 

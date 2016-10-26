@@ -129,7 +129,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts configuration connections credentials dashboards database devices discovery discoveries fields files groups ldap_servers licenses locations networks nmis orgs queries roles scripts search users ';
+        $collections = ' charts configuration connections credentials database devices discovery discoveries fields files groups ldap_servers licenses locations networks nmis orgs queries roles scripts search summaries users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -172,8 +172,8 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
             stdlog($log);
         } else {
-            $CI->response->meta->collection = 'dashboards';
-            $log->message = 'Set collection to dashboards as a default.';
+            $CI->response->meta->collection = 'summaries';
+            $log->message = 'Set collection to summaries as a default.';
             stdlog($log);
         }
         $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
@@ -860,7 +860,7 @@ if (! function_exists('inputRead')) {
                 if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
                     redirect($CI->response->meta->collection);
                 } else {
-                    redirect('dashboards');
+                    redirect('summaries');
                 }
             }
         }

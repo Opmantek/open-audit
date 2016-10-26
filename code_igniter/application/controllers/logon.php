@@ -131,7 +131,7 @@ class logon extends CI_Controller
         if (!empty($this->session->userdata('url'))) {
             redirect($this->session->userdata('url'));
         } else {
-            redirect('dashboards');
+            redirect('summaries');
         }
     }
 

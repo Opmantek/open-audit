@@ -42,7 +42,6 @@ if (count($this->response->data) == 0) {
 $collection = $this->response->meta->collection;
 if ($collection == 'credentials' or
     $collection == 'connections' or
-    $collection == 'dashboards' or
     $collection == 'discoveries' or
     $collection == 'fields' or
     $collection == 'files' or
@@ -53,6 +52,7 @@ if ($collection == 'credentials' or
     $collection == 'orgs' or
     $collection == 'queries' or
     $collection == 'scripts' or
+    $collection == 'summaries' or
     $collection == 'users') {
     $this->load->model('m_orgs');
     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());

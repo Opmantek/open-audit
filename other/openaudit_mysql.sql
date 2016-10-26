@@ -386,47 +386,6 @@ INSERT INTO credentials VALUES (NULL, 'Default SNMP', '', 'snmp', 'ZO6BkpM46ukP0
 UNLOCK TABLES;
 
 --
--- Table structure for table `dashboards`
---
-
-DROP TABLE IF EXISTS `dashboards`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `dashboards` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `table` varchar(100) NOT NULL DEFAULT '',
-  `column` varchar(100) NOT NULL DEFAULT '',
-  `extra_columns` text NOT NULL,
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `dashboards`
---
-
-LOCK TABLES `dashboards` WRITE;
-/*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
-INSERT INTO dashboards VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Form Factors', 1, 'system', 'form_factor', 'system.form_factor,system.class', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Server Types', 1, 'server', 'type', 'server.name,server.full_name,server.version,server.status', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Services', 1, 'service', 'name', 'service.name,service.state', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Software Keys', 1, 'software_key', 'name', 'software_key.name,software_key.string,software_key.rel,software_key.edition', 'system', NOW());
-INSERT INTO dashboards VALUES (NULL, 'Active Directory OU\'s', 1, 'windows', 'active_directory_ou', 'windows.active_directory_ou,windows.client_site_name', 'system', NOW());
-/*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `discoveries`
 --
 
@@ -2023,10 +1982,10 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","groups":"crud","ldap_servers":"crud","logs":"crud","nmis": "crud","queries":"crud","roles":"crud","search":"crud","sessions":"crud"}', 'open-audit_roles_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","dashboards":"crud","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","search":"crud","sessions":"crud","users":"crud"}', 'open-audit_roles_org_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","dashboards":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","search":"crud","sessions":"crud"}', 'open-audit_roles_reporter', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","dashboards":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","search":"crud","sessions":"crud"}', 'open-audit_roles_user', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","groups":"crud","ldap_servers":"crud","logs":"crud","nmis": "crud","queries":"crud","roles":"crud","search":"crud","sessions":"crud","summaries":"crud"}', 'open-audit_roles_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","summaries":"crud","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","search":"crud","sessions":"crud","users":"crud"}', 'open-audit_roles_org_admin', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","summaries":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","search":"crud","sessions":"crud"}', 'open-audit_roles_reporter', 'system', NOW());
+INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","summaries":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","search":"crud","sessions":"crud"}', 'open-audit_roles_user', 'system', NOW());
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2430,6 +2389,47 @@ CREATE TABLE `sound` (
 LOCK TABLES `sound` WRITE;
 /*!40000 ALTER TABLE `sound` DISABLE KEYS */;
 /*!40000 ALTER TABLE `sound` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `summaries`
+--
+
+DROP TABLE IF EXISTS `summaries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `summaries` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `table` varchar(100) NOT NULL DEFAULT '',
+  `column` varchar(100) NOT NULL DEFAULT '',
+  `extra_columns` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `summaries`
+--
+
+LOCK TABLES `summaries` WRITE;
+/*!40000 ALTER TABLE `summaries` DISABLE KEYS */;
+INSERT INTO summaries VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Form Factors', 1, 'system', 'form_factor', 'system.form_factor,system.class', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Server Types', 1, 'server', 'type', 'server.name,server.full_name,server.version,server.status', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Services', 1, 'service', 'name', 'service.name,service.state', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Software Keys', 1, 'software_key', 'name', 'software_key.name,software_key.string,software_key.rel,software_key.edition', 'system', NOW());
+INSERT INTO summaries VALUES (NULL, 'Active Directory OU\'s', 1, 'windows', 'active_directory_ou', 'windows.active_directory_ou,windows.client_site_name', 'system', NOW());
+/*!40000 ALTER TABLE `summaries` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
