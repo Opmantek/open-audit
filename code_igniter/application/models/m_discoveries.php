@@ -48,7 +48,7 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM discoveries WHERE id = ?";
+        $sql = "/* discoveries::read */ " . "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'discoveries');
@@ -124,7 +124,7 @@ class M_discoveries extends MY_Model
     {
         $CI = & get_instance();
         $data_array = array();
-        $sql = "INSERT INTO `discoveries` (";
+        $sql = "/* discoveries::create */ " . "INSERT INTO `discoveries` (";
         $sql_data = "";
         if (is_null($data)) {
             if (!empty($CI->response->meta->received_data->attributes)) {
@@ -186,7 +186,7 @@ class M_discoveries extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `discoveries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "/* discoveries::update */ " . "UPDATE `discoveries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql);
         return;
     }
@@ -201,7 +201,7 @@ class M_discoveries extends MY_Model
         }
         if ($id != 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `discoveries` WHERE id = ?";
+            $sql = "/* discoveries::delete */ " . "DELETE FROM `discoveries` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
