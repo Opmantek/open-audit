@@ -258,12 +258,6 @@ class M_summaries extends MY_Model
             $data[] = array("name" => 'Credentials', "collection" => "credentials", "icon" => 'shield', "count" => $count[0]->count);
         }
 
-        if ($this->m_users->get_user_permission('', 'summaries', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `summaries` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'summaries', "collection" => "summaries", "icon" => 'file-image-o', "count" => $count[0]->count);
-        }
-
         if ($this->m_users->get_user_permission('', 'database', 'r')) {
             $data[] = array("name" => 'Database', "collection" => "database", "icon" => 'database', "count" => count($this->db->list_tables()));
         }
@@ -326,12 +320,6 @@ class M_summaries extends MY_Model
             $data[] = array("name" => 'Orgs', "collection" => "orgs", "icon" => 'bank', "count" => $count[0]->count);
         }
 
-        // if ($this->m_users->get_user_permission('', 'queries', 'r')) {
-        //     $sql = "SELECT COUNT(*) AS `count` FROM `oa_report` WHERE report_view_file != 'v_help_oae' and org_id IN (" . $CI->user->org_list . ")";
-        //     $count = $this->run_sql($sql);
-        //     $data[] = array("name" => 'Queries', "collection" => "queries", "icon" => 'table', "count" => $count[0]->count);
-        // }
-
         if ($this->m_users->get_user_permission('', 'queries', 'r')) {
             $sql = "SELECT COUNT(*) AS `count` FROM `queries` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
@@ -348,6 +336,12 @@ class M_summaries extends MY_Model
             $sql = "SELECT COUNT(*) AS `count` FROM `scripts` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Scripts', "collection" => "scripts", "icon" => 'code', "count" => $count[0]->count);
+        }
+
+        if ($this->m_users->get_user_permission('', 'summaries', 'r')) {
+            $sql = "SELECT COUNT(*) AS `count` FROM `summaries` WHERE org_id IN (" . $CI->user->org_list . ")";
+            $count = $this->run_sql($sql);
+            $data[] = array("name" => 'Summaries', "collection" => "summaries", "icon" => 'file-image-o', "count" => $count[0]->count);
         }
 
         if ($this->m_users->get_user_permission('', 'users', 'r')) {
