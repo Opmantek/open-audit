@@ -242,6 +242,7 @@ $(document).ready(function () {
         }
     });
 });
+
 /* Make Geo on create locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_geocode_c', function (e) {
@@ -286,10 +287,6 @@ $(document).ready(function () {
                     }
                 }
             }
-
-
-
-
             var data = {};
             data["data"] = {};
             data["data"]["id"] = id;
