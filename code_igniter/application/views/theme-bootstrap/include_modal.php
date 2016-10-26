@@ -1,5 +1,22 @@
 <script type="text/javascript">
 
+    <?php if ($this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
+    // Wait until the DOM has loaded before querying the document
+    $(document).ready(function(){
+        // get from opmantek.com
+        $.get('https://opmantek.com/product_data/oae.json', function(data){
+            modal.open({content: data, source: "online"});
+        })
+        .fail(function() {
+            // get from OAE
+                $.get('/omk/data/oae.json', function(data){
+                modal.open({content: data, source: "offline"});
+            })
+        });
+    });
+    <?php } ?>
+
+    // Menu click response
     $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
         $.get('https://opmantek.com/product_data/oae.json', function(data){
@@ -132,12 +149,10 @@
             for (var i = 0; i < footer.length; i++) {
                 var button_link = footer[i]["button_link"];
                 if (button_link == "prompt_never") {
-                    button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/-";
-                    output += "<span id=\"button_prompt_never\" style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
+                    output += "<span id=\"button_prompt_never\" style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"2100-01-01\">"+footer[i]["button"]+"</a></span>\n";
                 }
                 if (button_link == "prompt_later") {
-                    button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/1";
-                    output += "<span id=\"button_prompt_later\"style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
+                    output += "<span id=\"button_prompt_later\"style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')); ?>\">"+footer[i]["button"]+"</a></span>\n";
                 }
                 //output += "<span style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
             }
@@ -224,5 +239,40 @@ function removeImageModal() {
     document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/1\">Ask me later</a>";
     document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/-\">Do now show me again</a>";
 }
+
+
+
+
+/* inline edit */
+$(document).ready(function () {
+    $(document).on('click', '.dismiss_modal_button', function (e) {
+        var value = $(this).attr("data-value");
+        //alert("Value is:"+value);
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = "oae_prompt";
+        data["data"]["type"] = "configuration";
+        data["data"]["attributes"] = {};
+        data["data"]["attributes"]["value"] = value;
+        data["data"]["attributes"]["name"] = "oae_prompt";
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "PATCH",
+            url: "configuration/oae_prompt",
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+                /* alert( 'success' ); */
+            },
+            error: function (data) {
+                data = JSON.parse(data.responseText);
+                alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+            }
+        });
+        modal.close();
+    });
+});
+
+
 
 </script>
