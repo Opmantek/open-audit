@@ -302,7 +302,7 @@ INSERT INTO `configuration` VALUES (NULL, 'distinct_groups','y','y','system',NOW
 INSERT INTO `configuration` VALUES (NULL, 'download_reports','download','y','system',NOW(),'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system',NOW(),'The API key for Google Maps.');
 INSERT INTO `configuration` VALUES (NULL, 'internal_version','20160904','n','system',NOW(),'The internal numerical version.');
-INSERT INTO `configuration` VALUES (NULL, 'logo','logo-banner-oae','y','2016-05-20 10:46:00',0,'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
+INSERT INTO `configuration` VALUES (NULL, 'logo','logo-banner-oac-oae','y','system',NOW(),'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `configuration` VALUES (NULL, 'log_level','5','y','system',NOW(),'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (NULL, 'log_style','syslog','y','system',NOW(),'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
 INSERT INTO `configuration` VALUES (NULL, 'maps_url','/omk/oae/map','y','system',NOW(),'The web server address of opMaps.');
@@ -312,7 +312,7 @@ INSERT INTO `configuration` VALUES (NULL, 'network_group_subnet','30','y','syste
 INSERT INTO `configuration` VALUES (NULL, 'nmis','n','y','system',NOW(),'Enable import / export to NMIS functions.');
 INSERT INTO `configuration` VALUES (NULL, 'nmis_url','','y','system',NOW(),'The web server address of NMIS.');
 INSERT INTO `configuration` VALUES (NULL, 'non_admin_search','y','y','system',NOW(),'Enable or disable search for non-Administrators');
-INSERT INTO `configuration` VALUES (NULL, 'oae_license','commercial','n','2016-05-20 10:46:00',0,'License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL, 'oae_license','none','n','system',NOW(),'License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL, 'oae_prompt','2015-06-01','n','system',NOW(),'Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL, 'oae_url','/omk/oae','y','system',NOW(),'The web server address of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (NULL, 'page_refresh','300','y','system',NOW(),'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
