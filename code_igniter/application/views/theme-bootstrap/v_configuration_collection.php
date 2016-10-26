@@ -62,7 +62,13 @@
                     <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
                     <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
+                    <?php if ($item->attributes->editable == 'y') { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="configuration/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <?php } else { ?>
+                    <td></td>
+                    <?php } ?>
+                    <?php } ?>
                 </tr>
                 <?php } ?>
                 <?php endforeach; ?>
