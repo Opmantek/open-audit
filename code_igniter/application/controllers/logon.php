@@ -95,6 +95,79 @@ class logon extends CI_Controller
         $this->response->meta->sql = array();
         $this->response->links = array();
         $this->response->included = array();
+
+        // Delete any old sessions stored int he DB
+        $sql = "/* logon::constructor */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
+        $query = $this->db->query($sql);
+
+        // Insert the local server subnet into the /networks
+        foreach ($this->m_configuration->read_subnet() as $subnet) {
+            $this->load->model('m_networks');
+            $network = new stdClass();
+            $network->name = $subnet;
+            $network->org_id = 0;
+            $network->description = 'Auto inserted local server subnet';
+            $this->m_networks->upsert($network);
+            unset($network);
+        }
+
+        // Get the license type and set our logo
+        $license = '';
+        $oae_url = $this->config->config['oae_url'];
+        if ($oae_url > '') {
+            if (substr($oae_url, -1, 1) != '/') {
+                $oae_url = $oae_url.'/';
+            }
+            // if we already have http... in the oae_url variable, no need to do anything.
+            if (strpos(strtolower($oae_url), 'http') === false) {
+                // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
+                // Make sure we have a leading /
+                if (substr($oae_url, 0, 1) != '/') {
+                    $oae_url = '/'.$oae_url;
+                }
+                // need to create a link to OAE on port 8042 to check the license
+                // we cannot detect and use the browser http[s] as it may being used in the client browser,
+                //     but stripped by a https offload or proxy
+                $oae_license_url = 'http://localhost'.$oae_url.'license';
+                // we create a link for the browser using the same address + the path & file in oae_url
+                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                    $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
+                } else {
+                    $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
+                }
+            } else {
+                // we already have a URL like http://something/omk/oae/ - leave it alone
+                $oae_license_url = $oae_url.'license';
+            }
+
+            ini_set('default_socket_timeout', 3);
+            // get the license status from the OAE API
+            // license status are: valid, invalid, expired, none
+            $license = @file_get_contents($oae_license_url, false);
+            if ($license !== false) {
+                $license = json_decode($license);
+                if (json_last_error()) {
+                    $license = new stdClass();
+                    $license->license = 'none';
+                }
+            } else {
+                $license = new stdClass();
+                $license->license = 'none';
+            }
+        } else {
+            $license = new stdClass();
+            $license->license = 'none';
+        }
+
+        if ($license->license != 'none' and $license->license != 'commercial' and $license->license != 'free') {
+            $license->license = 'none';
+        }
+        $this->m_configuration->update('oae_license', (string)$license->license, 'system');
+        if ($license->license == 'commercial' or $license->license == 'free') {
+            $this->m_configuration->update('logo', 'logo-banner-oae', 'system');
+        } else {
+            $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
+        }
     }
 
     /**
