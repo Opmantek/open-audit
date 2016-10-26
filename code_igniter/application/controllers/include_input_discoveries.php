@@ -90,6 +90,11 @@ if (!empty($_POST['form_details'])) {
         $input = (object) $input;
         if (!empty($input->subnet_timestamp)) {
             $log->discovery_id = intval($input->subnet_timestamp);
+            $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
+            $data = array($log->discovery_id);
+            $query = $this->db->query($sql, $data);
+            $result = $query->result();
+            $discovery = $result[0];
         }
         $log->system_id = null;
         $log->ip = $input->ip;
@@ -98,11 +103,7 @@ if (!empty($_POST['form_details'])) {
             $sql = "/* input::discoveries */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
-            $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
-            $data = array($log->discovery_id);
-            $query = $this->db->query($sql, $data);
-            $result = $query->result();
-            if ($result[0]->discard == 'y') {
+            if ($discovery->discard == 'y') {
                 $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
                 $data = array($log->discovery_id);
                 $query = $this->db->query($sql, $data);
@@ -137,26 +138,24 @@ if (!empty($_POST['form_details'])) {
         $data = array($input->subnet_timestamp);
         $query = $this->db->query($sql, $data);
 
-        $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE `id` = " . intval($input->subnet_timestamp);
-        $log->command = $sql;
-        $log->message = "retrieve discoveries entry from DB";
-        $command_log_id = discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+        // $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE `id` = " . intval($input->subnet_timestamp);
+        // $log->command = $sql;
+        // $log->message = "retrieve discoveries entry from DB";
+        // $command_log_id = discovery_log($log);
+        // unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
 
-        $command_start = microtime(true);
-        $query = $this->db->query($sql, array());
-        $command_end = microtime(true);
-        $log->command = $this->db->last_query();
-        $log->command_time_to_execute = $command_end - $command_start;
-        $log->id = $command_log_id;
-        discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
-        unset($log->id, $command_log_id);
+        // $command_start = microtime(true);
+        // $query = $this->db->query($sql, array());
+        // $command_end = microtime(true);
+        // $log->command = $this->db->last_query();
+        // $log->command_time_to_execute = $command_end - $command_start;
+        // $log->id = $command_log_id;
+        // discovery_log($log);
+        // unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+        // unset($log->id, $command_log_id);
 
-        $discovery = $query->row();
-        if (!empty($discovery->network_address) and empty($discovery->url)) {
-            $discovery->url = $discovery->network_address;
-        }
+        // $temp = $query->result();
+        // $discovery = $temp[0];
 
         $device = new stdClass();
         $device->id = '';
@@ -647,7 +646,7 @@ if (!empty($_POST['form_details'])) {
             // *nix Open-AudIT server auditing a Windows target
             if (php_uname('s') != 'Windows NT') {
                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
-                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->url."index.php/system/add_system debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi";
+                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/system/add_system debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi";
                 if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                     if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
                         # All complete!
@@ -686,7 +685,7 @@ if (!empty($_POST['form_details'])) {
                     unset($temp);
 
                     if ($display == 'y') {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->url."index.php/system/add_system debugging=3 system_id=".$device->id." last_seen_by=audit_wmi";
+                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/system/add_system debugging=3 system_id=".$device->id." last_seen_by=audit_wmi";
                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
                         exec($command_string, $output, $return_var);
                         $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
@@ -707,7 +706,7 @@ if (!empty($_POST['form_details'])) {
                         $output = null;
                         $return_var = null;
                     } else {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->url."index.php/system/add_system debugging=0  system_id=".$device->id." last_seen_by=audit_wmi";
+                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/system/add_system debugging=0  system_id=".$device->id." last_seen_by=audit_wmi";
                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
                         pclose(popen($command_string, "r"));
                     }
@@ -722,7 +721,7 @@ if (!empty($_POST['form_details'])) {
                     $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                     $source = 'audit_windows_' . $ts . '.vbs';
-                    $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->url."index.php/system/add_system debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi";
+                    $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/system/add_system debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi";
                     if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                             $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             stdlog($log);
@@ -851,10 +850,10 @@ if (!empty($_POST['form_details'])) {
                 # successfully copied and chmodded the audit script
                 if (!empty($credentials_ssh->sudo)) {
                     # run the audit script as a normal user, using sudo
-                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->url.'index.php/system/add_system debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/system/add_system debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
                 } else {
                     # run the script without using sudo
-                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->url.'index.php/system/add_system debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/system/add_system debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
                 }
                 $result = ssh_command($device->ip, $credentials_ssh, $command, $log);
                 if ($unlink != '') {
