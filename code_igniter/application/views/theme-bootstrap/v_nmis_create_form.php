@@ -33,62 +33,72 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">NMIS Import</span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
+                <span class="pull-right"></span>
+            </h3>
+        </div>
 
-        <div class="form-group">
-            <label for="upload_file" class="col-sm-2 control-label">Nodes.nmis file</label>
-            <div class="col-sm-4">
-                <div class="col-sm-12 input-group">
-                    <input type="text" id="file" name="file" size="30" value="/usr/local/nmis8/conf/Nodes.nmis">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="data[attributes][file]" class="col-sm-3 control-label">Nodes.nmis file</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][file]" name="data[attributes][file]" size="30" value="/usr/local/nmis8/conf/Nodes.nmis">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][location_id]" class="col-sm-3 control-label">Location</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][run_discovery]" class="col-sm-3 control-label">Run Discovery on devices</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="checkbox" class="form-control" id="data[attributes][run_discovery]" name="data[attributes][run_discovery]">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="submit" class="col-sm-3 control-label"></label>
+                        <div class="col-sm-8 input-group">
+                                <input type="hidden" value="nmis" id="data[type]" name="data[type]" />
+                                <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="form-group">
-            <label for="upload_file" class="col-sm-2 control-label">Assign to Location</label>
-            <div class="col-sm-4">
-                <div class="col-sm-12 input-group">
-                    <input type="text" id="location_id" name="location_id" size="30" value="">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="upload_file" class="col-sm-2 control-label">Assign to Org</label>
-            <div class="col-sm-4">
-                <div class="col-sm-12 input-group">
-                    <input type="text" id="org_id" name="org_id" size="30" value="">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="upload_file" class="col-sm-2 control-label">Run Discovery on devices</label>
-            <div class="col-sm-4">
-                <div class="col-sm-12 input-group">
-                    <input type="checkbox" id="run_discovery" name="run_discovery">
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="submit" class="col-sm-2 control-label"></label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="hidden" value="nmis" id="data[type]" name="data[type]" />
-                    <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
-                </div>
-            </div>
-        </div>
-
-    </form>
-  </div>
-</div>
+    </div>
+</form>

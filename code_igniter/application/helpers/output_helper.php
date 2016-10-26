@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -53,7 +54,7 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
         if ($CI->response->meta->id == 888888888888) {
-            $CI->response->meta->id = NULL;
+            $CI->response->meta->id = null;
             unset($CI->response->data);
             $CI->response->data = array();
         }
@@ -65,7 +66,7 @@ if (! function_exists('output')) {
         }
         create_links();
         // if we have errors set, make sure we remove the data object / array
-        if (count($CI->response->errors) > 0) {
+        if (!empty($CI->response->errors) and count($CI->response->errors) > 0) {
             unset($CI->response->data);
         } else {
             unset($CI->response->errors);
@@ -89,6 +90,10 @@ if (! function_exists('output')) {
 
             case 'csv':
                 output_csv($CI->response);
+                break;
+
+            case 'sql':
+                output_sql($CI->response);
                 break;
 
             case 'html':
@@ -135,9 +140,43 @@ if (! function_exists('output')) {
         }
     }
 
+    function output_csv()
+    {
+        $CI = & get_instance();
+        #print_r(json_encode($CI->response)); exit();
+
+        $output_csv = '';
+        foreach ($CI->response->data[0] as $attribute => $value) {
+            $output_csv .= '"'.trim($attribute).'",';
+        }
+        $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
+        $output_csv .= "\n";
+        foreach ($CI->response->data as $item) {
+            foreach ($item as $key => $value) {
+                $output_csv .= '"'.str_replace('"', '\"', $value).'",';
+            }
+            $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
+            $output_csv .= "\n";
+        }
+        echo $output_csv;
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.csv"');
+            header('Cache-Control: max-age=0');
+        }
+    }
+
+    function sql()
+    {
+        $CI = & get_instance();
+        print_r(json_encode($CI->response));
+        exit();
+    }
+
     function output_json()
     {
         $CI = & get_instance();
+        $CI->output->enable_profiler(false);
         header('Content-Type: application/json');
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
@@ -147,13 +186,23 @@ if (! function_exists('output')) {
             $CI->response->meta->user = $CI->user;
         } else {
             unset($CI->response->meta->internal);
+            unset($CI->response->meta->sql);
         }
+        // foreach ($CI->response->meta as $key => $value) {
+        //     if ($value == '') {
+        //         unset($CI->response->meta->$key);
+        //     }
+        //     if (count($key) == 0) {
+        //         unset($CI->response->meta->$key);
+        //     }
+        // }
         echo json_encode($CI->response);
     }
 
     function output_json_data()
     {
         $CI = & get_instance();
+        $CI->output->enable_profiler(false);
         header('Content-Type: application/json');
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
@@ -183,7 +232,6 @@ if (! function_exists('output')) {
         // if (!$CI->response->meta->debug) {
         //     unset($CI->response->meta->internal);
         // }
-
         $CI->load->view('v_template', $CI->response);
     }
 
@@ -199,30 +247,34 @@ if (! function_exists('output')) {
     }
 
     function output_convert($data) {
+        $CI = & get_instance();
+        $CI->load->helper('network_helper');
         foreach ($data as $row) {
             if (is_array($row)) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 if (!empty($row->attributes)) {
-                    foreach ($row->attributes as $key => $value) {
-                        if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
-                            $row->attributes->$key = intval($value);
-                        
-                        } elseif ((strrpos($key, 'id') === strlen($key)-2) or
-                                  (strrpos($key, 'count') === strlen($key)-5) or
-                                  (strrpos($key, 'percent') === strlen($key)-7) or
-                                  (strrpos($key, 'size') === strlen($key)-4)) {
-                            $row->attributes->$key = intval($value);
-                        
-                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
-                                (strrpos($key, 'next_hop') === strlen($key)-8) or
-                                (strrpos($key, 'destination') === strlen($key)-11)) {
-                            $temp_name = $key . '_padded';
-                            $row->attributes->$temp_name = ip_address_from_db($value);
-                            $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
-                            $row->attributes->$key = ip_address_from_db($value);
-                            if ($row->attributes->$temp_name == $row->attributes->$key) {
-                                unset($row->attributes->$temp_name);
+                    if (!empty($row->attributes)) {
+                        foreach ($row->attributes as $key => $value) {
+                            if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
+                                $row->attributes->$key = intval($value);
+                            
+                            } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                      (strrpos($key, '_count') === strlen($key)-6) or
+                                      (strrpos($key, '_percent') === strlen($key)-8) or
+                                      (strrpos($key, '_size') === strlen($key)-5)) {
+                                $row->attributes->$key = intval($value);
+                            
+                            } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
+                                    (strrpos($key, 'next_hop') === strlen($key)-8) or
+                                    (strrpos($key, 'destination') === strlen($key)-11)) {
+                                $temp_name = $key . '_padded';
+                                $row->attributes->$temp_name = ip_address_from_db($value);
+                                $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
+                                $row->attributes->$key = ip_address_from_db($value);
+                                if ($row->attributes->$temp_name == $row->attributes->$key) {
+                                    unset($row->attributes->$temp_name);
+                                }
                             }
                         }
                     }
@@ -296,6 +348,10 @@ if (! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
         $CI->response->table = '';
         $table = '';
         if (isset($CI->response->columns)) {
@@ -350,23 +406,23 @@ if (! function_exists('output')) {
                                 if (strrpos($column->link, '/')+1 != strlen($column->link)) {
                                     $column->link = $column->link . '/';
                                 }
-                                $table .= '<td style="text-align: '.$column->align.';"><a href="'.$column->link. $row->{$column->secondary} .'">'.htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8')."</a></td>\n";
+                                $table .= '<td style="text-align: '.$column->align.';"><a href="'.$column->link. $row->{$column->secondary} .'">'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET)."</a></td>\n";
                                 break;
 
                             case 'ip_address':
-                                $table .= '<td style="text-align: '.htmlentities($column->align).';">';
+                                $table .= '<td style="text-align: '.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).';">';
                                 $table .= '<span style="display:none;">' . $row->ip_padded . '</span>';
-                                $table .= htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8');
+                                $table .= htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET);
                                 echo "</td>\n";
                                 break;
 
                             case 'timestamp':
                             case 'text':
-                                $table .= '<td style="text-align: '.htmlentities($column->align).';">';
+                                $table .= '<td style="text-align: '.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).';">';
                                 if (is_int($row->{$column->variable})) {
                                     $table .= number_format($row->{$column->variable});
                                 } else {
-                                    $table .= htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8');
+                                    $table .= htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET);
                                 }
                                 echo "</td>\n";
                                 break;
@@ -376,17 +432,17 @@ if (! function_exists('output')) {
                                     $row->{$column->variable} = 'unknown';
                                 }
                                 if ((string) $column->name === 'Icon') {
-                                   $table .= '<td style="text-align:center;"><img width="20" src="' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlentities(str_replace(' ', '_', $row->{$column->variable})).'.svg" style="border-width:0px;" title="'.htmlentities($row->{$column->secondary}).'" alt="'.htmlentities($row->{$column->secondary})."\" /></td>\n";
+                                   $table .= '<td style="text-align:center;"><img width="20" src="' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlspecialchars(str_replace(' ', '_', $row->{$column->variable}), REPLACE_FLAGS, CHARSET).'.svg" style="border-width:0px;" title="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                                 }
                                 if ((string) $column->name === 'Picture') {
-                                    $table .= '<td style="text-align:center;"><img src=".' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlentities($row->{$column->variable}).'.jpg" style="border-width:0px; height:100px" title="'.htmlentities($row->{$column->secondary}).'" alt="'.htmlentities($row->{$column->secondary})."\" /></td>\n";
+                                    $table .= '<td style="text-align:center;"><img src=".' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET).'.jpg" style="border-width:0px; height:100px" title="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                                 }
                                 break;
 
                             case 'url':
                                 $href = '';
                                 if ((string) $column->ternary !== '') {
-                                    $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_'.htmlentities($column->ternary).'.png';
+                                    $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_'.htmlspecialchars($column->ternary, REPLACE_FLAGS, CHARSET).'.png';
                                 } else {
                                     $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_browser.png';
                                 }
@@ -395,10 +451,10 @@ if (! function_exists('output')) {
                                     $href = str_replace('&', '&amp;', str_replace('&amp;', '&', $row->{$column->variable}));
                                 }
                                 if (((string) $column->variable === '') and ($column->link > '')) {
-                                    $href = htmlentities($column->link, ENT_QUOTES, 'UTF-8');
+                                    $href = htmlspecialchars($column->link, REPLACE_FLAGS, CHARSET);
                                 }
                                 if ((string) $column->secondary !== '') {
-                                    $href .= htmlentities($row->{$column->secondary}, ENT_QUOTES, 'UTF-8');
+                                    $href .= htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET);
                                 }
                                 $href = str_replace(' ', '%20', $href);
                                 if ($href > '') {
@@ -409,7 +465,7 @@ if (! function_exists('output')) {
                                 break;
 
                             default:
-                                echo '<td align="'.htmlentities($column->align).'">'.htmlentities($row->{$column->variable}).'</td>';
+                                echo '<td align="'.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).'">'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET).'</td>';
                                 break;
                         }
                     }

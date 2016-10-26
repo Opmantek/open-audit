@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,17 +24,28 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   1.12.8
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object Networks.
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
+* @return   NULL
  */
-class networks extends MY_Controller
+class networks extends MY_Controller_new
 {
     public function __construct()
     {
@@ -60,132 +71,116 @@ class networks extends MY_Controller
     {
     }
 
+    /**
+    * Our remap function to override the inbuilt controller->method functionality
+    *
+    * @access public
+    * @return NULL
+    */
     public function _remap()
     {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
-    private function collection()
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
     {
-        $this->response->data = $this->m_networks->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_create.php';
     }
 
-    private function read()
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function read()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->sub_resource = 'devices';
-        $this->response->data = $this->m_networks->read();
-        if (!empty($this->response->data)) {
-            $this->response->included = $this->m_networks->sub_resource();
-            $this->response->meta->filtered = count($this->response->data);
-        }
-        output($this->response);
+        #$this->response->included = $this->m_networks->sub_resource();
+        include 'include_read.php';
     }
 
-    private function create_form()
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = array();
-        $temp = new stdClass();
-        $temp->type = $this->response->meta->collection;
-        $this->response->data[] = $temp;
-        unset($temp);
-        output($this->response);
+        include 'include_update.php';
     }
 
-    private function create()
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->id = $this->m_networks->create();
-        if (!empty($this->response->meta->id)) {
-            if ($this->response->meta->format == 'json') {
-                $this->response->data = $this->m_networks->read();
-                output($this->response);
-            } else {
-                redirect('/networks');
-            }
-        } else {
-            log_error('ERR-0009');
-            output($this->response);
-            exit();
-        }
+        include 'include_delete.php';
     }
 
-    private function update_form()
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->sub_resource = 'devices';
-        $this->response->data = $this->m_networks->read();
-        $this->response->included = $this->m_networks->sub_resource();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_collection.php';
     }
 
-    private function update()
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->m_networks->update();
-        if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_networks->read();
-            output($this->response);
-        } else {
-            redirect('networks');
-        }
+        include 'include_create_form.php';
     }
 
-    private function delete()
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        if ($this->m_networks->delete()) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-        } else {
-            log_error('ERR-0013');
-        }
-        if ($this->response->meta->format == 'json') {
-            output($this->response);
-        } else {
-            redirect($this->response->meta->collection);
-        }
+        include 'include_update_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
+    {
+        $this->load->model('m_database');
+        $this->response->data = $this->m_database->read('networks');
+        include 'include_import_form.php';
+    }
+
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import()
+    {
+        include 'include_import.php';
     }
 }

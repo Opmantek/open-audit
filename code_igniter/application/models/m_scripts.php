@@ -40,42 +40,16 @@ class M_scripts extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            $temp[$i] = trim($temp[$i]);
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit sub_resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                if (!empty($item->name)) {
-                    if ($filter != '') {
-                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    } else {
-                        $filter = ' WHERE ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    }
-                }
-            }
-        }
-        return($filter);
-    }
-
-
-    public function read()
+    public function read($id = '')
     {
-        $CI = & get_instance();
-        $return_data = array();
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
         $sql = "SELECT * FROM scripts WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
+        $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result[0]->options = json_decode($result[0]->options);
         $result = $this->format_data($result, 'scripts');
@@ -90,11 +64,15 @@ class M_scripts extends MY_Model
         $data = array($CI->response->meta->received_data->name);
         $result = $this->run_sql($sql, $data);
         if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_scripts::create_script');
+            log_error('ERR-0010', 'm_scripts::create');
             return false;
         }
-        $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
+        if (empty($CI->response->meta->received_data->org_id)) {
+            $CI->response->meta->received_data->org_id = 1;
+        }
+        $sql = "INSERT INTO `scripts` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $data = array(  $CI->response->meta->received_data->name,
+                        $CI->response->meta->received_data->org_id,
                         json_encode($CI->response->meta->received_data->options),
                         $CI->response->meta->received_data->description,
                         $CI->response->meta->received_data->based_on,
@@ -107,38 +85,7 @@ class M_scripts extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'scripts') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `scripts`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . " FROM `scripts` " . $filter . " " . $sort . " " . $limit;
+        $sql = $this->collection_sql('scripts', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'scripts');
         return ($result);
@@ -264,11 +211,23 @@ class M_scripts extends MY_Model
         } else {
             $id = intval($id);
         }
-        $CI = & get_instance();
-        $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
-        $data = array(intval($id));
-        $this->run_sql($sql, $data);
-        return true;
+
+        # do not allow deletion of default Scripts
+        $script = $this->m_scripts->read();
+        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+            $CI->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            return false;
+        } else {
+            $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
+            $data = array(intval($id));
+            $this->run_sql($sql, $data);
+            return true;
+        }
     }
 
     private function count_data($result)

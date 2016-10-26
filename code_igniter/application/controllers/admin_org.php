@@ -105,10 +105,10 @@ class Admin_org extends MY_Controller
                             # we need to update an existing org
                             $sql = "UPDATE oa_org SET ";
                             foreach ($details as $detail => $value) {
-                                $sql .= $detail." = '".mysql_real_escape_string($value)."', ";
+                                $sql .= $detail." = '".mysqli_real_escape_string($this->db->conn_id, $value)."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                            $sql .= " WHERE org_name = '".mysql_real_escape_string($details['org_name'])."'";
+                            $sql .= " WHERE org_name = '".mysqli_real_escape_string($this->db->conn_id, $details['org_name'])."'";
                         } else {
                             # this is a new org (we don't have a name match)
                             $sql = "INSERT INTO oa_org ( ";
@@ -118,7 +118,7 @@ class Admin_org extends MY_Controller
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= " ) VALUES ( ";
                             foreach ($details as $detail => $value) {
-                                $sql .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
+                                $sql .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= ")";

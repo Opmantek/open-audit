@@ -290,33 +290,33 @@ function print_something($string = '')
 	}
 </style>
 
-<?php if ($this->user->admin == 'y') {
-    echo "<script type=\"text/javascript\">\n";
-    echo "function createRequestObject() \n";
-    echo "{\n";
-    echo "	var req;\n";
-    echo "	if(window.XMLHttpRequest){\n";
-    echo "		// Firefox, Safari, Opera...\n";
-    echo "		req = new XMLHttpRequest();\n";
-    echo "	} else if(window.ActiveXObject) {\n";
-    echo "		// Internet Explorer 5+\n";
-    echo "		req = new ActiveXObject(\"Microsoft.XMLHTTP\");\n";
-    echo "	} else {\n";
-    echo "		// There is an error creating the object,\n";
-    echo "		// just as an old browser is being used.\n";
-    echo "		alert('Problem creating the XMLHttpRequest object');\n";
-    echo "	}\n";
-    echo "	return req;\n";
-    echo "}\n";
-    echo "\tfunction user_debug() {\n";
-    echo "\t\tvar http = createRequestObject();\n";
-    echo "\t\tuser_debug_field=document.getElementById(\"user_debug_field\").value\n";
-    echo "\t\thttp.open('get', '".base_url()."index.php/ajax/user_debug/'+user_debug_field);\n";
-    #echo "http.onreadystatechange = handleResponseFields;";
-    #echo "http.send(null);";
-    echo "\t}\n";
-    echo "</script>\n";
-} ?>
+<?php
+// if (!empty($this->user->roles['admin'])) {
+//     echo "<script type=\"text/javascript\">\n";
+//     echo "function createRequestObject() \n";
+//     echo "{\n";
+//     echo "	var req;\n";
+//     echo "	if(window.XMLHttpRequest){\n";
+//     echo "		// Firefox, Safari, Opera...\n";
+//     echo "		req = new XMLHttpRequest();\n";
+//     echo "	} else if(window.ActiveXObject) {\n";
+//     echo "		// Internet Explorer 5+\n";
+//     echo "		req = new ActiveXObject(\"Microsoft.XMLHTTP\");\n";
+//     echo "	} else {\n";
+//     echo "		// There is an error creating the object,\n";
+//     echo "		// just as an old browser is being used.\n";
+//     echo "		alert('Problem creating the XMLHttpRequest object');\n";
+//     echo "	}\n";
+//     echo "	return req;\n";
+//     echo "}\n";
+//     echo "\tfunction user_debug() {\n";
+//     echo "\t\tvar http = createRequestObject();\n";
+//     echo "\t\tuser_debug_field=document.getElementById(\"user_debug_field\").value\n";
+//     echo "\t\thttp.open('get', '".base_url()."index.php/ajax/user_debug/'+user_debug_field);\n";
+//     echo "\t}\n";
+//     echo "</script>\n";
+// }
+?>
 
 </head>
 <body>

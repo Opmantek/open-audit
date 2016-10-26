@@ -22,9 +22,9 @@
                  mysql, mysqli, postgre, odbc, mssql, sqlite, oci8
 |	['dbprefix'] You can add an optional prefix, which will be added
 |				 to the table name when using the  Active Record class
-|	['pconnect'] TRUE/FALSE - Whether to use a persistent connection
-|	['db_debug'] TRUE/FALSE - Whether database errors should be displayed.
-|	['cache_on'] TRUE/FALSE - Enables/disables query caching
+|	['pconnect'] true/false - Whether to use a persistent connection
+|	['db_debug'] true/false - Whether database errors should be displayed.
+|	['cache_on'] true/false - Enables/disables query caching
 |	['cachedir'] The path to the folder where cache files should be stored
 |	['char_set'] The character set used in communicating with the database
 |	['dbcollat'] The character collation used in communicating with the database

@@ -205,10 +205,10 @@ class Admin_location extends MY_Controller
                             // we need to update an existing location
                             $sql = "UPDATE oa_location SET ";
                             foreach ($details as $detail => $value) {
-                                $sql .= $detail." = '".mysql_real_escape_string($value)."', ";
+                                $sql .= $detail." = '".mysqli_real_escape_string($this->db->conn_id, $value)."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
-                            $sql .= " WHERE name = '".mysql_real_escape_string($details['name'])."'";
+                            $sql .= " WHERE name = '".mysqli_real_escape_string($this->db->conn_id, $details['name'])."'";
                         } else {
                             // this is a new location (we don't have a name match)
                             $sql = "INSERT INTO oa_location ( ";
@@ -218,7 +218,7 @@ class Admin_location extends MY_Controller
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= " ) VALUES ( ";
                             foreach ($details as $detail => $value) {
-                                $sql .= "'".mysql_real_escape_string(str_replace('"', '', $value))."', ";
+                                $sql .= "'".mysqli_real_escape_string($this->db->conn_id, str_replace('"', '', $value))."', ";
                             }
                             $sql = mb_substr($sql, 0, mb_strlen($sql)-2);
                             $sql .= ")";

@@ -120,7 +120,7 @@ class M_oa_admin_database extends MY_Model
         $directory = '/tmp/';
         $filename = "open-audit_database_backup_".date("Y_m_d_H_i_s").".sql";
         $command = 'mysqldump -h '.$this->db->hostname.' -u '.$this->db->username.' -p'.$this->db->password.' '.$this->db->database.' > '.$directory.$filename;
-        exec($command) or die("Failed to run mysqldump.");
+        exec($command) or die("Failed to run mysqldump.\n" . $command);
         $this->load->helper('download');
         $file_contents = file_get_contents($directory.$filename);
         force_download($filename, $file_contents);

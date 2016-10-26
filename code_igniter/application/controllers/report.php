@@ -238,7 +238,7 @@ class report extends MY_Controller
             return;
         } else {
             // we must check to see if the user has at least VIEW permission on the group (or is an admin)
-            if ($this->user->admin != 'y') {
+            if (!empty($this->user->roles->admin)) {
                 $this->user->access_level = $this->m_oa_group->get_group_access($this->data['group_id'], $this->user->id);
             } else {
                 $this->user->access_level ='10';
@@ -273,19 +273,19 @@ class report extends MY_Controller
             foreach ($this->data['query'] as $key) {
                 foreach ($filter as $enum_filter) {
                     if (property_exists($key, $enum_filter['variable'])) {
-                        if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
+                        if ((strtolower($key->{$enum_filter['variable']}) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
                             $remove = true;
                         }
-                        if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
+                        if ((strtolower($key->{$enum_filter['variable']}) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
                             $remove = true;
                         }
-                        if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === false and $enum_filter['condition'] == 'LIKE') {
+                        if (strpos(strtolower($key->{$enum_filter['variable']}), strtolower($enum_filter['value'])) === false and $enum_filter['condition'] == 'LIKE') {
                             $remove = true;
                         }
-                        if ((strtolower($key->$enum_filter['variable']) < strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '>')) {
+                        if ((strtolower($key->{$enum_filter['variable']}) < strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '>')) {
                             $remove = true;
                         }
-                        if ((strtolower($key->$enum_filter['variable']) > strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<')) {
+                        if ((strtolower($key->{$enum_filter['variable']}) > strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<')) {
                             $remove = true;
                         }
                     }
@@ -300,6 +300,22 @@ class report extends MY_Controller
             }
             $this->data['query'] = $new_query;
         }
+
+        for ($i=0; $i < count($this->data['query']); $i++) {
+            if (isset($this->data['query'][$i]->name) and $this->data['query'][$i]->name == '') {
+                $this->data['query'][$i]->name = '-';
+            }
+            if (isset($this->data['query'][$i]->{"system.name"}) and $this->data['query'][$i]->{"system.name"} == '') {
+                $this->data['query'][$i]->{"system.name"} = '-';
+            }
+            if (isset($this->data['query'][$i]->hostname) and $this->data['query'][$i]->hostname == '') {
+                $this->data['query'][$i]->hostname = '-';
+            }
+            if (isset($this->data['query'][$i]->{"system.hostname"}) and $this->data['query'][$i]->{"system.hostname"} == '') {
+                $this->data['query'][$i]->{"system.hostname"} = '-';
+            }
+        }
+
         $this->data['count'] = count($this->data['query']);
         $this->data['include'] = $this->m_oa_report->get_report_view($this->data['report_id']);
         $this->data['sortcolumn'] = $this->m_oa_report->get_report_sort_column($this->data['report_id']);
@@ -547,7 +563,7 @@ class report extends MY_Controller
         // 	if ((strpos($segment, 'out') === 0 or
         // 		 strpos($segment, 'only') === 0 or
         // 		 strpos($segment, 'like') === 0) and
-        // 		 strpos($segment, '___') !== FALSE) {
+        // 		 strpos($segment, '___') !== false) {
 
         // 		$filter_array = explode("___", $segment);
         // 		$filter[$i]['variable'] = $filter_array[1];
@@ -588,13 +604,13 @@ class report extends MY_Controller
             foreach ($this->data['query'] as $key) {
                 foreach ($filter as $enum_filter) {
                     if (property_exists($key, $enum_filter['variable'])) {
-                        if ((strtolower($key->$enum_filter['variable']) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
+                        if ((strtolower($key->{$enum_filter['variable']}) == strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '<>')) {
                             $remove = true;
                         }
-                        if ((strtolower($key->$enum_filter['variable']) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
+                        if ((strtolower($key->{$enum_filter['variable']}) != strtolower($enum_filter['value'])) and ($enum_filter['condition'] == '=')) {
                             $remove = true;
                         }
-                        if (strpos(strtolower($key->$enum_filter['variable']), strtolower($enum_filter['value'])) === false and $enum_filter['condition'] == 'LIKE') {
+                        if (strpos(strtolower($key->{$enum_filter['variable']}), strtolower($enum_filter['value'])) === false and $enum_filter['condition'] == 'LIKE') {
                             $remove = true;
                         }
                     }

@@ -57,11 +57,13 @@ class M_userlogin extends CI_Model
             $row = $query->row();
             $user_id = $row->id;
             $hash_password = $row->password;
+            // $user_data = array(    'username' => $row->name, 'logged_in' => true, 'user_id' => $row->id,
+            //                 'user_full_name' => $row->full_name, 'user_lang' => $row->lang,
+            //                 'user_theme' => $row->theme, 'user_admin' => $row->admin,
+            //                 'user_debug' => 'n', 'user_sam' => $row->sam, );
             $user_data = array(    'username' => $row->name, 'logged_in' => true, 'user_id' => $row->id,
                             'user_full_name' => $row->full_name, 'user_lang' => $row->lang,
-                            'user_theme' => $row->theme, 'user_admin' => $row->admin,
-                            'user_debug' => 'n', 'user_sam' => $row->sam, );
-
+                            'user_debug' => 'n', 'roles' => $row->roles );
             # make sure to validate if we have any older style MD5 passwords
             if ($hash_password == md5($password)) {
                 # change the password to a salted SHA256

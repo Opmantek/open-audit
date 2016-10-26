@@ -80,12 +80,12 @@ var modal_content_image = "";
     $new_object->report_name = 'Partition Alerts';
     $menu[] = $new_object;
 
-    if (isset($this->user->sam) and $this->user->sam > '0') {
+    #if (isset($this->user->sam) and $this->user->sam > '0') {
         $new_object = new stdClass();
         $new_object->report_id = '';
         $new_object->report_name = 'Software Licensing';
         $menu[] = $new_object;
-    }
+    #}
 
     #a sort function for $menuso the items added above are in their correct alphabetical order
     function cmp($a, $b)
@@ -131,7 +131,9 @@ var modal_content_image = "";
     } ?>
     -->
     <?php
-    if ($this->user->admin == 'y') {
+    #if (!empty($this->user->roles['admin'])) {
+    if ($this->m_users->get_user_permission($this->user->id, 'database', 'u')) {
+
         ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('Admin'))?></a>
@@ -144,34 +146,35 @@ var modal_content_image = "";
                 </ul>
             </li>
 
-            <li><a href='<?php echo $oa_web_index?>/admin/edit_config'><?php echo __('Config')?></a></li>
+            <li><a href='<?php echo $oa_web_index?>/configuration'><?php echo __('Config')?></a></li>
 
             <li><a href='javascript:void(0)'><?php echo __('Connections')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_connection/list_connections'><?php echo __('List Connections')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_connection/add_connection'><?php echo __('Add Connection')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/connections'><?php echo __('List Connections')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/connections/create'><?php echo __('Add Connection')?></a></li>
                 </ul>
             </li>
 
             <li><a href='javascript:void(0)'><?php echo __('Credentials')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/credentials'><?php echo __('View Credentials')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/credentials?action=create'><?php echo __('Add Credential Set')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/credentials/create'><?php echo __('Add Credential Set')?></a></li>
                 </ul>
             </li>
             <li><a href='javascript:void(0)'><?php echo __('Database')?></a>
                 <ul>
+                <li><a href='<?php echo $oa_web_index?>/database'><?php echo __('Database Tables')?></a></li>
                     <!--
                     # this will only work under Linux
                     <li><a href='<?php echo $oa_web_index?>/admin_db/restore'><?php echo __('Restore Database')?></a></li>
-                    -->
                     <?php
-                    if (php_uname('s') == 'Linux') {
+                    if (php_uname('s') != 'Windows') {
                         echo "                  <li><a href='".$oa_web_index."/admin_db/backup'>".__('Backup the Database')."</a></li>\n";
                     } ?>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/export_table'><?php echo __('Export a Database Table')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_db/maintenance'><?php echo __('Database Maintenance')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/reset_icons'><?php echo __('Reset Device Icons')?></a></li>
+                    -->
                 </ul>
             </li>
 
@@ -185,7 +188,7 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Discovery')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/discovery/discover_subnet/device'><?php echo __('Discover a Device')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
                     <li><a href='<?php echo $oa_web_index?>/discovery/discover_active_directory'><?php echo __('Discover Active Directory')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin/scan_ad'><?php echo __('Import Active Directory')?></a></li>
                 </ul>
@@ -202,8 +205,8 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Locations')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_location/list_locations'><?php echo __('List Locations')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_location/add_location'><?php echo __('Add Location')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/locations'><?php echo __('List Locations')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/locations/create'><?php echo __('Add Location')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_location/add_locations'><?php echo __('Add Multiple Locations')?></a></li>
                 </ul>
             </li>
@@ -218,13 +221,13 @@ var modal_content_image = "";
             <li><a href='javascript:void(0)'><?php echo __('Networks')?></a>
                 <ul>
                     <li><a href='<?php echo $oa_web_index?>/networks'><?php echo __('List Networks')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/networks?action=create'><?php echo __('Add Network')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/networks/create'><?php echo __('Add Network')?></a></li>
                 </ul>
             </li>
             <li><a href='javascript:void(0)'><?php echo __('Organisations')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_org/list_orgs'><?php echo __('List Organisations')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_org/add_org'><?php echo __('Add Organisation')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/orgs'><?php echo __('List Organisations')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/orgs/create'><?php echo __('Add Organisation')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_org/add_orgs'><?php echo __('Add Multiple Organisations')?></a></li>
                 </ul>
             </li>
@@ -237,18 +240,24 @@ var modal_content_image = "";
                 </ul>
             </li>
 
+            <li><a href='javascript:void(0)'><?php echo __('Roles')?></a>
+                <ul>
+                    <li><a href='<?php echo $oa_web_index?>/roles'><?php echo __('List Roles')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/roles/create'><?php echo __('Add Role')?></a></li>
+                </ul>
+            </li>
+
             <li><a href='javascript:void(0)'><?php echo __('Scripts')?></a>
                 <ul>
-                    <!-- <li><a href='<?php echo $oa_web_index?>/admin/add_script_audit_windows'><?php echo __('Create Audit Windows')?></a></li> -->
                     <li><a href='<?php echo $oa_web_index?>/scripts'><?php echo __('View Scripts')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/scripts?action=create'><?php echo __('Add Script')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/scripts/create'><?php echo __('Add Script')?></a></li>
                 </ul>
             </li>
 
             <li><a href='javascript:void(0)'><?php echo __('Users')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_user/list_users'><?php echo __('List Users')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/admin_user/add_user'><?php echo __('Add a User')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/users'><?php echo __('List Users')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/users/create'><?php echo __('Add a User')?></a></li>
                 </ul>
             </li>
         </ul>
@@ -256,7 +265,7 @@ var modal_content_image = "";
     <?php } ?>
 
     <?php
-    if (($this->user->admin == 'y') and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
+    if (!empty($this->user->roles['admin']) and (isset($this->config->config['nmis']) and $this->config->config['nmis'] == 'y')) { ?>
     <!-- // Only display the below code if the logged in user is an Admin -->
     <li><a href='#'><?php echo mb_strtoupper(__('NMIS'))?></a>
         <ul>

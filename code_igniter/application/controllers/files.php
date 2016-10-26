@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Files
 *
 * @access   public
 * @category Object
@@ -45,182 +45,109 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Files extends MY_Controller
+class Files extends MY_Controller_new
 {
-	/**
-	* Constructor
-	*
-	* @access    public
-	* @return    NULL
-	*/
-	public function __construct()
-	{
-		parent::__construct();
-		// log the attempt
-		stdlog();
-		// ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
-		$this->load->helper('url');
-		if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
-			redirect(uri_string());
-		}
-		$this->load->helper('input');
-		$this->load->helper('output');
-		$this->load->helper('error');
-		$this->load->model('m_files');
-		$this->load->model('m_orgs');
-		inputRead();
-		$this->output->url = $this->config->item('oa_web_index');
-	}
+    /**
+    * Constructor
+    *
+    * @access    public
+    * @return    NULL
+    */
+    public function __construct()
+    {
+        parent::__construct();
+        // log the attempt
+        stdlog();
+        // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
+        $this->load->helper('url');
+        if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
+            redirect(uri_string());
+        }
+        $this->load->helper('input');
+        $this->load->helper('output');
+        $this->load->helper('error');
+        $this->load->model('m_files');
+        $this->load->model('m_orgs');
+        inputRead();
+        $this->output->url = $this->config->item('oa_web_index');
+    }
 
-	/**
-	* Index that is unused
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function index()
-	{
-	}
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
+    public function index()
+    {
+    }
 
-	/**
-	* Our remap function to override the inbuilt controller->method functionality
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function _remap()
-	{
-		if ( ! empty($this->response->meta->action)) {
-			$this->{$this->response->meta->action}();
-		}
-		else {
-			$this->collection();
-		}
-		exit();
-	}
+    /**
+    * Our remap function to override the inbuilt controller->method functionality
+    *
+    * @access public
+    * @return NULL
+    */
+    public function _remap()
+    {
+        $this->{$this->response->meta->action}();
+    }
 
-	/**
-	* Process the supplied data and create a new object
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function create()
-	{
-		// Only admin's
-		if ($this->user->admin !== 'y') {
-			log_error('ERR-0008');
-			output($this->response);
-			exit();
-		}
-		$this->response->meta->id = $this->m_files->create();
-		if ( ! empty($this->response->meta->id)) {
-			if ($this->response->meta->format === 'json') {
-				$this->response->data = $this->m_files->read();
-				output($this->response);
-			}
-			else {
-				redirect('main/list_groups');
-			}
-		}
-		else {
-			log_error('ERR-0009');
-			output($this->response);
-			exit();
-		}
-	}
 
-	/**
-	* Read a single object
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function read()
-	{
-		$this->response->data = $this->m_files->read();
-		$this->response->meta->filtered = count($this->response->data);
-		if ($this->response->meta->format === 'json') {
-			output($this->response);
-		}
-		else {
-			redirect('main/list_groups');
-		}
-	}
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
+    {
+        include 'include_create.php';
+    }
 
-	/**
-	* Process the supplied data and update an existing object
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function update()
-	{
-		// Only admin's
-		if ($this->user->admin !== 'y') {
-			log_error('ERR-0008');
-			output($this->response);
-			exit();
-		}
-		$this->m_files->update();
-		if ($this->response->meta->format === 'json') {
-			$this->response->data = $this->m_files->read();
-			output($this->response);
-		}
-		else {
-			redirect('main/list_groups');
-		}
-	}
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function read()
+    {
+        include 'include_read.php';
+    }
 
-	/**
-	* Delete an existing object
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function delete()
-	{
-		// Only admin's
-		if ($this->user->admin !== 'y') {
-			log_error('ERR-0008');
-			output($this->response);
-			exit();
-		}
-		if ($this->m_files->delete()) {
-			$this->response->data = array();
-			$temp = new stdClass();
-			$temp->type = $this->response->meta->collection;
-			$this->response->data[] = $temp;
-			unset($temp);
-		}
-		else {
-			log_error('ERR-0013');
-		}
-		if ($this->response->meta->format === 'json') {
-			output($this->response);
-		}
-		else {
-			redirect('main/list_groups');
-		}
-	}
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
+    {
+        include 'include_update.php';
+    }
 
-	/**
-	* Collection of objects
-	*
-	* @access public
-	* @return NULL
-	*/
-	public function collection()
-	{
-		$this->response->data = $this->m_files->collection();
-		$this->response->meta->filtered = count($this->response->data);
-		if ($this->response->meta->format === 'json') {
-			output($this->response);
-		}
-		else {
-			redirect('main/list_groups');
-		}
-	}
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        include 'include_collection.php';
+    }
 }
 // End of file files.php
 // Location: ./controllers/files.php

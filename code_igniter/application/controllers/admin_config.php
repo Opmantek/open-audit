@@ -57,7 +57,9 @@ class Admin_config extends MY_Controller
     {
 
         // must be an admin to access this function
-        if ($this->user->admin != 'y') {
+        // if ($this->user->admin != 'y') {
+        $this->load->model('m_users');
+        if (!$this->m_users->get_user_permission('', 'configuration', 'u')) {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {

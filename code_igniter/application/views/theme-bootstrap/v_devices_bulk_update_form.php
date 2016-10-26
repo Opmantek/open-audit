@@ -43,21 +43,21 @@ $field_count = intval(count($fields) / 2) + 1;
 
 $special = array();
 
-$special['orgs'] = '<div class="form-group"><label for="org_id" class="col-sm-4 control-label">Organisation</label><div class="col-sm-8 input-group"><select id="org_id" class="form-control" disabled><option value=""> </option>';
+$special['orgs'] = '<div class="form-group"><label for="org_id" class="col-sm-4 control-label">Organisation</label><div class="col-sm-8 input-group"><select id="org_id" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($data['orgs'] as $item) {
     $special['orgs'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
 }
 $special['orgs'] .= '</select><span class="input-group-btn"><button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
-$special['locations'] = '<div class="form-group"><label for="location_id" class="col-sm-4 control-label">Location</label><div class="col-sm-8 input-group"><select id="location_id" class="form-control" disabled><option value=""> </option>';
+$special['locations'] = '<div class="form-group"><label for="location_id" class="col-sm-4 control-label">Location</label><div class="col-sm-8 input-group"><select id="location_id" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($data['locations'] as $item) {
     $special['locations'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
 }
 $special['locations'] .= '</select><span class="input-group-btn"><button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
-$special['status'] = '<div class="form-group"><label for="status" class="col-sm-4 control-label">Status</label><div class="col-sm-8 input-group"><select id="status" class="form-control" disabled><option value=""> </option>';
+$special['status'] = '<div class="form-group"><label for="status" class="col-sm-4 control-label">Status</label><div class="col-sm-8 input-group"><select id="status" class="form-control" disabled><option value="" label=" "> </option>';
 $special['status'] .= "<option value='deleted'>Deleted</option>";
 $special['status'] .= "<option value='production'>Lost</option>";
 $special['status'] .= "<option value='production'>Maintenance</option>";
@@ -67,7 +67,7 @@ $special['status'] .= "<option value='production'>Unallocated</option>";
 $special['status'] .= '</select><span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
-$special['types'] = '<div class="form-group"><label for="type" class="col-sm-4 control-label">Type</label><div class="col-sm-8 input-group"><select id="type" class="form-control" disabled><option value=""> </option>';
+$special['types'] = '<div class="form-group"><label for="type" class="col-sm-4 control-label">Type</label><div class="col-sm-8 input-group"><select id="type" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->types as $key => $value) {
     if ($value != '&nbsp;') {
         $special['types'] .= "<option value=\"".$key."\">".__($value)."</option>\n";
@@ -76,7 +76,7 @@ foreach ($this->response->types as $key => $value) {
 $special['types'] .= '</select><span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
-$special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value=""> </option>';
+$special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value="" label=" "> </option>';
 $special['environment'] .= "<option value='dev'>Development</option>";
 $special['environment'] .= "<option value='dr'>Disaster Recovery</option>";
 $special['environment'] .= "<option value='eval'>Evaluation</option>";
@@ -87,12 +87,12 @@ $special['environment'] .= "<option value='train'>Training</option>";
 $special['environment'] .= "<option value='uat'>User Acceptance Testing</option>";
 $special['environment'] .= '</select><span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
-$special['nmis_export'] = '<div class="form-group"><label for="nmis_export" class="col-sm-4 control-label">NMIS Export</label><div class="col-sm-8 input-group"><select id="nmis_export" class="form-control" disabled><option value=""> </option>';
+$special['nmis_export'] = '<div class="form-group"><label for="nmis_export" class="col-sm-4 control-label">NMIS Export</label><div class="col-sm-8 input-group"><select id="nmis_export" class="form-control" disabled><option value="" label=" "> </option>';
 $special['nmis_export'] .= "<option value='y'>Yes</option>";
 $special['nmis_export'] .= "<option value='n'>No</option>";
 $special['nmis_export'] .= '</select><span class="input-group-btn"><button id="edit_nmis_export" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_export"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
-$special['oae_manage'] = '<div class="form-group"><label for="oae_manage" class="col-sm-4 control-label">Manage in Open-AudIT Enterprise</label><div class="col-sm-8 input-group"><select id="oae_manage" class="form-control" disabled><option value=""> </option>';
+$special['oae_manage'] = '<div class="form-group"><label for="oae_manage" class="col-sm-4 control-label">Manage in Open-AudIT Enterprise</label><div class="col-sm-8 input-group"><select id="oae_manage" class="form-control" disabled><option value="" label=" "> </option>';
 $special['oae_manage'] .= "<option value='y'>Yes</option>";
 $special['oae_manage'] .= "<option value='n'>No</option>";
 $special['oae_manage'] .= '</select><span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
@@ -216,19 +216,19 @@ if ( ! empty($data['fields'])) {
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Create Credentials</label>
             <div class="col-sm-4 input-group">
-                <a href="devices?sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>&action=update"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align">Submit</button></a>
+                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>&action=update">Submit</a>
             </div>
         </div>
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Run Discovery</label>
             <div class="col-sm-4 input-group">
-                <a href="discovery/discover_list?ids=<?php echo $this->response->meta->ids; ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align">Submit</button></a>
+                <a role="button" class="btn btn-sm btn-success" href="discovery/discover_list?ids=<?php echo $this->response->meta->ids; ?>">Submit</a>
             </div>
         </div>
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Recalculate IP Address</label>
             <div class="col-sm-4 input-group">
-                <a href="devices?sub_resource=ip&ids=<?php echo $this->response->meta->ids; ?>&action=update"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align">Submit</button></a>
+                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=ip&ids=<?php echo $this->response->meta->ids; ?>&action=update">Submit</a>
             </div>
         </div>
     </div>
@@ -247,8 +247,8 @@ if ( ! empty($data['fields'])) {
         <table class="table">
             <thead>
                 <tr>
-                    <td>ID</td>
-                    <td>Icon</td>
+                    <td style="text-align: center;">ID</td>
+                    <td style="text-align: center;">Icon</td>
                     <td>Type</td>
                     <td>Name</td>
                     <td>Domain</td>
@@ -261,8 +261,8 @@ if ( ! empty($data['fields'])) {
             <tbody>
                 <?php foreach ($this->response->devices as $item) { ?>
                 <tr>
-                    <td><a href="devices/<?php echo htmlentities($item->id); ?>"><button type="button" class="btn btn-sm btn-success" aria-label="Left Align"><?php echo htmlentities($item->id); ?></button></a></td>
-                    <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url()); ?>device_images/<?php echo strtolower(str_replace(" ", "_", htmlentities($item->icon))); ?>.svg" style="border-width:0px; width:24px;" title="icon" alt="icon"/></td></td>
+                    <td style="text-align: center;"><a role="button" class="btn btn-sm btn-success" href="devices/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url()); ?>device_images/<?php echo strtolower(str_replace(" ", "_", htmlspecialchars($item->icon, REPLACE_FLAGS, CHARSET))); ?>.svg" style="border-width:0px; width:24px;" title="icon" alt="icon"/></td>
                     <td><?php echo $item->type; ?></td>
                     <td><?php echo $item->name; ?></td>
                     <td><?php echo $item->domain; ?></td>

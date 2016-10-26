@@ -241,7 +241,7 @@ class M_oa_connection extends MY_Model
      *
      * @param   details - the relevant connection details object
      *
-     * @return TRUE
+     * @return true
      */
     public function edit_connection($details)
     {

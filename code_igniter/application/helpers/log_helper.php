@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -49,15 +50,16 @@ if (! function_exists('log_error')) {
         # this object will hold this specific error data and be added to the above array at the end
         $error = new stdClass();
         $error->code = $error_code;
-        $error->file = 'system';
         $error->model = $model;
         if (function_exists('getError')) {
-            $error = getError($error->code);
+            $error = getError($error->code, $model);
             $error->message = $error->title;
         }
 
         // log the details of the error to the log file
+        $error->file = 'system';
         stdlog($error);
+
         if (!empty($error->controller) and !empty($eror->function)) {
             $error->controller = $error->controller . '::' . $error->function;
         } else {
@@ -65,7 +67,7 @@ if (! function_exists('log_error')) {
         }
         unset($error->function);
         // if the error is severe enough, set the error in the response object
-        if (isset($error->severity) and $error->severity <= 3) {
+        #if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
             unset($error->file); # we don't care about where this was logged (into which file)
             unset($error->message); # this is for logging only and is already contained in the $error->title
@@ -74,9 +76,136 @@ if (! function_exists('log_error')) {
                 $CI->response->errors[] = $error;
                 $CI->response->meta->header = $error->status;
             }
-        }
+        #}
     }
 
+}
+
+if (! function_exists('discovery_log')) {
+      /**
+     * The database logging function for Open-AudIT. Writes logs to a table in the DB.
+     *
+     * @access    public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param     Object    log     An object containing details you wish to log
+     *
+     * @return    id - the id of the inserted log entry
+     */
+    function discovery_log($log = null)
+    {
+        error_reporting(E_ALL);
+        $CI = & get_instance();
+
+        if (empty($log)) {
+            return;
+        }
+        if (empty($log->id)) {
+            $log->id = null;
+        }
+        if (empty($log->discovery_id)) {
+            $log->discovery_id = null;
+        }
+        if (empty($log->system_id)) {
+            $log->system_id = null;
+        }
+        // ignored at present, use MySQL NOW() function
+        if (empty($log->timestamp)) {
+            $log->timestamp = date('Y-m-d H:i:s');
+        }
+        if (empty($log->severity)) {
+            $log->severity = 5;
+        } else {
+            $log->severity = intval($log->severity);
+        }
+        if (empty($log->severity_text)) {
+            $log->severity_text = 'unknown';
+            if ($log->severity == 7) {
+                $log->severity_text = 'debug';
+            }
+            if ($log->severity == 6) {
+                $log->severity_text = 'info';
+            }
+            if ($log->severity == 5) {
+                $log->severity_text = 'notice';
+            }
+            if ($log->severity == 4) {
+                $log->severity_text = 'warning';
+            }
+            if ($log->severity == 3) {
+                $log->severity_text = 'error';
+            }
+            if ($log->severity == 2) {
+                $log->severity_text = 'critical';
+            }
+            if ($log->severity == 1) {
+                $log->severity_text = 'alert';
+            }
+            if ($log->severity == 0) {
+                $log->severity_text = 'emergency';
+            }
+        }
+        if (!isset($log->pid) or $log->pid == '') {
+            $log->pid = getmypid();
+        } else {
+            $log->pid = intval($log->pid);
+        }
+        if (empty($log->ip)) {
+            $log->ip = '';
+        }
+        if (empty($log->file)) {
+            $router = & load_class('Router', 'core');
+            $log->file = $router->fetch_class();
+            unset($router);
+        }
+        if (empty($log->function)) {
+            $router = & load_class('Router', 'core');
+            $log->function = $router->fetch_method();
+            unset($router);
+        }
+        if (empty($log->message)) {
+            $log->message = '';
+        }
+        if (empty($log->command)) {
+            $log->command = '';
+        }
+        if (empty($log->command_status)) {
+            $log->command_status = '';
+        }
+        if (empty($log->command_time_to_execute)) {
+            $log->command_time_to_execute = '';
+        }
+        if (empty($log->command_output)) {
+            $log->command_output = '';
+        }
+
+        if (!is_null($log->id)) {
+            $sql = "/* log_helper::discovery_log */ " . "UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?";
+            $data = array((string)$log->command, (string)$log->command_status, $log->command_time_to_execute, (string)$log->command_output, $log->id);
+            $query = $CI->db->query($sql, $data);
+            return($log->id);
+        } else {
+            $sql = "/* log_helper::discovery_log */ " . "INSERT INTO discovery_log VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $data = array($log->discovery_id,
+                            $log->system_id,
+                            $log->severity,
+                            $log->severity_text,
+                            $log->pid,
+                            (string)$log->ip,
+                            $log->file,
+                            $log->function,
+                            $log->message,
+                            $log->command,
+                            $log->command_status,
+                            $log->command_time_to_execute,
+                            $log->command_output);
+            $query = $CI->db->query($sql, $data);
+            return($CI->db->insert_id());
+        }
+    }
 }
 
 if (! function_exists('stdlog')) {
@@ -93,7 +222,7 @@ if (! function_exists('stdlog')) {
      *
      * @return NULL [logs the provided string to the log file]
      */
-    function stdlog($log_details = NULL)
+    function stdlog($log_details = null)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -129,6 +258,20 @@ if (! function_exists('stdlog')) {
         $log->ip_address = '';
         $log->message = '';
 
+        $log->database = '';
+        $log->name = '';
+        $log->org_id = 0;
+        $log->collection = '';
+        $log->action = '';
+        $log->collection_id = '';
+        $log->title = '';
+        $log->command = '';
+        $log->command_complete = '';
+        $log->command_time_to_execute = '';
+        $log->command_error_message = '';
+
+
+
         // SEVERITY LEVELS
         // The logging levels described by RFC 5424.
         // DEBUG (7): Detailed debug information.
@@ -143,7 +286,7 @@ if (! function_exists('stdlog')) {
         // We create a new object instead of simply populating the existing with defaults so we can set the attribute order
         // The original passed object is $log_details, the new object is $log
 
-        $CI->load->model('m_oa_config');        
+        $CI->load->model('m_oa_config');
 
         // set the line ending type
         if (php_uname('s') == 'Windows NT') {
@@ -299,16 +442,111 @@ if (! function_exists('stdlog')) {
             $log_line = $log->timestamp.' '.$log->hostname.' '.$log->pid.' '.$log->severity.' U:'.$log->user.' C:'.$log->controller.' F:'.$log->function.' I:'.$log->ip_address.' M:'.$log->message;
         }
 
-        if (!isset($log_details->file) or $log_details->file == '') {
+        if (empty($log_details->file)) {
             $log->file = 'access';
+        } else if ($log_details->file == '') {
+            $log->file = 'access';
+        } else if (strtolower($log_details->file) == 'access') {
+            $log->file = 'access';
+        } else if (strtolower($log_details->file) == 'system') {
+            $log->file = 'system';
         } else {
-            $log->file = $log_details->file;
+            $log->file = 'access';
         }
 
         if (php_uname('s') == 'Windows NT') {
-            $file = $CI->config->item('base_path') . '\other\log_' . $log->file . '.log';
+            if (empty($CI->config->item('base_path'))) {
+                $file = 'c:\\xampplite\\open-audit\\other\\log_' . $log->file . '.log';
+            } else {
+                $file = $CI->config->item('base_path') . '\\other\\log_' . $log->file . '.log';
+            }
         } else {
-            $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
+            if (empty($CI->config->item('base_path'))) {
+                $file = '/usr/local/open-audit/other/log_' . $log->file . '.log';
+            } else {
+                $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';
+            }
+        }
+
+
+
+        // Our SQL insert, before we atytempt to write to the log file (which may fail, permissions, etc).
+        if (!isset($log_details->database) or strtolower($log_details->database) != 'y') {
+            // TODO - unset this for release
+            $log->database = 'n';
+        } else {
+            $log->database = 'y';
+        }
+
+        if (!empty($log_details->name)) {
+            $log->name = $log_details->name;
+        } else {
+            $log->name = $log->file;
+        }
+
+        if (!empty($log_details->org_id)) {
+            $log->org_id = intval($log_details->org_id);
+        }
+
+        if (empty($log_details->collection)) {
+            $log->collection = $log->controller;
+        } else {
+            $log->collection = $log_details->collection;
+        }
+
+        if (empty($log_details->action)) {
+            $log->action = $log->function;
+        } else {
+            $log->action = $log_details->action;
+        }
+
+        if (!isset($log_details->collection_id) or $log_details->collection_id == '') {
+            $log->collection_id = 0;
+        } else {
+            $log->collection_id = $log_details->collection_id;
+        }
+
+        if (!empty($log_details->title)) {
+            $log->title = $log_details->title;
+        }
+
+        if (!empty($log_details->command)) {
+            $log->command = $log_details->command;
+        }
+
+        if (!empty($log_details->command_complete)) {
+            $log->command_complete = $log_details->command_complete;
+        }
+
+        if (!empty($log_details->command_time_to_execute)) {
+            $log->command_time_to_execute = $log_details->command_time_to_execute;
+        }
+
+        if (!empty($log_details->command_error_message)) {
+            $log->command_error_message = $log_details->command_error_message;
+        }
+
+        if ($log->database == 'yes_this_is_disabled') {
+            $sql = "/* log_helper::stdlog */ INSERT INTO logs VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $data = array((string)$log->name,
+                            intval($log->org_id),
+                            intval($log->severity),
+                            (string)$log->severity_text,
+                            intval($log->pid),
+                            (string)$log->collection,
+                            (string)$log->action,
+                            intval($log->collection_id),
+                            (string)$log->title,
+                            (string)$log->message,
+                            (string)$log->hostname,
+                            (string)$log->ip_address,
+                            (string)$log->user,
+                            (string)$log->command,
+                            (string)$log->command_complete,
+                            (string)$log->command_time_to_execute,
+                            (string)$log->command_error_message
+                            );
+            $query = $CI->db->query($sql, $data);
         }
 
         // log the page view

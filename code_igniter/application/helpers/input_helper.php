@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+       }
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -78,8 +78,19 @@ if (! function_exists('inputRead')) {
             $CI->response = new stdClass();
         }
 
+        # Define our constans for use in htmlspecialchars
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
+        
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
+
+        # make sure we have the required header
+        if (empty($_SERVER['HTTP_ACCEPT'])) {
+            $_SERVER['HTTP_ACCEPT'] = '';
+        }
 
         # /collection/{id}/{sub_resource}
 
@@ -94,7 +105,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->format = '';
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
-        $CI->response->meta->id = NULL;
+        $CI->response->meta->id = null;
         $CI->response->meta->ids = 0;
         $CI->response->meta->include = '';
         $CI->response->meta->limit = '';
@@ -111,13 +122,14 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->filter = array();
         $CI->response->meta->internal = new stdClass();
         $CI->response->meta->received_data = array();
+        $CI->response->meta->sql = array();
         $CI->response->links = array();
         $CI->response->included = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
         $action = '';
 
-        $collections = ' charts connections credentials devices fields files locations networks nmis orgs scripts ';
+        $collections = ' charts configuration connections credentials database devices discovery discoveries fields files groups ldap_servers licenses locations networks nmis orgs queries roles scripts search summaries users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -127,7 +139,7 @@ if (! function_exists('inputRead')) {
         # as well as /devices or
         # version={version} in the accept header
         # get the version
-        if ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2') {
+        if (!empty($CI->uri->segments[1]) and ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2')) {
             if ($CI->uri->segments[1] == 'api') {
                 $CI->response->meta->version = intval($CI->uri->segment(2));
                 unset ($CI->uri->segments[1]);
@@ -157,10 +169,14 @@ if (! function_exists('inputRead')) {
         $temp = $CI->uri->segment(1);
         if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
             $CI->response->meta->collection = (string)$temp;
-            $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
             $log->message = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
             stdlog($log);
+        } else {
+            $CI->response->meta->collection = 'summaries';
+            $log->message = 'Set collection to summaries as a default.';
+            stdlog($log);
         }
+        $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
         unset($temp);
 
         # get debug
@@ -176,8 +192,10 @@ if (! function_exists('inputRead')) {
         }
         if (strtolower($CI->response->meta->debug) == 'true') {
             $CI->response->meta->debug = true;
+            $CI->output->enable_profiler(true);
         } else {
             $CI->response->meta->debug = false;
+            $CI->output->enable_profiler(false);
         }
 
         # get the id of the collection item in question
@@ -208,35 +226,47 @@ if (! function_exists('inputRead')) {
             stdlog($log);
             $sql = '';
             switch ($CI->response->meta->collection) {
-            case 'devices':
-                $sql = "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
-                $table = 'system';
-                break;
-            case 'groups':
-                $sql = "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
-                $table = 'oa_group';
-                break;
-            case 'orgs':
-                $sql = "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
-                $table = 'oa_org';
-                break;
-            case 'users':
-                $sql = "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
-                $table = 'oa_user';
-                break;
-            case 'reports':
-                $sql = "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
-                $table = 'oa_report';
-                break;
-            case 'scripts':
-                $sql = "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
-                $table = 'scripts';
-                break;
-            case 'charts':
-                $sql = '';
-                $CI->response->meta->id = 1;
-                $CI->response->meta->sub_resource = $CI->uri->segment(2);
-                break;
+                case "database":
+                    $sql = '';
+                    foreach ($CI->db->list_tables() as $key => $value) {
+                        if ($CI->uri->segment(2) == $value) {
+                            $CI->response->meta->id = $CI->uri->segment(2);
+                        }
+                    }
+                    break;
+                case 'devices':
+                    $sql = "/* input_helper::inputRead */" . "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
+                    $table = 'system';
+                    break;
+                case 'groups':
+                    $sql = "/* input_helper::inputRead */" . "SELECT group_id AS id FROM oa_group WHERE group_name LIKE ? LIMIT 1";
+                    $table = 'oa_group';
+                    break;
+                case 'orgs':
+                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM oa_org WHERE name LIKE ? LIMIT 1";
+                    $table = 'oa_org';
+                    break;
+                case 'users':
+                    $sql = "/* input_helper::inputRead */" . "SELECT id AS id FROM oa_user WHERE name LIKE ? LIMIT 1";
+                    $table = 'oa_user';
+                    break;
+                case 'reports':
+                    $sql = "/* input_helper::inputRead */" . "SELECT report_id AS id FROM oa_report WHERE report_name LIKE ? LIMIT 1";
+                    $table = 'oa_report';
+                    break;
+                case 'scripts':
+                    $sql = "/* input_helper::inputRead */" . "SELECT id AS id FROM scripts WHERE name LIKE ? LIMIT 1";
+                    $table = 'scripts';
+                    break;
+                case 'charts':
+                    $sql = '';
+                    $CI->response->meta->id = 1;
+                    $CI->response->meta->sub_resource = $CI->uri->segment(2);
+                    break;
+                case 'configuration':
+                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM configuration WHERE name = ?";
+                    $table = 'configuration';
+                    break;
             }
             if ($sql != '') {
                 $data = array($CI->uri->segment(2));
@@ -331,7 +361,9 @@ if (! function_exists('inputRead')) {
             unset($data);
         }
         if (isset($CI->response->meta->received_data->id)) {
-            $CI->response->meta->id = intval($CI->response->meta->received_data->id);
+            if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'configuration') {
+                $CI->response->meta->id = intval($CI->response->meta->received_data->id);
+            }
         }
 
         # get the action
@@ -347,6 +379,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $action . ', according to POST.';
             stdlog($log);
         }
+
 
 
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == '') {
@@ -376,13 +409,34 @@ if (! function_exists('inputRead')) {
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == '') {
             // return a single item
             $CI->response->meta->action = 'read';
-            $CI->response->meta->id = intval($CI->response->meta->id);
+            if ($CI->response->meta->collection != 'database') {
+                $CI->response->meta->id = intval($CI->response->meta->id);
+            }
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'update' and empty($CI->response->meta->ids)) {
             // show a HTML form for updating an existing item
             $CI->response->meta->action = 'update_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
+            stdlog($log);
+        }
+        // Special case for the database endpoint
+        if ($REQUEST_METHOD == 'GET' and $action == 'update' and $CI->response->meta->collection == 'database') {
+            // show a HTML form for updating an existing item
+            $CI->response->meta->action = 'update_form';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and $action == 'execute' and $CI->response->meta->collection == 'database' and $CI->response->meta->sub_resource != '') {
+            // show a HTML form for updating an existing item
+            $CI->response->meta->action = 'execute';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'execute') {
+            // Execute the discovery / report / etc
+            $CI->response->meta->action = 'execute';
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
@@ -423,6 +477,11 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, ids, no id and action = update.';
             stdlog($log);
         }
+        if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'update' and $CI->response->meta->collection == 'database') {
+            $CI->response->meta->action = 'update';
+            $log->message = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, collection is database and action = update.';
+            stdlog($log);
+        }
         if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
             // update an item
             $CI->response->meta->action = 'update';
@@ -450,7 +509,9 @@ if (! function_exists('inputRead')) {
             // delete an item
             $CI->response->meta->action = 'delete';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
-            $CI->response->meta->id = intval($CI->response->meta->id);
+            if ($CI->response->meta->collection != 'database') {
+                $CI->response->meta->id = intval($CI->response->meta->id);
+            }
             $log->message = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id.';
             stdlog($log);
         }
@@ -483,11 +544,13 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sort = str_replace('+', '', $CI->response->meta->sort);
         if ($CI->response->meta->sort != '') {
             $temp = explode(',', $CI->response->meta->sort);
+            unset($item);
             foreach ($temp as &$item) {
                 if (substr($item, 0, 1) == '-') {
                     $item = substr($item, 1) . ' DESC';
                 }
             }
+            unset($item);
             $CI->response->meta->sort = implode(',', $temp);
         }
         if ($CI->response->meta->sort != '') {
@@ -555,7 +618,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set format to ' . $CI->response->meta->format . ', because default.';
             stdlog($log);
         }
-        $reserved_words = ' json json_data screen xml ';
+        $reserved_words = ' json json_data screen xml csv sql ';
         if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
             $CI->response->meta->format = 'json';
         }
@@ -626,7 +689,7 @@ if (! function_exists('inputRead')) {
 
         if ($CI->response->meta->properties == '') {
             # set some defaults
-            if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') { 
+            if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') {
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
                     $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.os_family, system.status';
@@ -721,7 +784,7 @@ if (! function_exists('inputRead')) {
                 $operator = array_shift($query);
                 if (stripos(' = != > >= < <= not like ', ' '.$operator.' ') !== false) {
                     $filter->operator = $operator;
-                    if (stripos($filter->operator , 'like') !== false) {
+                    if (stripos($filter->operator, 'like') !== false) {
                         $filter->value = '%'.array_shift($query).'%';
                     } else {
                         $filter->value = array_shift($query);
@@ -746,14 +809,118 @@ if (! function_exists('inputRead')) {
         if ($CI->response->meta->sub_resource_id != '') {
             $CI->response->links->self .= '/' . $CI->response->meta->sub_resource_id;
         }
-        $CI->response->links->first = NULL;
-        $CI->response->links->last = NULL;
-        $CI->response->links->next = NULL;
-        $CI->response->links->prev = NULL;
+        $CI->response->links->first = null;
+        $CI->response->links->last = null;
+        $CI->response->links->next = null;
+        $CI->response->links->prev = null;
         $CI->response->errors = array();
-        return;
+
+        $permission['bulk_update_form'] = 'c';
+        $permission['collection'] = 'r';
+        $permission['create'] = 'c';
+        $permission['create_form'] = 'c';
+        $permission['delete'] = 'd';
+        $permission['download'] = 'r';
+        if ($CI->response->meta->collection == 'database' or $CI->response->meta->collection == 'discoveries') {
+            $permission['execute'] = 'u';
+        } else {
+            $permission['execute'] = 'r';
+        }
+        $permission['import'] = 'c';
+        $permission['import_form'] = 'c';
+        $permission['read'] = 'r';
+        $permission['sub_resource_create'] = 'c';
+        $permission['sub_resource_create_form'] = 'c';
+        $permission['sub_resource_delete'] = 'd';
+        $permission['update'] = 'u';
+        $permission['update_form'] = 'u';
+        $permission['unknown'] = 'unknown action';
+
+        if (empty($CI->response->meta->action)) {
+            $log->severity = 5;
+            $log->message = 'No action determined, setting to collection.';
+            stdlog($log);
+            $CI->response->meta->action = 'collection';
+        }
+
+        if (empty($permission[$CI->response->meta->action])) {
+            $log->severity = 5;
+            $log->message = 'No permission determined for '  . $CI->response->meta->action;
+            stdlog($log);
+            $CI->response->meta->action = 'unknown';
+        }
+
+        if (empty($CI->roles) and $CI->config->config['internal_version'] >= 20160904) {
+            $CI->load->model('m_roles');
+            $CI->roles = $CI->m_roles->collection();
+        }
+
+        if ($CI->config->config['internal_version'] >= 20160904) {
+            $CI->load->model('m_users');
+            if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
+                log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
+                //output();
+                $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
+                    redirect($CI->response->meta->collection);
+                } else {
+                    redirect('summaries');
+                }
+            }
+        }
+
+        if (!empty($CI->response->meta->id) and
+            $CI->response->meta->collection != 'roles' and
+            $CI->response->meta->collection != 'configuration' and
+            $CI->response->meta->collection != 'database' and
+            $CI->response->meta->collection != 'ldap_servers' and
+            $CI->response->meta->collection != 'report' and
+            $CI->response->meta->collection != 'charts') {
+            if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
+                if ($CI->response->meta->format == 'json') {
+                    echo json_encode($CI->response);
+                } else {
+                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                    redirect($CI->response->meta->collection);
+                }
+                exit();
+            }
+            // check (if we're supplying data) that the OrgID is one we're allowed to supply
+            if ($CI->response->meta->action == 'create' or $CI->response->meta->action == 'update' or $CI->response->meta->action == 'import') {
+                $temp = explode(',', $CI->user->org_list);
+                // org_id
+                if (!empty($CI->meta->received_data->org_id)) {
+                    $allowed = false;
+                    foreach ($temp as $key => $value) {
+                        if ($CI->meta->received_data->org_id == $value) {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                        output();
+                        exit();
+                    }
+                }
+                // devices_assigned_to_org
+                if (!empty($CI->meta->received_data->devices_assigned_to_org)) {
+                    $allowed = false;
+                    foreach ($temp as $key => $value) {
+                        if ($CI->meta->received_data->devices_assigned_to_org == $value) {
+                            $allowed = true;
+                        }
+                    }
+                    if (!$allowed) {
+                        log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                        output();
+                        exit();
+                    }
+                }
+                unset($temp);
+            }
+        }
+        # print_r(json_encode($CI->response));
     }
 }
-
 /* End of file input_helper.php */
 /* Location: ./system/application/helpers/input_helper.php */

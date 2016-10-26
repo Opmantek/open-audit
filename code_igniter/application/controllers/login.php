@@ -48,8 +48,8 @@ class login extends CI_Controller
         $this->load->helper('form');
         $this->load->helper('log');
 
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
 
         $this->load->helper('report_helper');
         check_default_reports();
@@ -73,6 +73,7 @@ class login extends CI_Controller
      */
     public function index()
     {
+        redirect('logon');
         $data['title'] = 'Open-AudIT';
         $data['username'] = array('id' => 'username', 'name' => 'username');
         $data['password'] = array('id' => 'password', 'name' => 'password');
@@ -86,24 +87,31 @@ class login extends CI_Controller
         // set the form url so if nothing in the session and requested special login page, it has a default
         if ($form_url == '' and $uri_string == 'login/index/main/list_groups') {
             $form_url = 'main/list_groups';
+            $form_url = 'summaries';
         }
 
         $data['form_url'] = $form_url;
 
         $this->load->model('m_oa_admin_database');
-        $this->load->model('m_oa_config');
-        $data['systems'] = $this->m_oa_admin_database->count_systems();
+        $this->load->model('m_configuration');
+        $data['systems'] = $this->config->config['device_count'];
         // purge old user sessions (older than 7 days)
         $this->m_oa_admin_database->trim_oa_user_sessions();
         $data['logo'] = 'logo.png';
         $data['oae_message'] = '';
         $license = '';
 
-        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
-            $this->m_oa_config->update_blessed($subnet, 0);
+        foreach ($this->m_configuration->read_subnet() as $subnet) {
+            $this->load->model('m_networks');
+            $network = new stdClass();
+            $network->name = $subnet;
+            $network->org_id = 0;
+            $network->description = 'Auto inserted local server subnet';
+            $this->m_networks->upsert($network);
+            unset($network);
         }
 
-        $oae_url = $this->m_oa_config->get_config_item('oae_url');
+        $oae_url = $this->config->config['oae_url'];
 
         if ($oae_url > '') {
             if (substr($oae_url, -1, 1) != '/') {
@@ -159,13 +167,13 @@ class login extends CI_Controller
         // echo "<!-- " . $oae_license_url . " -->\n";
         $data['logo'] = 'logo-banner-oac-oae.png';
         $data['oae_message'] = '';
-        $this->m_oa_config->update_config('oae_license', $license->license, '', $this->config->config['timestamp']);
+        $this->m_configuration->update('oae_license', $license->license, 'system');
 
         if ($license->license == 'free' or $license->license == 'commercial') {
             // user going to an internal page and OAE is installed with a valid license, set the logo and show the logon page
             $data['oae_message'] = ' ';
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oac' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oac' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oae', '', $this->config->config['timestamp']);
+                $this->m_configuration->update('', 'logo', 'logo-banner-oae', 'system');
                 $data['logo'] = 'logo-banner-oae';
             }
         }
@@ -173,7 +181,7 @@ class login extends CI_Controller
             // OAE is installed but not licensed, show the logon page
             $data['oae_message'] = "Please try Open-AudIT Enterprise. Contact <a href='https://opmantek.com/contact-us/' style='color: blue;'>Opmantek</a> for a license today<br /> or click <a href='".$oae_url."' style='color: blue;'>here</a> to enter your license details.";
             if (isset($this->config->config['logo']) and ($this->config->config['logo'] == '' or $this->config->config['logo'] == 'logo-banner-oae' or $this->config->config['logo'] == 'logo-banner-oac-oae' or $this->config->config['logo'] == 'oae' or $this->config->config['logo'] == 'oac-oae')) {
-                $this->m_oa_config->update_config('logo', 'logo-banner-oac-oae', '', $this->config->config['timestamp']);
+                $this->m_configuration->update('', 'logo', 'logo-banner-oac-oae', 'system');
                 $data['logo'] = 'logo-banner-oac-oae';
             }
         }
@@ -339,11 +347,16 @@ class login extends CI_Controller
         $password  = html_entity_decode($this->uri->segment(4));
 
         $this->load->model('m_userlogin');
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
 
-        foreach ($this->m_oa_config->get_server_subnets() as $subnet) {
-            $this->m_oa_config->update_blessed($subnet, 0);
+        foreach ($this->m_configuration->read_subnet() as $subnet) {
+            $network = new stdClass();
+            $network->name = $subnet;
+            $network->org_id = 0;
+            $network->description = 'Auto inserted local server subnet';
+            $this->m_networks->upsert($network);
+            unset($network);
         }
 
         if (!empty($_POST['username'])) {
@@ -398,7 +411,7 @@ class login extends CI_Controller
         // attempt use the internal database to validate user
         $data = $this->m_userlogin->validate_user($username, $password);
         if (isset($data) and $data != 'fail') {
-            if ($data['user_admin'] == 'y') {
+            if (stripos($data['roles'], '"admin"') !== false) {
                 // SUCCESS
                 $this->session->set_userdata($data);
                 header('Content-Type: application/json');

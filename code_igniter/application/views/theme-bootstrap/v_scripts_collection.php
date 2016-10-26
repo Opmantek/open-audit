@@ -35,41 +35,48 @@
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
-            <span class="text-left">Scripts</span>
-            <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
-        </h3>
+        <?php include('include_collection_panel_header.php'); ?>
     </div>
     <div class="panel-body">
-        <?php include('include_collection_panel_header.php'); ?>
+        <?php include('include_collection_panel_body_links.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
-            <table class="table">
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                       <th style="text-align:center;"><?php echo __('ID')?></th>
                       <th><?php echo __('Name')?></th>
+                      <th><?php echo __('Organisation')?></th>
                       <th><?php echo __('Description')?></th>
                       <th><?php echo __('Based On')?></th>
                       <th><?php echo __('Edited By')?></th>
                       <th><?php echo __('Edited Date')?></th>
                       <th style="text-align:center;"><?php echo __('Download')?></th>
+                      <?php if ($this->m_users->get_user_permission('', 'scripts', 'u')) { ?>
                       <th style="text-align:center;"><?php echo __('Edit')?></th>
+                      <?php } ?>
+                      <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
                       <th style="text-align:center;"><?php echo __('Delete')?></th>
+                      <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     foreach ($this->response->data as $item): ?>
                     <tr>
-                          <td style='text-align:center;'><a class="btn btn-sm btn-success" href="<?php echo htmlentities($item->links->self); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                                <td><?php echo htmlentities($item->attributes->name)?></td>
-                          <td><?php echo htmlentities($item->attributes->description)?></td>
-                          <td><?php echo htmlentities($item->attributes->based_on)?></td>
-                                <td><?php echo htmlentities($item->attributes->edited_by)?></td>
-                                <td><?php echo htmlentities($item->attributes->edited_date)?></td>
-                          <td style='text-align:center;'><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
-                          <td style='text-align:center;'><a class="btn btn-sm btn-info" href="scripts/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger delete_link" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" data-id="<?php echo htmlentities($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
+                          <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                          <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                          <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
+                          <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
+                          <td><?php echo htmlspecialchars($item->attributes->based_on, REPLACE_FLAGS, CHARSET)?></td>
+                          <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
+                          <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
+                          <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
+                          <?php if ($this->m_users->get_user_permission('', 'scripts', 'u')) { ?>
+                          <td class="text-center"><a class="btn btn-sm btn-info" href="scripts/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                          <?php } ?>
+                          <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
+                          <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                          <?php } ?>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

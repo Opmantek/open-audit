@@ -54,16 +54,22 @@ class MY_Controller extends CI_Controller
     /**
      * The custom default controller object.
      */
-    #public function MY_Controller()
     public function __construct()
     {
         parent::__construct();
         $this->benchmark->mark('code_start');
 
         $this->load->library('session');
-        $this->load->model('m_oa_config');
-        $this->m_oa_config->load_config();
+        #$this->load->model('m_oa_config');
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
         $this->load->model('m_oa_user');
+        $this->load->model('m_users');
+
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        }
 
         // set the 'admin' flag if required when testing
         // any controllers named admin_* will require an Admin level of access
@@ -109,14 +115,36 @@ class MY_Controller extends CI_Controller
             $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
         }
         set_time_limit(600);
-        $this->user->orgs = $this->m_oa_user->get_orgs($this->user->id);
-        $temp = array();
-        foreach ($this->user->orgs as $key => $value) {
-            $temp[] = $key;
+        $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
+        if (!empty($this->user->roles)) {
+            $this->user->roles = json_decode($this->user->roles);
+        } else {
+            if ($this->config->config['internal_version'] < 20160904) {
+                $this->user->roles = array('admin', 'org_admin');
+            } else {
+                $this->load->helper('log');
+                $log = new stdClass();
+                $log->severity = 4;
+                $log->file = 'system';
+                $log->message = "Could not determine roles for user.";
+                stdlog($log);
+            }
         }
-        $this->user->org_list = implode(',', $temp);
+        if (!empty($this->user->orgs)) {
+            $this->user->orgs = json_decode($this->user->orgs);
+        } else {
+            if ($this->config->config['internal_version'] < 20160904) {
+                $this->user->orgs = array(0);
+            } else {
+                $this->load->helper('log');
+                $log = new stdClass();
+                $log->severity = 4;
+                $log->file = 'system';
+                $log->message = "Could not determine orgs for user.";
+                stdlog($log);
+            }
+        }
         unset($temp);
-
     }
 
     /**
@@ -140,54 +168,54 @@ class MY_Controller extends CI_Controller
 
         switch ($output_type) {
             case 'excel':
-            $this->excel_report($this->data['query']);
-                            break;
+                $this->excel_report($this->data['query']);
+                break;
 
             case 'csv':
-            $this->csv_report($this->data['query']);
-                            break;
+                $this->csv_report($this->data['query']);
+                break;
 
             case 'html':
-            $this->report($this->data, 'html');
-                            break;
+                $this->report($this->data, 'html');
+                break;
 
             case 'table':
-            $this->report($this->data, 'table');
-                            break;
+                $this->report($this->data, 'table');
+                break;
 
             case 'html_formatted':
-            $this->formatted_report($this->data, 'html');
-                            break;
+                $this->formatted_report($this->data, 'html');
+                break;
 
             case 'table_formatted':
-            $this->formatted_report($this->data, 'table');
-                            break;
+                $this->formatted_report($this->data, 'table');
+                break;
 
             case 'xml':
-            $this->xml_report($this->data['query']);
-                            break;
+                $this->xml_report($this->data['query']);
+                break;
 
             case 'json':
-            $this->json_report($this->data);
-                            break;
+                $this->json_report($this->data);
+                break;
 
             case 'rss':
-            $this->rss_report($this->data['query']);
-                            break;
+                $this->rss_report($this->data['query']);
+                break;
 
             case 'pdf':
             // TODO: need to insert the PDF function here
-            $this->load->view('v_template', $this->data);
-                            break;
+                $this->load->view('v_template', $this->data);
+                break;
 
             case 'doc':
             // TODO: need to insert the doc / docx function here
-            $this->load->view('v_template', $this->data);
-                            break;
+                $this->load->view('v_template', $this->data);
+                break;
 
             default:
-            $this->load->view('v_template', $this->data);
-                            break;
+                $this->load->view('v_template', $this->data);
+                break;
         }
     }
 
@@ -395,7 +423,7 @@ class MY_Controller extends CI_Controller
                         if ((string) $query_row->$col_var_name === '') {
                             $query_row->$col_var_name = ' ';
                         }
-                        echo "\t\t\t<td>".htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8')."</td>\n";
+                        echo "\t\t\t<td>".htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET)."</td>\n";
                     } else {
                         echo "\t\t\t<td></td>\n";
                     }
@@ -483,9 +511,8 @@ class MY_Controller extends CI_Controller
 
                     switch ($col_type) {
                         case '':
-                                        break;
+                            break;
 
-                        /////////////////////
                         case 'link':
                             $col_link = str_replace('$group_id', $this->data['group_id'], $col_link);
                             $temp_url = $this->make_url($col_link, (string)$query_row->$col_var_name_sec);
@@ -495,39 +522,37 @@ class MY_Controller extends CI_Controller
                             }
 
                             echo '			<td style="text-align: '.$col_align.';">';
-                            #echo '<a href="'.$temp_url.'">'.htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8')."</a></td>\n";
-                            echo '<a href="'.$temp_url.'">'.htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8')."</a></td>\n";
-                                        break;
+                            echo '<a href="'.$temp_url.'">'.htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET)."</a></td>\n";
+                            break;
 
-                        /////////////////////
                         case 'text':
                             switch ($column->column_variable) {
-                            case 'tag':
-                                            break;
+                                case 'tag':
+                                    break;
 
-                            default:
-                                if (isset($query_row->$col_var_name)) {
-                                    $output = htmlentities($query_row->$col_var_name);
-                                    echo '			<td style="text-align: '.htmlentities($column->column_align).';">';
-                                    if (is_numeric($query_row->$col_var_name)) {
-                                        if (strpos($column->column_variable, 'serial') === false and strpos($column->column_variable, 'model') === false) {
-                                            $query_row->$col_var_name = number_format($query_row->$col_var_name);
+                                default:
+                                    if (isset($query_row->$col_var_name)) {
+                                        $output = htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET);
+                                        echo '			<td style="text-align: '.htmlspecialchars($column->column_align, REPLACE_FLAGS, CHARSET).';">';
+                                        if (is_numeric($query_row->$col_var_name)) {
+                                            if (strpos($column->column_variable, 'serial') === false and strpos($column->column_variable, 'model') === false) {
+                                                $query_row->$col_var_name = number_format($query_row->$col_var_name);
+                                            }
+                                            // pad the output with leading zero's in a hidden span to enable sorting
+                                            echo '<span style="display: none;">'.mb_substr('0000000000'.$output, -10).'</span>'.$output;
+                                        } else {
+                                            if ((string) $query_row->$col_var_name === '') {
+                                                $query_row->$col_var_name = ' ';
+                                            }
+                                            echo htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET);
                                         }
-                                        // pad the output with leading zero's in a hidden span to enable sorting
-                                        echo '<span style="display: none;">'.mb_substr('0000000000'.$output, -10).'</span>'.$output;
+                                        echo "</td>\n";
                                     } else {
-                                        if ((string) $query_row->$col_var_name === '') {
-                                            $query_row->$col_var_name = ' ';
-                                        }
-                                        echo htmlentities($query_row->$col_var_name, ENT_QUOTES, 'UTF-8');
+                                        echo "\t\t\t<td></td>\n";
                                     }
-                                    echo "</td>\n";
-                                } else {
-                                    echo "\t\t\t<td></td>\n";
-                                }
-                                            break;
+                                    break;
                             }
-                                        break;
+                            break;
 
                         /////////////////////
                         case 'image':
@@ -538,33 +563,29 @@ class MY_Controller extends CI_Controller
                                 $col_align = 'center';
                             }
                             if ((string) $column->column_name === 'Icon') {
-                                echo '			<td style="text-align: '.htmlentities($col_align).';"><img src="'.$this->relative_url.'theme-tango/tango-images/16_'.htmlentities(str_replace(' ', '_', $query_row->$col_var_name)).'.png" style="border-width:0px;" title="'.htmlentities($query_row->$col_var_name_sec).'" alt="'.htmlentities($query_row->$col_var_name_sec)."\" /></td>\n";
+                                echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';"><img src="'.$this->relative_url.'theme-tango/tango-images/16_'.htmlspecialchars(str_replace(' ', '_', $query_row->$col_var_name), REPLACE_FLAGS, CHARSET).'.png" style="border-width:0px;" title="'.htmlspecialchars($query_row->$col_var_name_sec, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($query_row->$col_var_name_sec, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                             }
                             if ((string) $column->column_name === 'Picture') {
-                                echo '			<td style="text-align: '.htmlentities($col_align).';"><img src="'.$this->relative_url.'device_images/'.htmlentities($query_row->$col_var_name).'.jpg" style="border-width:0px; height:100px" title="'.htmlentities($query_row->$col_var_name_sec).'" alt="'.htmlentities($query_row->$col_var_name_sec)."\" /></td>\n";
+                                echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';"><img src="'.$this->relative_url.'device_images/'.htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET).'.jpg" style="border-width:0px; height:100px" title="'.htmlspecialchars($query_row->$col_var_name_sec, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($query_row->$col_var_name_sec, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                             }
-                                        break;
+                            break;
 
-                        /////////////////////
                         case 'ip_address':
-                            echo '			<td style="text-align: '.htmlentities($col_align).';"><span style="display: none;">'.htmlentities($query_row->{$col_var_name}).'&nbsp;</span>'.htmlentities(ip_address_from_db($query_row->{$col_var_name}))."</td>\n";
-                                        break;
+                            echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';"><span style="display: none;">'.htmlspecialchars($query_row->{$col_var_name}, REPLACE_FLAGS, CHARSET).'&nbsp;</span>'.htmlspecialchars(ip_address_from_db($query_row->{$col_var_name}), REPLACE_FLAGS, CHARSET)."</td>\n";
+                            break;
 
-                        /////////////////////
                         case 'multi':
-                            echo '			<td style="text-align: '.htmlentities($col_align).';">'.str_replace(',  ', ',<br />', htmlentities($query_row->$col_var_name))."</td>\n";
-                                        break;
+                            echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';">'.str_replace(',  ', ',<br />', htmlspecialchars($query_row->{$col_var_name}, REPLACE_FLAGS, CHARSET))."</td>\n";
+                            break;
 
-                        /////////////////////
                         case 'timestamp':
-                            echo '			<td style="text-align: '.htmlentities($col_align).';">'.htmlentities($query_row->$col_var_name)."</td>\n";
-                                        break;
+                            echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';">'.htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET)."</td>\n";
+                            break;
 
-                        /////////////////////
                         case 'url':
                             $href = '';
                             if ((string) $col_var_name_ter !== '') {
-                                $image = $this->relative_url.'theme-tango/tango-images/16_'.htmlentities($col_var_name_ter).'.png';
+                                $image = $this->relative_url.'theme-tango/tango-images/16_'.htmlspecialchars($col_var_name_ter, REPLACE_FLAGS, CHARSET).'.png';
                             } else {
                                 $image = $this->relative_url.'theme-tango/tango-images/16_browser.png';
                             }
@@ -573,23 +594,22 @@ class MY_Controller extends CI_Controller
                                 $href = str_replace('&', '&amp;', str_replace('&amp;', '&', $query_row->$col_var_name));
                             }
                             if (((string) $col_var_name === '') and ($col_link > '')) {
-                                $href = htmlentities($col_link, ENT_QUOTES, 'UTF-8');
+                                $href = htmlspecialchars($col_link, REPLACE_FLAGS, CHARSET);
                             }
                             if ((string) $col_var_name_sec !== '') {
-                                $href .= htmlentities($query_row->$col_var_name_sec, ENT_QUOTES, 'UTF-8');
+                                $href .= htmlspecialchars($query_row->$col_var_name_sec, REPLACE_FLAGS, CHARSET);
                             }
                             $href = str_replace(' ', '%20', $href);
                             if ($href > '') {
-                                echo '			<td style="text-align: '.htmlentities($col_align).';"><a href="'.$href.'"><img src="'.$image.'" border="0" title="" alt="" /></a></td>';
+                                echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';"><a href="'.$href.'"><img src="'.$image.'" border="0" title="" alt="" /></a></td>';
                             } else {
-                                echo '			<td style="text-align: '.htmlentities($col_align).';"></td>';
+                                echo '			<td style="text-align: '.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).';"></td>';
                             }
-                                        break;
+                            break;
 
-                        /////////////////////
                         default:
-                            echo '			<td align="'.htmlentities($col_align).'">'.htmlentities($query_row->$col_var_name).'</td>';
-                                        break;
+                            echo '			<td align="'.htmlspecialchars($col_align, REPLACE_FLAGS, CHARSET).'">'.htmlspecialchars($query_row->$col_var_name, REPLACE_FLAGS, CHARSET).'</td>';
+                            break;
                     }
                 }
             }

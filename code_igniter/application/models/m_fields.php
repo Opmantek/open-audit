@@ -40,37 +40,6 @@ class M_fields extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'additional_field.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-            }
-        }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
-        }
-        return($filter);
-    }
-
     public function read($id = '')
     {
         if ($id == '') {
@@ -89,38 +58,7 @@ class M_fields extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'fields') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `additional_field`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . ", oa_group.group_name as `group_name` FROM `additional_field` LEFT JOIN `oa_group` ON (`additional_field`.`group_id` = `oa_group`.`group_id`) GROUP BY `additional_field`.`id` " . $filter . " " . $sort . " " . $limit;
+        $sql = $this->collection_sql('fields', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'fields');
         return ($result);
@@ -145,39 +83,36 @@ class M_fields extends MY_Model
         }
     }
 
-    public function create()
+    public function create($data = null)
     {
         $CI = & get_instance();
-        # check to see if we already have a file with the same name
-        $sql = "SELECT COUNT(id) AS count FROM `additional_field` WHERE `name` = ?";
-        $data = array($CI->response->meta->received_data->attributes->name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_fields::create');
-            return false;
-        }
-
-        $system_fields = $this->db->list_fields('system');
-        foreach ($system_fields as $field) {
-            if ($CI->response->meta->received_data->attributes->name == $field) {
+        $data_array = array();
+        $sql = "INSERT INTO `additional_field` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
                 log_error('ERR-0010', 'm_fields::create');
                 return false;
             }
         }
-
-        $sql = "INSERT INTO `additional_field` VALUES (NULL, ?, ?, ?, ?, ?)";
-        if (empty($CI->response->meta->received_data->attributes->group_id)) {
-            $CI->response->meta->received_data->attributes->group_id = 1;
+        foreach ($this->db->field_data('additional_field') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
         }
-        if (empty($CI->response->meta->received_data->attributes->values)) {
-            $CI->response->meta->received_data->attributes->values = '';
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->type) or empty($data->placement)) {
+            log_error('ERR-0021', 'm_fields::create');
+            return false;
         }
-        $data = array($CI->response->meta->received_data->attributes->group_id,
-            $CI->response->meta->received_data->attributes->name,
-            $CI->response->meta->received_data->attributes->type,
-            $CI->response->meta->received_data->attributes->values,
-            $CI->response->meta->received_data->attributes->placement);
-        $this->run_sql($sql, $data);
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
         return $this->db->insert_id();
     }
 

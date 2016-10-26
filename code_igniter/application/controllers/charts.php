@@ -45,7 +45,7 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class Charts extends MY_Controller
+class Charts extends MY_Controller_new
 {
 	/**
 	* Constructor
@@ -88,16 +88,10 @@ class Charts extends MY_Controller
 	* @access public
 	* @return NULL
 	*/
-	public function _remap()
-	{
-		if ( ! empty($this->response->meta->action)) {
-			$this->{$this->response->meta->action}();
-		}
-		else {
-			$this->collection();
-		}
-		exit();
-	}
+    public function _remap()
+    {
+        $this->{$this->response->meta->action}();
+    }
 
 	/**
 	* Read a single object

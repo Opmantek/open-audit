@@ -37,7 +37,6 @@
 
 class MY_Model extends CI_Model
 {
-    #public function MY_Model()
     public function __construct()
     {
         parent::__construct();
@@ -47,7 +46,7 @@ class MY_Model extends CI_Model
     {
         if (empty($result)) {
             # TODO - thorw an error here
-            return null;
+            return array();
         }
         if (gettype($result) == 'string') {
             # TODO - this ws being provided through Discovery some how.
@@ -147,6 +146,7 @@ class MY_Model extends CI_Model
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
         $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
+        $sql = trim($sql);
         return $sql;
     }
 
@@ -156,28 +156,40 @@ class MY_Model extends CI_Model
         if ($sql == '') {
             return;
         }
+        // clean our SQL (usually adding the running model, etc)
         $trace = debug_backtrace();
         $caller = $trace[1];
-        // clean our SQL (usually adding the running model, etc)
-        $sql = $this->clean_sql($sql);
+        $function = @$caller['function'];
+        $model = @$caller['class'];
+        $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
+        $sql = preg_replace('!\s+!', ' ', $sql);
+        $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
+        $sql = trim($sql);
+
         // store the current setting of db_debug
         $temp_debug = $this->db->db_debug;
-        // set the db_debug setting to FALSE - this prevents the default CI error page and allows us
+        // set the db_debug setting to false - this prevents the default CI error page and allows us
         // to output a nice formatted page with the $error object
-        $this->db->db_debug = FALSE;
+        $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
-        // if we have debug set to TRUE, store the last run query
-        if (!empty($CI->response->meta->debug) and $CI->response->meta->debug) {
-            $CI->response->meta->sql = $this->db->last_query();
-        }
-        // restore the origin setting to db_debug
+        // store the query in our response object
+        $CI->response->meta->sql[] = $this->db->last_query();
+        // restore the original setting to db_debug
         $this->db->db_debug = $temp_debug;
         // do we have an error?
         if ($this->db->_error_message()) {
+            $this->load->helper('log');
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
             if (!empty($CI->response)) {
-                $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+                if (!empty($CI->response->errors)) {
+                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+                } else {
+                    $CI->response->errors = array();
+                    $item = new stdClass();
+                    $item->detail_specific = $this->db->_error_message();
+                    $CI->response->errors[0] = $item;
+                }
             }
             return false;
         }
@@ -185,5 +197,141 @@ class MY_Model extends CI_Model
         $result = $query->result();
         // return what we have
         return ($result);
+    }
+
+    public function collection_sql($endpoint = '', $type = 'sql')
+    {
+        $return = array();
+        $CI = & get_instance();
+
+        if ($type != 'sql') {
+            $type = 'array';
+        }
+
+        if ($endpoint == '' and !empty($CI->response->meta->collection)) {
+            $endpoint = $CI->response->meta->collection;
+        }
+
+        if (empty($endpoint)) {
+            return;
+        }
+
+        $table = $endpoint;
+        if ($table == 'users') {
+            $table = 'oa_user';
+        }
+        if ($table == 'connections') {
+            $table = 'oa_connection';
+        }
+        if ($table == 'fields') {
+            $table = 'additional_field';
+        }
+        if ($table == 'locations') {
+            $table = 'oa_location';
+        }
+        if ($table == 'orgs') {
+            $table = 'oa_org';
+        }
+
+        // total count
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            // get the total count
+            if ($endpoint == 'orgs') {
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
+            } else {
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
+            }
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $CI->response->meta->total = intval($result[0]->count);
+        }
+
+        // properties
+        $properties = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            $temp = explode(',', $CI->response->meta->properties);
+            for ($i=0; $i<count($temp); $i++) {
+                if (strpos($temp[$i], '.') === false) {
+                    $temp[$i] = $table.'.'.trim($temp[$i]);
+                } else {
+                    $temp[$i] = trim($temp[$i]);
+                }
+            }
+            $properties = implode(',', $temp);
+        } else {
+            $properties = $table . '.*';
+        }
+        $return['properties'] = $properties;
+        if ($endpoint == 'locations') {
+            $return['properties'] .= ', COUNT(DISTINCT system.id) AS `device_count`';
+        }
+
+        // filter
+        $filter = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            $reserved = ' properties limit resource action sort current offset format ';
+            foreach ($CI->response->meta->filter as $item) {
+                if (strpos(' '.$item->name.' ', $reserved) === false) {
+                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                }
+            }
+        }
+        if ($filter != '') {
+            $filter = substr($filter, 5);
+            $filter = ' WHERE oa_org.id IN (' . $CI->user->org_list . ') AND ' . $filter;
+        } else {
+            $filter = ' WHERE oa_org.id IN (' . $CI->user->org_list . ')';
+        }
+        $return['filter'] = $filter;
+
+        // sort
+        $sort = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            if ($CI->response->meta->sort == '') {
+                if ($table == 'oa_org') {
+                    $sort = 'ORDER BY ' . $table . '.name';
+                } else {
+                    $sort = 'ORDER BY ' . $table . '.id';
+                }
+            } else {
+                $sort = 'ORDER BY ' . $CI->response->meta->sort;
+            }
+        }
+        $return['sort'] = $sort;
+
+        // limit
+        $limit = '';
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+            if (!empty($CI->response->meta->limit)) {
+                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+            }
+            if (!empty($CI->response->meta->offset)) {
+                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+            }
+        }
+        $return['limit'] = $limit;
+        if ($type == 'sql') {
+            
+            if ($endpoint == 'locations') {
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `oa_location` LEFT JOIN system ON (oa_location.id = system.location_id) LEFT JOIN oa_org ON (oa_location.org_id = oa_org.id) " . $return['filter'] . " GROUP BY oa_location.id " . $return['sort'] . " " . $return['limit'];
+            
+            } else if ($endpoint == 'networks') {
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+            
+            } else if ($endpoint == 'orgs') {
+                $sql = "SELECT oa_org.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM oa_org LEFT JOIN oa_org o2 ON oa_org.parent_id = o2.id LEFT JOIN system ON (oa_org.id = system.org_id) " . $return['filter'] . " GROUP BY oa_org.id " . $return['sort'] . " " . $return['limit'];
+
+            } else if ($endpoint == 'queries') {
+                $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(oa_org.name) AS `org_name` FROM `queries` LEFT JOIN oa_org ON (`queries`.org_id = oa_org.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT queries.*, oa_org.name AS `org_name` FROM queries LEFT JOIN oa_org ON (queries.org_id = oa_org.id) GROUP BY queries.name";
+
+            } else {
+                $sql = "SELECT " . $return['properties'] . ", oa_org.name AS `org_name` FROM `" . $table . "` LEFT JOIN oa_org ON (`" . $table . "`.org_id = oa_org.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
+            }
+            return($sql);
+        } else {
+            return($return);
+        }
     }
 }

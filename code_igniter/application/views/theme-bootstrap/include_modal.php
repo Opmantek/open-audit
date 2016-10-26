@@ -1,46 +1,22 @@
-<style type="text/css">
-
-    #overlay {
-        position:fixed; 
-        top:0;
-        left:0;
-        width:100%;
-        height:100%;
-        background:#000;
-        opacity:0.5;
-        filter:alpha(opacity=50);
-    }
-
-    #modal {
-        position:absolute;
-        background:url(/open-audit/images/tint20.png) 0 0 repeat;
-        background:rgba(0,0,0,0.2);
-        border-radius:14px;
-        padding:8px;
-        width:1000px;
-    }
-
-    #content {
-        border-radius:8px;
-        background:#fff;
-        padding:20px;
-    }
-
-    #close {
-        position:absolute;
-        background:url(/open-audit/images/close.png) 0 0 no-repeat;
-        width:24px;
-        height:27px;
-        display:block;
-        text-indent:-9999px;
-        top:-7px;
-        right:-7px;
-    }
-
-</style>
-
 <script type="text/javascript">
 
+    <?php if ($this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
+    // Wait until the DOM has loaded before querying the document
+    $(document).ready(function(){
+        // get from opmantek.com
+        $.get('https://opmantek.com/product_data/oae.json', function(data){
+            modal.open({content: data, source: "online"});
+        })
+        .fail(function() {
+            // get from OAE
+                $.get('/omk/data/oae.json', function(data){
+                modal.open({content: data, source: "offline"});
+            })
+        });
+    });
+    <?php } ?>
+
+    // Menu click response
     $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
         $.get('https://opmantek.com/product_data/oae.json', function(data){
@@ -173,12 +149,10 @@
             for (var i = 0; i < footer.length; i++) {
                 var button_link = footer[i]["button_link"];
                 if (button_link == "prompt_never") {
-                    button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/-";
-                    output += "<span id=\"button_prompt_never\" style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
+                    output += "<span id=\"button_prompt_never\" style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"2100-01-01\">"+footer[i]["button"]+"</a></span>\n";
                 }
                 if (button_link == "prompt_later") {
-                    button_link = "/open-audit/index.php/admin_config/update_config/oae_prompt/1";
-                    output += "<span id=\"button_prompt_later\"style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
+                    output += "<span id=\"button_prompt_later\"style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')); ?>\">"+footer[i]["button"]+"</a></span>\n";
                 }
                 //output += "<span style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
             }
@@ -254,7 +228,7 @@ function imageModal(title, image) {
     modal_content_original = document.getElementById("modal_content").innerHTML;
     modal_content_image = '<div class="row"><div class="col-md-6"><h3>'+title+'</h3></div>';
     modal_content_image = modal_content_image+'<div class="col-md-6 text-right"><br /><a class="btn btn-default btn-sm" href="#" onclick="removeImageModal();">Back</a></div></div>';
-    modal_content_image = modal_content_image+'<a href="#" onclick="removeImageModal();"><img id="modalImage" src="/omk/img/'+image+'" style="width: 800px;" /></a>';
+    modal_content_image = modal_content_image+'<a href="#" onclick="removeImageModal();"><img id="modalImage" src="<?php echo str_replace("index.php", "", site_url()); ?>/images/'+image+'" style="width: 800px;" /></a>';
     document.getElementById("modal_content").innerHTML = modal_content_image;
     document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"#\" onclick=\"removeImageModal();\">Back</a>";
     document.getElementById("button_prompt_never").innerHTML = "";
@@ -262,8 +236,43 @@ function imageModal(title, image) {
 
 function removeImageModal() {
     document.getElementById("modal_content").innerHTML = modal_content_original;
-    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/1\">Ask me later</a>";
-    document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"/open-audit/index.php/admin_config/update_config/oae_prompt/-\">Do now show me again</a>";
+    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')); ?>\">Ask me later</a>";
+    document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"2100-01-01\">Do now show me again</a>";
 }
+
+
+
+
+/* inline edit */
+$(document).ready(function () {
+    $(document).on('click', '.dismiss_modal_button', function (e) {
+        var value = $(this).attr("data-value");
+        //alert("Value is:"+value);
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = "oae_prompt";
+        data["data"]["type"] = "configuration";
+        data["data"]["attributes"] = {};
+        data["data"]["attributes"]["value"] = value;
+        data["data"]["attributes"]["name"] = "oae_prompt";
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "PATCH",
+            url: "configuration/oae_prompt",
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+                /* alert( 'success' ); */
+            },
+            error: function (data) {
+                data = JSON.parse(data.responseText);
+                alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+            }
+        });
+        modal.close();
+    });
+});
+
+
 
 </script>

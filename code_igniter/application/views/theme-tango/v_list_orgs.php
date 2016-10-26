@@ -43,8 +43,6 @@ if (count($query) > 0) {
 			<th><?php echo __('Organisation Name')?></th>
 			<th><?php echo __('Comment')?></th>
 			<th><?php echo __('Parent Name')?></th>
-			<th align='center' width="80" class='{sorter: false}'><?php echo __('Activate Group')?></th>
-			<th align='center' width="80" class='{sorter: false}'><?php echo __('Remove Group')?></th>
 			<th align='center' width="80" class='{sorter: false}'><?php echo __('Show Devices')?></th>
 			<th align='center' width="80" class='{sorter: false}'><?php echo __('Edit Organisation')?></th>
 			<th align='center' width="80" class='{sorter: false}'><?php echo __('Delete Organisation')?></th>
@@ -82,8 +80,6 @@ if (count($query) > 0) {
     				<td><a href="../main/view_org/<?php echo $key->id?>"><?php echo htmlentities($key->name)?></a></td>
     				<td><?php echo htmlentities($key->comments)?></td>
     				<td><?php echo htmlentities($key->parent_name)?></td>
-    				<td align='center'><?php echo $activate_pic?></td>
-    				<td align='center'><?php echo $deactivate_pic?></td>
     				<td align='center'><?php echo $show_pic?></td>
     				<td align='center'><?php echo $edit_pic?></td>
     				<td align='center'><?php echo $delete_pic?></td>

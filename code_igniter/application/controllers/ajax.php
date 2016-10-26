@@ -34,7 +34,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-class ajax extends MY_Controller
+class ajax1 extends MY_Controller
 {
     public function __construct()
     {
@@ -49,6 +49,9 @@ class ajax extends MY_Controller
             $this->data['field_name'] = @$_POST['name'];
             $this->data['field_data'] = @$_POST['value'];
         }
+
+        define('CHARSET', 'UTF-8');
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
 
         $this->data['title'] = 'Open-AudIT';
 
@@ -111,90 +114,6 @@ class ajax extends MY_Controller
         # redirect('/');
     }
 
-    public function update_config()
-    {
-        $log_details = new stdClass();
-        $log_details->severity = 5;
-        $log_details->file = 'system';
-
-
-        // must be an admin to access this function
-        if ($this->user->admin != 'y') {
-            $log_details->message = "A non-admin user attempted to use ajax/update_config.";
-            stdlog($log_details);
-            if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
-                redirect($_SERVER['HTTP_REFERER']);
-            } else {
-                redirect('main/list_groups');
-            }
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-            $log_details->message = "GET request received to ajax/update_config. This is deprecated.";
-            stdlog($log_details);
-            $url = str_replace("%3A", ":", current_url());
-            $url = str_replace("ajax/update_config//", "ajax/update_config/", $url);
-            $url_array = explode('/', $url);
-
-            if (strpos($_SERVER['QUERY_STRING'], "name=") !== false) {
-                # we have a GET style request from the Bootstrap theme.
-                $i = explode('&', $_SERVER['QUERY_STRING']);
-                # get the config name
-                $config_name = urldecode(str_replace('name=', '', $i[0]));
-                # get the new config value
-                $config_value = urldecode(str_replace('value=', '', $i[1]));
-            } else {
-                for ($i = 0; $i<count($url_array); $i++) {
-                    if ($url_array[$i] == "update_config") {
-                        $config_name = $url_array[$i+1];
-                    }
-                }
-                $config_name = str_replace("%5E%5E%5E", "/", $config_name);
-                $location = strpos($url, $config_name);
-                $config_value = substr($url, $location);
-                $location = strpos($config_value, "/");
-                $config_value = substr($config_value, $location);
-                $config_value = substr($config_value, 1);
-            }
-
-            $config_value = str_replace("%5E%5E%5E", "/", $config_value);
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            # these are set in the constructor
-            $config_name = $this->data['field_name'];
-            $config_value = $this->data['field_data'];
-        }
-
-        if ($config_name == 'default_ad_server') { $config_name = 'ad_server'; }
-
-        if (empty($config_name)) {
-            return;
-        }
-
-        $this->load->model("m_oa_config");
-        if ($config_value == '-') {
-            $config_value = '';
-        }
-
-       $this->m_oa_config->update_config($config_name, $config_value, $this->user->id, $this->config->config['timestamp']);
-
-        $masked = str_pad('', strlen($config_value), '*');
-        if ($config_name == 'default_windows_password' and $this->config->config['show_passwords'] == 'n') {
-            $config_value = $masked;
-        }
-        if ($config_name == 'default_ssh_password' and $this->config->config['show_passwords'] == 'n') {
-            $config_value = $masked;
-        }
-        if ($config_name == 'default_ipmi_password' and $this->config->config['show_passwords'] == 'n') {
-            $config_value = $masked;
-        }
-        if ($config_name == 'default_snmp_community' and $this->config->config['show_snmp_community'] == 'n') {
-            $config_value = $masked;
-        }
-        echo htmlentities(urldecode($config_value));
-    }
-
     # /index.php/ajax/update_system_man/[system_id]/[field_name]/[field_value]
     # This should be POST'd to only from 1.12.2
     public function update_system_man()
@@ -255,14 +174,14 @@ class ajax extends MY_Controller
                         $data = array($this->oa_urldecode($this->data['field_data']), intval($row->id));
                         $query = $this->db->query($sql, $data);
                         $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
-                        echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                        echo htmlspecialchars($this->oa_urldecode($this->data['field_data']), REPLACE_FLAGS, CHARSET);
                     } else {
                         # we have to insert a new record for a custom data value for this system
                         $sql = "/* ajax::update_system_man */ INSERT INTO additional_field_item ( id, system_id, additional_field_id, timestamp, value) VALUES ( NULL, ?, ?, NOW(), ?)";
                         $data = array(intval($this->data['system_id']), $data[3], $this->oa_urldecode($this->data['field_data']));
                         $query = $this->db->query($sql, $data);
                         $this->m_edit_log->create($this->data['system_id'], "", "additional_field_item", "", "", $this->oa_urldecode($this->data['field_data']), "");
-                        echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                        echo htmlspecialchars($this->oa_urldecode($this->data['field_data']), REPLACE_FLAGS, CHARSET);
                     }
                 } else {
                     echo "This field not allowed for this device (see field groups).";
@@ -301,7 +220,7 @@ class ajax extends MY_Controller
                         if ((mb_substr_count($this->data['field_name'], 'location_id') > 0) || (mb_substr_count($this->data['field_name'], 'org_id') > 0)) {
                             # do nothing
                         } else {
-                            echo htmlentities($this->oa_urldecode($this->data['field_data']));
+                            echo htmlspecialchars($this->oa_urldecode($this->data['field_data']), REPLACE_FLAGS, CHARSET);
                         }
                     } else {
                         # echo "error with update";
@@ -324,11 +243,11 @@ class ajax extends MY_Controller
                     if ($key->country == '') {
                         $key->country = '-';
                     }
-                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlentities($key->name)."</span></span></p>\n";
-                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlentities($key->address)."</span></p>\n";
-                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlentities($key->city)."</span></p>\n";
-                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlentities($key->state)."</span></p>\n";
-                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlentities($key->country)."</span></p>\n";
+                    echo "<p><label for='location_id_select'>".__('Location Name').": </label><span id='location_id_select' style='color:blue;'><span onclick='display_location();'>".htmlspecialchars($key->name, REPLACE_FLAGS, CHARSET)."</span></span></p>\n";
+                    echo "<p><label for='location_address'>".__('Building Address').": </label><span id='location_address'>".htmlspecialchars($key->address, REPLACE_FLAGS, CHARSET)."</span></p>\n";
+                    echo "<p><label for='location_city'>".__('City').": </label><span id='location_city'>".htmlspecialchars($key->city, REPLACE_FLAGS, CHARSET)."</span></p>\n";
+                    echo "<p><label for='location_state'>".__('State').": </label><span id='location_state'>".htmlspecialchars($key->state, REPLACE_FLAGS, CHARSET)."</span></p>\n";
+                    echo "<p><label for='location_country'>".__('Country').": </label><span id='location_country'>".htmlspecialchars($key->country, REPLACE_FLAGS, CHARSET)."</span></p>\n";
                 }
             }
             if (mb_substr_count($this->data['field_name'], 'org_id') > 0) {
@@ -338,7 +257,7 @@ class ajax extends MY_Controller
                     $key->name = '-';
                 }
                 echo "<p><label for='org_id_select'>".__('Org Name').": </label><span id='org_id_select' style='color:blue;'><span onclick='display_org();'>".$key->name."</span></span></p>\n";
-                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlentities($key->parent_name)."</span></p>\n";
+                echo "<p><label for='org_parent'>".__('Parent Org').": </label><span id='org_parent'>".htmlspecialchars($key->parent_name, REPLACE_FLAGS, CHARSET)."</span></p>\n";
             }
 
             # finally update any groups that this change has caused
@@ -367,7 +286,7 @@ class ajax extends MY_Controller
             foreach ($fields as $field) {
                 $column = str_replace('_', ' ', $field);
                 $column = ucwords($column);
-                echo "<option value=\"".$field."\">".htmlentities($column)."</option>\n";
+                echo "<option value=\"".$field."\">".htmlspecialchars($column, REPLACE_FLAGS, CHARSET)."</option>\n";
             }
             echo "</select>\n";
         }
@@ -388,7 +307,7 @@ class ajax extends MY_Controller
             $values = $this->m_oa_group->get_field_values($table, $field);
             echo "<select id='dynamic_field_value' name='dynamic_field_value' style='width:250px;'>\n";
             foreach ($values as $value) {
-                echo "<option value=\"".$value->value."\">".htmlentities($value->value)."</option>\n";
+                echo "<option value=\"".$value->value."\">".htmlspecialchars($value->value, REPLACE_FLAGS, CHARSET)."</option>\n";
             }
             echo "</select>\n";
         }
@@ -443,7 +362,7 @@ class ajax extends MY_Controller
                 echo "<tr>\n";
                 echo "  <td width=\"100\"><img src=\"".base_url()."device_images/".$system->icon."\" width=\"100\"/></td>\n";
                 echo "  <td valign=\"top\" align=\"right\"><b>Status</b> <br /><b>Manufacturer</b> <br /><b>Model</b> <br /><b>Serial</b> <br /><b>Form Factor</b> </td>\n";
-                echo "  <td valign=\"top\" >".htmlentities($system->status)."<br />".htmlentities($system->manufacturer)."<br />".htmlentities($system->model)."<br />".htmlentities($system->serial)."<br />".htmlentities($system->form_factor)."</td>\n";
+                echo "  <td valign=\"top\" >".htmlspecialchars($system->status, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->manufacturer, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->model, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->serial, REPLACE_FLAGS, CHARSET)."<br />".htmlspecialchars($system->form_factor, REPLACE_FLAGS, CHARSET)."</td>\n";
                 echo "</tr>\n";
                 echo "</table>\n";
                 echo "</div>";
@@ -485,7 +404,7 @@ class ajax extends MY_Controller
             echo "<table border=\"0\" style=\"font-size: 8pt; color:#3D3D3D; font-family: 'Verdana','Lucida Sans Unicode','Lucida Sans',sans-serif;\">\n";
             foreach ($query as $group) {
                 echo "<tr>\n";
-                echo "  <td><a href=\"".site_url()."/main/list_devices/".intval($group->group_id)."\">".htmlentities($group->group_name)."</a></td>\n";
+                echo "  <td><a href=\"".site_url()."/main/list_devices/".intval($group->group_id)."\">".htmlspecialchars($group->group_name, REPLACE_FLAGS, CHARSET)."</a></td>\n";
                 echo "</tr>\n";
             }
             echo "</table>\n";

@@ -369,6 +369,11 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
 			result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
 			result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
+			if [ "$debugging" -gt 0 ]; then
+				result="$result		<debug>true</debug>"$'\n'
+			else
+				result="$result		<debug>false</debug>"$'\n'
+			fi
 			result="$result     <nmap_ports><![CDATA[$nmap_ports]]></nmap_ports>"$'\n'
 			#result="$result     <nmap_result><![CDATA[$nmap_result]]></nmap_result>"$'\n'
 			result="$result	</device>"

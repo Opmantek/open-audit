@@ -43,7 +43,7 @@ class MY_Input extends CI_Input {
         parent::__construct();
     }
 
-    public function post($index = null, $xss_clean = TRUE) {
+    public function post($index = null, $xss_clean = true) {
         if (!$xss_clean) {
             // if asked for raw post data (eg. post('key', false) ) return the raw data.
             // this is required for raw password strings that we need to output to the command line

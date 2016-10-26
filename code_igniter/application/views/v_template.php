@@ -33,18 +33,20 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_help_about' and $include != 'v_upgrade') {
-    $include = "v_help_about";
-    $heading = "You must upgrade";
-}
-if (!isset($this->user->theme) or $this->user->theme == '') {
-    $this->user->theme = 'tango';
+if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_database_update' and $include != 'v_database_update_form') {
+    redirect('database?action=update');
 }
 
 if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php', __FILE__))) {
     $this->user->theme = 'bootstrap';
+} else {
+    $this->user->theme = 'tango';
 }
 
+if (!defined('CHARSET')) {
+    define('CHARSET', 'UTF-8');
+    define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+}
 
 $oa_web_index    = htmlentities($this->config->item('oa_web_index'));
 $oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));

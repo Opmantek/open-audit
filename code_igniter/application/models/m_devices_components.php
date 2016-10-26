@@ -286,8 +286,9 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $display = 'n', $match_columns = array())
     {
-        $create_alerts = $this->m_oa_config->get_config_item('discovery_create_alerts');
-        $delete_noncurrent = @$this->m_oa_config->get_config_item('delete_noncurrent');
+
+        $create_alerts = $this->config->config['discovery_create_alerts'];
+        $delete_noncurrent = $this->config->config['delete_noncurrent'];
 
         $log_details = new stdClass();
         $log_details->message = '';
@@ -361,6 +362,7 @@ class M_devices_components extends MY_Model
 
         ### IP ADDRESS ###
         if ((string)$table == 'ip') {
+            $this->load->model('m_networks');
             for ($i=0; $i<count($input->item); $i++) {
                 # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
                 $input->item[$i]->mac = strtolower($input->item[$i]->mac);
@@ -414,7 +416,15 @@ class M_devices_components extends MY_Model
                 }
                 # ensure we add the network to the networks list
                 if (!empty($input->item[$i]->network)) {
-                    $this->m_oa_config->update_blessed($input->item[$i]->network);
+                    $network = new stdClass();
+                    $network->name = $input->item[$i]->network;
+                    if (!empty($details->org_id)) {
+                        $network->org_id = intval($details->org_id);
+                    } else {
+                        $network->org_id = 1;
+                    }
+                    $network->description = 'Inserted from audit result.';
+                    $this->m_networks->upsert($network);
                 }
             }
             if ($details->type == 'computer' and $details->os_group == 'VMware') {
@@ -583,7 +593,7 @@ class M_devices_components extends MY_Model
                 // loop through our match_columns array
                 for ($i = 0; $i < count($match_columns); $i++) {
                     // and test if the variables match
-                    if ((string)$input_item->$match_columns[$i] == (string)$output_item->$match_columns[$i]) {
+                    if ((string)$input_item->{$match_columns[$i]} === (string)$output_item->{$match_columns[$i]}) {
                         // they match so increment the count
                         $match_count ++;
                     }
@@ -614,7 +624,7 @@ class M_devices_components extends MY_Model
                 // check for a match against the columns in $match_columns
                 $match_count = 0;
                 for ($i = 0; $i < count($match_columns); $i++) {
-                    if ((string)$input_item->$match_columns[$i] == (string)$db_item->$match_columns[$i] and $db_item->updated != 'y') {
+                    if ((string)$input_item->{$match_columns[$i]} === (string)$db_item->{$match_columns[$i]} and $db_item->updated != 'y') {
                         $match_count ++;
                     }
                 }
@@ -716,9 +726,12 @@ class M_devices_components extends MY_Model
                 // insert an entry into the graph table
                 $used_percent = @intval(($input_item->used / $input_item->size) * 100);
                 $free_percent = @intval(100 - $used_percent);
-                $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                if (empty($details->org_id)) {
+                    $details->org_id = 1;
+                }
+                $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
-                $data = array(intval($details->id), "$table", intval($id), "$table", intval($used_percent),
+                $data = array(intval($details->org_id), intval($details->id), "$table", intval($id), "$table", intval($used_percent),
                         intval($free_percent), intval($input_item->used), intval($input_item->free), intval($input_item->size), "$details->last_seen");
                 $query = $this->db->query($sql, $data);
             }
@@ -1441,15 +1454,17 @@ class M_devices_components extends MY_Model
     */
     public function from_db ($result)
     {
-        foreach ($result as &$row) {
-            foreach ($row as $key => $value) {
+        unset($item);
+        foreach ($result as &$item) {
+            foreach ($item as $key => $value) {
                 if ($key == 'id' or $key == 'free' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'used' or
                 strrpos($key, '_id') === strlen($key)-3 or strrpos($key, '_count') === strlen($key)-6 or
                 strrpos($key, '_percent') === strlen($key)-8 or strrpos($key, '_size') === strlen($key)-5 ) {
-                    $row->$key = (int) intval($value);
+                    $item->$key = (int) intval($value);
                 }
             }
         }
+        unset($item);
         return($result);
     }
 }

@@ -33,108 +33,120 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-        <div class="form-group">
-            <label for="data[attributes][id]" class="col-sm-2 control-label">ID</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" placeholder="" value="" disabled>
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
+                <span class="pull-right"></span>
+            </h3>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" placeholder="" value="" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][location_id_a]" class="col-sm-3 control-label">Location A</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][location_id_a]" name="data[attributes][location_id_a]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][location_id_b]" class="col-sm-3 control-label">Location B</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][location_id_b]" name="data[attributes][location_id_b]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <?php $attributes = array('provider', 'service_type', 'product_name', 'service_identifier', 'speed');
+                    foreach ($attributes as $attribute) { ?>    <div class="form-group">
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
+                        </div>
+                    </div>
+                <?php
+                    } ?></div>
+
+                <div class="col-md-6">
+                    <?php $attributes = array('system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
+                    foreach ($attributes as $attribute) { ?>    <div class="form-group">
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
+                        </div>
+                    </div>
+                <?php
+                    } ?>
+
+                    <div class="form-group">
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="" value="" disabled>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="data[attributes][name]" class="col-sm-2 control-label">Name</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+            <div class="row">
+                <div class="form-group">
+                    <label for="submit" class="col-sm-2 control-label"></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="hidden" value="connections" id="data[type]" name="data[type]" />
+                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label for="data[attributes][org_id]" class="col-sm-2 control-label">Organisation</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]" placeholder="">
-                        <?php
-                        foreach ($this->response->included as $item) {
-                            if ($item->type == 'orgs') { ?>
-                                <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
-                        <?php
-                            }
-                        } ?>
-                        </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="data[attributes][location_id_a]" class="col-sm-2 control-label">Location A</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <select class="form-control" id="data[attributes][location_id_a]" name="data[attributes][location_id_a]" placeholder="">
-                        <?php
-                        foreach ($this->response->included as $item) {
-                            if ($item->type == 'locations') { ?>
-                                <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
-                        <?php
-                            }
-                        } ?>
-                        </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="data[attributes][location_id_b]" class="col-sm-2 control-label">Location B</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <select class="form-control" id="data[attributes][location_id_b]" name="data[attributes][location_id_b]" placeholder="">
-                        <?php
-                        foreach ($this->response->included as $item) {
-                            if ($item->type == 'locations') { ?>
-                                <option value="<?php echo intval($item->id); ?>"><?php echo htmlentities($item->attributes->name); ?></option>
-                        <?php
-                            }
-                        } ?>
-                        </select>
-                </div>
-            </div>
-        </div>
-
-        <?php $attributes = array('provider', 'service_type', 'product_name', 'service_identifier', 'speed', 'system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
-        foreach ($attributes as $attribute) { ?>
-        <div class="form-group">
-            <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" placeholder="" value="">
-                </div>
-            </div>
-        </div>
-        <?php } ?>
 
         </div>
-
-        <div class="form-group">
-            <label for="submit" class="col-sm-2 control-label"></label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="hidden" value="connections" id="data[type]" name="data[type]" />
-                    <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
-                </div>
-            </div>
-        </div>
-
-    </form>
-  </div>
-</div>
+    </div>
+</form>

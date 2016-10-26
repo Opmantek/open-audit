@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,17 +24,28 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   1.12.8
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object devices
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
+* @return   NULL
  */
-class devices extends MY_Controller
+class devices extends MY_Controller_new
 {
     public function __construct()
     {
@@ -57,26 +68,6 @@ class devices extends MY_Controller
 
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
-
-        if ($this->response->meta->id != '') {
-            $access_level = $this->m_devices->get_user_device_org_access();
-            if ($access_level < 1) {
-                // we should determine if the device does actually exist or not
-                // then we can throw the correct status code of 404 or 403
-                $sql = "SELECT system.id FROM system WHERE system.id = ?";
-                $data = array($this->response->meta->id);
-                $query = $this->db->query($sql, $data);
-                $result = $query->result();
-                if (count($result) == 0) {
-                    $this->response->errors[] = getError('ERR-0007');
-                } else {
-                    $this->response->errors[] = getError('ERR-0008');
-                }
-                $this->response->meta->header = $this->response->errors[0]->status;
-                output($this->response);
-                exit();
-            }
-        }
     }
 
     public function index()
@@ -85,27 +76,38 @@ class devices extends MY_Controller
 
     public function _remap()
     {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
     private function collection()
     {
-        if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource != 'report') {
+        if ($this->response->meta->sub_resource != '' and 
+            ($this->response->meta->sub_resource != 'report' and 
+                $this->response->meta->sub_resource != 'query' and 
+                $this->response->meta->sub_resource != 'group')) {
             $this->response->data = $this->m_devices->collection_sub_resource();
 
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
             $this->response->data = $this->m_devices->report();
 
-        } else {
-            $this->response->data = $this->m_devices->collection();
-        }
+        } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'query') {
+            $this->response->data = $this->m_devices->query();
 
+        } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'group') {
+            $this->response->data = $this->m_devices->group();
+
+        } else {
+            if (!empty($this->response->meta->groupby)) {
+                $this->response->data = $this->m_devices->collection_group_by();
+            } else {
+                $this->response->data = $this->m_devices->collection();
+            }
+        }
         $this->response->meta->filtered = count($this->response->data);
+        if ($this->response->meta->format == 'screen') {
+            $this->load->model('m_queries');
+            $this->response->included = $this->m_queries->collection();
+        }
         output($this->response);
     }
 
@@ -114,14 +116,13 @@ class devices extends MY_Controller
         $this->load->model('m_orgs');
         $this->load->model('m_locations');
         $this->load->model('m_devices_components');
-        $this->response->included = array();
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credential,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
 
         if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_devices->read_sub_resource( $this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+            $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
             $this->response->meta->format = 'json';
         } else {
             $this->response->data = $this->m_devices->read();
@@ -136,7 +137,7 @@ class devices extends MY_Controller
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
                     $result = false;
-                    $result = $this->m_devices->read_sub_resource( $this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+                    $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
                     if ($result) {
                         $this->response->included = array_merge($this->response->included, $result);
                     }
@@ -223,7 +224,6 @@ class devices extends MY_Controller
         if (empty($this->response->meta->sub_resource)) {
             $this->load->model('m_locations');
             $this->load->model('m_fields');
-            $this->response->included = array();
             $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             unset($temp);
@@ -242,12 +242,6 @@ class devices extends MY_Controller
 
     private function sub_resource_delete()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
         $this->m_devices->sub_resource_delete($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
         if ($this->response->meta->format == 'json') {
             output($this->response);
@@ -266,6 +260,19 @@ class devices extends MY_Controller
             $this->response->data[] = $temp;
             unset($temp);
             output($this->response);
+        } elseif ($this->response->meta->sub_resource == 'discovery') {
+            $this->response->data = $this->m_devices->read();
+            $data = new stdClass();
+            $data->name = $this->response->data[0]->attributes->name;
+            $data->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
+            $data->system_id = $this->response->data[0]->attributes->id;
+            $data->org_id = $this->response->data[0]->attributes->org_id;
+            $data->discard = 'y';
+            $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
+            $this->load->model('m_discoveries');
+            $discovery_id = $this->m_discoveries->create($data);
+            $this->m_discoveries->execute($discovery_id);
+            redirect('devices/'.$this->response->data[0]->attributes->id);
         } else {
             redirect('devices');
         }

@@ -40,37 +40,6 @@ class M_connections extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'oa_connection.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-            }
-        }
-        if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE ' . $filter;
-        }
-        return($filter);
-    }
-
     public function read($id = '')
     {
         if ($id == '') {
@@ -89,80 +58,68 @@ class M_connections extends MY_Model
     public function collection()
     {
         $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'connections') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `oa_connection`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
-        }
-        # get a list of Orgs and Locations so we can populate the names
+
+        // get a list of Orgs and Locations so we can populate the names
         $sql = "SELECT id, name FROM oa_org";
         $result = $this->run_sql($sql, array());
         $orgs = $result;
-        $sql = "SELECT id, name FROM oa_location";
+        $sql = "SELECT id, name FROM oa_connection";
         $result = $this->run_sql($sql, array());
-        $locations = $result;
+        $items = $result;
 
-        # get the response data
-        $sql = "SELECT " . $properties . " FROM `oa_connection` " . $filter . " " . $sort . " " . $limit;
+        $sql = $this->collection_sql('connections', 'sql');
         $result = $this->run_sql($sql, array());
-        for ($i=0; $i < count($result); $i++) { 
+
+        for ($i=0; $i < count($result); $i++) {
             foreach ($orgs as $org) {
                 if ($org->id == $result[$i]->org_id) {
                     $result[$i]->org_name = $org->name;
                 }
             }
-            foreach ($locations as $location) {
-                if ($location->id == $result[$i]->location_id_a) {
-                    $result[$i]->location_name_a = $location->name;
+            foreach ($items as $item) {
+                if ($item->id == $result[$i]->location_id_a) {
+                    $result[$i]->location_name_a = $item->name;
                 }
-                if ($location->id == $result[$i]->location_id_b) {
-                    $result[$i]->location_name_b = $location->name;
+                if ($item->id == $result[$i]->location_id_b) {
+                    $result[$i]->location_name_b = $item->name;
                 }
             }
         }
+
         $result = $this->format_data($result, 'connections');
         return ($result);
     }
 
-    public function create()
+    public function create($data = null)
     {
         $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            log_error('ERR-0010', 'm_connections::create');
+        $data_array = array();
+        $sql = "INSERT INTO `oa_connection` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'm_connections::create');
+                return false;
+            }
+        }
+        foreach ($this->db->field_data('oa_connection') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
+            log_error('ERR-0021', 'm_connections::create');
             return false;
         }
-        $attributes = array('org_id', 'name', 'provider', 'service_type', 'product_name', 'service_identifier', 'speed', 'location_id_a', 'location_id_b', 'system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
-        $data = array();
-        foreach ($attributes as $attribute) {
-            $data[] = $CI->response->meta->received_data->attributes->{$attribute};
-        }
-        $sql = "INSERT INTO `oa_connection` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $this->run_sql($sql, $data);
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $this->run_sql($sql, $data_array);
         return $this->db->insert_id();
     }
 
@@ -170,7 +127,7 @@ class M_connections extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = 'org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b';
+        $fields = ' org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
@@ -181,7 +138,7 @@ class M_connections extends MY_Model
             }
         }
         $sql = "UPDATE `oa_connection` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
+        $this->run_sql($sql);
         return;
     }
 
@@ -203,5 +160,4 @@ class M_connections extends MY_Model
             return false;
         }
     }
-
 }

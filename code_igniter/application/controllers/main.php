@@ -44,6 +44,10 @@ class main extends MY_Controller
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
+
+        $this->load->model('m_users');
+        $this->load->model('m_roles');
+        $this->roles = $this->m_roles->collection();
     }
 
     public function index()
@@ -532,10 +536,10 @@ class main extends MY_Controller
             foreach ($this->data['query'] as $key) {
                 foreach ($filter as $enum_filter) {
                     if (property_exists($key, $enum_filter['variable'])) {
-                        if (($key->$enum_filter['variable'] == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
+                        if (($key->{$enum_filter['variable']} == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
                             $remove = true;
                         }
-                        if (($key->$enum_filter['variable'] != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
+                        if (($key->{$enum_filter['variable']} != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
                             $remove = true;
                         }
                     }

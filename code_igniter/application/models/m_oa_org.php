@@ -109,7 +109,7 @@ class M_oa_org extends MY_Model
 
     public function get_all_orgs()
     {
-        $sql = "SELECT o1.*, o2.name as parent_name, count(oa_group_sys.system_id) as total FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN oa_group_sys ON oa_group_sys.group_id = o1.group_id GROUP BY o1.id ORDER BY o1.name";
+        $sql = "SELECT o1.*, o2.name as parent_name FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id GROUP BY o1.id ORDER BY o1.name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -151,7 +151,7 @@ class M_oa_org extends MY_Model
             return;
         }
         $data = array("$id");
-        $sql = "UPDATE system SET org_id = '0' WHERE org_id = ?";
+        $sql = "UPDATE system SET org_id = '1' WHERE org_id = ?";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
         $sql = "DELETE FROM oa_org WHERE id = ?";
