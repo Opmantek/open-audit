@@ -111,11 +111,22 @@ class M_configuration extends MY_Model
     {
         $CI = & get_instance();
 
+        // We might just use the response->meta->id
+        if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
+            if (!empty($CI->response->meta->id)) {
+                $id = $CI->response->meta->id;
+            } else if (!empty($CI->response->meta->received_data->attributes->name)) {
+                $id = $CI->response->meta->received_data->attributes->name;
+            } else if (!empty($CI->response->meta->received_data->attributes->id)) {
+                $id = $CI->response->meta->received_data->attributes->id;
+            }
+        }
+
         // We accept either an integer ID or a string NAME
         if (!empty($id) and !is_integer($id)) {
             $sql = "SELECT id FROM configuration WHERE name = ?";
-            $data = array($id);
-            $result = $this->run_sql($sql, array());
+            $data = array((string)$id);
+            $result = $this->run_sql($sql, $data);
             if (!empty($result[0]->id)) {
                 $id = $result[0]->id;
             } else {
@@ -123,24 +134,10 @@ class M_configuration extends MY_Model
             }
         }
 
-        // We might just use the response->meta->id
-        if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
-            $id = $CI->response->meta->id;
-        }
-
-        // We might also use the received data
-        if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration' and !empty($CI->response->meta->received_data->attributes->name)) {
-            $sql = "SELECT id FROM configuration WHERE name = ?";
-            $data = array($name);
-            $result = $this->run_sql($sql, array());
-            if (!empty($result[0]->id)) {
-                $id = $result[0]->id;
-            }
-        }
-
         // We have nothing to ID the particular config item
         if (empty($id)) {
-            return;
+            echo "FAIL";
+            return false;
         }
 
         // We can use the responsed received data if not explicitly provided a value
@@ -157,7 +154,7 @@ class M_configuration extends MY_Model
         $sql = "UPDATE `configuration` SET `value` = ?, edited_by = ?, edited_date = NOW() WHERE id = ?";
         $data = array((string)$value, (string)$edited_by, intval($id));
         $this->run_sql($sql, $data);
-        return;
+        return true;
     }
 
     public function delete($id = '')
