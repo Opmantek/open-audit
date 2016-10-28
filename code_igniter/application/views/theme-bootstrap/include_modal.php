@@ -168,6 +168,8 @@
             $(window).bind('resize.modal', method.center);
             $modal.show();
             $overlay.show();
+            $overlay.css("z-index", "1499");
+            $modal.css("z-index", "1500");
         };
 
         // Close the modal
