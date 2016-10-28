@@ -348,9 +348,14 @@ if (! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
+        # Define our constans for use in htmlspecialchars
         if (!defined('CHARSET')) {
             define('CHARSET', 'UTF-8');
-            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            if (phpversion() >= 5.4) {
+                define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            } else {
+                define('REPLACE_FLAGS', ENT_COMPAT);
+            }
         }
         $CI->response->table = '';
         $table = '';

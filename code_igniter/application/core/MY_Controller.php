@@ -66,9 +66,14 @@ class MY_Controller extends CI_Controller
         $this->load->model('m_oa_user');
         $this->load->model('m_users');
 
+        # Define our constans for use in htmlspecialchars
         if (!defined('CHARSET')) {
             define('CHARSET', 'UTF-8');
-            define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            if (phpversion() >= 5.4) {
+                define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            } else {
+                define('REPLACE_FLAGS', ENT_COMPAT);
+            }
         }
 
         // set the 'admin' flag if required when testing

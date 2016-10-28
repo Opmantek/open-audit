@@ -334,10 +334,14 @@ class admin extends MY_Controller
     public function export_nmis()
     {
         if (!isset($_POST['submit'])) {
-            # show the list
+            # Define our constans for use in htmlspecialchars
             if (!defined('CHARSET')) {
                 define('CHARSET', 'UTF-8');
-                define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+                if (phpversion() >= 5.4) {
+                    define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+                } else {
+                    define('REPLACE_FLAGS', ENT_COMPAT);
+                }
             }
             $this->data['heading'] = 'Export to NMIS';
             $this->data['include'] = 'v_export_nmis';

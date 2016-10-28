@@ -43,9 +43,14 @@ if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php'
     $this->user->theme = 'tango';
 }
 
+# Define our constans for use in htmlspecialchars
 if (!defined('CHARSET')) {
     define('CHARSET', 'UTF-8');
-    define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+    if (phpversion() >= 5.4) {
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+    } else {
+        define('REPLACE_FLAGS', ENT_COMPAT);
+    }
 }
 
 $oa_web_index    = htmlentities($this->config->item('oa_web_index'));

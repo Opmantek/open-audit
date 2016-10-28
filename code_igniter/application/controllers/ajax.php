@@ -50,8 +50,15 @@ class ajax1 extends MY_Controller
             $this->data['field_data'] = @$_POST['value'];
         }
 
-        define('CHARSET', 'UTF-8');
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+        # Define our constans for use in htmlspecialchars
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            if (phpversion() >= 5.4) {
+                define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            } else {
+                define('REPLACE_FLAGS', ENT_COMPAT);
+            }
+        }
 
         $this->data['title'] = 'Open-AudIT';
 
