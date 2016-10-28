@@ -5597,7 +5597,7 @@ class Database extends MY_Controller_new
             $result = $query->result();
             $this->data['output'] .= 'Completing 1.12.10 upgrade at ' . $result[0]->timestamp . "\n\n";
 
-            $log_details->message = 'Upgrade database to 1.12.10 completed';
+            $log_details->message = "Upgrade database to 1.12.10 completed\n\n";
             stdlog($log_details);
             unset($log_details);
 
