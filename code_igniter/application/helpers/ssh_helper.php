@@ -158,7 +158,7 @@ if (! function_exists('ssh_credentials')) {
                             return $credential;
                         } else {
                             # no we didn't use root - is sudo on the box?
-                            if ($result = ssh_command($ip, $credential, 'which sudo', $log)) {
+                            if ($result = ssh_command($ip, $credential, 'which sudo', $log) and !empty($result['output'][0])) {
                                 # yes, sudo is present
                                 $sudo_binary = $result['output'][0];
                                 $command = 'echo ' . $credential->credentials->password . ' | sudo -S whoami';
@@ -363,7 +363,7 @@ if (! function_exists('ssh_command')) {
             if ($credentials->type == 'ssh') {
                 #$command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . str_replace('"', '\"', $password) . ' ' . $command;
                 #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->id." self_delete=y\"";
-                $command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
+                $command_string = 'echo y | ' . $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
                 exec($command_string, $return['output'], $return['status']);
                 if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
                     (isset($return['output'][0]) and stripos($return['output'][0], 'using keyboard-interactive authentication') !== false) or
@@ -389,16 +389,14 @@ if (! function_exists('ssh_command')) {
         $command_string = str_replace(escapeshellarg($password), '******', $command_string);
         $log->command = $command_string;
         $log->command_time_to_execute = (microtime(true) - $item_start);
+        if (!empty($return['output'][0])) {
+            $log->command_output = trim($return['output'][0]);
+        }
         if ($return['status'] != '0') {
             $log->command_status = 'fail';
-            if (!empty($return['output'][0])) {
-                $log->command_output = trim($return['output'][0]);
-            }
+
         } else {
             $log->command_status = 'success';
-            if (!empty($return['output'][0])) {
-                $log->command_output = trim($return['output'][0]);
-            }
         }
         $log->message = 'SSH command';
         discovery_log($log);
@@ -461,7 +459,6 @@ if (! function_exists('ssh_audit')) {
         $details->os_group = '';
 
         $command = 'uname';
-
         $ssh_result = ssh_command($ip, $credentials, $command, $log);
         $log->function = 'ssh_audit';
         if ($ssh_result['status'] == 0) {
@@ -486,13 +483,17 @@ if (! function_exists('ssh_audit')) {
 
         if ($details->os_group == 'Windows') {
             # We don't support SSH auditing to Windows at the moment
+            $log->severity = 5;
+            $log->message = 'Windows audit via SSH not supported at this time';
+            discovery_log($log);
+            $log->severity = 7;
             return($details);
         }
 
         if ($details->os_group == '') {
             $log->function = 'ssh_audit';
             $log->severity = 5;
-            $log->message = 'uname command failed for ' . $details->ip . ' (System ID ' . $details->id . ')';
+            $log->message = 'uname command failed for ' . $ip;
             discovery_log($log);
             $log->severity = 7;
         }
@@ -755,11 +756,11 @@ if (! function_exists('scp')) {
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
             if ($credentials->type == 'ssh') {
                 $password = str_replace('"', '\"', $password);
-                $command = $filepath . '\pscp.exe -pw "' . $password . '" ' . $source . ' ' . $user . '@' . $host . ':' . $destination;
+                $command = $filepath . '\pscp.exe -pw "' . $password . '" ' . $source . ' ' . $username . '@' . $ip . ':' . $destination;
                 $echo = str_replace($password, '******', $command);
                 exec($command, $return['output'], $return['status']);
             } elseif ($credentials->type == 'ssh_key') {
-                $command = $filepath . '\pscp.exe -i "' . $keyfile . '" ' . $source . ' ' . $user . '@' . $host . ':' . $destination;
+                $command = $filepath . '\pscp.exe -i "' . $keyfile . '" ' . $source . ' ' . $username . '@' . $ip . ':' . $destination;
                 $echo = $command;
                 exec($command, $return['output'], $return['status']);
             }
