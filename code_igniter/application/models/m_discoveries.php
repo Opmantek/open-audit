@@ -268,6 +268,17 @@ class M_discoveries extends MY_Model
         // Windows based discovery
         if (php_uname('s') == 'Windows NT') {
             $filepath = $this->config->config['base_path'] . '\\other';
+            // run the script and continue (do not wait for result)
+            $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
+                                " subnet_range=" . $discovery->subnet .
+                                " url=".           $discovery->network_address . "index.php/input/discoveries" .
+                                " submit_online=y" .
+                                " echo_output=n" .
+                                " create_file=n" .
+                                " debugging=0" .
+                                " subnet_timestamp=" . $discovery->id .
+                                " os_scan=" . $nmap_os;
+            pclose(popen($command_string, "r"));
         }
     }
 }
