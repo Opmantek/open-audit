@@ -701,7 +701,7 @@ if (!empty($_POST['form_details'])) {
                             $log->severity = 7;
                         } else {
                             $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                            stdlog($log_details);
+                            stdlog($log);
                         }
                         $output = null;
                         $return_var = null;
@@ -791,17 +791,32 @@ if (!empty($_POST['form_details'])) {
             $sql = "/* discovery::process_subnet */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
             $query = $this->db->query($sql);
             $result = $query->result();
+            $log->command = $sql;
+            $log->message = "Retrieve appropriate script";
+            discovery_log($log);
+            unset($log->command, $log->message);
             if (!empty($result[0])) {
                 $script_details = $result[0];
                 # Just ensure we delete any audit scripts that might exist.
                 # Shouldn't be required because we're creating based on the timestamp
                 # Then open the file for writing
                 $ts = date('y_m_d_H_i_s');
+                $log->message = 'Creating temporary script';
                 if (php_uname('s') == 'Windows NT') {
                     $source_name = 'scripts\\' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
                     $unlink = $this->config->config['base_path'] . '\\other\\' . $source_name;
                     @unlink($unlink);
-                    $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                    try {
+                        $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                    } catch (Exception $e) {
+                        #print_r($e);
+                        $log->message = 'Could not create temporary script (windows)';
+                        $log->command = $e;
+                        $log->status = 'fail';
+                        discovery_log($log);
+                        unset($log->command, $log->message, $log->status);
+                    }
+                    $log->command = $this->config->config['base_path'] . '\\other\\' . $source_name;
                 } else {
                     $source_name = 'scripts/' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
                     $unlink = $this->config->config['base_path'] . '/other/' . $source_name;
@@ -809,8 +824,14 @@ if (!empty($_POST['form_details'])) {
                     try {
                         $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
                     } catch (Exception $e) {
-                        print_r($e);
+                        #print_r($e);
+                        $log->message = 'Could not create temporary script (unix)';
+                        $log->command = $e;
+                        $log->status = 'fail';
+                        discovery_log($log);
+                        unset($log->command, $log->message, $log->status);
                     }
+                    $log->command = $this->config->config['base_path'] . '/other/' . $source_name;
                 }
                 $script = $this->m_scripts->download($script_details->id);
                 fwrite($fp, $script);
@@ -818,6 +839,11 @@ if (!empty($_POST['form_details'])) {
             } else {
                 $unlink = '';
                 $source_name = $audit_script;
+                $log->message = 'Could not create temporary script';
+                $log->command = 'Nothing returned from database';
+                $log->status = 'fail';
+                discovery_log($log);
+                unset($log->command, $log->message, $log->status);
             }
 
             unset($temp);
@@ -876,8 +902,8 @@ if (!empty($_POST['form_details'])) {
                             $esx_xml = new SimpleXMLElement($esx_input);
                         } catch (Exception $error) {
                             // not a valid XML string
-                            $log_details->message = 'Invalid XML input for ESX audit script';
-                            stdlog($log_details);
+                            $log->message = 'Invalid XML input for ESX audit script';
+                            stdlog($log);
                             exit;
                         }
                         $count = 0;
@@ -895,13 +921,13 @@ if (!empty($_POST['form_details'])) {
                                     $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by');
                                     $esx_details->original_last_seen = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen');
                                     $this->m_system->update_system($esx_details);
-                                    $log_details->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
-                                    stdlog($log_details);
+                                    $log->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
+                                    stdlog($log);
                                 } else {
                                     // we have a new system
                                     $esx_details->system_id = $this->m_system->insert_system($esx_details);
-                                    $log_details->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
-                                    stdlog($log_details);
+                                    $log->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
+                                    stdlog($log);
                                 }
                                 if (!isset($esx_details->audits_ip)) {
                                     $esx_details->audits_ip = $device->audits_ip;

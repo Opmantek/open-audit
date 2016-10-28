@@ -533,8 +533,8 @@ if (! function_exists('wmi_command')) {
             if ($domain != '') {
                 $domain .= '\\';
             }
-            $command_string = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:' . $domain.$username . ' /password:"' . str_replace('"', '\"', $password) . '" ' . $command;
-            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:' . $domain.$username . ' /password:"******" ' . $command;
+            $command_string = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . str_replace('"', '\"', $password) . '" ' . $command;
+            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
             $log->message = "Attempting to execute command";
             $log->id = discovery_log($log);
             $item_start = microtime(true);
