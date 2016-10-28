@@ -82,16 +82,21 @@ include "include_header.php";
 if (!empty($this->response->errors) and !empty($this->response->errors[0]->title) and !empty($this->response->errors[0]->detail)) {
     echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
 }
-if (!empty($this->session->flashdata('error'))) {
+$temp = @$this->session->flashdata('error');
+if (!empty($temp)) {
     echo '<div class="alert alert-danger" role="alert">' . $this->session->flashdata('error') . "</div>\n";
 }
-if (!empty($this->session->flashdata('success'))) {
+$temp = @$this->session->flashdata('success');
+if (!empty($temp)) {
     echo '<div class="alert alert-success" role="alert">' . $this->session->flashdata('success') . "</div>\n";
 }
-if (!empty($this->session->flashdata('error')) and !empty($this->response->errors[0]->detail)) {
+$temp1 = @$this->session->flashdata('error');
+$temp2 = @$this->response->errors[0]->detail;
+if (!empty($temp1) and !empty($temp2)) {
     echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->detail . "</div>\n";
 }
-if (!empty($this->response->meta->flash)) {
+$temp = @$this->response->meta->flash;
+if (!empty($temp)) {
     echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
 }
 include($include.'.php');

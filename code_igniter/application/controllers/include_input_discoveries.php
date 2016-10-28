@@ -662,7 +662,7 @@ if (!empty($_POST['form_details'])) {
             }
 
             // Windows Open-AudIT server auditing a Windows target
-            if (php_uname('s') != 'Windows NT') {
+            if (php_uname('s') == 'Windows NT') {
                 if (exec('whoami') == 'nt authority\system') {
                     # We're running on the LocalSystem account.
                     # We cannot copy the audit script to the target and then run it,

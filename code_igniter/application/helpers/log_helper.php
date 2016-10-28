@@ -455,13 +455,13 @@ if (! function_exists('stdlog')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
-            if (empty($CI->config->item('base_path'))) {
+            if (empty($CI->config->config['base_path'])) {
                 $file = 'c:\\xampplite\\open-audit\\other\\log_' . $log->file . '.log';
             } else {
                 $file = $CI->config->item('base_path') . '\\other\\log_' . $log->file . '.log';
             }
         } else {
-            if (empty($CI->config->item('base_path'))) {
+            if (empty($CI->config->config['base_path'])) {
                 $file = '/usr/local/open-audit/other/log_' . $log->file . '.log';
             } else {
                 $file = $CI->config->item('base_path') . '/other/log_' . $log->file . '.log';

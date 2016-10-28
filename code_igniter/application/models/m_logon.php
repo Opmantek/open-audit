@@ -261,8 +261,9 @@ class M_logon extends MY_Model
                         }
                     }
                     $user->orgs = json_encode($user_orgs);
-
-                    if (!empty(json_decode($user->orgs)) and !empty(json_decode($user->roles))) {
+                    $temp1 = @json_decode($user->orgs);
+                    $temp2 = @json_decode($user->roles);
+                    if (!empty($temp1) and !empty($temp2)) {
                         $user_sql = "SELECT * FROM oa_user WHERE name = ? and ldap = ? and active = 'y' LIMIT 1";
                         $user_data = array((string)$username, intval($entries[0]['distinguishedname'][0]));
                         $user_query = $this->db->query($user_sql, $user_data);

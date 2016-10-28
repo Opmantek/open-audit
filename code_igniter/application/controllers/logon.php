@@ -201,7 +201,8 @@ class logon extends CI_Controller
             redirect('database');
             exit();
         }
-        if (!empty($this->session->userdata('url'))) {
+        $url = @$this->session->userdata('url');
+        if (!empty($url)) {
             redirect($this->session->userdata('url'));
         } else {
             redirect('summaries');

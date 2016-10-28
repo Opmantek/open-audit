@@ -68,7 +68,8 @@ class Summaries extends MY_Controller_new
         $this->load->helper('error');
         $this->load->model('m_summaries');
         $this->load->model('m_orgs');
-        if (empty($this->uri->segment(1))) {
+        $temp = @$this->uri->segment(1);
+        if (empty($temp)) {
             redirect('summaries');
         }
         inputRead();
