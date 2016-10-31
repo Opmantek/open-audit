@@ -94,6 +94,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][extra_columns]" class="col-sm-3 control-label">Extra Columns</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][extra_columns]" name="data[attributes][extra_columns]">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>
