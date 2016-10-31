@@ -47,13 +47,13 @@ class M_summaries extends MY_Model
             log_error('ERR-0010', 'm_summaries::create');
             return false;
         }
-        $attributes = array('name', 'org_id', 'table', 'column');
+        $attributes = array('name', 'org_id', 'table', 'column', 'extra_columns');
         $data = array();
         foreach ($attributes as $attribute) {
             $data[] = $CI->response->meta->received_data->attributes->{$attribute};
         }
         $data[] = $CI->user->full_name;
-        $sql = "INSERT INTO `summaries` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO `summaries` VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
