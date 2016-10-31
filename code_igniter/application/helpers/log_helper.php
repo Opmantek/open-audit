@@ -66,6 +66,9 @@ if (! function_exists('log_error')) {
             $error->controller = '';
         }
         unset($error->function);
+        if (empty($error->status)) {
+            $error->status = '';
+        }
         // if the error is severe enough, set the error in the response object
         #if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
