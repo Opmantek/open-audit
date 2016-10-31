@@ -56,12 +56,47 @@ class logon extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
         $this->load->helper('url');
         $this->load->helper('log');
         $this->load->helper('error');
         $this->load->library('session');
         $this->load->model('m_configuration');
         $this->m_configuration->load();
+
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->file = 'system';
+        $log->message = '';
+
+        # get the output format
+        $format = '';
+        $http_accept = @$_SERVER['HTTP_ACCEPT'];
+        if (strpos($http_accept, 'application/json') !== false) {
+            $format = 'json';
+            $log->message = 'Set format to ' . $format . ', according to HEADERS.';
+            stdlog($log);
+        }
+        if (strpos($http_accept, 'html') !== false) {
+            $format = 'screen';
+            $log->message = 'Set format to ' . $format . ', according to HEADERS.';
+            stdlog($log);
+        }
+        if (isset($_GET['format'])) {
+            $format = $_GET['format'];
+            $log->message = 'Set format to ' . $format . ', according to GET.';
+            stdlog($log);
+        }
+        if (isset($_POST['format'])) {
+            $format = $_POST['format'];
+            $log->message = 'Set format to ' . $format . ', according to POST.';
+            stdlog($log);
+        }
+        if ($format == '') {
+            $format = 'json';
+            $log->message = 'Set format to ' . $format . ', because default.';
+            stdlog($log);
+        }
 
         # initialise our properties
         $this->response = new stdClass();
@@ -72,7 +107,7 @@ class logon extends CI_Controller
         $this->response->meta->current = 'y';
         $this->response->meta->debug = false;
         $this->response->meta->filtered = '';
-        $this->response->meta->format = '';
+        $this->response->meta->format = $format;
         $this->response->meta->groupby = '';
         $this->response->meta->header = 'HTTP/1.1 200 OK';
         $this->response->meta->id = null;
@@ -179,8 +214,18 @@ class logon extends CI_Controller
     public function index()
     {
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
+
+            if (!empty($this->session->userdata('user_id'))) {
+                if ($this->response->meta->format != 'json') {
+                    #echo "<pre>\n"; print_r($this->session->all_userdata());
+                    redirect('summaries');
+                } else {
+                    print_r(json_encode($this->response));
+                }
+            }
             $this->response->meta->action = 'create';
             $this->load->view('v_logon', $this->response);
+            
         } else {
             // NOTE - had to NOT use 'logon' as it confuses PHP checkers that think it's the constructor
             $this->login();
@@ -195,17 +240,37 @@ class logon extends CI_Controller
     */
     public function login()
     {
+
+        if (!empty($this->session->userdata('user_id'))) {
+            if ($this->response->meta->format != 'json') {
+                #echo "<pre>\n"; print_r($this->session->all_userdata());
+                redirect('summaries');
+            } else {
+                print_r(json_encode($this->response));
+            }
+        }
+
         $this->load->model('m_logon');
         $this->m_logon->logon();
         if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
             redirect('database');
             exit();
         }
-        $url = @$this->session->userdata('url');
-        if (!empty($url)) {
-            redirect($this->session->userdata('url'));
+        #$this->response->meta->format = 'json';
+        $this->user->id = intval($this->user->id);
+        $this->user->org_id = intval($this->user->org_id);
+
+        #echo "<pre>\n"; print_r($this->response); exit();
+        if ($this->response->meta->format != 'json') {
+            $url = @$this->session->userdata('url');
+            if (!empty($url)) {
+                redirect($this->session->userdata('url'));
+            } else {
+                redirect('summaries');
+            }
         } else {
-            redirect('summaries');
+            $this->user->roles = json_decode($this->user->roles);
+            print_r(json_encode($this->user));
         }
     }
 
