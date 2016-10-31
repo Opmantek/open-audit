@@ -192,6 +192,12 @@ class M_roles extends MY_Model
             return false;
         }
 
+        if (empty($CI->response->meta->received_data->attributes->description)) {
+            $description = '';
+        } else {
+            $description = $CI->response->meta->received_data->attributes->description;
+        }
+
         $permissions = new stdClass();
         if (empty($CI->response->meta->received_data->attributes->permissions)) {
             $permissions = '';
@@ -204,7 +210,6 @@ class M_roles extends MY_Model
             }
             $permissions = json_encode($permissions);
         }
-
         $ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $CI->response->meta->received_data->attributes->name));
 
         if (empty($CI->user->name)) {
@@ -212,8 +217,8 @@ class M_roles extends MY_Model
         } else {
             $user = $CI->user->name;
         }
-        $sql = "INSERT INTO `roles` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        $data = array("$name", $permissions, $ad_group, $user);
+        $sql = "INSERT INTO `roles` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+        $data = array("$name", "$description", $permissions, $ad_group, $user);
         $this->run_sql($sql, $data);
         return $this->db->insert_id();
     }
