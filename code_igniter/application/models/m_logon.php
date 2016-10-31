@@ -126,7 +126,7 @@ class M_logon extends MY_Model
                         if (count($result) == 1) {
                             $userdata = array('user_id' => $result[0]->id);
                             $this->session->set_userdata($userdata);
-                            return;
+                            return $result[0];
                         } else {
                             // TODO log a warning. User in AD and correct credentials supplied, but no in OA
                             echo "HERE";
@@ -295,7 +295,7 @@ class M_logon extends MY_Model
                         $CI->user = $user;
                         $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
                         $this->session->set_userdata($userdata);
-                        return;
+                        return $user;
                     } else {
                         // The user exists in AD, but has no Open-AudIT roles or Organisations
                         // echo "<pre>\n"; print_r($user); exit();
@@ -326,7 +326,7 @@ class M_logon extends MY_Model
                     $CI->user = $db_user;
                     $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
                     $this->session->set_userdata($userdata);
-                    return;
+                    return $db_user;
                 }
             }
         }
