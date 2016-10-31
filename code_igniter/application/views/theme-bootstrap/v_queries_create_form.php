@@ -33,9 +33,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<pre>
-<?php print_r($this->user); ?>
-</pre>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->meta->collection; ?>">
     <div class="panel panel-default">
         <div class="panel-heading">
