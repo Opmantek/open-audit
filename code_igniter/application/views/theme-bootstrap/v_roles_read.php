@@ -39,12 +39,7 @@ $item_permissions = json_decode($item->attributes->permissions);
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
+        <?php include('include_read_panel_header.php'); ?>
 
         <div class="panel-body">
             <div class="row">
@@ -149,4 +144,48 @@ foreach ($endpoints as $endpoint) {
                 </table>
             </div>
     </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                <span class="text-left">Users</span>
+                <span class="pull-right"></span>
+            </h3>
+        </div>
+
+        <div class="panel-body">
+                <table class="table table-condensed table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><?php echo __('ID')?></th>
+                            <th><?php echo __('Name')?></th>
+                            <th><?php echo __('Organisation')?></th>
+                            <th><?php echo __('Roles')?></th>
+                            <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
+                            <th class="text-center"><?php echo __('Edit')?></th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+<?php
+foreach ($this->response->included as $item) {
+    if ($item->type == 'users') { ?>
+                    <tr>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                        <td><?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
+                        <td><?php echo htmlspecialchars(implode(', ', json_decode($item->attributes->roles)), REPLACE_FLAGS, CHARSET)?></td>
+                        <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
+                        <td class="text-center"><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                        <?php } ?>
+
+<?php    }
+}
+?>
+                    </tbody>
+                </table>
+            </div>
+    </div>
+
 </form>

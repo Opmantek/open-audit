@@ -86,6 +86,29 @@ class M_roles extends MY_Model
         return ($result);
     }
 
+    public function read_sub_resource($id = '')
+    {
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT name FROM `roles` WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        if (empty($result[0]->name)) {
+            return false;
+        } else {
+            $name = $result[0]->name;
+        }
+
+        $sql = "select oa_user.id, oa_user.full_name, oa_user.roles, oa_user.org_id, oa_org.name AS `org_name` FROM oa_user LEFT JOIN oa_org ON (oa_user.org_id = oa_org.id) WHERE oa_user.roles LIKE '%\"" . $name . "\"%'";
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'users');
+        return $result;
+    }
+
     public function collection()
     {
         $CI = & get_instance();

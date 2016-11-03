@@ -40,21 +40,30 @@ if ($this->response->meta->collection == 'users') {
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
-if (isset($this->response->data[0]->attributes->org_id) and $this->response->data[0]->attributes->org_id != '' and $this->response->meta->collection != 'users') {
+if (!empty($this->response->data[0]->attributes->org_id) and $this->response->meta->collection != 'users') {
     $this->load->model('m_orgs');
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
 }
+
 if ($this->response->meta->collection == 'orgs') {
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
 }
+
 if ($this->response->meta->collection == 'discoveries') {
     $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
 }
+
+if ($this->response->meta->collection == 'roles') {
+    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
+}
+
 $this->response->meta->filtered = count($this->response->data);
+
 if (count($this->response->data) == 0) {
     log_error('ERR-0002', $this->response->meta->collection . ':read');
     $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called read.');
 }
+
 if ($this->response->meta->format === 'json') {
     output($this->response);
 } else {
