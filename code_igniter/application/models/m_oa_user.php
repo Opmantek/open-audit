@@ -371,12 +371,12 @@ class M_oa_user extends MY_Model
         // }
 
         $user_prefix = 'user_';
-        $sql = "SELECT * FROM oa_user WHERE name = ? LIMIT 1";
+        $sql = "/* m_oa_user::validate_user */" . "SELECT * FROM oa_user WHERE name = ? LIMIT 1";
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) >= 20130512) {
-            $sql = "SELECT * FROM oa_user WHERE user_name = ? AND user_active = 'y' LIMIT 1";
+            $sql = "/* m_oa_user::validate_user */" . "SELECT * FROM oa_user WHERE user_name = ? AND user_active = 'y' LIMIT 1";
         }
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) >= 20160409) {
-            $sql = "SELECT * FROM oa_user WHERE name = ? AND active = 'y' LIMIT 1";
+            $sql = "/* m_oa_user::validate_user */" . "SELECT * FROM oa_user WHERE name = ? AND active = 'y' LIMIT 1";
             $user_prefix = '';
         }
 
