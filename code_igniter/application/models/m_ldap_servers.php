@@ -101,7 +101,7 @@ class M_ldap_servers extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name description org_id lang host domain ';
+        $fields = ' name description org_id lang host domain refresh ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
