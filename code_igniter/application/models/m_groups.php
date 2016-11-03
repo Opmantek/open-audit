@@ -111,7 +111,7 @@ class M_groups extends MY_Model
         #$sql = $this->collection_sql('queries', 'sql');
         $sql = "SELECT groups.*, oa_org.name AS `org_name` FROM groups LEFT JOIN oa_org ON (groups.org_id = oa_org.id) WHERE groups.org_id IN (" . $CI->user->org_list . ") GROUP BY groups.name";
         $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'queries');
+        $result = $this->format_data($result, 'groups');
         return ($result);
     }
 
