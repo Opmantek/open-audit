@@ -169,7 +169,7 @@
                     <li class="dropdown-submenu">
                         <a href="#">Groups</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/list_groups'>List Groups</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups'>List Groups</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'fields', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/add_group'>Create Group</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/import_group'>Import Group</a></li>
