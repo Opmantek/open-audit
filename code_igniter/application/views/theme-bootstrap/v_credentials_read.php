@@ -36,12 +36,7 @@ $item = $this->response->data[0];
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
+        <?php include('include_read_panel_header.php'); ?>
 
         <div class="panel-body">
             <div class="row">
@@ -175,7 +170,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.security_name" class="col-sm-3 control-label">Security Name</label>
+                        <label for="credentials.security_name" class="col-sm-3 control-label">User / Security Name</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="credentials.security_name" name="credentials.security_name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->security_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -224,7 +219,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.authentication_passphrase" class="col-sm-3 control-label">Authentication Passphrase</label>
+                        <label for="credentials.authentication_passphrase" class="col-sm-3 control-label">User / Authentication Passphrase</label>
                         <div class="col-sm-8 input-group">
                             <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" placeholder="" value="<?php echo htmlspecialchars($item->attributes->credentials->authentication_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>

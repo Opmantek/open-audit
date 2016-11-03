@@ -36,12 +36,7 @@ $item = $this->response->data[0];
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
+        <?php include('include_read_panel_header.php'); ?>
 
         <div class="panel-body">
             <div class="row">
