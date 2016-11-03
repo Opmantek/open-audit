@@ -131,6 +131,89 @@ class logon extends CI_Controller
         $this->response->links = array();
         $this->response->included = array();
 
+    }
+
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
+    public function index()
+    {
+        if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
+
+            if (!empty($this->session->userdata('user_id'))) {
+                if ($this->response->meta->format != 'json') {
+                    #echo "<pre>\n"; print_r($this->session->all_userdata());
+                    redirect('summaries');
+                } else {
+                    print_r(json_encode($this->response));
+                }
+            }
+            $this->check_defaults();
+            $this->response->meta->action = 'create';
+            $this->load->view('v_logon', $this->response);
+            
+        } else {
+            // NOTE - had to NOT use 'logon' as it confuses PHP checkers that think it's the constructor
+            $this->login();
+        }
+    }
+
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
+    public function login()
+    {
+
+        if (!empty($this->session->userdata('user_id'))) {
+            if ($this->response->meta->format != 'json') {
+                #echo "<pre>\n"; print_r($this->session->all_userdata());
+                redirect('summaries');
+            } else {
+                print_r(json_encode($this->response));
+            }
+        }
+
+        $this->load->model('m_logon');
+        $this->m_logon->logon();
+
+        if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
+            redirect('database');
+            exit();
+        }
+        #$this->response->meta->format = 'json';
+        $this->user->id = intval($this->user->id);
+        #$this->user->org_id = intval($this->user->org_id);
+        #echo "<pre>\n"; print_r($this->user); exit();
+
+        #echo "<pre>\n"; print_r($this->response); exit();
+        if ($this->response->meta->format != 'json') {
+            $url = @$this->session->userdata('url');
+            if (!empty($url)) {
+                redirect($this->session->userdata('url'));
+            } else {
+                redirect('summaries');
+            }
+        } else {
+            $this->user->roles = json_decode($this->user->roles);
+            print_r(json_encode($this->user));
+        }
+    }
+
+    public function logoff()
+    {
+        $this->session->sess_destroy();
+        redirect('logon');
+    }
+
+    public function check_defaults()
+    {
+
         // Delete any old sessions stored int he DB
         $sql = "/* logon::constructor */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
         $query = $this->db->query($sql);
@@ -204,82 +287,6 @@ class logon extends CI_Controller
             $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
         }
     }
-
-    /**
-    * Index that is unused
-    *
-    * @access public
-    * @return NULL
-    */
-    public function index()
-    {
-        if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
-
-            if (!empty($this->session->userdata('user_id'))) {
-                if ($this->response->meta->format != 'json') {
-                    #echo "<pre>\n"; print_r($this->session->all_userdata());
-                    redirect('summaries');
-                } else {
-                    print_r(json_encode($this->response));
-                }
-            }
-            $this->response->meta->action = 'create';
-            $this->load->view('v_logon', $this->response);
-            
-        } else {
-            // NOTE - had to NOT use 'logon' as it confuses PHP checkers that think it's the constructor
-            $this->login();
-        }
-    }
-
-    /**
-    * Index that is unused
-    *
-    * @access public
-    * @return NULL
-    */
-    public function login()
-    {
-
-        if (!empty($this->session->userdata('user_id'))) {
-            if ($this->response->meta->format != 'json') {
-                #echo "<pre>\n"; print_r($this->session->all_userdata());
-                redirect('summaries');
-            } else {
-                print_r(json_encode($this->response));
-            }
-        }
-
-        $this->load->model('m_logon');
-        $this->m_logon->logon();
-        if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
-            redirect('database');
-            exit();
-        }
-        #$this->response->meta->format = 'json';
-        $this->user->id = intval($this->user->id);
-        $this->user->org_id = intval($this->user->org_id);
-
-        #echo "<pre>\n"; print_r($this->response); exit();
-        if ($this->response->meta->format != 'json') {
-            $url = @$this->session->userdata('url');
-            if (!empty($url)) {
-                redirect($this->session->userdata('url'));
-            } else {
-                redirect('summaries');
-            }
-        } else {
-            $this->user->roles = json_decode($this->user->roles);
-            print_r(json_encode($this->user));
-        }
-    }
-
-    public function logoff()
-    {
-        $this->session->sess_destroy();
-        redirect('logon');
-    }
-
 }
 // End of file input.php
 // Location: ./controllers/input.php
