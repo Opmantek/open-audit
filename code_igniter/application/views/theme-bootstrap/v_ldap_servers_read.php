@@ -137,8 +137,8 @@ $item = $this->response->data[0];
                         <label for="use_roles" class="col-sm-3 control-label">Use Roles</label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="use_roles" name="use_roles" title='Use Roles' disabled>
-                                <option value='n' <?php if ($item->attributes->lang == 'n') { echo "selected"; }?>>No</option>
-                                <option value='y' <?php if ($item->attributes->lang == 'y') { echo "selected"; }?>>Yes</option>
+                                <option value='n' <?php if ($item->attributes->use_roles == 'n') { echo "selected"; }?>>No</option>
+                                <option value='y' <?php if ($item->attributes->use_roles == 'y') { echo "selected"; }?>>Yes</option>
                             </select>
                             <span class="input-group-btn">
                                 <button id="edit_use_roles" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="use_roles"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
