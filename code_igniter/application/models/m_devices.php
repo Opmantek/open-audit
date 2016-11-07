@@ -571,7 +571,7 @@ class M_devices extends MY_Model
         // $sql = str_replace('WHERE ', $filter, $sql);
 
         $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
-        $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+        #$device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
         $sql = $query->sql;
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
         $sql = "/* m_devices::query */ " . $sql;
