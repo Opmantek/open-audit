@@ -18597,6 +18597,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.35014') { $new->manufacturer = 'Fenzke Netzwerktechnik GmbH'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.35641') { $new->manufacturer = 'Universidad de los Andes'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.36108') { $new->manufacturer = 'Cooperative Resources International'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.43296') { $new->manufacturer = 'Exablaze'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.65665') { $new->manufacturer = 'Website Design, Search Engine Optimization, Ranking, New Delhi, India'; }
 		if (substr($oid, 0, 18) == '1.3.6.1.4.1.123456') { $new->manufacturer = 'Huama Infomation'; }
 		
