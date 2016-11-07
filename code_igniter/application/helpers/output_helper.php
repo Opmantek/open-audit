@@ -188,6 +188,12 @@ if (! function_exists('output')) {
             unset($CI->response->meta->internal);
             unset($CI->response->meta->sql);
         }
+        if (!empty($CI->response->data[0]->attributes)) {
+            $CI->response->meta->data_order = array();
+            foreach ($CI->response->data[0]->attributes as $key => $value) {
+                $CI->response->meta->data_order[] = $key;
+            }
+        }
         // foreach ($CI->response->meta as $key => $value) {
         //     if ($value == '') {
         //         unset($CI->response->meta->$key);
