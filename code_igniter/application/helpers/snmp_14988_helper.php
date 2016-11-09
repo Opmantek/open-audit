@@ -46,10 +46,14 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.7.3.0");
 
     $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
-    $temp = explode(' ', $temp);
-    unset($temp[0]);
-    $details->model = implode(' ', $temp);
-    unset($temp);
+    if ($temp == "RouterOS CHR") {
+        $details->model = "Cloud Hosted Router";
+    } else {
+        $temp = explode(' ', $temp);
+        unset($temp[0]);
+        $details->model = implode(' ', $temp);
+        unset($temp);
+    }
 
     $details->os_group = 'Linux';
     $details->os_family = 'RouterOS';
