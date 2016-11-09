@@ -622,7 +622,7 @@ if (! function_exists('inputRead')) {
             $log->message = 'Set format to ' . $CI->response->meta->format . ', because default.';
             stdlog($log);
         }
-        $reserved_words = ' json json_data screen xml csv sql ';
+        $reserved_words = ' json json_data screen xml csv sql table ';
         if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
             $CI->response->meta->format = 'json';
         }

@@ -85,7 +85,7 @@ if (! function_exists('output')) {
                 break;
 
             case 'excel':
-                output_excel($CI->response);
+                output_csv($CI->response);
                 break;
 
             case 'csv':
@@ -101,7 +101,8 @@ if (! function_exists('output')) {
                 break;
 
             case 'table':
-                output_report($CI->response);
+                #output_report($CI->response);
+                output_table($CI->response);
                 break;
 
             case 'html_formatted':
@@ -146,13 +147,13 @@ if (! function_exists('output')) {
         #print_r(json_encode($CI->response)); exit();
 
         $output_csv = '';
-        foreach ($CI->response->data[0] as $attribute => $value) {
+        foreach ($CI->response->data[0]->attributes as $attribute => $value) {
             $output_csv .= '"'.trim($attribute).'",';
         }
         $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
         $output_csv .= "\n";
         foreach ($CI->response->data as $item) {
-            foreach ($item as $key => $value) {
+            foreach ($item->attributes as $key => $value) {
                 $output_csv .= '"'.str_replace('"', '\"', $value).'",';
             }
             $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
@@ -352,6 +353,37 @@ if (! function_exists('output')) {
     }
 
     function output_table()
+    {
+        $CI = & get_instance();
+        $table = "<table>\n\t<thead>\n\t\t<tr>\n\t\t\t";
+        // Our Headers
+        foreach ($CI->response->data[0]->attributes as $key => $value) {
+            if (stripos($key, '_padded') === false) {
+                $table .= "<th>" . $key . "</th>";
+            }
+        }
+        $table .= "\n\t\t</tr>\n\t</thead>\n\t<tbody>\n";
+        foreach ($CI->response->data as $item) {
+            $table .= "\t\t<tr>\n\t\t\t";
+            foreach ($item->attributes as $key => $value) {
+                if (stripos($key, '_padded') === false) {
+                    $table .= "<td>" . $value . "</td>";
+                }
+            }
+            $table .= "\n\t\t</tr>\n";
+        }
+        $table .= "\t</tbody>\n</table>";
+        echo $table;
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/html');
+            header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
+            header('Cache-Control: max-age=0');
+        }
+
+
+    }
+
+    function output_table2()
     {
         $CI = & get_instance();
         # Define our constans for use in htmlspecialchars
