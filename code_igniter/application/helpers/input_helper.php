@@ -107,6 +107,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->debug = false;
         $CI->response->meta->filtered = '';
         $CI->response->meta->format = '';
+        $CI->response->meta->group = 0;
         $CI->response->meta->groupby = '';
         $CI->response->meta->header = 'HTTP/1.1 200 OK';
         $CI->response->meta->id = null;
@@ -660,6 +661,18 @@ if (! function_exists('inputRead')) {
             stdlog($log);
         }
 
+        # get the group
+        if (isset($_GET['group'])) {
+            $CI->response->meta->group = intval($_GET['group']);
+            $log->message = 'Set group to ' . $CI->response->meta->group . ', according to GET.';
+            stdlog($log);
+        }
+        if (isset($_POST['group'])) {
+            $CI->response->meta->group = intval($_POST['group']);
+            $log->message = 'Set group to ' . $CI->response->meta->group . ', according to POST.';
+            stdlog($log);
+        }
+
         if ($CI->response->meta->limit != '') {
             $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . $CI->response->meta->limit;
         } else {
@@ -738,7 +751,7 @@ if (! function_exists('inputRead')) {
         $filter = array();
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         if ($CI->response->meta->query_string != '') {
-            $reserved_words = ' properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids ';
+            $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
@@ -752,6 +765,11 @@ if (! function_exists('inputRead')) {
                 $operator = substr($query->value, 0, 2);
                 if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
                     $query->value = substr($query->value, 2);
+                    $query->operator = $operator;
+                }
+                $operator = substr($query->value, 0, 2);
+                if ($operator == 'in') {
+                    $query->value = "(" . substr($query->value, 2) . ")";
                     $query->operator = $operator;
                 }
                 $operator = substr($query->value, 0, 4);
