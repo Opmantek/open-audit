@@ -81,10 +81,7 @@ class devices extends MY_Controller_new
 
     private function collection()
     {
-        if ($this->response->meta->sub_resource != '' and 
-            ($this->response->meta->sub_resource != 'report' and 
-                $this->response->meta->sub_resource != 'query' and 
-                $this->response->meta->sub_resource != 'group')) {
+        if ($this->response->meta->sub_resource != '' and  ($this->response->meta->sub_resource != 'report' and $this->response->meta->sub_resource != 'query' and $this->response->meta->sub_resource != 'group')) {
             $this->response->data = $this->m_devices->collection_sub_resource();
 
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
@@ -122,7 +119,8 @@ class devices extends MY_Controller_new
         }
 
         if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+            #$this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+            $this->response->data = $this->m_devices_components->read($this->response->meta->id, $this->response->meta->current, $this->response->meta->sub_resource, $this->response->meta->filter, $this->response->meta->properties, $this->response->meta->group);
             $this->response->meta->format = 'json';
         } else {
             $this->response->data = $this->m_devices->read();
@@ -228,7 +226,7 @@ class devices extends MY_Controller_new
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             unset($temp);
             $temp = @$this->m_fields->collection();
-            if ( ! empty($temp)) {
+            if (! empty($temp)) {
                 $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             }
             include 'include_device_types.php';
