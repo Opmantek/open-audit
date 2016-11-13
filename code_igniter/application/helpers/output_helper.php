@@ -355,24 +355,24 @@ if (! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
-        $table = "<table>\n\t<thead>\n\t\t<tr>\n\t\t\t";
+        $table = "<table><thead><tr>";
         // Our Headers
         foreach ($CI->response->data[0]->attributes as $key => $value) {
             if (stripos($key, '_padded') === false) {
                 $table .= "<th>" . $key . "</th>";
             }
         }
-        $table .= "\n\t\t</tr>\n\t</thead>\n\t<tbody>\n";
+        $table .= "</tr></thead><tbody>";
         foreach ($CI->response->data as $item) {
-            $table .= "\t\t<tr>\n\t\t\t";
+            $table .= "<tr>";
             foreach ($item->attributes as $key => $value) {
                 if (stripos($key, '_padded') === false) {
                     $table .= "<td>" . $value . "</td>";
                 }
             }
-            $table .= "\n\t\t</tr>\n";
+            $table .= "</tr>";
         }
-        $table .= "\t</tbody>\n</table>";
+        $table .= "</tbody></table>";
         echo $table;
         if ((string) $CI->config->item('download_reports') === 'download') {
             header('Content-Type: text/html');
