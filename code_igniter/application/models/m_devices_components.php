@@ -40,7 +40,7 @@ class M_devices_components extends MY_Model
         parent::__construct();
     }
 
-    public function read($id = 0, $current = 'y', $table = '', $filter = '', $properties = '*')
+    public function read($id = 0, $current = 'y', $table = '', $filter = '', $properties = '*', $group = 0)
     {
         if ($table == '') {
             // we require a DB table to read from
@@ -90,6 +90,18 @@ class M_devices_components extends MY_Model
             }
         }
 
+        if (!empty($group)) {
+            $sql = "/* m_devices_components::read */" . "SELECT `sql` FROM `groups` WHERE `id` = " . intval($group);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $group_sql = $result[0]->sql;
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+            $group_sql = str_replace('WHERE @filter', $device_sql, $group_sql);
+            $group_sql = " AND system.id IN (" . $group_sql . ")";
+        } else {
+            $group_sql = "";
+        }
+
         $sql = '';
         // if ($filter != '' and strtolower(substr(trim($filter), 0, 3)) != 'and') {
         //     $filter = 'AND ' . $filter;
@@ -98,37 +110,37 @@ class M_devices_components extends MY_Model
         if ($found_id) {
             if ($found_current) {
                 if ($current == 'y') {
-                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? AND current = 'y' $filter";
+                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? AND current = 'y' $filter" . $group_sql;
                     $data = array($id);
                 }
                 if ($current == 'n') {
-                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? AND current = 'n' $filter";
+                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? AND current = 'n' $filter" . $group_sql;
                     $data = array($id);
                 }
                 if ($current == '' or $current == 'all') {
-                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter";
+                    $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter" . $group_sql;
                     $data = array($id);
                 }
                 if ($current == 'delta') {
                     if ($first_seen != '') {
-                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE `$table`.system_id = ? and (current = 'y' or first_seen = ?)";
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE `$table`.system_id = ? and (current = 'y' or first_seen = ?)" . $group_sql;
                         $data = array("$first_seen", $id, "$first_seen");
                     }
                 }
                 if ($current == 'full') {
                     if ($first_seen != '') {
-                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE `$table`.system_id = ?";
+                        $sql = "SELECT $properties, IF(($table.first_seen = ?), 'y', 'n') as original_install FROM `$table` WHERE `$table`.system_id = ?" . $group_sql;
                         $data = array("$first_seen", $id);
                     }
                 }
             } else {
-                $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter";
+                $sql = "SELECT $properties FROM `$table` WHERE `$table`.system_id = ? $filter" . $group_sql;
                 $data = array($id);
             }
         }
 
         if ($table == 'system') {
-            $sql = "SELECT $properties FROM system WHERE id = ? $filter";
+            $sql = "SELECT $properties FROM system WHERE id = ? $filter" . $group_sql;
             $data = array($id);
         }
 
@@ -138,7 +150,7 @@ class M_devices_components extends MY_Model
             $result = $query->result();
             if ($table == 'credential') {
                 $this->load->library('encrypt');
-                for ($i=0; $i < count($result); $i++) { 
+                for ($i=0; $i < count($result); $i++) {
                     $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
                 }
             }
@@ -167,7 +179,7 @@ class M_devices_components extends MY_Model
     //     $data = array(intval($id));
     //     $query = $this->db->query($sql, $data);
     //     $result = $query->result();
-    //     for ($i=0; $i < count($result); $i++) { 
+    //     for ($i=0; $i < count($result); $i++) {
     //         $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
     //     }
     //     return($result);
