@@ -281,7 +281,7 @@ class M_summaries extends MY_Model
         }
 
         if ($this->m_users->get_user_permission('', 'groups', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `oa_group` WHERE org_id IN (" . $CI->user->org_list . ")";
+            $sql = "SELECT COUNT(*) AS `count` FROM `groups` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Groups', "collection" => "groups", "icon" => 'tags', "count" => $count[0]->count);
         }
