@@ -64,8 +64,11 @@ class M_devices extends MY_Model
                 if ($item->name == 'id') {
                     $item->name = 'system.id';
                 }
-                if (!empty($item->name)) {
+                if (!empty($item->name) and $item->operator != 'in') {
                     $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                }
+                if (!empty($item->name) and $item->operator == 'in') {
+                    $filter .= ' AND ' . $item->name . ' in ' . $item->value;
                 }
             }
         }
@@ -239,9 +242,9 @@ class M_devices extends MY_Model
             $sort = '';
         }
 
-        if ($current != 'y') {
-            $current = 'n';
-        }
+        // if ($current != 'y') {
+        //     $current = 'n';
+        // }
 
         $filter = $this->build_filter();
 
@@ -570,11 +573,23 @@ class M_devices extends MY_Model
         // $filter = 'WHERE system.id IN (' . $CI->user->org_list . ') AND ' . $filter . ' AND ';
         // $sql = str_replace('WHERE ', $filter, $sql);
 
+        if (!empty($CI->response->meta->group)) {
+            $my_sql = "/* m_devices_components::read */" . "SELECT `sql` FROM `groups` WHERE `id` = " . intval($CI->response->meta->group);
+            $my_query = $this->db->query($my_sql);
+            $result = $my_query->result();
+            $group_sql = $result[0]->sql;
+            $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+            $group_sql = str_replace('WHERE @filter', $device_sql, $group_sql);
+            $group_sql = " AND system.id IN (" . $group_sql . ")";
+        } else {
+            $group_sql = "";
+        }
+
         $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
         #$device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
         $sql = $query->sql;
-        $sql = str_replace('WHERE @filter', $device_sql, $sql);
-        $sql = "/* m_devices::query */ " . $sql;
+        $sql = str_replace('WHERE @filter', $device_sql . $group_sql, $sql);
+        $sql = "/* m_devices::query */ " . $sql;# . $group_sql;
         $result = $this->run_sql($sql, array());
 
         for ($i=0; $i < count($result); $i++) {
