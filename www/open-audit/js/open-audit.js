@@ -180,7 +180,9 @@ $(document).ready(function () {
             $(edit_button).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(edit_button).attr("data-action", "edit");
             $(edit_button).attr("class", "btn btn-default edit_button");
-            //document.getElementById('submit_'+attribute).remove();
+            // need this below for other.x or credentials.x items
+            document.getElementById('submit_'+attribute).remove();
+            // need this for regular fields (name, description, etc)
             $('#submit_' + attribute).remove();
         }
     });
