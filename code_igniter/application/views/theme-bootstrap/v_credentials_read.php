@@ -110,7 +110,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>
