@@ -82,14 +82,16 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="subnet" class="col-sm-3 control-label">Subnet</label>
+                        <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="subnet" name="subnet" placeholder="" value="<?php echo htmlspecialchars($item->attributes->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="type" name="type" placeholder="" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -178,6 +180,69 @@ $item = $this->response->data[0];
                 </div>
                 <div class="col-md-6">
                     <?php
+                    if ($item->attributes->type == 'subnet') { ?>
+                    <div class="form-group">
+                        <label for="other.subnet" class="col-sm-3 control-label">Subnet</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="other.subnet" name="other.subnet" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_other.subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <?php
+                    }
+                    if ($item->attributes->type == 'active directory') { ?>
+                    <div class="form-group">
+                        <label for="other.ad_server" class="col-sm-3 control-label">AD Server</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_server, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_other.ad_server" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_server"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="other.ad_username" class="col-sm-3 control-label">AD Username</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="other.ad_username" name="other.ad_username" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_username, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_other.ad_username" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_username"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="other.ad_password" class="col-sm-3 control-label">AD Password</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="password" class="form-control" id="other.ad_password" name="other.ad_password" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_password, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_other.ad_password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="other.ad_domain" class="col-sm-3 control-label">AD Domain</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_other.ad_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <?php
+                    }
+                    ?>
+                    <?php
                     if ($item->attributes->complete == 'n') { ?>
                         <div class="form-group">
                             <label for="refresh" class="col-sm-3 control-label">Not Complete</label>
@@ -185,15 +250,6 @@ $item = $this->response->data[0];
                                 <a class="btn btn-sm btn-warning" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>">Refresh</a>
                             </div>
                         </div>
-                    <?php
-                    }
-                    if (filter_var($item->attributes->subnet, FILTER_VALIDATE_IP)) {?>
-                     <!--    <div class="form-group">
-                            <label for="execute_with_debug" class="col-sm-3 control-label">Execute with debug</label>
-                            <div class="col-sm-8 input-group">
-                                <a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&debug=true">Execute</a>
-                            </div>
-                        </div> -->
                     <?php
                     }
                     ?>

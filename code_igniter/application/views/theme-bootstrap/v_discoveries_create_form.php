@@ -74,11 +74,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][subnet]" class="col-sm-3 control-label">Subnet</label>
+                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][subnet]" name="data[attributes][subnet]" placeholder="192.168.1.0/24" value="">
+                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" disabled>
                         </div>
                     </div>
+
 <?php
 if (empty($this->config->config['default_network_address'])) {
     $address = 'http://YOUR_SERVER/open-audit/';
@@ -90,6 +91,16 @@ if (empty($this->config->config['default_network_address'])) {
                         <label for="data[attributes][network_address]" class="col-sm-3 control-label">Network Address</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="<?php echo $address; ?>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="data_type form-control" id="data[attributes][type]" name="data[attributes][type]">
+                                <option value="subnet">Subnet</option>
+                                <option value="active directory">Active Directory</option>
+                            </select>
                         </div>
                     </div>
 
@@ -136,12 +147,15 @@ if (empty($this->config->config['default_network_address'])) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][updated_on]" class="col-sm-3 control-label">Updated On</label>
+                        <label for="data[attributes][last_run]" class="col-sm-3 control-label">Last Run</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][updated_on]" name="data[attributes][updated_on]" disabled>
+                            <input type="text" class="form-control" id="data[attributes][last_run]" name="data[attributes][last_run]" disabled>
                         </div>
                     </div>
-
+                </div>
+                <div class="col-md-6">
+                    <span id="options">
+                    </span>
                 </div>
             </div>
             <div class="row">
@@ -149,10 +163,59 @@ if (empty($this->config->config['default_network_address'])) {
                     <label for="submit" class="col-sm-3 control-label"></label>
                     <div class="col-sm-8 input-group">
                         <input type="hidden" value="discoveries" id="data[type]" name="data[type]" />
+                        <input type="hidden" value="y" id="data[attributes][complete]" name="data[attributes][complete]" />
                         <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </form>
+
+<script>
+$(document).ready(function(){
+    var $subnet_text = "                                <div class=\"form-group\">\
+                                <label for=\"data[attributes][subnet]\" class=\"col-sm-4 control-label\">Subnet</label>\
+                                <div class=\"col-sm-7 input-group\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][subnet]\" name=\"data[attributes][other][subnet]\" placeholder=\"192.168.1.0/24\">\
+                                </div>\
+                            </div>";
+    var $active_directory_text = "                            <div class=\"form-group\">\
+                                <label for=\"data[attributes][other][ad_server]\" class=\"col-sm-4 control-label\">Active Directory Server</label>\
+                                <div class=\"col-sm-7 input-group\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_server]\" name=\"data[attributes][other][ad_server]\" placeholder=\"192.168.1.20\">\
+                                </div>\
+                            </div>\
+                            <div class=\"form-group\">\
+                                <label for=\"data[attributes][other][ad_username]\" class=\"col-sm-4 control-label\">Active Directory User</label>\
+                                <div class=\"col-sm-7 input-group\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_username]\" name=\"data[attributes][other][ad_username]\" placeholder=\"administrator\">\
+                                </div>\
+                            </div>\
+                            <div class=\"form-group\">\
+                                <label for=\"data[attributes][other][ad_password]\" class=\"col-sm-4 control-label\">Active Directory Password</label>\
+                                <div class=\"col-sm-7 input-group\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][other][ad_password]\" name=\"data[attributes][other][ad_password]\">\
+                                </div>\
+                            </div>\
+                            <div class=\"form-group\">\
+                                <label for=\"data[attributes][other][ad_domain]\" class=\"col-sm-4 control-label\">Active Directory Domain</label>\
+                                <div class=\"col-sm-7 input-group\">\
+                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_domain]\" name=\"data[attributes][other][ad_domain]\" placeholder=\"open-audit.local\">\
+                                </div>\
+                            </div>";
+    $("#options").html($subnet_text);
+    $('.data_type').change(function() {
+        var $type = $(this).val();
+        if ($type == "subnet") {
+            $("#options").html($subnet_text);
+        } else if ($type == "active directory") {
+            $("#options").html($active_directory_text);
+        } else {
+            $("#options").html($subnet_text);
+        }
+
+    });
+});
+</script>

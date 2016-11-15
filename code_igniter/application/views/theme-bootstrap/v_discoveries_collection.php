@@ -46,9 +46,10 @@
                     <th class="text-center"><?php echo __('ID')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Orgsinsation')?></th>
-                    <th><?php echo __('Subnet')?></th>
-                    <th><?php echo __('Updated On')?></th>
-                    <th><?php echo __('Complete')?></th>
+                    <th><?php echo __('Type')?></th>
+                    <th><?php echo __('Description')?></th>
+                    <th><?php echo __('Last Run')?></th>
+                    <th class="text-center"><?php echo __('Complete')?></th>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'u')) { ?>
                     <th class="text-center"><?php echo __('Execute')?></th>
                     <th class="text-center"><?php echo __('Edit')?></th>
@@ -64,9 +65,10 @@
                     <td class="text-center"><a class="btn btn-sm btn-success" href="discoveries/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                     <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->subnet, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->updated_on, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
+                    <td><?php echo htmlspecialchars($item->attributes->last_run, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET)?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="discoveries/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
