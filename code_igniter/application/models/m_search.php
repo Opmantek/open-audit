@@ -44,12 +44,20 @@ class M_search extends MY_Model
     {
         $CI = & get_instance();
         $value = $CI->response->meta->received_data->attributes->value;
-        $columns = json_decode($CI->response->meta->received_data->attributes->columns);
-        $tables = json_decode($CI->response->meta->received_data->attributes->tables);
+        if (!empty($CI->response->meta->received_data->attributes->columns)) {
+            $columns = json_decode($CI->response->meta->received_data->attributes->columns);
+        } else {
+            $columns = '';
+        }
+        if (!empty($CI->response->meta->received_data->attributes->tables)) {
+            $tables = json_decode($CI->response->meta->received_data->attributes->tables);
+        } else {
+            $tables = '';
+        }
         $return = array();
 
         // This is our standard menu bar search for name or IP
-        if ($tables[0] == 'system' and $columns[0] == 'name' and $columns[1] == 'ip') {
+        if (isset($tables[0]) and $tables[0] == 'system' and isset($columns[0]) and $columns[0] == 'name' and isset($columns[1]) and $columns[1] == 'ip') {
             // make our padded IP
             // TODO - better logic here - account for 2 digit and 1 digit octets
             $temp = explode('.', $value);
@@ -74,29 +82,105 @@ class M_search extends MY_Model
             $result = $this->run_sql($sql, array());
             $return = $this->format_data($result, 'devices');
         } else {
+            $CI->response->meta->data_order = array("system.id", "system.icon", "system.type", "system.name", "table", "column", "value");
+            $tables = array("bios","disk","dns","file","ip","log","memory","module","monitor","motherboard","netstat","network","nmap","optical","partition","pagefile","print_queue","processor","route","san","scsi","service","server","server_item","share","software","software_key","sound","task","user","user_group","variable","video","vm","windows");
             foreach ($tables as $table) {
                 unset($result);
                 $sql_select = '';
                 $sql_where = '';
+                $columns = $this->db->field_data($table);
+                $sql = "/* m_search::create */" . "SELECT `$table`.*, system.id AS `system.id`, system.name AS `system.name`, system.type AS `system.type`, system.icon AS `system.icon` FROM $table LEFT JOIN system ON (`$table`.system_id = system.id AND `$table`.current = 'y') WHERE system.org_id IN (" . $CI->user->org_list . ") AND ( ";
                 foreach ($columns as $column) {
-                    if ($this->db->field_exists($column, $table)) {
-                        if ($sql_select != '') {
-                            $sql_select .= ", `" . $column . "`";
+                    if ($column->name != 'id' and $column->name != 'system_id' and $column->name != 'current' and $column->name != 'first_seen' and $column->name != 'last_seen') {
+                        if ($column == 'ip') {
+                            $temp = explode('.', $value);
+                            for ($i=0; $i < count($temp); $i++) { 
+                                $temp[$i] = substr('000'.$temp[$i], -3);
+                            }
+                            $temp_value = implode('.', $temp);
+                            $sql .= "`" . $table . "`.`" . $column->name . "` LIKE \"%" . $temp_value . "%\" OR ";
+                            $sql .= "`" . $table . "`.`" . $column->name . "` LIKE \"%" . $value . "%\" OR ";
                         } else {
-                            $sql_select = "`" . $column . "`";
+                            $sql .= "`" . $table . "`.`" . $column->name . "` LIKE \"%" . $value . "%\" OR ";
                         }
-                        if ($sql_where != '') {
-                            $sql_where .= " OR `" . $column . "` LIKE ?";
-                        } else {
-                            $sql_where = "`" . $column . "` LIKE ?";
-                        }
-                        $data_array[] = '%'.$value.'%';
                     }
                 }
-                $sql = "SELECT id, " . $sql_select . " FROM `$table` WHERE " . $sql_where;
-                $result = $this->run_sql($sql, $data_array);
-                $return = $this->format_data($result, 'devices');
+                $sql = substr($sql, 0, -3);
+                $sql .= ")";
+                $result = $this->run_sql($sql);
+                $new_result = array();
+                foreach ($result as $item) {
+                    foreach ($item as $item_key => $item_value) {
+                        if ($item_key == 'ip') {
+                            $temp = explode('.', $value);
+                            for ($i=0; $i < count($temp); $i++) { 
+                                $temp[$i] = substr('000'.$temp[$i], -3);
+                            }
+                            $temp_value = implode('.', $temp);
+                        } else {
+                            $temp_value = $value;
+                        }
+                        if (stripos($item_value, $temp_value) !== false) {
+                            $new_item = new stdClass();
+                            $new_item->{'system.id'} = $item->{'system.id'};
+                            $new_item->{'system.icon'} = $item->{'system.icon'};
+                            $new_item->{'system.type'} = $item->{'system.type'};
+                            $new_item->{'system.name'} = $item->{'system.name'};
+                            $new_item->{'table'} = $table;
+                            $new_item->{'column'} = $item_key;
+                            $new_item->{'value'} = $item_value;
+                            $new_result[] = $new_item;
+                            unset($new_item);
+                        }
+                    }
+                    
+                }
+                $return = array_merge($return, $this->format_data($new_result, 'devices'));
             }
+            $columns = $this->db->field_data("system");
+            $sql = "/* m_search::create */" . "SELECT * FROM `system` WHERE system.org_id IN (" . $CI->user->org_list . ") AND ( ";
+            foreach ($columns as $column) {
+                if ($column == 'ip') {
+                    $temp = explode('.', $value);
+                    for ($i=0; $i < count($temp); $i++) { 
+                        $temp[$i] = substr('000'.$temp[$i], -3);
+                    }
+                    $temp_value = implode('.', $temp);
+                } else {
+                    $temp_value = $value;
+                }
+                $sql .= "`" . $column->name . "` LIKE \"%" . $temp_value . "%\" OR ";
+            }
+            $sql = substr($sql, 0, -3);
+            $sql .= ")";
+            $result = $this->run_sql($sql);
+            $new_result = array();
+            foreach ($result as $item) {
+                foreach ($item as $item_key => $item_value) {
+                    if ($item_key == 'ip') {
+                        $temp = explode('.', $value);
+                        for ($i=0; $i < count($temp); $i++) { 
+                            $temp[$i] = substr('000'.$temp[$i], -3);
+                        }
+                        $temp_value = implode('.', $temp);
+                    } else {
+                        $temp_value = $value;
+                    }
+                    if (stripos($item_value, $value) !== false) {
+                        $new_item = new stdClass();
+                        $new_item->{'system.id'} = $item->{'id'};
+                        $new_item->{'system.icon'} = $item->{'icon'};
+                        $new_item->{'system.type'} = $item->{'type'};
+                        $new_item->{'system.name'} = $item->{'name'};
+                        $new_item->{'table'} = 'system';
+                        $new_item->{'column'} = $item_key;
+                        $new_item->{'value'} = $item_value;
+                        $new_result[] = $new_item;
+                        unset($new_item);
+                    }
+                }
+            }
+            $return = array_merge($return, $this->format_data($new_result, 'devices'));
         }
         return $return;
     }
