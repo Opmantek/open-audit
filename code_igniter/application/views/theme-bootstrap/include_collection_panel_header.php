@@ -3,7 +3,7 @@
             <?php
             if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'c') and $this->response->meta->collection != 'configuration') { ?>
                 <span class="pull-right" style="padding-left:10px;" >
-                    <a class="btn btn-xs btn-primary" href="<?php echo $this->response->meta->collection; ?>/create" role="button"><?php echo __('Add'); ?></a>
+                    <a class="btn btn-xs btn-primary" href="<?php echo $this->response->meta->collection; ?>/create" role="button"><?php echo __('Create'); ?></a>
                 </span>
             <?php } ?>
             <span class="pull-right">
