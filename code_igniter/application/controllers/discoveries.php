@@ -211,7 +211,6 @@ class Discoveries extends MY_Controller_new
         } else {
             redirect('discoveries/'.$this->response->meta->id);
         }
-
     }
 }
 // End of file discoveries.php

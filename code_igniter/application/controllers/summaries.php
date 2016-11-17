@@ -165,7 +165,7 @@ class Summaries extends MY_Controller_new
     {
         $tables_temp = $this->db->list_tables();
         $tables = array();
-        for ($i=0; $i < count($tables_temp); $i++) { 
+        for ($i=0; $i < count($tables_temp); $i++) {
             $table = new stdClass();
             $table->type = 'table';
             $table->id = '';

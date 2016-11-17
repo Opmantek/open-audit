@@ -130,7 +130,6 @@ class logon extends CI_Controller
         $this->response->meta->sql = array();
         $this->response->links = array();
         $this->response->included = array();
-
     }
 
     /**
@@ -142,7 +141,6 @@ class logon extends CI_Controller
     public function index()
     {
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
-
             if (!empty($this->session->userdata('user_id'))) {
                 if ($this->response->meta->format != 'json') {
                     #echo "<pre>\n"; print_r($this->session->all_userdata());
@@ -154,7 +152,6 @@ class logon extends CI_Controller
             $this->check_defaults();
             $this->response->meta->action = 'create';
             $this->load->view('v_logon', $this->response);
-            
         } else {
             // NOTE - had to NOT use 'logon' as it confuses PHP checkers that think it's the constructor
             $this->login();

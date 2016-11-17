@@ -4579,7 +4579,7 @@ class Database extends MY_Controller_new
             $this->response->meta->received_data = new stdClass();
             $this->response->meta->received_data->attributes = new stdClass();
             if (!empty($this->config->config['default_snmp_community'])) {
-                unset ($this->response->meta->received_data->attributes->credentials);
+                unset($this->response->meta->received_data->attributes->credentials);
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default SNMP';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
@@ -4595,10 +4595,9 @@ class Database extends MY_Controller_new
                 $this->data['output'] .= $message . "<br /><br />\n";
                 $log_details->message = $message;
                 stdlog($log_details);
-
             }
             if (!empty($this->config->config['default_ssh_username']) and !empty($this->config->config['default_ssh_password'])) {
-                unset ($this->response->meta->received_data->attributes->credentials);
+                unset($this->response->meta->received_data->attributes->credentials);
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default SSH';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
@@ -4616,7 +4615,7 @@ class Database extends MY_Controller_new
                 stdlog($log_details);
             }
             if (!empty($this->config->config['default_windows_username']) and !empty($this->config->config['default_windows_password'])) {
-                unset ($this->response->meta->received_data->attributes->credentials);
+                unset($this->response->meta->received_data->attributes->credentials);
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default Windows';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
@@ -4634,7 +4633,7 @@ class Database extends MY_Controller_new
                 stdlog($log_details);
             }
             if (!empty($this->config->config['default_ipmi_username']) and !empty($this->config->config['default_ipmi_password'])) {
-                unset ($this->response->meta->received_data->attributes->credentials);
+                unset($this->response->meta->received_data->attributes->credentials);
                 $this->response->meta->received_data->attributes->credentials = new stdClass();
                 $this->response->meta->received_data->attributes->name = 'Default IPMI';
                 $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
@@ -5628,7 +5627,6 @@ class Database extends MY_Controller_new
             $log_details->message = "Upgrade database to 1.12.10 completed\n\n";
             stdlog($log_details);
             unset($log_details);
-
         }
 
         # refresh the icons

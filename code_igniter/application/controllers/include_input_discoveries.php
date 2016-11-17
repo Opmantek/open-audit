@@ -448,7 +448,6 @@ if (!empty($_POST['form_details'])) {
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             unset($log->id, $command_log_id);
-
         }
         // grab some timestamps
         $device->last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
@@ -471,7 +470,6 @@ if (!empty($_POST['form_details'])) {
             discovery_log($log);
             $this->m_oa_group->update_system_groups($device);
         }
-
 
         // update any network interfaces and ip addresses retrieved by SNMP
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
@@ -940,7 +938,6 @@ if (!empty($_POST['form_details'])) {
                                 }
                                 $this->m_audit_log->create($esx_details->system_id, $temp_user, $esx_details->last_seen_by, $esx_details->audits_ip, '', '', $esx_details->last_seen);
                                 unset($temp_user);
-
                             }
                         }
                         $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network, $display);

@@ -28,7 +28,7 @@
     /**
      * @author Mark Unwin <marku@opmantek.com>
      *
-     * 
+     *
      * @version 1.12.8
      * @copyright Copyright (c) 2014, Opmantek
      * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -157,4 +157,3 @@
     $device_status['production'] = 'Production';
     $device_status['retired'] = 'Retired';
     $device_status['unallocated'] = 'Unallocated';
-

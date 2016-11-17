@@ -83,16 +83,12 @@ class devices extends MY_Controller_new
     {
         if ($this->response->meta->sub_resource != '' and  ($this->response->meta->sub_resource != 'report' and $this->response->meta->sub_resource != 'query' and $this->response->meta->sub_resource != 'group')) {
             $this->response->data = $this->m_devices->collection_sub_resource();
-
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
             $this->response->data = $this->m_devices->report();
-
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'query') {
             $this->response->data = $this->m_devices->query();
-
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'group') {
             $this->response->data = $this->m_devices->group();
-
         } else {
             if (!empty($this->response->meta->groupby)) {
                 $this->response->data = $this->m_devices->collection_group_by();

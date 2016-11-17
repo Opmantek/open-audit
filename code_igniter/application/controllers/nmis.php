@@ -225,10 +225,10 @@ class Nmis extends MY_Controller_new
                     $device->credentials->credentials->privacy_passphrase = @$node['privpassword'];
                     $device->credentials->credentials->privacy_protocol = @$node['privprotocol'];
                     $device->credentials->credentials->security_level = 'noAuthNoPriv';
-                    if (!empty( @$node['authpassword']) and ! empty(@$node['authprotocol']) and empty($node['privpassword'])) {
+                    if (!empty($node['authpassword']) and !empty(@$node['authprotocol']) and empty($node['privpassword'])) {
                         $device->credentials->credentials->security_level = 'authNoPriv';
                     }
-                    if (!empty( @$node['authpassword']) and ! empty(@$node['authprotocol']) and ! empty($node['privpassword']) and ! empty($node['privprotocol'])) {
+                    if (!empty($node['authpassword']) and !empty(@$node['authprotocol']) and ! empty($node['privpassword']) and ! empty($node['privprotocol'])) {
                         $device->credentials->credentials->security_level = 'authPriv';
                     }
                 }
@@ -243,7 +243,7 @@ class Nmis extends MY_Controller_new
         foreach ($nodes_array as $details) {
             $details->last_seen_by = 'nmis';
             $details->last_seen = $timestamp;
-            if ( ! empty($details->id)) {
+            if (!empty($details->id)) {
                 $log->message = "Updating device " . $details->name . " (ID:" . $details->id . ")";
                 stdlog($log);
                 $this->m_devices->update($details);
@@ -268,8 +268,7 @@ class Nmis extends MY_Controller_new
 
         if ($this->response->meta->format === 'json') {
             output($this->response);
-        }
-        else {
+        } else {
             $this->session->set_flashdata('success', count($nodes_array) . ' devices imported.');
             redirect('devices?action=update&ids='.$ids);
         }
@@ -286,8 +285,6 @@ class Nmis extends MY_Controller_new
         #output($this->response);
         include 'include_create_form.php';
     }
-
-
 }
 // End of file name.php
 // Location: ./controllers/name.php
