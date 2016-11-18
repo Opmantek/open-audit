@@ -164,9 +164,9 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="updated_on" class="col-sm-3 control-label">Updated On</label>
+                        <label for="updated_on" class="col-sm-3 control-label">Last Run</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->updated_on, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->last_run, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
