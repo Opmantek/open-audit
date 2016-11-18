@@ -196,7 +196,7 @@ $(document).ready(function(){
                             <div class=\"form-group\">\
                                 <label for=\"data[attributes][other][ad_password]\" class=\"col-sm-4 control-label\">Active Directory Password</label>\
                                 <div class=\"col-sm-7 input-group\">\
-                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][other][ad_password]\" name=\"data[attributes][other][ad_password]\">\
+                                    <input type=\"password\" class=\"form-control\" id=\"data[attributes][other][other][ad_password]\" name=\"data[attributes][other][ad_password]\">\
                                 </div>\
                             </div>\
                             <div class=\"form-group\">\
