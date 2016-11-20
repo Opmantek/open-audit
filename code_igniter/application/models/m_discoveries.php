@@ -187,7 +187,7 @@ class M_discoveries extends MY_Model
     {
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name org_id location_id network_address type system_id other device_count updated_on complete ';
+        $fields = ' name org_id location_id network_address type system_id other device_count last_run complete ';
 
         if ( !empty($CI->response->meta->received_data->attributes->other)) {
             $received_other = new stdClass();
@@ -250,7 +250,7 @@ class M_discoveries extends MY_Model
             $id = intval($id);
         }
         // reset our device counter
-        $sql = "/* discoveries::execute */ " . "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', updated_on = NOW() WHERE id = ?";
+        $sql = "/* discoveries::execute */ " . "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', last_run = NOW() WHERE id = ?";
         $data = array(intval($id));
         $this->run_sql($sql, $data);
 
@@ -270,6 +270,9 @@ class M_discoveries extends MY_Model
         } else {
             $debugging = 0;
         }
+
+        // decode our other attributes
+        $discovery->other = json_decode($discovery->other);
 
         // Unix based discovery
         if (php_uname('s') != 'Windows NT') {
