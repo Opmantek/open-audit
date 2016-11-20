@@ -275,7 +275,7 @@ class M_discoveries extends MY_Model
         if (php_uname('s') != 'Windows NT') {
             $filepath = $this->config->config['base_path'] . '/other';
             $command_string = "$filepath/discover_subnet.sh" .
-                                " subnet_range=" .  $discovery->subnet .
+                                " subnet_range=" .  $discovery->other->subnet .
                                 " url=".            $discovery->network_address . "index.php/input/discoveries" .
                                 " submit_online=y" .
                                 " echo_output=n" .
@@ -288,10 +288,10 @@ class M_discoveries extends MY_Model
             }
             @exec($command_string, $output, $return_var);
             if ($return_var != '0') {
-                $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->subnet.') has failed';
+                $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has failed';
                 $this->session->set_flashdata('error', $message);
             } else {
-                $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->subnet.') has started';
+                $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has started';
                 $this->session->set_flashdata('success', $message);
             }
         }
@@ -301,7 +301,7 @@ class M_discoveries extends MY_Model
             $filepath = $this->config->config['base_path'] . '\\other';
             // run the script and continue (do not wait for result)
             $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
-                                " subnet_range=" . $discovery->subnet .
+                                " subnet_range=" . $discovery->other->subnet .
                                 " url=".           $discovery->network_address . "index.php/input/discoveries" .
                                 " submit_online=y" .
                                 " echo_output=n" .
