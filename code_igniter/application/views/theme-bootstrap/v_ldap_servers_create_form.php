@@ -152,7 +152,7 @@
                 <div class="form-group">
                     <label for="submit" class="col-sm-2 control-label"></label>
                     <div class="col-sm-8 input-group">
-                        <input type="hidden" value="connections" id="data[type]" name="data[type]" />
+                        <input type="hidden" value="ldap_servers" id="data[type]" name="data[type]" />
                         <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
                     </div>
                 </div>
