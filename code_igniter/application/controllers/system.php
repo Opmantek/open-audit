@@ -373,7 +373,7 @@ class System extends CI_Controller
             unset($log_details);
 
             $details->original_last_seen = "";
-            echo "SystemID (new): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+            echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
         } else {
             // update an existing system
 
