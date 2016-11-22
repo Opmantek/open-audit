@@ -85,6 +85,21 @@
               <ul class="dropdown-menu">
 
                 <?php
+                if ($this->m_users->get_user_permission('', 'connections', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Connections</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'connections', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/import'>Import Multiple Connections</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
                 if ($this->m_users->get_user_permission('', 'credentials', 'r')) { ?>
                     <li class="dropdown-submenu">
                         <a href="#">Credentials</a>
@@ -93,21 +108,6 @@
                             <?php if ($this->m_users->get_user_permission('', 'credentials', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'>Create Credentials</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/import'>Import Multiple Credentials</a></li>
-                            <?php } ?>
-                        </ul>
-                    </li>
-                <?php
-                } ?>
-
-                <?php
-                if ($this->m_users->get_user_permission('', 'connections', 'r')) { ?>
-                    <li class="dropdown-submenu">
-                        <a href="#">Connections</a>
-                        <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections'>List Connections</a></li>
-                            <?php if ($this->m_users->get_user_permission('', 'connections', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/create'>Create Connection</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/connections/import'>Import Multiple Connection</a></li>
                             <?php } ?>
                         </ul>
                     </li>
@@ -171,9 +171,8 @@
                         <ul class="dropdown-menu" style="min-width:250px;">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups'>List Groups</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'fields', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/add_group'>Create Group</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/import_group'>Import Group</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_group/activate_group'>Activate Group</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups/create'>Create Group</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/groups/import'>Import Multiple Groups</a></li>
                             <?php } ?>
                         </ul>
                     </li>
@@ -328,6 +327,9 @@
                         <a href="#">LDAP Servers</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers'>List Servers</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers/create'>Create LDAP Server</a></li>
+                            <?php } ?>
                         </ul>
                     </li>
                 <?php
