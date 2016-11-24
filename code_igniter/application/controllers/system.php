@@ -51,14 +51,19 @@ class System extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        // log the attempt
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         $this->load->model('m_system');
         // No need for user to be logged in
         // Have to be able to submit systems via the audit script
         $this->data['title'] = 'Open-AudIT';
         $this->load->library('session');
 
-        // log the attempt
-        $this->load->helper('log');
         $log_details = new stdClass();
         $log_details->severity = 6;
         stdlog($log_details);

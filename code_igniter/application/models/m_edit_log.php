@@ -38,10 +38,16 @@ class M_edit_log extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($system_id, $details = '',  $db_table = 'system', $db_column = '', $timestamp = '', $value = '', $previous_value = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id != '' and $system_id != 0) {
             if ($details == '') {
@@ -68,6 +74,8 @@ class M_edit_log extends MY_Model
 
     public function read($system_id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $sql = "SELECT edit_log.*, oa_user.full_name FROM edit_log, oa_user WHERE edit_log.system_id = ? AND oa_user.id = edit_log.user_id";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");

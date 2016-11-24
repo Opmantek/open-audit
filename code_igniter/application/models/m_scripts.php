@@ -38,26 +38,16 @@ class M_scripts extends MY_Model
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT * FROM scripts WHERE id = ?";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        $result[0]->options = json_decode($result[0]->options);
-        $result = $this->format_data($result, 'scripts');
-        return($result);
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         # check to see if we already have a script with the same name
         $sql = "SELECT COUNT(id) AS count FROM `scripts` WHERE `name` = ?";
@@ -82,8 +72,112 @@ class M_scripts extends MY_Model
         return $this->db->insert_id();
     }
 
+    public function read($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT * FROM scripts WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $result[0]->options = json_decode($result[0]->options);
+        $result = $this->format_data($result, 'scripts');
+        return($result);
+    }
+
+    public function update()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->file = 'system';
+        $CI = & get_instance();
+
+        $sql = 'UPDATE `scripts` SET ';
+        $data = array();
+        $log->message = json_encode($CI->response->meta->received_data);
+        stdlog($log);
+        if ( !empty($CI->response->meta->received_data->attributes->options)) {
+            $received_options = new stdClass();
+            foreach ($CI->response->meta->received_data->attributes->options as $key => $value) {
+                    $received_options->$key = $value;
+            }
+            $select = "SELECT * FROM scripts WHERE id = ?";
+            $existing_options = $this->run_sql($select, array($CI->response->meta->id));
+            $existing_options = json_decode($existing_options[0]->options);
+            $new_options = new stdClass();
+            foreach ($existing_options as $existing_key => $existing_value) {
+                if (!empty($received_options->$existing_key)) {
+                    $new_options->$existing_key = $received_options->$existing_key;
+                } else {
+                    $new_options->$existing_key = $existing_options->$existing_key;
+                }
+            }
+            $sql .= "`options` = ?, ";
+            $data[] = (string)json_encode($new_options);
+        }
+        
+        if (!empty($CI->response->meta->received_data->attributes->name)) {
+            $sql .= "`name` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->name;
+        }
+
+        if (!empty($CI->response->meta->received_data->attributes->description)) {
+            $sql .= "`description` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->description;
+        }
+
+        if ($sql == 'UPDATE `scripts` SET ') {
+            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
+        }
+        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
+        $data[] = (string)$CI->user->full_name;
+        $data[] = intval($CI->response->meta->id);
+        $this->run_sql($sql, $data);
+        return;
+    }
+
+    public function delete($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+
+        # do not allow deletion of default Scripts
+        $script = $this->m_scripts->read();
+        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
+            $CI->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            log_error('ERR-0014');
+            return false;
+        } else {
+            $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
+            $data = array(intval($id));
+            $this->run_sql($sql, $data);
+            return true;
+        }
+    }
+
     public function collection()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = $this->collection_sql('scripts', 'sql');
         $result = $this->run_sql($sql, array());
@@ -93,6 +187,8 @@ class M_scripts extends MY_Model
 
     public function download($id = 0)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $script_id = 0;
         if (empty($id)) {
@@ -150,84 +246,6 @@ class M_scripts extends MY_Model
             }
         #}
         return $file;
-    }
-
-    public function update()
-    {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->file = 'system';
-        $CI = & get_instance();
-
-        $sql = 'UPDATE `scripts` SET ';
-        $data = array();
-        $log->message = json_encode($CI->response->meta->received_data);
-        stdlog($log);
-        if ( !empty($CI->response->meta->received_data->attributes->options)) {
-            $received_options = new stdClass();
-            foreach ($CI->response->meta->received_data->attributes->options as $key => $value) {
-                    $received_options->$key = $value;
-            }
-            $select = "SELECT * FROM scripts WHERE id = ?";
-            $existing_options = $this->run_sql($select, array($CI->response->meta->id));
-            $existing_options = json_decode($existing_options[0]->options);
-            $new_options = new stdClass();
-            foreach ($existing_options as $existing_key => $existing_value) {
-                if (!empty($received_options->$existing_key)) {
-                    $new_options->$existing_key = $received_options->$existing_key;
-                } else {
-                    $new_options->$existing_key = $existing_options->$existing_key;
-                }
-            }
-            $sql .= "`options` = ?, ";
-            $data[] = (string)json_encode($new_options);
-        }
-        
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
-            $sql .= "`name` = ?, ";
-            $data[] = $CI->response->meta->received_data->attributes->name;
-        }
-
-        if (!empty($CI->response->meta->received_data->attributes->description)) {
-            $sql .= "`description` = ?, ";
-            $data[] = $CI->response->meta->received_data->attributes->description;
-        }
-
-        if ($sql == 'UPDATE `scripts` SET ') {
-            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
-        }
-        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
-        $data[] = (string)$CI->user->full_name;
-        $data[] = intval($CI->response->meta->id);
-        $this->run_sql($sql, $data);
-        return;
-    }
-
-    public function delete($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-
-        # do not allow deletion of default Scripts
-        $script = $this->m_scripts->read();
-        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
-            $CI->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-            log_error('ERR-0014');
-            return false;
-        } else {
-            $sql = "DELETE FROM `scripts` WHERE id = ? AND name != based_on";
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            return true;
-        }
     }
 
     private function count_data($result)

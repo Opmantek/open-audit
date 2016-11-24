@@ -57,7 +57,11 @@ class Groups extends MY_Controller_new
     {
         parent::__construct();
         // log the attempt
-        stdlog();
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
         if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {

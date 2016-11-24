@@ -49,6 +49,29 @@ class M_change_log extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
+    }
+
+    /**
+     * Create an alert for a given piece for a given system.
+     *
+     * @access  public
+     *
+     * @param   system_id, alert table, alert row, details, timestamp
+     *
+     * @return nothing
+     */
+    public function create($system_id, $db_table, $db_row, $db_action, $details, $timestamp)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
+        $sql = "INSERT INTO change_log (`system_id`, `db_table`, `db_row`, `db_action`, `details`, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
+        $sql = $this->clean_sql($sql);
+        $data = array("$system_id", "$db_table", "$db_row", "$db_action", "$details", "$timestamp");
+        $query = $this->db->query($sql, $data);
     }
 
     /**
@@ -60,6 +83,9 @@ class M_change_log extends MY_Model
      */
     public function deleteAll()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         $sql = "DELETE FROM change_log";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -76,6 +102,9 @@ class M_change_log extends MY_Model
      */
     public function deleteDays($days = 365)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         $sql = "DELETE FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -92,6 +121,8 @@ class M_change_log extends MY_Model
      */
     public function count()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $sql = "SELECT COUNT(*) AS count FROM change_log";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -108,6 +139,8 @@ class M_change_log extends MY_Model
      */
     public function countDays($days = 7)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $sql = "SELECT COUNT(*) AS count FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -126,6 +159,8 @@ class M_change_log extends MY_Model
      */
     public function readDevice($id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $id = intval($id);
         if ($id > 0) {
             $sql = "SELECT change_log.*, oa_user.full_name FROM change_log LEFT JOIN oa_user ON change_log.user_id = oa_user.id WHERE change_log.system_id = ? ORDER BY timestamp";
@@ -140,23 +175,6 @@ class M_change_log extends MY_Model
     }
 
     /**
-     * Create an alert for a given piece for a given system.
-     *
-     * @access	public
-     *
-     * @param	system_id, alert table, alert row, details, timestamp
-     *
-     * @return nothing
-     */
-    public function create($system_id, $db_table, $db_row, $db_action, $details, $timestamp)
-    {
-        $sql = "INSERT INTO change_log (`system_id`, `db_table`, `db_row`, `db_action`, `details`, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
-        $sql = $this->clean_sql($sql);
-        $data = array("$system_id", "$db_table", "$db_row", "$db_action", "$details", "$timestamp");
-        $query = $this->db->query($sql, $data);
-    }
-
-    /**
      * Get the details fo a given alert.
      *
      * @access	public
@@ -167,6 +185,8 @@ class M_change_log extends MY_Model
      */
     public function readChange($id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $sql = "SELECT change_log.*, system.name, system.ip, system.description FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
@@ -187,6 +207,9 @@ class M_change_log extends MY_Model
      */
     public function updateChange($details)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         foreach ($details['alerts'] as $key => $value) {
             $sql = "UPDATE change_log SET change_type = ?, change_id = ?, external_ident = ?, external_link = ?, note = ?, user_id = ?, ack_time = ? WHERE id = ?";
             $sql = $this->clean_sql($sql);

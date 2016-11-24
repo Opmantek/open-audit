@@ -51,7 +51,10 @@ class devices extends MY_Controller_new
     {
         parent::__construct();
         // log the attempt
-        stdlog();
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -102,6 +105,13 @@ class devices extends MY_Controller_new
             $this->response->included = $this->m_queries->collection();
         }
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function read()
@@ -161,6 +171,13 @@ class devices extends MY_Controller_new
             log_error('ERR-0002');
         }
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function create()
@@ -171,6 +188,13 @@ class devices extends MY_Controller_new
         } else {
             redirect('devices');
         }
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 5;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function update()
@@ -186,12 +210,26 @@ class devices extends MY_Controller_new
             $this->response->data = $this->m_devices->read();
             output($this->response);
         }
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 5;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
         exit();
     }
 
     private function create_form()
     {
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function execute()
@@ -199,6 +237,13 @@ class devices extends MY_Controller_new
         $this->response->meta->format = 'json';
         $this->response->meta->debug = true;
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function update_form()
@@ -206,6 +251,13 @@ class devices extends MY_Controller_new
         $this->response->meta->format = 'json';
         $this->response->meta->debug = true;
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function bulk_update_form()
@@ -232,6 +284,13 @@ class devices extends MY_Controller_new
             $this->response->meta->action = 'create_form_credentials';
         }
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function sub_resource_delete()
@@ -242,6 +301,13 @@ class devices extends MY_Controller_new
         } else {
             redirect('devices');
         }
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 5;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function sub_resource_create_form()
@@ -270,6 +336,13 @@ class devices extends MY_Controller_new
         } else {
             redirect('devices');
         }
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 6;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function sub_resource_create()
@@ -288,6 +361,13 @@ class devices extends MY_Controller_new
                 redirect('devices');
             }
         }
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 5;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 
     private function delete()
@@ -295,5 +375,12 @@ class devices extends MY_Controller_new
         $this->response->meta->format = 'json';
         $this->response->meta->debug = true;
         output($this->response);
+        $log = new stdClass();
+        $log->detail = json_encode($this->response->meta);
+        $log->severity = 5;
+        $log->status = 'finish';
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        stdLog($log);
     }
 }

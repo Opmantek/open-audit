@@ -38,10 +38,147 @@ class M_database extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
+    }
+
+    public function read($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = $CI->response->meta->id;
+        } else {
+            $id = $id;
+        }
+        $return = array();
+        $tables = $this->db->list_tables();
+        foreach ($tables as $table) {
+            if ($id == $table) {
+                $item = new stdClass();
+                $item->type = 'database';
+                $item->id = $table;
+                $item->attributes = new stdClass();
+                $item->attributes->name = $table;
+                
+                $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                $item->attributes->count = intval($result[0]->count);
+
+                if ($this->db->field_exists('current', $table)) {
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "` WHERE current = 'y'";
+                    $query = $this->db->query($sql);
+                    $result = $query->result();
+                    $item->attributes->current_row = true;
+                    $item->attributes->current = intval($result[0]->count);
+                    $item->attributes->non_current = intval($item->attributes->count -$item->attributes->current);
+                } else {
+                    $item->attributes->current_row = false;
+                }
+
+                if ($this->db->field_exists('org_id', $table)) {
+                    $item->attributes->org_id_row = true;
+                } else {
+                    $item->attributes->org_id_row = false;
+                }
+
+                if ($table == 'system') {
+                    $item->attributes->status = array();
+                    $sql = "SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`";
+                    $query = $this->db->query($sql);
+                    $item->attributes->status = $query->result();
+                }
+
+                # TODO - add in if the column has an index or is a foreign key
+
+                $item->attributes->columns = array();
+                $item->attributes->columns = $this->db->field_data($table);
+                foreach ($item->attributes->columns as &$column) {
+                    if ($column->type == 'enum') {
+                        $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `values` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND COLUMN_NAME = '" . $column->name . "'";
+                        $query = $this->db->query($sql);
+                        $result = $query->result();
+                        $column->values = $result[0]->values;
+                    }
+                }
+                $return[] = $item;
+            }
+        }
+
+        // $fields = $this->db->field_data($id);
+
+        // $return = array();
+        // $item = new stdClass();
+        // $sql = "SELECT COUNT(*) AS `count` FROM `" . $id . "`";
+        // $data = array();
+        // $result = $this->run_sql($sql, $data);
+        // $item->type = 'database';
+        // $item->id = $id;
+        // $item->attributes = new stdClass();
+        // $item->attributes->count = intval($result[0]->count);
+        // $result = $this->format_data($result, 'summaries');
+        return ($return);
+    }
+
+    public function delete($table = '', $current = '', $status = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+        if ($table == '') {
+            $CI = & get_instance();
+            $table = $CI->response->meta->id;
+        }
+        if ($current == '') {
+            if (!empty($this->response->meta->current)) {
+                $current = $this->response->meta->current;
+            } else {
+                $current = 'n';
+            }
+        }
+        if ($status == '') {
+            if (!empty($CI->response->meta->filter)) {
+                foreach ($CI->response->meta->filter as $filter) {
+                    if ($filter->name == 'status') {
+                        $status = $filter->value;
+                    }
+                }
+            }
+        }
+        if ($this->db->table_exists($table)) {
+            if ($this->db->field_exists('current', $table)) {
+                $sql = "DELETE FROM `" . $table . "` WHERE current = '" . $current . "'";
+                $this->run_sql($sql, array());
+                return true;
+            } elseif ($table == 'system') {
+                if ($status != '') {
+                    $sql = "DELETE FROM system WHERE status = ?";
+                    $this->run_sql($sql, array($status));
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                if ($current == 'all') {
+                    $sql = "DELETE FROM `" . $table . "`";
+                    $this->run_sql($sql, array());
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }
     }
 
     public function execute($table = '', $action = '', $format = '', $attributes = array())
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         if ($table == '') {
             $table = $CI->response->meta->id;
@@ -195,135 +332,12 @@ class M_database extends MY_Model
         #print_r($result);
     }
 
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = $CI->response->meta->id;
-        } else {
-            $id = $id;
-        }
-        $return = array();
-        $tables = $this->db->list_tables();
-        foreach ($tables as $table) {
-            if ($id == $table) {
-                $item = new stdClass();
-                $item->type = 'database';
-                $item->id = $table;
-                $item->attributes = new stdClass();
-                $item->attributes->name = $table;
-                
-                $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
-                $query = $this->db->query($sql);
-                $result = $query->result();
-                $item->attributes->count = intval($result[0]->count);
 
-                if ($this->db->field_exists('current', $table)) {
-                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "` WHERE current = 'y'";
-                    $query = $this->db->query($sql);
-                    $result = $query->result();
-                    $item->attributes->current_row = true;
-                    $item->attributes->current = intval($result[0]->count);
-                    $item->attributes->non_current = intval($item->attributes->count -$item->attributes->current);
-                } else {
-                    $item->attributes->current_row = false;
-                }
-
-                if ($this->db->field_exists('org_id', $table)) {
-                    $item->attributes->org_id_row = true;
-                } else {
-                    $item->attributes->org_id_row = false;
-                }
-
-                if ($table == 'system') {
-                    $item->attributes->status = array();
-                    $sql = "SELECT status, COUNT(*) AS `count` FROM system GROUP BY `status`";
-                    $query = $this->db->query($sql);
-                    $item->attributes->status = $query->result();
-                }
-
-                # TODO - add in if the column has an index or is a foreign key
-
-                $item->attributes->columns = array();
-                $item->attributes->columns = $this->db->field_data($table);
-                foreach ($item->attributes->columns as &$column) {
-                    if ($column->type == 'enum') {
-                        $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `values` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND COLUMN_NAME = '" . $column->name . "'";
-                        $query = $this->db->query($sql);
-                        $result = $query->result();
-                        $column->values = $result[0]->values;
-                    }
-                }
-                $return[] = $item;
-            }
-        }
-
-        // $fields = $this->db->field_data($id);
-
-        // $return = array();
-        // $item = new stdClass();
-        // $sql = "SELECT COUNT(*) AS `count` FROM `" . $id . "`";
-        // $data = array();
-        // $result = $this->run_sql($sql, $data);
-        // $item->type = 'database';
-        // $item->id = $id;
-        // $item->attributes = new stdClass();
-        // $item->attributes->count = intval($result[0]->count);
-        // $result = $this->format_data($result, 'summaries');
-        return ($return);
-    }
-
-    public function delete($table = '', $current = '', $status = '')
-    {
-        if ($table == '') {
-            $CI = & get_instance();
-            $table = $CI->response->meta->id;
-        }
-        if ($current == '') {
-            if (!empty($this->response->meta->current)) {
-                $current = $this->response->meta->current;
-            } else {
-                $current = 'n';
-            }
-        }
-        if ($status == '') {
-            if (!empty($CI->response->meta->filter)) {
-                foreach ($CI->response->meta->filter as $filter) {
-                    if ($filter->name == 'status') {
-                        $status = $filter->value;
-                    }
-                }
-            }
-        }
-        if ($this->db->table_exists($table)) {
-            if ($this->db->field_exists('current', $table)) {
-                $sql = "DELETE FROM `" . $table . "` WHERE current = '" . $current . "'";
-                $this->run_sql($sql, array());
-                return true;
-            } elseif ($table == 'system') {
-                if ($status != '') {
-                    $sql = "DELETE FROM system WHERE status = ?";
-                    $this->run_sql($sql, array($status));
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                if ($current == 'all') {
-                    $sql = "DELETE FROM `" . $table . "`";
-                    $this->run_sql($sql, array());
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-    }
 
     public function collection()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $return = array();
         $tables = $this->db->list_tables();
         foreach ($tables as $table) {

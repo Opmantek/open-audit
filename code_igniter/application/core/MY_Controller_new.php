@@ -57,6 +57,12 @@ class MY_Controller_new extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = 'MY_Controller_new::__construct';
+        stdlog($log);
+        
         $this->benchmark->mark('code_start');
         $this->load->library('session');
         $this->load->model('m_configuration');
@@ -74,7 +80,6 @@ class MY_Controller_new extends CI_Controller
             if ($this->config->config['internal_version'] < 20160904) {
                 $this->user->roles = array('admin', 'org_admin');
             } else {
-                $this->load->helper('log');
                 $log = new stdClass();
                 $log->severity = 4;
                 $log->file = 'system';
@@ -88,7 +93,6 @@ class MY_Controller_new extends CI_Controller
             if ($this->config->config['internal_version'] < 20160904) {
                 $this->user->orgs = array(0);
             } else {
-                $this->load->helper('log');
                 $log = new stdClass();
                 $log->severity = 4;
                 $log->file = 'system';

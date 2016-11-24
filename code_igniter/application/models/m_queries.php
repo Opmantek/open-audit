@@ -38,10 +38,16 @@ class M_queries extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `queries` (";
@@ -92,6 +98,8 @@ class M_queries extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -105,33 +113,11 @@ class M_queries extends MY_Model
         return ($result);
     }
 
-    public function sub_resource($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
-        $data = array((string)$id);
-        $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'devices');
-        return $result;
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        #$sql = $this->collection_sql('queries', 'sql');
-        $sql = "SELECT queries.*, oa_org.name AS `org_name` FROM queries LEFT JOIN oa_org ON (queries.org_id = oa_org.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'queries');
-        return ($result);
-    }
-
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $data_items = array();
@@ -157,11 +143,6 @@ class M_queries extends MY_Model
                 }
             }
             if (strpos($fields, ' '.$key.' ') !== false) {
-                // if ($sql == '') {
-                //     $sql = "SET `" . $key . "` = '" . $value . "'";
-                // } else {
-                //     $sql .= ", `" . $key . "` = '" . $value . "'";
-                // }
                 if ($sql == '') {
                     $sql = "SET `" . $key . "` = ?";
                 } else {
@@ -177,6 +158,9 @@ class M_queries extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -195,4 +179,31 @@ class M_queries extends MY_Model
         }
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = "SELECT queries.*, oa_org.name AS `org_name` FROM queries LEFT JOIN oa_org ON (queries.org_id = oa_org.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'queries');
+        return ($result);
+    }
+
+    public function sub_resource($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
+        $data = array((string)$id);
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'devices');
+        return $result;
+    }
 }

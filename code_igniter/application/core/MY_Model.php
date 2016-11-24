@@ -175,11 +175,17 @@ class MY_Model extends CI_Model
         $query = $this->db->query($sql, $data);
         // store the query in our response object
         $CI->response->meta->sql[] = $this->db->last_query();
+        // log the query
+        $this->load->helper('log');
+        $sqllog = new stdClass();
+        $sqllog->function =  strtolower($model . '::' . $function);
+        $sqllog->status = 'running sql';
+        $sqllog->summary = str_replace('/* ' . $model . '::' . $function . ' */', '', $this->db->last_query());
+        stdlog($sqllog);
         // restore the original setting to db_debug
         $this->db->db_debug = $temp_debug;
         // do we have an error?
         if ($this->db->_error_message()) {
-            $this->load->helper('log');
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
             if (!empty($CI->response)) {
                 if (!empty($CI->response->errors)) {
@@ -305,9 +311,9 @@ class MY_Model extends CI_Model
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
             if (!empty($CI->response->meta->limit)) {
                 $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-            }
-            if (!empty($CI->response->meta->offset)) {
-                $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                if (!empty($CI->response->meta->offset)) {
+                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                }
             }
         }
         $return['limit'] = $limit;

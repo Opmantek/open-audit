@@ -38,10 +38,16 @@ class M_search extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $value = $CI->response->meta->received_data->attributes->value;
         if (!empty($CI->response->meta->received_data->attributes->columns)) {
@@ -185,17 +191,11 @@ class M_search extends MY_Model
         return $return;
     }
 
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('files', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'files');
-        return ($result);
-    }
-
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' path description ';
@@ -215,6 +215,9 @@ class M_search extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -226,6 +229,17 @@ class M_search extends MY_Model
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
+    }
+
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('files', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'files');
+        return ($result);
     }
 
     private function count_data($result)

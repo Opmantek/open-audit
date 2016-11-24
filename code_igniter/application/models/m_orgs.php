@@ -38,10 +38,16 @@ class M_orgs extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `oa_org` (";
@@ -80,6 +86,8 @@ class M_orgs extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -93,36 +101,11 @@ class M_orgs extends MY_Model
         return ($result);
     }
 
-    public function read_sub_resource($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        if (count($result) == 0) {
-            return false;
-        } else {
-            $result = $this->format_data($result, 'devices');
-            return ($result);
-        }
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('orgs', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'orgs');
-        return ($result);
-    }
-
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name comments parent_id ';
@@ -142,6 +125,9 @@ class M_orgs extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -159,17 +145,45 @@ class M_orgs extends MY_Model
         }
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('orgs', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'orgs');
+        return ($result);
+    }
+
+    public function read_sub_resource($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT `type`, count(`system`.`id`) as `count`, org_id FROM `system` WHERE system.org_id = ? AND system.status = 'production' GROUP BY `system`.`type`";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        if (count($result) == 0) {
+            return false;
+        } else {
+            $result = $this->format_data($result, 'devices');
+            return ($result);
+        }
+    }
+
     public function get_orgs()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
         $result = $this->run_sql($sql, $data);
-        // $sql = $this->clean_sql($sql);
-        // $temp_debug = $this->db->db_debug;
-        // $this->db->db_debug = false;
-        // $query = $this->db->query($sql);
-        // $this->db->db_debug = $temp_debug;
-        // $result = $query->result();
         return($result);
     }
 

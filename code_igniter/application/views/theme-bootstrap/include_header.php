@@ -340,11 +340,12 @@
                     <li class="dropdown-submenu">
                         <a href="#">Logs</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/view_log/access'>View Access Log</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/view_log/system'>View System Log</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs'>View Logs</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'logs', 'd')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/purge_log/access'>Purge Access Log</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/purge_log/system'>Purge System Log</a></li>
+                            <!--
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/#'>Purge Access Log</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/#'>Purge System Log</a></li>
+                            -->
                             <?php } ?>
                         </ul>
                     </li>

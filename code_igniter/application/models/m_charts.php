@@ -38,6 +38,9 @@ class M_charts extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     private function build_filter() {
@@ -112,6 +115,8 @@ class M_charts extends MY_Model
 
     public function read_charts()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $filter = $this->build_filter();
         $CI->response->meta->internal->filter = $filter;
@@ -124,6 +129,8 @@ class M_charts extends MY_Model
 
     public function read_chart()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $filter = $this->build_filter();
         $CI->response->meta->internal->filter = $filter;
@@ -184,6 +191,8 @@ class M_charts extends MY_Model
 
     private function count_data($result)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         // do we have any retrieved rows?
         $CI = & get_instance();
         $trace = debug_backtrace();

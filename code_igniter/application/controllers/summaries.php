@@ -56,11 +56,21 @@ class Summaries extends MY_Controller_new
     public function __construct()
     {
         parent::__construct();
+        if (empty($this->uri->segment(1))) {
+            redirect('summaries');
+        }
+
         // log the attempt
-        stdlog();
+        $log = new stdClass();
+        $log->status = 'starting';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
         if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
+            $log->status = 'redirecting because of trailing slash';
+            stdlog($log);
             redirect(uri_string());
         }
         $this->load->helper('input');
@@ -68,10 +78,6 @@ class Summaries extends MY_Controller_new
         $this->load->helper('error');
         $this->load->model('m_summaries');
         $this->load->model('m_orgs');
-        $temp = @$this->uri->segment(1);
-        if (empty($temp)) {
-            redirect('summaries');
-        }
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
     }

@@ -38,10 +38,16 @@ class M_summaries extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         if (empty($CI->response->meta->received_data->attributes->name)) {
             log_error('ERR-0010', 'm_summaries::create');
@@ -60,6 +66,8 @@ class M_summaries extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -75,6 +83,9 @@ class M_summaries extends MY_Model
 
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name org_id table column ';
@@ -94,6 +105,9 @@ class M_summaries extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -113,6 +127,8 @@ class M_summaries extends MY_Model
 
     public function collection()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         if (empty($CI->response->meta->sort)) {
             $CI->response->meta->sort = 'name';
@@ -146,6 +162,8 @@ class M_summaries extends MY_Model
 
     public function execute($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -236,6 +254,8 @@ class M_summaries extends MY_Model
 
     public function read_sub_resource($sub_resource = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $this->load->model('m_users');
         $data = array();

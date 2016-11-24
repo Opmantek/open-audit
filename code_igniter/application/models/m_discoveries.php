@@ -38,91 +38,16 @@ class M_discoveries extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
-
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "/* discoveries::read */ " . "SELECT * FROM discoveries WHERE id = ?";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        $result[0]->other = json_decode($result[0]->other);
-        $result = $this->format_data($result, 'discoveries');
-        return ($result);
-    }
-
-    public function read_sub_resource($id = '') {
-        // Read our associated logs (if any)
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "/* m_discoveries::read_sub_resource */ " . "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `timestamp`";
-        $result = $this->run_sql($sql, array(intval($id)));
-        $result = $this->format_data($result, 'discovery_log');
-        return ($result);
-        #return(array());
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('discoveries', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'discoveries');
-        return ($result);
-    }
-
-    // public function create()
-    // {
-    //     $CI = & get_instance();
-    //     if (empty($CI->response->meta->received_data->attributes->name)) {
-    //         log_error('ERR-0010', 'm_discoveries::create');
-    //         return false;
-    //     }
-    //     $attributes = array('name', 'org_id', 'devices_assigned_to_org', 'devices_assigned_to_location', 'network_address', 'subnet');
-    //     $data = array();
-    //     foreach ($attributes as $attribute) {
-    //         if (!empty($CI->response->meta->received_data->attributes->{$attribute})) {
-    //             $data[] = $CI->response->meta->received_data->attributes->{$attribute};
-    //         } else {
-    //             $data[] = '';
-    //         }
-    //     }
-    //     $data[] = $this->user->full_name;
-    //     $sql = "INSERT INTO `discoveries` VALUES (NULL, ?, ?, ?, ?, ?, 'subnet', ?, 0, '', 0, ?, NOW(), '', 'y')";
-    //     $this->run_sql($sql, $data);
-    //     $id = $this->db->insert_id();
-    //     if (strpos($CI->response->meta->received_data->attributes->subnet, '/') !== false) {
-    //         $CI->load->model('m_networks');
-    //         $network = new stdClass();
-    //         $network->name = $CI->response->meta->received_data->attributes->subnet;
-    //         $network->org_id = $CI->response->meta->received_data->attributes->org_id;
-    //         $network->description = $CI->response->meta->received_data->attributes->name;
-    //         $CI->m_networks->upsert($network);
-    //     } else {
-    //         if (filter_var($CI->response->meta->received_data->attributes->subnet, FILTER_VALIDATE_IP) !== false) {
-    //             $CI->load->model('m_networks');
-    //             $CI->load->helper('network');
-    //             $temp = network_details($CI->response->meta->received_data->attributes->subnet.'/30');
-    //             $network = new stdClass();
-    //             $network->name = $temp->network.'/'.$temp->network_slash;
-    //             $network->org_id = $CI->response->meta->received_data->attributes->org_id;
-    //             $CI->m_networks->upsert($network);
-    //         }
-    //     }
-    //     return $id;
-    // }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "/* discoveries::create */ " . "INSERT INTO `discoveries` (";
@@ -183,8 +108,29 @@ class M_discoveries extends MY_Model
         return $id;
     }
 
+    public function read($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "/* discoveries::read */ " . "SELECT * FROM discoveries WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $result[0]->other = json_decode($result[0]->other);
+        $result = $this->format_data($result, 'discoveries');
+        return ($result);
+    }
+
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name org_id location_id network_address type system_id other device_count last_run complete ';
@@ -224,6 +170,9 @@ class M_discoveries extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -241,8 +190,38 @@ class M_discoveries extends MY_Model
         }
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('discoveries', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'discoveries');
+        return ($result);
+    }
+
+    public function read_sub_resource($id = '') {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        // Read our associated logs (if any)
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "/* m_discoveries::read_sub_resource */ " . "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `timestamp`";
+        $result = $this->run_sql($sql, array(intval($id)));
+        $result = $this->format_data($result, 'discovery_log');
+        return ($result);
+        #return(array());
+    }
+
     public function execute($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         if ($id == '') {
             $id = intval($CI->response->meta->id);

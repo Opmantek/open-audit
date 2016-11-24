@@ -56,6 +56,13 @@ class input extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        // log the attempt
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         $this->data['title'] = 'Open-AudIT';
         $this->load->helper('url');
         $this->load->helper('network');
@@ -71,7 +78,8 @@ class input extends CI_Controller
         // log the attempt
         $this->load->helper('log');
         $log = new stdClass();
-        $log->file = 'system';
+        $log->type = 'system';
+        $log->object = 'input';
         $log->severity = 6;
         stdlog($log);
         $log->severity = 7;

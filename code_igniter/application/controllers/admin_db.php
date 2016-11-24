@@ -40,9 +40,10 @@ class Admin_db extends MY_Controller
     {
         parent::__construct();
         set_time_limit(240);
-        $log_details = new stdClass();
-        stdlog($log_details);
-        unset($log_details);
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
     }
 
     public function index()

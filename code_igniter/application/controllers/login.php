@@ -43,10 +43,14 @@ class login extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->helper('form');
-        $this->load->helper('log');
 
         $this->load->model('m_configuration');
         $this->m_configuration->load();

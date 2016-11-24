@@ -40,10 +40,10 @@ class report extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
     }
 
     public function index()

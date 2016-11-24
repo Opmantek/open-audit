@@ -70,9 +70,10 @@ class cli extends CI_Controller
         parent::__construct();
         // must be called from the CLI to access this page
         $this->load->helper('log');
-        $log_details = new stdClass();
-        stdlog($log_details);
-        $log_details->file = 'system';
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
 
         if (! $this->input->is_cli_request()) {
             exit();

@@ -38,10 +38,16 @@ class M_groups extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `groups` (";
@@ -92,6 +98,8 @@ class M_groups extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -105,18 +113,11 @@ class M_groups extends MY_Model
         return ($result);
     }
 
-    public function collection()
-    {
-        $CI = & get_instance();
-        #$sql = $this->collection_sql('queries', 'sql');
-        $sql = "SELECT groups.*, oa_org.name AS `org_name` FROM groups LEFT JOIN oa_org ON (groups.org_id = oa_org.id) WHERE groups.org_id IN (" . $CI->user->org_list . ") GROUP BY groups.name";
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'groups');
-        return ($result);
-    }
-
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $data_items = array();
@@ -157,6 +158,9 @@ class M_groups extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -175,4 +179,14 @@ class M_groups extends MY_Model
         }
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = "SELECT groups.*, oa_org.name AS `org_name` FROM groups LEFT JOIN oa_org ON (groups.org_id = oa_org.id) WHERE groups.org_id IN (" . $CI->user->org_list . ") GROUP BY groups.name";
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'groups');
+        return ($result);
+    }
 }

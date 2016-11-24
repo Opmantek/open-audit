@@ -38,60 +38,16 @@ class M_connections extends MY_Model
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT * FROM oa_connection WHERE id = ?";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'connections');
-        return ($result);
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-
-        // get a list of Orgs and Locations so we can populate the names
-        $sql = "SELECT id, name FROM oa_org";
-        $result = $this->run_sql($sql, array());
-        $orgs = $result;
-        $sql = "SELECT id, name FROM oa_connection";
-        $result = $this->run_sql($sql, array());
-        $items = $result;
-
-        $sql = $this->collection_sql('connections', 'sql');
-        $result = $this->run_sql($sql, array());
-
-        for ($i=0; $i < count($result); $i++) {
-            foreach ($orgs as $org) {
-                if ($org->id == $result[$i]->org_id) {
-                    $result[$i]->org_name = $org->name;
-                }
-            }
-            foreach ($items as $item) {
-                if ($item->id == $result[$i]->location_id_a) {
-                    $result[$i]->location_name_a = $item->name;
-                }
-                if ($item->id == $result[$i]->location_id_b) {
-                    $result[$i]->location_name_b = $item->name;
-                }
-            }
-        }
-
-        $result = $this->format_data($result, 'connections');
-        return ($result);
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `oa_connection` (";
@@ -123,8 +79,28 @@ class M_connections extends MY_Model
         return $this->db->insert_id();
     }
 
+    public function read($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT * FROM oa_connection WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'connections');
+        return ($result);
+    }
+
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ';
@@ -144,6 +120,9 @@ class M_connections extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -159,5 +138,42 @@ class M_connections extends MY_Model
         } else {
             return false;
         }
+    }
+
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+
+        // get a list of Orgs and Locations so we can populate the names
+        $sql = "SELECT id, name FROM oa_org";
+        $result = $this->run_sql($sql, array());
+        $orgs = $result;
+        $sql = "SELECT id, name FROM oa_connection";
+        $result = $this->run_sql($sql, array());
+        $items = $result;
+
+        $sql = $this->collection_sql('connections', 'sql');
+        $result = $this->run_sql($sql, array());
+
+        for ($i=0; $i < count($result); $i++) {
+            foreach ($orgs as $org) {
+                if ($org->id == $result[$i]->org_id) {
+                    $result[$i]->org_name = $org->name;
+                }
+            }
+            foreach ($items as $item) {
+                if ($item->id == $result[$i]->location_id_a) {
+                    $result[$i]->location_name_a = $item->name;
+                }
+                if ($item->id == $result[$i]->location_id_b) {
+                    $result[$i]->location_name_b = $item->name;
+                }
+            }
+        }
+
+        $result = $this->format_data($result, 'connections');
+        return ($result);
     }
 }

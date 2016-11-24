@@ -39,6 +39,13 @@ class test extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+        // log the attempt
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         // must be an admin to access this page
         $this->load->model('m_oa_user');
         $this->m_oa_user->validate_user();
@@ -49,14 +56,6 @@ class test extends CI_Controller
                 redirect('main/list_groups');
             }
         }
-
-        $this->load->helper('log');
-
-        // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
 
         $this->load->helper('report_helper');
         check_default_reports();

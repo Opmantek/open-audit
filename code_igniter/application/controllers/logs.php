@@ -45,28 +45,93 @@
 * @link     http://www.open-audit.org
 * @return   NULL
  */
-class logs extends CI_Controller_new
+class logs extends MY_Controller_new
 {
     /**
-     * Constructor.
-     *
-     * @access    public
-     *
-     * @category  Constructor
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-     *
-     * @link      http://www.open-audit.org
-     *
-     * @return Admin
-     */
+    * Constructor
+    *
+    * @access    public
+    * @return    NULL
+    */
     public function __construct()
     {
         parent::__construct();
+        // log the attempt
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
+        // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
-        redirect('admin/view_log/system');
+        if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
+            redirect(uri_string());
+        }
+        $this->load->helper('input');
+        $this->load->helper('output');
+        $this->load->helper('error');
+        $this->load->model('m_logs');
+        inputRead();
+        $this->output->url = $this->config->item('oa_web_index');
     }
+
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
+    public function index()
+    {
+    }
+
+    /**
+    * Our remap function to override the inbuilt controller->method functionality
+    *
+    * @access public
+    * @return NULL
+    */
+    public function _remap()
+    {
+        $this->{$this->response->meta->action}();
+    }
+
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function read()
+    {
+        include 'include_read.php';
+    }
+
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        if ($this->response->meta->limit == 1000 and $this->response->meta->format == 'screen') {
+            $this->response->meta->limit = 100; 
+        }
+        include 'include_collection.php';
+    }
+
 }
-// End of file queries.php
-// Location: ./controllers/queries.php
+// End of file logs.php
+// Location: ./controllers/logs.php

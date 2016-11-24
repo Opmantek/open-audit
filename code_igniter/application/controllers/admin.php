@@ -68,9 +68,10 @@ class admin extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $log_details = new stdClass();
-        stdlog($log_details);
-        unset($log_details);
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
     }
 
     /**

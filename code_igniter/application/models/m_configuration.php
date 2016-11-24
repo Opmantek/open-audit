@@ -38,10 +38,22 @@ class M_configuration extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
+    }
+
+    public function create()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
     }
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         // We accept either an integer ID or a string NAME
         if (!empty($id) and !is_integer($id)) {
@@ -78,8 +90,64 @@ class M_configuration extends MY_Model
         return ($result);
     }
 
+    public function update($id = '', $value = '', $edited_by = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
+        $CI = & get_instance();
+        // We might just use the response->meta->id
+        if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
+            if (!empty($CI->response->meta->id)) {
+                $id = $CI->response->meta->id;
+            } else if (!empty($CI->response->meta->received_data->attributes->name)) {
+                $id = $CI->response->meta->received_data->attributes->name;
+            } else if (!empty($CI->response->meta->received_data->attributes->id)) {
+                $id = $CI->response->meta->received_data->attributes->id;
+            }
+        }
+        // We accept either an integer ID or a string NAME
+        if (!empty($id) and !is_integer($id)) {
+            $sql = "SELECT id FROM configuration WHERE name = ?";
+            $data = array((string)$id);
+            $result = $this->run_sql($sql, $data);
+            if (!empty($result[0]->id)) {
+                $id = $result[0]->id;
+            } else {
+                $id = '';
+            }
+        }
+        // We have nothing to ID the particular config item
+        if (empty($id)) {
+            echo "FAIL";
+            return false;
+        }
+        // We can use the responsed received data if not explicitly provided a value
+        if (empty($value) and $CI->response->meta->collection == 'configuration') {
+            if (isset($CI->response->meta->received_data->attributes->value)) {
+                $value = $CI->response->meta->received_data->attributes->value;
+            }
+        }
+        if (empty($edited_by)) {
+            $edited_by = $this->user->full_name;
+        }
+        $sql = "UPDATE `configuration` SET `value` = ?, edited_by = ?, edited_date = NOW() WHERE id = ?";
+        $data = array((string)$value, (string)$edited_by, intval($id));
+        $this->run_sql($sql, $data);
+        return true;
+    }
+
+    public function delete($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+    }
+
     public function collection()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
 
         // total count
@@ -107,66 +175,11 @@ class M_configuration extends MY_Model
         return ($result);
     }
 
-    public function update($id = '', $value = '', $edited_by = '')
-    {
-        $CI = & get_instance();
-
-        // We might just use the response->meta->id
-        if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
-            if (!empty($CI->response->meta->id)) {
-                $id = $CI->response->meta->id;
-            } else if (!empty($CI->response->meta->received_data->attributes->name)) {
-                $id = $CI->response->meta->received_data->attributes->name;
-            } else if (!empty($CI->response->meta->received_data->attributes->id)) {
-                $id = $CI->response->meta->received_data->attributes->id;
-            }
-        }
-
-        // We accept either an integer ID or a string NAME
-        if (!empty($id) and !is_integer($id)) {
-            $sql = "SELECT id FROM configuration WHERE name = ?";
-            $data = array((string)$id);
-            $result = $this->run_sql($sql, $data);
-            if (!empty($result[0]->id)) {
-                $id = $result[0]->id;
-            } else {
-                $id = '';
-            }
-        }
-
-        // We have nothing to ID the particular config item
-        if (empty($id)) {
-            echo "FAIL";
-            return false;
-        }
-
-        // We can use the responsed received data if not explicitly provided a value
-        if (empty($value) and $CI->response->meta->collection == 'configuration') {
-            if (isset($CI->response->meta->received_data->attributes->value)) {
-                $value = $CI->response->meta->received_data->attributes->value;
-            }
-        }
-
-        if (empty($edited_by)) {
-            $edited_by = $this->user->full_name;
-        }
-
-        $sql = "UPDATE `configuration` SET `value` = ?, edited_by = ?, edited_date = NOW() WHERE id = ?";
-        $data = array((string)$value, (string)$edited_by, intval($id));
-        $this->run_sql($sql, $data);
-        return true;
-    }
-
-    public function delete($id = '')
-    {
-    }
-
-    public function create()
-    {
-    }
-
     public function load()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'loading data';
+        stdlog($this->log);
 
         if ($this->db->table_exists('configuration')) {
             $sql = "SELECT name, value FROM `configuration`";
@@ -293,10 +306,10 @@ class M_configuration extends MY_Model
         $this->config->config['ip'] = implode(',', $ip_address_array);
     }
 
-
-
     public function read_subnet()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $this->load->helper('network');
         $ip_address_array = array();
         # osx
@@ -373,6 +386,8 @@ class M_configuration extends MY_Model
 
     public function read_domain()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $result = '';
         if (php_uname('s') == 'Windows NT') {
             $command = "wmic computersystem get domain";

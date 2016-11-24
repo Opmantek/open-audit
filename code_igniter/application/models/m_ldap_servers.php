@@ -38,30 +38,16 @@ class M_ldap_servers extends MY_Model
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT ldap_servers.*, oa_org.name AS `org_name` FROM ldap_servers LEFT JOIN oa_org ON (ldap_servers.org_id = oa_org.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (" . $CI->user->org_list . ")";
-        $data = array(intval($id));
-        $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'ldap_servers');
-        return $result;
-    }
-
-    public function sub_resource($id = '')
-    {
-        return array();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         if (empty($CI->response->meta->received_data->attributes->org_id)) {
             $CI->response->meta->received_data->attributes->org_id = 1;
@@ -88,17 +74,28 @@ class M_ldap_servers extends MY_Model
         return $this->db->insert_id();
     }
 
-    public function collection()
+    public function read($id = '')
     {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('ldap_servers', 'sql');
-        $result = $this->run_sql($sql, array());
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT ldap_servers.*, oa_org.name AS `org_name` FROM ldap_servers LEFT JOIN oa_org ON (ldap_servers.org_id = oa_org.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (" . $CI->user->org_list . ")";
+        $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'ldap_servers');
-        return ($result);
+        return $result;
     }
 
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name description org_id lang host domain refresh use_roles ';
@@ -118,6 +115,9 @@ class M_ldap_servers extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -131,4 +131,19 @@ class M_ldap_servers extends MY_Model
         return true;
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('ldap_servers', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'ldap_servers');
+        return ($result);
+    }
+
+    public function sub_resource($id = '')
+    {
+        return array();
+    }
 }

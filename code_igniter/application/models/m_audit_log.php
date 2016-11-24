@@ -38,10 +38,16 @@ class M_audit_log extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($system_id, $username = '', $type = '', $ip = '', $debug = '', $wmi_fails = '', $timestamp = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id == '' or $system_id == 0) {
             return;
@@ -58,20 +64,10 @@ class M_audit_log extends MY_Model
         $query = $this->db->query($sql, $data);
     }
 
-    public function update($column, $value, $system_id, $timestamp)
-    {
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
-        }
-        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
-        $sql = $this->clean_sql($sql);
-        $data = array("$value", "$system_id", "$timestamp");
-        $query = $this->db->query($sql, $data);
-    }
-
     public function read($system_id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id == '' or $system_id == 0) {
             return;
@@ -82,5 +78,20 @@ class M_audit_log extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         return ($result);
+    }
+
+    public function update($column, $value, $system_id, $timestamp)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
+        $system_id = intval($system_id);
+        if ($system_id == '' or $system_id == 0) {
+            return;
+        }
+        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
+        $sql = $this->clean_sql($sql);
+        $data = array("$value", "$system_id", "$timestamp");
+        $query = $this->db->query($sql, $data);
     }
 }

@@ -38,10 +38,17 @@ class M_networks extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->severity = 7;
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `networks` (";
@@ -75,6 +82,8 @@ class M_networks extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -88,8 +97,61 @@ class M_networks extends MY_Model
         return $result;
     }
 
+    public function update()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = '';
+        $fields = ' name description org_id ';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
+                } else {
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
+                }
+            }
+        }
+        $sql = "UPDATE `networks` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql, array());
+        return;
+    }
+
+    public function delete($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $CI = & get_instance();
+        $sql = "DELETE FROM `networks` WHERE id = ?";
+        $data = array(intval($id));
+        $this->run_sql($sql, $data);
+        return true;
+    }
+
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('networks', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'networks');
+        return ($result);
+    }
+
     public function sub_resource($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -115,51 +177,11 @@ class M_networks extends MY_Model
         }
     }
 
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('networks', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'networks');
-        return ($result);
-    }
-
-    public function update()
-    {
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' name description org_id ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "UPDATE `networks` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
-        return;
-    }
-
-    public function delete($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $CI = & get_instance();
-        $sql = "DELETE FROM `networks` WHERE id = ?";
-        $data = array(intval($id));
-        $this->run_sql($sql, $data);
-        return true;
-    }
-
     public function upsert($network)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'upserting data';
+        stdlog($this->log);
         if (empty($network)) {
             return false;
         }
@@ -203,6 +225,8 @@ class M_networks extends MY_Model
     # returns true if ip is contained in a subnet, false otherwise
     public function check_ip($ip = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if (empty($this->config)) {
             $this->load->model('m_configuration');
             $this->m_configuration->load();
@@ -265,6 +289,8 @@ class M_networks extends MY_Model
 
     private function count_data($result)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         // do we have any retrieved rows?
         $CI = & get_instance();
         $trace = debug_backtrace();

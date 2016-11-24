@@ -57,7 +57,11 @@ class Database extends MY_Controller_new
     {
         parent::__construct();
         // log the attempt
-        stdlog();
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
         if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
@@ -4957,6 +4961,18 @@ class Database extends MY_Controller_new
               PRIMARY KEY (`id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO `configuration` (SELECT NULL, config_name, config_value, config_editable, 'system', NOW(), config_description FROM oa_config)";
+
+            $sql[] = "DELETE FROM `configuration` WHERE `name` = 'log_style'";
+            $sql[] = "DELETE FROM `configuration` WHERE `name` LIKE 'log_retain_level%'";
+
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_0','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 0.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_1','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 1.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_2','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 2.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_3','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 3.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_4','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 4.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_5','90','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 5.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_6','30','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 6.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_7','7','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 7.')";
 
             # credential
             $sql[] = "ALTER TABLE `credential` CHANGE `edited_date` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";

@@ -38,53 +38,16 @@ class M_fields extends MY_Model
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT * FROM `additional_field` WHERE id = ?";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'fields');
-        return ($result);
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('fields', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'fields');
-        return ($result);
-    }
-
-    public function delete($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        if ($id != 0) {
-            $CI = & get_instance();
-            $sql = "DELETE FROM `additional_field` WHERE id = ?";
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            return true;
-        } else {
-            return false;
-        }
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `additional_field` (";
@@ -116,8 +79,28 @@ class M_fields extends MY_Model
         return $this->db->insert_id();
     }
 
+    public function read($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT * FROM `additional_field` WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'fields');
+        return ($result);
+    }
+
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name type values placement group_id ';
@@ -135,4 +118,37 @@ class M_fields extends MY_Model
         return;
     }
 
+    public function delete($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        if ($id != 0) {
+            $CI = & get_instance();
+            $sql = "DELETE FROM `additional_field` WHERE id = ?";
+            $data = array(intval($id));
+            $this->run_sql($sql, $data);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('fields', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'fields');
+        return ($result);
+    }
 }

@@ -211,6 +211,7 @@ if (! function_exists('discovery_log')) {
     }
 }
 
+
 if (! function_exists('stdlog')) {
     /**
      * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
@@ -226,6 +227,208 @@ if (! function_exists('stdlog')) {
      * @return NULL [logs the provided string to the log file]
      */
     function stdlog($log_details = null)
+    {
+        error_reporting(E_ALL);
+        $CI = & get_instance();
+        $router = & load_class('Router', 'core');
+
+        // log_details:
+        //  timestamp - default to current. Format is YYYY-MM-DD HH:II:SS
+        //  severity - default to 5
+        //  log level - default to 5, default set in config, can be over written
+        //  type - the log file to write to. Default to 'access'.and debug.
+        //  pid - default to PHP function to retrieve PHP script PID
+        //  hostname - default to PHP function to retrieve hostname of current server
+        //  user - default to user calling function
+        //  ip - the address of the client calling the function
+        //  display - echo the log entry $message to the screen - n is the default
+        //  message
+
+        // SEVERITY LEVELS
+        // The logging levels described by RFC 5424.
+        // DEBUG (7): Detailed debug information.
+        // INFO (6): Interesting events. Examples: User logs in, SQL logs.
+        // NOTICE (5): Normal but significant events.
+        // WARNING (4): Exceptional occurrences that are not errors. Examples: Use of deprecated APIs, poor use of an API, undesirable things that are not necessarily wrong.
+        // ERROR (3): Runtime errors that do not require immediate action but should typically be logged and monitored.
+        // CRITICAL (2): Critical conditions. Example: Application component unavailable, unexpected exception.
+        // ALERT (1): Action must be taken immediately. Example: Entire website down, database unavailable, etc. This should trigger the SMS alerts and wake you up.
+        // EMERGENCY (0): Emergency: system is unusable.
+
+        // `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+        // `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+        // `type` varchar(200) NOT NULL DEFAULT '',
+        // `severity` int(10) unsigned NOT NULL DEFAULT 0,
+        // `severity_text` varchar(20) NOT NULL DEFAULT '',
+        // `pid` int(10) unsigned NOT NULL DEFAULT 0,
+        // `user` varchar(200) NOT NULL DEFAULT '',
+        // `server` varchar(200) NOT NULL DEFAULT '',
+        // `ip` varchar(200) NOT NULL DEFAULT '',
+        // `collection` varchar(200) NOT NULL DEFAULT '',
+        // `action` varchar(200) NOT NULL DEFAULT '',
+        // `function` varchar(200) NOT NULL DEFAULT '',
+        // `status` varchar(200) NOT NULL DEFAULT '',
+        // `summary` text NOT NULL DEFAULT '',
+        // `detail` varchar(200) NOT NULL DEFAULT '',
+
+        // setup the default values
+        $log = array();
+        $log['type'] = 'access';
+        $log['severity'] = 7;
+        $log['severity_text'] = 'notice';
+        $log['pid'] = getmypid();
+        $log['user'] = '';
+        $log['server'] = php_uname('n');
+        $log['ip'] = $_SERVER['REMOTE_ADDR'];
+        $log['collection'] = '';
+        $log['action'] = '';
+        $log['function'] = $router->fetch_method();
+        $log['status'] = '';
+        $log['summary'] = '';
+        $log['detail'] = '';
+
+        if (!empty($log_details->file)) {
+            $log['type'] = $log_details->file;
+        }
+        if (!empty($log_details->type)) {
+            $log['type'] = $log_details->type;
+        }
+
+        if (!empty($log_details->severity)) {
+            $log['severity'] = intval($log_details->severity);
+        }
+        switch ($log['severity']) {
+            case 0:
+                $log['severity_text'] = 'emergency';
+                break;
+            case 1:
+                $log['severity_text'] = 'alert';
+                break;
+            case 2:
+                $log['severity_text'] = 'critical';
+                break;
+            case 3:
+                $log['severity_text'] = 'error';
+                break;
+            case 4:
+                $log['severity_text'] = 'warning';
+                break;
+            case 5:
+                $log['severity_text'] = 'notice';
+                break;
+            case 6:
+                $log['severity_text'] = 'info';
+                break;
+            case 7:
+                $log['severity_text'] = 'debug';
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        if (!empty($CI->user->full_name)) {
+            $log['user'] = $CI->user->full_name;
+        }
+
+        if (empty($log_details->log_level)) {
+            $log_level = intval($CI->config->item('log_level'));
+        } else {
+            $log_level = intval($log_details->log_level);
+        }
+        if ($log['severity'] > $log_level) {
+            // log called but log severity level not met
+            return;
+        }
+        unset($log_level);
+
+        if (!empty($log_details->user)) {
+            $log['user'] = $log_details->user;
+        }
+
+        if (!empty($CI->response->meta->collection)) {
+            $log['collection'] = $CI->response->meta->collection;
+        }
+
+        if (!empty($CI->response->meta->action)) {
+            $log['action'] = $CI->response->meta->action;
+        }
+
+        if (!empty($log_details->function)) {
+            $log['function'] = $log_details->function;
+        }
+
+        if (!empty($log_details->message)) {
+            $log['detail'] = $log_details->message;
+        }
+        if (!empty($log_details->detail)) {
+            $log['detail'] = $log_details->detail;
+        }
+
+        if (!empty($log_details->title)) {
+            $log['title'] = $log_details->title;
+        }
+
+        if (!empty($log_details->code)) {
+            $log['code'] = $log_details->code;
+        }
+
+        if (!empty($log_details->status)) {
+            $log['status'] = $log_details->status;
+        }
+
+        if (!empty($log_details->summary)) {
+            $log['summary'] = $log_details->summary;
+        }
+
+        if (!empty($log_details->detail)) {
+            $log['detail'] = $log_details->detail;
+        }
+
+        if (!$CI->db->table_exists('logs')) {
+            $sql = "CREATE TABLE `logs` (
+                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+                  `type` varchar(200) NOT NULL DEFAULT '',
+                  `severity` int(10) unsigned NOT NULL DEFAULT 0,
+                  `severity_text` varchar(20) NOT NULL DEFAULT '',
+                  `pid` int(10) unsigned NOT NULL DEFAULT 0,
+                  `user` varchar(200) NOT NULL DEFAULT '',
+                  `server` varchar(200) NOT NULL DEFAULT '',
+                  `ip` varchar(200) NOT NULL DEFAULT '',
+                  `collection` varchar(200) NOT NULL DEFAULT '',
+                  `action` varchar(200) NOT NULL DEFAULT '',
+                  `function` varchar(200) NOT NULL DEFAULT '',
+                  `status` varchar(200) NOT NULL DEFAULT '',
+                  `summary` text NOT NULL DEFAULT '',
+                  `detail` text NOT NULL DEFAULT '',
+                  PRIMARY KEY (`id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            $query = $CI->db->query($sql);
+        }
+
+        $sql = "/* log_helper */" . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = $CI->db->query($sql, $log);
+    }
+}
+
+
+if (! function_exists('stdlog1')) {
+    /**
+     * The standard log function for Open-AudIT. Writes logs to a text file in the desired format (json or syslog).
+     *
+     * @access    public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param     Object    log_details     An object containing details you wish to log
+     *
+     * @return NULL [logs the provided string to the log file]
+     */
+    function stdlog1($log_details = null)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -471,9 +674,7 @@ if (! function_exists('stdlog')) {
             }
         }
 
-
-
-        // Our SQL insert, before we atytempt to write to the log file (which may fail, permissions, etc).
+        // Our SQL insert, before we attempt to write to the log file (which may fail, permissions, etc).
         if (!isset($log_details->database) or strtolower($log_details->database) != 'y') {
             // TODO - unset this for release
             $log->database = 'n';
@@ -529,8 +730,8 @@ if (! function_exists('stdlog')) {
             $log->command_error_message = $log_details->command_error_message;
         }
 
-        if ($log->database == 'yes_this_is_disabled') {
-            $sql = "/* log_helper::stdlog */ INSERT INTO logs VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        if ($log->database == 'not_yet') {
+            $sql = "/* log_helper::stdlog */ INSERT INTO logs VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $data = array((string)$log->name,
                             intval($log->org_id),
                             intval($log->severity),
@@ -543,12 +744,7 @@ if (! function_exists('stdlog')) {
                             (string)$log->message,
                             (string)$log->hostname,
                             (string)$log->ip_address,
-                            (string)$log->user,
-                            (string)$log->command,
-                            (string)$log->command_complete,
-                            (string)$log->command_time_to_execute,
-                            (string)$log->command_error_message
-                            );
+                            (string)$log->user);
             $query = $CI->db->query($sql, $data);
         }
 

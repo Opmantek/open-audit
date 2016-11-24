@@ -40,10 +40,11 @@ class main extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
 
         $this->load->model('m_users');
         $this->load->model('m_roles');

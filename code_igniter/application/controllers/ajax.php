@@ -38,6 +38,11 @@ class ajax1 extends MY_Controller
 {
     public function __construct()
     {
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
+
         parent::__construct();
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             $this->data['system_id'] = $this->uri->segment(3, '');

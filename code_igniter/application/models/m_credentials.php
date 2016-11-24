@@ -38,12 +38,17 @@ class M_credentials extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
         $this->load->library('encrypt');
-        $this->load->helper('log_helper');
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `credentials` (";
@@ -88,6 +93,8 @@ class M_credentials extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         if ($id == '') {
             $id = @intval($CI->response->meta->id);
@@ -119,6 +126,9 @@ class M_credentials extends MY_Model
 
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $log = new stdClass();
         $log->severity = 7;
         $log->file = 'system';
@@ -167,8 +177,22 @@ class M_credentials extends MY_Model
         return;
     }
 
+    public function delete()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = "DELETE FROM `credentials` WHERE id = ?";
+        $data = array(intval($CI->response->meta->id));
+        $this->run_sql($sql, $data);
+        return true;
+    }
+
     public function collection()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = $this->collection_sql('credentials', 'sql');
         $result = $this->run_sql($sql, array());
@@ -179,108 +203,5 @@ class M_credentials extends MY_Model
             }
         }
         return ($result);
-    }
-
-    public function delete()
-    {
-        $CI = & get_instance();
-        $sql = "DELETE FROM `credentials` WHERE id = ?";
-        $data = array(intval($CI->response->meta->id));
-        $this->run_sql($sql, $data);
-        return true;
-    }
-
-    public function create1()
-    {
-        $CI = & get_instance();
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->level = 7;
-        $log->file = 'system';
-
-        $this->load->library('encrypt');
-
-        if (!empty($CI->response->meta->received_data->attributes->type)) {
-            $type = $CI->response->meta->received_data->attributes->type;
-            $log->message = "Using type from received_data.";
-            stdlog($log);
-        } else {
-            $type = $CI->response->meta->collection;
-            $log->message = "Using type from collection.";
-            stdlog($log);
-        }
-
-        # Required
-        if (!empty($CI->response->meta->received_data->attributes->credentials)) {
-            $credentials = (string)$this->encrypt->encode(json_encode($CI->response->meta->received_data->attributes->credentials));
-            $log->message = "Using credentials from received_data.";
-            stdlog($log);
-        } else {
-            $log->message = "Credentials not supplied - exiting." . json_encode($CI->response->meta);
-            $log->severity = 5;
-            stdlog($log);
-            return false;
-        }
-
-        # Required
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
-            $name = (string)$CI->response->meta->received_data->attributes->name;
-            $log->message = "Using name from received_data.";
-            stdlog($log);
-        } else {
-            $log->message = "Name not supplied - exiting.";
-            $log->severity = 5;
-            stdlog($log);
-            return false;
-        }
-
-        # Required
-        if (isset($CI->response->meta->received_data->attributes->org_id)) {
-            $org_id = intval($CI->response->meta->received_data->attributes->org_id);
-            $log->message = "Using org_id from received_data.";
-            stdlog($log);
-        } else {
-            $log->message = "Org_id not supplied - exiting.";
-            $log->severity = 5;
-            stdlog($log);
-            return false;
-        }
-
-        # Optional
-        if (!empty($CI->response->meta->received_data->attributes->description)) {
-            $description = (string)$CI->response->meta->received_data->attributes->description;
-            $log->message = "Using description from received_data.";
-            stdlog($log);
-        } else {
-            $description = '';
-        }
-
-        # check to see if we already have a set of credentials with the same name
-        $sql = "SELECT COUNT(id) AS count FROM `credentials` WHERE `name` = ?";
-        $data = array($name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            $log->message = "Duplicate name found - exiting.";
-            $log->severity = 5;
-            stdlog($log);
-            log_error('ERR-0010', 'm_credentials::create');
-            return false;
-        }
-
-        # Insert the new item
-        $sql = "INSERT INTO `credentials` (id, name, description, type, credentials, org_id, edited_by, edited_date) VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array($name, $description, $type, $credentials, $org_id, $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        $id = @$this->db->insert_id();
-        if (!empty($id)) {
-            $log->message = "Credentials created.";
-            stdlog($log);
-            return $id;
-        } else {
-            $log->message = "Credentials NOT created.";
-            $log->severity = 5;
-            stdlog($log);
-            return false;
-        }
     }
 }

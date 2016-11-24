@@ -38,10 +38,16 @@ class M_users extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `oa_user` (";
@@ -96,6 +102,8 @@ class M_users extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -109,18 +117,11 @@ class M_users extends MY_Model
         return ($result);
     }
 
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('users', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'users');
-        return ($result);
-    }
-
     public function update()
     {
-        #sleep(3);
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name permissions password org_id full_name email lang active roles orgs ';
@@ -152,6 +153,9 @@ class M_users extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -170,8 +174,23 @@ class M_users extends MY_Model
         }
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('users', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'users');
+        return ($result);
+    }
+
     public function get_orgs($user_id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'pre';
+        $this->log->summary = 'retrieving orgs';
+        stdlog($this->log);
         if (empty($this->user->orgs)) {
             return array();
         }
@@ -192,6 +211,10 @@ class M_users extends MY_Model
 
     private function get_org($org_id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'pre';
+        $this->log->summary = 'retrieving org';
+        stdlog($this->log);
         $org_list = array();
         foreach ($this->orgs as $org) {
             if ($org->parent_id == $org_id and $org->id != 1) {
@@ -269,6 +292,9 @@ class M_users extends MY_Model
 
     public function get_user_collection_org_permission($collection, $id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'retrieving collection orgs';
+        stdlog($this->log);
         if ($collection == '') {
             return false;
         }
@@ -336,6 +362,11 @@ class M_users extends MY_Model
 
     public function validate()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'validating user';
+        $this->log->status = 'pre';
+        stdlog($this->log);
+
         $CI = & get_instance();
         $this->config = $CI->config;
         $CI->user = new stdClass();
@@ -394,6 +425,9 @@ class M_users extends MY_Model
 
     public function user_org($org_id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'retrieving user orgs';
+        stdlog($this->log);
         $CI = & get_instance();
         $temp = explode(',', $CI->user->org_list);
         foreach ($temp as $key => $value) {

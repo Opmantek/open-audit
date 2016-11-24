@@ -38,10 +38,16 @@ class M_locations extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($data = null)
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
         $sql = "INSERT INTO `oa_location` (";
@@ -75,6 +81,8 @@ class M_locations extends MY_Model
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -88,32 +96,11 @@ class M_locations extends MY_Model
         return ($result);
     }
 
-    public function sub_resource($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
-        $data = array((string)$id);
-        $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'devices');
-        return $result;
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('locations', 'sql');
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'locations');
-        return ($result);
-    }
-
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' name type room suite level address city state postcode country phone geo latitude longitude org_id ';
@@ -133,6 +120,9 @@ class M_locations extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -151,4 +141,31 @@ class M_locations extends MY_Model
         }
     }
 
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('locations', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'locations');
+        return ($result);
+    }
+
+    public function sub_resource($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
+        $data = array((string)$id);
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'devices');
+        return $result;
+    }
 }

@@ -38,25 +38,16 @@ class M_licenses extends MY_Model
     public function __construct()
     {
         parent::__construct();
-    }
-
-    public function read($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT * FROM licenses WHERE id = ?";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'licenses');
-        return($result);
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
         if (empty($CI->response->meta->received_data->org_id)) {
             $CI->response->meta->received_data->org_id = 1;
@@ -75,17 +66,28 @@ class M_licenses extends MY_Model
         return $this->db->insert_id();
     }
 
-    public function collection()
+    public function read($id = '')
     {
-        $CI = & get_instance();
-        $sql = $this->collection_sql('licenses', 'sql');
-        $result = $this->run_sql($sql, array());
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT * FROM licenses WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'licenses');
-        return ($result);
+        return($result);
     }
 
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $log = new stdClass();
         $log->severity = 7;
         $log->file = 'system';
@@ -137,6 +139,9 @@ class M_licenses extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -147,6 +152,17 @@ class M_licenses extends MY_Model
         $data = array(intval($id));
         $this->run_sql($sql, $data);
         return true;
+    }
+
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $sql = $this->collection_sql('licenses', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'licenses');
+        return ($result);
     }
 
     private function count_data($result)
