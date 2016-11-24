@@ -3000,20 +3000,36 @@ if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number
 		MyArray = Split(strResults, vbcrlf)
 		for each line in MyArray
 			sTask = CSVParser(line)
-			if UCase(sTask(0)) = UCase(system_hostname) then
+			' if UCase(sTask(0)) = UCase(system_hostname) then
+			' 	item = item & "      <item>" & vbcrlf
+			' 	item = item & "         <name><![CDATA[" & mid(sTask(1), 1, 100) & "]]></name>" & vbcrlf
+			' 	item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
+			' 	item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
+			' 	item = item & "         <last_run><![CDATA[" & sTask(5) & "]]></last_run>" & vbcrlf
+			' 	item = item & "         <last_result><![CDATA[" & sTask(6) & "]]></last_result>" & vbcrlf
+			' 	item = item & "         <creator><![CDATA[" & sTask(7) & "]]></creator>" & vbcrlf
+			' 	item = item & "         <schedule></schedule>" & vbcrlf
+			' 	item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
+			' 	item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
+			' 	item = item & "         <user><![CDATA[" & sTask(14) & "]]></user>" & vbcrlf
+			' 	item = item & "      </item>" & vbcrlf
+			' end if
+
+			if UCase(safeArraySubscript(sTask, 0, "")) = UCase(system_hostname) then
 				item = item & "      <item>" & vbcrlf
-				item = item & "         <name><![CDATA[" & mid(sTask(1), 1, 100) & "]]></name>" & vbcrlf
-				item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
-				item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
-				item = item & "         <last_run><![CDATA[" & sTask(5) & "]]></last_run>" & vbcrlf
-				item = item & "         <last_result><![CDATA[" & sTask(6) & "]]></last_result>" & vbcrlf
-				item = item & "         <creator><![CDATA[" & sTask(7) & "]]></creator>" & vbcrlf
+				item = item & "         <name><![CDATA[" & mid(safeArraySubscript(sTask, 1, ""), 1, 100) & "]]></name>" & vbcrlf
+				item = item & "         <next_run><![CDATA[" & safeArraySubscript(sTask, 2, "") & "]]></next_run>" & vbcrlf
+				item = item & "         <status><![CDATA[" & safeArraySubscript(sTask, 3, "") & "]]></status>" & vbcrlf
+				item = item & "         <last_run><![CDATA[" & safeArraySubscript(sTask, 5, "") & "]]></last_run>" & vbcrlf
+				item = item & "         <last_result><![CDATA[" & safeArraySubscript(sTask, 6, "") & "]]></last_result>" & vbcrlf
+				item = item & "         <creator><![CDATA[" & safeArraySubscript(sTask, 7, "") & "]]></creator>" & vbcrlf
 				item = item & "         <schedule></schedule>" & vbcrlf
-				item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
-				item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
-				item = item & "         <user><![CDATA[" & sTask(14) & "]]></user>" & vbcrlf
+				item = item & "         <task><![CDATA[" & safeArraySubscript(sTask, 8, "") & "]]></task>" & vbcrlf
+				item = item & "         <state><![CDATA[" & safeArraySubscript(sTask, 11, "") & "]]></state>" & vbcrlf
+				item = item & "         <user><![CDATA[" & safeArraySubscript(sTask, 14, "") & "]]></user>" & vbcrlf
 				item = item & "      </item>" & vbcrlf
 			end if
+
 		next
 	end if
 	if item > "" then
@@ -7400,6 +7416,17 @@ function ou(dn)
 	ou = mid(ou, 1, len(ou)-1)
 end function
 
+' Intention: Provides safe access to array subscripts, when dealing with arrays that can vary in length
+' If the array subscript does not exist, the default value will be used
+function safeArraySubscript (array, subscript, defaultValue)
+	dim value
+	value = defaultValue
+	if UBound(array) >= subscript then
+		value = array(subscript)
+	end if
+	safeArraySubscript  = value
+end function
+
 Sub forceCScriptExecution
 	Dim Arg, Str
 	if not lcase( Right( wscript.FullName, 12 ) ) = "\cscript.exe" then
@@ -7424,8 +7451,6 @@ Sub hiddenExecution
 	CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str, 0
 	WScript.Quit
 End Sub
-
-
 
 ' windows build numbers
 ' 528 - Win NT 3.1
