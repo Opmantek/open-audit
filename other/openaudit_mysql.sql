@@ -304,7 +304,14 @@ INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfy
 INSERT INTO `configuration` VALUES (NULL, 'internal_version','20160904','n','system',NOW(),'The internal numerical version.');
 INSERT INTO `configuration` VALUES (NULL, 'logo','logo-banner-oac-oae','y','system',NOW(),'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `configuration` VALUES (NULL, 'log_level','5','y','system',NOW(),'Tells Open-AudIT which severity of event (at least) should be logged.');
-INSERT INTO `configuration` VALUES (NULL, 'log_style','syslog','y','system',NOW(),'Tells Open-AudIT which log format to use. Valid values are json and syslog.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_0','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 0.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_1','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 1.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_2','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 2.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_3','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 3.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_4','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 4.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_5','90','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 5.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_6','30','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 6.');
+INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_7','7','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 7.');
 INSERT INTO `configuration` VALUES (NULL, 'maps_url','/omk/oae/map','y','system',NOW(),'The web server address of opMaps.');
 INSERT INTO `configuration` VALUES (NULL, 'network_group_auto_create','y','y','system',NOW(),'Have Open-AudIT automatically create Groups based on Subnet.');
 INSERT INTO `configuration` VALUES (NULL, 'network_group_homepage_limit','20','y','system',NOW(),'The number of network groups to display on the homepage.');
@@ -942,6 +949,42 @@ CREATE TABLE `log` (
 LOCK TABLES `log` WRITE;
 /*!40000 ALTER TABLE `log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `logs`
+--
+
+DROP TABLE IF EXISTS `logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `logs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `severity` int(10) unsigned NOT NULL DEFAULT 0,
+  `severity_text` varchar(20) NOT NULL DEFAULT '',
+  `pid` int(10) unsigned NOT NULL DEFAULT 0,
+  `user` varchar(200) NOT NULL DEFAULT '',
+  `server` varchar(200) NOT NULL DEFAULT '',
+  `ip` varchar(200) NOT NULL DEFAULT '',
+  `collection` varchar(200) NOT NULL DEFAULT '',
+  `action` varchar(200) NOT NULL DEFAULT '',
+  `function` varchar(200) NOT NULL DEFAULT '',
+  `status` varchar(200) NOT NULL DEFAULT '',
+  `summary` text NOT NULL DEFAULT '',
+  `detail` text NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `logs`
+--
+
+LOCK TABLES `logs` WRITE;
+/*!40000 ALTER TABLE `logs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
