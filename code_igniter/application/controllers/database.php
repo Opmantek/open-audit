@@ -4915,7 +4915,17 @@ class Database extends MY_Controller_new
             }
 
             # attachment
-            $sql[] = "ALTER TABLE `attachment` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            if ($this->db->field_exists('timestamp', 'attachment')) {
+                $sql[] = "ALTER TABLE `attachment` CHANGE `timestamp` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            }
+            if (!$this->db->field_exists('edited_by', 'attachment')) {
+                $sql[] = "ALTER TABLE `attachment` ADD `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `filename`";
+            }
+            $sql[] = "UPDATE `attachment`, `oa_user` SET attachment.edited_by = oa_user.full_name WHERE attachment.user_id = oa_user.id";
+
+            if (!$this->db->field_exists('user_id', 'attachment')) {
+                $sql[] = "ALTER TABLE `attachment` DROP user_id";
+            }
 
             # audit log
             $sql[] = "ALTER TABLE `audit_log` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
