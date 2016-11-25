@@ -64,14 +64,12 @@ class M_database extends MY_Model
                 $item->attributes->name = $table;
                 
                 $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "`";
-                $query = $this->db->query($sql);
-                $result = $query->result();
+                $result = $this->run_sql($sql, array());
                 $item->attributes->count = intval($result[0]->count);
 
                 if ($this->db->field_exists('current', $table)) {
                     $sql = "SELECT COUNT(*) AS `count` FROM `" . $table . "` WHERE current = 'y'";
-                    $query = $this->db->query($sql);
-                    $result = $query->result();
+                    $result = $this->run_sql($sql, array());
                     $item->attributes->current_row = true;
                     $item->attributes->current = intval($result[0]->count);
                     $item->attributes->non_current = intval($item->attributes->count -$item->attributes->current);
@@ -99,8 +97,7 @@ class M_database extends MY_Model
                 foreach ($item->attributes->columns as &$column) {
                     if ($column->type == 'enum') {
                         $sql = "SELECT SUBSTRING(COLUMN_TYPE,5) AS `values` FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND COLUMN_NAME = '" . $column->name . "'";
-                        $query = $this->db->query($sql);
-                        $result = $query->result();
+                        $result = $this->run_sql($sql, array());
                         $column->values = $result[0]->values;
                     }
                 }

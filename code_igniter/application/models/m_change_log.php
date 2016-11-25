@@ -69,9 +69,8 @@ class M_change_log extends MY_Model
         $this->log->status = 'creating data';
         stdlog($this->log);
         $sql = "INSERT INTO change_log (`system_id`, `db_table`, `db_row`, `db_action`, `details`, `timestamp` ) VALUES ( ?, ?, ?, ?, ?, ? )";
-        $sql = $this->clean_sql($sql);
         $data = array("$system_id", "$db_table", "$db_row", "$db_action", "$details", "$timestamp");
-        $query = $this->db->query($sql, $data);
+        $this->run_sql($sql, $data);
     }
 
     /**
@@ -166,8 +165,7 @@ class M_change_log extends MY_Model
             $sql = "SELECT change_log.*, oa_user.full_name FROM change_log LEFT JOIN oa_user ON change_log.user_id = oa_user.id WHERE change_log.system_id = ? ORDER BY timestamp";
             $sql = $this->clean_sql($sql);
             $data = array($id);
-            $query = $this->db->query($sql, $data);
-            $result = $query->result();
+            $result = $this->run_sql($sql, $data);
             return ($result);
         } else {
             return;
@@ -190,9 +188,7 @@ class M_change_log extends MY_Model
         $sql = "SELECT change_log.*, system.name, system.ip, system.description FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.id = ?";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
-        $query = $this->db->query($sql, $data);
-        $result = $query->result();
-
+        $result = $this->run_sql($sql, $data);
         return ($result);
     }
 
@@ -212,9 +208,8 @@ class M_change_log extends MY_Model
         stdlog($this->log);
         foreach ($details['alerts'] as $key => $value) {
             $sql = "UPDATE change_log SET change_type = ?, change_id = ?, external_ident = ?, external_link = ?, note = ?, user_id = ?, ack_time = ? WHERE id = ?";
-            $sql = $this->clean_sql($sql);
             $data = array($details['change_type'], $details['change_id'], $details['external_change_id'], $details['external_change_link'], $details['alert_note'], $details['user_id'], $details['alert_ack_time'], "$value");
-            $query = $this->db->query($sql, $data);
+            $this->run_sql($sql, $data);
         }
     }
 }

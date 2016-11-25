@@ -155,8 +155,7 @@ class M_configuration extends MY_Model
             // get the total count
             $sql = "SELECT COUNT(*) as `count` FROM `configuration`";
             $sql = $this->clean_sql($sql);
-            $query = $this->db->query($sql);
-            $result = $query->result();
+            $result = $this->run_sql($sql, $data);
             $CI->response->meta->total = intval($result[0]->count);
         }
 

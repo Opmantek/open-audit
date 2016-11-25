@@ -59,9 +59,8 @@ class M_audit_log extends MY_Model
             $timestamp = $this->config->config['timestamp'];
         }
         $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $sql = $this->clean_sql($sql);
         $data = array($system_id, "$username", "$type", "$ip", "$debug", "$wmi_fails", "$timestamp");
-        $query = $this->db->query($sql, $data);
+        $this->run_sql($sql, $data);
     }
 
     public function read($system_id)
@@ -73,10 +72,8 @@ class M_audit_log extends MY_Model
             return;
         }
         $sql = "SELECT * FROM audit_log WHERE audit_log.system_id = ?";
-        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
-        $query = $this->db->query($sql, $data);
-        $result = $query->result();
+        $result = $this->run_sql($sql, $data);
         return ($result);
     }
 
@@ -90,8 +87,7 @@ class M_audit_log extends MY_Model
             return;
         }
         $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
-        $sql = $this->clean_sql($sql);
         $data = array("$value", "$system_id", "$timestamp");
-        $query = $this->db->query($sql, $data);
+        $this->run_sql($sql, $data);
     }
 }
