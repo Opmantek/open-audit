@@ -163,7 +163,7 @@ class MY_Model extends CI_Model
         $model = @$caller['class'];
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
-        $sql = '/* ' . $model . '::' . $function .' */ ' . $sql;
+        $sql = strtolower('/* ' . $model . '::' . $function .' */ ') . $sql;
         $sql = trim($sql);
 
         // store the current setting of db_debug
@@ -180,7 +180,7 @@ class MY_Model extends CI_Model
         $sqllog = new stdClass();
         $sqllog->function =  strtolower($model . '::' . $function);
         $sqllog->status = 'running sql';
-        $sqllog->summary = str_replace('/* ' . $model . '::' . $function . ' */', '', $this->db->last_query());
+        $sqllog->summary = $this->db->last_query();
         stdlog($sqllog);
         // restore the original setting to db_debug
         $this->db->db_debug = $temp_debug;

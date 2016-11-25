@@ -85,7 +85,10 @@ class M_discoveries extends MY_Model
         $data_array[] = $CI->user->full_name;    // the user.name
         $sql .= ") VALUES (" . $sql_data . ")";
         $this->run_sql($sql, $data_array);
-        $id = $this->db->insert_id();
+        $sql = "SELECT id FROM discoveries WHERE name = ? and org_id = ? and other = ?";
+        $new_discovery = $this->run_sql($sql, array($data->name, $data->org_id, $data->other));
+        $id = $new_discovery[0]->id;
+
         $data->other = json_decode($data->other);
         if ($data->type == 'subnet' and strpos($data->other->subnet, '/') !== false) {
             $CI->load->model('m_networks');
@@ -221,6 +224,7 @@ class M_discoveries extends MY_Model
     public function execute($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'executing discovery';
         stdlog($this->log);
         $CI = & get_instance();
         if ($id == '') {
@@ -228,15 +232,23 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        // reset our device counter
-        $sql = "/* discoveries::execute */ " . "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', last_run = NOW() WHERE id = ?";
-        $data = array(intval($id));
-        $this->run_sql($sql, $data);
 
-        $sql = "/* discoveries::execute */ " . "SELECT * FROM discoveries WHERE id = ?";
+        $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array(intval($id));
         $temp = $this->run_sql($sql, $data);
-        $discovery = $temp[0];
+        if (!empty($temp[0])) {
+            $discovery = $temp[0];
+        } else {
+            $this->log->status = 'error';
+            $this->log->summary = 'Discovery ID provided does not exist';
+            stdlog($this->log);
+            return;
+        }
+
+        // reset our device counter
+        $sql = "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', last_run = NOW() WHERE id = ?";
+        $data = array(intval($id));
+        $this->run_sql($sql, $data);
 
         if (!empty($this->config->config['discovery_nmap_os'])) {
             $nmap_os = $this->config->config['discovery_nmap_os'];
@@ -253,45 +265,127 @@ class M_discoveries extends MY_Model
         // decode our other attributes
         $discovery->other = json_decode($discovery->other);
 
-        // Unix based discovery
-        if (php_uname('s') != 'Windows NT') {
-            $filepath = $this->config->config['base_path'] . '/other';
-            $command_string = "$filepath/discover_subnet.sh" .
-                                " subnet_range=" .  $discovery->other->subnet .
-                                " url=".            $discovery->network_address . "index.php/input/discoveries" .
-                                " submit_online=y" .
-                                " echo_output=n" .
-                                " create_file=n" .
-                                " debugging=" . $debugging .
-                                " subnet_timestamp=" . $discovery->id .
-                                " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
-            if (php_uname('s') == 'Linux') {
-                $command_string = 'nohup ' . $command_string;
+        if ($discovery->type == 'subnet') {
+            // Unix based discovery
+            if (php_uname('s') != 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '/other';
+                $command_string = "$filepath/discover_subnet.sh" .
+                                    " subnet_range=" .  $discovery->other->subnet .
+                                    " url=".            $discovery->network_address . "index.php/input/discoveries" .
+                                    " submit_online=y" .
+                                    " echo_output=n" .
+                                    " create_file=n" .
+                                    " debugging=" . $debugging .
+                                    " subnet_timestamp=" . $discovery->id .
+                                    " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                if (php_uname('s') == 'Linux') {
+                    $command_string = 'nohup ' . $command_string;
+                }
+                @exec($command_string, $output, $return_var);
+                if ($return_var != '0') {
+                    $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has failed';
+                    $this->session->set_flashdata('error', $message);
+                } else {
+                    $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has started';
+                    $this->session->set_flashdata('success', $message);
+                }
             }
-            @exec($command_string, $output, $return_var);
-            if ($return_var != '0') {
-                $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has failed';
-                $this->session->set_flashdata('error', $message);
-            } else {
-                $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has started';
-                $this->session->set_flashdata('success', $message);
+
+            // Windows based discovery
+            if (php_uname('s') == 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '\\other';
+                // run the script and continue (do not wait for result)
+                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
+                                    " subnet_range=" . $discovery->other->subnet .
+                                    " url=".           $discovery->network_address . "index.php/input/discoveries" .
+                                    " submit_online=y" .
+                                    " echo_output=n" .
+                                    " create_file=n" .
+                                    " debugging=0" .
+                                    " subnet_timestamp=" . $discovery->id .
+                                    " os_scan=" . $nmap_os;
+                pclose(popen($command_string, "r"));
             }
         }
 
-        // Windows based discovery
-        if (php_uname('s') == 'Windows NT') {
-            $filepath = $this->config->config['base_path'] . '\\other';
-            // run the script and continue (do not wait for result)
-            $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
-                                " subnet_range=" . $discovery->other->subnet .
-                                " url=".           $discovery->network_address . "index.php/input/discoveries" .
-                                " submit_online=y" .
-                                " echo_output=n" .
-                                " create_file=n" .
-                                " debugging=0" .
-                                " subnet_timestamp=" . $discovery->id .
-                                " os_scan=" . $nmap_os;
-            pclose(popen($command_string, "r"));
+        if ($discovery->type = 'active directory') {
+
+            # get the list of subnets from AD
+            $ad_ldap_connect = 'ldap://' . $discovery->other->ad_server;
+            $ad_user = $discovery->other->ad_username . '@' . $discovery->other->ad_domain;
+            $error_reporting = error_reporting();
+            error_reporting(0);
+            $ad = @ldap_connect($ad_ldap_connect);
+            error_reporting($error_reporting);
+            unset($error_reporting);
+            if (!$ad) {
+                // log the failed attempt to connect to AD
+                $log_details->severity = 5;
+                $log_details->status = 'error';
+                $log_details->details = 'Could not connect to AD ' . $discovery->other->ad_domain . ' at ' . $discovery->other->ad_server;
+                stdlog($log_details);
+                $log_details->severity = 7;
+            } else {
+                // successful connect to AD, now try to bind using the credentials
+                ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
+                ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
+                $bind = @ldap_bind($ad, $ad_user, $discovery->other->ad_password);
+                if ($bind) {
+                    $log_details->message = 'Retrieving subnets from ' . $discovery->other->ad_domain . ' on ' . $discovery->other->ad_server;
+                    stdlog($log_details);
+                    $dn = "CN=Subnets,CN=Sites,CN=Configuration,dc=".implode(", dc=", explode(".", $discovery->other->ad_domain));
+                    $filter = "(&(objectclass=*))";
+                    $justthese = array("distinguishedName", "name");
+                    $sr = ldap_search($ad, $dn, $filter, $justthese);
+                    $info = ldap_get_entries($ad, $sr);
+                    $this->load->model('m_networks');
+                    foreach ($info as $subnet) {
+                        if (!empty($subnet['name'][0]) and $subnet['name'][0] != 'Subnets') {
+                            // $network = new stdClass();
+                            // $network->id = 0;
+                            // $network->name = $subnet['name'][0];
+                            // $network->org_id = $discovery->org_id;
+                            // $network->description = $subnet['description'][0];
+                            // if (!empty($subnet['location'][0])) {
+                            //     $network->description .= ' (' . $subnet['location'][0] . ')';
+                            // }
+                            // $this->m_networks->upsert($network);
+                            // unset($network);
+
+                            $ad_discovery = new stdClass();
+                            if (!empty($subnet['description'][0])) {
+                                if (!empty($subnet['location'][0])) {
+                                    $ad_discovery->name = $subnet['description'][0] . ' (' . $subnet['location'][0] . ')';
+                                } else {
+                                    $ad_discovery->name = $subnet['description'][0];
+                                }
+                            } else {
+                                $ad_discovery->name = $subnet['name'][0];
+                            }
+                            $ad_discovery->org_id = $discovery->org_id;
+                            $ad_discovery->type = 'subnet';
+                            $ad_discovery->devices_assigned_to_org = $discovery->devices_assigned_to_org;
+                            $ad_discovery->devices_assigned_to_location = $discovery->devices_assigned_to_location;
+                            $ad_discovery->network_address = $discovery->network_address;
+                            $ad_discovery->complete = 'y';
+                            $ad_discovery->other = new stdClass();
+                            $ad_discovery->other->subnet = $subnet['name'][0];
+                            $other = json_encode($ad_discovery->other);
+                            $sql = 'SELECT * FROM discoveries WHERE other = " . $other . " AND org_id = ' . $ad_discovery->org_id;
+                            $result = $this->run_sql($sql, array());
+                            if (count($result) == 0) {
+                                $this_id = $this->create($ad_discovery);
+                                $this->execute($this_id);
+                            }
+                        }
+                    }
+                    $sql = "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
+                    $this->run_sql($sql, array($discovery->id));
+                } else {
+                    $log_details->message = 'Could not bind to AD ' . $discovery->other->ad_domain . ' at ' . $discovery->other->ad_server;
+                    stdlog($log_details);
+                }
+            }
         }
     }
 }
