@@ -219,29 +219,31 @@ class logon extends CI_Controller
         $query = $this->db->query($sql);
 
         // Remove any olds los as per config
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 0 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_0']) . " DAY)";
-        $query = $this->db->query($sql);
+        if ($this->db->table_exists('logs') and !empty($this->config->config['log_retain_level_0'])) {
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 0 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_0']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 1 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_1']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 1 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_1']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 2 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_2']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 2 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_2']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 3 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_3']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 3 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_3']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 4 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_4']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 4 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_4']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 5 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_5']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 5 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_5']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 6 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_6']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 6 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_6']) . " DAY)";
+            $query = $this->db->query($sql);
 
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 7 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_7']) . " DAY)";
-        $query = $this->db->query($sql);
+            $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 7 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_7']) . " DAY)";
+            $query = $this->db->query($sql);
+        }
 
 
         // Insert the local server subnet into the /networks
