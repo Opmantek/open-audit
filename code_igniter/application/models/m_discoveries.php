@@ -310,9 +310,38 @@ class M_discoveries extends MY_Model
 
         if ($discovery->type = 'active directory') {
 
+            $CI->load->helper('wmi');
+            $CI->load->model('m_credentials');
+            // We need to set the user orgs to the org of this particular discovery run
+            $this->user = new stdClass();
+            $this->user->orgs = $this->m_orgs->get_children($discovery->org_id);
+            if (count($this->user->orgs) > 0) {
+                $this->user->org_list = $discovery->org_id . ',' . implode(',', $this->user->orgs);
+            } else {
+                $this->user->org_list = $discovery->org_id;
+            }
+
+            // Stored credential sets
+            $credentials = $this->m_credentials->collection();
+            # TODO - replace the ugly code below
+            $creds = array();
+            foreach ($credentials as $credential) {
+                $creds[] = $credential->attributes;
+            }
+            unset($credentials);
+            $credentials = $creds;
+            unset($creds);
+            $credentials = windows_credentials($discovery->other->ad_server, $credentials, null);
+            if (count($credentials) == 0) {
+                // TODO - log an error no credentials working
+                return;
+            }
+            $windows_username = $credentials->credentials->username;
+            $windows_password = $credentials->credentials->password;
+
+
             # get the list of subnets from AD
             $ad_ldap_connect = 'ldap://' . $discovery->other->ad_server;
-            $ad_user = $discovery->other->ad_username . '@' . $discovery->other->ad_domain;
             $error_reporting = error_reporting();
             error_reporting(0);
             $ad = @ldap_connect($ad_ldap_connect);
@@ -329,7 +358,7 @@ class M_discoveries extends MY_Model
                 // successful connect to AD, now try to bind using the credentials
                 ldap_set_option($ad, LDAP_OPT_PROTOCOL_VERSION, 3);
                 ldap_set_option($ad, LDAP_OPT_REFERRALS, 0);
-                $bind = @ldap_bind($ad, $ad_user, $discovery->other->ad_password);
+                $bind = @ldap_bind($ad, $windows_username, $windows_password);
                 if ($bind) {
                     $log_details->message = 'Retrieving subnets from ' . $discovery->other->ad_domain . ' on ' . $discovery->other->ad_server;
                     stdlog($log_details);

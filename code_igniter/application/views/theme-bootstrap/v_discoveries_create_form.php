@@ -188,18 +188,6 @@ $(document).ready(function(){
                                 </div>\
                             </div>\
                             <div class=\"form-group\">\
-                                <label for=\"data[attributes][other][ad_username]\" class=\"col-sm-4 control-label\">Active Directory User</label>\
-                                <div class=\"col-sm-7 input-group\">\
-                                    <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_username]\" name=\"data[attributes][other][ad_username]\" placeholder=\"administrator\">\
-                                </div>\
-                            </div>\
-                            <div class=\"form-group\">\
-                                <label for=\"data[attributes][other][ad_password]\" class=\"col-sm-4 control-label\">Active Directory Password</label>\
-                                <div class=\"col-sm-7 input-group\">\
-                                    <input type=\"password\" class=\"form-control\" id=\"data[attributes][other][other][ad_password]\" name=\"data[attributes][other][ad_password]\">\
-                                </div>\
-                            </div>\
-                            <div class=\"form-group\">\
                                 <label for=\"data[attributes][other][ad_domain]\" class=\"col-sm-4 control-label\">Active Directory Domain</label>\
                                 <div class=\"col-sm-7 input-group\">\
                                     <input type=\"text\" class=\"form-control\" id=\"data[attributes][other][ad_domain]\" name=\"data[attributes][other][ad_domain]\" placeholder=\"open-audit.local\">\

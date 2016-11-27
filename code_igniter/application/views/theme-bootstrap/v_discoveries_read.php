@@ -207,28 +207,6 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="other.ad_username" class="col-sm-3 control-label">AD Username</label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_username" name="other.ad_username" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_username, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_other.ad_username" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_username"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="other.ad_password" class="col-sm-3 control-label">AD Password</label>
-                        <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="other.ad_password" name="other.ad_password" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_password, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_other.ad_password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label for="other.ad_domain" class="col-sm-3 control-label">AD Domain</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
