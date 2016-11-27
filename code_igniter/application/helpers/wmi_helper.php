@@ -55,8 +55,11 @@ if (! function_exists('windows_credentials')) {
      *
      * @return    false || credentials object with an additional flag for 'sudo' and root
      */
-    function windows_credentials($ip = '', $credentials = array(), $log)
+    function windows_credentials($ip = '', $credentials = array(), $log = null)
     {
+        if (empty($log)) {
+            $log = new stdClass();
+        }
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
         $log->message = 'Windows credentials starting';
