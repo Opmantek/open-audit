@@ -120,7 +120,7 @@ class M_configuration extends MY_Model
         }
         // We have nothing to ID the particular config item
         if (empty($id)) {
-            echo "FAIL";
+            // TODO - throw a warning here
             return false;
         }
         // We can use the responsed received data if not explicitly provided a value
