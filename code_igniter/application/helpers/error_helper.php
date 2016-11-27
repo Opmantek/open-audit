@@ -223,6 +223,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0022']->title = "Required attributes not supplied (WHERE @filter)" . $extra;
         $error_array['ERR-0022']->detail = 'When attempting to create a query, the supplied SQL did not contain the required WHERE @filter.';
 
+        $error_array['ERR-0023'] = new stdClass();
+        $error_array['ERR-0023']->code = 'ERR-0023';
+        $error_array['ERR-0023']->status = 'error';
+        $error_array['ERR-0023']->severity = 2;
+        $error_array['ERR-0023']->title = $extra;
+        $error_array['ERR-0023']->detail = 'SQL command failed.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
