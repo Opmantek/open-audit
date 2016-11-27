@@ -684,6 +684,7 @@ if ($data['system']->type != 'computer') {
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Downloads'); ?></a>
                         -->
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=credential&action=create" role="button"><?php echo __('Add Credentials'); ?></a>
+                        <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=attachment&action=create" role="button"><?php echo __('Add Attachment'); ?></a>
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=discovery&action=create" role="button"><?php echo __('Discover'); ?></a>
                     </div>
                 </div>
@@ -747,9 +748,7 @@ foreach ($list as $item) {
 
 
 
-<?php
-// credentials
-if (isset($data['credential']) and count($data['credential']) > 0) { ?>
+
     <div id="credentials" class="section">
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -758,6 +757,7 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
         <div class="clearfix"></div>
       </div>
           <div class="panel-body">
+          <?php if (isset($data['credential']) and count($data['credential']) > 0) { ?>
             <table class="table">
                 <thead>
                     <tr>
@@ -765,8 +765,9 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
                         <th>Type</th>
                         <th>Name</th>
                         <th>Description</th>
-                        <td style="text-align:center;">Edit</td>
+                        <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
                         <td style="text-align:center;">Delete</td>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -776,15 +777,17 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
                   <td><?php echo htmlspecialchars($item->type, REPLACE_FLAGS, CHARSET); ?></td>
                   <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
                   <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
-                  <td style="text-align:center;"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                  <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
                   <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                  <?php } ?>
                 <?php } ?>
                 </tbody>
             </table>
+            <?php } ?>
           </div>
         </div>
     </div>
-<?php } ?>
+
 
 
 <?php
@@ -1003,10 +1006,61 @@ foreach ($list as $item) {
 ?>
 
 
+    
+        <div id="attachment" class="section">
+            <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title pull-left">Attachments</h3>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="attachment"></span>
+            <div class="clearfix"></div>
+          </div>
+              <div class="panel-body">
+              <?php if (isset($data['attachment']) and count($data['attachment']) > 0) { ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Filename</th>
+                            <th>Edited By</th>
+                            <th>Edited Date</th>
+                            <th style="text-align:center;">Download</td>
+                            <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
+                            <th style="text-align:center;">Delete</td>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($data['attachment'] as $item) {
+                            echo '<tr>';
+                            echo "<td>" . $item->id . "</td>";
+                            echo "<td>" . $item->title . "</td>";
+                            echo "<td>" . $item->filename . "</td>";
+                            echo "<td>" . $item->edited_by . "</td>";
+                            echo "<td>" . $item->edited_date . "</td>";
+                            ?>
+                            <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $this->response->links->self; ?>?sub_resource=attachment&sub_resource_id=<?php echo intval($item->id); ?>&action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
+                            <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
+                            <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="attachment" data-name="<?php echo htmlspecialchars($item->title, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                            <?php } ?>
+                            <?php
+                            echo '</tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <?php } ?>
+              </div>
+            </div>
+        </div>
+    
+
+
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'discovery_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
+$list = array ('alert_log', 'audit_log', 'change_log', 'discovery_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
   $list[] = 'disk';
 }

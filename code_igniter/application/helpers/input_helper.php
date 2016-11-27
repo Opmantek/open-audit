@@ -135,7 +135,7 @@ if (! function_exists('inputRead')) {
         $CI->response->links = array();
         $CI->response->included = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
         $action = '';
 
         $collections = ' charts configuration connections credentials database devices discovery discoveries fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
@@ -408,10 +408,16 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
-        if ($REQUEST_METHOD == 'GET' and $action == 'create' and $CI->response->meta->sub_resource != '') {
+        if ($REQUEST_METHOD == 'GET' and $action == 'create' and $CI->response->meta->sub_resource != '' and empty($CI->response->meta->sub_resource)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource and action = create.';
+            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, not sub_resource_id and action = create.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and $action == 'download' and $CI->response->meta->sub_resource != '' and !empty($CI->response->meta->sub_resource_id)) {
+            // show a HTML form for entering a new item
+            $CI->response->meta->action = 'sub_resource_download';
+            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, sub_resource_id and action = download.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'import') {
@@ -460,7 +466,7 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, ids, no id and action = update.';
             stdlog($log);
         }
-        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'download') {
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'download' and empty($CI->response->meta->sub_resource)) {
             // mainly used for running a report and displaying the output
             $CI->response->meta->action = 'download';
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = download.';
@@ -863,6 +869,7 @@ if (! function_exists('inputRead')) {
         $permission['sub_resource_create'] = 'c';
         $permission['sub_resource_create_form'] = 'c';
         $permission['sub_resource_delete'] = 'd';
+        $permission['sub_resource_download'] = 'r';
         $permission['update'] = 'u';
         $permission['update_form'] = 'u';
         $permission['unknown'] = 'unknown action';

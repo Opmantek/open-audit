@@ -121,7 +121,7 @@ class devices extends MY_Controller_new
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'additional_fields,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'additional_fields,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
 
         if ($this->response->meta->sub_resource != '') {
@@ -333,6 +333,14 @@ class devices extends MY_Controller_new
             $discovery_id = $this->m_discoveries->create($data);
             $this->m_discoveries->execute($discovery_id);
             redirect('devices/'.$this->response->data[0]->attributes->id);
+        } elseif ($this->response->meta->sub_resource == 'attachment') {
+            $this->response->meta->action = 'create_form_attachment';
+            $this->response->data = array();
+            $temp = new stdClass();
+            $temp->type = $this->response->meta->collection;
+            $this->response->data[] = $temp;
+            unset($temp);
+            output($this->response);
         } else {
             redirect('devices');
         }
@@ -368,6 +376,23 @@ class devices extends MY_Controller_new
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
         stdLog($log);
+    }
+
+    private function sub_resource_download()
+    {
+        $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
+
+        $this->load->helper('file');
+        if (php_uname('s') == 'Windows NT') {
+            $i = explode('\\', $attachment[0]->filename);
+        } else {
+            $i = explode('/', $attachment[0]->filename);
+        }
+        $filename = $i[count($i)-1];
+        header('Content-Type: '.get_mime_by_extension($attachment->filename));
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+        readfile($attachment->filename);
     }
 
     private function delete()
