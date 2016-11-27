@@ -87,6 +87,7 @@ $(document).ready(function () {
             success: function (data) {
                 // alert($name + " has been deleted.");
                 // window.location = web_folder + "/index.php/" + collection + "/" + id;
+                alert("Deleted\nYou may need to refresh the page to display current items.");
             },
             error: function () {
                 alert("An error occurred when deleting item:" + $name);
