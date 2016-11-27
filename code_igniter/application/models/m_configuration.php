@@ -154,8 +154,7 @@ class M_configuration extends MY_Model
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
             // get the total count
             $sql = "SELECT COUNT(*) as `count` FROM `configuration`";
-            $sql = $this->clean_sql($sql);
-            $result = $this->run_sql($sql, $data);
+            $result = $this->run_sql($sql);
             $CI->response->meta->total = intval($result[0]->count);
         }
 
