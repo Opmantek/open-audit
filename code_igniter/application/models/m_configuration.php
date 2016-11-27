@@ -38,6 +38,7 @@ class M_configuration extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('log');
         $this->log = new stdClass();
         $this->log->status = 'reading data';
         $this->log->type = 'system';
