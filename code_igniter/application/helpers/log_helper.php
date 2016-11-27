@@ -53,7 +53,7 @@ if (! function_exists('log_error')) {
         $error->model = $model;
         if (function_exists('getError')) {
             $error = getError($error->code, $model);
-            $error->message = $error->title;
+            $error->summary = $error->title;
         }
 
         // log the details of the error to the log file
@@ -73,7 +73,6 @@ if (! function_exists('log_error')) {
         #if (isset($error->severity) and $error->severity <= 3) {
             error_reporting(E_ALL);
             unset($error->file); # we don't care about where this was logged (into which file)
-            unset($error->message); # this is for logging only and is already contained in the $error->title
             $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
             if (!empty($CI->response)) {
                 $CI->response->errors[] = $error;
@@ -386,26 +385,31 @@ if (! function_exists('stdlog')) {
             $log['detail'] = $log_details->detail;
         }
 
-        if (!$CI->db->table_exists('logs')) {
-            $sql = "CREATE TABLE `logs` (
-                  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
-                  `type` varchar(200) NOT NULL DEFAULT '',
-                  `severity` int(10) unsigned NOT NULL DEFAULT 0,
-                  `severity_text` varchar(20) NOT NULL DEFAULT '',
-                  `pid` int(10) unsigned NOT NULL DEFAULT 0,
-                  `user` varchar(200) NOT NULL DEFAULT '',
-                  `server` varchar(200) NOT NULL DEFAULT '',
-                  `ip` varchar(200) NOT NULL DEFAULT '',
-                  `collection` varchar(200) NOT NULL DEFAULT '',
-                  `action` varchar(200) NOT NULL DEFAULT '',
-                  `function` varchar(200) NOT NULL DEFAULT '',
-                  `status` varchar(200) NOT NULL DEFAULT '',
-                  `summary` text NOT NULL DEFAULT '',
-                  `detail` text NOT NULL DEFAULT '',
-                  PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        if (intval($CI->config->config['internal_version']) <= 20160810) {
+            $sql = "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'logs'";
             $query = $CI->db->query($sql);
+            $result = $query->result();
+            if (count($result) == 0) {
+                $sql = "CREATE TABLE `logs` (
+                      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                      `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+                      `type` varchar(200) NOT NULL DEFAULT '',
+                      `severity` int(10) unsigned NOT NULL DEFAULT 0,
+                      `severity_text` varchar(20) NOT NULL DEFAULT '',
+                      `pid` int(10) unsigned NOT NULL DEFAULT 0,
+                      `user` varchar(200) NOT NULL DEFAULT '',
+                      `server` varchar(200) NOT NULL DEFAULT '',
+                      `ip` varchar(200) NOT NULL DEFAULT '',
+                      `collection` varchar(200) NOT NULL DEFAULT '',
+                      `action` varchar(200) NOT NULL DEFAULT '',
+                      `function` varchar(200) NOT NULL DEFAULT '',
+                      `status` varchar(200) NOT NULL DEFAULT '',
+                      `summary` text NOT NULL DEFAULT '',
+                      `detail` text NOT NULL DEFAULT '',
+                      PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                $query = $CI->db->query($sql);
+            }
         }
 
         $sql = "/* log_helper */" . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
