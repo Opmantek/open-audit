@@ -4795,19 +4795,20 @@ class Database extends MY_Controller_new
 
 
         if (($db_internal_version < '201608904') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 1.12.10
+            # upgrade for 1.14
 
             $item_start = microtime(true);
 
             $log_details = new stdClass();
             $log_details->file = 'system';
-            $log_details->message = 'Upgrade database to 1.12.10 commenced';
+            $log_details->severity = 5;
+            $log_details->message = 'Upgrade database to 1.14 commenced';
             stdlog($log_details);
 
             if (!empty($this->data['output'])) {
-                $this->data['output'] .= 'Commencing 1.12.10 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+                $this->data['output'] .= 'Commencing 1.14 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
             } else {
-                $this->data['output'] = 'Commencing 1.12.10 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+                $this->data['output'] = 'Commencing 1.14 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
             }
 
             # oa_user_org
@@ -5052,7 +5053,7 @@ class Database extends MY_Controller_new
             $sql[] = "ALTER TABLE `dns` CHANGE `last_seen` `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # edit log
-            $sql[] = "ALTER TABLE `edit_lof` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
+            $sql[] = "ALTER TABLE `edit_log` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
 
             # file
             $sql[] = "ALTER TABLE `file` CHANGE `first_seen` `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
@@ -5627,30 +5628,32 @@ class Database extends MY_Controller_new
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'discovery_serial_match','y','y','system',NOW(),'Should we match a device based on its serial number.')";
 
             $sql[] = "UPDATE configuration SET value = '20160904' WHERE name = 'internal_version'";
-            $sql[] = "UPDATE configuration SET value = '1.12.10' WHERE name = 'display_version'";
+            $sql[] = "UPDATE configuration SET value = '1.14' WHERE name = 'display_version'";
 
             $temp_debug = $this->db->db_debug;
             $this->db->db_debug = false;
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
+                $log_details->status = 'running sql';
                 stdlog($log_details);
                 $this->data['output'] .= $this_query.";\n\n";
                 $query = $this->db->query($this_query);
                 if ($this->db->_error_message()) {
                     $this->data['output'] .= 'ERROR - ' . $this->db->_error_message() . "\n\n";
+                    log_error('ERR-0023', $this->db->_error_message());
                 }
             }
             $this->db->db_debug = $temp_debug;
-            $this->data['output'] .= 'Upgrade database to 1.12.10 completed';
+            $this->data['output'] .= 'Upgrade database to 1.14 completed';
             $this->config->config['internal_version'] = '20160904';
-            $this->config->config['display_version'] = '1.12.10';
+            $this->config->config['display_version'] = '1.14';
 
             $sql_time = "SELECT NOW() as `timestamp`";
             $query = $this->db->query($sql_time);
             $result = $query->result();
-            $this->data['output'] .= 'Completing 1.12.10 upgrade at ' . $result[0]->timestamp . "\n\n";
+            $this->data['output'] .= 'Completing 1.14 upgrade at ' . $result[0]->timestamp . "\n\n";
 
-            $log_details->message = "Upgrade database to 1.12.10 completed\n\n";
+            $log_details->message = "Upgrade database to 1.14 completed\n\n";
             stdlog($log_details);
             unset($log_details);
         }
