@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version 1.12.8
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -40,7 +40,8 @@ class M_devices extends MY_Model
         parent::__construct();
     }
 
-    private function build_properties() {
+    private function build_properties()
+    {
         $CI = & get_instance();
         $properties = '';
         $temp = explode(',', $CI->response->meta->properties);
@@ -55,7 +56,8 @@ class M_devices extends MY_Model
         return($properties);
     }
 
-    private function build_filter() {
+    private function build_filter()
+    {
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $filter = '';
@@ -84,7 +86,8 @@ class M_devices extends MY_Model
         return($filter);
     }
 
-    private function build_join() {
+    private function build_join()
+    {
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $join = '';
@@ -247,21 +250,16 @@ class M_devices extends MY_Model
         if ($sub_resource == 'location') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT location_id, oa_location.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
             $data = array($id);
-
         } elseif ($sub_resource == 'purchase') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
-
         } elseif ($sub_resource == 'discovery_log') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
             $data = array($id);
-
         } elseif ($sub_resource == 'additional_fields') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT additional_field.id as `additional_field.id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
             $data = array($id);
-
         } else {
-
             $currency = '';
             $fields = $this->db->list_fields($sub_resource);
             foreach ($fields as $field) {
@@ -287,13 +285,14 @@ class M_devices extends MY_Model
 
         $result = $this->format_data($result, 'devices/' . $id . '/' . $sub_resource);
         if (count($result) == 0) {
-            return NULL;
+            return null;
         } else {
             return ($result);
         }
     }
 
-    public function sub_resource_delete($id = 0, $sub_resource = 0, $sub_resource_id = 0) {
+    public function sub_resource_delete($id = 0, $sub_resource = 0, $sub_resource_id = 0)
+    {
         $CI = & get_instance();
         if (empty($id)) {
             if (!empty($CI->response->meta->id)) {
@@ -321,6 +320,16 @@ class M_devices extends MY_Model
         if (empty($sub_resource_id)) {
             return false;
         }
+        if ($sub_resource == 'attachment') {
+            $sql = "SELECT * FROM attachment WHERE id = " . intval($sub_resource_id);
+            $attachment = $this->run_sql($sql, array());
+            if (unlink($attachment[0]->filename)) {
+                // good
+            } else {
+                // TODO - log an error here
+                echo "Could not delete $filename."; exit();
+            }
+        }
         $sql = "/* m_devices::sub_resource_delete */ " . "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
         $data = array(intval($id), intval($sub_resource_id));
         $result = $this->run_sql($sql, $data);
@@ -334,27 +343,31 @@ class M_devices extends MY_Model
     public function sub_resource_create($id = 0, $sub_resource = '', $data = '')
     {
         $CI = & get_instance();
-        $CI = & get_instance();
         $log = new stdClass();
         $log->file = 'system';
         $log->level = 7;
         $log->message = "sub_resource_create start.";
         stdlog($log);
 
+        if (!empty($id)) {
+            $device_ids[] = $id;
+        } elseif (!empty($CI->response->meta->received_data->ids)) {
+            $device_ids = explode(',', $CI->response->meta->received_data->ids);
+        } elseif (!empty($CI->response->meta->id)) {
+            $device_ids = array($CI->response->meta->id);
+        } else {
+            $log->level = 5;
+            $log->message = "No ID, nor list of IDs supplied to sub_resource_create.";
+            stdlog($log);
+            return false;
+        }
+
+        if (empty($sub_resource)) {
+            $sub_resource = $CI->response->meta->sub_resource;
+        }
+
         if ($sub_resource == 'credential' or (!empty($CI->response->meta->sub_resource) and $CI->response->meta->sub_resource == 'credential')) {
             $this->load->library('encrypt');
-
-            if (!empty($id)) {
-                $device_ids[] = $id;
-            } elseif (!empty($CI->response->meta->received_data->ids)) {
-                $device_ids = explode(',', $CI->response->meta->received_data->ids);
-            } elseif (!empty($CI->response->meta->id)) {
-                $device_ids = array($CI->response->meta->id);
-            } else {
-                $log->message = "No ID, nor list of IDs supplied to sub_resource_create.";
-                stdlog($log);
-                return false;
-            }
 
             foreach ($device_ids as $id) {
                 if (!empty($data->credentials)) {
@@ -362,6 +375,7 @@ class M_devices extends MY_Model
                 } elseif (!empty($CI->response->meta->received_data->attributes->credentials)) {
                     $credentials = $this->encrypt->encode(json_encode($CI->response->meta->received_data->attributes->credentials));
                 } else {
+                    $log->level = 5;
                     $log->message = "No credentials supplied to sub_resource_create.";
                     stdlog($log);
                     return false;
@@ -372,6 +386,7 @@ class M_devices extends MY_Model
                 } elseif (!empty($CI->response->meta->received_data->attributes->type)) {
                     $type = $CI->response->meta->received_data->attributes->type;
                 } else {
+                    $log->level = 5;
                     $log->message = "No credential type supplied to sub_resource_create.";
                     stdlog($log);
                     return false;
@@ -409,9 +424,35 @@ class M_devices extends MY_Model
                 $this->run_sql($sql, $data);
             }
             return true;
+        } else if ($sub_resource == 'attachment') {
+            if (empty($_FILES['attachment'])) {
+                $log->severity = 5;
+                $log->summary = "No file provided to PHP for sub_resource_create.";
+                $log->status = 'error';
+                stdlog($log);
+                return false;
+            }
+            $target = BASEPATH."../application/attachments/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
+            if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                $sql = "INSERT INTO `attachment` VALUES (NULL, ?, ?, ?, ?, NOW())";
+                $data = array(intval($CI->response->meta->id), 
+                            $CI->response->meta->received_data->attributes->title,
+                            "$target",
+                            $CI->user->full_name);
+                $query = $this->db->query($sql, $data);
+                return true;
+            } else {
+                $log->severity = 5;
+                $log->summary = "Unable to move uploaded file.";
+                $log->status = 'error';
+                $log->detail = error_get_last();
+                stdlog($log);
+                return false;
+            }
         } else {
-            $log->message = "sub_resource not equal to credential - exiting.";
+            $log->summary = "sub_resource not equal to credential or attachment - exiting.";
             stdlog($log);
+            return false;
         }
     }
 
@@ -450,7 +491,7 @@ class M_devices extends MY_Model
             unset($seen_by);
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->{'system.id'})) {
-                    if (!empty($seen_by_temp[$result[$i]->{'system.id'}] )) {
+                    if (!empty($seen_by_temp[$result[$i]->{'system.id'}])) {
                         $result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
                     } else {
                         $result[$i]->seen_by = '';
@@ -525,11 +566,11 @@ class M_devices extends MY_Model
         $report = $result[0];
         $CI->response->meta->sub_resource_name = $report->report_name;
                          
-        # not how reports should be used                  
+        # not how reports should be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON system.id = oa_group_sys.system_id', '', $report->report_sql);
-        # not how reports should be used   
+        # not how reports should be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON oa_group_sys.system_id = system.id', '', $report->report_sql);
-        # not how reports should be used   
+        # not how reports should be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id)', '', $report->report_sql);
         # THIS is how reports _should_ be used
         $report->report_sql = str_ireplace('LEFT JOIN oa_group_sys ON (oa_group_sys.system_id = system.id)', '', $report->report_sql);
@@ -658,7 +699,7 @@ class M_devices extends MY_Model
         return($result);
     }
 
-    public function update($device = NULL)
+    public function update($device = null)
     {
         $CI = & get_instance();
         $temp_debug = $this->db->db_debug;
@@ -674,27 +715,27 @@ class M_devices extends MY_Model
         # account for a single id or multiple id's
         $ids = array();
 
-        if ( ! is_null($device)) {
+        if (! is_null($device)) {
             if (empty($device->id)) {
                 // TODO - throw an error
                 return;
             } else {
                 $ids[] = $device->id;
             }
-            if ( ! empty($device->last_seen_by)) {
+            if (! empty($device->last_seen_by)) {
                 $source = $device->last_seen_by;
             } else {
                 $source = 'user';
             }
             $received_data = $device;
         } else {
-            if ( ! empty($CI->response->meta->id)) {
+            if (! empty($CI->response->meta->id)) {
                 $ids[] = $CI->response->meta->id;
             } elseif (!empty($CI->response->meta->ids)) {
                 $ids = explode(',', $CI->response->meta->ids);
             }
             # set out last seen by
-            if ( ! empty($CI->response->attributes->last_seen_by)) {
+            if (! empty($CI->response->attributes->last_seen_by)) {
                 $source = $CI->response->attributes->last_seen_by;
             } else {
                 $source = 'user';
@@ -732,7 +773,7 @@ class M_devices extends MY_Model
                         }
                         // insert an entry into the edit table
                         $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                        $data = array(intval($CI->user->id), intval($id), (string)$source, 1000, (string)$key, (string)$value, (string)$previous_value);;
+                        $data = array(intval($CI->user->id), intval($id), (string)$source, 1000, (string)$key, (string)$value, (string)$previous_value);
                         $this->run_sql($sql, $data);
                     }
                 }
@@ -759,7 +800,7 @@ class M_devices extends MY_Model
                     }
                     // calculate the weight
                     $weight = intval($this->weight($source));
-                    if ($weight <= $previous_weight AND $value != $previous_value) {
+                    if ($weight <= $previous_weight and $value != $previous_value) {
                         if ($key != 'id' and $key != 'last_seen' and $key != 'last_seen_by' and $key != 'first_seen') {
                             // update the system table
                             $sql = "UPDATE `system` SET `" . $key . "` = ? WHERE id = ?";
@@ -767,7 +808,7 @@ class M_devices extends MY_Model
                             $this->run_sql($sql, $data);
                             // insert an entry into the edit table
                             $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                            $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);;
+                            $data = array(intval($CI->user->id), intval($id), (string)$source, intval($weight), (string)$key, (string)$value, (string)$previous_value);
                             $this->run_sql($sql, $data);
                             // Special case the 'type' - set the icon to match
                             if ($key == 'type') {
@@ -779,7 +820,6 @@ class M_devices extends MY_Model
                     } else {
                         # We have an existing edit_log entry with a more important change - don't touch the `system`.`$key` value
                     }
-
                 }
             }
         }
@@ -862,7 +902,7 @@ class M_devices extends MY_Model
     * @access  public
     * @return  array an array of objects with the integer columns set as int types
     */
-    public function from_db ($result)
+    public function from_db($result)
     {
         unset($item);
         foreach ($result as &$item) {
@@ -924,7 +964,7 @@ class M_devices extends MY_Model
         stdlog($log_details);
 
         # remove some characters from the OS string
-        if ( ! empty($details->os_name)) {
+        if (! empty($details->os_name)) {
             $details->os_name = str_ireplace("(r)", "", $details->os_name);
             $details->os_name = str_ireplace("(tm)", "", $details->os_name);
         }
@@ -948,7 +988,7 @@ class M_devices extends MY_Model
         }
 
         # Set the form factor to virtual if required
-        if ( ! empty($details->manufacturer)) {
+        if (! empty($details->manufacturer)) {
             if ((strripos($details->manufacturer, "vmware") !== false) or
                 (strripos($details->manufacturer, "parallels") !== false) or
                 (strripos($details->manufacturer, "virtual") !== false)) {
@@ -957,7 +997,7 @@ class M_devices extends MY_Model
                 }
             }
         }
-        if ( ! empty($details->model)) {
+        if (! empty($details->model)) {
             if (strripos($details->model, "bhyve") !== false) {
                 if (!isset($details->class) or $details->class != 'hypervisor') {
                     $details->form_factor = 'Virtual';
@@ -966,11 +1006,11 @@ class M_devices extends MY_Model
         }
 
         # Pad the IP address
-        if ( ! empty($details->ip)) {
+        if (! empty($details->ip)) {
             $details->ip = ip_address_to_db($details->ip);
         }
 
-        if ( ! empty($details->hostname) and  ! empty($details->domain) and empty($details->fqdn)) {
+        if (! empty($details->hostname) and  ! empty($details->domain) and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
         }
 
@@ -1250,5 +1290,4 @@ class M_devices extends MY_Model
         }
         return ($count);
     }
-
 }

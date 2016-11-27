@@ -790,22 +790,22 @@ foreach ($list as $item) {
 
 
 
-<?php
-// additional fields
-if (isset($data['additional_fields']) and count($data['additional_fields']) > 0) { ?>
-    <div id="additional_fields" class="section">
-        <div class="panel panel-default">
-      <div class="panel-heading">
-        <h3 class="panel-title pull-left">Additional Fields</h3>
-        <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="additional_fields"></span>
-        <div class="clearfix"></div>
+
+<div id="additional_fields" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left">Additional Fields</h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="additional_fields"></span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+          <?php if (isset($data['additional_fields']) and count($data['additional_fields']) > 0) { ?>
+          <?php insert_additional_fields('', $data['additional_fields']); ?>
+          <?php } ?>
       </div>
-          <div class="panel-body">
-              <?php insert_additional_fields('', $data['additional_fields']); ?>
-          </div>
-        </div>
     </div>
-<?php } ?>
+</div>
+
 
 
 
@@ -1033,10 +1033,17 @@ foreach ($list as $item) {
                     <tbody>
                         <?php
                         foreach ($data['attachment'] as $item) {
+                            if (php_uname('s') == 'Windows NT') {
+                                $i = explode('\\', $item->filename);
+                            } else {
+                                $i = explode('/', $item->filename);
+                            }
+                            $filename = $i[count($i)-1];
+                            $filename = preg_replace('/'.$data['system']->id . '_/', '', $filename, 1);
                             echo '<tr>';
                             echo "<td>" . $item->id . "</td>";
                             echo "<td>" . $item->title . "</td>";
-                            echo "<td>" . $item->filename . "</td>";
+                            echo "<td>" . $filename . "</td>";
                             echo "<td>" . $item->edited_by . "</td>";
                             echo "<td>" . $item->edited_date . "</td>";
                             ?>

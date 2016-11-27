@@ -1,6 +1,6 @@
 <?php  if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
-       }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -151,20 +151,20 @@ if (! function_exists('inputRead')) {
         if (!empty($CI->uri->segments[1]) and ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2')) {
             if ($CI->uri->segments[1] == 'api') {
                 $CI->response->meta->version = intval($CI->uri->segment(2));
-                unset ($CI->uri->segments[1]);
-                unset ($CI->uri->segments[2]);
+                unset($CI->uri->segments[1]);
+                unset($CI->uri->segments[2]);
                 $log->summary = 'Set version to ' . intval($CI->uri->segment(2)) . ', according to URI segment.';
                 stdlog($log);
             } else if ($CI->uri->segments[1] == 'v1') {
                 $CI->response->meta->version = 1;
                 $log->summary = 'Set version to v1, according to URI segment.';
                 stdlog($log);
-                unset ($CI->uri->segments[1]);
+                unset($CI->uri->segments[1]);
             } else if ($CI->uri->segments[1] == 'v2') {
                 $CI->response->meta->version = 2;
                 $log->summary = 'Set version to v2, according to URI segment.';
                 stdlog($log);
-                unset ($CI->uri->segments[1]);
+                unset($CI->uri->segments[1]);
             }
             array_unshift($CI->uri->segments, '');
             $CI->uri->segments = array_values($CI->uri->segments);
@@ -408,7 +408,7 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
-        if ($REQUEST_METHOD == 'GET' and $action == 'create' and $CI->response->meta->sub_resource != '' and empty($CI->response->meta->sub_resource)) {
+        if ($REQUEST_METHOD == 'GET' and $action == 'create' and $CI->response->meta->sub_resource != '' and empty($CI->response->meta->sub_resource_id)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create_form';
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, not sub_resource_id and action = create.';
@@ -813,7 +813,7 @@ if (! function_exists('inputRead')) {
         }
 
         if ($query = json_decode($CI->input->get('query'))) {
-            unset ($CI->response->meta->filter);
+            unset($CI->response->meta->filter);
             $CI->response->meta->filter = array();
             while (count($query) > 0) {
                 $filter = new stdClass();
@@ -958,7 +958,7 @@ if (! function_exists('inputRead')) {
                 unset($temp);
             }
         }
-        # print_r(json_encode($CI->response));
+        #echo "<pre>\n"; print_r(json_encode($CI->response)); exit();
     }
 }
 /* End of file input_helper.php */

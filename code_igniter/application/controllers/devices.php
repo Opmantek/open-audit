@@ -381,14 +381,14 @@ class devices extends MY_Controller_new
     private function sub_resource_download()
     {
         $attachment = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);
-
         $this->load->helper('file');
         if (php_uname('s') == 'Windows NT') {
-            $i = explode('\\', $attachment[0]->filename);
+            $i = explode('\\', $attachment[0]->attributes->filename);
         } else {
-            $i = explode('/', $attachment[0]->filename);
+            $i = explode('/', $attachment[0]->attributes->filename);
         }
         $filename = $i[count($i)-1];
+        $filename = preg_replace('/'.$this->response->meta->id.'_/', '', $filename, 1);
         header('Content-Type: '.get_mime_by_extension($attachment->filename));
         header('Content-Disposition: attachment;filename="'.$filename.'"');
         header('Cache-Control: max-age=0');

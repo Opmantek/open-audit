@@ -41,7 +41,7 @@
     </h3>
   </div>
   <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>">
+    <form class="form-horizontal" id="form_update" method="post" action="?action=create&sub_resource=attachment" enctype="multipart/form-data">
         <div class="form-group">
             <label for="id" class="col-sm-2 control-label">ID</label>
             <div class="col-sm-4">
@@ -61,35 +61,13 @@
         </div>
 
         <div class="form-group">
-            <label for="data[attributes][description]" class="col-sm-2 control-label">Description</label>
+            <label for="attachment" class="col-sm-2 control-label">File</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input tabindex="2" type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" placeholder="" value="">
+                    <input tabindex="1" type="file" class="form-control" id="attachment" name="attachment" placeholder="" value="">
                 </div>
             </div>
         </div>
-
-        <div class="form-group">
-            <label for="data[attributes][type]" class="col-sm-2 control-label">Type</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <select tabindex="3" class="data_type form-control" id="data[attributes][type]" name="data[attributes][type]" title='Type'>
-                        <option value='' label=' '></option>
-                        <option value='snmp'>SNMP (v1 / v2)</option>
-                        <option value='snmp_v3'>SNMP v3</option>
-                        <option value='ssh'>SSH</option>
-                        <?php
-                        # TODO - SSH Keys not supported in OA 1.12.8 under Windows
-                        if (php_uname('s') != 'Windows NT') { ?>
-                        <option value='ssh_key'>SSH Key</option>
-                        <?php } ?>
-                        <option value='windows'>Windows</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <span id="options"></span>
 
         <div class="form-group">
             <label for="edited_by" class="col-sm-2 control-label">Edited By</label>
@@ -113,12 +91,8 @@
             <label for="submit" class="col-sm-2 control-label"></label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="hidden" value="credential" id="data[type]" name="data[type]" />
-                    <?php if (!empty($this->response->meta->ids)) { ?>
-                    <input type="hidden" value="<?php echo $this->response->meta->ids; ?>" id="data[ids]" name="data[ids]" />
-                    <?php } else { ?>
+                    <input type="hidden" value="attachment" id="data[type]" name="data[type]" />
                     <input type="hidden" value="<?php echo intval($this->response->meta->id); ?>" id="data[system_id]" name="data[system_id]" />
-                    <?php } ?>
                     <button tabindex="10" id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
                 </div>
             </div>
