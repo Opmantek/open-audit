@@ -39,7 +39,7 @@
 $active_group = "default";
 $active_record = true;
 
-$db['default']['hostname'] = "localhost";
+$db['default']['hostname'] = "127.0.0.1";
 $db['default']['username'] = "openaudit";
 $db['default']['password'] = "openauditpassword";
 $db['default']['database'] = "openaudit";
@@ -55,3 +55,4 @@ $db['default']['stricton'] = false;
 
 /* End of file database.php */
 /* Location: ./system/application/config/database.php */
+
