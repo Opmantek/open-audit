@@ -55,7 +55,12 @@ class M_users extends MY_Model
         if (is_null($data)) {
             if (!empty($CI->response->meta->received_data->attributes)) {
                 $data = $CI->response->meta->received_data->attributes;
-                $data->roles = json_encode($data->roles);
+                if (!empty($data->roles)) {
+                    $data->roles = json_encode($data->roles);
+                } else {
+                    log_error('ERR-0010', 'm_users::create');
+                    return false;
+                }
                 $data->orgs = array();
                 if (isset($this->response->meta->received_data->attributes->orgs)) {
                     for ($i=0; $i < count($this->response->meta->received_data->attributes->orgs); $i++) {
