@@ -694,6 +694,13 @@ class main extends MY_Controller
         $this->load->view('v_template', $this->data);
     }
 
+    function help_queries()
+    {
+        $this->data['heading'] = 'Queries';
+        $this->data['include'] = 'v_help_queries';
+        $this->load->view('v_template', $this->data);
+    }
+
     public function add_attachment()
     {
         $this->load->model("m_system");

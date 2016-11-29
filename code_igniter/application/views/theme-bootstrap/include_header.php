@@ -388,6 +388,7 @@
                     <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_statistics'><?php echo __('Statistics')?></a></li>
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_support'><?php echo __('Support')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_queries'><?php echo __('Default Query List')?></a></li>
                 </ul>
             </li>
 
