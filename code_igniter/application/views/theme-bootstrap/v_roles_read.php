@@ -37,7 +37,7 @@ $endpoints = array('charts','configuration','connections','credentials','databas
 $permissions = array('c', 'r', 'u', 'd');
 $item_permissions = json_decode($item->attributes->permissions);
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" name="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -79,7 +79,7 @@ $item_permissions = json_decode($item->attributes->permissions);
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">AD Group</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="ad_group" name="ad_group" placeholder="" value="<?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -135,13 +135,16 @@ foreach ($endpoints as $endpoint) {
         } else {
             $checked = '';
         }
-        echo "<td style=\"text-align:center;\"><input id=\"permissions[" . $endpoint . "][" . $permission . "]\" name=\"permissions[" . $endpoint . "][" . $permission . "]\" type=\"checkbox\" value=\"y\" " . $checked . " " . $disabled . "></td>";
+        echo "<td style=\"text-align:center;\"><input name=\"permission.$endpoint\" id=\"permission.$endpoint\" type=\"checkbox\" value=\"$permission\" " . $checked . " " . $disabled . "></td>";
     }
     echo "</tr>\n";
 }
- ?>
+?>
                     </tbody>
                 </table>
+                <?php if (!empty($edit)) { ?>
+                <button id="send" name="send" type="button" class="btn btn-default" onclick="javascript:sendthis();">Submit</button>
+                <?php } ?>
             </div>
     </div>
 
@@ -180,7 +183,8 @@ foreach ($this->response->included as $item) {
                         <td class="text-center"><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         <?php } ?>
 
-<?php    }
+<?php
+    }
 }
 ?>
                     </tbody>
@@ -189,3 +193,38 @@ foreach ($this->response->included as $item) {
     </div>
 
 </form>
+
+<script>
+function sendthis() {
+    var permissions = {};
+    <?php foreach ($endpoints as $point) { ?>
+    var values = $("input[id='permission.<?php echo $point; ?>']:checked").map(function(){return (this.value);}).get();
+    var i;
+    permissions['<?php echo $point; ?>'] = "";
+    for (i = 0; i < values.length; ++i) {
+        permissions['<?php echo $point; ?>'] = permissions['<?php echo $point; ?>'] + values[i];
+    }
+    <?php } ?>
+    console.log(JSON.stringify(permissions));
+    var data = {};
+    data["data"] = {};
+    data["data"]["id"] = id;
+    data["data"]["type"] = collection;
+    data["data"]["attributes"] = {};
+    data["data"]["attributes"]["permissions"] = JSON.stringify(permissions);
+    data = JSON.stringify(data);
+    $.ajax({
+        type: "PATCH",
+        url: id,
+        contentType: "application/json",
+        data: {data : data},
+        success: function (data) {
+            alert( 'success' );
+        },
+        error: function (data) {
+            data = JSON.parse(data.responseText);
+            alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+        }
+    });
+}
+</script>

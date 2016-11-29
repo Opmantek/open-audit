@@ -117,7 +117,7 @@ class M_roles extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name permissions ';
+        $fields = ' description name permissions ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
