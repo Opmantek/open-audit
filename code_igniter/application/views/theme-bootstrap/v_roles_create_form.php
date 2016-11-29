@@ -32,7 +32,7 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-$endpoints = array('charts','configuration','connections','credentials','database','devices','discoveries','fields','files','graphs','groups','invoices','licenses','locations','logs','networks','nmis','orgs','queries','roles','scripts','sessions','users');
+$endpoints = array('charts','configuration','connections','credentials','database','devices','discoveries','fields','files','graphs','groups','invoices','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','roles','scripts','search','sessions','summaries','users');
 $permissions = array('c', 'r', 'u', 'd');
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
@@ -128,7 +128,15 @@ $permissions = array('c', 'r', 'u', 'd');
 foreach ($endpoints as $endpoint) {
     echo "                        <tr><td><strong>$endpoint</strong></td>";
     foreach ($permissions as $permission) {
-        echo "<td style=\"text-align:center;\"><input id=\"data[attributes][permissions][" . $endpoint . "][" . $permission . "]\" name=\"data[attributes][permissions][" . $endpoint . "][" . $permission . "]\" type=\"checkbox\" value=\"y\"></td>";
+        if (($endpoint == 'summaries' and $permission == 'r') or
+            ($endpoint == 'search') or
+            ($endpoint == 'sessions') or
+            ($endpoint == 'devices' and $permission == 'r')) {
+            $checked = ' checked';
+        } else {
+            $checked = '';
+        }
+        echo "<td style=\"text-align:center;\"><input id=\"data[attributes][permissions][" . $endpoint . "][" . $permission . "]\" name=\"data[attributes][permissions][" . $endpoint . "][" . $permission . "]\" type=\"checkbox\" value=\"y\" $checked></td>";
     }
     echo "</tr>\n";
 }
