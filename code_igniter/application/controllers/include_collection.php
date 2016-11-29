@@ -24,7 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
+unset($this->response->data);
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 $this->response->meta->filtered = count($this->response->data);
 if (empty($this->response->meta->total) and !empty($this->response->meta->filtered)) {
@@ -34,7 +34,7 @@ output($this->response);
 
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
 if ($this->config->config['log_level'] < 6) {
     $log->severity = 5;
     $log->status = 'finish';
@@ -42,6 +42,6 @@ if ($this->config->config['log_level'] < 6) {
 } else {
     $log->severity = 6;
     $log->status = 'finish';
-    $log->detail = json_encode($this->response->meta); 
+    $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
