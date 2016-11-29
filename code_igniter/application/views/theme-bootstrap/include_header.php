@@ -69,10 +69,10 @@
                     <li class="dropdown-submenu">
                         <a href='#'><?php echo __('Reports')?></a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Device%20Types'><?php echo __('Device Types')?></a>
-                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20OS%20Types'><?php echo __('OS Types')?></a>
-                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Devices%20Discovered%20by%20Date/'><?php echo __('Devices Discovered Today')?></a>
-                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/show_report/Enterprise%20-%20Software%20Discovered%20by%20Date/'><?php echo __('Software Discovered Today')?></a>
+                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/summaries/Device%20Types'><?php echo __('Device Types')?></a>
+                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/summaries/Operating%20Systems'><?php echo __('OS Types')?></a>
+                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/reports?system.first_seen=liketoday_date&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.first_seen&report_name=Devices%20Discovered%20Today'><?php echo __('Devices Discovered Today')?></a>
+                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/reports?sub_resource=change_log&change_log.timestamp=liketoday_date&change_log.db_table=software&change_log.db_action=create&properties=system.id,system.name,change_log.details&report_name=Software%20Discovered%20Today'><?php echo __('Software Discovered Today')?></a>
                         </ul>
                     </li>
                 </ul>
@@ -277,11 +277,11 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Queries'); ?> <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                 <?php
-                    foreach ($this->response->included as $item) {
-                        if ($item->type == 'queries') {
-                            echo "<li><a href='" . $this->config->config['oa_web_index'] . "/devices?sub_resource=query&sub_resource_id=" . intval($item->id) . "'>" . __($item->attributes->name) . "</a></li>";
-                        }
+                foreach ($this->response->included as $item) {
+                    if ($item->type == 'queries') {
+                        echo "<li><a href='" . $this->config->config['oa_web_index'] . "/devices?sub_resource=query&sub_resource_id=" . intval($item->id) . "'>" . __($item->attributes->name) . "</a></li>";
                     }
+                }
                 ?>
                 </ul>
             </li>
@@ -290,10 +290,10 @@
 
 
             <?php
-            if ($this->m_users->get_user_permission('', 'configuration', 'r') !== false or 
-                $this->m_users->get_user_permission('', 'database', 'u') !== false or 
-                $this->m_users->get_user_permission('', 'ldap_servers', 'u') !== false or 
-                $this->m_users->get_user_permission('', 'logs', 'r') !== false or 
+            if ($this->m_users->get_user_permission('', 'configuration', 'r') !== false or
+                $this->m_users->get_user_permission('', 'database', 'u') !== false or
+                $this->m_users->get_user_permission('', 'ldap_servers', 'u') !== false or
+                $this->m_users->get_user_permission('', 'logs', 'r') !== false or
                 $this->m_users->get_user_permission('', 'roles', 'r') !== false) { ?>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
