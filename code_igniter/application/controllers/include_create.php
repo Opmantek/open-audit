@@ -36,7 +36,11 @@ if (! empty($this->response->meta->id)) {
         $this->response->meta->flash->status = 'success';
         $this->response->meta->flash->message = 'New object in ' . $this->response->meta->collection . ' created.';
         $this->response->meta->action = 'collection';
-        include 'include_collection.php';
+        if ($this->response->meta->collection == 'orgs') {
+            redirect('orgs');
+        } else {
+            include 'include_collection.php';
+        }
     }
 } else {
     if ($this->response->meta->format === 'json') {
@@ -49,11 +53,10 @@ if (! empty($this->response->meta->id)) {
         $this->response->meta->action = 'collection';
         include 'include_collection.php';
     }
-    exit();
 }
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
 if ($this->config->config['log_level'] < 6) {
     $log->severity = 5;
     $log->status = 'finish';
@@ -61,6 +64,6 @@ if ($this->config->config['log_level'] < 6) {
 } else {
     $log->severity = 5;
     $log->status = 'finish';
-    $log->detail = json_encode($this->response->meta); 
+    $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
