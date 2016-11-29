@@ -103,7 +103,7 @@ class M_fields extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name type values placement group_id ';
+        $fields = ' name type values placement org_id ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
