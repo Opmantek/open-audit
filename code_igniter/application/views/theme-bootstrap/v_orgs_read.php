@@ -67,11 +67,11 @@ $item = $this->response->data[0];
                             <select class="data_type form-control" id="parent_id" name="parent_id" disabled>
                                 <option value='' label=' '></option>
                                 <?php foreach ($this->response->included as $org) {
-                                if ($org->type == 'orgs' and $org->attributes->id != $item->attributes->id) { ?>
+                                    if ($org->type == 'orgs' and $org->attributes->id != $item->attributes->id) { ?>
                                     <option value="<?php echo intval($org->attributes->id); ?>"<?php if ($org->attributes->id == $item->attributes->parent_id) { echo " selected"; } ?>><?php echo htmlspecialchars($org->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php } } ?>
                             </select>
-                            <?php if (!empty($edit)) { ?>
+                            <?php if (!empty($edit) and $item->attributes->id != 1) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_parent_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="parent_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
