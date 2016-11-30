@@ -45,7 +45,7 @@
                 <tr>
                     <th class="text-center"><?php echo __('ID')?></th>
                     <th><?php echo __('Name')?></th>
-                    <th><?php echo __('Orgsinsation')?></th>
+                    <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Location A')?></th>
                     <th><?php echo __('Location B')?></th>
                     <th><?php echo __('Provider')?></th>
