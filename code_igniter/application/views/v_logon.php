@@ -99,6 +99,12 @@
                         <br />Don't forget about the Open-AudIT wiki for all your documentation.<br /><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
                         </div>
                     </div>
+<?php
+$temp = @$this->session->flashdata('error');
+if (!empty($temp)) {
+    echo '<div class="alert alert-danger" role="alert">' . $this->session->flashdata('error') . "</div>\n";
+}
+?>
                 </div>
             </div>
         </div>

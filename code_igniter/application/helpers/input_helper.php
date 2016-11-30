@@ -902,9 +902,21 @@ if (! function_exists('inputRead')) {
                 if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
                     redirect($CI->response->meta->collection);
                 } else {
-                    redirect('summaries');
+                    if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'collection') {
+                        $CI->session->unset_userdata('user_id');
+                        $CI->session->set_flashdata('error', 'User cannot run summaries::collection.');
+                        redirect('logon');
+                    } else {
+                        redirect('summaries');
+                    }
                 }
             }
+        }
+
+        if (empty($CI->user->orgs)) {
+            $CI->session->unset_userdata('user_id');
+            $CI->session->set_flashdata('error', 'User has no permissions on any orgs.');
+            redirect('logon');
         }
 
         if (!empty($CI->response->meta->id) and

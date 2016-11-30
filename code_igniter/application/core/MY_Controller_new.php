@@ -74,7 +74,7 @@ class MY_Controller_new extends CI_Controller
 
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
-        if (!empty($this->user->roles)) {
+        if (!empty($this->user->roles) and $this->user->roles != 'null') {
             $this->user->roles = json_decode($this->user->roles);
         } else {
             if ($this->config->config['internal_version'] < 20160904) {
@@ -85,6 +85,10 @@ class MY_Controller_new extends CI_Controller
                 $log->file = 'system';
                 $log->message = "Could not determine roles for user.";
                 stdlog($log);
+                #$this->session->sess_destroy();
+                $this->session->unset_userdata('user_id');
+                $this->session->set_flashdata('error', 'Could not determine roles for user.');
+                redirect('logon');
             }
         }
         if (!empty($this->user->orgs)) {
