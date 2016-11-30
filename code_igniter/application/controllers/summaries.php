@@ -56,7 +56,8 @@ class Summaries extends MY_Controller_new
     public function __construct()
     {
         parent::__construct();
-        if (empty($this->uri->segment(1))) {
+        $temp = @$this->uri->segment(1);
+        if (empty($temp)) {
             redirect('summaries');
         }
 
