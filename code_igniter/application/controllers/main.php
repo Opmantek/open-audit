@@ -298,12 +298,13 @@ class main extends MY_Controller
 
     public function view_org()
     {
-        $this->load->model("m_oa_org");
-        $this->data['org'] = $this->m_oa_org->get_org_details($this->data['id']);
-        $this->data['include'] = 'v_org';
-        $this->data['sortcolumn'] = '1';
-        $this->data['heading'] = 'View Organisation';
-        $this->load->view('v_template', $this->data);
+        redirect('orgs/'.$this->data['id']);
+        // $this->load->model("m_oa_org");
+        // $this->data['org'] = $this->m_oa_org->get_org_details($this->data['id']);
+        // $this->data['include'] = 'v_org';
+        // $this->data['sortcolumn'] = '1';
+        // $this->data['heading'] = 'View Organisation';
+        // $this->load->view('v_template', $this->data);
     }
 
     public function get_count()
@@ -332,12 +333,13 @@ class main extends MY_Controller
 
     public function view_location()
     {
-        $this->load->model("m_oa_location");
-        $this->data['location'] = $this->m_oa_location->get_location_details($this->data['id']);
-        $this->data['include'] = 'v_location';
-        $this->data['sortcolumn'] = '1';
-        $this->data['heading'] = 'View Location';
-        $this->load->view('v_template', $this->data);
+        redirect('locations/'.$this->data['id']);
+        // $this->load->model("m_oa_location");
+        // $this->data['location'] = $this->m_oa_location->get_location_details($this->data['id']);
+        // $this->data['include'] = 'v_location';
+        // $this->data['sortcolumn'] = '1';
+        // $this->data['heading'] = 'View Location';
+        // $this->load->view('v_template', $this->data);
     }
 
     public function edit_systems()
@@ -483,86 +485,88 @@ class main extends MY_Controller
 
     public function list_groups()
     {
-        $this->load->model("m_oa_group");
-        $this->data['query'] = $this->m_oa_group->get_user_groups($this->user->id);
-        $this->data['heading'] = 'Groups';
-        $this->data['include'] = 'v_main';
-        $this->data['sortcolumn'] = '2';
-        $this->data['export_report'] = 'y';
-        $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+        redirect('summaries');
+        // $this->load->model("m_oa_group");
+        // $this->data['query'] = $this->m_oa_group->get_user_groups($this->user->id);
+        // $this->data['heading'] = 'Groups';
+        // $this->data['include'] = 'v_main';
+        // $this->data['sortcolumn'] = '2';
+        // $this->data['export_report'] = 'y';
+        // $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
     }
 
     public function list_devices()
     {
-        $this->load->model("m_oa_group");
-        if (!empty($this->data['id']) and is_numeric($this->data['id'])) {
-            // we must check to see if the user has at least VIEW permission on the group
-            $this->user->access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->id);
-            if ($this->user->access_level < '3') {
-                // not even VIEW permission - redirect
-                redirect('main/list_groups/');
-            }
-        } else {
-            redirect('main/list_groups/');
-        }
-        $this->load->model("m_systems");
-        $this->data['heading'] = 'List Devices';
-        if ($this->data['id'] != '0') {
-            $this->data['heading'] = $this->m_oa_group->get_group_name($this->data['id']);
-        }
+        redirect('devices');
+        // $this->load->model("m_oa_group");
+        // if (!empty($this->data['id']) and is_numeric($this->data['id'])) {
+        //     // we must check to see if the user has at least VIEW permission on the group
+        //     $this->user->access_level = $this->m_oa_group->get_group_access($this->data['id'], $this->user->id);
+        //     if ($this->user->access_level < '3') {
+        //         // not even VIEW permission - redirect
+        //         redirect('main/list_groups/');
+        //     }
+        // } else {
+        //     redirect('main/list_groups/');
+        // }
+        // $this->load->model("m_systems");
+        // $this->data['heading'] = 'List Devices';
+        // if ($this->data['id'] != '0') {
+        //     $this->data['heading'] = $this->m_oa_group->get_group_name($this->data['id']);
+        // }
 
-        $segs = $this->uri->segment_array();
-        $i = 0;
-        $filter = array();
-        foreach ($segs as $segment) {
-            if (((strpos($segment, 'out') === 0) or (strpos($segment, 'only') === 0)) and (strpos($segment, '___'))) {
-                $filter_array = explode("___", $segment);
-                $filter[$i]['variable'] = $filter_array[1];
-                $filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
-                if ($filter_array[0] == 'only') {
-                    $filter[$i]['condition'] = '=';
-                } else {
-                    $filter[$i]['condition'] = '<>';
-                }
-                $i++;
-            }
-        }
+        // $segs = $this->uri->segment_array();
+        // $i = 0;
+        // $filter = array();
+        // foreach ($segs as $segment) {
+        //     if (((strpos($segment, 'out') === 0) or (strpos($segment, 'only') === 0)) and (strpos($segment, '___'))) {
+        //         $filter_array = explode("___", $segment);
+        //         $filter[$i]['variable'] = $filter_array[1];
+        //         $filter[$i]['value'] = str_replace("%20", " ", html_entity_decode($filter_array[2]));
+        //         if ($filter_array[0] == 'only') {
+        //             $filter[$i]['condition'] = '=';
+        //         } else {
+        //             $filter[$i]['condition'] = '<>';
+        //         }
+        //         $i++;
+        //     }
+        // }
 
-        $this->load->model("m_oa_group_column");
-        $this->data['column'] = $this->m_oa_group_column->get_group_column($this->data['id']);
-        $this->data['query'] = $this->m_systems->get_group_systems($this->data['id']);
-        $remove = false;
-        $new_query = array();
-        if (count($filter) > 0) {
-            foreach ($this->data['query'] as $key) {
-                foreach ($filter as $enum_filter) {
-                    if (property_exists($key, $enum_filter['variable'])) {
-                        if (($key->{$enum_filter['variable']} == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
-                            $remove = true;
-                        }
-                        if (($key->{$enum_filter['variable']} != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
-                            $remove = true;
-                        }
-                    }
-                }
-                if ($remove == true) {
-                    # do not push this object to the new array
-                } else {
-                    # we want to keep this element - no matches above.
-                    # push this onto the new query array
-                    $new_query[] = $key;
-                }
-                $remove = false;
-            }
-            $this->data['query'] = $new_query;
-        }
+        // $this->load->model("m_oa_group_column");
+        // $this->data['column'] = $this->m_oa_group_column->get_group_column($this->data['id']);
+        // $this->data['query'] = $this->m_systems->get_group_systems($this->data['id']);
+        // $remove = false;
+        // $new_query = array();
+        // if (count($filter) > 0) {
+        //     foreach ($this->data['query'] as $key) {
+        //         foreach ($filter as $enum_filter) {
+        //             if (property_exists($key, $enum_filter['variable'])) {
+        //                 if (($key->{$enum_filter['variable']} == $enum_filter['value']) and ($enum_filter['condition'] == '<>')) {
+        //                     $remove = true;
+        //                 }
+        //                 if (($key->{$enum_filter['variable']} != $enum_filter['value']) and ($enum_filter['condition'] == '=')) {
+        //                     $remove = true;
+        //                 }
+        //             }
+        //         }
+        //         if ($remove == true) {
+        //             # do not push this object to the new array
+        //         } else {
+        //             # we want to keep this element - no matches above.
+        //             # push this onto the new query array
+        //             $new_query[] = $key;
+        //         }
+        //         $remove = false;
+        //     }
+        //     $this->data['query'] = $new_query;
+        // }
 
-        $this->data['count'] = count($this->data['query']);
-        $this->data['group_id'] = $this->data['id'];
-        $this->data['include'] = 'v_report';
-        $this->data['sortcolumn'] = '1';
-        $this->data['export_report'] = 'y';
-        $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+        // $this->data['count'] = count($this->data['query']);
+        // $this->data['group_id'] = $this->data['id'];
+        // $this->data['include'] = 'v_report';
+        // $this->data['sortcolumn'] = '1';
+        // $this->data['export_report'] = 'y';
+        // $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
     }
 
     public function search()
@@ -838,262 +842,264 @@ class main extends MY_Controller
     {
         $this->load->model("m_system");
         $this->data['id'] = $this->m_system->get_system_id($this->data['id']);
-        if ($this->data['id'] > '0') {
-            // we must check to see if the user has at least VIEW permission on the system
-            $this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->id);
-            if ($this->data['access_level'] < '5') {
-                // not even VIEW BASIC permission - redirect
-                redirect('main');
-            }
-        } else {
-            // not a valid system (id, hostname)
-            redirect('main');
-        }
-        $this->load->model("m_oa_general");
-        $this->load->model("m_additional_fields");
-        $this->load->model("m_audit_log");
-        $this->load->model("m_edit_log");
-        $this->load->model("m_change_log");
-        $this->load->model("m_attachment");
-        $this->load->model("m_oa_location");
-        $this->load->model("m_oa_org");
+        redirect('devices/'.$this->data['id']);
+        // if ($this->data['id'] > '0') {
+        //     // we must check to see if the user has at least VIEW permission on the system
+        //     $this->data['access_level'] = $this->m_system->get_system_access_level($this->data['id'], $this->user->id);
+        //     if ($this->data['access_level'] < '5') {
+        //         // not even VIEW BASIC permission - redirect
+        //         redirect('main');
+        //     }
+        // } else {
+        //     // not a valid system (id, hostname)
+        //     redirect('main');
+        // }
+        // $this->load->model("m_oa_general");
+        // $this->load->model("m_additional_fields");
+        // $this->load->model("m_audit_log");
+        // $this->load->model("m_edit_log");
+        // $this->load->model("m_change_log");
+        // $this->load->model("m_attachment");
+        // $this->load->model("m_oa_location");
+        // $this->load->model("m_oa_org");
 
-        $this->load->model("m_devices_components");
-        $this->data['additional_fields'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
-        // $sorted_names = $this->m_additional_fields->get_additional_fields_names();
-        // sort($sorted_names);
-        // $this->data['additional_fields_names'] = $sorted_names;
-        // $sort = $this->m_additional_fields->get_additional_fields($this->data['id']);
-        // sort($sort);
-        // $this->data['additional_fields'] = $sort;
+        // $this->load->model("m_devices_components");
+        // $this->data['additional_fields'] = $this->m_additional_fields->get_additional_fields_data($this->data['id']);
+        // // $sorted_names = $this->m_additional_fields->get_additional_fields_names();
+        // // sort($sorted_names);
+        // // $this->data['additional_fields_names'] = $sorted_names;
+        // // $sort = $this->m_additional_fields->get_additional_fields($this->data['id']);
+        // // sort($sort);
+        // // $this->data['additional_fields'] = $sort;
 
-        $this->data['bios'] = $this->m_devices_components->read($this->data['id'], 'y', 'bios');
-        $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
-        $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
-        $this->data['dns'] = $this->m_devices_components->read($this->data['id'], 'y', 'dns');
-        $this->data['file'] = $this->m_devices_components->read($this->data['id'], 'y', 'file');
-        $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
-        $this->data['log'] = $this->m_devices_components->read($this->data['id'], 'y', 'log');
-        $this->data['memory'] = $this->m_devices_components->read($this->data['id'], 'y', 'memory');
-        $this->data['module'] = $this->m_devices_components->read($this->data['id'], 'y', 'module');
-        $this->data['monitor'] = $this->m_devices_components->read($this->data['id'], 'y', 'monitor');
-        $this->data['motherboard'] = $this->m_devices_components->read($this->data['id'], 'y', 'motherboard');
-        $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
-        $this->data['nmap'] = $this->m_devices_components->read($this->data['id'], 'y', 'nmap');
-        $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
-        $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
-        $this->data['pagefile'] = $this->m_devices_components->read($this->data['id'], 'y', 'pagefile');
-        $this->data['partition'] = $this->m_devices_components->read($this->data['id'], 'y', 'partition');
-        $this->data['print_queue'] = $this->m_devices_components->read($this->data['id'], 'y', 'print_queue');
-        $this->data['processor'] = $this->m_devices_components->read($this->data['id'], 'y', 'processor');
-        $this->data['route'] = $this->m_devices_components->read($this->data['id'], 'y', 'route');
-        $this->data['san'] = $this->m_devices_components->read($this->data['id'], 'y', 'san');
-        $this->data['scsi'] = $this->m_devices_components->read($this->data['id'], 'y', 'scsi');
-        $this->data['server'] = $this->m_devices_components->read($this->data['id'], 'y', 'server');
-        $this->data['server_item'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item');
-        $this->data['service'] = $this->m_devices_components->read($this->data['id'], 'y', 'service');
-        $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
-        $this->data['software'] = $this->m_devices_components->read($this->data['id'], 'y', 'software');
-        $this->data['sound'] = $this->m_devices_components->read($this->data['id'], 'y', 'sound');
-        $this->data['task'] = $this->m_devices_components->read($this->data['id'], 'y', 'task');
-        $this->data['user'] = $this->m_devices_components->read($this->data['id'], 'y', 'user');
-        $this->data['user_group'] = $this->m_devices_components->read($this->data['id'], 'y', 'user_group');
-        $this->data['variable'] = $this->m_devices_components->read($this->data['id'], 'y', 'variable');
-        $this->data['video'] = $this->m_devices_components->read($this->data['id'], 'y', 'video');
-        $this->data['vm'] = $this->m_devices_components->read($this->data['id'], 'y', 'vm');
-        $this->data['webserver'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'web\'');
-        $this->data['website_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'website\'');
-        $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
+        // $this->data['bios'] = $this->m_devices_components->read($this->data['id'], 'y', 'bios');
+        // $this->data['database'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'database\'');
+        // $this->data['database_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'database\'');
+        // $this->data['dns'] = $this->m_devices_components->read($this->data['id'], 'y', 'dns');
+        // $this->data['file'] = $this->m_devices_components->read($this->data['id'], 'y', 'file');
+        // $this->data['hard_drive'] = $this->m_devices_components->read($this->data['id'], 'y', 'disk');
+        // $this->data['log'] = $this->m_devices_components->read($this->data['id'], 'y', 'log');
+        // $this->data['memory'] = $this->m_devices_components->read($this->data['id'], 'y', 'memory');
+        // $this->data['module'] = $this->m_devices_components->read($this->data['id'], 'y', 'module');
+        // $this->data['monitor'] = $this->m_devices_components->read($this->data['id'], 'y', 'monitor');
+        // $this->data['motherboard'] = $this->m_devices_components->read($this->data['id'], 'y', 'motherboard');
+        // $this->data['netstat'] = $this->m_devices_components->read($this->data['id'], 'y', 'netstat');
+        // $this->data['nmap'] = $this->m_devices_components->read($this->data['id'], 'y', 'nmap');
+        // $this->data['network'] = $this->m_devices_components->read($this->data['id'], 'y', 'network');
+        // $this->data['optical'] = $this->m_devices_components->read($this->data['id'], 'y', 'optical');
+        // $this->data['pagefile'] = $this->m_devices_components->read($this->data['id'], 'y', 'pagefile');
+        // $this->data['partition'] = $this->m_devices_components->read($this->data['id'], 'y', 'partition');
+        // $this->data['print_queue'] = $this->m_devices_components->read($this->data['id'], 'y', 'print_queue');
+        // $this->data['processor'] = $this->m_devices_components->read($this->data['id'], 'y', 'processor');
+        // $this->data['route'] = $this->m_devices_components->read($this->data['id'], 'y', 'route');
+        // $this->data['san'] = $this->m_devices_components->read($this->data['id'], 'y', 'san');
+        // $this->data['scsi'] = $this->m_devices_components->read($this->data['id'], 'y', 'scsi');
+        // $this->data['server'] = $this->m_devices_components->read($this->data['id'], 'y', 'server');
+        // $this->data['server_item'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item');
+        // $this->data['service'] = $this->m_devices_components->read($this->data['id'], 'y', 'service');
+        // $this->data['share'] = $this->m_devices_components->read($this->data['id'], 'y', 'share');
+        // $this->data['software'] = $this->m_devices_components->read($this->data['id'], 'y', 'software');
+        // $this->data['sound'] = $this->m_devices_components->read($this->data['id'], 'y', 'sound');
+        // $this->data['task'] = $this->m_devices_components->read($this->data['id'], 'y', 'task');
+        // $this->data['user'] = $this->m_devices_components->read($this->data['id'], 'y', 'user');
+        // $this->data['user_group'] = $this->m_devices_components->read($this->data['id'], 'y', 'user_group');
+        // $this->data['variable'] = $this->m_devices_components->read($this->data['id'], 'y', 'variable');
+        // $this->data['video'] = $this->m_devices_components->read($this->data['id'], 'y', 'video');
+        // $this->data['vm'] = $this->m_devices_components->read($this->data['id'], 'y', 'vm');
+        // $this->data['webserver'] = $this->m_devices_components->read($this->data['id'], 'y', 'server', ' AND type = \'web\'');
+        // $this->data['website_details'] = $this->m_devices_components->read($this->data['id'], 'y', 'server_item', ' AND type = \'website\'');
+        // $this->data['windows'] = $this->m_devices_components->read($this->data['id'], 'y', 'windows');
 
-        #$this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
-        $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
-        $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
-        $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
-        $this->data['edit_log'] = $this->m_edit_log->read($this->data['id']);
-        $this->data['ip'] = $this->m_devices_components->read($this->data['id'], 'y', 'ip');
-        $this->data['locations'] = $this->m_oa_location->get_location_names();
-        $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
-        $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
-        $this->data['system_id'] = $this->data['id'];
-        $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);
-        $this->data['system_org'] = $this->m_oa_org->get_system_org($this->data['id']);
+        // #$this->data['additional_fields_data'] = $this->m_additional_fields->get_system_fields($this->data['id']);
+        // $this->data['attachment'] = $this->m_attachment->get_system_attachment($this->data['id']);
+        // $this->data['audit_log'] = $this->m_audit_log->read($this->data['id']);
+        // $this->data['change_log'] = $this->m_change_log->readDevice($this->data['id']);
+        // $this->data['edit_log'] = $this->m_edit_log->read($this->data['id']);
+        // $this->data['ip'] = $this->m_devices_components->read($this->data['id'], 'y', 'ip');
+        // $this->data['locations'] = $this->m_oa_location->get_location_names();
+        // $this->data['orgs'] = $this->m_oa_org->get_all_orgs();
+        // $this->data['system'] = $this->m_system->get_system_summary($this->data['id']);
+        // $this->data['system_id'] = $this->data['id'];
+        // $this->data['system_location'] = $this->m_oa_location->get_system_location($this->data['id']);
+        // $this->data['system_org'] = $this->m_oa_org->get_system_org($this->data['id']);
 
-        include 'include_device_types.php';
-        $this->data['device_types'] = $device_types;
+        // include 'include_device_types.php';
+        // $this->data['device_types'] = $device_types;
 
-        # TODO: add in browser addons and odbc drivers
+        // # TODO: add in browser addons and odbc drivers
 
-        # only show to users with 'view sensitive details' level of access access level >= 7
-        if ($this->data['access_level'] >= '7') {
-            $this->data['software_key'] = $this->m_devices_components->read($this->data['id'], 'y', 'software_key');
+        // # only show to users with 'view sensitive details' level of access access level >= 7
+        // if ($this->data['access_level'] >= '7') {
+        //     $this->data['software_key'] = $this->m_devices_components->read($this->data['id'], 'y', 'software_key');
 
-            $this->data['decoded_access_details'] = new stdClass();
-            $this->data['decoded_access_details']->ip_address = '';
-            $this->data['decoded_access_details']->snmp_version = '';
-            $this->data['decoded_access_details']->snmp_community = '';
-            $this->data['decoded_access_details']->ssh_username = '';
-            $this->data['decoded_access_details']->ssh_password = '';
-            $this->data['decoded_access_details']->windows_username = '';
-            $this->data['decoded_access_details']->windows_password = '';
-            $this->data['decoded_access_details']->windows_domain = '';
+        //     $this->data['decoded_access_details'] = new stdClass();
+        //     $this->data['decoded_access_details']->ip_address = '';
+        //     $this->data['decoded_access_details']->snmp_version = '';
+        //     $this->data['decoded_access_details']->snmp_community = '';
+        //     $this->data['decoded_access_details']->ssh_username = '';
+        //     $this->data['decoded_access_details']->ssh_password = '';
+        //     $this->data['decoded_access_details']->windows_username = '';
+        //     $this->data['decoded_access_details']->windows_password = '';
+        //     $this->data['decoded_access_details']->windows_domain = '';
 
-            if (isset($this->data['system'][0]->access_details)) {
-                $this->load->library('encrypt');
+        //     if (isset($this->data['system'][0]->access_details)) {
+        //         $this->load->library('encrypt');
 
-                $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
-                $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
-                # this returns an array if it doesn't contain data
+        //         $this->data['decoded_access_details'] = $this->encrypt->decode($this->data['system'][0]->access_details);
+        //         $this->data['decoded_access_details'] = json_decode($this->data['decoded_access_details']);
+        //         # this returns an array if it doesn't contain data
 
-                if (!isset($this->data['decoded_access_details']) or
-                    count($this->data['decoded_access_details']) == 0) {
-                    $this->data['decoded_access_details'] = new stdClass();
-                }
+        //         if (!isset($this->data['decoded_access_details']) or
+        //             count($this->data['decoded_access_details']) == 0) {
+        //             $this->data['decoded_access_details'] = new stdClass();
+        //         }
 
-                if (!isset($this->data['decoded_access_details']->ip_address)) {
-                    $this->data['decoded_access_details']->ip_address = '';
-                }
+        //         if (!isset($this->data['decoded_access_details']->ip_address)) {
+        //             $this->data['decoded_access_details']->ip_address = '';
+        //         }
 
-                if (!isset($this->data['decoded_access_details']->snmp_version)) {
-                    $this->data['decoded_access_details']->snmp_version = '';
-                }
-                if (!isset($this->data['decoded_access_details']->snmp_community)) {
-                    $this->data['decoded_access_details']->snmp_community = '';
-                }
-                if (!isset($this->data['decoded_access_details']->ssh_username)) {
-                    $this->data['decoded_access_details']->ssh_username = '';
-                }
-                if (!isset($this->data['decoded_access_details']->ssh_password)) {
-                    $this->data['decoded_access_details']->ssh_password = '';
-                }
-                if (!isset($this->data['decoded_access_details']->windows_username)) {
-                    $this->data['decoded_access_details']->windows_username = '';
-                }
-                if (!isset($this->data['decoded_access_details']->windows_password)) {
-                    $this->data['decoded_access_details']->windows_password = '';
-                }
-                if (!isset($this->data['decoded_access_details']->windows_domain)) {
-                    $this->data['decoded_access_details']->windows_domain = '';
-                }
-            } else {
-                $this->data['decoded_access_details'] = new stdClass();
-                $this->data['decoded_access_details']->ip_address = "";
-                $this->data['decoded_access_details']->snmp_version = "";
-                $this->data['decoded_access_details']->snmp_community = "";
-                $this->data['decoded_access_details']->ssh_username = "";
-                $this->data['decoded_access_details']->ssh_password = "";
-                $this->data['decoded_access_details']->windows_username = "";
-                $this->data['decoded_access_details']->windows_password = "";
-                $this->data['decoded_access_details']->windows_domain = "";
-            }
-        }
+        //         if (!isset($this->data['decoded_access_details']->snmp_version)) {
+        //             $this->data['decoded_access_details']->snmp_version = '';
+        //         }
+        //         if (!isset($this->data['decoded_access_details']->snmp_community)) {
+        //             $this->data['decoded_access_details']->snmp_community = '';
+        //         }
+        //         if (!isset($this->data['decoded_access_details']->ssh_username)) {
+        //             $this->data['decoded_access_details']->ssh_username = '';
+        //         }
+        //         if (!isset($this->data['decoded_access_details']->ssh_password)) {
+        //             $this->data['decoded_access_details']->ssh_password = '';
+        //         }
+        //         if (!isset($this->data['decoded_access_details']->windows_username)) {
+        //             $this->data['decoded_access_details']->windows_username = '';
+        //         }
+        //         if (!isset($this->data['decoded_access_details']->windows_password)) {
+        //             $this->data['decoded_access_details']->windows_password = '';
+        //         }
+        //         if (!isset($this->data['decoded_access_details']->windows_domain)) {
+        //             $this->data['decoded_access_details']->windows_domain = '';
+        //         }
+        //     } else {
+        //         $this->data['decoded_access_details'] = new stdClass();
+        //         $this->data['decoded_access_details']->ip_address = "";
+        //         $this->data['decoded_access_details']->snmp_version = "";
+        //         $this->data['decoded_access_details']->snmp_community = "";
+        //         $this->data['decoded_access_details']->ssh_username = "";
+        //         $this->data['decoded_access_details']->ssh_password = "";
+        //         $this->data['decoded_access_details']->windows_username = "";
+        //         $this->data['decoded_access_details']->windows_password = "";
+        //         $this->data['decoded_access_details']->windows_domain = "";
+        //     }
+        // }
 
-        $this->data['include'] = "v_display_device";
+        // $this->data['include'] = "v_display_device";
 
-        foreach ($this->data['system'] as $system) {
-            $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
-            $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
-            #$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
-            $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
-            $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
-            $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->id.'.jpg';
-        }
+        // foreach ($this->data['system'] as $system) {
+        //     $model_formatted = str_replace(']', '', str_replace('[', '', str_replace(' ', '_', trim(mb_strtolower($system->model)))));
+        //     $type_formatted = str_replace(" ", "_", trim(mb_strtolower($system->type)));
+        //     #$default_file_exists = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$system->picture.'.jpg';
+        //     $model_file_exists   = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$model_formatted.'.jpg';
+        //     $type_file_exists    = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/'.$type_formatted.'.png';
+        //     $custom_file_exists  = str_replace('index.php', '', $_SERVER["SCRIPT_FILENAME"]).'device_images/custom/'.$system->id.'.jpg';
+        // }
 
-        $this->data['heading'] = 'Summary - '.$this->m_system->get_system_hostname($this->data['id']);
-        $this->load->view('v_template', $this->data);
+        // $this->data['heading'] = 'Summary - '.$this->m_system->get_system_hostname($this->data['id']);
+        // $this->load->view('v_template', $this->data);
     }
 
     public function edit_user()
     {
-        $this->load->model("m_oa_user");
-        $this->load->model("m_oa_group");
-        $this->load->helper('url');
-        if (!isset($_POST['submit'])) {
-            # load the initial form
-            $this->data['user'][0] = $this->user;
-            if ($this->user->admin == 'y') {
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->user->id);
-            }
-            $this->data['heading'] = 'Edit User';
-            $this->data['include'] = 'v_edit_user';
-            $this->data['sortcolumn'] = '1';
-            $this->data['url'] = current_url();
-            $this->load->view('v_template', $this->data);
-        } else {
-            # process the form
-            $error = '0';
-            $details = new stdClass();
-            foreach ($_POST as $key => $value) {
-                $details->$key = $value;
-            }
+        redirect('users');
+        // $this->load->model("m_oa_user");
+        // $this->load->model("m_oa_group");
+        // $this->load->helper('url');
+        // if (!isset($_POST['submit'])) {
+        //     # load the initial form
+        //     $this->data['user'][0] = $this->user;
+        //     if ($this->user->admin == 'y') {
+        //         $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($this->user->id);
+        //     }
+        //     $this->data['heading'] = 'Edit User';
+        //     $this->data['include'] = 'v_edit_user';
+        //     $this->data['sortcolumn'] = '1';
+        //     $this->data['url'] = current_url();
+        //     $this->load->view('v_template', $this->data);
+        // } else {
+        //     # process the form
+        //     $error = '0';
+        //     $details = new stdClass();
+        //     foreach ($_POST as $key => $value) {
+        //         $details->$key = $value;
+        //     }
 
-            if ($details->password != $details->password_confirm) {
-                $error = '1';
-                $this->data['error_message'] = "Passwords must match.";
-                $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
-                $this->data['heading'] = 'Edit User';
-                $this->data['include'] = 'v_edit_user';
-                $this->data['url'] = current_url();
-                $this->load->view('v_template', $this->data);
-            }
+        //     if ($details->password != $details->password_confirm) {
+        //         $error = '1';
+        //         $this->data['error_message'] = "Passwords must match.";
+        //         $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
+        //         $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
+        //         $this->data['heading'] = 'Edit User';
+        //         $this->data['include'] = 'v_edit_user';
+        //         $this->data['url'] = current_url();
+        //         $this->load->view('v_template', $this->data);
+        //     }
 
-            if ($this->m_oa_user->check_user_name($details->name, $details->id) == false) {
-                $error = '1';
-                $this->data['error_message'] = "Username already exists.";
-                $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
-                $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
-                $this->data['heading'] = 'Edit User';
-                $this->data['include'] = 'v_edit_user';
-                $this->data['url'] = current_url();
-                $this->load->view('v_template', $this->data);
-            }
+        //     if ($this->m_oa_user->check_user_name($details->name, $details->id) == false) {
+        //         $error = '1';
+        //         $this->data['error_message'] = "Username already exists.";
+        //         $this->data['user'] = $this->m_oa_user->get_user_details($details->id);
+        //         $this->data['user_group'] = $this->m_oa_group->get_all_user_groups($details->id);
+        //         $this->data['heading'] = 'Edit User';
+        //         $this->data['include'] = 'v_edit_user';
+        //         $this->data['url'] = current_url();
+        //         $this->load->view('v_template', $this->data);
+        //     }
 
-            if ($error == '0') {
-                $this->m_oa_user->edit_user($details);
-                if ($this->user->admin == 'y') {
-                    $this->m_oa_group->edit_user_groups($details);
-                }
-                if ($details->user_name == 'admin' and
-                    isset($details->user_password) and
-                    isset($details->user_password_confirm) and
-                    $details->user_password == $details->user_password_confirm and
-                    $details->user_password != '') {
-                    // Reset the admin user password in OAE
-                    $server_os = php_uname('s');
-                    if ($server_os == 'Windows NT') {
-                        $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin '.$details->user_password.' 2>&1';
-                    }
-                    if (php_uname('s') == 'Linux' or php_uname('s') == "Darwin") {
-                        $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin '.$details->user_password.' 2>&1';
-                    }
-                    exec($command_string, $output, $return_var);
-                    if ($return_var != '0') {
-                        $log_details = new stdClass();
-                        $log_details->severity = 5;
-                        $log_details->file = 'system';
-                        $log_details->message = 'Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
-                        stdlog($log_details);
-                        unset($log_details);
-                    } else {
-                        $log_details = new stdClass();
-                        $log_details->severity = 5;
-                        $log_details->file = 'system';
-                        $log_details->message = 'Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
-                        stdlog($log_details);
-                        unset($log_details);
-                    }
-                    $command_string = null;
-                    $output = null;
-                    $return_var = null;
-                }
-                redirect('main/edit_user/'.$this->user->id);
-            } else {
-                $log_details->severity = 5;
-                $log_details->message = 'Error on edit user details submission for '.$details->user_name;
-                stdlog($log_details);
-                redirect('main/list_groups/');
-            }
-        }
+        //     if ($error == '0') {
+        //         $this->m_oa_user->edit_user($details);
+        //         if ($this->user->admin == 'y') {
+        //             $this->m_oa_group->edit_user_groups($details);
+        //         }
+        //         if ($details->user_name == 'admin' and
+        //             isset($details->user_password) and
+        //             isset($details->user_password_confirm) and
+        //             $details->user_password == $details->user_password_confirm and
+        //             $details->user_password != '') {
+        //             // Reset the admin user password in OAE
+        //             $server_os = php_uname('s');
+        //             if ($server_os == 'Windows NT') {
+        //                 $command_string = 'c:\xampplite\apache\bin\htpasswd.exe -mb c:\omk\conf\users.dat admin '.$details->user_password.' 2>&1';
+        //             }
+        //             if (php_uname('s') == 'Linux' or php_uname('s') == "Darwin") {
+        //                 $command_string = 'htpasswd -mb /usr/local/opmojo/conf/users.dat admin '.$details->user_password.' 2>&1';
+        //             }
+        //             exec($command_string, $output, $return_var);
+        //             if ($return_var != '0') {
+        //                 $log_details = new stdClass();
+        //                 $log_details->severity = 5;
+        //                 $log_details->file = 'system';
+        //                 $log_details->message = 'Admin user password reset attempt for Open-AudIT and Open-AudIT Enterprise has failed';
+        //                 stdlog($log_details);
+        //                 unset($log_details);
+        //             } else {
+        //                 $log_details = new stdClass();
+        //                 $log_details->severity = 5;
+        //                 $log_details->file = 'system';
+        //                 $log_details->message = 'Admin user password reset successful for Open-AudIT and Open-AudIT Enterprise';
+        //                 stdlog($log_details);
+        //                 unset($log_details);
+        //             }
+        //             $command_string = null;
+        //             $output = null;
+        //             $return_var = null;
+        //         }
+        //         redirect('main/edit_user/'.$this->user->id);
+        //     } else {
+        //         $log_details->severity = 5;
+        //         $log_details->message = 'Error on edit user details submission for '.$details->user_name;
+        //         stdlog($log_details);
+        //         redirect('main/list_groups/');
+        //     }
+        // }
     }
 
     public function help_support()
