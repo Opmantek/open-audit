@@ -145,7 +145,8 @@ class logon extends CI_Controller
     public function index()
     {
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
-            if (!empty($this->session->userdata('user_id'))) {
+            $temp = @$this->session->userdata('user_id');
+            if (!empty($temp)) {
                 if ($this->response->meta->format != 'json') {
                     redirect('summaries');
                 } else {
@@ -170,7 +171,8 @@ class logon extends CI_Controller
     public function login()
     {
 
-        if (!empty($this->session->userdata('user_id'))) {
+        $temp = @$this->session->userdata('user_id');
+        if (!empty($temp)) {
             if ($this->response->meta->format != 'json') {
                 #echo "<pre>\n"; print_r($this->session->all_userdata());
                 redirect('summaries');
