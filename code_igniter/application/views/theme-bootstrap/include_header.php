@@ -36,7 +36,7 @@
     Version<br /><?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>
     <?php
     if ($this->config->item('internal_version') < $this->config->item('web_internal_version') and $this->m_users->get_user_permission('', 'database', 'u')) {
-        echo '<br /><a href="'.$this->config->config['oa_web_index'].'/main/help_about" style="color: red;">upgrade</a>';
+        echo '<br /><a href="'.$this->config->config['oa_web_index'].'/database?action=update" style="color: red;">upgrade</a>';
     } ?>
   </div>
 
@@ -383,12 +383,13 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_about'><?php echo __('About')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help'><?php echo __('About')?></a></li>
                     <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
                     <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_statistics'><?php echo __('Statistics')?></a></li>
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_support'><?php echo __('Support')?></a></li>
-                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/main/help_queries'><?php echo __('Default Query List')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/support'><?php echo __('Support')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/queries'><?php echo __('Default Query List')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/groups'><?php echo __('Default Group List')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/summaries'><?php echo __('Default Summary List')?></a></li>
                 </ul>
             </li>
 
