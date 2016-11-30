@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version 1.14
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -179,6 +179,9 @@ class M_networks extends MY_Model
 
     public function upsert($network)
     {
+        $router = & load_class('Router', 'core');
+        $model = $router->fetch_class();
+        $function = $router->fetch_method();
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'upserting data';
         stdlog($this->log);
