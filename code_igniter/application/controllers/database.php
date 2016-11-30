@@ -5100,8 +5100,6 @@ class Database extends MY_Controller_new
 
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Centos Computers\", \"Devices with type = computer and os_family like Centos.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'centos'\", \"\", \"y\", \"system\", NOW())";
 
-            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Computers\", \"Devices with class = hypervisor.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = 'hypervisor'\", \"\", \"y\", \"system\", NOW())";
-
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Computers\", \"Devices with type = computer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer'\", \"\", \"y\", \"system\", NOW())";
 
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Debian Computers\", \"Devices with type = computer and os_family like Debian.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'debian'\", \"\", \"y\", \"system\", NOW())";
@@ -5110,7 +5108,7 @@ class Database extends MY_Controller_new
 
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Open-AudIT Enterprise Managed Devices\", \"Devices Managed by Open-AudIT Enterprise.\", \"SELECT distinct(system.id) FROM system WHERE @filter AND system.status = 'production' and oae_manage = 'y'\", \"\", \"y\", \"system\", NOW())";
 
-            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Printers\", \"Devices with type = computer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'printer'\", \"\", \"y\", \"system\", NOW())";
+            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Printers\", \"Devices with type = printer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'printer'\", \"\", \"y\", \"system\", NOW())";
 
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Public IP Devices\", \"Devices with a public IP address and a status of production.\", \"SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = 'y') WHERE @filter AND ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production'\", \"\", \"y\", \"system\", NOW())";
 
@@ -5120,11 +5118,13 @@ class Database extends MY_Controller_new
 
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Switches\", \"Devices with type = switch.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'switch'\", \"\", \"y\", \"system\", NOW())";
 
+            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Virtual Hosts\", \"Devices with class = hypervisor.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = 'hypervisor'\", \"\", \"y\", \"system\", NOW())";
+
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Windows Computers\", \"Devices with type = computer and os_group like Windows.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'windows'\", \"\", \"y\", \"system\", NOW())";
 
             $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Windows Servers\", \"Devices with type = computer and os_name like Windows Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_name LIKE '%windows%server%'\", \"\", \"y\", \"system\", NOW())";
 
-            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Windows Workstations\", \"Devices with type = computer and os_name not like Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name not like '%server%')\", \"\", \"y\", \"system\", NOW())";
+            $sql[] = "INSERT INTO groups VALUES(NULL, 1, \"Windows Workstations\", \"Devices with type = computer and os_name like Windows and os_name not like Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%')\", \"\", \"y\", \"system\", NOW())";
 
 
 
