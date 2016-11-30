@@ -230,6 +230,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0023']->title = $extra;
         $error_array['ERR-0023']->detail = 'SQL command failed.';
 
+        $error_array['ERR-0024'] = new stdClass();
+        $error_array['ERR-0024']->code = 'ERR-0024';
+        $error_array['ERR-0024']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0024']->severity = 3;
+        $error_array['ERR-0024']->title = "Cannot create resource with supplied data" . $extra;
+        $error_array['ERR-0024']->detail = 'Cannot create resource with supplied data. A required field is missing.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';

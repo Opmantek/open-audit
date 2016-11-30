@@ -62,7 +62,12 @@ class M_discoveries extends MY_Model
         }
 
         if ($data->type == 'subnet') {
-            $data->description = $data->other->subnet;
+            if (empty($data->other->subnet)) {
+                log_error('ERR-0024', 'm_discoveries::create');
+                return false;
+            } else {
+                $data->description = $data->other->subnet;
+            }
         } else if ($data->type = 'active directory') {
             $data->description = $data->other->ad_domain;
         } else {
