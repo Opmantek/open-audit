@@ -919,6 +919,10 @@ if (! function_exists('inputRead')) {
             redirect('logon');
         }
 
+        if ($CI->config->config['internal_version'] < $CI->config->config['web_internal_version'] and $CI->response->meta->collection != 'database') {
+            redirect('database?action=update');
+        }
+
         if (!empty($CI->response->meta->id) and
             $CI->response->meta->collection != 'charts' and
             $CI->response->meta->collection != 'configuration' and
