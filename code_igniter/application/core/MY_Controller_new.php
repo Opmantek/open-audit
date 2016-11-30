@@ -85,7 +85,6 @@ class MY_Controller_new extends CI_Controller
                 $log->file = 'system';
                 $log->message = "Could not determine roles for user.";
                 stdlog($log);
-                #$this->session->sess_destroy();
                 $this->session->unset_userdata('user_id');
                 $this->session->set_flashdata('error', 'Could not determine roles for user.');
                 redirect('logon');
