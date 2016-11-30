@@ -165,6 +165,7 @@ class MY_Model extends CI_Model
         $sql = preg_replace('!\s+!', ' ', $sql);
         $sql = strtolower('/* ' . $model . '::' . $function .' */ ') . $sql;
         $sql = trim($sql);
+        $result = array();
 
         // store the current setting of db_debug
         $temp_debug = $this->db->db_debug;
@@ -198,9 +199,10 @@ class MY_Model extends CI_Model
                 }
             }
             return false;
+        } else {
+            // no error, so get the result
+            $result = $query->result();
         }
-        // no error, so get the result
-        $result = $query->result();
         // return what we have
         return ($result);
     }

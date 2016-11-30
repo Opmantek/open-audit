@@ -234,6 +234,13 @@ class M_users extends MY_Model
 
     public function get_user_permission($user_id = '', $endpoint = '', $permission = '')
     {
+        if ($this->config->config['internal_version'] < 20160904) {
+            if (!empty($this->user->admin) and $this->user->admin == 'y') {
+                return true;
+            } else {
+                return false;
+            }
+        }
         if ($endpoint == '') {
             return false;
         }

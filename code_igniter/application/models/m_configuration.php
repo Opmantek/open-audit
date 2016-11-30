@@ -93,6 +93,9 @@ class M_configuration extends MY_Model
 
     public function update($id = '', $value = '', $edited_by = '')
     {
+        if ($this->config->config['internal_version'] < 20160904) {
+            return;
+        }
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'updating data';
         stdlog($this->log);
