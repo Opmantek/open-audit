@@ -2628,7 +2628,7 @@ CREATE TABLE `task` (
   `last_result` varchar(50) NOT NULL DEFAULT '',
   `creator` varchar(50) NOT NULL DEFAULT '',
   `schedule` varchar(100) NOT NULL DEFAULT '',
-  `task` varchar(100) NOT NULL DEFAULT '',
+  `task` text NOT NULL DEFAULT '',
   `state` varchar(10) NOT NULL DEFAULT '',
   `runas` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),

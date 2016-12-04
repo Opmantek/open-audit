@@ -4794,7 +4794,7 @@ class Database extends MY_Controller_new
         }
 
 
-        if (($db_internal_version < '201608904') and ($this->db->platform() == 'mysql')) {
+        if (($db_internal_version < '20160904') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.14
 
             $item_start = microtime(true);
@@ -5654,6 +5654,57 @@ class Database extends MY_Controller_new
             $this->data['output'] .= 'Completing 1.14 upgrade at ' . $result[0]->timestamp . "\n\n";
 
             $log_details->message = "Upgrade database to 1.14 completed\n\n";
+            stdlog($log_details);
+            unset($log_details);
+        }
+
+        if (($db_internal_version < '20161130') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.14.2
+
+            $item_start = microtime(true);
+
+            $log_details = new stdClass();
+            $log_details->file = 'system';
+            $log_details->severity = 5;
+            $log_details->message = 'Upgrade database to 1.14.2 commenced';
+            stdlog($log_details);
+
+            if (!empty($this->data['output'])) {
+                $this->data['output'] .= 'Commencing 1.14.2 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            } else {
+                $this->data['output'] = 'Commencing 1.14.2 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
+            }
+
+            # task
+            $sql[] = "ALTER TABLE `task` CHANGE `task` `task` TEXT NOT NULL DEFAULT ''";
+
+            $sql[] = "UPDATE configuration SET value = '20161130' WHERE name = 'internal_version'";
+            $sql[] = "UPDATE configuration SET value = '1.14.2' WHERE name = 'display_version'";
+
+            $temp_debug = $this->db->db_debug;
+            $this->db->db_debug = false;
+            foreach ($sql as $this_query) {
+                $log_details->message = $this_query;
+                $log_details->status = 'running sql';
+                stdlog($log_details);
+                $this->data['output'] .= $this_query.";\n\n";
+                $query = $this->db->query($this_query);
+                if ($this->db->_error_message()) {
+                    $this->data['output'] .= 'ERROR - ' . $this->db->_error_message() . "\n\n";
+                    log_error('ERR-0023', $this->db->_error_message());
+                }
+            }
+            $this->db->db_debug = $temp_debug;
+            $this->data['output'] .= "Upgrade database to 1.14.2 completed\n\n";
+            $this->config->config['internal_version'] = '20161130';
+            $this->config->config['display_version'] = '1.14.2';
+
+            $sql_time = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql_time);
+            $result = $query->result();
+            $this->data['output'] .= 'Completing 1.14.2 upgrade at ' . $result[0]->timestamp . "\n\n";
+
+            $log_details->message = "Upgrade database to 1.14.2 completed\n\n";
             stdlog($log_details);
             unset($log_details);
         }
