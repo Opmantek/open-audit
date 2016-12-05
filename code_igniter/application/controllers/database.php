@@ -5676,15 +5676,39 @@ class Database extends MY_Controller_new
             }
 
             # connections
-            $sql[] = "RENAME TABLE `oa_connection` TO `connections`";
+            if ($this->db->table_exists('oa_connection')) {
+                $sql[] = "RENAME TABLE `oa_connection` TO `connections`";
+            }
 
             # locations
-            $sql[] = "RENAME TABLE `oa_location` TO `locations`";
+            if ($this->db->table_exists('oa_location')) {
+                $sql[] = "RENAME TABLE `oa_location` TO `locations`";
+            }
 
             # queries
             $sql[] = "UPDATE `queries` SET sql = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter' WHERE name = 'Billing Report'";
 
             $sql[] = "UPDATE `queries` SET sql = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name' WHERE name = 'Hardware - Workstations'";
+
+            # oa_group_column
+            if ($this->db->table_exists('oa_group_column')) {
+                $sql[] = "DROP TABLE `oa_group_column`";
+            }
+
+            # oa_group_sys
+            if ($this->db->table_exists('oa_group_sys')) {
+                $sql[] = "DROP TABLE `oa_group_sys`";
+            }
+
+            # oa_group_user
+            if ($this->db->table_exists('oa_group_user')) {
+                $sql[] = "DROP TABLE `oa_group_user`";
+            }
+
+            # oa_report_column
+            if ($this->db->table_exists('oa_report_column')) {
+                $sql[] = "DROP TABLE `oa_report_column`";
+            }
 
             # task
             $sql[] = "ALTER TABLE `task` CHANGE `task` `task` TEXT NOT NULL DEFAULT ''";
