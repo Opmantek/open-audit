@@ -33,7 +33,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->meta->collection; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
@@ -114,7 +114,7 @@
                 <div class="form-group">
                     <label for="submit" class="col-sm-3 control-label"></label>
                     <div class="col-sm-8 input-group">
-                        <input type="hidden" value="queries" id="data[type]" name="data[type]" />
+                        <input type="hidden" value="groups" id="data[type]" name="data[type]" />
                         <input type="hidden" value="y" id="data[expose]" name="data[expose]" />
                         <input type="hidden" value="" id="data[link]" name="data[link]" />
                         <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
