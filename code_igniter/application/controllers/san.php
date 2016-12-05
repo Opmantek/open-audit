@@ -62,10 +62,6 @@ class San extends CI_Controller
         // Have to be able to submit systems via the audit script
         $this->data['title'] = 'Open-AudIT';
         $this->load->library('session');
-        $this->load->helper('report_helper');
-        check_default_reports();
-        $this->load->helper('group_helper');
-        check_default_groups();
         $this->load->model('m_configuration');
         $this->m_configuration->load();
     }
@@ -99,7 +95,6 @@ class San extends CI_Controller
 
             $this->load->model('m_devices_components');
             $this->load->model('m_system');
-            $this->load->model('m_oa_group');
             $this->load->model('m_audit_log');
             $this->load->helper('url');
 
@@ -761,16 +756,6 @@ class San extends CI_Controller
             $this->m_audit_log->update('debug', 'ip address', $details->id, $details->last_seen);
             $this->m_devices_components->process_component('ip', $details, $ip);
 
-            // Finally, update any groups for this system if config item is set
-            // $temp = @$this->m_configuration->read('discovery_update_groups');
-            // $discovery_update_groups = @$temp->attributes->value;
-            // if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
-            if (empty($this->config->config['discovery_update_groups']) or strtolower($this->config->config['discovery_update_groups']) != 'y') {
-                # don't run the update group routine
-            } else {
-                $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
-                $this->m_oa_group->update_system_groups($details);
-            }
             $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
 
             $this->benchmark->mark('code_end');

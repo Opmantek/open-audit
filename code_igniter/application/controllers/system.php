@@ -69,10 +69,6 @@ class System extends CI_Controller
         stdlog($log_details);
         unset($log_details);
 
-        $this->load->helper('report_helper');
-        check_default_reports();
-        $this->load->helper('group_helper');
-        check_default_groups();
         $this->load->model('m_configuration');
         $this->m_configuration->load();
     }
@@ -140,7 +136,6 @@ class System extends CI_Controller
             echo "<head>\n<title>XHTML-document</title>\n</head>\n<body>\n";
             $this->load->helper('xml');
             $this->load->model('m_system');
-            $this->load->model('m_oa_group');
             $this->load->model('m_audit_log');
             $input = html_entity_decode($_POST['form_reportXML']);
             $input = utf8_encode($input);
@@ -169,7 +164,6 @@ class System extends CI_Controller
                     $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
                     $details->last_seen_by = 'active directory';
                     $details->id = $this->m_system->process_system_from_ad($child);
-                    $this->m_oa_group->update_system_groups($details);
                     $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                 }
             }
@@ -466,16 +460,6 @@ class System extends CI_Controller
         // set the ip (if not already set)
         $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
         $this->m_devices_components->set_initial_address($details->id);
-
-        $this->load->model('m_oa_group');
-
-        // Update any groups for this system if config item is set
-        if (empty($this->config->config['discovery_update_groups']) or strtolower($this->config->config['discovery_update_groups']) != 'y') {
-            # don't run the update group routine
-        } else {
-            $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
-            $this->m_oa_group->update_system_groups($details);
-        }
         $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
         $this->benchmark->mark('code_end');
         echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
@@ -522,7 +506,6 @@ class System extends CI_Controller
                 $this->load->helper('snmp_oid');
             }
             $this->load->model('m_system');
-            $this->load->model('m_oa_group');
             $this->load->model('m_audit_log');
             $timestamp = $this->config->config['timestamp'];
             $xml_input = $_POST['form_nmap'];
@@ -655,7 +638,6 @@ class System extends CI_Controller
                 }
                 $this->m_audit_log->create($details->id, $temp_user, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
                 unset($temp_user);
-                $this->m_oa_group->update_system_groups($details);
             }
 
             if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {

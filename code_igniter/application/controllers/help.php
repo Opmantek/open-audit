@@ -147,6 +147,18 @@ class Help extends MY_Controller_new
         $this->load->view('v_template', $this->data);
     }
 
+    /**
+    * Our opMaps help
+    *
+    * @access public
+    * @return NULL
+    */
+    function enterprise()
+    {
+        $this->data['include'] = 'v_help_enterprise';
+        $this->load->view('v_template', $this->data);
+    }
+
 }
 // End of file help.php
 // Location: ./controllers/help.php

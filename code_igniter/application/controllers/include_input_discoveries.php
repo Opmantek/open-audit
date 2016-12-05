@@ -47,7 +47,6 @@ $this->load->model('m_audit_log');
 $this->load->model('m_credentials');
 $this->load->model('m_devices');
 $this->load->model('m_devices_components');
-$this->load->model('m_oa_group');
 $this->load->model('m_orgs');
 $this->load->model('m_scripts');
 // our required helpers
@@ -461,15 +460,6 @@ if (!empty($_POST['form_details'])) {
         }
         $this->m_audit_log->create($device->id, $user, $device->last_seen_by, $device->audits_ip, '', '', $device->last_seen);
         unset($user);
-
-        // Update the groups
-        if ($this->config->config['discovery_update_groups'] == 'y') {
-            $log->file = 'input';
-            $log->function = 'discoveries';
-            $log->message = 'Updating groups for ' . $device->ip . ' (System ID ' . $device->id . ')';
-            discovery_log($log);
-            $this->m_oa_group->update_system_groups($device);
-        }
 
         // update any network interfaces and ip addresses retrieved by SNMP
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {

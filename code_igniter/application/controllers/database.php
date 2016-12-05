@@ -5748,18 +5748,6 @@ class Database extends MY_Controller_new
         // $this->load->model('m_system');
         // $this->m_system->reset_icons();
 
-        # refresh the reports
-        // $this->load->helper('report_helper');
-        // refresh_report_definitions();
-
-        # refresh the groups
-        // $this->load->helper('group_helper');
-        // refresh_group_definitions();
-
-        #refresh the scripts
-        // $this->load->helper('script_helper');
-        // refresh_script_definitions();
-
         // $this->load->model('m_configuration');
         // $this->m_configuration->load();
         $this->data['include'] = 'v_database_update';

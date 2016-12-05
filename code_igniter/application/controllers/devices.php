@@ -203,8 +203,6 @@ class devices extends MY_Controller_new
         # TODO - replace this old function
         $details = new stdClass();
         $details->id = $this->response->meta->id;
-        $this->load->model("m_oa_group");
-        $this->m_oa_group->update_system_groups($details);
 
         if ($this->response->meta->format == 'json') {
             $this->response->data = $this->m_devices->read();

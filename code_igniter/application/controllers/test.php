@@ -57,10 +57,6 @@ class test extends CI_Controller
             }
         }
 
-        $this->load->helper('report_helper');
-        check_default_reports();
-        $this->load->helper('group_helper');
-        check_default_groups();
     }
 
     public function index()

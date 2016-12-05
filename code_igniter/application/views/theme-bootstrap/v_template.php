@@ -56,9 +56,8 @@ if (!empty($this->response->meta->collection) and $this->response->meta->collect
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.tablesorter.min.js"></script>
     <!-- Open-AudIT specific items -->
     <script>
-
 <?php
-if (!is_null($this->response->meta->id)) {
+if (isset($this->response->meta->id) and !is_null($this->response->meta->id)) {
     echo "        var id = '" . $this->response->meta->id . "';\n";
 }
 if (!empty($this->response->meta->collection)) {

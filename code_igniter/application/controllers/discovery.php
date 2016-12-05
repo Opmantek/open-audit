@@ -72,11 +72,6 @@ class discovery extends CI_Controller
         $log_details->severity = 6;
         stdlog($log_details);
         unset($log_details);
-
-        $this->load->helper('report_helper');
-        check_default_reports();
-        $this->load->helper('group_helper');
-        check_default_groups();
     }
 
     public function index()
@@ -696,12 +691,6 @@ class discovery extends CI_Controller
                         $sql = "/* discovery::discover_subnet */ INSERT INTO oa_group_user (SELECT null, oa_user.id, ?, '10' FROM oa_user WHERE admin = 'y')";
                         $data = array( $insert_id );
                         $result = $this->db->query($sql, $data);
-                        // now we update this specific group
-                        // this accounts for if another system has a IP that would fall in this group, but was submitted
-                        // without a subnet_range and no matching network group was previously created.
-                        // update the group with all systems that match
-                        $this->load->model('m_oa_group');
-                        $this->m_oa_group->update_specific_group($insert_id);
                     }
                 }
 

@@ -72,7 +72,7 @@
 	<div style="width:100px; float: right; text-align: center;">
 		<br />Version<br /><?php echo htmlentities($this->config->item('display_version')); ?>
 		<?php if ($this->config->item('internal_version') < $this->config->item('web_internal_version')) {
-        echo '<br /><a href="'.$oa_web_index.'/main/help_about" style="color: red;">upgrade</a>'; } ?>
+        echo '<br /><a href="'.$oa_web_index.'/help/about" style="color: red;">upgrade</a>'; } ?>
 	</div>
 	<div style="width:100px; float: right; text-align: center;">
 	<?php if (isset($this->config->config['nmis_url']) and $this->config->config['nmis_url'] > "") { ?>
@@ -88,7 +88,7 @@
 	<?php if (isset($this->config->config['maps_url']) and $this->config->config['maps_url'] > "") { ?>
 		<br />Map<br /><a href="<?php echo htmlentities($this->config->item('maps_url')); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
 	<?php } else { ?>
-		<br />Map<br /><a href="<?php echo $oa_web_index; ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
+		<br />Map<br /><a href="<?php echo $oa_web_index; ?>/help/enterprise"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
 	<?php } ?>
 	</div>
 </div>

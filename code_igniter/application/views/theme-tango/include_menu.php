@@ -279,11 +279,11 @@ var modal_content_image = "";
 
     <li><a href='javascript:void(0)'><?php echo mb_strtoupper(__('Help'))?></a>
         <ul>
-            <li><a href='<?php echo $oa_web_index; ?>/main/help_about'><?php echo __('About')?></a></li>
+            <li><a href='<?php echo $oa_web_index; ?>/help/about'><?php echo __('About')?></a></li>
             <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
             <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
-            <li><a href='<?php echo $oa_web_index; ?>/main/help_statistics'><?php echo __('Statistics')?></a></li>
-            <li><a href='<?php echo $oa_web_index; ?>/main/help_support'><?php echo __('Support')?></a></li>
+            <li><a href='<?php echo $oa_web_index; ?>/help/statistics'><?php echo __('Statistics')?></a></li>
+            <li><a href='<?php echo $oa_web_index; ?>/help/support'><?php echo __('Support')?></a></li>
         </ul>
     </li>
 

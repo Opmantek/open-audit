@@ -12,7 +12,7 @@
             Map<br /><a href="<?php echo htmlspecialchars($this->config->item('maps_url'), REPLACE_FLAGS, CHARSET); ?>"  target="_blank" ><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
         <?php
         } else { ?>
-            Map<br /><a href="<?php echo $this->config->config['oa_web_index']; ?>/main/help_opmaps"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
+            Map<br /><a href="<?php echo $this->config->config['oa_web_index']; ?>/help/enterprise"><img alt="" style="height:30px" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" /></a>
         <?php
         } ?>
     </div>
@@ -386,6 +386,7 @@
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help'><?php echo __('About')?></a></li>
                     <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
                     <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
+                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/enterprise'><?php echo __('Open-AudIT Enterprise')?></a></li>
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/support'><?php echo __('Support')?></a></li>
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/queries'><?php echo __('Default Query List')?></a></li>
                     <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/groups'><?php echo __('Default Group List')?></a></li>

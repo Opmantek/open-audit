@@ -634,11 +634,6 @@ class report extends MY_Controller
 
     public function list_reports()
     {
-        $this->load->helper('report_helper');
-        check_default_reports();
-        $this->load->helper('group_helper');
-        check_default_groups();
-        $this->load->model("m_oa_report");
-        echo json_encode($this->m_oa_report->list_reports_in_menu());
+        echo json_encode(NULL);
     }
 }
