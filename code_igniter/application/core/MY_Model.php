@@ -228,9 +228,6 @@ class MY_Model extends CI_Model
         if ($table == 'users') {
             $table = 'oa_user';
         }
-        if ($table == 'connections') {
-            $table = 'oa_connection';
-        }
         if ($table == 'fields') {
             $table = 'additional_field';
         }

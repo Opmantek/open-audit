@@ -5675,6 +5675,9 @@ class Database extends MY_Controller_new
                 $this->data['output'] = 'Commencing 1.14.2 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
             }
 
+            # connections
+            $sql[] = "RENAME TABLE `oa_connection` TO `connections`";
+
             # task
             $sql[] = "ALTER TABLE `task` CHANGE `task` `task` TEXT NOT NULL DEFAULT ''";
 

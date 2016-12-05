@@ -50,7 +50,7 @@ class M_connections extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
-        $sql = "INSERT INTO `oa_connection` (";
+        $sql = "INSERT INTO `connections` (";
         $sql_data = "";
         if (is_null($data)) {
             if (!empty($CI->response->meta->received_data->attributes)) {
@@ -60,7 +60,7 @@ class M_connections extends MY_Model
                 return false;
             }
         }
-        foreach ($this->db->field_data('oa_connection') as $field) {
+        foreach ($this->db->field_data('connections') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";
                 $sql_data .= "?, ";
@@ -89,7 +89,7 @@ class M_connections extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM oa_connection WHERE id = ?";
+        $sql = "SELECT * FROM connections WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'connections');
@@ -113,7 +113,7 @@ class M_connections extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `oa_connection` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `connections` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql);
         return;
     }
@@ -131,7 +131,7 @@ class M_connections extends MY_Model
         }
         if ($id != 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `oa_connection` WHERE id = ?";
+            $sql = "DELETE FROM `connections` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
@@ -150,7 +150,7 @@ class M_connections extends MY_Model
         $sql = "SELECT id, name FROM oa_org";
         $result = $this->run_sql($sql, array());
         $orgs = $result;
-        $sql = "SELECT id, name FROM oa_connection";
+        $sql = "SELECT id, name FROM connections";
         $result = $this->run_sql($sql, array());
         $items = $result;
 

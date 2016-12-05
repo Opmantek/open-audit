@@ -331,6 +331,47 @@ INSERT INTO `configuration` VALUES (NULL, 'show_snmp_community','n','y','system'
 UNLOCK TABLES;
 
 --
+-- Table structure for table `connections`
+--
+
+DROP TABLE IF EXISTS `connections`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `connections` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(100) NOT NULL,
+  `provider` varchar(100) NOT NULL,
+  `service_type` varchar(100) NOT NULL,
+  `product_name` varchar(100) NOT NULL,
+  `service_identifier` varchar(100) NOT NULL,
+  `speed` float(7,3) NOT NULL DEFAULT '0.000',
+  `location_id_a` int(10) unsigned NOT NULL DEFAULT '1',
+  `location_id_b` int(10) unsigned NOT NULL DEFAULT '1',
+  `system_id_a` int(10) unsigned DEFAULT NULL,
+  `system_id_b` int(10) unsigned DEFAULT NULL,
+  `line_number_a` varchar(100) NOT NULL,
+  `line_number_b` varchar(100) NOT NULL,
+  `ip_address_external_a` varchar(30) NOT NULL,
+  `ip_address_external_b` varchar(30) NOT NULL,
+  `ip_address_internal_a` varchar(30) NOT NULL,
+  `ip_address_internal_b` varchar(30) NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `connections`
+--
+
+LOCK TABLES `connections` WRITE;
+/*!40000 ALTER TABLE `connections` DISABLE KEYS */;
+/*!40000 ALTER TABLE `connections` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `credential`
 --
 
@@ -1367,47 +1408,6 @@ LOCK TABLES `oa_change` WRITE;
 /*!40000 ALTER TABLE `oa_change` DISABLE KEYS */;
 INSERT INTO `oa_change` VALUES (NULL,'Default Change.','',NOW(),NOW(),'','','','','','','',1,NOW());
 /*!40000 ALTER TABLE `oa_change` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `oa_connection`
---
-
-DROP TABLE IF EXISTS `oa_connection`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_connection` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL,
-  `provider` varchar(100) NOT NULL,
-  `service_type` varchar(100) NOT NULL,
-  `product_name` varchar(100) NOT NULL,
-  `service_identifier` varchar(100) NOT NULL,
-  `speed` float(7,3) NOT NULL DEFAULT '0.000',
-  `location_id_a` int(10) unsigned NOT NULL DEFAULT '1',
-  `location_id_b` int(10) unsigned NOT NULL DEFAULT '1',
-  `system_id_a` int(10) unsigned DEFAULT NULL,
-  `system_id_b` int(10) unsigned DEFAULT NULL,
-  `line_number_a` varchar(100) NOT NULL,
-  `line_number_b` varchar(100) NOT NULL,
-  `ip_address_external_a` varchar(30) NOT NULL,
-  `ip_address_external_b` varchar(30) NOT NULL,
-  `ip_address_internal_a` varchar(30) NOT NULL,
-  `ip_address_internal_b` varchar(30) NOT NULL,
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_connection`
---
-
-LOCK TABLES `oa_connection` WRITE;
-/*!40000 ALTER TABLE `oa_connection` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_connection` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

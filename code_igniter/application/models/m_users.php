@@ -324,10 +324,6 @@ class M_users extends MY_Model
         $table = $collection;
         $id_name = 'id';
 
-
-        if ($collection == 'connections') {
-            $table = 'oa_connection';
-        }
         if ($collection == 'devices') {
             $table = 'system';
         }
