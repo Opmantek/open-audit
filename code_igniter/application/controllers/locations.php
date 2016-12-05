@@ -184,7 +184,7 @@ class Locations extends MY_Controller_new
     public function import_form()
     {
         $this->load->model('m_database');
-        $this->response->data = $this->m_database->read('oa_location');
+        $this->response->data = $this->m_database->read('locations');
         include 'include_import_form.php';
     }
 

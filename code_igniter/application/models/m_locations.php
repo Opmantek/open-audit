@@ -50,7 +50,7 @@ class M_locations extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
-        $sql = "INSERT INTO `oa_location` (";
+        $sql = "INSERT INTO `locations` (";
         $sql_data = "";
         if (is_null($data)) {
             if (!empty($CI->response->meta->received_data->attributes)) {
@@ -60,7 +60,7 @@ class M_locations extends MY_Model
                 return false;
             }
         }
-        foreach ($this->db->field_data('oa_location') as $field) {
+        foreach ($this->db->field_data('locations') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";
                 $sql_data .= "?, ";
@@ -89,7 +89,7 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM oa_location WHERE id = ?";
+        $sql = "SELECT * FROM locations WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'locations');
@@ -113,7 +113,7 @@ class M_locations extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `oa_location` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `locations` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql, array());
         return;
     }
@@ -131,7 +131,7 @@ class M_locations extends MY_Model
         }
         if ($id != 1) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `oa_location` WHERE id = ?";
+            $sql = "DELETE FROM `locations` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;

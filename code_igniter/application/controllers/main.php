@@ -334,12 +334,6 @@ class main extends MY_Controller
     public function view_location()
     {
         redirect('locations/'.$this->data['id']);
-        // $this->load->model("m_oa_location");
-        // $this->data['location'] = $this->m_oa_location->get_location_details($this->data['id']);
-        // $this->data['include'] = 'v_location';
-        // $this->data['sortcolumn'] = '1';
-        // $this->data['heading'] = 'View Location';
-        // $this->load->view('v_template', $this->data);
     }
 
     public function edit_systems()

@@ -337,7 +337,7 @@ class test extends CI_Controller
         $dashboard->total['org'] = count($result);
 
         $dashboard->location = array();
-        $sql = "SELECT count(system.id) AS count, system.location_id, oa_location.name FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system.org_id IN (" . $instring . ") GROUP BY system.location_id";
+        $sql = "SELECT count(system.id) AS count, system.location_id, locations.name FROM system LEFT JOIN locations ON system.location_id = locations.id WHERE system.org_id IN (" . $instring . ") GROUP BY system.location_id";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -484,7 +484,7 @@ class test extends CI_Controller
         $test = array();
         $test[] = "system.type = 'bridge'";
         $test[] = "oa_org.name = 'OpenDealerExchange'";
-        $test[] = "oa_location.name = 'Pune - India'";
+        $test[] = "locations.name = 'Pune - India'";
         $test[] = "system.os_family = 'Ubuntu'";
         $test[] = "server.type = 'web'";
         $test[] = "system.status = 'deleted'";

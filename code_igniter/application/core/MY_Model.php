@@ -231,9 +231,6 @@ class MY_Model extends CI_Model
         if ($table == 'fields') {
             $table = 'additional_field';
         }
-        if ($table == 'locations') {
-            $table = 'oa_location';
-        }
         if ($table == 'orgs') {
             $table = 'oa_org';
         }
@@ -319,7 +316,7 @@ class MY_Model extends CI_Model
         if ($type == 'sql') {
             
             if ($endpoint == 'locations') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `oa_location` LEFT JOIN system ON (oa_location.id = system.location_id) LEFT JOIN oa_org ON (oa_location.org_id = oa_org.id) " . $return['filter'] . " GROUP BY oa_location.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN oa_org ON (locations.org_id = oa_org.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
             
             } else if ($endpoint == 'networks') {
                 $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];

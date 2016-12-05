@@ -46,7 +46,7 @@ class M_oa_general extends MY_Model
             return;
         }
         if ($table == 'system') {
-            $sql = 'SELECT system.id AS `system_id`, system.hostname, system.fqdn, system.ip, system.type AS `man_type`, system.class AS `man_class`, system.os_version, system.function AS `man_function`, system.environment AS `man_environment`, system.status AS `man_status`, system.description AS `man_description`, system.os_group AS `man_os_group`, system.os_family AS `man_os_family`, system.os_name AS `man_os_name`, system.manufacturer AS `man_manufacturer`, system.model AS `man_model`, system.serial AS `nan_serial`, system.form_factor AS `man_form_factor`, system.vm_group AS `vm_group`, system.uptime, oa_location.name, system.last_seen, system.last_seen_by, system.icon, system.snmp_oid, system.sysDescr, system.sysObjectID, system.sysUpTime, system.sysContact, system.sysName, system.sysLocation FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system.id = ?';
+            $sql = 'SELECT system.id AS `system_id`, system.hostname, system.fqdn, system.ip, system.type AS `man_type`, system.class AS `man_class`, system.os_version, system.function AS `man_function`, system.environment AS `man_environment`, system.status AS `man_status`, system.description AS `man_description`, system.os_group AS `man_os_group`, system.os_family AS `man_os_family`, system.os_name AS `man_os_name`, system.manufacturer AS `man_manufacturer`, system.model AS `man_model`, system.serial AS `nan_serial`, system.form_factor AS `man_form_factor`, system.vm_group AS `vm_group`, system.uptime, locations.name, system.last_seen, system.last_seen_by, system.icon, system.snmp_oid, system.sysDescr, system.sysObjectID, system.sysUpTime, system.sysContact, system.sysName, system.sysLocation FROM system LEFT JOIN locations ON system.location_id = locations.id WHERE system.id = ?';
             $sql = $this->clean_sql($sql);
 
         }
@@ -64,7 +64,7 @@ class M_oa_general extends MY_Model
         }
         $sql = '';
         if ($table == 'system') {
-            $sql = 'SELECT system.* FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE system.id = ?';
+            $sql = 'SELECT system.* FROM system LEFT JOIN locations ON system.location_id = locations.id WHERE system.id = ?';
             $sql = $this->clean_sql($sql);
         }
         if ($sql != '') {

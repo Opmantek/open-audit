@@ -597,7 +597,7 @@ class M_system extends MY_Model
     public function system_summary($id = '')
     {
         // Improved SQL to show the linked system for the case of devices like local attached, non-networked printers
-        $sql = "SELECT a.system_id, a.hostname, a.ip, a.environment, a.status, a.description, a.type, a.class, a.os_group, a.os_family, a.os_name, a.manufacturer, a.model, a.serial, a.form_factor, oa_location.name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN oa_location on a.location_id = oa_location.id WHERE a.system_id = ?";
+        $sql = "SELECT a.system_id, a.hostname, a.ip, a.environment, a.status, a.description, a.type, a.class, a.os_group, a.os_family, a.os_name, a.manufacturer, a.model, a.serial, a.form_factor, locations.name, a.last_seen, a.last_seen_by, a.linked_sys as linked_system_id, b.hostname as linked_hostname FROM system a LEFT JOIN system b on a.linked_sys = b.system_id LEFT JOIN locations on a.location_id = locations.id WHERE a.system_id = ?";
 
         $sql = $this->clean_sql($sql);
         $data = array(intval($id));
@@ -666,7 +666,7 @@ class M_system extends MY_Model
 
     public function get_system_summary($id)
     {
-        $sql = "SELECT system.*, oa_location.name AS `location_name` FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ? LIMIT 1";
+        $sql = "SELECT system.*, locations.name AS `location_name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);

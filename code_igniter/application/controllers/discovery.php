@@ -535,8 +535,7 @@ class discovery extends CI_Controller
             }
             $this->load->model('m_oa_org');
             $this->data['orgs'] = $this->m_oa_org->get_org_names();
-            $this->load->model('m_oa_location');
-            $this->data['locations'] = $this->m_oa_location->get_location_names();
+            $this->data['locations'] = array();
             $this->data['warning'] = '';
             
             $sql = "SELECT COUNT(*) AS `count` FROM credentials";

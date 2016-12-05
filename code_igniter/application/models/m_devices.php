@@ -248,7 +248,7 @@ class M_devices extends MY_Model
         $filter = $this->build_filter();
 
         if ($sub_resource == 'location') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT location_id, oa_location.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN oa_location ON (system.location_id = oa_location.id) WHERE system.id = ?";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?";
             $data = array($id);
         } elseif ($sub_resource == 'purchase') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";

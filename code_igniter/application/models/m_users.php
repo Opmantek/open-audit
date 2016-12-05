@@ -330,9 +330,6 @@ class M_users extends MY_Model
         if ($collection == 'fields') {
             $table = 'additional_field';
         }
-        if ($collection == 'locations') {
-            $table = 'oa_location';
-        }
         if ($collection == 'orgs') {
             $table = 'oa_org';
             $org_id_name = 'id';

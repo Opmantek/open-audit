@@ -208,10 +208,6 @@ class M_summaries extends MY_Model
         $result = $this->format_data($result, 'summaries');
         switch ($dashboard[0]->table) {
 
-            case 'oa_location':
-                $collection = 'locations';
-                break;
-
             case 'networks':
                 $collection = 'networks';
                 break;
@@ -319,7 +315,7 @@ class M_summaries extends MY_Model
         }
 
         if ($this->m_users->get_user_permission('', 'locations', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `oa_location` WHERE org_id IN (" . $CI->user->org_list . ")";
+            $sql = "SELECT COUNT(*) AS `count` FROM `locations` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Locations', "collection" => "locations", "icon" => 'globe', "count" => $count[0]->count);
         }
