@@ -115,10 +115,6 @@ class MY_Controller extends CI_Controller
             $this->user->theme = 'tango';
         }
         $this->data['image_path'] = base_url().'theme-'.$this->user->theme.'/'.$this->user->theme.'-images/';
-        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') === false) {
-            $this->load->model('m_oa_report');
-            $this->data['menu'] = $this->m_oa_report->list_reports_in_menu();
-        }
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
         if (!empty($this->user->roles)) {

@@ -301,27 +301,13 @@ class main extends MY_Controller
         redirect('orgs/'.$this->data['id']);
     }
 
+    # left here for backwards compat
     public function get_count()
     {
-        $this->load->model("m_systems");
-        $group_id = '';
-        if (isset($_POST['group_id'])) {
-            $group_id = $_POST['group_id'];
-        }
-        if ($group_id == '') {
-            $group_id = $this->uri->segment(3, 1);
-        }
-        if (!is_numeric($group_id)) {
-            $group_id = '1';
-        }
-        // we must check to see if the user has at least VIEW permission on the group
-        $this->user->access_level = $this->m_oa_group->get_group_access($group_id, $this->user->id);
-        if ($this->user->access_level < '1') {
-            // not enough permission - exit
-            exit();
-        }
-        $count = $this->m_systems->get_group_system_count($group_id);
-        echo $count;
+        $sql = "SELECT count(*) as `count` FROM system";
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        echo intval($result[0]->count);
     }
 
     public function view_location()
@@ -351,69 +337,12 @@ class main extends MY_Controller
 
     public function search()
     {
-        # TODO: for completeness we should check if user is admin and if not, check is search is allowed in confg variable
-        if ($this->data['id'] == '') {
-            redirect('main/list_groups/');
-        }
-        if (($this->data['id'] > '0') && (is_int($this->data['id']))) {
-            // we must check to see if the user has at least VIEW permission on the group
-            if ($this->m_oa_group->get_group_access($this->data['id'], $this->user->id) < '3') {
-                // not even VIEW permission - redirect
-                redirect('main/list_groups/');
-            }
-        }
-        if (isset($_POST["search"])) {
-            redirect('main/search/'.$this->data['id'].'/'.$_POST['search']);
-        }
-        $this->data['group_id'] = $this->uri->segment(3, 0);
-        $this->data['search_term'] = urldecode($this->uri->segment(4, 0));
-        $this->data['search_term'] = html_entity_decode($this->data['search_term']);
-        $this->load->model("m_systems");
-        $result = $this->m_systems->search($this->data['search_term'], $this->data['group_id']);
-        $this->data['query'] = $result;
-        $this->data['heading'] = 'Search Result ('.$this->data['search_term'].")";
-        $this->data['include'] = 'v_search_result';
-        $this->data['sortcolumn'] = '0';
-        $this->data['export_report'] = 'y';
-        $this->determine_output($this->uri->segment($this->uri->total_rsegments()));
+        redirect('summaries');
     }
 
     public function search_device()
     {
-        # search for a match on PRODUCTION devices only.
-        # search for name, ip
-        $this->data['search'] = '';
-        if (isset($_POST['search'])) {
-            $this->data['search'] = urldecode($_POST['search']);
-        }
-        $this->data['search'] = html_entity_decode($this->data['search']);
-        if ($this->data['search'] == '') {
-            //exit();
-            redirect('main/list_groups/');
-        }
-
-        if (isset($_POST['format'])) {
-            $format = $_POST['format'];
-        } else {
-            $format = $this->uri->segment($this->uri->total_rsegments());
-        }
-
-        $this->load->model("m_system");
-        $this->data['query'] = $this->m_system->search_device($this->data['search']);
-        $this->data['heading'] = 'Search Result ('.$this->data['search'].")";
-        if ($this->user->name == 'open-audit_enterprise') {
-            $this->data['heading'] = "Enterprise - " . $this->data['heading'];
-        }
-        $this->data['column'] = $this->m_system->search_device_columns();
-        $this->data['count'] = count($this->data['query']);
-        $this->data['include'] = 'v_search_device';
-        $this->data['sortcolumn'] = '0';
-        $this->data['export_report'] = 'y';
-        if (isset($_POST['format'])) {
-            $this->determine_output($format);
-        } else {
-            $this->load->view('v_template', $this->data);
-        }
+        redirect('summaries');
     }
 
     public function disk_graph()
@@ -442,15 +371,11 @@ class main extends MY_Controller
     {
         # outputs a JSON formatted summary of an individual system
         # designed to be called from Open-AudIT Enterprise
-        $this->load->model("m_system");
-        $this->data['id'] = $this->m_system->get_system_id($this->data['id']);
         redirect('devices/'.$this->data['id'].'?format=json');
     }
 
     public function system_display()
     {
-        $this->load->model("m_system");
-        $this->data['id'] = $this->m_system->get_system_id($this->data['id']);
         redirect('devices/'.$this->data['id']);
     }
 
