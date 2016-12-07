@@ -130,9 +130,6 @@
                     <td>active_directory_ou</td>
                     <td>windows.active_directory_ou,windows.client_site_name</td>
                 </tr>
-
-
-
             </tbody>
         </table>
     </div>
