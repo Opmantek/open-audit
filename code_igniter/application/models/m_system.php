@@ -75,20 +75,87 @@ class M_system extends MY_Model
         $log_details->display = $display;
         unset($display);
 
-        if (!empty($details->uuid) and !empty($details->hostname)) {
-            $sql = "SELECT system.id FROM system WHERE system.uuid = ? AND system.hostname = ? AND system.status = 'production' LIMIT 1";
+        # TODO: fix this by making sure (snmp in particular) calls with the proper variable name
+        if (!isset($details->mac_address) and (isset($details->mac))) {
+            $details->mac_address = $details->mac;
+        }
+
+        # check if we have an ip address or a hostname (possibly a fqdn)
+        if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
+            # not an ip - check it's not a fqdn
+            if (strpos($details->hostname, '.') !== false) {
+                # it's a fqdn
+                if (empty($details->fqdn)) {
+                    $details->fqdn = $details->hostname;
+                }
+                $i = explode(".", $details->hostname);
+                $hostname = $i[0];
+                unset($i);
+            }
+        } else {
+            # we have an ip address in the hostname field - remove it
+            # likely because DNS is not fully setup and working correctly
+            if (empty($details->ip)) {
+                $details->ip = $details->hostname;
+            }
+            unset($details->hostname);
+        }
+
+        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '.' and empty($details->fqdn)) {
+            $details->fqdn = $details->hostname.".".$details->domain;
+        } else {
+            $details->fqdn = '';
+        }
+
+        $details->mac_address = strtolower($details->mac_address);
+        if ($details->mac_address == '00:00:00:00:00:00' or $details->mac_address == '') {
+            unset($details->mac_address);
+        }
+
+        if (empty($details->ip) or $details->ip == '0.0.0.0' or $details->ip == '000.000.000.000') {
+            $details->ip = '';
+        }
+
+        if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and !empty($details->uuid) and !empty($details->hostname)) {
+            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status = 'production' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->uuid", "$details->hostname");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on uuid + hostname for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
+                $log_details->message = 'HIT on hostname + uuid for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
             }
         }
 
-        if (!empty($details->dbus_identifier)) {
+        if (strtolower($this->config->config['match_hostname_dbus']) == 'y' and !empty($details->dbus_identifier) and !empty($details->hostname)) {
+            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.dbus_identifier = ? AND system.status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->hostname", "$details->dbus_identifier");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log_details->message = 'HIT on hostname + dbus_identifier for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
+                stdlog($log_details);
+            }
+        }
+
+        if (strtolower($this->config->config['match_hostname_serial']) == 'y' and !empty($details->serial) and !empty($details->hostname)) {
+            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.serial = ? AND system.status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->hostname", "$details->serial");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log_details->message = 'HIT on hostname + serial for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
+                stdlog($log_details);
+            }
+        }
+
+        if (strtolower($this->config->config['match_dbus']) == 'y' and !empty($details->dbus_identifier)) {
             $sql = "SELECT system.id FROM system WHERE system.dbus_identifier = ? AND system.status = 'production' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->dbus_identifier");
@@ -101,28 +168,7 @@ class M_system extends MY_Model
             }
         }
 
-        if (!empty($details->uuid) and !empty($details->hostname) and strlen($details->hostname) > 15) {
-            $temp_hostname = substr($details->hostname, 0, 15);
-            $sql = "SELECT system.id FROM system WHERE system.uuid = ? AND system.hostname = ? AND system.status = 'production' LIMIT 1";
-            $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid", "$temp_hostname");
-            $query = $this->db->query($sql, $data);
-            $row = $query->row();
-            if (count($row) > 0) {
-                $details->id = $row->id;
-                $log_details->message = 'HIT on uuid + hostname short for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
-            }
-            unset($temp_hostname);
-        }
-
-        if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '' and $details->domain != '.' and empty($details->fqdn)) {
-            $details->fqdn = $details->hostname.".".$details->domain;
-        } else {
-            $details->fqdn = '';
-        }
-
-        if (empty($details->id) and !empty($details->fqdn)) {
+        if (strtolower($this->config->config['match_fqdn']) == 'y' and empty($details->id) and !empty($details->fqdn)) {
             $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status = 'production' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->fqdn");
@@ -135,54 +181,47 @@ class M_system extends MY_Model
             }
         }
 
-        if (!empty($this->config->config['discovery_serial_match']) and strtolower($this->config->config['discovery_serial_match']) == 'y') {
-            if (empty($details->id) and !empty($details->serial) and !empty($details->type)) {
-                $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production' LIMIT 1";
-                $sql = $this->clean_sql($sql);
-                $data = array("$details->serial", "$details->type");
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->id = $row->id;
-                    $log_details->message = 'HIT on serial + type for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                    stdlog($log_details);
-                }
+        if (strtolower($this->config->config['match_serial_type']) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->type)) {
+            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->serial", "$details->type");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log_details->message = 'HIT on serial + type for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
+                stdlog($log_details);
             }
         }
 
-        # TODO: fix this by making sure (snmp in particular) calls with the proper variable name
-        if (!isset($details->mac_address) and (isset($details->mac))) {
-            $details->mac_address = $details->mac;
-        }
-
-        
-        if (empty($this->config->config['discovery_mac_match']) or (isset($this->config->config['discovery_mac_match']) and $this->config->config['discovery_mac_match'] != 'n')) {
-            # NOTE - the below mac address prefixes are used by VMware and resulting full mac addresses 'may' not be unique
-            # AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%'
-            # We may excule these as another option in future versions
-
-            # check MAC Address - this caters for a single mac address, usually from a nmap result
-            if (isset($details->mac_address) and $details->mac_address > '' and $details->mac_address != '00:00:00:00:00:00' and $details->id == '') {
-                # check the ip table
+        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
+            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status = 'production' LIMIT 1";
+            } else {
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status = 'production' LIMIT 1";
-                $sql = $this->clean_sql($sql);
-                $data = array("$details->mac_address");
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->id = $row->id;
-                    $log_details->message = 'HIT on mac address for '.$details->ip.' (System ID '.$details->id.')';
-                    stdlog($log_details);
-                }
+            }
+
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->mac_address");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log_details->message = 'HIT on mac address for '.$details->ip.' (System ID '.$details->id.')';
+                stdlog($log_details);
             }
 
             # check all MAC addresses - this caters for an actual audit script result
-            if (isset($details->mac_addresses) and count($details->mac_addresses) > 0 and $details->id == '') {
+            if (!empty($details->mac_addresses) and count($details->mac_addresses) > 0 and $details->id == '') {
                 foreach ($details->mac_addresses as $mac_address) {
                     foreach ($mac_address as $mac) {
                         if ($mac != '' and $mac != '00:00:00:00:00:00') {
                             # check the ip table
-                            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status = 'production' LIMIT 1";
+                            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status = 'production' LIMIT 1";
+                            } else {
+                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status = 'production' LIMIT 1";
+                            }
                             $sql = $this->clean_sql($sql);
                             $data = array("$mac");
                             $query = $this->db->query($sql, $data);
@@ -199,71 +238,50 @@ class M_system extends MY_Model
         }
 
         # check IP Address in system, then ip tables
-        if (empty($this->config->config['discovery_ip_match']) or (isset($this->config->config['discovery_ip_match']) and $this->config->config['discovery_ip_match'] != 'n')) {
-            if (isset($details->ip) and
-                    $details->ip > '' and
-                    $details->ip != '0.0.0.0' and
-                    $details->ip != '000.000.000.000' and
-                    filter_var($details->ip, FILTER_VALIDATE_IP)) {
+        if (strtolower($this->config->config['match_ip']) == 'y' and empty($details->id) and !empty($details->ip) and filter_var($details->ip, FILTER_VALIDATE_IP)) {
 
-                # first check the ip table as eny existing devices that have been seen
-                # by more than just Nmap will have an entry here
-                if ($details->id == '') {
-                    $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status = 'production' LIMIT 1";
-                    $sql = $this->clean_sql($sql);
-                    $data = array(ip_address_to_db($details->ip), "$details->ip");
-                    $query = $this->db->query($sql, $data);
-                    $row = $query->row();
-                    if (count($row) > 0) {
-                        $details->id = $row->id;
-                        $log_details->message = 'HIT on ip_address in network table for '.$details->ip.' (System ID '.$row->id.')';
-                        stdlog($log_details);
-                    }
-                }
-
-                # next check the system table for a ip match
-                if ($details->id == '') {
-                    $sql = "SELECT system.id FROM system WHERE system.ip = ? and system.status = 'production'";
-                    $sql = $this->clean_sql($sql);
-                    $data = array(ip_address_to_db($details->ip));
-                    $query = $this->db->query($sql, $data);
-                    $row = $query->row();
-                    if (count($row) > 0) {
-                        $details->id = $row->id;
-                        $log_details->message = 'HIT on ip for '.$details->ip.' (System ID '.$row->id.')';
-                        stdlog($log_details);
-                    }
-                }
-            }
-        }
-
-        if (empty($this->config->config['discovery_name_match']) or (isset($this->config->config['discovery_name_match']) and $this->config->config['discovery_name_match'] != 'n')) {
-            # check hostname
-            if (isset($details->hostname) and $details->hostname != '' and $details->id == '') {
-                # check if we have an ip address or a hostname (possibly a fqdn)
-                if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-                    # we don't have a vaild ip - split by . and take first segment
-                    $i = explode(".", $details->hostname);
-                    $hostname = $i[0];
-                } else {
-                    # we have an ip address in the hostname field - use as is
-                    # likely because DNS is not fully setup and working correctly
-                    $hostname = $details->hostname;
-                }
-                $sql = "SELECT system.id FROM system WHERE (system.hostname = ? or system.hostname = ?) AND system.status = 'production'";
+            # first check the ip table as eny existing devices that have been seen
+            # by more than just Nmap will have an entry here
+                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status = 'production' LIMIT 1";
                 $sql = $this->clean_sql($sql);
-                $data = array("$hostname", "$details->hostname");
+                $data = array(ip_address_to_db($details->ip), "$details->ip");
                 $query = $this->db->query($sql, $data);
                 $row = $query->row();
                 if (count($row) > 0) {
                     $details->id = $row->id;
-                    $log_details->message = 'HIT on hostname for '.$details->ip.' (System ID '.$row->id.')';
+                    $log_details->message = 'HIT on ip_address in network table for '.$details->ip.' (System ID '.$row->id.')';
+                    stdlog($log_details);
+                }
+
+            # next check the system table for a ip match
+            if (empty($details->id)) {
+                $sql = "SELECT system.id FROM system WHERE system.ip = ? and system.status = 'production'";
+                $sql = $this->clean_sql($sql);
+                $data = array(ip_address_to_db($details->ip));
+                $query = $this->db->query($sql, $data);
+                $row = $query->row();
+                if (count($row) > 0) {
+                    $details->id = $row->id;
+                    $log_details->message = 'HIT on ip for '.$details->ip.' (System ID '.$row->id.')';
                     stdlog($log_details);
                 }
             }
+        }
+
+        if (strtolower($this->config->config['match_hostname']) == 'y' and empty($details->id) and !empty($details->hostname)) {
+            $sql = "SELECT system.id FROM system WHERE (system.hostname = ?) AND system.status = 'production'";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->hostname");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log_details->message = 'HIT on hostname for '.$details->ip.' (System ID '.$row->id.')';
+                stdlog($log_details);
+            }
 
             # check short hostname in $details
-            if (!empty($details->hostname) and $details->id == '') {
+            if (!empty($details->hostname) and empty($details->id)) {
                 if (isset($details->hostname_length) and $details->hostname_length == 'short') {
                     # we grabbed the hostname from SNMP.
                     # SNMP hostnames on Windows are truncated to 15 characters
@@ -285,7 +303,7 @@ class M_system extends MY_Model
             }
 
             # check short hostname in database
-            if (isset($details->hostname) and strlen($details->hostname) > 15 and $details->id == '') {
+            if (isset($details->hostname) and strlen($details->hostname) > 15 and empty($details->id)) {
                 $i = explode(".", $details->hostname);
                 $hostname = $i[0];
                 $hostname = substr($hostname, 0, 15);

@@ -5675,6 +5675,41 @@ class Database extends MY_Controller_new
                 $this->data['output'] = 'Commencing 1.14.2 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
             }
 
+            # configuration
+            $sql[] = "UPDATE `configuration` SET name = 'match_ip' WHERE name = 'discovery_ip_match'";
+            $sql[] = "UPDATE `configuration` SET name = 'match_mac' WHERE name = 'discovery_mac_match'";
+            $sql[] = "UPDATE `configuration` SET name = 'match_hostname', description = 'Should we match a device based only on its hostname.' WHERE name = 'discovery_name_match'";
+            $sql[] = "UPDATE `configuration` SET name = 'match_serial' WHERE name = 'discovery_serial_match'";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_dbus'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_dbus','y','y','system',NOW(),'Should we match a device based on its dbus id.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_uuid'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_uuid','y','y','system',NOW(),'Should we match a device based on its UUID.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_hostname_dbus'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_dbus','y','y','system',NOW(),'Should we match a device based on its hostname and dbus id.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_hostname_uuid'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_uuid','y','y','system',NOW(),'Should we match a device based on its hostname and UUID.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_hostname_serial'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_serial','y','y','system',NOW(),'Should we match a device based on its hostname and serial.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_serial_type'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_serial_type','y','y','system',NOW(),'Should we match a device based on its serial and type.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_fqdn'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_fqdn','y','y','system',NOW(),'Should we match a device based on its fqdn.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_mac_vmware'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_mac_vmware','n','y','system',NOW(),'Should we match a device based mac address even if it\'s a known likely duplicate from VMware.')";
+
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_auto_create'";
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_homepage_limit'";
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_subnet'";
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'non_admin_search'";
+
             # connections
             if ($this->db->table_exists('oa_connection')) {
                 $sql[] = "RENAME TABLE `oa_connection` TO `connections`";
@@ -5686,9 +5721,9 @@ class Database extends MY_Controller_new
             }
 
             # queries
-            $sql[] = "UPDATE `queries` SET sql = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter' WHERE name = 'Billing Report'";
+            $sql[] = "UPDATE `queries` SET sql = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter' WHERE name = 'Billing Report\"";
 
-            $sql[] = "UPDATE `queries` SET sql = 'SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name' WHERE name = 'Hardware - Workstations'";
+            $sql[] = "UPDATE `queries` SET sql = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name' WHERE name = 'Hardware - Workstations\"";
 
             # oa_group_column
             if ($this->db->table_exists('oa_group_column')) {
