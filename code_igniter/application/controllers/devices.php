@@ -123,11 +123,16 @@ class devices extends MY_Controller_new
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
             $this->response->meta->include = 'additional_fields,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
-
         if ($this->response->meta->sub_resource != '') {
-            #$this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
-            $this->response->data = $this->m_devices_components->read($this->response->meta->id, $this->response->meta->current, $this->response->meta->sub_resource, $this->response->meta->filter, $this->response->meta->properties, $this->response->meta->group);
-            $this->response->meta->format = 'json';
+            if ($this->response->meta->sub_resource == 'partition_graph') {
+                $this->response->data = $this->m_devices_components->graph($this->response->meta->id, $this->response->meta->sub_resource_id, 'partition', 30);
+                $this->response->meta->action = 'read_partition_graph';
+            } else {
+                #$this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+                $this->response->data = $this->m_devices_components->read($this->response->meta->id, $this->response->meta->current, $this->response->meta->sub_resource, $this->response->meta->filter, $this->response->meta->properties, $this->response->meta->group);
+                $this->response->meta->format = 'json';
+            }
+            
         } else {
             $this->response->data = $this->m_devices->read();
             # create the related links

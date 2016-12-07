@@ -45,6 +45,11 @@ include "v_lang.php";
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-table.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-dropdown.css">
+<?php if ($this->response->meta->action == 'read_partition_graph') { ?>
+    <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/chartist.min.css">
+<?php } ?>
+
+
 <?php
 if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'locations' and ($this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
         <script src="http://maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>

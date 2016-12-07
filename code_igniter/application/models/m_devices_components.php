@@ -1255,7 +1255,7 @@ class M_devices_components extends MY_Model
         }
     }
 
-    public function graph($system_id, $linked_row, $type = 'partition', $days = 30)
+    public function graph($system_id, $linked_row, $type = 'partition', $days = 20)
     {
         if ($system_id == '' or !is_numeric($system_id)) {
             # TODO - wrtie out a log entry
@@ -1267,11 +1267,11 @@ class M_devices_components extends MY_Model
         if (!is_numeric($days)) {
            return;
         }
-        $sql = "SELECT used_percent, DATE(timestamp) AS timestamp FROM `graph` WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
-        $sql = $this->clean_sql($sql);
+        $sql = "SELECT id, used_percent, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
         $data = array($system_id, $linked_row, "$type");
-        $query = $this->db->query($sql, $data);
-        return ($query->result());
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'graph');
+        return $result;
     }
 
     public function partition_use_report($group_id, $user_id, $days = '120')
