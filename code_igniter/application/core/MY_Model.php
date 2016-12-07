@@ -181,6 +181,7 @@ class MY_Model extends CI_Model
         $sqllog = new stdClass();
         $sqllog->function =  strtolower($model . '::' . $function);
         $sqllog->status = 'running sql';
+        $sqllog->type = 'system';
         $sqllog->summary = $this->db->last_query();
         stdlog($sqllog);
         // restore the original setting to db_debug
