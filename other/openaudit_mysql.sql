@@ -293,11 +293,11 @@ INSERT INTO `configuration` VALUES (NULL, 'discovery_nmap_os','n','y','system',N
 INSERT INTO `configuration` VALUES (NULL, 'discovery_update_groups','y','y','system',NOW(),'Should Open-AudIT update the device groups after discovering a device.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_use_ipmi','y','y','system',NOW(),'Should we use ipmitool for discovering management ports if ipmitool is installed.');
 INSERT INTO `configuration` VALUES (NULL, 'discovery_use_dns','y','y','system',NOW(),'Should we use DNS for looking up the hostname and domain.');
-INSERT INTO `configuration` VALUES (NULL, 'display_version','1.14','n','system',NOW(),'The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL, 'display_version','1.14.2','n','system',NOW(),'The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (NULL, 'distinct_groups','y','y','system',NOW(),'Display Groups on the homepage, separated into the type of each Group.');
 INSERT INTO `configuration` VALUES (NULL, 'download_reports','download','y','system',NOW(),'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system',NOW(),'The API key for Google Maps.');
-INSERT INTO `configuration` VALUES (NULL, 'internal_version','20160904','n','system',NOW(),'The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL, 'internal_version','20161130','n','system',NOW(),'The internal numerical version.');
 INSERT INTO `configuration` VALUES (NULL, 'logo','logo-banner-oac-oae','y','system',NOW(),'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `configuration` VALUES (NULL, 'log_level','5','y','system',NOW(),'Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_0','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 0.');
