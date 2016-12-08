@@ -5705,6 +5705,9 @@ class Database extends MY_Controller_new
             $sql[] = "DELETE FROM `configuration` WHERE name = 'match_mac_vmware'";
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_mac_vmware','n','y','system',NOW(),'Should we match a device based mac address even if it\'s a known likely duplicate from VMware.')";
 
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'homepage'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'homepage','groups','y','system',NOW(),'Any links to the default page should be directed to this endpoint.')";
+
             $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_auto_create'";
             $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_homepage_limit'";
             $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_subnet'";
