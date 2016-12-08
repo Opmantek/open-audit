@@ -54,16 +54,17 @@ class M_licenses extends MY_Model
         }
         $CI->response->meta->received_data->attributes->invoice_id = 0;
         $CI->response->meta->received_data->attributes->invoice_item_id = 0;
-        $sql = "INSERT INTO `licenses` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
+        $sql = "INSERT INTO `licenses` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
         $data = array(  $CI->response->meta->received_data->attributes->org_id,
                         $CI->response->meta->received_data->attributes->invoice_id,
                         $CI->response->meta->received_data->attributes->invoice_item_id,
                         $CI->response->meta->received_data->attributes->name,
                         $CI->response->meta->received_data->attributes->description,
+                        $CI->response->meta->received_data->attributes->match_string,
                         $CI->response->meta->received_data->attributes->type,
                         $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
 
     public function read($id = '')
@@ -162,6 +163,25 @@ class M_licenses extends MY_Model
         $sql = $this->collection_sql('licenses', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'licenses');
+        return ($result);
+    }
+
+    public function execute($id = 0)
+    {
+        if ($id = 0) {
+            $CI = & get_instance();
+            $id = $CI->response->meta->id;
+        }
+        $sql = "SELECT * FROM licenses WHERE id = " . intval($id);
+        $result = $this->run_sql($sql, array());
+        if (empty($result[0])) {
+            // log an error, no matching license
+            return;
+        } else {
+            $license = $result[0];
+        }
+        $sql = "SELECT system.id, system.name, software.name, software.version FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE software.name LIKE '%" . $license->match_string . "%'";
+        $result = $this->run_sql($sql, array());
         return ($result);
     }
 
