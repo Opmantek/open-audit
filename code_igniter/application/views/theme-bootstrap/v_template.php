@@ -45,7 +45,7 @@ include "v_lang.php";
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-table.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/font-awesome.min.css">
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/bootstrap-dropdown.css">
-<?php if ($this->response->meta->action == 'read_partition_graph') { ?>
+<?php if (!empty($this->response->meta->action) and $this->response->meta->action == 'read_partition_graph') { ?>
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/chartist.min.css">
 <?php } ?>
 
