@@ -293,8 +293,7 @@
             if ($this->m_users->get_user_permission('', 'configuration', 'r') !== false or
                 $this->m_users->get_user_permission('', 'database', 'u') !== false or
                 $this->m_users->get_user_permission('', 'ldap_servers', 'u') !== false or
-                $this->m_users->get_user_permission('', 'logs', 'r') !== false or
-                $this->m_users->get_user_permission('', 'roles', 'r') !== false) { ?>
+                $this->m_users->get_user_permission('', 'logs', 'r') !== false) { ?>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
               <ul class="dropdown-menu">
@@ -346,20 +345,6 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/#'>Purge Access Log</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/#'>Purge System Log</a></li>
                             -->
-                            <?php } ?>
-                        </ul>
-                    </li>
-                <?php
-                } ?>
-
-                <?php
-                if ($this->m_users->get_user_permission('', 'roles', 'r')) { ?>
-                    <li class="dropdown-submenu">
-                        <a href="#">Roles</a>
-                        <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles'>List Roles</a></li>
-                            <?php if ($this->m_users->get_user_permission('', 'roles', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/roles/create'>Create Role</a></li>
                             <?php } ?>
                         </ul>
                     </li>

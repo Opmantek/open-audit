@@ -342,12 +342,6 @@ class M_summaries extends MY_Model
             $data[] = array("name" => 'Queries', "collection" => "queries", "icon" => 'table', "count" => $count[0]->count);
         }
 
-        if ($this->m_users->get_user_permission('', 'roles', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `roles`";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Roles', "collection" => "roles", "icon" => 'odnoklassniki', "count" => $count[0]->count);
-        }
-
         if ($this->m_users->get_user_permission('', 'scripts', 'r')) {
             $sql = "SELECT COUNT(*) AS `count` FROM `scripts` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
