@@ -40,11 +40,7 @@ if (php_uname('s') != "Windows NT") {
 } else {
     $ldap_server_addition = "";
 }
-if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] == 'n') {
-    $password_field = 'password';
-} else {
-    $password_field = 'text';
-}
+$password_field = 'password';
 echo form_open('discovery/discover_active_directory') ?>
 <fieldset id="group_details" class='niceforms'>
 	<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('Discover and Audit an Active Directory Domain')?></span></legend>

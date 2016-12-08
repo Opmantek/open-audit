@@ -103,37 +103,9 @@ if ($access_level > 7) {
 }
 
 # set the passwords to display or not
-if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] != 'y') {
-    if (isset($decoded_access_details->ssh_password)) {
-        $ssh_password = str_replace($decoded_access_details->ssh_password, str_repeat("*", strlen($decoded_access_details->ssh_password)), $decoded_access_details->ssh_password);
-    } else {
-        $ssh_password = '';
-    }
-    if (isset($decoded_access_details->windows_password)) {
-        $windows_password = str_replace($decoded_access_details->windows_password, str_repeat("*", strlen($decoded_access_details->windows_password)), $decoded_access_details->windows_password);
-    } else {
-        $windows_password = '';
-    }
-} else {
-    if (isset($decoded_access_details->ssh_password)) {
-        $ssh_password = $decoded_access_details->ssh_password;
-        $windows_password = $decoded_access_details->windows_password;
-    }
-}
-
-if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] != 'y') {
-    if (isset($decoded_access_details->snmp_community)) {
-        $snmp_community = str_replace($decoded_access_details->snmp_community, str_repeat("*", strlen($decoded_access_details->snmp_community)), $decoded_access_details->snmp_community);
-    } else {
-        $snmp_community = '';
-    }
-} else {
-    if (isset($decoded_access_details->snmp_community)) {
-        $snmp_community = $decoded_access_details->snmp_community;
-    } else {
-        $snmp_community = '';
-    }
-}
+$ssh_password = '';
+$windows_password = '';
+$snmp_community = '';
 
 // creating manufacturer / warranty / search links
 $system[0]->warranty_link = '';

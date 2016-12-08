@@ -61,16 +61,8 @@ var http = createRequestObject();
 
 function display_credentials() {
 	<?php
-    if (isset($this->config->config['show_passwords']) and $this->config->config['show_passwords'] != 'y') {
-        $password_field = 'password';
-    } else {
-        $password_field = 'text';
-    }
-    if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] != 'y') {
-        $snmp_community_field = 'password';
-    } else {
-        $snmp_community_field = 'text';
-    }
+    $password_field = 'password';
+    $snmp_community_field = 'password';
     ?>
 	status_text="<p><label for='ip_address'><?php echo __("IP Address"); ?>: <\/label><input type='text' id='ip_address' name='ip_address' value='<?php if (isset($decoded_access_details->ip_address) and $decoded_access_details->ip_address > '') { echo $decoded_access_details->ip_address; } elseif (isset($system[0]->ip) and $system[0]->ip != '' and $system[0]->ip != '000.000.000.000' and $system[0]->ip != '0.0.0.0') { echo ip_address_from_db($system[0]->ip); } ?>' \/><\/p> \
 	<p><label for='snmp_version'><?php echo __("SNMP Version"); ?>: <\/label><input type='text' id='snmp_version' name='snmp_version' value='<?php if (isset($decoded_access_details->snmp_version) and $decoded_access_details->snmp_version > '') { echo $decoded_access_details->snmp_version; } else { echo '2c'; } ?>' \/><\/p> \

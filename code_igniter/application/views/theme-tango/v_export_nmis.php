@@ -77,11 +77,7 @@ if (count($query) > 0) {
     echo "\t<tbody>\n";
     $i = 0;
     foreach ($query as $key) {
-        if (isset($this->config->config['show_snmp_community']) and $this->config->config['show_snmp_community'] == 'y' and isset($key->nmis_community)) {
-            $nmis_community = $key->nmis_community;
-        } else {
-            $nmis_community = str_replace($key->nmis_community, str_repeat("*", strlen($key->nmis_community)), $key->nmis_community);
-        }
+        $nmis_community = str_replace($key->nmis_community, str_repeat("*", strlen($key->nmis_community)), $key->nmis_community);
         echo "\t\t<tr>\n";
         echo "\t\t\t<td align=\"left\"><a class=\"SystemPopupTrigger\" rel=\"".intval($key->id)."\" href=\"".site_url()."/main/system_display/".intval($key->id)."\">".$key->nmis_name."</a></td>\n";
         echo "\t\t\t<td align=\"left\">".$key->nmis_host."</td>\n";
