@@ -5712,6 +5712,8 @@ class Database extends MY_Controller_new
             $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_homepage_limit'";
             $sql[] = "DELETE FROM `configuration` WHERE name = 'network_group_subnet'";
             $sql[] = "DELETE FROM `configuration` WHERE name = 'non_admin_search'";
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'show_passwords'";
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'show_snmp_community'";
 
             # connections
             if ($this->db->table_exists('oa_connection')) {
