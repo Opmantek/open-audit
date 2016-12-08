@@ -60,6 +60,12 @@ class M_locations extends MY_Model
                 return false;
             }
         }
+        if (empty($data->icon) and !empty($data->type)) {
+            $data->icon = strtolower($data->type);
+        }
+        if (empty($data->icon)) {
+            $data->icon = 'office';
+        }
         foreach ($this->db->field_data('locations') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";
