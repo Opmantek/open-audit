@@ -68,8 +68,8 @@ class M_scripts extends MY_Model
                         $CI->response->meta->received_data->based_on,
                         '',
                         $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
 
     public function read($id = '')

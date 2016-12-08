@@ -163,6 +163,12 @@ class MY_Model extends CI_Model
         $model = @$caller['class'];
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
+        if (stripos($sql, 'insert') === 0) {
+            // this is an insert - return the insert_id
+            $insert_id = true;
+        } else {
+            $insert_id = false;
+        }
         $sql = strtolower('/* ' . $model . '::' . $function .' */ ') . $sql;
         $sql = trim($sql);
         $result = array();
@@ -174,6 +180,10 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
+        // get the insert id
+        if ($insert_id) {
+            $result = $this->db->insert_id();
+        }
         // store the query in our response object
         $CI->response->meta->sql[] = $this->db->last_query();
         // log the query
@@ -202,7 +212,9 @@ class MY_Model extends CI_Model
             return false;
         } else {
             // no error, so get the result
-            $result = $query->result();
+            if (!$insert_id) {
+                $result = $query->result();
+            }
         }
         // return what we have
         return ($result);

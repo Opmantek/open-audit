@@ -80,8 +80,8 @@ class M_orgs extends MY_Model
             $data_array[] = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
         #}
         $sql .= ") VALUES (" . $sql_data . ")";
-        $this->run_sql($sql, $data_array);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data_array));
+        return ($id);
     }
 
     public function read($id = '')

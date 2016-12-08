@@ -76,8 +76,8 @@ class M_networks extends MY_Model
         $sql_data .= '?, NOW()';                 // the user.name and timestamp
         $data_array[] = $CI->user->full_name;    // the user.name
         $sql .= ") VALUES (" . $sql_data . ")";
-        $this->run_sql($sql, $data_array);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data_array));
+        return ($id);
     }
 
     public function read($id = '')

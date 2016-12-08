@@ -60,8 +60,8 @@ class M_summaries extends MY_Model
         }
         $data[] = $CI->user->full_name;
         $sql = "INSERT INTO `summaries` VALUES (NULL, ?, ?, ?, ?, ?, ?, NOW())";
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
 
     public function read($id = '')

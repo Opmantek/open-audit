@@ -70,8 +70,8 @@ class M_ldap_servers extends MY_Model
                         (string)$CI->response->meta->received_data->attributes->use_roles,
                         (string)$CI->response->meta->received_data->attributes->refresh,
                         (string)$CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
 
     public function read($id = '')

@@ -50,7 +50,7 @@ class M_discoveries extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
-        $sql = "/* discoveries::create */ " . "INSERT INTO `discoveries` (";
+        $sql = "INSERT INTO `discoveries` (";
         $sql_data = "";
         if (is_null($data)) {
             if (!empty($CI->response->meta->received_data->attributes)) {

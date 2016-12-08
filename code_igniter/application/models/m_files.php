@@ -62,8 +62,8 @@ class M_files extends MY_Model
             $CI->response->meta->received_data->attributes->org_id = 1;
         }
         $data = array($CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->path, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
 
     public function read()

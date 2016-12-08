@@ -90,35 +90,4 @@ class M_logs extends MY_Model
         $result = $this->format_data($result, 'logs');
         return ($result);
     }
-
-    // public function collection1()
-    // {
-    //     $CI = & get_instance();
-    //     $sql = "SELECT IF(type = 'system', 0, 1) AS `id`, type, count(*) AS `count` FROM `logs` GROUP BY type";
-    //     $result = $this->run_sql($sql, array());
-    //     $result = $this->format_data($result, 'logs');
-    //     return ($result);
-    // }
-
-    // public function read1($log = '', $lines = 100) {
-    //     if ($log == '') {
-    //         $CI = & get_instance();
-    //         $log = $CI->response->meta->sub_resource;
-    //         $lines = intval($CI->response->meta->limit);
-    //     }
-    //     if ($log == 0) {
-    //         $log = 'system';
-    //     }
-    //     if ($log == 1) {
-    //         $log = 'access';
-    //     }
-    //     if ($log != 'access' and $log != 'system') {
-    //         return false;
-    //     }
-    //     $sql = "SELECT * FROM logs WHERE type = ? LIMIT ?";
-    //     $data = array($log, intval($lines));
-    //     $result = $this->run_sql($sql, $data);
-    //     $result = $this->format_data($result, 'logs');
-    //     return ($result);
-    // }
 }

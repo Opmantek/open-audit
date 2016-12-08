@@ -89,8 +89,8 @@ class M_roles extends MY_Model
         }
         $sql = "INSERT INTO `roles` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
         $data = array("$name", "$description", $permissions, $ad_group, $user);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
 
     public function read($id = '')
