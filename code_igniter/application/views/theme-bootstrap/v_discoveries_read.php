@@ -173,9 +173,15 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="complete" class="col-sm-3 control-label">Complete</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="complete" name="complete" placeholder="" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_complete" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="complete"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
+
 
                 </div>
                 <div class="col-md-6">
@@ -217,9 +223,8 @@ $item = $this->response->data[0];
                             <?php } ?>
                         </div>
                     </div>
-                    <?php
-                    }
-                    ?>
+                    <?php } ?>
+
                     <?php
                     if ($item->attributes->complete == 'n') { ?>
                         <div class="form-group">
@@ -229,7 +234,7 @@ $item = $this->response->data[0];
                             </div>
                         </div>
                     <?php
-                    }
+                    } else {
                     ?>
                     <div class="form-group">
                         <label for="execute" class="col-sm-3 control-label">Execute</label>
@@ -237,6 +242,7 @@ $item = $this->response->data[0];
                             <a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute">Execute</a>
                         </div>
                     </div>
+                    <?php } ?>
                 </div>
             </div>
         </div>
