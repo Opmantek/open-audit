@@ -22,13 +22,16 @@ $(document).ready(function(){
     });
 });
 
-/* select all devices on /devices for bulk edit */
-$(document).ready(function() {
-    $(':checkbox[name=select-all]').click (function () {
-      $(':checkbox').prop('checked', this.checked);
-    });
-});
 
+/* select all devices on /devices for bulk edit */
+// $(document).ready(function() {
+//     $(':checkbox[name=select_all]').click (function () {
+//         $(':checkbox').prop('checked', this.checked);
+//     });
+// });
+function select_all_click() {
+    $(':checkbox').prop('checked', true);
+}
 
 /* Send to bulk edit form */
 $(document).ready(function () {

@@ -67,32 +67,30 @@ if (!empty($this->response->meta->sub_resource_name)) {
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
-        <!-- <div class="form-group"> -->
-            <div class="row">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    foreach ($this->response->included as $item) {
-                        if ($item->type == 'queries') {
-                            if (strpos($this->response->links->first, '?') !== false) {
-                                $link = $this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id;
-                            } else {
-                                $link = $this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id;
-                            }
-                            echo "<tr><td><a href=\"" . $link . "\">" . $item->attributes->name . "</a></td><td>" . $item->attributes->description . "</td></tr>";
+        <div class="row">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                foreach ($this->response->included as $item) {
+                    if ($item->type == 'queries') {
+                        if (strpos($this->response->links->first, '?') !== false) {
+                            $link = $this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id;
+                        } else {
+                            $link = $this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id;
                         }
+                        echo "<tr><td><a href=\"" . $link . "\">" . $item->attributes->name . "</a></td><td>" . $item->attributes->description . "</td></tr>";
                     }
-                    ?>
-                    </tbody>
-                </table>
-            </div>
-        <!-- </div> -->
+                }
+                ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 </div>
@@ -183,8 +181,8 @@ if (!empty($this->response->data)) { ?>
                 foreach ($properties as $key => $value) {
                     if ($key == 'system.id') {
                         echo "            <th class=\"text-center\">\n";
-                        echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
-                        echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
+                        echo "              <button type=\"button\" class=\"btn btn-primary btn-xs bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
+                        echo "              <input type=\"checkbox\" name=\"select_all\" id=\"select_all\" onclick=\"select_all_click();\"/>\n";
                         echo "            </th>\n";
                     }
                 }
@@ -266,3 +264,5 @@ if (!empty($this->response->data)) { ?>
     ?>
   </div>
 </div>
+
+
