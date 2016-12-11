@@ -73,9 +73,15 @@ class M_logs extends MY_Model
             if (!empty($CI->response->meta->limit)) {
                 if (!empty($CI->response->meta->offset)) {
                     $limit = 'LIMIT ' . intval($CI->response->meta->offset) . ', ' . intval($CI->response->meta->limit);
+                } else {
+                    $limit = 'LIMIT ' . intval($CI->response->meta->limit);
                 }
             } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
+                if ($CI->response->meta->format == 'screen') {
+                    $limit = 'LIMIT 1000';
+                } else {
+                    $limit = '';
+                }
             }
         }
 
