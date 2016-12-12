@@ -40,7 +40,11 @@ if ($this->config->config['internal_version'] < $this->config->config['web_inter
 if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php', __FILE__))) {
     $this->user->theme = 'bootstrap';
 } else {
-    $this->user->theme = 'tango';
+	if (file_exists(str_replace('v_template.php', 'theme-tango/'.$include.'.php', __FILE__))) {
+    	$this->user->theme = 'tango';
+    } else {
+    	redirect("/");
+    }
 }
 
 # Define our constans for use in htmlspecialchars
