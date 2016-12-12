@@ -144,7 +144,14 @@ if (! function_exists('output')) {
     function output_csv()
     {
         $CI = & get_instance();
-        #print_r(json_encode($CI->response)); exit();
+
+        if (!empty($CI->response->meta->heading)) {
+            $filename = $CI->response->meta->heading;
+        } else if (!empty($CI->response->meta->collection)) {
+            $filename = $CI->response->meta->collection;
+        } else {
+            $filename = 'openaudit';
+        }
 
         $output_csv = '';
         foreach ($CI->response->data[0]->attributes as $attribute => $value) {
@@ -162,7 +169,7 @@ if (! function_exists('output')) {
         echo $output_csv;
         if ((string) $CI->config->item('download_reports') === 'download') {
             header('Content-Type: text/csv');
-            header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.csv"');
+            header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
             header('Cache-Control: max-age=0');
         }
     }
@@ -178,7 +185,20 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         $CI->output->enable_profiler(false);
+
+        if (!empty($CI->response->meta->heading)) {
+            $filename = $CI->response->meta->heading;
+        } else if (!empty($CI->response->meta->collection)) {
+            $filename = $CI->response->meta->collection;
+        } else {
+            $filename = 'openaudit';
+        }
+
         header('Content-Type: application/json');
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Disposition: attachment;filename="'.$filename.'.json"');
+            header('Cache-Control: max-age=0');
+        }
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
         header("Expires: 0");
@@ -195,14 +215,6 @@ if (! function_exists('output')) {
                 $CI->response->meta->data_order[] = $key;
             }
         }
-        // foreach ($CI->response->meta as $key => $value) {
-        //     if ($value == '') {
-        //         unset($CI->response->meta->$key);
-        //     }
-        //     if (count($key) == 0) {
-        //         unset($CI->response->meta->$key);
-        //     }
-        // }
         echo json_encode($CI->response);
     }
 
@@ -236,9 +248,6 @@ if (! function_exists('output')) {
             $CI->response->include = $CI->response->meta->include;
             $CI->response->heading = $CI->response->meta->heading;
         }
-        // if (!$CI->response->meta->debug) {
-        //     unset($CI->response->meta->internal);
-        // }
         $CI->load->view('v_template', $CI->response);
     }
 
@@ -246,11 +255,36 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         $CI->load->helper('xml');
-        $xml_generater = new XMLSerializer;
-        $xml = $xml_generater->generateValidXmlFromObj($CI->response);
-        header('Content-Type: text/xml');
-        header($CI->response->meta->header);
-        print_r($xml);
+        if (!empty($CI->response->meta->heading)) {
+            $filename = $CI->response->meta->heading;
+        } else if (!empty($CI->response->meta->collection)) {
+            $filename = $CI->response->meta->collection;
+        } else {
+            $filename = 'openaudit';
+        }
+        $output = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+        $output .= "<" . $CI->response->meta->collection . ">\n";
+        foreach ($CI->response->data as $details) {
+            $output .= "\t<item>\n";
+            foreach ($details->attributes as $attribute => $value) {
+                if (phpversion() >= 5.4) {
+                    $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                } else {
+                    $value = xml_convert($value);
+                }
+                $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
+            }
+            $output .= "\t</item>\n";
+        }
+        $output .=  "</" . $CI->response->meta->collection . ">\n";
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/xml');
+            header('Content-Disposition: attachment;filename="' . $filename . '.xml"');
+            header('Cache-Control: max-age=0');
+            echo $output;
+        } else {
+            echo "<pre>" . htmlentities($output) . "</pre>";
+        }
     }
 
     function output_convert($data) {
