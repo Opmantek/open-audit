@@ -5688,13 +5688,13 @@ class Database extends MY_Controller_new
             }
 
             # configuration
-            $sql[] = "UPDATE `configuration` SET name = 'match_ip' WHERE name = 'discovery_ip_match'";
-            $sql[] = "UPDATE `configuration` SET name = 'match_mac' WHERE name = 'discovery_mac_match'";
+            $sql[] = "UPDATE `configuration` SET name = 'match_ip', description = 'Should we match a device based on its ip.' WHERE name = 'discovery_ip_match'";
+            $sql[] = "UPDATE `configuration` SET name = 'match_mac', description = 'Should we match a device based on its mac address.' WHERE name = 'discovery_mac_match'";
             $sql[] = "UPDATE `configuration` SET name = 'match_hostname', description = 'Should we match a device based only on its hostname.' WHERE name = 'discovery_name_match'";
             $sql[] = "UPDATE `configuration` SET name = 'match_serial' WHERE name = 'discovery_serial_match'";
 
             $sql[] = "DELETE FROM `configuration` WHERE name = 'match_dbus'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_dbus','y','y','system',NOW(),'Should we match a device based on its dbus id.')";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_dbus','n','y','system',NOW(),'Should we match a device based on its dbus id.')";
 
             $sql[] = "DELETE FROM `configuration` WHERE name = 'match_uuid'";
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_uuid','y','y','system',NOW(),'Should we match a device based on its UUID.')";

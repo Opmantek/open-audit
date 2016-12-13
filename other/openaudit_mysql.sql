@@ -310,7 +310,7 @@ INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_5','90','y','system'
 INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_6','30','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 6.');
 INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_7','7','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 7.');
 INSERT INTO `configuration` VALUES (NULL, 'maps_url','/omk/oae/map','y','system',NOW(),'The web server address of opMaps.');
-INSERT INTO `configuration` VALUES (NULL, 'match_dbus','y','y','system',NOW(),'Should we match a device based on its dbus id.');
+INSERT INTO `configuration` VALUES (NULL, 'match_dbus','n','y','system',NOW(),'Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (NULL, 'match_fqdn','y','y','system',NOW(),'Should we match a device based on its fqdn.');
 INSERT INTO `configuration` VALUES (NULL, 'match_hostname','y','y','system',NOW(),'Should we match a device based on its hostname.');
 INSERT INTO `configuration` VALUES (NULL, 'match_hostname_dbus','y','y','system',NOW(),'Should we match a device based on its hostname and dbus id.');
