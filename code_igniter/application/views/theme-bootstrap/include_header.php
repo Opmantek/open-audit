@@ -254,6 +254,20 @@
                 } ?>
 
                 <?php
+                if ($this->m_users->get_user_permission('', 'summaries', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Summaries</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/summaries'>List Summaries</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'summaries', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/summaries/create'>Create Summary</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
                 if ($this->m_users->get_user_permission('', 'users', 'r')) { ?>
                     <li class="dropdown-submenu">
                         <a href="#">Users</a>
