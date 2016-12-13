@@ -2972,6 +2972,7 @@ class Database extends MY_Controller_new
             $log_details->message = 'Upgrade database to 1.8.4 commenced';
             stdlog($log_details);
 
+            unset($sql);
             $sql = array();
             $sql[] = "ALTER TABLE sys_sw_service MODIFY service_start_mode varchar(200) NOT NULL default ''";
             $sql[] = "ALTER TABLE sys_sw_service MODIFY service_state varchar(200) NOT NULL default ''";
@@ -3003,6 +3004,7 @@ class Database extends MY_Controller_new
             $log_details->message = 'Upgrade database to 1.10 commenced';
             stdlog($log_details);
 
+            unset($sql);
             $sql = array();
 
             # We know these tables aren't used - drop them
@@ -3797,6 +3799,7 @@ class Database extends MY_Controller_new
             $log_details->message = 'Upgrade database to 1.10.1 commenced';
             stdlog($log_details);
 
+            unset($sql);
             $sql = array();
             $sql[] = "ALTER TABLE variable ADD program varchar(100) NOT NULL default '' AFTER last_seen";
             $sql[] = "UPDATE variable SET program = 'environment'";
@@ -3824,6 +3827,7 @@ class Database extends MY_Controller_new
             $log_details->message = 'Upgrade database to 1.12 commenced';
             stdlog($log_details);
 
+            unset($sql);
             $sql = array();
             $sql[] = "ALTER TABLE system ADD comments text NOT NULL AFTER description";
 
@@ -3850,6 +3854,7 @@ class Database extends MY_Controller_new
             $log_details->message = 'Upgrade database to 1.12.2 commenced';
             stdlog($log_details);
 
+            unset($sql);
             $sql = array();
 
             $sql[] = "UPDATE system SET man_class = 'virtual server' WHERE (manufacturer LIKE '%vmware%' OR manufacturer LIKE '%Parallels%') AND os_family IN ('Windows 2008', 'Windows 2012', 'Windows 2003')";
@@ -4009,7 +4014,9 @@ class Database extends MY_Controller_new
             $log_details->message = 'Upgrade database to 1.12.4 commenced';
             stdlog($log_details);
 
+            unset($sql);
             $sql = array();
+
             $sql[] = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
             $sql[] = "ALTER TABLE oa_group CHANGE group_category group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'";
             $sql[] = "ALTER TABLE print_queue CHANGE system_key device varchar(200) NOT NULL DEFAULT ''";
@@ -4798,6 +4805,7 @@ class Database extends MY_Controller_new
             # upgrade for 1.14
 
             $item_start = microtime(true);
+            unset($sql);
 
             $log_details = new stdClass();
             $log_details->file = 'system';
@@ -5664,6 +5672,8 @@ class Database extends MY_Controller_new
             # upgrade for 1.14.2
 
             $item_start = microtime(true);
+            unset($sql);
+            $sql = array();
 
             $log_details = new stdClass();
             $log_details->file = 'system';
@@ -5728,9 +5738,9 @@ class Database extends MY_Controller_new
             }
 
             # queries
-            $sql[] = "UPDATE `queries` SET sql = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter' WHERE name = 'Billing Report\"";
+            $sql[] = "UPDATE `queries` SET `sql` = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter\" WHERE name = \"Billing Report\" ";
 
-            $sql[] = "UPDATE `queries` SET sql = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name' WHERE name = 'Hardware - Workstations\"";
+            $sql[] = "UPDATE `queries` SET `sql` = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name\" WHERE name = \"Hardware - Workstations\" ";
 
             # oa_group_column
             if ($this->db->table_exists('oa_group_column')) {
