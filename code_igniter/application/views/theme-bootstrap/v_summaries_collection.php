@@ -57,12 +57,9 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
-            <span class="text-left">Summaries</span>
-        </h3>
+        <?php include('include_collection_panel_header.php'); ?>
     </div>
     <div class="panel-body">
-        <?php include('include_collection_panel_header.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
             <br />
             <table class="table table-striped table-hover">
