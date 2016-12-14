@@ -173,12 +173,12 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the software categories
-        $software = array('software', 'service', 'software_key', 'server');
         $display_software = false;
-        foreach ($software as $item) {
-            if (isset($data[$item])) {
-                $display_software = true;
-            }
+        if (!empty($data['software']) or
+            !empty($data['service']) or
+            !empty($data['software_key']) or
+            !empty($data['server']) ) {
+            $display_software = true;
         }
         if ($display_software) {
         ?>
@@ -194,21 +194,31 @@ if ($data['system']->type != 'computer') {
               <div class="panel-body">
                 <ul class="list-group">
                 <?php
-                foreach ($software as $item) {
-                    if (isset($data[$item])) {
-                    ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
-                    <?php
-                    }
+                if (!empty($data['software'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software.svg"/><a href="#" data-menuitem="software">Software</a></li>
+                <?php
                 }
                 if (!empty($software_odbc)) { ?>
                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver">Software ODBC Driver</a></li>
                 <?php
                 }
                 if (!empty($software_update)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update">Software Updates</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update">Software Update</a></li>
                 <?php
-                } ?>
+                }
+                if (!empty($data['software_key'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_key.svg"/><a href="#" data-menuitem="software_key">Software Key</a></li>
+                <?php
+                }
+                if (!empty($data['service'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="services">Service</a></li>
+                <?php
+                }
+                if (!empty($data['server'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/server.svg"/><a href="#" data-menuitem="server">Server</a></li>
+                <?php
+                }
+                ?>
                 </ul>
               </div>
             </div>
@@ -219,7 +229,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
+        $software = array('dns', 'file', 'log', 'netstat', 'nmap', 'share', 'pagefile', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -962,68 +972,160 @@ foreach ($list as $item) {
 
 
 
-
 <?php
-// software installed / odbc / updates
-$list = array('', 'odbc_driver', 'update');
-foreach ($list as $item) {
-    if (isset($data['software']) and count($data['software']) > 0) {
-        if ($item == '') {
-            $id = 'software';
-        } else {
-            $id = 'software_' . $item;
-        }
-        $count = 0;
-        foreach ($data['software'] as $row) {
-            if ($row->type == $item) {
-                $count++;
-            }
-        }
-        ?>
-        <div id="<?php echo $id; ?>" class="section">
-            <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title pull-left">Software <?php echo ucwords(str_replace(' ', '_', $item)); ?></h3>
-            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $id; ?>"></span>
-            <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
-            <div class="clearfix"></div>
-          </div>
-              <div class="panel-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <?php
-                            foreach ($attributes['software'] as $key => $value) {
-                                echo "<th>$value</th>";
-                            }
-                            ?>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        foreach ($data['software'] as $row) {
-                            if ($row->type == $item) {
-                                echo "<tr>";
-                                foreach ($attributes['software'] as $key => $value) {
-                                    if (is_integer($row->$key)) {
-                                        echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
-                                    } else {
-                                        echo "<td>" . $row->$key . "</td>\n";
-                                    }
-                                }
-                                echo "</tr>\n";
-                            }
-                        }
-                        ?>
-                    </tbody>
-                </table>
-              </div>
-            </div>
-        </div>
-        <?php
+// software
+$count = 0;
+foreach ($data['software'] as $row) {
+    if ($row->type == '') {
+        $count++;
     }
 }
 ?>
+<div id="software" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left">Software</h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software"></span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($attributes['software'] as $key => $value) {
+                        echo "<th>$value</th>";
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($data['software'] as $row) {
+                    if ($row->type == '') {
+                        echo "<tr>";
+                        foreach ($attributes['software'] as $key => $value) {
+                            if (is_integer($row->$key)) {
+                                echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                            } else {
+                                echo "<td>" . $row->$key . "</td>\n";
+                            }
+                        }
+                        echo "</tr>\n";
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
+
+
+<?php
+// software odbc drivers
+$count = 0;
+foreach ($data['software'] as $row) {
+    if ($row->type == 'odbc driver') {
+        $count++;
+    }
+}
+?>
+<div id="software_odbc_driver" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left">Software ODBC Drivers</h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_odbc_driver"></span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($attributes['software'] as $key => $value) {
+                        echo "<th>$value</th>";
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($data['software'] as $row) {
+                    if ($row->type == 'odbc driver') {
+                        echo "<tr>";
+                        foreach ($attributes['software'] as $key => $value) {
+                            if (is_integer($row->$key)) {
+                                echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                            } else {
+                                echo "<td>" . $row->$key . "</td>\n";
+                            }
+                        }
+                        echo "</tr>\n";
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
+
+
+<?php
+// software updates
+$count = 0;
+foreach ($data['software'] as $row) {
+    if ($row->type == 'update') {
+        $count++;
+    }
+}
+?>
+<div id="software_update" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left">Software Updates</h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_update"></span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($attributes['software'] as $key => $value) {
+                        echo "<th>$value</th>";
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($data['software'] as $row) {
+                    if ($row->type == 'update') {
+                        echo "<tr>";
+                        foreach ($attributes['software'] as $key => $value) {
+                            if (is_integer($row->$key)) {
+                                echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                            } else {
+                                echo "<td>" . $row->$key . "</td>\n";
+                            }
+                        }
+                        echo "</tr>\n";
+                    }
+                }
+                ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+
 
 
     
