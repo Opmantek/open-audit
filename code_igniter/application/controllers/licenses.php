@@ -174,6 +174,21 @@ class Licenses extends MY_Controller_new
     {
         include 'include_update_form.php';
     }
+
+    /**
+    * Execute the license and report
+    *
+    * @access public
+    * @return NULL
+    */
+    public function execute()
+    {
+        $this->response->data = $this->m_licenses->execute();
+        echo "<pre>\n";
+        echo "LICENSE\n";
+        print_r($this->response->data);
+        exit();
+    }
 }
 // End of file locations.php
 // Location: ./controllers/locations.php
