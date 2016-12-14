@@ -586,7 +586,7 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to POST.';
             stdlog($log);
         }
-        $current_words = ' y n all delta ';
+        $current_words = ' y n all delta full ';
         if (stripos($current_words, ' '.$CI->response->meta->current.' ') === false) {
             $CI->response->meta->current = 'y';
             $log->summary = 'Set current to ' . $CI->response->meta->current . ', because in reserved words.';

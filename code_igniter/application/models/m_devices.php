@@ -227,9 +227,9 @@ class M_devices extends MY_Model
             $sub_resource_id = ' AND `' . $sub_resource . '`.id = ' . intval($sub_resource_id);
         }
 
-        if ($properties == '') {
-            $properties = @$CI->response->meta->properties;
-        }
+        // if ($properties == '') {
+        //     $properties = @$CI->response->meta->properties;
+        // }
         if (empty($properties) or $properties == '*') {
             $properties = '`' . $sub_resource . '`.*';
         }
@@ -260,18 +260,47 @@ class M_devices extends MY_Model
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT additional_field.id as `additional_field.id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
             $data = array($id);
         } else {
-            $currency = '';
+            $currency = false;
+            $first_seen = false;
             $fields = $this->db->list_fields($sub_resource);
             foreach ($fields as $field) {
                 if ($field == 'current') {
                     $currency = true;
                 }
+                if ($field == 'first_seen') {
+                    $first_seen = true;
+                }
             }
-            if ($currency != '') {
+            if ($currency) {
                 $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
+                if ($current == 'y') {
+                    $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
+                }
+                if ($current == 'n') {
+                    $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
+                }
+                if ($current == '' or $current == 'all') {
+                    $currency = "";
+                }
+                if ($current == 'delta' and $first_seen) {
+                    $properties .= ", IF((`" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
+                    $currency = "AND current = 'y' or first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1))";
+                }
+                if ($current == 'delta' and !$first_seen) {
+                    $currency = "";
+                }
+                if ($current == 'full' and $first_seen) {
+                    $properties .= ", IF((`" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
+                    $currency = "";
+                }
+                if ($current == 'full' and !$first_seen) {
+                    $currency = "";
+                }
+            } else {
+                $currency = "";
             }
 
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") AND system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $sort;
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $sort;
             $data = array($CI->user->id);
         }
         $result = $this->run_sql($sql, $data);
@@ -327,7 +356,8 @@ class M_devices extends MY_Model
                 // good
             } else {
                 // TODO - log an error here
-                echo "Could not delete $filename."; exit();
+                echo "Could not delete $filename.";
+                exit();
             }
         }
         $sql = "/* m_devices::sub_resource_delete */ " . "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";

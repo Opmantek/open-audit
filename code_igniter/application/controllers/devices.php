@@ -110,7 +110,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -132,7 +132,6 @@ class devices extends MY_Controller_new
                 $this->response->data = $this->m_devices_components->read($this->response->meta->id, $this->response->meta->current, $this->response->meta->sub_resource, $this->response->meta->filter, $this->response->meta->properties, $this->response->meta->group);
                 $this->response->meta->format = 'json';
             }
-            
         } else {
             $this->response->data = $this->m_devices->read();
             # create the related links
@@ -146,7 +145,7 @@ class devices extends MY_Controller_new
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
                     $result = false;
-                    $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '');
+                    $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
                     if ($result) {
                         $this->response->included = array_merge($this->response->included, $result);
                     }
@@ -181,7 +180,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -198,7 +197,7 @@ class devices extends MY_Controller_new
         $log->severity = 5;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -218,7 +217,7 @@ class devices extends MY_Controller_new
         $log->severity = 5;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
         exit();
     }
@@ -231,7 +230,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -245,7 +244,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -259,7 +258,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -292,7 +291,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -309,7 +308,7 @@ class devices extends MY_Controller_new
         $log->severity = 5;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -352,7 +351,7 @@ class devices extends MY_Controller_new
         $log->severity = 6;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -377,7 +376,7 @@ class devices extends MY_Controller_new
         $log->severity = 5;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 
@@ -408,7 +407,7 @@ class devices extends MY_Controller_new
         $log->severity = 5;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
         stdLog($log);
     }
 }
