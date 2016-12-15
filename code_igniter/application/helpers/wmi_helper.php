@@ -72,7 +72,7 @@ if (! function_exists('windows_credentials')) {
             return false;
         }
         if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No IP passed or bad IP to windows_credentials.';
+            $log->message = 'No IP passed or bad IP to windows_credentials ('. $ip . ').';
             discovery_log($log);
             return false;
         }
