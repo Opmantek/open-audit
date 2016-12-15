@@ -401,11 +401,11 @@
             <?php } ?>
                 <ul class="dropdown-menu">
                     <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                        <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
+                        <li><a target='_blank' href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
                     <?php } ?>
-                    <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
+                    <li><a target='_blank' href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
                     <li><a href='#' id='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
-                    <li><a href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
+                    <li><a target='_blank' href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                 </ul>
             </li>
       </ul>
