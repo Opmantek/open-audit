@@ -122,7 +122,7 @@ $item = $this->response->data[0];
                                 </select>
                                 <?php if (!empty($edit)) { ?>
                                 <span class="input-group-btn">
-                                    <button id="edit_devices_assigned_to_org" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                    <button id="edit_devices_assigned_to_org" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="devices_assigned_to_org"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                                 </span>
                                 <?php } ?>
                         </div>
@@ -143,7 +143,7 @@ $item = $this->response->data[0];
                                 </select>
                                 <?php if (!empty($edit)) { ?>
                                 <span class="input-group-btn">
-                                    <button id="edit_devices_assigned_to_location" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                    <button id="edit_devices_assigned_to_location" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="devices_assigned_to_location"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                                 </span>
                                 <?php } ?>
                         </div>
