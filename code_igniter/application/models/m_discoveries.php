@@ -68,7 +68,7 @@ class M_discoveries extends MY_Model
             } else {
                 $data->description = $data->other->subnet;
             }
-        } else if ($data->type = 'active directory') {
+        } else if ($data->type == 'active directory') {
             $data->description = $data->other->ad_domain;
         } else {
             $data->description = '';
@@ -313,7 +313,7 @@ class M_discoveries extends MY_Model
             }
         }
 
-        if ($discovery->type = 'active directory') {
+        if ($discovery->type == 'active directory') {
 
             $CI->load->helper('wmi');
             $CI->load->model('m_credentials');
