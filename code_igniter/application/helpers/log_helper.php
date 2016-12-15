@@ -386,7 +386,7 @@ if (! function_exists('stdlog')) {
         }
 
         if (intval($CI->config->config['internal_version']) <= 20160810) {
-            $sql = "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = 'openaudit' AND TABLE_NAME = 'logs'";
+            $sql = "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = '" . $CI->db->database . "' AND TABLE_NAME = 'logs'";
             $query = $CI->db->query($sql);
             $result = $query->result();
             if (count($result) == 0) {
