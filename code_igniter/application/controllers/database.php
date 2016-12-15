@@ -4924,6 +4924,8 @@ class Database extends MY_Controller_new
             }
 
             # attachment
+            $sql[] = "set @var=if((SELECT true FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = 'attachment' AND CONSTRAINT_NAME = 'att_user_id' AND CONSTRAINT_TYPE = 'FOREIGN KEY') = true,'ALTER TABLE attachment drop foreign key att_user_id','select 1'); prepare stmt from @var; execute stmt; deallocate prepare stmt;"
+
             if ($this->db->field_exists('timestamp', 'attachment')) {
                 $sql[] = "ALTER TABLE `attachment` CHANGE `timestamp` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
             }
