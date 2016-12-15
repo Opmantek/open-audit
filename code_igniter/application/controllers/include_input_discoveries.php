@@ -378,6 +378,13 @@ if (!empty($_POST['form_details'])) {
 
         $device->id = $this->m_system->find_system($device, $display);
 
+        if (!empty($discovery->devices_assigned_to_org)) {
+            $device->org_id = $discovery->devices_assigned_to_org;
+        }
+        if (!empty($discovery->devices_assigned_to_location)) {
+            $device->location_id = $discovery->devices_assigned_to_location;
+        }
+
         // insert or update the device
         if (!empty($device->id)) {
             // we have a system id - UPDATE

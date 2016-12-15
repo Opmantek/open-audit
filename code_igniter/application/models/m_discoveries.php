@@ -141,7 +141,7 @@ class M_discoveries extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name org_id location_id network_address type system_id other device_count last_run complete ';
+        $fields = ' name org_id location_id network_address type system_id other device_count last_run complete devices_assigned_to_org devices_assigned_to_location ';
 
         if ( !empty($CI->response->meta->received_data->attributes->other)) {
             $received_other = new stdClass();
