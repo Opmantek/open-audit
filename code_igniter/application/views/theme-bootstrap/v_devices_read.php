@@ -1,3 +1,4 @@
+
 <?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -974,158 +975,163 @@ foreach ($list as $item) {
 
 <?php
 // software
-$count = 0;
-foreach ($data['software'] as $row) {
-    if ($row->type == '') {
-        $count++;
+if (!empty($data['software'])) {
+    $count = 0;
+    foreach ($data['software'] as $row) {
+        if ($row->type == '') {
+            $count++;
+        }
     }
-}
-?>
-<div id="software" class="section">
-    <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title pull-left">Software</h3>
-    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software"></span>
-    <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
-    <div class="clearfix"></div>
-  </div>
-      <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
+    ?>
+    <div id="software" class="section">
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title pull-left">Software</h3>
+        <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software"></span>
+        <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+        <div class="clearfix"></div>
+      </div>
+          <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <?php
+                        foreach ($attributes['software'] as $key => $value) {
+                            echo "<th>$value</th>";
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
                     <?php
-                    foreach ($attributes['software'] as $key => $value) {
-                        echo "<th>$value</th>";
+                    foreach ($data['software'] as $row) {
+                        if ($row->type == '') {
+                            echo "<tr>";
+                            foreach ($attributes['software'] as $key => $value) {
+                                if (is_integer($row->$key)) {
+                                    echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                } else {
+                                    echo "<td>" . $row->$key . "</td>\n";
+                                }
+                            }
+                            echo "</tr>\n";
+                        }
                     }
                     ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($data['software'] as $row) {
-                    if ($row->type == '') {
-                        echo "<tr>";
-                        foreach ($attributes['software'] as $key => $value) {
-                            if (is_integer($row->$key)) {
-                                echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
-                            } else {
-                                echo "<td>" . $row->$key . "</td>\n";
-                            }
-                        }
-                        echo "</tr>\n";
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
-      </div>
+                </tbody>
+            </table>
+          </div>
+        </div>
     </div>
-</div>
+<?php } ?>
 
 
 
 <?php
 // software odbc drivers
-$count = 0;
-foreach ($data['software'] as $row) {
-    if ($row->type == 'odbc driver') {
-        $count++;
+if (!empty($data['software'])) {
+    $count = 0;
+    foreach ($data['software'] as $row) {
+        if ($row->type == 'odbc driver') {
+            $count++;
+        }
     }
-}
-?>
-<div id="software_odbc_driver" class="section">
-    <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title pull-left">Software ODBC Drivers</h3>
-    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_odbc_driver"></span>
-    <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
-    <div class="clearfix"></div>
-  </div>
-      <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
+    ?>
+    <div id="software_odbc_driver" class="section">
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title pull-left">Software ODBC Drivers</h3>
+        <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_odbc_driver"></span>
+        <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+        <div class="clearfix"></div>
+      </div>
+          <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <?php
+                        foreach ($attributes['software'] as $key => $value) {
+                            echo "<th>$value</th>";
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
                     <?php
-                    foreach ($attributes['software'] as $key => $value) {
-                        echo "<th>$value</th>";
+                    foreach ($data['software'] as $row) {
+                        if ($row->type == 'odbc driver') {
+                            echo "<tr>";
+                            foreach ($attributes['software'] as $key => $value) {
+                                if (is_integer($row->$key)) {
+                                    echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                } else {
+                                    echo "<td>" . $row->$key . "</td>\n";
+                                }
+                            }
+                            echo "</tr>\n";
+                        }
                     }
                     ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($data['software'] as $row) {
-                    if ($row->type == 'odbc driver') {
-                        echo "<tr>";
-                        foreach ($attributes['software'] as $key => $value) {
-                            if (is_integer($row->$key)) {
-                                echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
-                            } else {
-                                echo "<td>" . $row->$key . "</td>\n";
-                            }
-                        }
-                        echo "</tr>\n";
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
-      </div>
+                </tbody>
+            </table>
+          </div>
+        </div>
     </div>
-</div>
+<?php } ?>
 
 
 
 <?php
-// software updates
-$count = 0;
-foreach ($data['software'] as $row) {
-    if ($row->type == 'update') {
-        $count++;
+if (!empty($data['software'])) {
+    // software updates
+    $count = 0;
+    foreach ($data['software'] as $row) {
+        if ($row->type == 'update') {
+            $count++;
+        }
     }
-}
-?>
-<div id="software_update" class="section">
-    <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title pull-left">Software Updates</h3>
-    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_update"></span>
-    <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
-    <div class="clearfix"></div>
-  </div>
-      <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
+    ?>
+    <div id="software_update" class="section">
+        <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title pull-left">Software Updates</h3>
+        <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_update"></span>
+        <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+        <div class="clearfix"></div>
+      </div>
+          <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <?php
+                        foreach ($attributes['software'] as $key => $value) {
+                            echo "<th>$value</th>";
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
                     <?php
-                    foreach ($attributes['software'] as $key => $value) {
-                        echo "<th>$value</th>";
+                    foreach ($data['software'] as $row) {
+                        if ($row->type == 'update') {
+                            echo "<tr>";
+                            foreach ($attributes['software'] as $key => $value) {
+                                if (is_integer($row->$key)) {
+                                    echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                } else {
+                                    echo "<td>" . $row->$key . "</td>\n";
+                                }
+                            }
+                            echo "</tr>\n";
+                        }
                     }
                     ?>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($data['software'] as $row) {
-                    if ($row->type == 'update') {
-                        echo "<tr>";
-                        foreach ($attributes['software'] as $key => $value) {
-                            if (is_integer($row->$key)) {
-                                echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
-                            } else {
-                                echo "<td>" . $row->$key . "</td>\n";
-                            }
-                        }
-                        echo "</tr>\n";
-                    }
-                }
-                ?>
-            </tbody>
-        </table>
-      </div>
+                </tbody>
+            </table>
+          </div>
+        </div>
     </div>
-</div>
-
+<?php } ?>
 
 
     
