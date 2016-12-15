@@ -326,11 +326,13 @@ class devices extends MY_Controller_new
             $this->response->data = $this->m_devices->read();
             $data = new stdClass();
             $data->name = $this->response->data[0]->attributes->name;
-            $data->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
             $data->system_id = $this->response->data[0]->attributes->id;
             $data->org_id = $this->response->data[0]->attributes->org_id;
+            $data->type = 'subnet';
             $data->discard = 'y';
             $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
+            $data->other = new stdClass();
+            $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
             $this->load->model('m_discoveries');
             $discovery_id = $this->m_discoveries->create($data);
             $this->m_discoveries->execute($discovery_id);
