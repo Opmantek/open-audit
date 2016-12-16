@@ -264,10 +264,11 @@ if (!empty($_POST['form_details'])) {
 
         // On OSX we cannot run Nmap and get a UDP port result for 161 as 'You requested a scan type which requires root privileges.'
         // So just set the snmp_status to true and attempt to snmp_audit the target device
-        if (php_uname('s') == 'Darwin') {
-            $input->snmp_status = 'true';
-            $input->nmap_ports .= ',161/udp/snmp';
-        }
+        // As at 2016-12-16 this no longer appears to be an issue. Commenting out below code.
+        // if (php_uname('s') == 'Darwin') {
+        //     $input->snmp_status = 'true';
+        //     $input->nmap_ports .= ',161/udp/snmp';
+        // }
 
         $log->message = 'SNMP Status is '.$input->snmp_status.' on '.$device->ip;
         discovery_log($log);
