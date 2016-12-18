@@ -4919,9 +4919,8 @@ class Database extends MY_Controller_new
             if (!$this->db->field_exists('edited_date', 'additional_field')) {
                 $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
-            if (!$this->db->field_exists('group_id', 'additional_field')) {
-                $sql[] = "ALTER TABLE `additional_field` DROP `group_id`";
-            }
+
+
 
             # attachment
             $sql[] = "set @var=if((SELECT true FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = 'attachment' AND CONSTRAINT_NAME = 'att_user_id' AND CONSTRAINT_TYPE = 'FOREIGN KEY') = true,'ALTER TABLE attachment drop foreign key att_user_id','select 1'); prepare stmt from @var; execute stmt; deallocate prepare stmt;"
@@ -5656,6 +5655,33 @@ class Database extends MY_Controller_new
                 }
             }
             $this->db->db_debug = $temp_debug;
+
+            # Migrate old fields groups
+            $field_sql = "SELECT * FROM `additional_fields`";
+            $query = $this->db->query($field_sql);
+            $result = $query->result();
+            foreach ($result as $field) {
+                $field_sql = "SELECT * FROM oa_group WHERE id = ?";
+                $data = array(intval($field->group_id));
+                $query = $this->db->query($field_sql);
+                $result_group = $query->result();
+                if (!empty($result_group)) {
+                    $old_group = $result_group[0];
+                    $new_group = array();
+                    $new_group['org_id'] = 1;
+                    $new_group['name'] = $old_group->name . ' (used by fields)';
+                    $new_group['description'] = 'Migrated for use in fields.';
+                    $new_group['sql'] = str_ireplace('where ', 'WHERE @filter', $old_group->group_dynamic_select);
+                    $new_group['link'] = '';
+                    $new_group['expose'] = 'n';
+                    $field_sql = "INSERT INTO `groups` VALUES (NULL, ?, ?, ?, ?, ?, ?, 'system', NOW())";
+                    $query = $this->db->query($field_sql, $new_group);
+                    $new_group['id'] = $this->db->insert_id();
+                    $field_sql = "UPDATE `additional_field` SET `group_id` = ? WHERE `id` = ?";
+                    $data = array(intval($new_group['id']), intval($field->id));
+                }
+            }
+
             $this->data['output'] .= 'Upgrade database to 1.14 completed';
             $this->config->config['internal_version'] = '20160904';
             $this->config->config['display_version'] = '1.14';
@@ -5733,6 +5759,22 @@ class Database extends MY_Controller_new
             if ($this->db->table_exists('oa_connection')) {
                 $sql[] = "RENAME TABLE `oa_connection` TO `connections`";
             }
+
+            # fields
+            if (!$this->db->field_exists('group_id', 'additional_field')) {
+                // for the beta users, this field might have been removed upon the 1.14 upgrade
+                $sql[] = "ALTER TABLE `additional_field` ADD `group_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER org_id";
+            }
+            if (!$this->db->field_exists('additional_field_id', 'additional_field_item')) {
+                $sql[] = "ALTER TABLE `additional_field_item` CHANGE `additional_field_id` `fields_id` int(10) unsigned NOT NULL DEFAULT '0'";
+            }
+            if ($this->db->table_exists('additional_field')) {
+                $sql[] = "RENAME TABLE `additional_field` TO `fields`";
+            }
+            if ($this->db->table_exists('additional_field_item')) {
+                $sql[] = "RENAME TABLE `additional_field_item` TO `field`";
+            }
+            #TODO - nwe indexes
 
             # locations
             if ($this->db->table_exists('oa_location')) {

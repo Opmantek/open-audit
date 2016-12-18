@@ -16,63 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `additional_field`
---
-
-DROP TABLE IF EXISTS `additional_field`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `additional_field` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
-  `values` varchar(100) NOT NULL DEFAULT '',
-  `placement` varchar(100) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `additional_field`
---
-
-LOCK TABLES `additional_field` WRITE;
-/*!40000 ALTER TABLE `additional_field` DISABLE KEYS */;
-/*!40000 ALTER TABLE `additional_field` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `additional_field_item`
---
-
-DROP TABLE IF EXISTS `additional_field_item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `additional_field_item` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `additional_field_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `value` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `additional_field_item_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `additional_field_item`
---
-
-LOCK TABLES `additional_field_item` WRITE;
-/*!40000 ALTER TABLE `additional_field_item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `additional_field_item` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `attachment`
 --
 
@@ -619,6 +562,64 @@ CREATE TABLE `edit_log` (
 LOCK TABLES `edit_log` WRITE;
 /*!40000 ALTER TABLE `edit_log` DISABLE KEYS */;
 /*!40000 ALTER TABLE `edit_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `fields`
+--
+
+DROP TABLE IF EXISTS `fields`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `fields` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `group_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
+  `values` varchar(100) NOT NULL DEFAULT '',
+  `placement` varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fields`
+--
+
+LOCK TABLES `fields` WRITE;
+/*!40000 ALTER TABLE `fields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `fields` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `field`
+--
+
+DROP TABLE IF EXISTS `field`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `field` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `fields_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `field_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+-- CONSTRAINT `additional_field_item_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+--
+-- Dumping data for table `field`
+--
+
+LOCK TABLES `field` WRITE;
+/*!40000 ALTER TABLE `field` DISABLE KEYS */;
+/*!40000 ALTER TABLE `field` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
