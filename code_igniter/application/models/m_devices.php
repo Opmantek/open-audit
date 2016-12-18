@@ -180,13 +180,77 @@ class M_devices extends MY_Model
         #$sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
         $sql = $this->clean_sql($sql);
         $result = $this->run_sql($sql, array($id));
-        $sql = "/* m_devices::read */ " . "SELECT additional_field.name, additional_field_item.value FROM additional_field_item RIGHT JOIN additional_field ON additional_field.id = additional_field_item.additional_field_id AND additional_field_item.system_id = ?";
+        $sql = "/* m_devices::read */ " . "SELECT fields.name, field.value FROM field RIGHT JOIN fields ON fields.id = field.fields_id AND field.system_id = ?";
         $result_fields = $this->run_sql($sql, array($id));
         foreach ($result_fields as $field) {
             $result[0]->{$field->name} = $field->value;
         }
         $result = $this->format_data($result, 'devices');
         return($result);
+    }
+
+    public function get_fields($id = '')
+    {
+        $CI = & get_instance();
+        $CI->load->model('m_orgs');
+        $CI->load->model('m_fields');
+        $log = new stdClass();
+        $log->file = 'system';
+        $log->level = 7;
+
+        if ($id == '') {
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        if (empty($id)) {
+            $log->message = 'No ID, returning false';
+            stdlog($log);
+            return false;
+        }
+
+        // get the org_id of the device
+        $sql = "SELECT `system`.`org_id` FROM system WHERE `system`.`id` = ?";
+        $data = array (intval($id));
+        $result = $this->run_sql($sql, $data);
+        $device_org_id = intval($result[0]->org_id);
+
+        // get the fields
+        $fields = $CI->m_fields->collection();
+
+        // get our group list
+        $groups = $CI->m_groups->collection();
+
+
+        // this is our array of field.id's that are acceptable on this device
+        $field_list = array();
+
+        foreach ($fields as $field) {
+            // get this field.org_id children
+            $orgs = $CI->m_orgs->get_children($field->attributes->org_id);
+            foreach ($orgs as $key => $value) {
+                if ($device_org_id == $value) {
+                    $field_list[] = $field->id;
+                }
+            }
+        }
+
+        foreach ($fields as $field) {
+            foreach ($field_list as $field_item) {
+                if ($field->id == $field_item) {
+                    // check to see if the group sql matches
+
+                }
+            }
+        }
+
+
+
+        // get the parents of this org_id
+
+
+
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT fields.id, groups.sql from `fields` LEFT JOIN `groups` ON `fields`.`groups_id` = `groups`.`id` WHERE `groups.id` = ";
     }
 
     public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y')
@@ -241,10 +305,6 @@ class M_devices extends MY_Model
             $sort = '';
         }
 
-        // if ($current != 'y') {
-        //     $current = 'n';
-        // }
-
         $filter = $this->build_filter();
 
         if ($sub_resource == 'location') {
@@ -256,8 +316,8 @@ class M_devices extends MY_Model
         } elseif ($sub_resource == 'discovery_log') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
             $data = array($id);
-        } elseif ($sub_resource == 'additional_fields') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT additional_field.id as `additional_field.id`, additional_field.name AS `additional_field.name`, additional_field.type AS `additional_field.type`, additional_field.values AS `additional_field.values`, additional_field.placement AS `additional_field.placement`, additional_field_item.* FROM additional_field LEFT JOIN additional_field_item ON (additional_field_item.additional_field_id = additional_field.id AND (additional_field_item.system_id = ? OR additional_field_item.system_id IS NULL))";
+        } elseif ($sub_resource == 'fields') {
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT fields.id as `fields.id`, fields.name AS `fields.name`, fields.type AS `fields.type`, fields.values AS `fields.values`, fields.placement AS `fields.placement`, field.* FROM fields LEFT JOIN field ON (field.fields_id = fields.id AND (field.system_id = ? OR field.system_id IS NULL))";
             $data = array($id);
         } else {
             $currency = false;
@@ -774,8 +834,8 @@ class M_devices extends MY_Model
         }
 
         $system_fields = implode(' ', $this->db->list_fields('system'));
-        $sql = "SELECT id, name FROM additional_field";
-        $additional_fields = $this->run_sql($sql, array());
+        $sql = "SELECT id, name FROM fields";
+        $fields = $this->run_sql($sql, array());
 
         // loop through our supplied data and test if it's a custom field or a system field,
         // then update any supplied device id's
@@ -784,19 +844,19 @@ class M_devices extends MY_Model
             $previous_value = '';
 
             // check our custom fields
-            foreach ($additional_fields as $field) {
+            foreach ($fields as $field) {
                 if ($key == $field->name) {
                     # we have a custom field - get the original value (if it exists)
                     foreach ($ids as $id) {
-                        $sql = "SELECT id, value FROM additional_field_item WHERE system_id = ? AND additional_field_id = ?";
+                        $sql = "SELECT id, value FROM field WHERE system_id = ? AND fields_id = ?";
                         $result = $this->run_sql($sql, array(intval($id), $field->id));
                         if (!empty($result[0]->value)) {
                             $previous_value = $result[0]->value;
-                            $sql = "UPDATE additional_field_item SET value = ?, timestamp = NOW() WHERE id = ?";
+                            $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
                             $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
                             // TODO - add an entry into the change log
                         } else {
-                            $sql = "INSERT INTO additional_field_item VALUES (NULL, ?, ?, NOW(), ?)";
+                            $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
                             $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
                             $previous_value = '';
                             // TODO - add an entry into the change log

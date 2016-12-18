@@ -40,8 +40,8 @@ $data['system'] = $this->response->data[0]->attributes;
 foreach ($this->response->included as $item) {
   $data[$item->type][] = $item->attributes;
 }
-if (empty($data['additional_fields'])) {
-  $data['additional_fields'] = array();
+if (empty($data['fields'])) {
+  $data['fields'] = array();
 }
 ?>
 

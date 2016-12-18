@@ -157,45 +157,45 @@ var id = 0;
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Additional Fields</span>
+            <span class="text-left">Fields</span>
             <span class="pull-right"></span>
         </h3>
     </div>
     <div class="panel-body">
         <div class="form-group">
 <?php
-if ( ! empty($data['fields'])) {
+if (!empty($data['fields'])) {
     foreach ($data['fields'] as $field) {
-            if ($field->{'type'} == 'varchar') {
-                echo '                    <div class="form-group">
-                    <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
-                    <div class="input-group">
-                      <input disabled type="text" class="form-control" placeholder="" id="' . $field->{'name'} . '" name="' . $field->{'name'} . '" value="">
-                      <span class="input-group-btn">
-                        <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                      </span>
-                    </div>
-                </div>' . "\n";
+        if ($field->{'type'} == 'varchar') {
+            echo '                    <div class="form-group">
+                <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                <div class="input-group">
+                  <input disabled type="text" class="form-control" placeholder="" id="' . $field->{'name'} . '" name="' . $field->{'name'} . '" value="">
+                  <span class="input-group-btn">
+                    <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                  </span>
+                </div>
+            </div>' . "\n";
+        }
+        if ($field->{'type'} == 'list') {
+            echo '                    <div class="form-group">
+                <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                <div class="col-sm-8 input-group">
+                    <select id="' . $field->{'name'} . '" class="form-control" disabled>' . "\n";
+                      echo "                          <option value='' > </option>\n";
+            foreach (explode(',', $field->{'values'}) as $key => $value) {
+                        echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
             }
-            if ($field->{'type'} == 'list') {
-                echo '                    <div class="form-group">
-                    <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
-                    <div class="col-sm-8 input-group">
-                        <select id="' . $field->{'name'} . '" class="form-control" disabled>' . "\n";
-                          echo "                          <option value='' > </option>\n";
-                        foreach (explode(',', $field->{'values'}) as $key => $value) {
-                            echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
-                        }
 
-                        echo '                        </select>
-                        <span class="input-group-btn">
-                          <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                          </button>
-                        </span>
-                    </div>
-                </div>' . "\n";
-            }
+                    echo '                        </select>
+                    <span class="input-group-btn">
+                      <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                      </button>
+                    </span>
+                </div>
+            </div>' . "\n";
+        }
     }
 }
 ?>

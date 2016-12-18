@@ -59,8 +59,8 @@ if (!empty($this->response->data[0]->attributes)) {
 foreach ($this->response->included as $item) {
     $data[$item->type][] = $item->attributes;
 }
-if (empty($data['additional_fields'])) {
-    $data['additional_fields'] = array();
+if (empty($data['fields'])) {
+    $data['fields'] = array();
 }
 
 $software_odbc_driver = false;
@@ -114,7 +114,7 @@ if ($data['system']->type != 'computer') {
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="additional_fields"><?php echo __('Additional Fields'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="fields"><?php echo __('Fields'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
@@ -517,7 +517,7 @@ if ($data['system']->type != 'computer') {
                                 <?php } ?>
                             </div>
                         </div>
-<?php insert_additional_fields('system', $data['additional_fields']); ?>
+<?php insert_additional_fields('system', $data['fields']); ?>
 
                     </div>
                     <div class="col-md-5">
@@ -752,7 +752,7 @@ foreach ($list as $item) {
             }
         }
         ?>
-        <?php insert_additional_fields($item, $data['additional_fields']); ?>
+        <?php insert_additional_fields($item, $data['fields']); ?>
       </div>
     </div>
 </div>
@@ -815,8 +815,8 @@ foreach ($list as $item) {
   </div>
       <div class="panel-body">
         <?php
-        if (isset($data['additional_fields']) and count($data['additional_fields']) > 0) {
-            insert_additional_fields('', $data['additional_fields']);
+        if (isset($data['fields']) and count($data['fields']) > 0) {
+            insert_additional_fields('', $data['fields']);
         } ?>
       </div>
     </div>
@@ -915,7 +915,7 @@ foreach ($list as $item) {
                     <?php
                         }
                     }
-                    insert_additional_fields($item, $data['additional_fields']);
+                    insert_additional_fields($item, $data['fields']);
                 ?></div><!-- 4 -->
             </div><!-- 3 -->
         </div><!-- 2 -->
@@ -1296,7 +1296,7 @@ foreach ($list as $item) {
                     </tbody>
                 </table>
               </div>
-                <?php insert_additional_fields($item, $data['additional_fields']); ?>
+                <?php insert_additional_fields($item, $data['fields']); ?>
             </div>
         </div>
         <?php
@@ -1514,11 +1514,11 @@ if ($data['system']->type == 'computer') {
 function insert_additional_fields($section = '', $additional_fields = array())
 {
     foreach ($additional_fields as $field) {
-        if ($field->{'additional_field.placement'} == $section or $section == '') {
-            $name = $field->{'additional_field.name'};
-            if ($field->{'additional_field.type'} == 'varchar') {
+        if ($field->{'fields.placement'} == $section or $section == '') {
+            $name = $field->{'fields.name'};
+            if ($field->{'fields.type'} == 'varchar') {
                 echo '                    <div class="form-group">
-                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'fields.name'} . '</label>
                     <div class="input-group">
                       <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">
                       <span class="input-group-btn">
@@ -1527,15 +1527,15 @@ function insert_additional_fields($section = '', $additional_fields = array())
                     </div>
                 </div>' . "\n";
             }
-            if ($field->{'additional_field.type'} == 'list') {
+            if ($field->{'fields.type'} == 'list') {
                 echo '                    <div class="form-group">
-                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'fields.name'} . '</label>
                     <div class="col-sm-8 input-group">
                         <select id="' . $name . '" class="form-control" disabled>' . "\n";
                 if ($field->{'value'} == '') {
                     echo "                          <option value='' > </option>\n";
                 }
-                foreach (explode(',', $field->{'additional_field.values'}) as $key => $value) {
+                foreach (explode(',', $field->{'fields.values'}) as $key => $value) {
                     if ($field->{'value'} == $value) {
                         $selected = " selected";
                     } else {

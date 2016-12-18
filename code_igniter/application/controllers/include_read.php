@@ -28,9 +28,30 @@
 
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
 
+if ($this->response->meta->collection == 'discoveries') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
+    $this->load->model('m_orgs');
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+}
+
+if ($this->response->meta->collection == 'fields') {
+    $this->load->model('m_groups');
+    $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+}
+
+if ($this->response->meta->collection == 'orgs') {
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
+}
+
 if ($this->response->meta->collection == 'scripts') {
         $this->load->model('m_files');
         $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+}
+
+if ($this->response->meta->collection == 'roles') {
+    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
 }
 
 if ($this->response->meta->collection == 'users') {
@@ -43,22 +64,6 @@ if ($this->response->meta->collection == 'users') {
 if (!empty($this->response->data[0]->attributes->org_id) and $this->response->meta->collection != 'users') {
     $this->load->model('m_orgs');
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
-}
-
-if ($this->response->meta->collection == 'orgs') {
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
-}
-
-if ($this->response->meta->collection == 'discoveries') {
-    $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
-    $this->load->model('m_orgs');
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
-}
-
-if ($this->response->meta->collection == 'roles') {
-    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
 }
 
 $this->response->meta->filtered = count($this->response->data);
@@ -80,7 +85,7 @@ if ($this->response->meta->format === 'json') {
 
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
 if ($this->config->config['log_level'] < 6) {
     $log->severity = 5;
     $log->status = 'finish';
@@ -88,6 +93,6 @@ if ($this->config->config['log_level'] < 6) {
 } else {
     $log->severity = 6;
     $log->status = 'finish';
-    $log->detail = json_encode($this->response->meta); 
+    $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);

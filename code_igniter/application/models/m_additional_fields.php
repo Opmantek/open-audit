@@ -278,7 +278,7 @@ class M_additional_fields extends MY_Model
         if ($system_id == '') {
             return;
         }
-        $sql = "SELECT f.id, f.name, f.type, f.values, f.placement, IFNULL(d.value,\"\") AS data_value, IFNULL(d.id, \"\") as data_id FROM additional_field f  LEFT JOIN additional_field_item d ON (f.id = d.additional_field_id AND d.system_id = ?) WHERE f.group_id IN (SELECT group_id FROM oa_group_sys WHERE system_id = ?)";
+        $sql = "SELECT f.id, f.name, f.type, f.values, f.placement, IFNULL(d.value,\"\") AS data_value, IFNULL(d.id, \"\") as data_id FROM fields f  LEFT JOIN field d ON (f.id = d.fields_id AND d.system_id = ?) WHERE f.group_id IN (SELECT group_id FROM oa_group_sys WHERE system_id = ?)";
         $sql = $this->clean_sql($sql);
         $data = array($system_id, $system_id);
         $query = $this->db->query($sql, $data);

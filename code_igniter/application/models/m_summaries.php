@@ -136,7 +136,7 @@ class M_summaries extends MY_Model
         $sql = $this->collection_sql('summaries', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'summaries');
-        $tables = ' additional_field_item audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
+        $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
         for ($i=0; $i < count($result); $i++) {
             if ($result[$i]->attributes->table == 'oa_org') {
                 $org_id = 'id';
@@ -196,7 +196,7 @@ class M_summaries extends MY_Model
         } else {
             $org_id = 'org_id';
         }
-        $tables = ' additional_field_item audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
+        $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
         
         if (stripos($tables, $dashboard[0]->table) !== false) {
             $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->table . "." . $dashboard[0]->column . " AS `name` FROM system LEFT JOIN " . $dashboard[0]->table . " ON (system.id = " . $dashboard[0]->table . ".system_id and " . $dashboard[0]->table . ".current = 'y') WHERE " . $dashboard[0]->table . "." . $dashboard[0]->column . " IS NOT NULL AND " . $dashboard[0]->table . "." . $dashboard[0]->column . " != '' AND system.org_id IN (" . $CI->user->org_list . ") GROUP BY " . $dashboard[0]->table . "." . $dashboard[0]->column;
@@ -291,7 +291,7 @@ class M_summaries extends MY_Model
         }
 
         if ($this->m_users->get_user_permission('', 'fields', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `additional_field` WHERE org_id IN (" . $CI->user->org_list . ")";
+            $sql = "SELECT COUNT(*) AS `count` FROM `fields` WHERE org_id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Fields', "collection" => "fields", "icon" => 'list', "count" => $count[0]->count);
         }

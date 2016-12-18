@@ -50,7 +50,7 @@ class M_fields extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
-        $sql = "INSERT INTO `additional_field` (";
+        $sql = "INSERT INTO `fields` (";
         $sql_data = "";
         if (is_null($data)) {
             if (!empty($CI->response->meta->received_data->attributes)) {
@@ -60,7 +60,7 @@ class M_fields extends MY_Model
                 return false;
             }
         }
-        foreach ($this->db->field_data('additional_field') as $field) {
+        foreach ($this->db->field_data('fields') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";
                 $sql_data .= "?, ";
@@ -89,7 +89,7 @@ class M_fields extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM `additional_field` WHERE id = ?";
+        $sql = "SELECT `fields`.*, `groups`.`name` AS `groups.name` FROM `fields` LEFT JOIN `groups` ON `fields`.`group_id` = `groups`.`id` WHERE `fields`.`id` = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'fields');
@@ -103,7 +103,7 @@ class M_fields extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
-        $fields = ' name type values placement org_id ';
+        $fields = ' name type values placement org_id group_id ';
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
@@ -113,7 +113,7 @@ class M_fields extends MY_Model
                 }
             }
         }
-        $sql = "UPDATE `additional_field` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $sql = "UPDATE `fields` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql, array());
         return;
     }
@@ -131,7 +131,7 @@ class M_fields extends MY_Model
         }
         if ($id != 0) {
             $CI = & get_instance();
-            $sql = "DELETE FROM `additional_field` WHERE id = ?";
+            $sql = "DELETE FROM `fields` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;

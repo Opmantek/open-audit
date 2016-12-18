@@ -64,6 +64,14 @@ class test extends CI_Controller
         redirect('/');
     }
 
+    public function fields()
+    {
+        $this->load->model('m_devices');
+        $result = $this->m_devices->get_fields(1);
+        echo "<pre>\n";
+        print_r($result);
+    }
+
     public function user()
     {
         echo "<pre>\n";

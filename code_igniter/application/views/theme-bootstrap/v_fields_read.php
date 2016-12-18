@@ -122,6 +122,28 @@ $item = $this->response->data[0];
                             <?php } ?>
                         </div>
                     </div>
+
+
+                    <div class="form-group">
+                        <label for="group_id" class="col-sm-3 control-label">Group</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="group_id" name="group_id" disabled>
+                                <?php
+                                foreach ($this->response->included as $group) {
+                                    if ($group->type == 'groups') { ?>
+                                        <option value="<?php echo intval($group->id); ?>"<?php if ($item->attributes->group_id == $group->id) { echo " selected"; } ?>><?php echo htmlspecialchars($group->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                <?php
+                                    }
+                                } ?>
+                                </select>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_group_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="group_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
