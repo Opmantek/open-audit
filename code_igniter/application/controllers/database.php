@@ -5717,33 +5717,44 @@ class Database extends MY_Controller_new
 
             # configuration
             $sql[] = "UPDATE `configuration` SET name = 'match_ip', description = 'Should we match a device based on its ip.' WHERE name = 'discovery_ip_match'";
+
             $sql[] = "UPDATE `configuration` SET name = 'match_mac', description = 'Should we match a device based on its mac address.' WHERE name = 'discovery_mac_match'";
+
             $sql[] = "UPDATE `configuration` SET name = 'match_hostname', description = 'Should we match a device based only on its hostname.' WHERE name = 'discovery_name_match'";
+
             $sql[] = "UPDATE `configuration` SET name = 'match_serial' WHERE name = 'discovery_serial_match'";
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_dbus'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_dbus','n','y','system',NOW(),'Should we match a device based on its dbus id.')";
+            if (!isset($this->config->config['match_dbus'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_dbus','n','y','system',NOW(),'Should we match a device based on its dbus id.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_uuid'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_uuid','y','y','system',NOW(),'Should we match a device based on its UUID.')";
+            if (!isset($this->config->config['match_uuid'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_uuid','y','y','system',NOW(),'Should we match a device based on its UUID.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_hostname_dbus'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_dbus','y','y','system',NOW(),'Should we match a device based on its hostname and dbus id.')";
+            if (!isset($this->config->config['match_hostname_dbus'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_dbus','y','y','system',NOW(),'Should we match a device based on its hostname and dbus id.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_hostname_uuid'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_uuid','y','y','system',NOW(),'Should we match a device based on its hostname and UUID.')";
+            if (!isset($this->config->config['match_hostname_uuid'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_uuid','y','y','system',NOW(),'Should we match a device based on its hostname and UUID.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_hostname_serial'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_serial','y','y','system',NOW(),'Should we match a device based on its hostname and serial.')";
+            if (!isset($this->config->config['match_hostname_serial'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_hostname_serial','y','y','system',NOW(),'Should we match a device based on its hostname and serial.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_serial_type'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_serial_type','y','y','system',NOW(),'Should we match a device based on its serial and type.')";
+            if (!isset($this->config->config['match_serial_type'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_serial_type','y','y','system',NOW(),'Should we match a device based on its serial and type.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_fqdn'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_fqdn','y','y','system',NOW(),'Should we match a device based on its fqdn.')";
+            if (!isset($this->config->config['match_fqdn'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_fqdn','y','y','system',NOW(),'Should we match a device based on its fqdn.')";
+            }
 
-            $sql[] = "DELETE FROM `configuration` WHERE name = 'match_mac_vmware'";
-            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_mac_vmware','n','y','system',NOW(),'Should we match a device based mac address even if it\'s a known likely duplicate from VMware.')";
+            if (!isset($this->config->config['match_mac_vmware'])) {
+                $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'match_mac_vmware','n','y','system',NOW(),'Should we match a device based mac address even if it\'s a known likely duplicate from VMware.')";
+            }
 
             $sql[] = "DELETE FROM `configuration` WHERE name = 'homepage'";
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'homepage','groups','y','system',NOW(),'Any links to the default page should be directed to this endpoint.')";
