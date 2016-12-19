@@ -773,34 +773,41 @@ if (! function_exists('inputRead')) {
                 $query->name = substr($item, 0, strpos($item, '='));
                 $query->operator = '=';
                 $query->value = str_replace($query->name.'=', '', $item);
-                $operator = substr($query->value, 0, 1);
-                if ($operator == '=' or $operator == '>' or $operator == '<') {
-                    $query->value = substr($query->value, 1);
-                    $query->operator = $operator;
+
+                if (strtolower(substr($query->value, 0, 8)) == 'not like') {
+                    $query->value = '%' . substr($query->value, 8) . '%';
+                    $query->operator = 'not like';
                 }
-                $operator = substr($query->value, 0, 2);
-                if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
-                    $query->value = substr($query->value, 2);
-                    $query->operator = $operator;
+
+                if (strtolower(substr($query->value, 0, 5)) == '!like') {
+                    $query->value = '%' . substr($query->value, 5) . '%';
+                    $query->operator = 'not like';
                 }
-                $operator = substr($query->value, 0, 2);
-                if ($operator == 'in') {
-                    $query->value = "(" . substr($query->value, 2) . ")";
-                    $query->operator = $operator;
-                }
+
                 $operator = substr($query->value, 0, 4);
                 if (strtolower($operator) == 'like') {
                     $query->value = '%' . substr($query->value, 4) . '%';
                     $query->operator = $operator;
                 }
-                if (strtolower(substr($query->value, 0, 5)) == '!like') {
-                    $query->value = '%' . substr($query->value, 5) . '%';
-                    $query->operator = 'not like';
+
+                $operator = substr($query->value, 0, 2);
+                if ($operator == 'in') {
+                    $query->value = "(" . substr($query->value, 2) . ")";
+                    $query->operator = $operator;
                 }
-                if (strtolower(substr($query->value, 0, 8)) == 'not like') {
-                    $query->value = '%' . substr($query->value, 8) . '%';
-                    $query->operator = 'not like';
+
+                $operator = substr($query->value, 0, 2);
+                if ($operator == '!=' or $operator == '>=' or $operator == '<=') {
+                    $query->value = substr($query->value, 2);
+                    $query->operator = $operator;
                 }
+
+                $operator = substr($query->value, 0, 1);
+                if ($operator == '=' or $operator == '>' or $operator == '<') {
+                    $query->value = substr($query->value, 1);
+                    $query->operator = $operator;
+                }
+
                 $query->name = str_replace(array(',', '\'', '"', '(', ')'), '', $query->name);
                 if ($query->value == false) {
                     $query->value = '';
