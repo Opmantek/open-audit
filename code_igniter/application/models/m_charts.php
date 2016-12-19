@@ -142,8 +142,11 @@ class M_charts extends MY_Model
         $CI->response->meta->total = intval($result[0]->count);
 
         if ($CI->response->meta->internal->what == 'device_missing') {
-            $sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, first_seen, last_seen FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND ip <> '' AND ip <> '0.0.0.0' AND ip <> '000.000.000.000' and status = 'production') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
-            $data = array(1, $CI->response->meta->internal->end, $CI->response->meta->internal->end);
+            #$sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, first_seen, last_seen FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND ip <> '' AND ip <> '0.0.0.0' AND ip <> '000.000.000.000' and status = 'production') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
+
+            $sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, system.first_seen, system.last_seen FROM system WHERE system.org_id in (" . $CI->user->org_list . ") AND system.ip <> '' AND system.ip <> '0.0.0.0' AND system.ip <> '000.000.000.000' and system.status = 'production' and system.oae_manage = 'y') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
+            $data = array($CI->response->meta->internal->end, $CI->response->meta->internal->end);
+
         } else {
             // $sql = "SELECT DATE(a.Date) AS `date`, UNIX_TIMESTAMP(a.Date) AS `timestamp`, SUM(IF(`count` IS NULL, 0, `count`)) as `count` FROM ( SELECT a.Date FROM ( 
             // SELECT CURDATE() - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY AS Date
@@ -170,7 +173,7 @@ class M_charts extends MY_Model
                         ) a
                     ) AS a 
                     LEFT JOIN 
-                        (SELECT SUM(`count`) AS 'count', DATE(`when`) AS 'date', `what` FROM `chart` WHERE DATE(`when`) BETWEEN ? AND ? AND `what` = ? and `org_id` in (" . $CI->user->org_list . ") group by date(`when`)) AS z 
+                        (SELECT SUM(`count`) AS 'count', DATE(`when`) AS 'date', `what` FROM `chart` WHERE DATE(`when`) BETWEEN ? AND ? AND `what` = ? AND `org_id` in (" . $CI->user->org_list . ") GROUP BY  DATE(`when`)) AS z 
                         ON (DATE(z.date) = DATE(a.Date))
                     GROUP BY a.Date 
                     ORDER BY a.Date asc";
@@ -179,6 +182,7 @@ class M_charts extends MY_Model
             $data = array($CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->what);
         }
         $result = $this->run_sql($sql, $data);
+
         foreach ($result as $item) {
             if (!empty($item->timestamp)) {
                 $item->timestamp = intval($item->timestamp);
