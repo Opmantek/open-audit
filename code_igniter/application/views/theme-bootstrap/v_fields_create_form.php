@@ -101,6 +101,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][group_id]" class="col-sm-3 control-label">Group</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][group_id]" name="data[attributes][group_id]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'groups') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>

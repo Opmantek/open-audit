@@ -144,9 +144,15 @@ class devices extends MY_Controller_new
             if (!empty($this->response->meta->include) and !empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
-                    $result = false;
-                    $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
-                    if ($result) {
+                    if ($table != 'fields') {
+                        $result = false;
+                        $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
+                        if ($result) {
+                            $this->response->included = array_merge($this->response->included, $result);
+                        }
+                    } else {
+                        $result = false;
+                        $result = $this->m_devices->get_device_fields($this->response->meta->id);
                         $this->response->included = array_merge($this->response->included, $result);
                     }
                 }

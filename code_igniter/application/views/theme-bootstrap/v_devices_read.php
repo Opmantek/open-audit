@@ -114,7 +114,7 @@ if ($data['system']->type != 'computer') {
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="fields"><?php echo __('Fields'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom_fields"><?php echo __('Custom Fields'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
@@ -806,17 +806,17 @@ foreach ($list as $item) {
 
 
 
-<div id="additional_fields" class="section">
+<div id="custom_fields" class="section">
     <div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title pull-left">Additional Fields</h3>
-    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="additional_fields"></span>
+    <h3 class="panel-title pull-left">Custom Fields</h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="custom_fields"></span>
     <div class="clearfix"></div>
   </div>
       <div class="panel-body">
         <?php
         if (isset($data['fields']) and count($data['fields']) > 0) {
-            insert_additional_fields('', $data['fields']);
+            insert_additional_fields('custom', $data['fields']);
         } ?>
       </div>
     </div>
@@ -1512,6 +1512,51 @@ if ($data['system']->type == 'computer') {
 
 <?php
 function insert_additional_fields($section = '', $additional_fields = array())
+{
+    foreach ($additional_fields as $field) {
+        if ($field->{'placement'} == $section or $section == '') {
+            $name = $field->{'name'};
+            if ($field->{'type'} == 'varchar') {
+                echo '                    <div class="form-group">
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                    <div class="input-group">
+                      <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">
+                      <span class="input-group-btn">
+                        <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>
+                    </div>
+                </div>' . "\n";
+            }
+            if ($field->{'type'} == 'list') {
+                echo '                    <div class="form-group">
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                    <div class="col-sm-8 input-group">
+                        <select id="' . $name . '" class="form-control" disabled>' . "\n";
+                if ($field->{'value'} == '') {
+                    echo "                          <option value='' > </option>\n";
+                }
+                foreach (explode(',', $field->{'values'}) as $key => $value) {
+                    if ($field->{'value'} == $value) {
+                        $selected = " selected";
+                    } else {
+                        $selected = "";
+                    }
+                    echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
+                }
+
+                        echo '                        </select>
+                        <span class="input-group-btn">
+                          <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                          </button>
+                        </span>
+                    </div>
+                </div>' . "\n";
+            }
+        }
+    }
+}
+function insert_additional_fields_orig($section = '', $additional_fields = array())
 {
     foreach ($additional_fields as $field) {
         if ($field->{'fields.placement'} == $section or $section == '') {

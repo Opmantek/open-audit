@@ -189,68 +189,61 @@ class M_devices extends MY_Model
         return($result);
     }
 
-    public function get_fields($id = '')
+    public function get_device_fields($device_id = '')
     {
         $CI = & get_instance();
         $CI->load->model('m_orgs');
         $CI->load->model('m_fields');
+        $CI->load->model('m_groups');
         $log = new stdClass();
         $log->file = 'system';
         $log->level = 7;
 
-        if ($id == '') {
-            $id = intval($CI->response->meta->id);
+        if ($device_id == '') {
+            $device_id = intval($CI->response->meta->id);
         } else {
-            $id = intval($id);
+            $device_id = intval($device_id);
         }
-        if (empty($id)) {
-            $log->message = 'No ID, returning false';
+        if (empty($device_id)) {
+            $log->message = 'No device ID for fields, returning false';
             stdlog($log);
             return false;
         }
 
         // get the org_id of the device
-        $sql = "SELECT `system`.`org_id` FROM system WHERE `system`.`id` = ?";
-        $data = array (intval($id));
+        $sql = "SELECT system.org_id FROM system WHERE `system`.`id` = ?";
+        $data = array (intval($device_id));
         $result = $this->run_sql($sql, $data);
         $device_org_id = intval($result[0]->org_id);
 
         // get the fields
-        $fields = $CI->m_fields->collection();
+        #$sql = "SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name` FROM fields LEFT JOIN groups ON fields.group_id = groups.id";
+        $sql = "SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name`, field.value FROM fields LEFT JOIN groups ON fields.group_id = groups.id LEFT JOIN field ON (fields.id = field.fields_id AND field.system_id = $device_id) ORDER BY fields.name";
 
-        // get our group list
-        $groups = $CI->m_groups->collection();
-
-
+        $fields = $this->run_sql($sql, array());
         // this is our array of field.id's that are acceptable on this device
         $field_list = array();
-
         foreach ($fields as $field) {
             // get this field.org_id children
-            $orgs = $CI->m_orgs->get_children($field->attributes->org_id);
+            $orgs = array($field->org_id);
+            $orgs = array_merge($orgs, $CI->m_orgs->get_children($field->org_id));
             foreach ($orgs as $key => $value) {
                 if ($device_org_id == $value) {
-                    $field_list[] = $field->id;
+                    $sql = "SELECT COUNT(*) AS `count` FROM (" . str_replace("@filter", "1=1", $field->group_sql) . ") a WHERE a.id = $device_id";
+                    $result = $this->run_sql($sql, $data);
+                    if ($result[0]->count == 1) {
+                        $field_list[] = $field;
+                    }
                 }
             }
         }
-
-        foreach ($fields as $field) {
-            foreach ($field_list as $field_item) {
-                if ($field->id == $field_item) {
-                    // check to see if the group sql matches
-
-                }
-            }
+        // remove the sql and group name
+        foreach ($field_list as &$field) {
+            unset($field->group_sql);
+            unset($field->group_name);
         }
-
-
-
-        // get the parents of this org_id
-
-
-
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT fields.id, groups.sql from `fields` LEFT JOIN `groups` ON `fields`.`groups_id` = `groups`.`id` WHERE `groups.id` = ";
+        $result = $this->format_data($field_list, 'fields');
+        return($result);
     }
 
     public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y')
@@ -316,9 +309,9 @@ class M_devices extends MY_Model
         } elseif ($sub_resource == 'discovery_log') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ?";
             $data = array($id);
-        } elseif ($sub_resource == 'fields') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT fields.id as `fields.id`, fields.name AS `fields.name`, fields.type AS `fields.type`, fields.values AS `fields.values`, fields.placement AS `fields.placement`, field.* FROM fields LEFT JOIN field ON (field.fields_id = fields.id AND (field.system_id = ? OR field.system_id IS NULL))";
-            $data = array($id);
+        // } elseif ($sub_resource == 'fields') {
+        //     $sql = "/* m_devices::read_sub_resource */ " . "SELECT fields.id as `fields.id`, fields.name AS `fields.name`, fields.type AS `fields.type`, fields.values AS `fields.values`, fields.placement AS `fields.placement`, field.* FROM fields LEFT JOIN field ON (field.fields_id = fields.id AND (field.system_id = ? OR field.system_id IS NULL))";
+        //     $data = array($id);
         } else {
             $currency = false;
             $first_seen = false;

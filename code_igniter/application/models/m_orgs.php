@@ -206,4 +206,25 @@ class M_orgs extends MY_Model
         }
         return($org_list);
     }
+
+    public function is_desc($parent_id = 0, $desc_id = 0)
+    {
+        if (empty($parent_id) or empty($desc_id)) {
+            return false;
+        }
+        $CI = & get_instance();
+        if (empty($CI->orgs)) {
+            $sql = "SELECT * FROM oa_org";
+            $CI->orgs = $this->run_sql($sql, array());
+        }
+        $children = $this->get_children($parent_id);
+        foreach ($CI->orgs as $org) {
+            foreach ($children as $child) {
+                if ($desc_id == $org->id and $org->id == $child) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

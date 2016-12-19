@@ -96,6 +96,9 @@ $item = $this->response->data[0];
                         </div>
                     </div>
 
+                    <?php
+                    if ($item->attributes->type == 'list') {
+                    ?>
                     <div class="form-group">
                         <label for="values" class="col-sm-3 control-label">Values</label>
                         <div class="col-sm-8 input-group">
@@ -107,6 +110,7 @@ $item = $this->response->data[0];
                             <?php } ?>
                         </div>
                     </div>
+                    <?php } ?>
 
                     <div class="form-group">
                         <label for="placement" class="col-sm-3 control-label">Placement</label>
