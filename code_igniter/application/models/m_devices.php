@@ -1035,6 +1035,9 @@ class M_devices extends MY_Model
         } elseif (!empty($details->dns_hostname)) {
             $name = $details->dns_hostname;
             $details->name = $details->dns_hostname;
+        } elseif (!empty($details->ip)) {
+            $name = $details->ip;
+            $details->name = $details->ip;
         }
 
         if (!isset($details->ip)) {
@@ -1048,7 +1051,7 @@ class M_devices extends MY_Model
         stdlog($log_details);
 
         # remove some characters from the OS string
-        if (! empty($details->os_name)) {
+        if (!empty($details->os_name)) {
             $details->os_name = str_ireplace("(r)", "", $details->os_name);
             $details->os_name = str_ireplace("(tm)", "", $details->os_name);
         }
