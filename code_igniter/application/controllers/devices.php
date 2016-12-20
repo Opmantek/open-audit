@@ -193,19 +193,38 @@ class devices extends MY_Controller_new
 
     private function create()
     {
-        $this->m_devices->update();
-        if ($this->response->meta == 'json') {
-            output($this->response);
-        } else {
-            redirect('devices');
+        echo "<pre>\n";
+        echo "Option " . $_POST['input_type'] . " chosen.\n";
+
+        if (empty($_POST['input_type']) or $_POST['input_type'] == 'manual_input') {
+            $device = new stdClass();
+            foreach ($this->response->meta->received_data->attributes as $key => $value) {
+                if ($value != '') {
+                    $device->$key = $value;
+                }
+            }
+            $device->last_seen_by = 'manual';
+            $device->last_seen = date("Y-m-d H:i:s");
+            $this->load->model('m_devices');
+            $id = $this->m_devices->create($device);
+            redirect('devices/' . $id);
         }
-        $log = new stdClass();
-        $log->detail = json_encode($this->response->meta);
-        $log->severity = 5;
-        $log->status = 'finish';
-        $log->object = $this->response->meta->collection;
-        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-        stdLog($log);
+
+        if (!empty($_POST['input_type']) and $_POST['input_type'] == 'audit_input') {
+            #
+        }
+
+        if (!empty($_POST['input_type']) and $_POST['input_type'] == 'file_input') {
+            #
+        }
+
+        // $log = new stdClass();
+        // $log->detail = json_encode($this->response->meta);
+        // $log->severity = 5;
+        // $log->status = 'finish';
+        // $log->object = $this->response->meta->collection;
+        // $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
+        // stdLog($log);
     }
 
     private function update()
@@ -231,6 +250,9 @@ class devices extends MY_Controller_new
 
     private function create_form()
     {
+        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+        $this->load->model('m_locations');
+        $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
         output($this->response);
         $log = new stdClass();
         $log->detail = json_encode($this->response->meta);

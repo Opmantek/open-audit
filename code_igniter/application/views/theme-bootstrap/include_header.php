@@ -121,9 +121,9 @@
                         <ul class="dropdown-menu" style="min-width:250px;">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices'>List Devices</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'devices', 'c')) { ?>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_system/add_system'>Add Device Manually</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=create'>Add Device</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/system'>Add Device (using audit result)</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin_system/add_systems'>Add Multiple Devices</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices/import'>Add Multiple Devices</a></li>
                             <?php } ?>
                         </ul>
                     </li>
@@ -139,10 +139,6 @@
                             <?php if ($this->m_users->get_user_permission('', 'devices', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/import'>Import Multiple Discoveries</a></li>
-                            <!--
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discovery/discover_active_directory'>Discover Active Directory</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/admin/scan_ad'>Import Active Directory</a></li>
-                            -->
                             <?php } ?>
                         </ul>
                     </li>
