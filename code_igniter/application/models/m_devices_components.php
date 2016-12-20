@@ -303,6 +303,15 @@ class M_devices_components extends MY_Model
         $create_alerts = $this->config->config['discovery_create_alerts'];
         $delete_noncurrent = $this->config->config['delete_noncurrent'];
 
+
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->type = 'system';
+        $log->discovery_id = null;
+        $log->system_id = $details->id;
+        $log->message = '';
+
+
         $log_details = new stdClass();
         $log_details->message = '';
         $log_details->severity = 7;
@@ -328,9 +337,9 @@ class M_devices_components extends MY_Model
         }
 
         if (!$input) {
-            $log_details->message = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log_details->severity = 5;
-            stdlog($log_details);
+            $log->summary = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $log->severity = 7;
+            discovery_log($log);
             return;
         }
 

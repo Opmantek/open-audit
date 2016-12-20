@@ -64,9 +64,9 @@ if (php_uname('s') != 'Windows NT') {
     $filepath = $this->config->config['base_path'] . '\\other';
 }
 
-if (!empty($_POST['form_details'])) {
+if (!empty($_POST['data'])) {
     // process the input
-    $xml_input = $_POST['form_details'];
+    $xml_input = $_POST['data'];
     try {
         $xml = new SimpleXMLElement($xml_input);
     } catch (Exception $error) {
@@ -957,7 +957,7 @@ if (!empty($_POST['form_details'])) {
         discovery_log($log);
     }
 } else {
-    $log->message = "No 'form_details' sent to input.";
+    $log->message = "No 'data' sent to input.";
     $log->severity = 5;
     stdlog($log);
 }

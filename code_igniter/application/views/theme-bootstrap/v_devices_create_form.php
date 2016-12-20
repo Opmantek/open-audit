@@ -44,13 +44,13 @@ if (php_uname('s') != 'Windows NT') {
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Credentials</span>
+      <span class="text-left">Devices</span>
       <span class="pull-right"></span>
     </h3>
   </div>
   <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-
+    <form action="<?php echo $this->response->links->self; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+    <fieldset>
         <div class="form-group">
             <div class="row">
                 <div class="col-md-6">
@@ -78,13 +78,13 @@ if (php_uname('s') != 'Windows NT') {
                         <div class="col-sm-8 input-group">
                             <select id="data[attributes][type]" name="data[attributes][type]" class="form-control" onChange="choose_type();">
                                 <option value=''>Choose</option>
-                            <?php
-                            foreach ($device_types as $key => $value) {
-                                if ($key != '') {
-                                    echo "<option value='$key'>".__("$value")."</option>";
-                                }
-                            }
-                            ?>
+<?php
+foreach ($device_types as $key => $value) {
+    if ($key != '') {
+        echo "                                <option value='$key'>".__("$value")."</option>\n";
+    }
+}
+?>
                             </select>
                         </div>
                     </div>
@@ -158,7 +158,7 @@ if (php_uname('s') != 'Windows NT') {
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'orgs') { ?>    <option value="<?php echo intval($item->id); ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -170,7 +170,7 @@ if (php_uname('s') != 'Windows NT') {
                             <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'locations') { ?>        <option value="<?php echo intval($item->id); ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'locations') { ?>    <option value="<?php echo intval($item->id); ?>"<?php if ($item->id == 1) { echo " selected"; } ?>><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -267,6 +267,17 @@ if (php_uname('s') != 'Windows NT') {
 
                     <div id="phone" style="display:none;">
                         <div class="form-group">
+                            <label for="data[attributes][service_type]" class="col-sm-3 control-label">Service Type</label>
+                            <div class="col-sm-8 input-group">
+                                <select class="form-control" id="data[attributes][service_type]" name="data[attributes][service_type]">
+                                    <option value="">Choose</option>
+                                    <option value="voice">Voice Only</option>
+                                    <option value="data">Data Only</option>
+                                    <option value="voice and data">Voice and Data</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="data[attributes][service_number]" class="col-sm-3 control-label">Service Number</label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][service_number]" name="data[attributes][service_number]">
@@ -276,17 +287,6 @@ if (php_uname('s') != 'Windows NT') {
                             <label for="data[attributes][service_provider]" class="col-sm-3 control-label">Service Provider</label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][service_provider]" name="data[attributes][service_provider]">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="data[attributes][service_type]" class="col-sm-3 control-label">Service Type</label>
-                            <div class="col-sm-8 input-group">
-                                <select class="form-control" id="data[attributes][service_type]" name="data[attributes][service_type]">
-                                    <option value="">Choose</option>
-                                    <option value="voice">Voice Only</option>
-                                    <option value="data">Data Only</option>
-                                    <option value="voice and data">Voice and Data</option>
-                                </select>
                             </div>
                         </div>
                         <div class="form-group">
@@ -321,54 +321,54 @@ if (php_uname('s') != 'Windows NT') {
                         </div>
                     </div>
                 </div>
-
-            </div>
-        </div>
-
-
-        <div id="audit_input" style="display:none;">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="form_systemXML" class="col-sm-3 control-label">Audit Result Input</label>
-                        <div class="col-sm-8">
-                                <textarea class="form-control" rows="10" id="result"></textarea>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </div>
-
-
-        <div id="file_input" style="display:none;">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="upload_file" class="col-sm-3 control-label">File Input</label>
-                        <div class="col-sm-8">
-                            <input type="file" id="upload_file">
+            <div id="audit_input" style="display:none;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="upload_input" class="col-sm-3 control-label">Audit Result Input</label>
+                            <div class="col-sm-8">
+                                    <textarea class="form-control" rows="10" name="upload_input" id="upload_input"></textarea>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="submit_button" style="display:none;">
-            <hr />
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="submit" class="col-sm-2 control-label"></label>
-                        <div class="col-sm-4">
-                            <div class="col-sm-8 input-group">
-                                <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        <div class="form-group">
+                            <label for="display" class="col-sm-3 control-label">Debug</label>
+                            <div class="col-sm-8">
+                                    <input type="checkbox" id="display" name="display" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+            <div id="file_input" style="display:none;">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="upload_file" class="col-sm-3 control-label">File Input</label>
+                            <div class="col-sm-8">
+                                <input type="file" id="upload_file" name="upload_file">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="submit_button" style="display:none;">
+                <hr />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="submit" class="col-sm-2 control-label"></label>
+                            <div class="col-sm-4">
+                                <div class="col-sm-8 input-group">
+                                    <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
     </form>
   </div>
 </div>
@@ -396,21 +396,27 @@ function choose_type() {
     var showDiv = document.getElementById("data[attributes][type]").value;
     $("#printer").css('display', 'none');
     $("#phone").css('display', 'none');
-    switch (showDiv) {
-        case "printer":
-            $("#printer").css('display', 'block');
-            break;
-
-        case "cell phone":
-        case "mobile modem":
-        case "phone":
-        case "satellite phone":
-            $("#phone").css('display', 'block');
-            break;
-
-        default:
-            break;
+    if (showDiv == "printer") {
+        $("#printer").css('display', 'block');
     }
+    if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
+        $("#phone").css('display', 'block');
+    }
+    // switch (showDiv) {
+    //     case "printer":
+    //         $("#printer").css('display', 'block');
+    //         break;
+
+    //     case "cell phone":
+    //     case "mobile modem":
+    //     case "phone":
+    //     case "satellite phone":
+    //         $("#phone").css('display', 'block');
+    //         break;
+
+    //     default:
+    //         break;
+    // }
 };
 
 

@@ -119,24 +119,35 @@ class input extends CI_Controller
             $this->load->model('m_roles');
             $this->roles = $this->m_roles->collection();
             $this->response->meta->collection = 'input';
-            $this->response->meta->action = 'discoveries_create_form';
             $this->response->data = array();
-            $this->response->meta->id = null;
+            $this->response->meta->id = NULL;
+            $this->response->meta->action = $this->uri->segment(2, 0) . '_create_form';
             $this->response->meta->total = 0;
             $this->response->meta->format = 'screen';
             $this->response->meta->header = 'Input';
             $this->response->meta->heading = 'Input';
+            $this->response->links = array();
             output($this->response);
             #$this->data['include'] = 'v_input_discoveries_create_form';
             #$this->load->view('v_template', $this->data);
         } else {
-            $this->discoveries();
+            $temp = $this->uri->segment(2, 0);
+            if (empty($temp)) {
+                $temp = 'discoveries';
+            }
+            $this->{$temp}();
         }
     }
 
     public function discoveries()
     {
         include "include_input_discoveries.php";
+    }
+
+    public function devices()
+    {
+        #echo "here"; exit();
+        include "include_input_devices.php";
     }
 }
 // End of file input.php

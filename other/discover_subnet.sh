@@ -47,7 +47,7 @@ submit_online="y"
 subnet_range=""
 subnet_timestamp=""
 syslog="y"
-url="http://localhost/open-audit/index.php/discovery/process_subnet"
+url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
@@ -393,10 +393,10 @@ if [[ "$hosts" != "" ]]; then
 					# -b   = background the wget command
 					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 					# -q   = quiet (no output)
-					wget $sequential -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+					wget $sequential -O - -q --no-check-certificate "$url" --post-data=data="$result" 1>/dev/null
 				fi
 				if [[ $(uname) == "Darwin" ]]; then
-					curl --data "form_details=$result" "$url" -o curl_output.txt
+					curl --data "data=$result" "$url" -o curl_output.txt
 				fi
 			else
 				log_entry="IP $host responding."
@@ -419,11 +419,11 @@ if [[ "$submit_online" == "y" ]]; then
 		# -b   = background the wget command
 		# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 		# -q   = quiet (no output)
-		wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$resultcomplete" 1>/dev/null
+		wget -b -O - -q --no-check-certificate "$url" --post-data=data="$resultcomplete" 1>/dev/null
 	fi
 
 	if [[ $(uname) == "Darwin" ]]; then
-		curl --data "form_details=$resultcomplete" "$url"
+		curl --data "data=$resultcomplete" "$url"
 	fi
 fi
 

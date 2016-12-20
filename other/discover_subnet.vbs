@@ -52,7 +52,7 @@ dim submit_online : submit_online = "n"
 dim subnet_range : subnet_range = ""
 dim subnet_timestamp : subnet_timestamp = ""
 dim syslog : syslog = "y"
-dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
+dim url : url = "http://localhost/open-audit/index.php/input/discoveries"
 dim objHTTP
 dim sequential : sequential = "y"
 dim os_scan : os_scan = "n"
@@ -423,7 +423,7 @@ for each host in hosts_in_subnet
                     objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
                 end if
                 objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-                objHTTP.Send "form_details=" + result + vbcrlf
+                objHTTP.Send "data=" + result + vbcrlf
             on error goto 0
             if (error_returned <> 0) then
                 log_entry = "Result send for " & host & " failed"
@@ -509,8 +509,8 @@ if submit_online = "y" then
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
         ' reverted the below (changed in 1/8/2 and back in 1.8.4) to send the final subnet
         ' finished result instead of the entire result file
-        'objHTTP.Send "form_details=" + result_file + vbcrlf
-        objHTTP.Send "form_details=" + result + vbcrlf
+        'objHTTP.Send "data=" + result_file + vbcrlf
+        objHTTP.Send "data=" + result + vbcrlf
     on error goto 0
     if (error_returned <> 0) then
         if debugging > "0" then wscript.echo "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp end if

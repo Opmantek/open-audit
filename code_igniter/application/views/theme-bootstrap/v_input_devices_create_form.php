@@ -34,11 +34,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="discoveries">
+<form class="form-horizontal" id="form_update" method="post" action="devices">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left">Discovery Script Input</span>
+                <span class="text-left">Audit Script Input</span>
                 <span class="pull-right"></span>
             </h3>
         </div>

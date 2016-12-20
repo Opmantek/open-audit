@@ -193,9 +193,6 @@ class devices extends MY_Controller_new
 
     private function create()
     {
-        echo "<pre>\n";
-        echo "Option " . $_POST['input_type'] . " chosen.\n";
-
         if (empty($_POST['input_type']) or $_POST['input_type'] == 'manual_input') {
             $device = new stdClass();
             foreach ($this->response->meta->received_data->attributes as $key => $value) {
@@ -203,28 +200,25 @@ class devices extends MY_Controller_new
                     $device->$key = $value;
                 }
             }
-            $device->last_seen_by = 'manual';
-            $device->last_seen = date("Y-m-d H:i:s");
+            $device->last_seen_by = 'web form';
+            $device->last_seen = $this->config->config['timestamp'];
             $this->load->model('m_devices');
             $id = $this->m_devices->create($device);
-            redirect('devices/' . $id);
+            #redirect('devices/' . $id);
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'audit_input') {
-            #
+            unset($_POST['data']);
+            $input = $_POST['upload_input'];
+            include "include_input_devices.php";
+            #redirect('devices/' . $device->id);
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'file_input') {
-            #
+            unset($_POST['data']);
+            include "include_input_devices.php";
+            #redirect('devices/' . $device->id);
         }
-
-        // $log = new stdClass();
-        // $log->detail = json_encode($this->response->meta);
-        // $log->severity = 5;
-        // $log->status = 'finish';
-        // $log->object = $this->response->meta->collection;
-        // $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
-        // stdLog($log);
     }
 
     private function update()

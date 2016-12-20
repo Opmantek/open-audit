@@ -36,7 +36,7 @@
 # these are REQUIRED and can be overwritten on the command line
 OPENAUDIT_USER="admin"
 OPENAUDIT_PASS="password"
-OPENAUDIT_URL="http://localhost/open-audit/index.php/discovery/discover_subnet"
+OPENAUDIT_URL="http://localhost/open-audit/index.php/input/discoveries"
 FORM_SUBNET=""
 FORM_LOCAL_ADDRESS=""
 DEBUGGING=1
