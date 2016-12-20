@@ -122,7 +122,6 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices'>List Devices</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'devices', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices?action=create'>Add Device</a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/system'>Add Device (using audit result)</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/devices/import'>Add Multiple Devices</a></li>
                             <?php } ?>
                         </ul>

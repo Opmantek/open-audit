@@ -332,12 +332,6 @@ foreach ($device_types as $key => $value) {
                                     <textarea class="form-control" rows="10" name="upload_input" id="upload_input"></textarea>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="display" class="col-sm-3 control-label">Debug</label>
-                            <div class="col-sm-8">
-                                    <input type="checkbox" id="display" name="display" />
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -375,7 +369,7 @@ foreach ($device_types as $key => $value) {
 
 <script>
 $(document).ready(function () {
-    $(document).on('click', '#input_type', function (e) {
+    $(document).on('change', '#input_type', function (e) {
         var showDiv = $("#input_type").val();
         $("#manual_input").css('display', 'none');
         $("#audit_input").css('display', 'none');
@@ -402,21 +396,6 @@ function choose_type() {
     if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
         $("#phone").css('display', 'block');
     }
-    // switch (showDiv) {
-    //     case "printer":
-    //         $("#printer").css('display', 'block');
-    //         break;
-
-    //     case "cell phone":
-    //     case "mobile modem":
-    //     case "phone":
-    //     case "satellite phone":
-    //         $("#phone").css('display', 'block');
-    //         break;
-
-    //     default:
-    //         break;
-    // }
 };
 
 

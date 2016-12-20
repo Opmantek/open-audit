@@ -204,20 +204,21 @@ class devices extends MY_Controller_new
             $device->last_seen = $this->config->config['timestamp'];
             $this->load->model('m_devices');
             $id = $this->m_devices->create($device);
-            #redirect('devices/' . $id);
+            redirect('devices/' . $id);
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'audit_input') {
             unset($_POST['data']);
+            unset($_FILES);
             $input = $_POST['upload_input'];
             include "include_input_devices.php";
-            #redirect('devices/' . $device->id);
+            redirect('devices/' . $details->id);
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'file_input') {
             unset($_POST['data']);
             include "include_input_devices.php";
-            #redirect('devices/' . $device->id);
+            redirect('devices/' . $details->id);
         }
     }
 
