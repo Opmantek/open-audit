@@ -5798,6 +5798,8 @@ class Database extends MY_Controller_new
 
             $sql[] = "UPDATE `queries` SET `sql` = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name\" WHERE name = \"Hardware - Workstations\" ";
 
+            $sql[] = "INSERT INTO `queries` VALUES (NULL, 1, 'Servers - AD Controllers', 'Active Directory Domain Controllers', "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') WHERE windows.domain_role LIKE '%Domain Controller' AND system.status = 'production'", '', 'y', 'system', NOW())";
+
             # oa_group_column
             if ($this->db->table_exists('oa_group_column')) {
                 $sql[] = "DROP TABLE `oa_group_column`";
