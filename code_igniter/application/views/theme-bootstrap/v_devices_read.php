@@ -130,6 +130,9 @@ if ($data['system']->type != 'computer') {
                 <?php if ($data['system']->type != 'computer' and ! empty($data['module'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/module.svg"/><a href="#" data-menuitem="module"><?php echo __('Module'); ?></a></li>
                 <?php } ?>
+                <?php if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Phone'); ?></a></li>
+                <?php } ?>
               </ul>
           </div>
         </div>
@@ -761,7 +764,50 @@ foreach ($list as $item) {
 }
 ?>
 
+<?php
+if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) {
+    $items = "service_number,service_provider,service_plan,service_network,unlock_pin,serial_imei,serial_sim"
+?>
+    <div id="phone" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Phone</h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="phone"></span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="service_type" class="col-sm-4 control-label">Service Type</label>
+                    <div class="col-sm-8 input-group">
+                        <select class="form-control" id="service_type" name="service_type" disabled>
+                            <option value=""<?php if ($data['system']->{'service_type'} == '') { echo ' selected'; } ?>> </option>
+                            <option value="voice"<?php if ($data['system']->{'service_type'} == 'voice') { echo ' selected'; } ?>>Voice Only</option>
+                            <option value="data"<?php if ($data['system']->{'service_type'} == 'data') { echo ' selected'; } ?>>Data Only</option>
+                            <option value="voice and data"<?php if ($data['system']->{'service_type'} == 'voice and data') { echo ' selected'; } ?>>Voice and Data</option>
+                        </select>
+                        <?php if ($edit) { ?>
+                            <span class="input-group-btn"><button id="edit_service_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="service_type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                        <?php } ?>
+                    </div>
+                </div>
 
+                <?php foreach (explode(',', $items) as $item) { ?>
+                <div class="form-group">
+                    <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
+                    <div class="col-sm-8 input-group">
+                      <input type="text" class="form-control" id="<?php echo $item; ?>" placeholder="" value="<?php echo $data['system']->{$item}; ?>" disabled>
+                      <span class="input-group-btn">
+                        <button id="edit_<?php echo $item; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+<?php
+}
+?>
 
 
 
