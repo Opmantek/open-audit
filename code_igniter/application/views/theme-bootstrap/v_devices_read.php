@@ -1180,7 +1180,6 @@ if (!empty($data['software'])) {
     </div>
 <?php } ?>
 
-
     
         <div id="attachment" class="section">
             <div class="panel panel-default">
@@ -1236,13 +1235,72 @@ if (!empty($data['software'])) {
               </div>
             </div>
         </div>
-    
 
+
+
+<?php
+$item = 'discovery_log';
+if (isset($data[$item]) and count($data[$item]) > 0) {
+?>
+<div id="<?php echo $item; ?>" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left"><?php echo __('Discovery Log'); ?></h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="discovery_log"></span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo count($data['discovery_log']); ?> items</span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($data[$item][0] as $key => $value) {
+                        if ($key != 'system_id' and $key != 'ip_padded') {
+                            if (is_int($value)) {
+                                echo "<th class=\"text-right\">" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                            } else {
+                                echo "<th>" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                            }
+                        }
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    foreach ($data[$item] as $row) {
+                        echo '<tr>';
+                        foreach ($row as $key => $value) {
+                            if ($key != 'system_id' and $key != 'ip_padded') {
+                                if (is_int($value)) {
+                                    echo "<td class=\"text-right\">" . number_format($value) . "</td>\n";
+                                } else {
+                                    if (strlen($value) > 40) {
+                                        echo "<td class=\"wrap\">" . $value . "</td>\n";
+                                    } else {
+                                        echo "<td>" . $value . "</td>\n";
+                                    }
+                                }
+                            }
+                        }
+                        echo '</tr>';
+                    }
+
+                ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<?php
+}
+?>
 
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'audit_log', 'change_log', 'discovery_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
+$list = array ('alert_log', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
     $list[] = 'disk';
 }
