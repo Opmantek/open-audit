@@ -781,7 +781,7 @@ fi
 # 	wget --delete-after --post-file="$xml_file" $url 2>/dev/null
 # fi
 
-sed -i -e 's/form_systemXML=//g' $xml_file
+sed -i -e 's/data=//g' $xml_file
 sed -i -e 's/%2B/+/g' $xml_file
 if [ "$create_file" != "y" ]; then
 	`rm $PWD/$xml_file`

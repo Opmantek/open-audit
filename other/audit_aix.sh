@@ -576,7 +576,7 @@ fi
 
 if [ "$submit_online" = "y" ]; then
 	echo "Submitting results to server"
-	post_result="perl -MLWP::UserAgent -MHTTP::Request::Common -e 'my \$url=\"$url\"; open(F,\"$xml_file\"); my \$result=join(\"\",<F>); close(F); my \$ua=LWP::UserAgent->new; my \$req=POST(\$url, [ form_systemXML => \"\$result\" ] ); my \$response=\$ua->request(\$req); if ( \$response->is_error() ) { print \$response->status_line; }'"
+	post_result="perl -MLWP::UserAgent -MHTTP::Request::Common -e 'my \$url=\"$url\"; open(F,\"$xml_file\"); my \$result=join(\"\",<F>); close(F); my \$ua=LWP::UserAgent->new; my \$req=POST(\$url, [ data => \"\$result\" ] ); my \$response=\$ua->request(\$req); if ( \$response->is_error() ) { print \$response->status_line; }'"
 	if [ "$debugging" -gt 2 ]; then
 		echo "$post_result"
 	fi

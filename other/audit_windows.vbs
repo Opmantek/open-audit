@@ -824,7 +824,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	objHTTP.Open "POST", url, False
 	objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
 	result.position = 0
-	objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
+	objHTTP.Send "data=" + urlEncode(result.ReadText()) + vbcrlf
 	if (objHTTP.ResponseText > "" and debugging > "2") then
 	wscript.echo
 	wscript.echo
@@ -6441,7 +6441,7 @@ if submit_online = "y" then
       result.position = 0
       On Error Resume Next
       objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-      objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
+      objHTTP.Send "data=" + urlEncode(result.ReadText()) + vbcrlf
       aErr = Array(Err.Number, Err.Description)
       On Error GoTo 0
       Select Case True
