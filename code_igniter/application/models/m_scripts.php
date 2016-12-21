@@ -206,9 +206,9 @@ class M_scripts extends MY_Model
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
 
-        if ($options->url = 'http://open-audit/index.php/system/add_system') {
+        if ($options->url == 'http://open-audit/index.php/system/add_system' or $options->url == 'http://open-audit/index.php/input/devices') {
             # inject our default network address
-            $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
+            $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/input/devices';
         }
 
         $find = 'Configuration from web UI here';

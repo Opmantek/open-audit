@@ -101,7 +101,7 @@ class test extends CI_Controller
         $options['struser'] = '';
         $options['submit_online'] = 'y';
         $options['system_id'] = '';
-        $options['url'] = 'http://localhost/open-audit/index.php/system/add_system';
+        $options['url'] = 'http://localhost/open-audit/index.php/input/devices';
         $options['use_proxy'] = 'n';
         $options['win32_product'] = 'n';
         $options['windows_user_work_1'] = 'physicalDeliveryOfficeName';

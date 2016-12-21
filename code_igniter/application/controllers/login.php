@@ -208,7 +208,7 @@ class login extends CI_Controller
                 $variable['strcomputer'] = '.';
                 $variable['submit_online'] = 'y';
                 $variable['create_file'] = 'n';
-                $variable['url'] = base_url().'index.php/system/add_system';
+                $variable['url'] = base_url().'index.php/input/devices';
                 $variable['use_proxy'] = 'n';
                 $variable['struser'] = '';
                 $variable['strpass'] = '';
@@ -251,7 +251,7 @@ class login extends CI_Controller
                 $variable['strcomputer'] = '.';
                 $variable['submit_online'] = 'y';
                 $variable['create_file'] = 'n';
-                $variable['url'] = base_url().'index.php/system/add_system';
+                $variable['url'] = base_url().'index.php/input/devices';
                 $variable['use_proxy'] = 'n';
                 $variable['struser'] = '';
                 $variable['strpass'] = '';
@@ -293,7 +293,7 @@ class login extends CI_Controller
                 $variable['strcomputer'] = '.';
                 $variable['submit_online'] = 'y';
                 $variable['create_file'] = 'n';
-                $variable['url'] = base_url().'index.php/system/add_system';
+                $variable['url'] = base_url().'index.php/input/devices';
                 $variable['use_proxy'] = 'n';
                 $variable['struser'] = '';
                 $variable['strpass'] = '';

@@ -171,7 +171,7 @@ class System extends CI_Controller
             unset($temp_user);
             echo "<hr>\n";
             echo 'Count: ' . $count . "<br />\n";
-            echo "<a href='" . base_url() . "index.php/system/add_system_ad'>Back to input page</a><br />\n";
+            echo "<a href='" . base_url() . "index.php/input/devices'>Back to input page</a><br />\n";
             echo "AD Data submitted.<br />\n";
             echo "</body>\n</html>";
             exit;

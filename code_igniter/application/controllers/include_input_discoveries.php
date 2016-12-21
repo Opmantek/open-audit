@@ -642,7 +642,7 @@ if (!empty($_POST['data'])) {
             // *nix Open-AudIT server auditing a Windows target
             if (php_uname('s') != 'Windows NT') {
                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
-                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/system/add_system debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi";
+                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi";
                 if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                     if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
                         # All complete!
@@ -681,7 +681,7 @@ if (!empty($_POST['data'])) {
                     unset($temp);
 
                     if ($display == 'y') {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/system/add_system debugging=3 system_id=".$device->id." last_seen_by=audit_wmi";
+                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi";
                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
                         exec($command_string, $output, $return_var);
                         $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
@@ -702,7 +702,7 @@ if (!empty($_POST['data'])) {
                         $output = null;
                         $return_var = null;
                     } else {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/system/add_system debugging=0  system_id=".$device->id." last_seen_by=audit_wmi";
+                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=0  system_id=".$device->id." last_seen_by=audit_wmi";
                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
                         pclose(popen($command_string, "r"));
                     }
@@ -717,7 +717,7 @@ if (!empty($_POST['data'])) {
                     $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                     $source = 'audit_windows_' . $ts . '.vbs';
-                    $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/system/add_system debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi";
+                    $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi";
                     if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                             $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             stdlog($log);
@@ -872,10 +872,10 @@ if (!empty($_POST['data'])) {
                 # successfully copied and chmodded the audit script
                 if (!empty($credentials_ssh->sudo)) {
                     # run the audit script as a normal user, using sudo
-                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/system/add_system debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
                 } else {
                     # run the script without using sudo
-                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/system/add_system debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
                 }
                 $result = ssh_command($device->ip, $credentials_ssh, $command, $log);
                 if ($unlink != '') {

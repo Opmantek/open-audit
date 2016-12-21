@@ -5839,13 +5839,31 @@ class Database extends MY_Controller_new
                     log_error('ERR-0023', $this->db->_error_message());
                 }
             }
+
+            unset($sql);
+
+            # scripts
+            # Update with the new endpoint for devices to submit audit results to
+            $sql = "SELECT * FROM `scripts`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $script) {
+                $json = @json_decode($script->options);
+                if (!empty($json)) {
+                    $json->url = str_replace('/system/add_system', '/input/devices', $json->url);
+                    $script->options = json_encode($json);
+                    $sql = "UPDATE `sc5ipts` SET options = ? WHERE id = ?";
+                    $data = array($script->options, intval($script->id));
+                }
+            }
+
             $this->db->db_debug = $temp_debug;
             $this->data['output'] .= "Upgrade database to 1.14.2 completed\n\n";
             $this->config->config['internal_version'] = '20161130';
             $this->config->config['display_version'] = '1.14.2';
 
-            $sql_time = "SELECT NOW() as `timestamp`";
-            $query = $this->db->query($sql_time);
+            $sql = "SELECT NOW() as `timestamp`";
+            $query = $this->db->query($sql);
             $result = $query->result();
             $this->data['output'] .= 'Completing 1.14.2 upgrade at ' . $result[0]->timestamp . "\n\n";
 

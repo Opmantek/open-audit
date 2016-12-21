@@ -181,8 +181,7 @@ var modal_content_image = "";
 
             <li><a href='javascript:void(0)'><?php echo __('Devices')?></a>
                 <ul>
-                    <li><a href='<?php echo $oa_web_index?>/admin_system/add_system'><?php echo __('Add a Device (manually)')?></a></li>
-                    <li><a href='<?php echo $oa_web_index?>/system'><?php echo __('Add a Computer (using an audit result)')?></a></li>
+                    <li><a href='<?php echo $oa_web_index?>/devices?action=create'><?php echo __('Add a Device')?></a></li>
                     <li><a href='<?php echo $oa_web_index?>/admin_system/add_systems'><?php echo __('Add Multiple Devices (using a spreadsheet)')?></a></li>
                 </ul>
             </li>

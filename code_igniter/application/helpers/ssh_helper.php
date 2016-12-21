@@ -363,7 +363,7 @@ if (! function_exists('ssh_command')) {
             $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
             if ($credentials->type == 'ssh') {
                 #$command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . str_replace('"', '\"', $password) . ' ' . $command;
-                #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/system/add_system debugging=1 system_id=".$details->id." self_delete=y\"";
+                #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/input/devices debugging=1 system_id=".$details->id." self_delete=y\"";
                 $command_string = 'echo y | ' . $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
                 exec($command_string, $return['output'], $return['status']);
                 if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
