@@ -88,6 +88,11 @@ class input extends CI_Controller
         if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
             exit;
         }
+
+        $this->response = new stdClass();
+        $this->response->meta = new stdClass();
+        $this->response->meta->collection = 'input';
+        $this->response->meta->action = '';
     }
 
     /**
@@ -141,12 +146,13 @@ class input extends CI_Controller
 
     public function discoveries()
     {
+        $this->response->meta->action = 'discoveries';
         include "include_input_discoveries.php";
     }
 
     public function devices()
     {
-        #echo "here"; exit();
+        $this->response->meta->action = 'devices';
         include "include_input_devices.php";
     }
 }
