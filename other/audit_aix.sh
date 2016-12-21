@@ -52,7 +52,7 @@ create_file="y"
 
 # the address of the OAv2 server "submit" page
 # url="http://localhost/index.php/system/add_system"
-url="http://localhost/open-audit/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/input/devices"
 
 # 0 = no debug
 # 1 = basic debug

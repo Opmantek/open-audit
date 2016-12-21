@@ -61,7 +61,7 @@ submit_online="n"
 create_file="y"
 
 # the address of the Open-AudIT server "submit" page
-url="http://localhost/open-audit/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/input/devices"
 
 # optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""

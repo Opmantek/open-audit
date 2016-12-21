@@ -48,7 +48,7 @@ submit_online = "y"
 create_file = "n"
 
 ' the address of the Open-AudIT server "submit" page
-url = "http://localhost/open-audit/index.php/system/add_system"
+url = "http://localhost/open-audit/index.php/input/devices"
 
 ' submit via a proxy (using the settings of the user running the script)
 use_proxy = "n"
@@ -1183,7 +1183,7 @@ if san_audit = "y" and audit_location = "local" then
 				' send the output result to the server
 				if submit_online = "y" then
 				   if debugging > "0" then wscript.echo "Submitting SAN audit online" end if
-				   san_url = replace(url, "system/add_system", "san/add_san")
+				   san_url = replace(url, "input/devices", "san/add_san")
 				   Err.clear
 				   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
 				   objHTTP.setTimeouts 5000, 5000, 5000, 480000
