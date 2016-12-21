@@ -244,6 +244,9 @@ if (!empty($_POST['data'])) {
 
         if (count($temp) > 0) {
             $credentials = array_merge($credentials, $temp);
+        } else {
+            $log->message = "No credentials returned from database";
+            discovery_log($log);
         }
         unset($temp);
         # TODO - replace the ugly code below
