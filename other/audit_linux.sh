@@ -402,7 +402,7 @@ fi
 #========================
 if [ "$san_audit" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
-		san_url=$(echo "$san_url" | sed 's/system\/add_system/san\/add_san/g')
+		san_url=$(echo "$san_url" | sed 's/input\/devices/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
