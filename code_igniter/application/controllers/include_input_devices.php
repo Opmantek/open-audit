@@ -75,6 +75,7 @@ if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_na
     $input = file_get_contents($target_path);
     if (empty($input)) {
         log_error('ERR-0011');
+        print_r($this->response->errors);
     }
     unlink($target_path);
 }
@@ -85,6 +86,7 @@ if (!empty($_POST['data'])) {
 
 if (empty($input)) {
     log_error('ERR-0021');
+    print_r($this->response->errors);
     exit();
 }
 
@@ -107,6 +109,7 @@ try {
     // $hostname = @str_replace("\t\t<hostname>", '', $xml_split[5]);
     // $hostname = @str_replace('</hostname>', '', $hostname);
     log_error('ERR-0012');
+    print_r($this->response->errors);
     exit;
 }
 
@@ -190,6 +193,12 @@ if ((string) $i === '') {
     $this->m_system->update_system($details);
     echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
 }
+
+# delete the discovery_logs with pid != current pid and discovery_id = NULL
+$sql = "DELETE FROM discovery_log WHERE system_id = ? AND discovery_id IS NULL AND pid != ?";
+$data = array(intval($details->id), intval(getmypid()));
+$query = $this->db->query($sql, $data);
+
 
 $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
 
