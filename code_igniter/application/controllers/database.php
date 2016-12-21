@@ -5845,6 +5845,10 @@ class Database extends MY_Controller_new
             # scripts
             # Update with the new endpoint for devices to submit audit results to
             $sql = "SELECT * FROM `scripts`";
+            $log_details->message = $sql;
+            $log_details->status = 'running sql';
+            stdlog($log_details);
+            $this->data['output'] .= $sql.";\n\n";
             $query = $this->db->query($sql);
             $result = $query->result();
             foreach ($result as $script) {
@@ -5852,8 +5856,13 @@ class Database extends MY_Controller_new
                 if (!empty($json)) {
                     $json->url = str_replace('/system/add_system', '/input/devices', $json->url);
                     $script->options = json_encode($json);
-                    $sql = "UPDATE `sc5ipts` SET options = ? WHERE id = ?";
+                    $sql = "UPDATE `scripts` SET options = ? WHERE id = ?";
                     $data = array($script->options, intval($script->id));
+                    $query = $this->db->query($sql, $data);
+                    $log_details->message = $this->db->last_query();
+                    $log_details->status = 'running sql';
+                    stdlog($log_details);
+                    $this->data['output'] .= $this->db->last_query().";\n\n";
                 }
             }
 
