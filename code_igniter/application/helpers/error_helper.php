@@ -61,7 +61,7 @@ if (! function_exists('getError')) {
         $error_array = array();
         $CI = & get_instance();
         if (empty($extra)) {
-            $extra = ' (User:' . $CI->user->id . ', Collection:' . $CI->response->meta->collection . ', Action:' . $CI->response->meta->action;
+            $extra = ' (User:' . @$CI->user->id . ', Collection:' . $CI->response->meta->collection . ', Action:' . $CI->response->meta->action;
         } else {
             $extra = ' (' . $extra;
         }
