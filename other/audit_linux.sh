@@ -744,7 +744,7 @@ fi
 xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 
 {
-echo "form_systemXML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+echo "data=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
 echo "	<sys>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
@@ -2242,7 +2242,7 @@ if [ "$submit_online" = "y" ]; then
 	fi
 fi
 
-sed -i -e 's/form_systemXML=//g' "$xml_file"
+sed -i -e 's/data=//g' "$xml_file"
 sed -i -e 's/%2B/+/g' "$xml_file"
 sed -i -e 's/%22/"/g' "$xml_file"
 sed -i -e 's/%26/&/g' "$xml_file"
