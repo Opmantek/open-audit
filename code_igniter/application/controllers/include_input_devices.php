@@ -145,7 +145,7 @@ if ($received_status !== 'production') {
     $received_system_id = '';
 }
 
-if (empty($details->fqdn) and !empty($details->hostname and !empty($details->domain))) {
+if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
     $details->fqdn = $details->hostname . "." . $details->domain;
 }
 
