@@ -178,14 +178,7 @@ class M_devices extends MY_Model
         $this->load->model('m_devices_components');
         $this->load->model('m_system');
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
-        #$sql = "SELECT `system`.*, GROUP_CONCAT(DISTINCT(`audit_log`.`type`)) AS `seen_by` FROM `system` LEFT JOIN `audit_log` ON `system`.`id` = `audit_log`.`system_id` WHERE `system`.`id` = ? GROUP BY `audit_log`.`system_id`";
-        $sql = $this->clean_sql($sql);
         $result = $this->run_sql($sql, array($id));
-        $sql = "/* m_devices::read */ " . "SELECT fields.name, field.value FROM field RIGHT JOIN fields ON fields.id = field.fields_id AND field.system_id = ?";
-        $result_fields = $this->run_sql($sql, array($id));
-        foreach ($result_fields as $field) {
-            $result[0]->{$field->name} = $field->value;
-        }
         $result = $this->format_data($result, 'devices');
         return($result);
     }
