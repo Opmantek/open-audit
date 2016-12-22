@@ -4921,10 +4921,11 @@ class Database extends MY_Controller_new
                 $sql[] = "ALTER TABLE `additional_field` ADD `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_by`";
             }
 
-
-
             # attachment
-            $sql[] = "set @var=if((SELECT true FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = 'attachment' AND CONSTRAINT_NAME = 'att_user_id' AND CONSTRAINT_TYPE = 'FOREIGN KEY') = true,'ALTER TABLE attachment drop foreign key att_user_id','select 1'); prepare stmt from @var; execute stmt; deallocate prepare stmt;";
+            $sql[] = "set @var=if((SELECT true FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = DATABASE() AND TABLE_NAME = 'attachment' AND CONSTRAINT_NAME = 'att_user_id' AND CONSTRAINT_TYPE = 'FOREIGN KEY') = true,'ALTER TABLE `attachment` DROP FOREIGN KEY att_user_id','select 1')";
+            $sql[] = "prepare stmt from @var";
+            $sql[] = "execute stmt";
+            $sql[] = "deallocate prepare stmt";
 
             if ($this->db->field_exists('timestamp', 'attachment')) {
                 $sql[] = "ALTER TABLE `attachment` CHANGE `timestamp` `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
@@ -4934,9 +4935,9 @@ class Database extends MY_Controller_new
             }
             $sql[] = "UPDATE `attachment`, `oa_user` SET attachment.edited_by = oa_user.full_name WHERE attachment.user_id = oa_user.id";
 
-            if (!$this->db->field_exists('user_id', 'attachment')) {
+            #if (!$this->db->field_exists('user_id', 'attachment')) {
                 $sql[] = "ALTER TABLE `attachment` DROP user_id";
-            }
+            #}
 
             # audit log
             $sql[] = "ALTER TABLE `audit_log` CHANGE `timestamp` `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'";
@@ -4983,6 +4984,8 @@ class Database extends MY_Controller_new
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
             $sql[] = "INSERT INTO `configuration` (SELECT NULL, config_name, config_value, config_editable, 'system', NOW(), config_description FROM oa_config)";
 
+            $sql[] = "DELETE FROM `configuration` WHERE `name` = 'ad_domain'";
+            $sql[] = "DELETE FROM `configuration` WHERE `name` = 'ad_server'";
             $sql[] = "DELETE FROM `configuration` WHERE `name` = 'log_style'";
             $sql[] = "DELETE FROM `configuration` WHERE `name` LIKE 'log_retain_level%'";
 
@@ -5038,7 +5041,7 @@ class Database extends MY_Controller_new
               `system_id` int(10) unsigned DEFAULT NULL,
               `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
               `severity` int(1) unsigned NOT NULL DEFAULT '5',
-              `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
+              `severity_text` enum ('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
               `pid` int(10) unsigned NOT NULL DEFAULT '0',
               `ip` varchar(45) NOT NULL DEFAULT '',
               `file` varchar(100) NOT NULL DEFAULT '',
@@ -5322,6 +5325,8 @@ class Database extends MY_Controller_new
             }
             $sql[] = "ALTER TABLE `oa_org` CHANGE `parent_id` `parent_id` int(10) unsigned DEFAULT '1'";
             $sql[] = "UPDATE oa_org SET ad_group = CONCAT('open-audit_orgs_', LOWER(REPLACE(`name`, ' ', '_')))";
+            $sql[] = "UPDATE oa_org SET edited_by = 'system'";
+            $sql[] = "UPDATE oa_org SET edited_date = NOW()";
 
             # oa_report
             if (!$this->db->field_exists('org_id', 'oa_report')) {
@@ -5658,7 +5663,7 @@ class Database extends MY_Controller_new
             $this->db->db_debug = $temp_debug;
 
             # Migrate old fields groups
-            $field_sql = "SELECT * FROM `additional_fields`";
+            $field_sql = "SELECT * FROM `additional_field`";
             $query = $this->db->query($field_sql);
             $result = $query->result();
             foreach ($result as $field) {
@@ -5772,26 +5777,34 @@ class Database extends MY_Controller_new
                 $sql[] = "RENAME TABLE `oa_connection` TO `connections`";
             }
 
-            # fields
+            # credentials
+            $sql[] = "INSERT INTO credentials VALUES (NULL, 'Default SNMP', '', 'snmp', 'ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==', 1, 'system', NOW())";
+
+            # field / fields
             if (!$this->db->field_exists('group_id', 'additional_field')) {
                 // for the beta users, this field might have been removed upon the 1.14 upgrade
                 $sql[] = "ALTER TABLE `additional_field` ADD `group_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER org_id";
             }
-            if (!$this->db->field_exists('additional_field_id', 'additional_field_item')) {
-                $sql[] = "ALTER TABLE `additional_field_item` CHANGE `additional_field_id` `fields_id` int(10) unsigned NOT NULL DEFAULT '0'";
-            }
+            $sql[] = "ALTER TABLE `additional_field_item` CHANGE `additional_field_id` `fields_id` int(10) unsigned NOT NULL DEFAULT '0'";
+
             if ($this->db->table_exists('additional_field')) {
                 $sql[] = "RENAME TABLE `additional_field` TO `fields`";
             }
             if ($this->db->table_exists('additional_field_item')) {
                 $sql[] = "RENAME TABLE `additional_field_item` TO `field`";
             }
-            #TODO - nwe indexes
+
+            $sql[] = "ALTER TABLE `field` DROP FOREIGN KEY additional_field_item_system_id";
+            $sql[] = "ALTER TABLE `field` ADD CONSTRAINT `field_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE";
+            $sql[] = "ALTER TABLE `fields` CHANGE `group_id` `group_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `org_id`";
 
             # locations
             if ($this->db->table_exists('oa_location')) {
                 $sql[] = "RENAME TABLE `oa_location` TO `locations`";
             }
+
+            # notes
+            $sql[] = "ALTER TABLE `notes` CHANGE `edited_by` `edited_by` varchar(200) NOT NULL DEFAULT '' AFTER `comment`";
 
             # queries
             $sql[] = "UPDATE `queries` SET `sql` = \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter\" WHERE name = \"Billing Report\" ";
@@ -5820,6 +5833,25 @@ class Database extends MY_Controller_new
                 $sql[] = "DROP TABLE `oa_report_column`";
             }
 
+            # oa_user
+            $sql[] = "ALTER TABLE `oa_user` CHANGE `ldap` `ldap` text NOT NULL AFTER `active`";
+
+            # summaries
+            $sql[] = "DELETE FROM summaries";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Device Classes',1,'system','class','','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Device Status',1,'system','status','','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Device Types',1,'system','type','','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'DNS Domains',1,'system','dns_domain','','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Form Factors',1,'system','form_factor','system.form_factor,system.class','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Manufacturers',1,'system','manufacturer','system.model','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Operating Systems',1,'system','os_family','','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Server Types',1,'server','type','server.name,server.full_name,server.version,server.status','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Services',1,'service','name','service.name,service.state','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Software',1,'software','name','software.name,software.version','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Software Keys',1,'software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system',NOW())";
+            $sql[] = "INSERT INTO summaries VALUES (NULL,'Active Directory OU\'s',1,'windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system',NOW())";
+
+
             # task
             $sql[] = "ALTER TABLE `task` CHANGE `task` `task` TEXT NOT NULL DEFAULT ''";
 
@@ -5831,9 +5863,10 @@ class Database extends MY_Controller_new
             foreach ($sql as $this_query) {
                 $log_details->message = $this_query;
                 $log_details->status = 'running sql';
-                stdlog($log_details);
                 $this->data['output'] .= $this_query.";\n\n";
                 $query = $this->db->query($this_query);
+                $log_details->message = $this->db->last_query();
+                stdlog($log_details);
                 if ($this->db->_error_message()) {
                     $this->data['output'] .= 'ERROR - ' . $this->db->_error_message() . "\n\n";
                     log_error('ERR-0023', $this->db->_error_message());

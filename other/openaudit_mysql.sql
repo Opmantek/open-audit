@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.29, for osx10.6 (i386)
+-- MySQL dump 10.13  Distrib 5.7.16, for Linux (x86_64)
 --
 -- Host: localhost    Database: openaudit
 -- ------------------------------------------------------
--- Server version	5.5.29-log
+-- Server version	5.7.16-0ubuntu0.16.04.1-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -212,7 +212,7 @@ CREATE TABLE `configuration` (
   `name` varchar(45) NOT NULL DEFAULT '',
   `value` varchar(250) NOT NULL DEFAULT '',
   `editable` varchar(1) NOT NULL DEFAULT 'n',
-  `edited_by`varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(100) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -225,54 +225,54 @@ CREATE TABLE `configuration` (
 
 LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
-INSERT INTO `configuration` VALUES (NULL, 'blessed_subnets_use','y','y','system',NOW(),'Should we only accept data from the blessed subnets list.');
-INSERT INTO `configuration` VALUES (NULL, 'default_network_address','','y','system',NOW(),'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
-INSERT INTO `configuration` VALUES (NULL, 'delete_noncurrent','n','y','system',NOW(),'Should we delete any attributes that are not present when we audit a device.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_create_alerts','y','y','system',NOW(),'Should Open-AudIT create an entry in the alert table if a change is detected.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_ip_exclude','','y','system',NOW(),'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_linux_script_directory','/tmp/','y','system',NOW(),'The directory the script is copied into on the target device.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_linux_script_permissions','700','y','system',NOW(),'The permissions set on the audit_linux.sh script when it is copied to the target device.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_nmap_os','n','y','system',NOW(),'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_update_groups','y','y','system',NOW(),'Should Open-AudIT update the device groups after discovering a device.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_use_ipmi','y','y','system',NOW(),'Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (NULL, 'discovery_use_dns','y','y','system',NOW(),'Should we use DNS for looking up the hostname and domain.');
-INSERT INTO `configuration` VALUES (NULL, 'display_version','1.14.2','n','system',NOW(),'The version shown on the web pages.');
-INSERT INTO `configuration` VALUES (NULL, 'distinct_groups','y','y','system',NOW(),'Display Groups on the homepage, separated into the type of each Group.');
-INSERT INTO `configuration` VALUES (NULL, 'download_reports','download','y','system',NOW(),'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system',NOW(),'The API key for Google Maps.');
-INSERT INTO `configuration` VALUES (NULL, 'homepage','groups','y','system',NOW(),'Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (NULL, 'internal_version','20161130','n','system',NOW(),'The internal numerical version.');
-INSERT INTO `configuration` VALUES (NULL, 'logo','logo-banner-oac-oae','y','system',NOW(),'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
-INSERT INTO `configuration` VALUES (NULL, 'log_level','5','y','system',NOW(),'Tells Open-AudIT which severity of event (at least) should be logged.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_0','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 0.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_1','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 1.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_2','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 2.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_3','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 3.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_4','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 4.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_5','90','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 5.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_6','30','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 6.');
-INSERT INTO `configuration` VALUES (NULL, 'log_retain_level_7','7','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 7.');
-INSERT INTO `configuration` VALUES (NULL, 'maps_url','/omk/oae/map','y','system',NOW(),'The web server address of opMaps.');
-INSERT INTO `configuration` VALUES (NULL, 'match_dbus','n','y','system',NOW(),'Should we match a device based on its dbus id.');
-INSERT INTO `configuration` VALUES (NULL, 'match_fqdn','y','y','system',NOW(),'Should we match a device based on its fqdn.');
-INSERT INTO `configuration` VALUES (NULL, 'match_hostname','y','y','system',NOW(),'Should we match a device based on its hostname.');
-INSERT INTO `configuration` VALUES (NULL, 'match_hostname_dbus','y','y','system',NOW(),'Should we match a device based on its hostname and dbus id.');
-INSERT INTO `configuration` VALUES (NULL, 'match_hostname_serial','y','y','system',NOW(),'Should we match a device based on its hostname and serial.');
-INSERT INTO `configuration` VALUES (NULL, 'match_hostname_uuid','y','y','system',NOW(),'Should we match a device based on its hostname and UUID.');
-INSERT INTO `configuration` VALUES (NULL, 'match_ip','n','y','system',NOW(),'Should we match a device based on its ip.');
-INSERT INTO `configuration` VALUES (NULL, 'match_mac','n','y','system',NOW(),'Should we match a device based on its mac address.');
-INSERT INTO `configuration` VALUES (NULL, 'match_mac_vmware','n','y','system',NOW(),'Should we match a device based mac address even if it\'s a known likely duplicate from VMware.');
-INSERT INTO `configuration` VALUES (NULL, 'match_serial','y','y','system',NOW(),'Should we match a device based on its serial number.');
-INSERT INTO `configuration` VALUES (NULL, 'match_serial_type','y','y','system',NOW(),'Should we match a device based on its serial and type.');
-INSERT INTO `configuration` VALUES (NULL, 'match_uuid','y','y','system',NOW(),'Should we match a device based on its UUID.');
-INSERT INTO `configuration` VALUES (NULL, 'nmis','n','y','system',NOW(),'Enable import / export to NMIS functions.');
-INSERT INTO `configuration` VALUES (NULL, 'nmis_url','','y','system',NOW(),'The web server address of NMIS.');
-INSERT INTO `configuration` VALUES (NULL, 'oae_license','none','n','system',NOW(),'License status of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (NULL, 'oae_prompt','2015-06-01','n','system',NOW(),'Prompt to activate a license for Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (NULL, 'oae_url','/omk/oae','y','system',NOW(),'The web server address of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (NULL, 'page_refresh','300','y','system',NOW(),'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
-INSERT INTO `configuration` VALUES (NULL, 'rss_enable','y','y','system',NOW(),'Enable the RSS feed.');
-INSERT INTO `configuration` VALUES (NULL, 'rss_url','https://community.opmantek.com/rss/OA.xml','y','system',NOW(),'The RSS feed URL.');
+INSERT INTO `configuration` VALUES (NULL,'blessed_subnets_use','y','y','system',NOW(),'Should we only accept data from the blessed subnets list.');
+INSERT INTO `configuration` VALUES (NULL,'default_network_address','','y','system',NOW(),'The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
+INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent','n','y','system',NOW(),'Should we delete any attributes that are not present when we audit a device.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_create_alerts','y','y','system',NOW(),'Should Open-AudIT create an entry in the alert table if a change is detected.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_ip_exclude','','y','system',NOW(),'Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_directory','/tmp/','y','system',NOW(),'The directory the script is copied into on the target device.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_linux_script_permissions','700','y','system',NOW(),'The permissions set on the audit_linux.sh script when it is copied to the target device.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_nmap_os','n','y','system',NOW(),'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
+INSERT INTO `configuration` VALUES (NULL,'discovery_update_groups','y','y','system',NOW(),'Should Open-AudIT update the device groups after discovering a device.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_use_ipmi','y','y','system',NOW(),'Should we use ipmitool for discovering management ports if ipmitool is installed.');
+INSERT INTO `configuration` VALUES (NULL,'discovery_use_dns','y','y','system',NOW(),'Should we use DNS for looking up the hostname and domain.');
+INSERT INTO `configuration` VALUES (NULL,'display_version','1.14.2','n','system',NOW(),'The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (NULL,'distinct_groups','y','y','system',NOW(),'Display Groups on the homepage, separated into the type of each Group.');
+INSERT INTO `configuration` VALUES (NULL,'download_reports','download','y','system',NOW(),'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
+INSERT INTO `configuration` VALUES (NULL,'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system',NOW(),'The API key for Google Maps.');
+INSERT INTO `configuration` VALUES (NULL,'homepage','groups','y','system',NOW(),'Any links to the default page should be directed to this endpoint.');
+INSERT INTO `configuration` VALUES (NULL,'internal_version','20161130','n','system',NOW(),'The internal numerical version.');
+INSERT INTO `configuration` VALUES (NULL,'logo','logo-banner-oac-oae','y','system',NOW(),'The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
+INSERT INTO `configuration` VALUES (NULL,'log_level','5','y','system',NOW(),'Tells Open-AudIT which severity of event (at least) should be logged.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_0','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 0.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_1','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 1.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_2','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 2.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_3','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 3.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_4','180','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 4.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_5','90','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 5.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_6','30','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 6.');
+INSERT INTO `configuration` VALUES (NULL,'log_retain_level_7','7','y','system',NOW(),'Tells Open-AudIT how many days to keep logs with severity 7.');
+INSERT INTO `configuration` VALUES (NULL,'maps_url','/omk/oae/map','y','system',NOW(),'The web server address of opMaps.');
+INSERT INTO `configuration` VALUES (NULL,'match_dbus','n','y','system',NOW(),'Should we match a device based on its dbus id.');
+INSERT INTO `configuration` VALUES (NULL,'match_fqdn','y','y','system',NOW(),'Should we match a device based on its fqdn.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname','y','y','system',NOW(),'Should we match a device based on its hostname.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname_dbus','y','y','system',NOW(),'Should we match a device based on its hostname and dbus id.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname_serial','y','y','system',NOW(),'Should we match a device based on its hostname and serial.');
+INSERT INTO `configuration` VALUES (NULL,'match_hostname_uuid','y','y','system',NOW(),'Should we match a device based on its hostname and UUID.');
+INSERT INTO `configuration` VALUES (NULL,'match_ip','n','y','system',NOW(),'Should we match a device based on its ip.');
+INSERT INTO `configuration` VALUES (NULL,'match_mac','n','y','system',NOW(),'Should we match a device based on its mac address.');
+INSERT INTO `configuration` VALUES (NULL,'match_mac_vmware','n','y','system',NOW(),'Should we match a device based mac address even if it\'s a known likely duplicate from VMware.');
+INSERT INTO `configuration` VALUES (NULL,'match_serial','y','y','system',NOW(),'Should we match a device based on its serial number.');
+INSERT INTO `configuration` VALUES (NULL,'match_serial_type','y','y','system',NOW(),'Should we match a device based on its serial and type.');
+INSERT INTO `configuration` VALUES (NULL,'match_uuid','y','y','system',NOW(),'Should we match a device based on its UUID.');
+INSERT INTO `configuration` VALUES (NULL,'nmis','n','y','system',NOW(),'Enable import / export to NMIS functions.');
+INSERT INTO `configuration` VALUES (NULL,'nmis_url','','y','system',NOW(),'The web server address of NMIS.');
+INSERT INTO `configuration` VALUES (NULL,'oae_license','none','n','system',NOW(),'License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'oae_prompt','2015-06-01','n','system',NOW(),'Prompt to activate a license for Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'oae_url','/omk/oae','y','system',NOW(),'The web server address of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (NULL,'page_refresh','300','y','system',NOW(),'Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
+INSERT INTO `configuration` VALUES (NULL,'rss_enable','y','y','system',NOW(),'Enable the RSS feed.');
+INSERT INTO `configuration` VALUES (NULL,'rss_url','https://community.opmantek.com/rss/OA.xml','y','system',NOW(),'The RSS feed URL.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -375,7 +375,7 @@ CREATE TABLE `credentials` (
 
 LOCK TABLES `credentials` WRITE;
 /*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
-INSERT INTO credentials VALUES (NULL, 'Default SNMP', '', 'snmp', 'ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==', 1, 'system', NOW());
+INSERT INTO `credentials` VALUES (NULL,'Default SNMP','','snmp','ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==',1,'system',NOW());
 /*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -429,7 +429,7 @@ CREATE TABLE `discovery_log` (
   `system_id` int(10) unsigned DEFAULT NULL,
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `severity` int(1) unsigned NOT NULL DEFAULT '5',
-  `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
+  `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `pid` int(10) unsigned NOT NULL DEFAULT '0',
   `ip` varchar(45) NOT NULL DEFAULT '',
   `file` varchar(100) NOT NULL DEFAULT '',
@@ -565,6 +565,34 @@ LOCK TABLES `edit_log` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `field`
+--
+
+DROP TABLE IF EXISTS `field`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `field` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `fields_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `field_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `field`
+--
+
+LOCK TABLES `field` WRITE;
+/*!40000 ALTER TABLE `field` DISABLE KEYS */;
+/*!40000 ALTER TABLE `field` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `fields`
 --
 
@@ -592,34 +620,6 @@ CREATE TABLE `fields` (
 LOCK TABLES `fields` WRITE;
 /*!40000 ALTER TABLE `fields` DISABLE KEYS */;
 /*!40000 ALTER TABLE `fields` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `field`
---
-
-DROP TABLE IF EXISTS `field`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `field` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `fields_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `value` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `field_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
--- CONSTRAINT `additional_field_item_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
---
--- Dumping data for table `field`
---
-
-LOCK TABLES `field` WRITE;
-/*!40000 ALTER TABLE `field` DISABLE KEYS */;
-/*!40000 ALTER TABLE `field` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -745,7 +745,7 @@ CREATE TABLE `groups` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -754,22 +754,22 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO groups VALUES(NULL, 1, "All Devices", "All the devices a user is authorised to view.", "SELECT DISTINCT(system.id) FROM system WHERE @filter", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Apple Computers", "Devices with type = computer and os_family like OSX.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND (os_family LIKE '%osx' OR os_family LIKE '%macos%')", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Centos Computers", "Devices with type = computer and os_family like Centos.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'centos'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Computers", "Devices with type = computer.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Debian Computers", "Devices with type = computer and os_family like Debian.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'debian'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Linux Computers", "Devices with type = computer and os_group like Linux.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'linux'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Open-AudIT Enterprise Managed Devices", "Devices Managed by Open-AudIT Enterprise.", "SELECT distinct(system.id) FROM system WHERE @filter AND system.status = 'production' and oae_manage = 'y'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Printers", "Devices with type = printer.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'printer'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Public IP Devices", "Devices with a public IP address and a status of production.", "SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = 'y') WHERE @filter AND ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "RedHat Computers", "Devices with type = computer and os_family like RedHat.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'redhat'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Routers", "Devices with type = router.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'router'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Switches", "Devices with type = switch.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'switch'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Virtual Hosts", "Devices with class = hypervisor.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = 'hypervisor'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Windows Computers", "Devices with type = computer and os_group like Windows.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'windows'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Windows Servers", "Devices with type = computer and os_name like Windows Server.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_name LIKE '%windows%server%'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Windows Workstations", "Devices with type = computer and os_name like Windows and os_name not like Server.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%')", "", "y", "system", NOW());
+INSERT INTO `groups` VALUES (1,1,'All Devices','All the devices a user is authorised to view.','SELECT DISTINCT(system.id) FROM system WHERE @filter','','y','system',NOW());
+INSERT INTO `groups` VALUES (2,1,'Apple Computers','Devices with type = computer and os_family like OSX.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND (os_family LIKE \'%osx\' OR os_family LIKE \'%macos%\')','','y','system',NOW());
+INSERT INTO `groups` VALUES (3,1,'Centos Computers','Devices with type = computer and os_family like Centos.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_family LIKE \'centos\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (4,1,'Computers','Devices with type = computer.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (5,1,'Debian Computers','Devices with type = computer and os_family like Debian.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_family LIKE \'debian\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (6,1,'Linux Computers','Devices with type = computer and os_group like Linux.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_group LIKE \'linux\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (7,1,'Open-AudIT Enterprise Managed Devices','Devices Managed by Open-AudIT Enterprise.','SELECT distinct(system.id) FROM system WHERE @filter AND system.status = \'production\' and oae_manage = \'y\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (8,1,'Printers','Devices with type = printer.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'printer\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (9,1,'Public IP Devices','Devices with a public IP address and a status of production.','SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = \'y\') WHERE @filter AND ((( ip.ip > \'000.000.000.000\' AND ip.ip < \'010.000.000.000\' ) OR ( ip.ip > \'010.255.255.255\' AND ip.ip < \'169.254.0.0\' ) OR ( ip.ip > \'169.254.255.255\' AND ip.ip < \'172.016.000.000\' ) OR ( ip.ip > \'172.31.255.255\' AND ip.ip < \'192.168.000.000\' ) OR ip.ip > \'192.168.255.255\' ) OR ( ( system.ip > \'000.000.000.000\' AND system.ip < \'010.000.000.000\' ) OR ( system.ip > \'010.255.255.255\' AND system.ip < \'169.254.0.0\' ) OR ( system.ip > \'169.254.255.255\' AND system.ip < \'172.016.000.000\' ) OR ( system.ip > \'172.31.255.255\' AND system.ip < \'192.168.000.000\' ) OR system.ip > \'192.168.255.255\' )) AND system.status = \'production\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (10,1,'RedHat Computers','Devices with type = computer and os_family like RedHat.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_family LIKE \'redhat\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (11,1,'Routers','Devices with type = router.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'router\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (12,1,'Switches','Devices with type = switch.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'switch\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (13,1,'Virtual Hosts','Devices with class = hypervisor.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = \'hypervisor\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (14,1,'Windows Computers','Devices with type = computer and os_group like Windows.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_group LIKE \'windows\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (15,1,'Windows Servers','Devices with type = computer and os_name like Windows Server.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_name LIKE \'%windows%server%\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (16,1,'Windows Workstations','Devices with type = computer and os_name like Windows and os_name not like Server.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND system.os_name LIKE \'%windows%\' AND system.os_name NOT LIKE \'%server%\')','','y','system',NOW());
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -930,7 +930,6 @@ LOCK TABLES `ldap_servers` WRITE;
 /*!40000 ALTER TABLE `ldap_servers` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 --
 -- Table structure for table `licenses`
 --
@@ -938,7 +937,6 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `licenses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-
 CREATE TABLE `licenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -998,7 +996,7 @@ CREATE TABLE `locations` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1053,11 +1051,11 @@ DROP TABLE IF EXISTS `logs`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `type` varchar(200) NOT NULL DEFAULT '',
-  `severity` int(10) unsigned NOT NULL DEFAULT 0,
+  `severity` int(10) unsigned NOT NULL DEFAULT '0',
   `severity_text` varchar(20) NOT NULL DEFAULT '',
-  `pid` int(10) unsigned NOT NULL DEFAULT 0,
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
   `user` varchar(200) NOT NULL DEFAULT '',
   `server` varchar(200) NOT NULL DEFAULT '',
   `ip` varchar(200) NOT NULL DEFAULT '',
@@ -1065,8 +1063,8 @@ CREATE TABLE `logs` (
   `action` varchar(200) NOT NULL DEFAULT '',
   `function` varchar(200) NOT NULL DEFAULT '',
   `status` varchar(200) NOT NULL DEFAULT '',
-  `summary` text NOT NULL DEFAULT '',
-  `detail` text NOT NULL DEFAULT '',
+  `summary` text NOT NULL,
+  `detail` text NOT NULL,
   PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1536,10 +1534,10 @@ CREATE TABLE `oa_user` (
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',  
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1548,9 +1546,9 @@ CREATE TABLE `oa_user` (
 
 LOCK TABLES `oa_user` WRITE;
 /*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (NULL,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','["admin","org_admin"]','[1]','en','y','','system',NOW());
-INSERT INTO `oa_user` VALUES (NULL,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','["admin","org_admin"]','[1]','en','y','','system',NOW());
-INSERT INTO `oa_user` VALUES (NULL,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','["admin","org_admin"]','[1]','en','y','','system',NOW());
+INSERT INTO `oa_user` VALUES (1,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','[\"admin\",\"org_admin\"]','[1]','en','y','','',NOW());
+INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','[\"admin\",\"org_admin\"]','[1]','en','y','','',NOW());
+INSERT INTO `oa_user` VALUES (3,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','[\"admin\",\"org_admin\"]','[1]','en','y','','',NOW());
 /*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1783,7 +1781,7 @@ CREATE TABLE `queries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1792,39 +1790,39 @@ CREATE TABLE `queries` (
 
 LOCK TABLES `queries` WRITE;
 /*!40000 ALTER TABLE `queries` DISABLE KEYS */;
-INSERT INTO queries VALUES (NULL, 1, "Audit Dates", "The first and last times a device was audited.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_name AS `system.os_name`, system.first_seen AS `system.first_seen`, system.last_seen AS `system.last_seen`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM system LEFT JOIN audit_log ON (audit_log.system_id = system.id) WHERE @filter GROUP BY system.id", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Billing Report", "Name, last seen on and by, type, class, manufacturer, model, serial, user, location.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Changes - Files", "Any changes in the table 'file'.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table = 'files'", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Changes - Hardware", "Any changes created in the tables 'bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound' and 'video'.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table in ('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound', 'video')", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Changes - New Devices", "Any changes in the table 'system'.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table = 'system'", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Changes - Settings", "Any changes in the tables 'dns', 'ip', 'log', netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group' and 'variable'.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table in ('dns', 'ip', 'log', 'netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group', 'variable')", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Changes - Software", "Any changes in the tables 'service', 'server', 'server_item', 'software' and 'software_key'.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table in ('service', 'server', 'server_item', 'software', 'software_key')", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Consumed IP Addresses", "The ip addresses used by a group.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.description AS `system.description`, ip.ip as `ip.ip` FROM ip LEFT JOIN system ON (system.id = ip.system_id AND ip.current = 'y') WHERE @filter AND ip.ip IS NOT NULL AND ip.ip != '127.000.000.001' AND ip.ip != '' AND ip.ip != '0.0.0.0' AND ip.ip != '000.000.000.000' AND ip.version = '4' GROUP BY ip.id, ip.ip ORDER BY ip.ip", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Devices Without Credentials", "Device details - name, ip, last seen on and by for those devices only discovered by Nmap and have therefore not been audited.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, audit_log.timestamp AS `audit_log.timestamp`, audit_log.ip AS `audit_log.ip` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.id) WHERE @filter AND audit_log.system_id NOT IN (SELECT DISTINCT(audit_log.system_id) FROM audit_log WHERE type != 'nmap') GROUP BY system.id", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Disk Partition Use", "Partition details where partition free and used space aren't 0 and type isn't Volume or Network Drive and mount point isn't [SWAP].", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, partition.id AS `partition.id`, partition.hard_drive_index AS `partition.hard_drive_index`, partition.mount_point AS `partition.mount_point`, partition.mount_type as `partition.mount_type`, partition.size AS `partition.size`, partition.used AS `partition.used`, partition.free AS `partition.free`, ROUND(((partition.free / partition.size) * 100), 0) AS percent_free, partition.name AS `partition.name` FROM system INNER JOIN `partition` ON (partition.system_id = system.id AND partition.current = 'y') WHERE @filter AND partition.used > 0 AND partition.free > 0 AND LOWER(partition.type) != 'volume' AND LOWER(partition.type) != 'network drive' AND LOWER(partition.mount_point) != '[swap]' ORDER BY system.name, partition.id", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Export Details", "Icon, type, name, first seen on, last seen on, last seen by, manufacturer, model, serial, owner, organisation, location, operating system.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.fqdn AS `system.fqdn`, system.serial AS `system.serial`, system.class AS `system.class`, system.function AS `system.function`, system.owner AS `system.owner`, system.asset_number AS `system.asset_number` FROM system WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Failed Audits", "Name, ip address, audit time, audit stage.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, audit_log.timestamp AS `audit_log.timestamp`, audit_log.debug AS `audit_log.debug` FROM system LEFT JOIN audit_log ON (system.id = audit_log.system_id) WHERE @filter AND audit_log.debug > ''", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Hardware - Device", "Icon, name, ip address, manufacturer, model, serial.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.asset_number AS `system.asset_number` FROM system WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Hardware - Memory and Processors", "Device details - name, ip, memory, total processor cores, processor speed, processor description.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, CAST(system.memory_count/1024 AS UNSIGNED) AS `system.memory_count`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, processor.speed AS `processor.speed`, processor.description AS `processor.description` FROM system INNER JOIN processor ON (system.id = processor.system_id AND processor.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Hardware - Workstations", "Device details - name, ip, manufacturer, model, serial, form factor, memory, processor.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = 'y') WHERE @filter AND system.type = 'computer' AND system.class != 'server' AND system.class != 'hypervisor' ORDER BY system.name", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - Acrobat", "Adobe Acrobat installations (software name contains 'acrobat' or 'adobe reader').", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND (software.name LIKE '%acrobat%' OR software.name LIKE 'adobe reader%')) LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - Antivirus", "Installed AntiVirus software (software name contains 'virus' or 'trend micro' or 'endpoint').", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version` FROM system LEFT JOIN software ON (software.system_id = system.id AND software.current = 'y' AND (software.name LIKE '%virus%' or software.name LIKE '%trend micro%' or software.name LIKE '%endpoint%')) LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter AND system.type = 'computer'", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - Flash", "Flash Player installations.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND software.name LIKE '%Flash Player%') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - MS FrontPage", "MS Frontpage installations (software name contains 'Microsoft Office Frontpage' or 'with Frontpage').", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND (software.name LIKE 'Microsoft Office Frontpage%' OR software.name LIKE '%with FrontPage')) LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - MS Office", "MS Office installations.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND software.name LIKE 'Microsoft Office%') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - MS Project", "MS Project installations (software name contains 'Microsoft Project').", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND software.name LIKE '%Microsoft%Project%') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Installed - MS Visio", "MS Visio installations (software name contains 'Microsoft Visio').", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = 'y' AND software.name LIKE 'Microsoft%Visio%') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Interfaces Used or Available", "Query to determine if a device interface is available for use.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, network.alias as `network.alias`, network.net_index AS `network.net_index`, network.description as `network.description`, network.ifadminstatus as `network.ifadminstatus`, network.ip_enabled as `network.ip_enabled`, system.sysuptime AS `system.sysuptime`, (system.sysuptime - network.iflastchange) AS diff, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as diff_days, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') WHERE @filter AND network.ifadminstatus != ''", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Log Files", "Log file details.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, log.name as `log.name`, log.file_name AS `log.file_name`, log.file_size AS `log.file_size`, log.max_file_size AS `log.max_file_size`, log.overwrite AS `log.overwrite` FROM log LEFT JOIN system ON (system.id = log.system_id and log.current = 'y') WHERE @filter ORDER BY system.name", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Netstat Ports", "Detected Netstat ports.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_name AS `system.os_name`, netstat.protocol AS `netstat.protocol`, netstat.port AS `netstat.port`, netstat.ip AS `netstat.ip`, netstat.program AS `netstat.program` FROM system LEFT JOIN netstat ON (system.id = netstat.system_id AND netstat.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Printer Queues", "Printer details - manufacturer, model, status, capabilities, etc.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, print_queue.manufacturer AS `print_queue.manufacturer`, print_queue.model AS `print_queue.model`, print_queue.description AS `print_queue.description`, print_queue.driver AS `print_queue.driver`, print_queue.status AS `print_queue.status`, print_queue.port_name AS `print_queue.port_name`, print_queue.duplex AS `print_queue.duplex`, print_queue.color AS `print_queue.color`, print_queue.location AS `print_queue.location`, print_queue.type AS `print_queue.type`, print_queue.shared AS `print_queue.shared`, print_queue.shared_name AS `print_queue.shared_name`, print_queue.capabilities AS `print_queue.capabilities` FROM print_queue LEFT JOIN system ON (system.id = print_queue.system_id AND print_queue.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, 'Servers - AD Controllers', 'Active Directory Domain Controllers', "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = 'y') WHERE windows.domain_role LIKE '%Domain Controller' AND system.status = 'production'", '', 'y', 'system', NOW());
-INSERT INTO queries VALUES (NULL, 1, "Servers - Database", "All databases.", "SELECT system.id AS `system.id`, system.name AS `system.name`, system.fqdn AS `system.fqdn`, system.os_family AS `system.os_family`, system.environment AS `system.environment`, server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.instance AS `server_item.instance`, server_item.path AS `server_item.path`, server_item.log_status AS `server_item.log_status`, server_item.log_format AS `server_item.log_format`, server_item.log_rotation AS `server_item.log_rotation`, server_item.log_path AS `server_item.log_path` FROM system LEFT JOIN server_item ON (server_item.system_id = system.id and server_item.current = 'y') WHERE @filter AND server_item.type = 'database'", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Servers - Websites", "desc", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.environment AS `system.environment`, server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.description AS `server_item.description`, server_item.status AS `server_item.status`, server_item.instance AS `server_item.instance`, server_item.path AS `server_item.path`, server_item.log_status AS `server_item.log_status`, server_item.log_format AS `server_item.log_format`, server_item.log_rotation AS `server_item.log_rotation`, server_item.log_path AS `server_item.log_path` FROM system LEFT JOIN server_item ON (server_item.system_id = system.id and server_item.current = 'y') WHERE @filter AND server_item.type = 'website'", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Shares", "Shared directory details.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, share.id AS `share.id`, share.name AS `share.name`, share.description AS `share.description`, share.size AS `share.size`, share.path AS `share.path` FROM share LEFT JOIN system ON (system.id = share.system_id and share.current = 'y') WHERE @filter", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Users - Elevated", "Name, group name, group members.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.name as `user_group.name`, user_group.members AS `user_group.members` FROM user_group LEFT JOIN system ON (user_group.system_id = system.id AND user_group.current = 'y') WHERE @filter AND (user_group.name = 'Administrators' OR user_group.name = 'Power Users' OR user_group.name = 'Remote Desktop Users' OR user_group.name = 'wheel' OR user_group.name = 'sudo') AND user_group.members > '' GROUP BY system.id, user_group.name ORDER BY system.name", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Users - Orphaned", "User accounts that no longer appear to be valid.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.name as `user_group.name`, user_group.members AS `user_group.members` FROM system LEFT JOIN user_group ON (user_group.system_id = system.id AND user_group.current = 'y') WHERE @filter AND user_group.members LIKE '%@,%' AND user_group.members NOT LIKE 'Everyone@,' GROUP BY user_group.id ORDER BY system.name", "", "y", "system", NOW());
-INSERT INTO queries VALUES (NULL, 1, "Users - Standard", "Name, group name, group members.", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.members AS `user_group.members`, user_group.name AS `user_group.name` FROM user_group LEFT JOIN system ON (user_group.system_id = system.id AND user_group.current = 'y') WHERE @filter AND (user_group.name = 'Users' OR user_group.name = 'Guests') AND user_group.members > ''", "", "y", "system", NOW());
+INSERT INTO `queries` VALUES (1,1,'Audit Dates','The first and last times a device was audited.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_name AS `system.os_name`, system.first_seen AS `system.first_seen`, system.last_seen AS `system.last_seen`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM system LEFT JOIN audit_log ON (audit_log.system_id = system.id) WHERE @filter GROUP BY system.id','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (2,1,'Billing Report','Name, last seen on and by, type, class, manufacturer, model, serial, user, location.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, oa_org.name AS `oa_org.name`, system.last_seen AS `system.last_seen`, system.last_seen_by AS `system.last_seen_by`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.class AS `system.class`, windows.user_name AS `windows.user_name`, locations.name AS `locations.name` FROM system LEFT JOIN locations ON (system.location_id = locations.id) LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = \'y\') LEFT JOIN oa_org ON (system.org_id = oa_org.id) WHERE @filter','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (3,1,'Changes - Files','Any changes in the table \'file\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2001-01-01 00:00:00\' AND change_log.db_table = \'files\'','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (4,1,'Changes - Hardware','Any changes created in the tables \'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\' and \'video\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2001-01-01 00:00:00\' AND change_log.db_table in (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'optical\', \'partition\', \'processor\', \'network\', \'scsi\', \'sound\', \'video\')','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (5,1,'Changes - New Devices','Any changes in the table \'system\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2001-01-01 00:00:00\' AND change_log.db_table = \'system\'','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (6,1,'Changes - Settings','Any changes in the tables \'dns\', \'ip\', \'log\', netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\' and \'variable\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2001-01-01 00:00:00\' AND change_log.db_table in (\'dns\', \'ip\', \'log\', \'netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\', \'variable\')','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (7,1,'Changes - Software','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.ack_time = \'2001-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (8,1,'Consumed IP Addresses','The ip addresses used by a group.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.description AS `system.description`, ip.ip as `ip.ip` FROM ip LEFT JOIN system ON (system.id = ip.system_id AND ip.current = \'y\') WHERE @filter AND ip.ip IS NOT NULL AND ip.ip != \'127.000.000.001\' AND ip.ip != \'\' AND ip.ip != \'0.0.0.0\' AND ip.ip != \'000.000.000.000\' AND ip.version = \'4\' GROUP BY ip.id, ip.ip ORDER BY ip.ip','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (9,1,'Devices Without Credentials','Device details - name, ip, last seen on and by for those devices only discovered by Nmap and have therefore not been audited.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, audit_log.timestamp AS `audit_log.timestamp`, audit_log.ip AS `audit_log.ip` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.id) WHERE @filter AND audit_log.system_id NOT IN (SELECT DISTINCT(audit_log.system_id) FROM audit_log WHERE type != \'nmap\') GROUP BY system.id','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (10,1,'Disk Partition Use','Partition details where partition free and used space aren\'t 0 and type isn\'t Volume or Network Drive and mount point isn\'t [SWAP].','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, partition.id AS `partition.id`, partition.hard_drive_index AS `partition.hard_drive_index`, partition.mount_point AS `partition.mount_point`, partition.mount_type as `partition.mount_type`, partition.size AS `partition.size`, partition.used AS `partition.used`, partition.free AS `partition.free`, ROUND(((partition.free / partition.size) * 100), 0) AS percent_free, partition.name AS `partition.name` FROM system INNER JOIN `partition` ON (partition.system_id = system.id AND partition.current = \'y\') WHERE @filter AND partition.used > 0 AND partition.free > 0 AND LOWER(partition.type) != \'volume\' AND LOWER(partition.type) != \'network drive\' AND LOWER(partition.mount_point) != \'[swap]\' ORDER BY system.name, partition.id','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (11,1,'Export Details','Icon, type, name, first seen on, last seen on, last seen by, manufacturer, model, serial, owner, organisation, location, operating system.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.fqdn AS `system.fqdn`, system.serial AS `system.serial`, system.class AS `system.class`, system.function AS `system.function`, system.owner AS `system.owner`, system.asset_number AS `system.asset_number` FROM system WHERE @filter','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (12,1,'Failed Audits','Name, ip address, audit time, audit stage.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, audit_log.timestamp AS `audit_log.timestamp`, audit_log.debug AS `audit_log.debug` FROM system LEFT JOIN audit_log ON (system.id = audit_log.system_id) WHERE @filter AND audit_log.debug > \'\'','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (13,1,'Hardware - Device','Icon, name, ip address, manufacturer, model, serial.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.asset_number AS `system.asset_number` FROM system WHERE @filter','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (14,1,'Hardware - Memory and Processors','Device details - name, ip, memory, total processor cores, processor speed, processor description.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, CAST(system.memory_count/1024 AS UNSIGNED) AS `system.memory_count`, processor.physical_count AS `processor.physical_count`, processor.core_count AS `processor.core_count`, processor.logical_count AS `processor.logical_count`, processor.speed AS `processor.speed`, processor.description AS `processor.description` FROM system INNER JOIN processor ON (system.id = processor.system_id AND processor.current = \'y\') WHERE @filter','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (15,1,'Hardware - Workstations','Device details - name, ip, manufacturer, model, serial, form factor, memory, processor.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = \'y\') WHERE @filter AND system.type = \'computer\' AND system.class != \'server\' AND system.class != \'hypervisor\' ORDER BY system.name','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (16,1,'Installed - Acrobat','Adobe Acrobat installations (software name contains \'acrobat\' or \'adobe reader\').','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = \'y\' AND (software.name LIKE \'%acrobat%\' OR software.name LIKE \'adobe reader%\')) LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (17,1,'Installed - Antivirus','Installed AntiVirus software (software name contains \'virus\' or \'trend micro\' or \'endpoint\').','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version` FROM system LEFT JOIN software ON (software.system_id = system.id AND software.current = \'y\' AND (software.name LIKE \'%virus%\' or software.name LIKE \'%trend micro%\' or software.name LIKE \'%endpoint%\')) LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter AND system.type = \'computer\'','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (18,1,'Installed - Flash','Flash Player installations.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = \'y\' AND software.name LIKE \'%Flash Player%\') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter','','y','system','2016-12-22 13:45:04');
+INSERT INTO `queries` VALUES (19,1,'Installed - MS FrontPage','MS Frontpage installations (software name contains \'Microsoft Office Frontpage\' or \'with Frontpage\').','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = \'y\' AND (software.name LIKE \'Microsoft Office Frontpage%\' OR software.name LIKE \'%with FrontPage\')) LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (20,1,'Installed - MS Office','MS Office installations.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = \'y\' AND software.name LIKE \'Microsoft Office%\') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (21,1,'Installed - MS Project','MS Project installations (software name contains \'Microsoft Project\').','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = \'y\' AND software.name LIKE \'%Microsoft%Project%\') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (22,1,'Installed - MS Visio','MS Visio installations (software name contains \'Microsoft Visio\').','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.class AS `system.class`, system.os_family AS `system.os_family`, oa_org.name AS `oa_org.name`, windows.user_name AS `windows.user_name`, software.name as `software.name`, software.version AS `software.version`, software.id as `software.id` FROM software LEFT JOIN system ON (software.system_id = system.id AND software.current = \'y\' AND software.name LIKE \'Microsoft%Visio%\') LEFT JOIN oa_org ON (oa_org.id = system.org_id) LEFT JOIN windows ON (windows.system_id = system.id AND windows.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (23,1,'Interfaces Used or Available','Query to determine if a device interface is available for use.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, network.alias as `network.alias`, network.net_index AS `network.net_index`, network.description as `network.description`, network.ifadminstatus as `network.ifadminstatus`, network.ip_enabled as `network.ip_enabled`, system.sysuptime AS `system.sysuptime`, (system.sysuptime - network.iflastchange) AS diff, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as diff_days, IF((network.ifadminstatus = \'down\') OR (network.ifadminstatus = \'up\' AND (network.ip_enabled != \'up\' AND network.ip_enabled != \'dormant\') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), \'available\', \'used\') AS available FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = \'y\') WHERE @filter AND network.ifadminstatus != \'\'','','y','system',NOW());
+INSERT INTO `queries` VALUES (24,1,'Log Files','Log file details.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, log.name as `log.name`, log.file_name AS `log.file_name`, log.file_size AS `log.file_size`, log.max_file_size AS `log.max_file_size`, log.overwrite AS `log.overwrite` FROM log LEFT JOIN system ON (system.id = log.system_id and log.current = \'y\') WHERE @filter ORDER BY system.name','','y','system',NOW());
+INSERT INTO `queries` VALUES (25,1,'Netstat Ports','Detected Netstat ports.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_name AS `system.os_name`, netstat.protocol AS `netstat.protocol`, netstat.port AS `netstat.port`, netstat.ip AS `netstat.ip`, netstat.program AS `netstat.program` FROM system LEFT JOIN netstat ON (system.id = netstat.system_id AND netstat.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (26,1,'Printer Queues','Printer details - manufacturer, model, status, capabilities, etc.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, print_queue.manufacturer AS `print_queue.manufacturer`, print_queue.model AS `print_queue.model`, print_queue.description AS `print_queue.description`, print_queue.driver AS `print_queue.driver`, print_queue.status AS `print_queue.status`, print_queue.port_name AS `print_queue.port_name`, print_queue.duplex AS `print_queue.duplex`, print_queue.color AS `print_queue.color`, print_queue.location AS `print_queue.location`, print_queue.type AS `print_queue.type`, print_queue.shared AS `print_queue.shared`, print_queue.shared_name AS `print_queue.shared_name`, print_queue.capabilities AS `print_queue.capabilities` FROM print_queue LEFT JOIN system ON (system.id = print_queue.system_id AND print_queue.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (27,1,'Servers - Database','All databases.','SELECT system.id AS `system.id`, system.name AS `system.name`, system.fqdn AS `system.fqdn`, system.os_family AS `system.os_family`, system.environment AS `system.environment`, server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.instance AS `server_item.instance`, server_item.path AS `server_item.path`, server_item.log_status AS `server_item.log_status`, server_item.log_format AS `server_item.log_format`, server_item.log_rotation AS `server_item.log_rotation`, server_item.log_path AS `server_item.log_path` FROM system LEFT JOIN server_item ON (server_item.system_id = system.id and server_item.current = \'y\') WHERE @filter AND server_item.type = \'database\'','','y','system',NOW());
+INSERT INTO `queries` VALUES (28,1,'Servers - Websites','All detected websites (IIS based).','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_family AS `system.os_family`, system.environment AS `system.environment`, server_item.parent_name AS `server_item.parent_name`, server_item.name AS `server_item.name`, server_item.description AS `server_item.description`, server_item.status AS `server_item.status`, server_item.instance AS `server_item.instance`, server_item.path AS `server_item.path`, server_item.log_status AS `server_item.log_status`, server_item.log_format AS `server_item.log_format`, server_item.log_rotation AS `server_item.log_rotation`, server_item.log_path AS `server_item.log_path` FROM system LEFT JOIN server_item ON (server_item.system_id = system.id and server_item.current = \'y\') WHERE @filter AND server_item.type = \'website\'','','y','system',NOW());
+INSERT INTO `queries` VALUES (29,1,'Shares','Shared directory details.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, share.id AS `share.id`, share.name AS `share.name`, share.description AS `share.description`, share.size AS `share.size`, share.path AS `share.path` FROM share LEFT JOIN system ON (system.id = share.system_id and share.current = \'y\') WHERE @filter','','y','system',NOW());
+INSERT INTO `queries` VALUES (30,1,'Users - Elevated','Name, group name, group members.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.name as `user_group.name`, user_group.members AS `user_group.members` FROM user_group LEFT JOIN system ON (user_group.system_id = system.id AND user_group.current = \'y\') WHERE @filter AND (user_group.name = \'Administrators\' OR user_group.name = \'Power Users\' OR user_group.name = \'Remote Desktop Users\' OR user_group.name = \'wheel\' OR user_group.name = \'sudo\') AND user_group.members > \'\' GROUP BY system.id, user_group.name ORDER BY system.name','','y','system',NOW());
+INSERT INTO `queries` VALUES (31,1,'Users - Orphaned','User accounts that no longer appear to be valid.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.name as `user_group.name`, user_group.members AS `user_group.members` FROM system LEFT JOIN user_group ON (user_group.system_id = system.id AND user_group.current = \'y\') WHERE @filter AND user_group.members LIKE \'%@,%\' AND user_group.members NOT LIKE \'Everyone@,\' GROUP BY user_group.id ORDER BY system.name','','y','system',NOW());
+INSERT INTO `queries` VALUES (32,1,'Users - Standard','Name, group name, group members.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, user_group.members AS `user_group.members`, user_group.name AS `user_group.name` FROM user_group LEFT JOIN system ON (user_group.system_id = system.id AND user_group.current = \'y\') WHERE @filter AND (user_group.name = \'Users\' OR user_group.name = \'Guests\') AND user_group.members > \'\'','','y','system',NOW());
+INSERT INTO `queries` VALUES (33,1,'Servers - AD Controllers','Active Directory Domain Controllers','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = \'y\') WHERE windows.domain_role LIKE \'%Domain Controller\' AND system.status = \'production\'','','y','system',NOW());
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1839,12 +1837,12 @@ CREATE TABLE `roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `permissions` text NOT NULL DEFAULT '',
+  `permissions` text NOT NULL,
   `ad_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1853,10 +1851,10 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","groups":"crud","ldap_servers":"crud","logs":"crud","nmis": "crud","queries":"crud","roles":"crud","search":"crud","sessions":"crud","summaries":"crud"}', 'open-audit_roles_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","summaries":"crud","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","search":"crud","sessions":"crud","users":"crud"}', 'open-audit_roles_org_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","summaries":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","search":"crud","sessions":"crud"}', 'open-audit_roles_reporter', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","summaries":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","search":"crud","sessions":"crud"}', 'open-audit_roles_user', 'system', NOW());
+INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"configuration\":\"crud\",\"database\":\"crud\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\"}','open-audit_roles_admin','system',NOW());
+INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}','open-audit_roles_org_admin','system',NOW());
+INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_reporter','system',NOW());
+INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_user','system',NOW());
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1949,7 +1947,7 @@ CREATE TABLE `scripts` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1958,11 +1956,11 @@ CREATE TABLE `scripts` (
 
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
-INSERT INTO `scripts` VALUES (NULL,'audit_aix.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (NULL,'audit_esx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit ESX config.','audit_esx.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (NULL,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (NULL,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (NULL,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system',NOW());
+INSERT INTO `scripts` VALUES (1,'audit_aix.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (2,'audit_esx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit ESX config.','audit_esx.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (3,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (4,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system','2016-06-01 00:00:00');
+INSERT INTO `scripts` VALUES (5,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system','2016-06-01 00:00:00');
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2288,18 +2286,18 @@ CREATE TABLE `summaries` (
 
 LOCK TABLES `summaries` WRITE;
 /*!40000 ALTER TABLE `summaries` DISABLE KEYS */;
-INSERT INTO summaries VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Form Factors', 1, 'system', 'form_factor', 'system.form_factor,system.class', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Server Types', 1, 'server', 'type', 'server.name,server.full_name,server.version,server.status', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Services', 1, 'service', 'name', 'service.name,service.state', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Software Keys', 1, 'software_key', 'name', 'software_key.name,software_key.string,software_key.rel,software_key.edition', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Active Directory OU\'s', 1, 'windows', 'active_directory_ou', 'windows.active_directory_ou,windows.client_site_name', 'system', NOW());
+INSERT INTO `summaries` VALUES (NULL,'Device Classes',1,'system','class','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Device Status',1,'system','status','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Device Types',1,'system','type','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'DNS Domains',1,'system','dns_domain','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Form Factors',1,'system','form_factor','system.form_factor,system.class','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Manufacturers',1,'system','manufacturer','system.model','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Operating Systems',1,'system','os_family','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Server Types',1,'server','type','server.name,server.full_name,server.version,server.status','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Services',1,'service','name','service.name,service.state','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Software',1,'software','name','software.name,software.version','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Software Keys',1,'software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Active Directory OU\'s',1,'windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system',NOW());
 /*!40000 ALTER TABLE `summaries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2443,7 +2441,7 @@ CREATE TABLE `task` (
   `last_result` varchar(50) NOT NULL DEFAULT '',
   `creator` varchar(50) NOT NULL DEFAULT '',
   `schedule` varchar(100) NOT NULL DEFAULT '',
-  `task` text NOT NULL DEFAULT '',
+  `task` text NOT NULL,
   `state` varchar(10) NOT NULL DEFAULT '',
   `runas` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -2728,9 +2726,9 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`openaudit`@`localhost`*/ /*!50003 FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1
+CREATE DEFINER=`openaudit`@`localhost` FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1
     DETERMINISTIC
-RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) */;;
+RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -2746,4 +2744,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-20 10:46:10
+-- Dump completed on 2016-12-22 14:32:10
