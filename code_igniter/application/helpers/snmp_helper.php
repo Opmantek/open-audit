@@ -101,11 +101,11 @@ if (!function_exists('snmp_credentials')) {
                 $oid = "1.3.6.1.2.1.1.2.0";
                 if (@snmp3_get($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries)) {
                     $credential->credentials->version = 3;
-                    $log->message = "Credential set for SNMPv3 from " . $from . " working on " . $ip;
+                    $log->message = "Credential set for SNMPv3 " . $from . " working on " . $ip;
                     discovery_log($log);
                     return $credential;
                 } else {
-                    $log->message = "Credential set for SNMPv3 from " . $from . " not working on " . $ip;
+                    $log->message = "Credential set for SNMPv3 " . $from . " not working on " . $ip;
                     discovery_log($log);
                 }
             }
