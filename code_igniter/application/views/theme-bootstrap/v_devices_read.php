@@ -96,6 +96,26 @@ $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', '
 if ($data['system']->type != 'computer') {
     $attributes['disk'] = array('model' => 'Model', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'size' => 'Size', 'status' => 'Status');
 }
+
+$data['mount_point'] = array();
+if (!empty($data['partition'])) {
+    $x = count($data['partition']);
+    for ($i=0; $i < $x; $i++) {
+        if ($data['partition'][$i]->mount_type == 'mount point') {
+            unset($data['partition'][$i]->partition_disk_index);
+            unset($data['partition'][$i]->hard_drive_index);
+            unset($data['partition'][$i]->serial);
+            unset($data['partition'][$i]->device);
+            unset($data['partition'][$i]->bootable);
+            $data['mount_point'][] = $data['partition'][$i];
+            unset($data['partition'][$i]);
+        }
+    }
+    $data['partition'] = array_values($data['partition']);
+}
+if (empty($data['mount_point'])) {
+    unset($data['mount_point']);
+}
 ?>
 
 <div class="row">
@@ -139,7 +159,7 @@ if ($data['system']->type != 'computer') {
       </div>
         <?php
         // the hardware categories
-        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'processor', 'san', 'sound', 'video');
+        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'mount_point', 'network', 'optical', 'processor', 'san', 'sound', 'video');
         $display_hardware = false;
         foreach ($hardware as $item) {
             if (!empty($data[$item])) {
@@ -163,7 +183,7 @@ if ($data['system']->type != 'computer') {
                 foreach ($hardware as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }
@@ -1300,7 +1320,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
 <?php
 // table style displays
 #$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
+$list = array ('alert_log', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'mount_point', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
     $list[] = 'disk';
 }
@@ -1479,7 +1499,7 @@ if ($data['system']->type == 'computer') {
                                     <?php
                                     foreach ($data[$sub_item] as $sub_row) {
                                         if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or
-                                            ($item == 'disk' and $item_row->hard_drive_index == $sub_row->hard_drive_index) or
+                                            ($item == 'disk' and !empty($sub_row->hard_drive_index) and $item_row->hard_drive_index == $sub_row->hard_drive_index) or
                                             ($item == 'server' and $item_row->name == $sub_row->parent_name)) { ?>
                                             <tr>
                                                 <?php
@@ -1706,4 +1726,4 @@ function insert_additional_fields_orig($section = '', $additional_fields = array
         }
     }
 }
-?>
+
