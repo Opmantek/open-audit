@@ -1042,7 +1042,7 @@ echo "</system>" >> $xml_file
 if [ "$submit_online" = "y" ]; then
         echo "Submitting results to server"
         #wget --delete-after --post-file="$xml_file" $url 2>/dev/null
-        #wget --post-file="$xml_file" $url 2>/dev/null
+        wget --post-file="$xml_file" $url 2>/dev/null
 fi
 
 
