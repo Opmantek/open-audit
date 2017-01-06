@@ -5914,6 +5914,9 @@ class Database extends MY_Controller_new
             unset($log_details);
         }
 
+        # for 1.14.4
+        # INSERT INTO `scripts` VALUES (6,'audit_solaris.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Solaris config.','audit_solaris.sh','','system','2016-06-01 00:00:00');
+
         # refresh the icons
         // $this->load->model('m_system');
         // $this->m_system->reset_icons();
