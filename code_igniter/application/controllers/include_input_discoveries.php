@@ -775,6 +775,10 @@ if (!empty($_POST['data'])) {
                     $audit_script = '';
                     break;
                 
+                case 'sunos':
+                    $audit_script = 'audit_solaris.sh';
+                    break;
+                
                 default:
                     $audit_script = '';
                     break;
