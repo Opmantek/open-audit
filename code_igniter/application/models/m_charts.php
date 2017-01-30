@@ -84,7 +84,15 @@ class M_charts extends MY_Model
             $filter = new stdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
-            $filter->value = date('Y-m-d', strtotime('-29 days'));
+            if (empty($this->config->item('graph_days'))) {
+                $days = 30;
+            } else {
+                $days = intval($this->config->item('graph_days'));
+            }
+            if (empty($this->config->item('graph_days'))) {
+                $days = 30;
+            }
+            $filter->value = date('Y-m-d', strtotime('-' . $days . ' days'));
             $CI->response->meta->filter[] = $filter;
             $CI->response->meta->internal->start = $filter->value;
         }

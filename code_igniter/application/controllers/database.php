@@ -5902,6 +5902,7 @@ class Database extends MY_Controller_new
             # configuration
             $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
             $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
+            $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system',NOW(),'The number of days to report on for the Enterprise graphs.')";
 
             # queries
             $sql[] = "DELETE FROM queries WHERE `name` LIKE 'Changes - %'";

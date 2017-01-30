@@ -237,6 +237,7 @@ INSERT INTO `configuration` VALUES (NULL, 'discovery_use_ipmi','y','y','system',
 INSERT INTO `configuration` VALUES (NULL, 'discovery_use_dns','y','y','system',NOW(),'Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (NULL, 'display_version','1.14.4','n','system',NOW(),'The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (NULL, 'download_reports','download','y','system',NOW(),'Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
+INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system',NOW(),'The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system',NOW(),'The API key for Google Maps.');
 INSERT INTO `configuration` VALUES (NULL, 'homepage','groups','y','system',NOW(),'Any links to the default page should be directed to this endpoint.');
 INSERT INTO `configuration` VALUES (NULL, 'internal_version','20170104','n','system',NOW(),'The internal numerical version.');
