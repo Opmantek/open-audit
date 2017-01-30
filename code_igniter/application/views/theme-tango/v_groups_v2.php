@@ -35,7 +35,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if ($query) {
-    if ($this->config->config['distinct_groups'] == 'y') {
+    if (!empty($this->config->config['distinct_groups']) and $this->config->config['distinct_groups'] == 'y') {
         $old_category = '';
         foreach ($query as $key) {
             if ($key->group_category != $old_category) {

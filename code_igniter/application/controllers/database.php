@@ -5899,6 +5899,9 @@ class Database extends MY_Controller_new
             } else {
                 $this->data['output'] = 'Commencing 1.14.4 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
             }
+            # configuration
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
+            $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 
             $sql[] = "UPDATE configuration SET value = '20170104' WHERE name = 'internal_version'";
             $sql[] = "UPDATE configuration SET value = '1.14.4' WHERE name = 'display_version'";

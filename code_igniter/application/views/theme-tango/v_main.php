@@ -43,7 +43,7 @@ if ($query) {
         $group_limit = intval($this->config->config['network_group_homepage_limit']);
     }
 
-    if ($this->config->config['distinct_groups'] == 'y') {
+    if (!empty($this->config->config['distinct_groups']) and $this->config->config['distinct_groups'] == 'y') {
         $old_category = '';
         $i = 0;
         foreach ($query as $key) {
