@@ -220,7 +220,7 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "/* m_discoveries::read_sub_resource */ " . "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `timestamp`";
+        $sql = "/* m_discoveries::read_sub_resource */ " . "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id`";
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
         return ($result);
