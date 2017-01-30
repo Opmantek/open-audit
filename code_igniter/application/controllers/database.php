@@ -5917,6 +5917,21 @@ class Database extends MY_Controller_new
 
             $sql[] = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Software\", \"Any changes in the tables 'service', 'server', 'server_item', 'software' and 'software_key'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('service', 'server', 'server_item', 'software', 'software_key')\", \"\", \"y\", \"system\", NOW())";
 
+            # scripts
+            $sql[] = "DELETE FROM `scripts` WHERE `based_on` = 'audit_esx.sh'";
+            $options = array();
+            $options['submit_online'] = 'y';
+            $options['create_file'] = 'n';
+            if ($this->config->item('default_network_address') != '') {
+                $options['url'] = 'http://' . $this->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
+            } else {
+                $options['url'] = 'http://localhost/open-audit/index.php/system/add_system';
+            }
+            $options['debugging'] = 1;
+            $options = json_encode($options);
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_esxi.sh', '" . $options . "', 'The default audit ESXi config.', 'audit_esxi.sh', '', 'system', NOW())";
+            unset($options);
+
             $sql[] = "UPDATE configuration SET value = '20170104' WHERE name = 'internal_version'";
             $sql[] = "UPDATE configuration SET value = '1.14.4' WHERE name = 'display_version'";
 

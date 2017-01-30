@@ -1958,7 +1958,7 @@ CREATE TABLE `scripts` (
 LOCK TABLES `scripts` WRITE;
 /*!40000 ALTER TABLE `scripts` DISABLE KEYS */;
 INSERT INTO `scripts` VALUES (NULL,'audit_aix.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit AIX config.','audit_aix.sh','','system',NOW());
-INSERT INTO `scripts` VALUES (NULL,'audit_esx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit ESX config.','audit_esx.sh','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_esxi.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit ESXi config.','audit_esxi.sh','','system',NOW());
 INSERT INTO `scripts` VALUES (NULL,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system',NOW());
 INSERT INTO `scripts` VALUES (NULL,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system',NOW());
 INSERT INTO `scripts` VALUES (NULL,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system',NOW());
