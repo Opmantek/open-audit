@@ -154,7 +154,7 @@ if (!function_exists('my_snmp_get')) {
         $timeout = '3000000';
         $retries = '0';
 
-        if (empty($credentials->credentials->version) or $credentials->credentials->version != 1 or $credentials->credentials->version != 2 or $credentials->credentials->version !=3) {
+        if (empty($credentials->credentials->version) or ($credentials->credentials->version != 1 and $credentials->credentials->version != 2 and $credentials->credentials->version !=3)) {
             $credentials->credentials->version = 2;
         }
         switch ($credentials->credentials->version) {
