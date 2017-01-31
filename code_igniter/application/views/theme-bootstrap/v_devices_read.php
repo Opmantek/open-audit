@@ -541,7 +541,7 @@ if (empty($data['mount_point'])) {
                                 <?php } ?>
                             </div>
                         </div>
-<?php insert_additional_fields('system', $data['fields']); ?>
+<?php insert_additional_fields('system', $data['fields'], $edit); ?>
 
                     </div>
                     <div class="col-md-5">
@@ -720,9 +720,13 @@ if (empty($data['mount_point'])) {
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Warranty'); ?></a>
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Downloads'); ?></a>
                         -->
+                        <?php if ($edit) { ?>
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=credential&action=create" role="button"><?php echo __('Add Credentials'); ?></a>
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=attachment&action=create" role="button"><?php echo __('Add Attachment'); ?></a>
+                        <?php } ?>
+                        <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=discovery&action=create" role="button"><?php echo __('Discover'); ?></a>
+                        <?php } ?>
                     </div>
                 </div>
             </fieldset>
@@ -756,9 +760,11 @@ foreach ($list as $item) {
                             <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
                               <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="-" value="<?php echo $value; ?>" disabled>
+                              <?php if ($edit) { ?>
                               <span class="input-group-btn">
                                 <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                               </span>
+                              <?php } ?>
                             </div>
                         </div>
                     <?php
@@ -776,7 +782,7 @@ foreach ($list as $item) {
             }
         }
         ?>
-        <?php insert_additional_fields($item, $data['fields']); ?>
+        <?php insert_additional_fields($item, $data['fields'], $edit); ?>
       </div>
     </div>
 </div>
@@ -883,7 +889,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
       <div class="panel-body">
         <?php
         if (isset($data['fields']) and count($data['fields']) > 0) {
-            insert_additional_fields('custom', $data['fields']);
+            insert_additional_fields('custom', $data['fields'], $edit);
         } ?>
       </div>
     </div>
@@ -947,12 +953,12 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                         <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
                         <?php
                         if ($key != 'dummy_location_id') {
-                        ?><span class="input-group-btn">
+                        ?><?php if ($edit) { ?><span class="input-group-btn">
                             <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>">
                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             </button>
                         </span>
-                        <?php
+                        <?php }
                         }
                     } else {
                         ?><label for="location_id" class="col-sm-4 control-label"><?php echo __($label)?></label>
@@ -970,19 +976,20 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                             }
                             ?>
                         </select>
+                        <?php if ($edit) { ?>
                         <span class="input-group-btn">
                             <button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id">
                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             </button>
                         </span>
-                    <?php
+                    <?php }
                     } ?>
                         </div><!-- 6 -->
                     </div><!-- 5 -->
                     <?php
                         }
                     }
-                    insert_additional_fields($item, $data['fields']);
+                    insert_additional_fields($item, $data['fields'], $edit);
                 ?></div><!-- 4 -->
             </div><!-- 3 -->
         </div><!-- 2 -->
@@ -999,11 +1006,13 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
           <label for="owner" class="col-sm-4 control-label">Owner</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
             <input type="text" class="form-control" id="owner" placeholder="" value="<?php echo $data['system']->owner; ?>" disabled>
+            <?php if ($edit) { ?>
             <span class="input-group-btn">
               <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
               </button>
             </span>
+            <?php } ?>
           </div><!-- 6 -->
         </div><!-- 5 -->
 
@@ -1011,11 +1020,13 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
           <label for="org_id" class="col-sm-4 control-label">Organisation ID</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
             <input type="text" class="form-control" id="org_id" placeholder="" value="<?php echo $data['system']->org_id; ?>" disabled>
+            <?php if ($edit) { ?>
             <span class="input-group-btn">
               <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id">
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
               </button>
             </span>
+            <?php } ?>
           </div><!-- 6 -->
         </div><!-- 5 -->
 
@@ -1023,11 +1034,13 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
           <label for="owner" class="col-sm-4 control-label">Comments</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
             <input type="text" class="form-control" id="comments" placeholder="" value="<?php echo $data['system']->comments; ?>" disabled>
+            <?php if ($edit) { ?>
             <span class="input-group-btn">
               <button id="edit_comments" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="comments">
                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
               </button>
             </span>
+            <?php } ?>
           </div><!-- 6 -->
         </div><!-- 5 -->
         </div><!-- 4 -->
@@ -1421,7 +1434,7 @@ foreach ($list as $item) {
                     </tbody>
                 </table>
               </div>
-                <?php insert_additional_fields($item, $data['fields']); ?>
+                <?php insert_additional_fields($item, $data['fields'], $edit); ?>
             </div>
         </div>
         <?php
@@ -1636,7 +1649,7 @@ if ($data['system']->type == 'computer') {
 ?>
 
 <?php
-function insert_additional_fields($section = '', $additional_fields = array())
+function insert_additional_fields($section = '', $additional_fields = array(), $edit)
 {
     foreach ($additional_fields as $field) {
         if ($field->{'placement'} == $section or $section == '') {
@@ -1644,11 +1657,15 @@ function insert_additional_fields($section = '', $additional_fields = array())
             if ($field->{'type'} == 'varchar') {
                 echo '                    <div class="form-group">
                     <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
-                    <div class="input-group">
-                      <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">
+                    <div class="col-sm-8 input-group">
+                      <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">';
+                      if ($edit) {
+                        echo '
                       <span class="input-group-btn">
                         <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                      </span>
+                      </span>';
+                    }
+                    echo '
                     </div>
                 </div>' . "\n";
             }
@@ -1669,57 +1686,16 @@ function insert_additional_fields($section = '', $additional_fields = array())
                     echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
                 }
 
-                        echo '                        </select>
+                        echo '                        </select>';
+                        if ($edit) {
+                            echo '
                         <span class="input-group-btn">
                           <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '">
                             <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                           </button>
-                        </span>
-                    </div>
-                </div>' . "\n";
-            }
-        }
-    }
-}
-function insert_additional_fields_orig($section = '', $additional_fields = array())
-{
-    foreach ($additional_fields as $field) {
-        if ($field->{'fields.placement'} == $section or $section == '') {
-            $name = $field->{'fields.name'};
-            if ($field->{'fields.type'} == 'varchar') {
-                echo '                    <div class="form-group">
-                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'fields.name'} . '</label>
-                    <div class="input-group">
-                      <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">
-                      <span class="input-group-btn">
-                        <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                      </span>
-                    </div>
-                </div>' . "\n";
-            }
-            if ($field->{'fields.type'} == 'list') {
-                echo '                    <div class="form-group">
-                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'fields.name'} . '</label>
-                    <div class="col-sm-8 input-group">
-                        <select id="' . $name . '" class="form-control" disabled>' . "\n";
-                if ($field->{'value'} == '') {
-                    echo "                          <option value='' > </option>\n";
-                }
-                foreach (explode(',', $field->{'fields.values'}) as $key => $value) {
-                    if ($field->{'value'} == $value) {
-                        $selected = " selected";
-                    } else {
-                        $selected = "";
-                    }
-                    echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
-                }
-
-                        echo '                        </select>
-                        <span class="input-group-btn">
-                          <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '">
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                          </button>
-                        </span>
+                        </span>';
+                        }
+                        echo '
                     </div>
                 </div>' . "\n";
             }

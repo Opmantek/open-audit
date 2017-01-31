@@ -135,7 +135,7 @@
                         <a href="#">Discoveries</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
-                            <?php if ($this->m_users->get_user_permission('', 'devices', 'c')) { ?>
+                            <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/import'>Import Multiple Discoveries</a></li>
                             <?php } ?>
