@@ -68,7 +68,17 @@ class M_fields extends MY_Model
                 $data_array[] = (string)$data->{$field->name};
             }
         }
-        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->type) or empty($data->placement)) {
+        # set a default for placement
+        if (empty($data->placement)) {
+            $data->placement = 'system';
+        }
+        if (empty($data->org_id)) {
+            $data->org_id = 1;
+        }
+        if (empty($data->type)) {
+            $data->type = 'varchar';
+        }
+        if (count($data_array) == 0 or empty($data->name)) {
             log_error('ERR-0021', 'm_fields::create');
             return false;
         }

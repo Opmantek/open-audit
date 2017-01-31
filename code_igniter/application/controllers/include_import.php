@@ -83,7 +83,8 @@ if ($this->response->meta->format === 'json') {
     output($this->response);
 } else {
     $this->response->meta->action = 'collection';
-    include 'include_collection.php';
+    #include 'include_collection.php';
+    redirect($this->response->meta->collection);
 }
 
 $log = new stdClass();

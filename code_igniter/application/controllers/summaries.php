@@ -208,6 +208,30 @@ class Summaries extends MY_Controller_new
         $this->response->data = $this->m_summaries->execute();
         output();
     }
+
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
+    {
+        $this->load->model('m_database');
+        $this->response->data = $this->m_database->read('summaries');
+        include 'include_import_form.php';
+    }
+
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import()
+    {
+        include 'include_import.php';
+    }
 }
 // End of file summaries.php
 // Location: ./controllers/summaries.php

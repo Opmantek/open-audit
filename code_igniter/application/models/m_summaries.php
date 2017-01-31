@@ -44,7 +44,43 @@ class M_summaries extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create()
+    public function create($data = null)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
+        $CI = & get_instance();
+        $data_array = array();
+        $sql = "INSERT INTO `summaries` (";
+        $sql_data = "";
+        if (is_null($data)) {
+            if (!empty($CI->response->meta->received_data->attributes)) {
+                $data = $CI->response->meta->received_data->attributes;
+            } else {
+                log_error('ERR-0010', 'm_summaries::create');
+                return false;
+            }
+        }
+        foreach ($this->db->field_data('summaries') as $field) {
+            if (!empty($data->{$field->name}) and $field->name != 'id') {
+                $sql .= "`" . $field->name . "`, ";
+                $sql_data .= "?, ";
+                $data_array[] = (string)$data->{$field->name};
+            }
+        }
+        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
+            log_error('ERR-0021', 'm_summaries::create');
+            return false;
+        }
+        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql_data .= '?, NOW()';                 // the user.name and timestamp
+        $data_array[] = $CI->user->full_name;    // the user.name
+        $sql .= ") VALUES (" . $sql_data . ")";
+        $id = intval($this->run_sql($sql, $data_array));
+        return ($id);
+    }
+
+    public function create_orig()
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';

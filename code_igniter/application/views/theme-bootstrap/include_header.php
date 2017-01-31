@@ -152,6 +152,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields'>List Fields</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'fields', 'c')) { ?>
                                 <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields/create'>Create Field</a></li>
+                                <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/fields/import'>Import Multiple Fields</a></li>
                             <?php } ?>
                         </ul>
                     </li>
@@ -256,6 +257,7 @@
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/summaries'>List Summaries</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'summaries', 'c')) { ?>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/summaries/create'>Create Summary</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/summaries/import'>Import Multiple Summaries</a></li>
                             <?php } ?>
                         </ul>
                     </li>
