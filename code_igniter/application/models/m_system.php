@@ -131,6 +131,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on hostname + uuid for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
         }
 
@@ -144,6 +145,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on hostname + dbus_identifier for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
         }
 
@@ -157,6 +159,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on hostname + serial for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
         }
 
@@ -170,6 +173,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on dbus_identifier for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
         }
 
@@ -183,6 +187,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on fqdn for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
         }
 
@@ -196,6 +201,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on serial + type for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
         }
 
@@ -214,6 +220,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on mac address for '.$details->ip.' (System ID '.$details->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
 
             # check all MAC addresses - this caters for an actual audit script result
@@ -235,6 +242,7 @@ class M_system extends MY_Model
                                 $details->id = $row->id;
                                 $log_details->message = 'HIT on mac address from audit result for '.strtolower($mac).' (System ID '.$row->id.')';
                                 stdlog($log_details);
+                                return $details->id;
                             }
                         }
                     }
@@ -256,6 +264,7 @@ class M_system extends MY_Model
                     $details->id = $row->id;
                     $log_details->message = 'HIT on ip_address in network table for '.$details->ip.' (System ID '.$row->id.')';
                     stdlog($log_details);
+                    return $details->id;
                 }
 
             # next check the system table for a ip match
@@ -269,6 +278,7 @@ class M_system extends MY_Model
                     $details->id = $row->id;
                     $log_details->message = 'HIT on ip for '.$details->ip.' (System ID '.$row->id.')';
                     stdlog($log_details);
+                    return $details->id;
                 }
             }
         }
@@ -283,6 +293,7 @@ class M_system extends MY_Model
                 $details->id = $row->id;
                 $log_details->message = 'HIT on hostname for '.$details->ip.' (System ID '.$row->id.')';
                 stdlog($log_details);
+                return $details->id;
             }
 
             # check short hostname in $details
@@ -302,6 +313,7 @@ class M_system extends MY_Model
                             $details->id = $row->id;
                             $log_details->message = 'HIT on hostname short for '.$details->ip.' (System ID '.$row->id.')';
                             stdlog($log_details);
+                            return $details->id;
                         }
                     }
                 }
@@ -321,6 +333,7 @@ class M_system extends MY_Model
                     $details->id = $row->id;
                     $log_details->message = 'HIT on short hostname '.$details->ip.' (System ID '.$row->id.')';
                     stdlog($log_details);
+                    return $details->id;
                 }
             }
         }
