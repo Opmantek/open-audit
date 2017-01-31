@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.29, for osx10.6 (i386)
+-- MySQL dump 10.13  Distrib 5.7.16, for Linux (x86_64)
 --
 -- Host: localhost    Database: openaudit
 -- ------------------------------------------------------
--- Server version	5.5.29-log
+-- Server version	5.7.16-0ubuntu0.16.04.1-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -212,7 +212,7 @@ CREATE TABLE `configuration` (
   `name` varchar(45) NOT NULL DEFAULT '',
   `value` varchar(250) NOT NULL DEFAULT '',
   `editable` varchar(1) NOT NULL DEFAULT 'n',
-  `edited_by`varchar(100) NOT NULL DEFAULT '',
+  `edited_by` varchar(100) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
@@ -374,7 +374,7 @@ CREATE TABLE `credentials` (
 
 LOCK TABLES `credentials` WRITE;
 /*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
-INSERT INTO credentials VALUES (NULL, 'Default SNMP', '', 'snmp', 'ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==', 1, 'system', NOW());
+INSERT INTO `credentials` VALUES (NULL,'Default SNMP','','snmp','ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==',1,'system',NOW());
 /*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -428,7 +428,7 @@ CREATE TABLE `discovery_log` (
   `system_id` int(10) unsigned DEFAULT NULL,
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `severity` int(1) unsigned NOT NULL DEFAULT '5',
-  `severity_text` enum ('debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency') NOT NULL DEFAULT 'notice',
+  `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
   `pid` int(10) unsigned NOT NULL DEFAULT '0',
   `ip` varchar(45) NOT NULL DEFAULT '',
   `file` varchar(100) NOT NULL DEFAULT '',
@@ -564,6 +564,34 @@ LOCK TABLES `edit_log` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `field`
+--
+
+DROP TABLE IF EXISTS `field`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `field` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `fields_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `field_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `field`
+--
+
+LOCK TABLES `field` WRITE;
+/*!40000 ALTER TABLE `field` DISABLE KEYS */;
+/*!40000 ALTER TABLE `field` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `fields`
 --
 
@@ -591,34 +619,6 @@ CREATE TABLE `fields` (
 LOCK TABLES `fields` WRITE;
 /*!40000 ALTER TABLE `fields` DISABLE KEYS */;
 /*!40000 ALTER TABLE `fields` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `field`
---
-
-DROP TABLE IF EXISTS `field`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `field` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `system_id` int(10) unsigned DEFAULT NULL,
-  `fields_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `value` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `system_id` (`system_id`),
-  CONSTRAINT `field_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
--- CONSTRAINT `additional_field_item_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
---
--- Dumping data for table `field`
---
-
-LOCK TABLES `field` WRITE;
-/*!40000 ALTER TABLE `field` DISABLE KEYS */;
-/*!40000 ALTER TABLE `field` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -744,7 +744,7 @@ CREATE TABLE `groups` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -753,22 +753,22 @@ CREATE TABLE `groups` (
 
 LOCK TABLES `groups` WRITE;
 /*!40000 ALTER TABLE `groups` DISABLE KEYS */;
-INSERT INTO groups VALUES(NULL, 1, "All Devices", "All the devices a user is authorised to view.", "SELECT DISTINCT(system.id) FROM system WHERE @filter", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Apple Computers", "Devices with type = computer and os_family like OSX.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND (os_family LIKE '%osx' OR os_family LIKE '%macos%')", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Centos Computers", "Devices with type = computer and os_family like Centos.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'centos'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Computers", "Devices with type = computer.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Debian Computers", "Devices with type = computer and os_family like Debian.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'debian'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Linux Computers", "Devices with type = computer and os_group like Linux.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'linux'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Open-AudIT Enterprise Managed Devices", "Devices Managed by Open-AudIT Enterprise.", "SELECT distinct(system.id) FROM system WHERE @filter AND system.status = 'production' and oae_manage = 'y'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Printers", "Devices with type = printer.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'printer'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Public IP Devices", "Devices with a public IP address and a status of production.", "SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = 'y') WHERE @filter AND ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "RedHat Computers", "Devices with type = computer and os_family like RedHat.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'redhat'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Routers", "Devices with type = router.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'router'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Switches", "Devices with type = switch.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'switch'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Virtual Hosts", "Devices with class = hypervisor.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = 'hypervisor'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Windows Computers", "Devices with type = computer and os_group like Windows.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'windows'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Windows Servers", "Devices with type = computer and os_name like Windows Server.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_name LIKE '%windows%server%'", "", "y", "system", NOW());
-INSERT INTO groups VALUES(NULL, 1, "Windows Workstations", "Devices with type = computer and os_name like Windows and os_name not like Server.", "SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%')", "", "y", "system", NOW());
+INSERT INTO `groups` VALUES (1,1,'All Devices','All the devices a user is authorised to view.','SELECT DISTINCT(system.id) FROM system WHERE @filter','','y','system',NOW());
+INSERT INTO `groups` VALUES (2,1,'Apple Computers','Devices with type = computer and os_family like OSX.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND (os_family LIKE \'%osx\' OR os_family LIKE \'%macos%\')','','y','system',NOW());
+INSERT INTO `groups` VALUES (3,1,'Centos Computers','Devices with type = computer and os_family like Centos.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_family LIKE \'centos\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (4,1,'Computers','Devices with type = computer.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (5,1,'Debian Computers','Devices with type = computer and os_family like Debian.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_family LIKE \'debian\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (6,1,'Linux Computers','Devices with type = computer and os_group like Linux.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_group LIKE \'linux\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (7,1,'Open-AudIT Enterprise Managed Devices','Devices Managed by Open-AudIT Enterprise.','SELECT distinct(system.id) FROM system WHERE @filter AND system.status = \'production\' and oae_manage = \'y\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (8,1,'Printers','Devices with type = printer.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'printer\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (9,1,'Public IP Devices','Devices with a public IP address and a status of production.','SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = \'y\') WHERE @filter AND ((( ip.ip > \'000.000.000.000\' AND ip.ip < \'010.000.000.000\' ) OR ( ip.ip > \'010.255.255.255\' AND ip.ip < \'169.254.0.0\' ) OR ( ip.ip > \'169.254.255.255\' AND ip.ip < \'172.016.000.000\' ) OR ( ip.ip > \'172.31.255.255\' AND ip.ip < \'192.168.000.000\' ) OR ip.ip > \'192.168.255.255\' ) OR ( ( system.ip > \'000.000.000.000\' AND system.ip < \'010.000.000.000\' ) OR ( system.ip > \'010.255.255.255\' AND system.ip < \'169.254.0.0\' ) OR ( system.ip > \'169.254.255.255\' AND system.ip < \'172.016.000.000\' ) OR ( system.ip > \'172.31.255.255\' AND system.ip < \'192.168.000.000\' ) OR system.ip > \'192.168.255.255\' )) AND system.status = \'production\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (10,1,'RedHat Computers','Devices with type = computer and os_family like RedHat.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_family LIKE \'redhat\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (11,1,'Routers','Devices with type = router.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'router\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (12,1,'Switches','Devices with type = switch.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'switch\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (13,1,'Virtual Hosts','Devices with class = hypervisor.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = \'hypervisor\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (14,1,'Windows Computers','Devices with type = computer and os_group like Windows.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_group LIKE \'windows\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (15,1,'Windows Servers','Devices with type = computer and os_name like Windows Server.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND os_name LIKE \'%windows%server%\'','','y','system',NOW());
+INSERT INTO `groups` VALUES (16,1,'Windows Workstations','Devices with type = computer and os_name like Windows and os_name not like Server.','SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = \'computer\' AND system.os_name LIKE \'%windows%\' AND system.os_name NOT LIKE \'%server%\')','','y','system',NOW());
 /*!40000 ALTER TABLE `groups` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -929,7 +929,6 @@ LOCK TABLES `ldap_servers` WRITE;
 /*!40000 ALTER TABLE `ldap_servers` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
 --
 -- Table structure for table `licenses`
 --
@@ -937,7 +936,6 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `licenses`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-
 CREATE TABLE `licenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
@@ -997,7 +995,7 @@ CREATE TABLE `locations` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1052,11 +1050,11 @@ DROP TABLE IF EXISTS `logs`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `type` varchar(200) NOT NULL DEFAULT '',
-  `severity` int(10) unsigned NOT NULL DEFAULT 0,
+  `severity` int(10) unsigned NOT NULL DEFAULT '0',
   `severity_text` varchar(20) NOT NULL DEFAULT '',
-  `pid` int(10) unsigned NOT NULL DEFAULT 0,
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
   `user` varchar(200) NOT NULL DEFAULT '',
   `server` varchar(200) NOT NULL DEFAULT '',
   `ip` varchar(200) NOT NULL DEFAULT '',
@@ -1064,8 +1062,8 @@ CREATE TABLE `logs` (
   `action` varchar(200) NOT NULL DEFAULT '',
   `function` varchar(200) NOT NULL DEFAULT '',
   `status` varchar(200) NOT NULL DEFAULT '',
-  `summary` text NOT NULL DEFAULT '',
-  `detail` text NOT NULL DEFAULT '',
+  `summary` text NOT NULL,
+  `detail` text NOT NULL,
   PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1535,10 +1533,10 @@ CREATE TABLE `oa_user` (
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',  
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `user_id_index` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1547,9 +1545,9 @@ CREATE TABLE `oa_user` (
 
 LOCK TABLES `oa_user` WRITE;
 /*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (NULL,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','["admin","org_admin"]','[1]','en','y','','system',NOW());
-INSERT INTO `oa_user` VALUES (NULL,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','["admin","org_admin"]','[1]','en','y','','system',NOW());
-INSERT INTO `oa_user` VALUES (NULL,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','["admin","org_admin"]','[1]','en','y','','system',NOW());
+INSERT INTO `oa_user` VALUES (1,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','[\"admin\",\"org_admin\"]','[1]','en','y','','',NOW());
+INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','[\"admin\",\"org_admin\"]','[1]','en','y','','',NOW());
+INSERT INTO `oa_user` VALUES (3,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','[\"admin\",\"org_admin\"]','[1]','en','y','','',NOW());
 /*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1782,7 +1780,7 @@ CREATE TABLE `queries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1838,12 +1836,12 @@ CREATE TABLE `roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `description` text NOT NULL,
-  `permissions` text NOT NULL DEFAULT '',
+  `permissions` text NOT NULL,
   `ad_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1852,10 +1850,10 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO roles VALUES (NULL, 'admin', 'This role can change global options.', '{"configuration":"crud","database":"crud","groups":"crud","ldap_servers":"crud","logs":"crud","nmis": "crud","queries":"crud","roles":"crud","search":"crud","sessions":"crud","summaries":"crud"}', 'open-audit_roles_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'org_admin', 'This role is used for administration of endpoints that contain an org_id.', '{"charts":"crud","connections":"crud","credentials":"crud","summaries":"crud","devices":"crud","discoveries":"crud","fields":"crud","files":"crud","graph":"crud","groups":"crud","invoice":"crud","licenses":"crud","locations":"crud","networks":"crud","orgs":"crud","queries":"crud","scripts":"crud","search":"crud","sessions":"crud","users":"crud"}', 'open-audit_roles_org_admin', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'reporter', 'The role used for reading endpoints and creating reports above to the user role.', '{"charts":"r","connections":"r","credentials":"r","summaries":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"crud","locations":"r","networks":"r","orgs":"r","queries":"crud","search":"crud","sessions":"crud"}', 'open-audit_roles_reporter', 'system', NOW());
-INSERT INTO roles VALUES (NULL, 'user', 'A standard role that can read all endpoints that contain an org_id.', '{"charts":"r","connections":"r","credentials":"r","summaries":"r","devices":"r","fields":"r","files":"r","graph":"r","invoice":"r","licenses":"r","locations":"r","networks":"r","orgs":"r","queries":"r","search":"crud","sessions":"crud"}', 'open-audit_roles_user', 'system', NOW());
+INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"configuration\":\"crud\",\"database\":\"crud\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\"}','open-audit_roles_admin','system',NOW());
+INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}','open-audit_roles_org_admin','system',NOW());
+INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_reporter','system',NOW());
+INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_user','system',NOW());
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1948,7 +1946,7 @@ CREATE TABLE `scripts` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1962,6 +1960,7 @@ INSERT INTO `scripts` VALUES (NULL,'audit_esxi.sh',1,'{\"submit_online\":\"y\",\
 INSERT INTO `scripts` VALUES (NULL,'audit_linux.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit Linux config.','audit_linux.sh','','system',NOW());
 INSERT INTO `scripts` VALUES (NULL,'audit_osx.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit OSX config.','audit_osx.sh','','system',NOW());
 INSERT INTO `scripts` VALUES (NULL,'audit_windows.vbs',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http://open-audit/index.php/input/devices\",\"debugging\":1}','The default audit Windows config.','audit_windows.vbs','','system',NOW());
+INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh',1,'{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit Solaris config.','audit_solaris.sh','','system',NOW());
 /*!40000 ALTER TABLE `scripts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2287,18 +2286,18 @@ CREATE TABLE `summaries` (
 
 LOCK TABLES `summaries` WRITE;
 /*!40000 ALTER TABLE `summaries` DISABLE KEYS */;
-INSERT INTO summaries VALUES (NULL, 'Device Classes', 1, 'system', 'class', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Device Status', 1, 'system', 'status', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Device Types', 1, 'system', 'type', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'DNS Domains', 1, 'system', 'dns_domain', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Form Factors', 1, 'system', 'form_factor', 'system.form_factor,system.class', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Manufacturers', 1, 'system', 'manufacturer', 'system.model', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Operating Systems', 1, 'system', 'os_family', '', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Server Types', 1, 'server', 'type', 'server.name,server.full_name,server.version,server.status', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Services', 1, 'service', 'name', 'service.name,service.state', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Software', 1, 'software', 'name', 'software.name,software.version', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Software Keys', 1, 'software_key', 'name', 'software_key.name,software_key.string,software_key.rel,software_key.edition', 'system', NOW());
-INSERT INTO summaries VALUES (NULL, 'Active Directory OU\'s', 1, 'windows', 'active_directory_ou', 'windows.active_directory_ou,windows.client_site_name', 'system', NOW());
+INSERT INTO `summaries` VALUES (NULL,'Device Classes',1,'system','class','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Device Status',1,'system','status','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Device Types',1,'system','type','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'DNS Domains',1,'system','dns_domain','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Form Factors',1,'system','form_factor','system.form_factor,system.class','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Manufacturers',1,'system','manufacturer','system.model','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Operating Systems',1,'system','os_family','','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Server Types',1,'server','type','server.name,server.full_name,server.version,server.status','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Services',1,'service','name','service.name,service.state','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Software',1,'software','name','software.name,software.version','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Software Keys',1,'software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system',NOW());
+INSERT INTO `summaries` VALUES (NULL,'Active Directory OU\'s',1,'windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system',NOW());
 /*!40000 ALTER TABLE `summaries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2442,7 +2441,7 @@ CREATE TABLE `task` (
   `last_result` varchar(50) NOT NULL DEFAULT '',
   `creator` varchar(50) NOT NULL DEFAULT '',
   `schedule` varchar(100) NOT NULL DEFAULT '',
-  `task` text NOT NULL DEFAULT '',
+  `task` text NOT NULL,
   `state` varchar(10) NOT NULL DEFAULT '',
   `runas` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -2727,9 +2726,9 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = '' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50020 DEFINER=`openaudit`@`localhost`*/ /*!50003 FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1
+CREATE DEFINER=`openaudit`@`localhost` FUNCTION `cidr_to_mask`(cidr INT(2)) RETURNS char(15) CHARSET latin1
     DETERMINISTIC
-RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) */;;
+RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10)) ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -2745,4 +2744,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-20 10:46:10
+-- Dump completed on 2016-12-22 14:32:10

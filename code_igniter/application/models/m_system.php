@@ -108,8 +108,12 @@ class M_system extends MY_Model
             $details->fqdn = '';
         }
 
-        $details->mac_address = strtolower($details->mac_address);
-        if ($details->mac_address == '00:00:00:00:00:00' or $details->mac_address == '') {
+        if (!empty($details->mac_address)) {
+            $details->mac_address = strtolower($details->mac_address);
+            if ($details->mac_address == '00:00:00:00:00:00') {
+                unset($details->mac_address);
+            }
+        } else {
             unset($details->mac_address);
         }
 

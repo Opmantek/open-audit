@@ -510,6 +510,38 @@ if (! function_exists('ssh_audit')) {
             }
         }
 
+        # Solaris specific tests
+        if ($details->os_group == 'SunOS') {
+            $command = 'hostname';
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
+            if ($ssh_result['status'] == 0) {
+                $details->hostname = $ssh_result['output'][0];
+            }
+            $command = 'domainname';
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
+            if ($ssh_result['status'] == 0) {
+                $details->domain = $ssh_result['output'][0];
+            }
+            if (empty($details->domain)) {
+                $command = 'grep domain /etc/resolv.conf | awk \'{print $2}\'';
+                $ssh_result = ssh_command($ip, $credentials, $command, $log);
+                if ($ssh_result['status'] == 0) {
+                    $details->domain = $ssh_result['output'][0];
+                }
+            }
+            if (!empty($details->hostname) and !empty($details->domain)) {
+                $details->fqdn = $details->hostname . '.' . $details->domain;
+            }
+            $command = 'smbios -t SMB_TYPE_SYSTEM | grep UUID | awk \'{print $2}\'';
+            $ssh_result = ssh_command($ip, $credentials, $command, $log);
+            if ($ssh_result['status'] == 0) {
+                if (!empty($ssh_result['output'][0])) {
+                    $details->uuid = $ssh_result['output'][0];
+                }
+            }
+            return($details);
+        }
+
         # Hostname
         $command = 'hostname -s';
         $ssh_result = ssh_command($ip, $credentials, $command, $log);
