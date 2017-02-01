@@ -162,7 +162,16 @@ class M_discoveries extends MY_Model
             }
             unset($CI->response->meta->received_data->attributes->other);
             $CI->response->meta->received_data->attributes->other = (string)json_encode($new_other);
+            if (!empty($received_other->subnet)) {
+                $CI->response->meta->received_data->attributes->description = $received_other->subnet;
+                $fields .= ' description ';
+            }
+            if (!empty($received_other->ad_domain)) {
+                $CI->response->meta->received_data->attributes->description = $received_other->ad_domain;
+                $fields .= ' description ';
+            }
         }
+
         foreach ($CI->response->meta->received_data->attributes as $key => $value) {
             if (strpos($fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
