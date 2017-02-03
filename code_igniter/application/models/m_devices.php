@@ -741,7 +741,17 @@ class M_devices extends MY_Model
         $result = $this->run_sql($sql, array());
         $group = $result[0];
         $CI->response->meta->sub_resource_name = $group->name;
-        $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))";
+
+        $filter = '';
+        if (!empty($CI->response->meta->filter)) {
+            foreach ($CI->response->meta->filter as $filter_entry) {
+                $filter .= ' AND ' . $filter_entry->name . ' ' . $filter_entry->operator . ' ' . '"' . $filter_entry->value . '"';
+            }
+        }
+
+        $device_sql = "WHERE system.id IN (SELECT system.id FROM system WHERE system.org_id IN (" . $CI->user->org_list . "))" . $filter;
+
+
         $sql = $group->sql;
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
 
