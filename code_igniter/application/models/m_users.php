@@ -62,13 +62,12 @@ class M_users extends MY_Model
                     log_error('ERR-0010', 'm_users::create');
                     return false;
                 }
-                $data->orgs = array();
-                if (isset($this->response->meta->received_data->attributes->orgs)) {
-                    for ($i=0; $i < count($this->response->meta->received_data->attributes->orgs); $i++) {
-                        $data->orgs[$i] = intval($this->response->meta->received_data->attributes->orgs[$i]);
-                    }
+
+                if (!empty($data->orgs)) {
+                    $data->orgs = json_encode(array_map('intval', $data->orgs));
+                } else {
+                    $data->orgs = array();
                 }
-                $data->orgs = json_encode($data->orgs);
             } else {
                 log_error('ERR-0010', 'm_users::create');
                 return false;
@@ -80,18 +79,18 @@ class M_users extends MY_Model
         if (empty($data->password)) {
             $data->password = '';
         }
-        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM)); # get 256 random bits in hex
-        $hash = hash("sha256", $salt.(string)$data->password); # prepend the salt, then hash
+        // get 256 random bits in hex
+        $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+        // hash the password
+        $hash = hash("sha256", $salt.(string)$data->password);
+        // prepend the salt
         $data->password = $salt.$hash;
-        // assign the orgs
-        if (!isset($data->orgs)) {
-            $data->orgs = '';
-        }
         foreach ($this->db->field_data('oa_user') as $field) {
             if (!empty($data->{$field->name}) and $field->name != 'id') {
                 $sql .= "`" . $field->name . "`, ";
                 $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$field->name};
+                //$data_array[] = (string)$data->{$field->name};
+                $data_array[] = $data->{$field->name};
             }
         }
         if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
