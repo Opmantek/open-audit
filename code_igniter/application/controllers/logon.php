@@ -171,30 +171,44 @@ class logon extends CI_Controller
     */
     public function login()
     {
-
         $temp = @$this->session->userdata('user_id');
         if (!empty($temp)) {
             if ($this->response->meta->format != 'json') {
-                #echo "<pre>\n"; print_r($this->session->all_userdata());
                 redirect('summaries');
             } else {
-                print_r(json_encode($this->response));
+                $this->load->model('m_users');
+                $this->m_users->validate();
+                if (!empty($this->user->roles)) {
+                    $this->user->roles = json_decode($this->user->roles);
+                } else {
+                    $this->user->roles = array();
+                }
+                print_r(json_encode($this->user));
+                exit();
             }
         }
 
         $this->load->model('m_logon');
         $this->m_logon->logon();
+        if (empty($this->user->id)) {
+            // user not validated
+            if ($this->response->meta->format != 'json') {
+                redirect('summaries');
+            } else {
+                log_error('ERR-0020', current_url());
+                header($this->response->meta->header);
+                unset($this->response->sql);
+                print_r(json_encode($this->response->meta));
+                exit();
+            }
+        }
 
         if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
             redirect('database');
             exit();
         }
-        #$this->response->meta->format = 'json';
-        $this->user->id = intval($this->user->id);
-        #$this->user->org_id = intval($this->user->org_id);
-        #echo "<pre>\n"; print_r($this->user); exit();
 
-        #echo "<pre>\n"; print_r($this->response); exit();
+
         if ($this->response->meta->format != 'json') {
             $url = @$this->session->userdata('url');
             if (!empty($url)) {
@@ -203,6 +217,8 @@ class logon extends CI_Controller
                 redirect('summaries');
             }
         } else {
+            $this->user->id = intval($this->user->id);
+            $this->user->org_id = intval($this->user->org_id);
             $this->user->roles = json_decode($this->user->roles);
             print_r(json_encode($this->user));
         }

@@ -327,5 +327,6 @@ class M_logon extends MY_Model
         $log->severity = 5;
         $log->message = "User $username attempted to log on with invalid credentials. IP " . $_SERVER['REMOTE_ADDR'];
         stdlog($log);
+        return false;
     }
 }
