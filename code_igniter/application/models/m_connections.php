@@ -72,11 +72,11 @@ class M_connections extends MY_Model
             log_error('ERR-0021', 'm_connections::create');
             return false;
         }
-        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
+        $sql .= '`edited_by`, `edited_date`';        // the user.name and timestamp
         $sql_data .= '?, NOW()';                 // the user.name and timestamp
         $data_array[] = $CI->user->full_name;    // the user.name
         $sql .= ") VALUES (" . $sql_data . ")";
-        $id = intval($this->run_sql($sql, $data));
+        $id = intval($this->run_sql($sql, $data_array));
         return ($id);
     }
 
