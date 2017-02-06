@@ -5963,7 +5963,7 @@ class Database extends MY_Controller_new
             $options['debugging'] = 1;
             $options = json_encode($options);
             $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_esxi.sh', 1, '" . $options . "', 'The default audit ESXi config.', 'audit_esxi.sh', '', 'system', NOW())";
-            $sql[] = "INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh', 1, '" . $options . "', 'The default audit Solaris config.', audit_solaris.sh', '', 'system', NOW())";
+            $sql[] = "INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh', 1, '" . $options . "', 'The default audit Solaris config.', 'audit_solaris.sh', '', 'system', NOW())";
             unset($options);
 
             $sql[] = "UPDATE configuration SET value = '20170104' WHERE name = 'internal_version'";
