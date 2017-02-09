@@ -5937,6 +5937,19 @@ class Database extends MY_Controller_new
             $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
             $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system',NOW(),'The number of days to report on for the Enterprise graphs.')";
 
+            # fields
+            $sql[] = "UPDATE `fields` SET `type` = 'varchar' WHERE `type` != 'list'";
+            $sql[] = "ALTER TABLE `fields` CHANGE `type` `type` enum('varchar','list') NOT NULL DEFAULT 'varchar'";
+            $sql[] = "UPDATE `fields` SET `placement` = 'custom' WHERE `placement` != 'system'";
+            $sql[] = "ALTER TABLE `fields` CHANGE `placement` `placement` enum('custom','system') NOT NULL DEFAULT 'system'";
+
+            # files
+            $sql[] = "ALTER TABLE `files` CHANGE `path` `path` text NOT NULL DEFAULT ''";
+
+            # locations
+            $sql[] = "ALTER TABLE `locations` DROP `icon`";
+            $sql[] = "ALTER TABLE `locations` DROP `comments`";
+
             # queries
             $sql[] = "DELETE FROM queries WHERE `name` LIKE 'Changes - %'";
 
@@ -5965,6 +5978,10 @@ class Database extends MY_Controller_new
             $sql[] = "INSERT INTO `scripts` VALUES (NULL, 'audit_esxi.sh', 1, '" . $options . "', 'The default audit ESXi config.', 'audit_esxi.sh', '', 'system', NOW())";
             $sql[] = "INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh', 1, '" . $options . "', 'The default audit Solaris config.', 'audit_solaris.sh', '', 'system', NOW())";
             unset($options);
+
+            # users
+            $sql[] = "ALTER TABLE `oa_user` CHANGE `lang` `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en'";
+
 
             $sql[] = "UPDATE configuration SET value = '20170104' WHERE name = 'internal_version'";
             $sql[] = "UPDATE configuration SET value = '1.14.4' WHERE name = 'display_version'";

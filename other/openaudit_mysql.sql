@@ -603,9 +603,9 @@ CREATE TABLE `fields` (
   `name` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `group_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('varchar','bool','int','memo','list','datetime','timestamp') NOT NULL DEFAULT 'varchar',
+  `type` enum('varchar','list') NOT NULL DEFAULT 'varchar',
   `values` varchar(100) NOT NULL DEFAULT '',
-  `placement` varchar(100) NOT NULL DEFAULT '',
+  `placement` enum('custom','system') NOT NULL DEFAULT 'system',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -674,7 +674,7 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `path` varchar(45) NOT NULL DEFAULT '',
+  `path` text NOT NULL DEFAULT '',
   `description` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -990,8 +990,6 @@ CREATE TABLE `locations` (
   `latitude` float(10,6) NOT NULL,
   `longitude` float(10,6) NOT NULL,
   `geo` varchar(200) NOT NULL DEFAULT '',
-  `comments` varchar(100) NOT NULL DEFAULT '',
-  `icon` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1531,7 +1529,7 @@ CREATE TABLE `oa_user` (
   `orgs` text NOT NULL,
   `lang` varchar(100) NOT NULL,
   `active` varchar(1) NOT NULL DEFAULT 'y',
-  `ldap` text NOT NULL,
+  `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
