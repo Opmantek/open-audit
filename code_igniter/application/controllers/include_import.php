@@ -31,12 +31,17 @@ $this->load->helper('log');
 $this->response->meta->flash = new stdClass();
 $csv = @array_map('str_getcsv', file($_FILES['file_import']['tmp_name']));
 if (!$csv) {
-    $this->log_helper->log_error('ERR-0011');
-    redirect($this->response->meta->collection);
+    log_error('ERR-0011');
+    if ($this->response->meta->format === 'json') {
+        output($this->response);
+    } else {
+        redirect($this->response->meta->collection);
+    }
     exit();
 }
 $header = $csv[0];
 unset($csv[0]);
+$this->response->data = array();
 foreach ($csv as $key => $value) {
     $item = new stdClass();
     for ($i=0; $i < count($value); $i++) {
@@ -61,10 +66,13 @@ foreach ($csv as $key => $value) {
             break;
         }
         unset($test);
-        if ($this->{'m_'.$this->response->meta->collection}->create($item)) {
+        unset($id);
+        $id = $this->{'m_'.$this->response->meta->collection}->create($item);
+        if (!empty($id)) {
             // set a flash
             $this->response->meta->flash->status = 'success';
             $this->response->meta->flash->message = 'New object(s) in ' . $this->response->meta->collection . ' created.';
+            $this->response->data = array_merge($this->response->data, $this->{'m_'.$this->response->meta->collection}->read($id));
         } else {
             // set an error
             $this->response->meta->flash = new stdClass();
@@ -79,7 +87,7 @@ foreach ($csv as $key => $value) {
     }
 }
 if ($this->response->meta->format === 'json') {
-    $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+    #$this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
     output($this->response);
 } else {
     $this->response->meta->action = 'collection';
