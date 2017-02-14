@@ -371,9 +371,14 @@ if (! function_exists('inputRead')) {
             }
         }
         if ($REQUEST_METHOD == 'PATCH') {
-            $data = json_decode(urldecode(str_replace('data=', '', file_get_contents('php://input'))));
-            $CI->response->meta->received_data = $data->data;
-            unset($data);
+            $data = urldecode(str_replace('data=', '', file_get_contents('php://input')));
+            $data = json_decode($data);
+            if (empty($data)) {
+                $log->summary = 'Request method is PATCH but no data supplied.';
+                stdlog($log);
+            } else {
+                $CI->response->meta->received_data = $data->data;
+            }
         }
         if (isset($CI->response->meta->received_data->id)) {
             if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'configuration') {
