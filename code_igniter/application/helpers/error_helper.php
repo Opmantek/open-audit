@@ -238,6 +238,13 @@ if (! function_exists('getError')) {
         $error_array['ERR-0024']->title = "Cannot create resource with supplied data" . $extra;
         $error_array['ERR-0024']->detail = 'Cannot create resource with supplied data. A required field is missing.';
 
+        $error_array['ERR-0025'] = new stdClass();
+        $error_array['ERR-0025']->code = 'ERR-0025';
+        $error_array['ERR-0025']->status = 'error';
+        $error_array['ERR-0025']->severity = 2;
+        $error_array['ERR-0025']->title = $extra;
+        $error_array['ERR-0025']->detail = 'Update did not supply PATCH data.';
+
         foreach ($error_array as $error_each) {
             if ($error_each->severity == '3') {
                 $error_each->severity_text = 'error';
