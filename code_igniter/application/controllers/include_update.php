@@ -25,7 +25,11 @@
 #
 # *****************************************************************************
 
-
+if (empty($this->response->meta->received_data)) {
+	log_error('ERR-0025');
+	output($this->response);
+	exit();
+}
 $this->{'m_'.$this->response->meta->collection}->update();
 if ($this->response->meta->format === 'json') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
