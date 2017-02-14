@@ -153,6 +153,11 @@ if (empty($data['mount_point'])) {
                 <?php if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Phone'); ?></a></li>
                 <?php } ?>
+
+                <?php if (isset($data['nmap'])) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
+                <?php } ?>
+
               </ul>
           </div>
         </div>
@@ -254,7 +259,7 @@ if (empty($data['mount_point'])) {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'log', 'netstat', 'nmap', 'share', 'pagefile', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
+        $software = array('dns', 'file', 'log', 'netstat', 'share', 'pagefile', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
