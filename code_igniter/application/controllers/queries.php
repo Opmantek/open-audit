@@ -98,7 +98,6 @@ class Queries extends MY_Controller_new
         $this->{$this->response->meta->action}();
     }
 
-
     /**
     * Process the supplied data and create a new object
     *
@@ -177,16 +176,15 @@ class Queries extends MY_Controller_new
     }
 
     /**
-    * Supply a HTML form for the user to upload a collection of objects in CSV
+    * Supply a HTML form for the user to update an object
     *
     * @access public
     * @return NULL
     */
-    public function import_form()
+    public function execute()
     {
-        $this->load->model('m_database');
-        $this->response->data = $this->m_database->read('queries');
-        include 'include_import_form.php';
+        $this->response->data = $this->m_queries->execute();
+        output();
     }
 
     /**
@@ -199,6 +197,20 @@ class Queries extends MY_Controller_new
     {
         include 'include_import.php';
     }
+
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
+    {
+        $this->load->model('m_database');
+        $this->response->data = $this->m_database->read('queries');
+        include 'include_import_form.php';
+    }
+
 }
 // End of file locations.php
 // Location: ./controllers/locations.php

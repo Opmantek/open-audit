@@ -191,6 +191,49 @@ class M_queries extends MY_Model
         return ($result);
     }
 
+    public function execute($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+            $set_count = true;
+            $limit = str_replace('LIMIT ', '', $CI->response->meta->internal->limit);
+            $limit = explode(',', $limit);
+            if (!empty($limit[0])) {
+                $limit_lower = @intval($limit[0]);
+            } else {
+                $limit_lower = 0;
+            }
+            if (!empty($limit[1])) {
+                $limit_upper = intval($limit[1]);
+            } else {
+                $limit_upper = 8888888888;
+            }
+            
+            unset($limit);
+        } else {
+            $id = intval($id);
+            $limit_lower = 0;
+            $limit_upper = 8888888888;
+        }
+        $sql = "SELECT * FROM queries WHERE id = ?";
+        $data = array($id);
+        $queries = $this->run_sql($sql, $data);
+        $query = $queries[0];
+        unset($queries);
+        $sql = $query->sql;
+        $filter = "system.org_id IN (" . $CI->user->org_list . ")";
+        $sql = str_replace('WHERE @filter', "WHERE $filter", $sql);
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'queries');
+        return $result;
+    }
+
+
+
+
     public function sub_resource($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
