@@ -226,7 +226,7 @@ if (! function_exists('getError')) {
 
         $error_array['ERR-0023'] = new stdClass();
         $error_array['ERR-0023']->code = 'ERR-0023';
-        $error_array['ERR-0023']->status = 'error';
+        $error_array['ERR-0023']->status = 'HTTP/1.1 500 Internal Server Error';
         $error_array['ERR-0023']->severity = 2;
         $error_array['ERR-0023']->title = $extra;
         $error_array['ERR-0023']->detail = 'SQL command failed.';
@@ -240,7 +240,7 @@ if (! function_exists('getError')) {
 
         $error_array['ERR-0025'] = new stdClass();
         $error_array['ERR-0025']->code = 'ERR-0025';
-        $error_array['ERR-0025']->status = 'error';
+        $error_array['ERR-0025']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0025']->severity = 2;
         $error_array['ERR-0025']->title = $extra;
         $error_array['ERR-0025']->detail = 'Update did not supply PATCH data.';
