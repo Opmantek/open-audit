@@ -508,7 +508,8 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, collection is database and action = update.';
             stdlog($log);
         }
-        if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
+        #if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
+        if (($REQUEST_METHOD == 'PUT' or $REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
             // update an item
             $CI->response->meta->action = 'update';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
