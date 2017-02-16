@@ -164,7 +164,7 @@ class MY_Model extends CI_Model
         $model = @$caller['class'];
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
-        if (stripos($sql, 'insert') === 0) {
+        if (stripos($sql, 'insert into')) {
             // this is an insert - return the insert_id
             $insert_id = true;
         } else {
