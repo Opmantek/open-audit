@@ -198,41 +198,28 @@ class M_queries extends MY_Model
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-            $set_count = true;
-            $limit = str_replace('LIMIT ', '', $CI->response->meta->internal->limit);
-            $limit = explode(',', $limit);
-            if (!empty($limit[0])) {
-                $limit_lower = @intval($limit[0]);
-            } else {
-                $limit_lower = 0;
-            }
-            if (!empty($limit[1])) {
-                $limit_upper = intval($limit[1]);
-            } else {
-                $limit_upper = 8888888888;
-            }
-            
             unset($limit);
         } else {
             $id = intval($id);
-            $limit_lower = 0;
-            $limit_upper = 8888888888;
         }
+        # TODO - add a count for the total returned in response->meta->filtered
         $sql = "SELECT * FROM queries WHERE id = ?";
         $data = array($id);
         $queries = $this->run_sql($sql, $data);
         $query = $queries[0];
-        unset($queries);
         $sql = $query->sql;
+        unset($queries);
         $filter = "system.org_id IN (" . $CI->user->org_list . ")";
+        $user_filter = $this->build_filter();
+        if (!empty($user_filter)) {
+            $filter .= $user_filter;
+        }
         $sql = str_replace('WHERE @filter', "WHERE $filter", $sql);
+        $sql .= $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'queries');
         return $result;
     }
-
-
-
 
     public function sub_resource($id = '')
     {
@@ -250,4 +237,41 @@ class M_queries extends MY_Model
         $result = $this->format_data($result, 'devices');
         return $result;
     }
+
+
+
+
+
+
+
+    private function build_filter()
+    {
+        $CI = & get_instance();
+        $reserved = ' properties limit sub_resource action sort current offset format ';
+        $filter = '';
+        foreach ($CI->response->meta->filter as $item) {
+            if (strpos(' '.$item->name.' ', $reserved) === false) {
+                if ($item->name == 'id') {
+                    $item->name = 'system.id';
+                }
+                if (!empty($item->name) and $item->operator != 'in') {
+                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                }
+                if (!empty($item->name) and $item->operator == 'in') {
+                    $filter .= ' AND ' . $item->name . ' in ' . $item->value;
+                }
+            }
+        }
+        if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false) {
+            $filter .= ' AND system.status = "production"';
+            $temp = new stdClass();
+            $temp->name = 'system.status';
+            $temp->operator = '=';
+            $temp->value = 'production';
+            $CI->response->meta->filter[] = $temp;
+            unset($temp);
+        }
+        return($filter);
+    }
+
 }
