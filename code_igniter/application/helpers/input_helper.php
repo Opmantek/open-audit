@@ -139,7 +139,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
         $action = '';
 
-        $collections = ' charts configuration connections credentials database devices discovery discoveries fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
+        $collections = ' charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -253,6 +253,10 @@ if (! function_exists('inputRead')) {
                         }
                     }
                     break;
+                case 'errors':
+                    $sql = '';
+                    $CI->response->meta->id = $CI->uri->segment(2);
+                    break;
                 case 'devices':
                     $sql = "/* input_helper::inputRead */" . "SELECT system.id AS id FROM system WHERE name LIKE ? ORDER BY system.id DESC LIMIT 1";
                     $table = 'system';
@@ -297,6 +301,9 @@ if (! function_exists('inputRead')) {
                     $log->summary = 'Set id to NULL, after searching - no match found.';
                     stdlog($log);
                 }
+            } else {
+                $log->summary = "Set id to " . $CI->response->meta->id . ", based on the URL.";
+                stdlog($log);
             }
         }
 
@@ -380,7 +387,7 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = $data->data;
             }
         }
-        if (isset($CI->response->meta->received_data->id)) {
+        if (!empty($CI->response->meta->received_data->id)) {
             if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'configuration') {
                 $CI->response->meta->id = intval($CI->response->meta->received_data->id);
             }
@@ -435,7 +442,7 @@ if (! function_exists('inputRead')) {
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == '') {
             // return a single item
             $CI->response->meta->action = 'read';
-            if ($CI->response->meta->collection != 'database') {
+            if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'errors') {
                 $CI->response->meta->id = intval($CI->response->meta->id);
             }
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
@@ -909,7 +916,7 @@ if (! function_exists('inputRead')) {
 
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
-            if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action])) {
+            if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors') {
                 log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
                 //output();
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
@@ -941,6 +948,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->collection != 'charts' and
             $CI->response->meta->collection != 'configuration' and
             $CI->response->meta->collection != 'database' and
+            $CI->response->meta->collection != 'errors' and
             $CI->response->meta->collection != 'ldap_servers' and
             $CI->response->meta->collection != 'logs' and
             $CI->response->meta->collection != 'report' and

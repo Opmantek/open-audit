@@ -54,6 +54,12 @@ class MY_Model extends CI_Model
             # Check this when we change from m_system to m_devices for processing results
             return null;
         }
+        if (gettype($result) == 'object') {
+            $object = $result;
+            unset($result);
+            $result = array($object);
+            unset($object);
+        }
         if (empty($type)) {
             return false;
         }
@@ -76,6 +82,8 @@ class MY_Model extends CI_Model
                 $item->id = intval($entry->{'system.id'});
             } else if (!empty($entry->{$type.".id"})) {
                 $item->id = intval($entry->{$type.".id"});
+            } else if ($type == 'errors') {
+                $item->id = $entry->code;
             }
             $item->type = $type;
             $item->attributes = $entry;
