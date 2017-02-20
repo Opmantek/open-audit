@@ -674,7 +674,7 @@ DROP TABLE IF EXISTS `files`;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `path` text NOT NULL DEFAULT '',
+  `path` text NOT NULL,
   `description` varchar(200) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -1653,7 +1653,7 @@ CREATE TABLE `partition` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `serial` varchar(100) NOT NULL DEFAULT '',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` text NOT NULL,
   `description` varchar(100) NOT NULL DEFAULT '',
   `device` varchar(100) NOT NULL DEFAULT '',
   `hard_drive_index` varchar(100) NOT NULL DEFAULT '',

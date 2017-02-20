@@ -5669,7 +5669,7 @@ class Database extends MY_Controller_new
             foreach ($result as $field) {
                 $field_sql = "SELECT * FROM oa_group WHERE id = ?";
                 $data = array(intval($field->group_id));
-                $query = $this->db->query($field_sql);
+                $query = $this->db->query($field_sql, $data);
                 $result_group = $query->result();
                 if (!empty($result_group)) {
                     $old_group = $result_group[0];
@@ -5944,11 +5944,14 @@ class Database extends MY_Controller_new
             $sql[] = "ALTER TABLE `fields` CHANGE `placement` `placement` enum('custom','system') NOT NULL DEFAULT 'system'";
 
             # files
-            $sql[] = "ALTER TABLE `files` CHANGE `path` `path` text NOT NULL DEFAULT ''";
+            $sql[] = "ALTER TABLE `files` CHANGE `path` `path` text NOT NULL";
 
             # locations
             $sql[] = "ALTER TABLE `locations` DROP `icon`";
             $sql[] = "ALTER TABLE `locations` DROP `comments`";
+
+            # partition
+            $sql[] = "ALTER TABLE `partition` CHANGE `name` `name` text NOT NULL";
 
             # queries
             $sql[] = "DELETE FROM queries WHERE `name` LIKE 'Changes - %'";
