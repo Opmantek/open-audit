@@ -5667,7 +5667,7 @@ class Database extends MY_Controller_new
             $query = $this->db->query($field_sql);
             $result = $query->result();
             foreach ($result as $field) {
-                $field_sql = "SELECT * FROM oa_group WHERE id = ?";
+                $field_sql = "SELECT * FROM oa_group WHERE group_id = ?";
                 $data = array(intval($field->group_id));
                 $query = $this->db->query($field_sql, $data);
                 $result_group = $query->result();
@@ -5942,6 +5942,7 @@ class Database extends MY_Controller_new
             $sql[] = "ALTER TABLE `fields` CHANGE `type` `type` enum('varchar','list') NOT NULL DEFAULT 'varchar'";
             $sql[] = "UPDATE `fields` SET `placement` = 'custom' WHERE `placement` != 'system'";
             $sql[] = "ALTER TABLE `fields` CHANGE `placement` `placement` enum('custom','system') NOT NULL DEFAULT 'system'";
+            $sql[] = "ALTER TABLE `fields` CHANGE `values` `values` text NOT NULL";
 
             # files
             $sql[] = "ALTER TABLE `files` CHANGE `path` `path` text NOT NULL";

@@ -604,7 +604,7 @@ CREATE TABLE `fields` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `group_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('varchar','list') NOT NULL DEFAULT 'varchar',
-  `values` varchar(100) NOT NULL DEFAULT '',
+  `values` text NOT NULL,
   `placement` enum('custom','system') NOT NULL DEFAULT 'system',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
