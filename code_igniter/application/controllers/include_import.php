@@ -49,7 +49,7 @@ foreach ($csv as $key => $value) {
     }
     $item->org_id = @intval($item->org_id);
     if ($item->org_id == 0 and $this->response->meta->collection != 'orgs') {
-        $this->log_helper->log_error('ERR-0011');
+        log_error('ERR-0011');
     } else {
         // Check user is auth on org_id
         unset($test);
