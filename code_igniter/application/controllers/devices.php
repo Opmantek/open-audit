@@ -323,6 +323,14 @@ class devices extends MY_Controller_new
         stdLog($log);
     }
 
+    private function sub_resource_read()
+    {
+        $this->response->data = $this->m_devices->read_sub_resource($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
+        $this->response->meta->total = count($this->response->data);
+        $this->response->meta->filtered = $this->response->meta->total;
+        output($this->response);
+    }
+
     private function sub_resource_delete()
     {
         $this->m_devices->sub_resource_delete($this->response->meta->id, $this->response->meta->sub_resource, $this->response->meta->sub_resource_id);

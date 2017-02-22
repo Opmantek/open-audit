@@ -75,7 +75,7 @@ class M_devices extends MY_Model
                 }
             }
         }
-        if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false) {
+        if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false and $CI->response->meta->action != 'sub_resource_read') {
             $filter .= ' AND system.status = "production"';
             $temp = new stdClass();
             $temp->name = 'system.status';
@@ -313,15 +313,21 @@ class M_devices extends MY_Model
         } else {
             $currency = false;
             $first_seen = false;
-            $fields = $this->db->list_fields($sub_resource);
-            foreach ($fields as $field) {
-                if ($field == 'current') {
-                    $currency = true;
-                }
-                if ($field == 'first_seen') {
-                    $first_seen = true;
-                }
+            if ($this->db->field_exists('current', $sub_resource)) {
+                $currency = true;
             }
+            if ($this->db->field_exists('first_seen', $sub_resource)) {
+                $first_seen = true;
+            }
+            // $fields = $this->db->list_fields($sub_resource);
+            // foreach ($fields as $field) {
+            //     if ($field == 'current') {
+            //         $currency = true;
+            //     }
+            //     if ($field == 'first_seen') {
+            //         $first_seen = true;
+            //     }
+            // }
             if ($currency) {
                 $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
                 if ($current == 'y') {
@@ -335,7 +341,7 @@ class M_devices extends MY_Model
                 }
                 if ($current == 'delta' and $first_seen) {
                     $properties .= ", IF((`" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)), 'y', 'n') as original_install";
-                    $currency = "AND current = 'y' or first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1))";
+                    $currency = "AND current = 'y' or `" . $sub_resource . "`.first_seen = (SELECT first_seen FROM `" . $sub_resource . "` WHERE system_id = $id ORDER BY first_seen LIMIT 1)";
                 }
                 if ($current == 'delta' and !$first_seen) {
                     $currency = "";
@@ -351,7 +357,7 @@ class M_devices extends MY_Model
                 $currency = "";
             }
 
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $sort;
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $limit . " " . $sort;
             $data = array($CI->user->id);
         }
         $result = $this->run_sql($sql, $data);
