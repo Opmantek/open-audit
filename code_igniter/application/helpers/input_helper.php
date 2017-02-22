@@ -136,7 +136,7 @@ if (! function_exists('inputRead')) {
         $CI->response->links = array();
         $CI->response->included = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
         $action = '';
 
         $collections = ' charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
@@ -425,6 +425,12 @@ if (! function_exists('inputRead')) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create_form';
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, not sub_resource_id and action = create.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and $action == 'sub_resource_read' and $CI->response->meta->sub_resource != '') {
+            // return the sub_resource
+            $CI->response->meta->action = 'sub_resource_read';
+            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource and action = sub_resource_read.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and $action == 'download' and $CI->response->meta->sub_resource != '' and !empty($CI->response->meta->sub_resource_id)) {
@@ -891,6 +897,7 @@ if (! function_exists('inputRead')) {
         $permission['sub_resource_create_form'] = 'c';
         $permission['sub_resource_delete'] = 'd';
         $permission['sub_resource_download'] = 'r';
+        $permission['sub_resource_read'] = 'r';
         $permission['update'] = 'u';
         $permission['update_form'] = 'u';
         $permission['unknown'] = 'unknown action';
