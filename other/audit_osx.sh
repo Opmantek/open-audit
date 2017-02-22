@@ -479,10 +479,12 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A
         software_publisher="Apple"
     fi
 
-    if [[ "$line" == *"Get Info String: "* && "$software_publisher" == "" ]]; then
-        software_publisher=`echo "$line" | sed 's/^ *//'`
-        software_publisher=`echo "$software_publisher" | sed 's/^Get Info String: //'`
-    fi
+    # the below line appears (sometimes) after the Location: line.
+    # Commenting out for now as it's not easy to retrieve this for 'some' packages only
+    # if [[ "$line" == *"Get Info String: "* && "$software_publisher" == "" ]]; then
+    #     software_publisher=`echo "$line" | sed 's/^ *//'`
+    #     software_publisher=`echo "$software_publisher" | sed 's/^Get Info String: //'`
+    # fi
 
     if [[ "$line" == *"Location:"* ]]; then
         software_location=`echo "$line" | cut -d":" -f2 | sed 's/^ *//'`
