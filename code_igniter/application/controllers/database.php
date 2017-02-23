@@ -5675,7 +5675,7 @@ class Database extends MY_Controller_new
                     $old_group = $result_group[0];
                     $new_group = array();
                     $new_group['org_id'] = 1;
-                    $new_group['name'] = $old_group->name . ' (used by fields)';
+                    $new_group['name'] = $old_group->group_name . ' (used by fields)';
                     $new_group['description'] = 'Migrated for use in fields.';
                     $new_group['sql'] = str_ireplace('where ', 'WHERE @filter', $old_group->group_dynamic_select);
                     $new_group['link'] = '';
