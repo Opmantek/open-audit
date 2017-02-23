@@ -4837,7 +4837,7 @@ class Database extends MY_Controller_new
                 $result = $query->result();
                 if ($result[0]->count > 0) {
                     // Move this Org
-                    $sql = "INSERT INTO oa_org (SELECT NULL, `name`, 0, `comments`, 'system', NOW() FROM oa_org WHERE id = 1)";
+                    $sql = "INSERT INTO oa_org (SELECT NULL, `name`, 0, `comments`, 'system', NOW() FROM oa_org WHERE org_id = 1)";
                     $query = $this->db->query($sql);
                     $org_1_id = $this->db->insert_id();
                     $org_1_id = intval($org_1_id);
