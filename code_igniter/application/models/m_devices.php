@@ -579,7 +579,8 @@ class M_devices extends MY_Model
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->{'system.id'})) {
                     if (!empty($seen_by_temp[$result[$i]->{'system.id'}])) {
-                        $result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
+                        #$result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
+                        $result[$i]->{'seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
                     } else {
                         $result[$i]->seen_by = '';
                     }
