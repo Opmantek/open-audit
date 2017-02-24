@@ -57,6 +57,7 @@
     $device_types['access token'] = 'Access Token';
     $device_types['adsl modem'] = 'ADSL Modem';
     $device_types['alarm'] = 'Alarm';
+    $device_types['bar code reader'] = 'Bar Code Reader';
     $device_types['bdsl modem'] = 'BDSL Modem';
     $device_types['bridge'] = 'Bridge';
     $device_types['broadband router'] = 'Broadband Router';
