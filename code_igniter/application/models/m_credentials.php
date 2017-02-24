@@ -168,6 +168,11 @@ class M_credentials extends MY_Model
             $data[] = $CI->response->meta->received_data->attributes->description;
         }
 
+        if (!empty($CI->response->meta->received_data->attributes->org_id)) {
+            $sql .= "`org_id` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->org_id;
+        }
+
         if ($sql == 'UPDATE `credentials` SET ') {
             # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
         }
@@ -175,6 +180,7 @@ class M_credentials extends MY_Model
         $data[] = (string)$CI->user->full_name;
         $data[] = intval($CI->response->meta->id);
         $this->run_sql($sql, $data);
+        #echo $sql; exit();
         return;
     }
 
