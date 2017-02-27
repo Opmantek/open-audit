@@ -152,7 +152,16 @@ class input extends CI_Controller
 
     public function devices()
     {
-        $this->response->meta->action = 'devices';
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 6;
+        $log->status = 'processing';
+        $log->collection = 'input';
+        $log->action = 'devices';
+        $log->function = strtolower($log->collection) . '::' . strtolower($log->action);
+        $log->summary = 'processing submitted data';
+        stdlog($log);
+        $discovery_id = NULL;
         include "include_input_devices.php";
     }
 }
