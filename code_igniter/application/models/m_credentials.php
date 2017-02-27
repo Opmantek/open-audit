@@ -79,7 +79,8 @@ class M_credentials extends MY_Model
             }
         }
         if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->type) or empty($data->credentials)) {
-            echo "<pre>\n"; print_r($data); echo "</pre>\n";
+            # TODO - log an error here
+            # echo "<pre>\n"; print_r($data); echo "</pre>\n";
             log_error('ERR-0021', 'm_credentials::create');
             return false;
         }
