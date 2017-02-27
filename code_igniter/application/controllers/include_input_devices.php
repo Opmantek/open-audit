@@ -27,39 +27,31 @@
 
 $this->benchmark->mark('code_start');
 
-// check if the submitting IP is in the list of allowable subnets
-$this->load->model('m_networks');
-if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
-    exit;
-}
-
+// load our required helpers
 $this->load->helper('log');
 $this->load->helper('error');
-
-$log = new stdClass();
-$log->severity = 6;
-$log->status = 'processing';
-$log->type = 'system';
-$log->collection = @$this->response->meta->collection;
-if (empty($log->collection)) {
-    $log->collection = 'input';
-}
-$log->action = @$this->response->meta->action;
-if (empty($log->action)) {
-    $log->action = 'devices';
-}
-$log->function = strtolower($log->collection) . '::' . strtolower($log->action);
-$log->summary = 'processing submitted data';
-if (!empty($_POST['display'])) {
-    $log->display = $_POST['display'];
-}
-stdlog($log);
-
 // our required models
 $this->load->model('m_audit_log');
 $this->load->model('m_devices');
 $this->load->model('m_devices_components');
 $this->load->model('m_system');
+
+// check if the submitting IP is in the list of allowable subnets
+$this->load->model('m_networks');
+if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
+    $log = new stdClass();
+    $log->type = 'system';
+    $log->severity = 5;
+    $log->user = @$this->user->full_name;
+    $log->collection = @$this->response->meta->collection;
+    $log->action = @$this->response->meta->action;
+    $log->status = 'Checking for valid network submission.';
+    $log->summary = 'Audit supplied from ineligible network.';
+    $log->detail = 'An audit result was submitted from ' . $_SERVER['REMOTE_ADDR'] . ' which is not in the list of allowed networks.';
+    stdlog($log);
+    unset($log);
+    exit;
+}
 
 // get the input either from the textfield or the uploaded file
 if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
@@ -67,6 +59,17 @@ if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_na
     try {
         move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
     } catch (Exception $e) {
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 5;
+        $log->user = @$this->user->full_name;
+        $log->collection = @$this->response->meta->collection;
+        $log->action = @$this->response->meta->action;
+        $log->status = 'processing audit submission';
+        $log->summary = 'Could not move uploaded audit file.';
+        $log->detail = $e;
+        stdlog($log);
+        unset($log);
         $this->data['query'] = $e;
         $this->data['error'] = "There was an error uploading the file, please try again.";
         $this->data['include'] = 'v_error';
@@ -79,6 +82,24 @@ if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_na
     }
     unlink($target_path);
 }
+
+$log = new stdClass();
+$log->discovery_id = null;
+$log->system_id = null;
+$log->timestamp = null;
+$log->severity = 7;
+$log->pid = getmypid();
+$log->file = 'include_input_discoveries';
+$log->function = '';
+$log->message = '';
+$log->command = 'process audit';
+
+# we will store our message until we get a system.id, then wrtie them to the log
+$log_message = array();
+
+# We will use this array to hold a list of ID's in the discovery log
+# that we will later update with our system_id
+$ids = array();
 
 if (!empty($_POST['data'])) {
     $input = html_entity_decode($_POST['data']);
@@ -104,17 +125,12 @@ try {
     $errors = libxml_get_errors();
     echo "Invalid XML.<br />\n<pre>\n";
     print_r($errors);
-    // not a valid XML string
-    // $xml_split = explode("\n", $xml_input, 10);
-    // $hostname = @str_replace("\t\t<hostname>", '', $xml_split[5]);
-    // $hostname = @str_replace('</hostname>', '', $hostname);
     log_error('ERR-0012');
     print_r($this->response->errors);
     exit;
 }
-
-$log->summary = "Valid XML received.";
-stdlog($log);
+$log->message = "Valid XML result received.";
+$ids[] = discovery_log($log);
 
 # this inserts all the (or any) retrieved mac addresses into the sys XML section
 # which are then compared against in the m_system->find_system function to match a device
@@ -136,27 +152,50 @@ $details->last_seen = $this->config->config['timestamp'];
 $received_system_id = '';
 if (empty($details->id)) {
     $details->id = '';
+    $log->message = "No system_id provided.";
+    $ids[] = discovery_log($log);
 } else if ($details->id != '') {
     $received_system_id = (string)$details->id;
+    $log->message = "System_id provided - " . $received_system_id . ".";
+    $ids[] = discovery_log($log);
+}
+if (empty($details->discovery_id)) {
+    $details->discovery_id = '';
+} else {
+    $log->discovery_id = $details->discovery_id;
 }
 $received_status = "";
-$received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
+if ($received_system_id != '') {
+    $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
+}
 if ($received_status !== 'production') {
     $received_system_id = '';
+    $log->message = "No device in database with supplied system_id. Remove attribute.";
+    $ids[] = discovery_log($log);
 }
 
 if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
     $details->fqdn = $details->hostname . "." . $details->domain;
+    $log->message = "No FQDN, but hostname and domain provided. Setting FQDN.";
+    $ids[] = discovery_log($log);
 }
 
 if (!isset($details->type)) {
     $details->type = 'computer';
+    $log->message = "No type provided, setting to 'computer'.";
+    $ids[] = discovery_log($log);
 }
 
+# todo - finding device
+$log->message = "Running find_system function.";
+$ids[] = discovery_log($log);
+
 $i = $this->m_system->find_system($details);
+
 if ($i == '' and $received_system_id > '') {
     $i = $received_system_id;
 }
+
 if ($i != '' and $received_system_id != '' and $i != $received_system_id) {
     // We delete this original system as likely with limited data (from
     // nmap and/or snmp) we couldn't match an existing system
@@ -164,8 +203,9 @@ if ($i != '' and $received_system_id != '' and $i != $received_system_id) {
     // we have found a match and it's not the original
     $sql = "/* system::add_system */ DELETE FROM system WHERE id = ?";
     $query = $this->db->query($sql, array($received_system_id));
-    $log->summary = 'System Id provided differs from System Id found for ' . $details->hostname;
-    stdlog($log);
+    $log->system_id = $i;
+    $log->message = 'System Id provided differs from System Id found for ' . $details->hostname;
+    $ids[] = discovery_log($log);
 }
 $details->id = $i;
 
@@ -178,30 +218,53 @@ $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 if ((string) $i === '') {
     // insert a new system
     $details->id = $this->m_system->insert_system($details);
-    $log->severity = 7;
-    $log->summary = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
-    stdlog($log);
+    $log->system_id = $details->id;
+    $log->ip = @$details->ip;
+    $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
+    discovery_log($log);
+    # In the case where we inserted a new device, find_system will add a log entry, but have no 
+    # associated system_id. Update this one row.
+    $sql = "/* include_input_devices */" . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
+    $data = array($log->system_id, $log->pid);
+    $query = $this->db->query($sql, $data);
     $details->original_last_seen = "";
     echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
 } else {
     // update an existing system
-    $log->severity = 7;
-    $log->summary = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
-    stdlog($log);
+    $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
+    $log->system_id = $details->id;
+    $log->ip = @$details->ip;
+    discovery_log($log);
     $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
     $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
     $this->m_system->update_system($details);
     echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
 }
 
-# delete the discovery_logs with pid != current pid and discovery_id = NULL
-$sql = "DELETE FROM discovery_log WHERE system_id = ? AND discovery_id IS NULL AND pid != ?";
-$data = array(intval($details->id), intval(getmypid()));
-$query = $this->db->query($sql, $data);
+$sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
+$query = $this->db->query($sql, array($details->id, (string)$log->ip));
 
+# We now have a system.id - either supplied, found or created.
+if (!empty($details->discovery_id)) {
+    # we have a discovery_id, insert our $log_message's and delete anything where log.pid != our pid
+    $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
+    $data = array(intval($details->id), intval(getmypid()));
+    $query = $this->db->query($sql, $data);
+    echo $this->db->last_query();
+} else {
+    # we were supplied an audit result, but no discovery_id
+    # delete all dicovery logs where system_id = our ID and log.pid != our pid
+    $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `pid` != ?";
+    $data = array(intval($details->id), intval(getmypid()));
+    $query = $this->db->query($sql, $data);
+}
+
+# delete the discovery_logs with pid != current pid and discovery_id = NULL
+// $sql = "DELETE FROM discovery_log WHERE system_id = ? AND discovery_id IS NULL AND pid != ?";
+// $data = array(intval($details->id), intval(getmypid()));
+// $query = $this->db->query($sql, $data);
 
 $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
-
 
 $this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
 
@@ -268,10 +331,13 @@ unset($item);
 unset($dns);
 
 $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
+$log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
+discovery_log($log);
 
 // set the ip (if not already set)
 $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
 $this->m_devices_components->set_initial_address($details->id);
+
 $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
 $this->benchmark->mark('code_end');
 echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
