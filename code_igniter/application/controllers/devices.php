@@ -217,12 +217,14 @@ class devices extends MY_Controller_new
             unset($_POST['data']);
             unset($_FILES);
             $input = $_POST['upload_input'];
+            $discovery_id = NULL;
             include "include_input_devices.php";
             redirect('devices/' . $details->id);
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'file_input') {
             unset($_POST['data']);
+            $discovery_id = NULL;
             include "include_input_devices.php";
             redirect('devices/' . $details->id);
         }
