@@ -24,13 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-
 $display = 'y';
-// DISPLAY OUTPUT
-if ($display == 'y') {
-    echo "<pre>\n";
-}
 
 $log = new stdClass();
 $log->discovery_id = null;
@@ -41,6 +35,13 @@ $log->pid = getmypid();
 $log->file = 'input';
 $log->function = 'discoveries';
 $log->message = '';
+
+$syslog = new stdClass();
+$syslog->type = 'system';
+$syslog->action = 'input::discoveries';
+$syslog->severity = 6;
+$syslog->summary = '';
+$syslog->message = '';
 
 // our required models
 $this->load->model('m_audit_log');
@@ -71,41 +72,66 @@ if (!empty($_POST['data'])) {
         $xml = new SimpleXMLElement($xml_input);
     } catch (Exception $error) {
         // not a valid XML string
-        $log->severity = 3;
-        $log->title = 'Invalid data';
-        $log->message = 'Invalid XML input for discovery from '.$_SERVER['REMOTE_ADDR'];
-        stdlog($log);
+        $syslog->severity = 3;
+        $syslog->summary = 'Invalid data';
+        $syslog->message = 'Invalid XML input for discovery from '.$_SERVER['REMOTE_ADDR'];
+        stdlog($syslog);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
         exit;
-    }
-    // DISPLAY OUTPUT
-    if ($display == 'y') {
-        print_r($xml);
     }
     unset($xml_input);
 
     foreach ($xml->children() as $input) {
         $individual_ip_start = microtime(true);
         $input = (object) $input;
-        if (!empty($input->subnet_timestamp)) {
-            $log->discovery_id = intval($input->subnet_timestamp);
+        if (!empty($input->discovery_id)) {
+            $syslog->severity = 6;
+            $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
+            $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
+            stdlog($syslog);
+            $log->discovery_id = intval($input->discovery_id);
             $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
             $discovery = $result[0];
+            $syslog->summary = 'Discovery ' . $discovery->name . ' staring to process.';
+            $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
+            stdlog($syslog);
+        } else {
+            $syslog->severity = 4;
+            $syslog->summary = 'No discovery id provided';
+            $syslog->message = 'When processing discover_subnet, no discovery_id was provided in the input.';
+            stdlog($syslog);
+            $discovery = new stdClass();
+            $discovery->id = '';
+            $discovery->discard = '';
+            if (!empty($this->config->default_network_address)) {
+                $discovery->network_address = 'http://' . $this->config->default_network_address . '/open-audit/';
+            } else {
+                $discovery->network_address = 'http://localhost/open-audit/';
+            }
         }
         $log->system_id = null;
         $log->ip = $input->ip;
+
         // The end submit from the script that indicates there are no more items to be submitted
         if (isset($input->complete) and $input->complete == 'y') {
             $sql = "/* input::discoveries */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
+            $syslog->severity = 7;
+            $syslog->summary = 'Set discovery entry status to complete';
+            $syslog->message = $this->db->last_query();
+            stdlog($syslog);
             if ($discovery->discard == 'y') {
                 $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
                 $data = array($log->discovery_id);
                 $query = $this->db->query($sql, $data);
+                $syslog->severity = 7;
+                $syslog->summary = 'Deleteing discovery entry';
+                $syslog->message = $this->db->last_query();
+                stdlog($syslog);
             }
             exit();
         }
@@ -114,6 +140,10 @@ if (!empty($_POST['data'])) {
             # Our ip address matched an ip in the discovery_ip_exclude list - skip it
             $log->message = $input->ip . ' is in the list of excluded ip addresses - skipping.';
             discovery_log($log);
+            // $syslog->severity = 7;
+            // $syslog->summary = $input->ip . ' is in the list of excluded ip addresses - skipping.';
+            // $syslog->message = '';
+            // stdlog($syslog);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             continue;
         }
@@ -129,32 +159,15 @@ if (!empty($_POST['data'])) {
             $log->system_id = intval($input->system_id);
         }
 
-        $log->message = 'Received data from ' . $input->ip . ', now starting to process';
+        $log->message = 'Received data for ' . $input->ip . ', now starting to process';
         $individual_log_id_start = discovery_log($log);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
 
-        $sql = "/* input::discoveries */ " . "UPDATE discoveries SET device_count = device_count + 1 WHERE id = ?";
-        $data = array($input->subnet_timestamp);
-        $query = $this->db->query($sql, $data);
-
-        // $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE `id` = " . intval($input->subnet_timestamp);
-        // $log->command = $sql;
-        // $log->message = "retrieve discoveries entry from DB";
-        // $command_log_id = discovery_log($log);
-        // unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
-
-        // $command_start = microtime(true);
-        // $query = $this->db->query($sql, array());
-        // $command_end = microtime(true);
-        // $log->command = $this->db->last_query();
-        // $log->command_time_to_execute = $command_end - $command_start;
-        // $log->id = $command_log_id;
-        // discovery_log($log);
-        // unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
-        // unset($log->id, $command_log_id);
-
-        // $temp = $query->result();
-        // $discovery = $temp[0];
+        if (!empty($discovery->id)) {
+            $sql = "/* input::discoveries */ " . "UPDATE discoveries SET device_count = device_count + 1 WHERE id = ?";
+            $data = array($discovery->id);
+            $query = $this->db->query($sql, $data);
+        }
 
         $device = new stdClass();
         $device->id = '';
@@ -166,8 +179,10 @@ if (!empty($_POST['data'])) {
         $device->last_seen = $this->config->config['timestamp'];
         $device->ip = (string)$input->ip;
         $device->last_seen_by = 'nmap';
+        $device->discovery_id = $discovery->id;
+
         if ($this->config->item('discovery_use_dns') == 'y') {
-            $device = dns_validate($device, $display);
+            $device = dns_validate($device);
             if (!empty($device->hostname)) {
                 $log->message = 'IP ' . $device->ip . ' resolved to hostname ' . $device->hostname;
                 discovery_log($log);
@@ -184,16 +199,16 @@ if (!empty($_POST['data'])) {
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             }
         }
-        $device->id = $this->m_system->find_system($device, $display);
+        $device->id = $this->m_system->find_system($device);
         if (!empty($device->id)) {
             $log->system_id = $device->id;
-            $log->message = "Device with ID# " . $device->id . " found on initial Nmap result.";
+            $log->message = "Device with ID " . $device->id . " found on initial Nmap result.";
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
 
             // remove any old logs for this device
             $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
-            $log->message = 'Delete the previous log entries for this system_id';
+            $log->message = 'Delete the previous log entries for this device';
             $log->command = $sql;
             $command_log_id = discovery_log($log);
             $command_start = microtime(true);
@@ -208,7 +223,7 @@ if (!empty($_POST['data'])) {
             
             // update the previous log entries with our new system_id
             $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $input->ip . "'";
-            $log->message = 'Update the previous log entries with our new system_id';
+            $log->message = 'Update the current log entries with our new device';
             $log->command = $sql;
             $command_log_id = discovery_log($log);
             $command_start = microtime(true);
@@ -232,11 +247,15 @@ if (!empty($_POST['data'])) {
         }
         // We need to set the user orgs to the org of this particular discovery run
         $this->user = new stdClass();
-        $this->user->orgs = $this->m_orgs->get_children($discovery->org_id);
-        if (count($this->user->orgs) > 0) {
-            $this->user->org_list = $discovery->org_id . ',' . implode(',', $this->user->orgs);
+        if (!empty($discovery->org_id)) {
+            $this->user->orgs = $this->m_orgs->get_children($discovery->org_id);
+            if (count($this->user->orgs) > 0) {
+                $this->user->org_list = $discovery->org_id . ',' . implode(',', $this->user->orgs);
+            } else {
+                $this->user->org_list = $discovery->org_id;
+            }
         } else {
-            $this->user->org_list = $discovery->org_id;
+            $this->user->org_list = '';
         }
 
         // Stored credential sets
@@ -260,9 +279,15 @@ if (!empty($_POST['data'])) {
 
         // output to log file and DEBUG the status of the three main services
         $log->message = 'WMI Status is '.$input->wmi_status.' on '.$device->ip;
+        if (!empty($device->id)) {
+            $log->message .= ' (System ID ' . $device->id . ')';
+        }
         discovery_log($log);
 
         $log->message = 'SSH Status is '.$input->ssh_status.' on '.$device->ip;
+        if (!empty($device->id)) {
+            $log->message .= ' (System ID ' . $device->id . ')';
+        }
         discovery_log($log);
 
         // On OSX we cannot run Nmap and get a UDP port result for 161 as 'You requested a scan type which requires root privileges.'
@@ -274,22 +299,31 @@ if (!empty($_POST['data'])) {
         // }
 
         $log->message = 'SNMP Status is '.$input->snmp_status.' on '.$device->ip;
+        if (!empty($device->id)) {
+            $log->message .= ' (System ID ' . $device->id . ')';
+        }
         discovery_log($log);
 
-        // SNMP audit
+        # test for working SNMP credentials
         if (!extension_loaded('snmp') and $input->snmp_status == 'true') {
             $log->message = 'PHP extension not loaded, skipping SNMP data retrieval for ' . $device->ip;
+            if (!empty($device->id)) {
+                $log->message .= ' (System ID ' . $device->id . ')';
+            }
             discovery_log($log);
         }
 
         if (extension_loaded('snmp') and $input->snmp_status == 'true') {
             $log->message = 'Testing SNMP credentials for '.$device->ip;
+            if (!empty($device->id)) {
+                $log->message .= ' (System ID ' . $device->id . ')';
+            }
             discovery_log($log);
             $credentials_snmp = snmp_credentials($device->ip, $credentials, $log);
         } else {
             $credentials_snmp = false;
         }
-
+        # run SNMP audit commands
         if ($credentials_snmp) {
             $temp_array = snmp_audit($device->ip, $credentials_snmp, $log);
             if (!empty($temp_array['details'])) {
@@ -314,17 +348,23 @@ if (!empty($_POST['data'])) {
                 $guests = $temp_array['guests'];
             }
         }
-        $log->file = 'input';
+        $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
 
         if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false) {
-            $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
+            if (!empty($device->id)) {
+                $log->message .= ' (System ID ' . $device->id . ')';
+            }
             discovery_log($log);
             $input->ssh_status = 'false';
         }
         # test for working SSH credentials
         if ($input->ssh_status == 'true') {
             $log->message = 'Testing SSH credentials for '.$device->ip;
+            if (!empty($device->id)) {
+                $log->message .= ' (System ID ' . $device->id . ')';
+            }
             discovery_log($log);
             $credentials_ssh = ssh_credentials($device->ip, $credentials, $log);
         } else {
@@ -343,13 +383,15 @@ if (!empty($_POST['data'])) {
                 }
             }
         }
-        $log->file = 'input';
+        $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
 
-
-        // test for working Windows credentials
+        # test for working Windows credentials
         if ($input->wmi_status == 'true') {
             $log->message = 'Testing Windows credentials for ' . $device->ip;
+            if (!empty($device->id)) {
+                $log->message .= ' (System ID ' . $device->id . ')';
+            }
             discovery_log($log);
             $credentials_windows = windows_credentials($device->ip, $credentials, $log);
         } else {
@@ -368,7 +410,7 @@ if (!empty($_POST['data'])) {
                 }
             }
         }
-        $log->file = 'input';
+        $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
 
         # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
@@ -376,11 +418,11 @@ if (!empty($_POST['data'])) {
             $device->type = 'voip phone';
         }
 
-        if ($this->config->item('discovery_use_dns') == 'y') {
-            $device = dns_validate($device, $display);
-        }
+        $log->command_output = json_encode($details->system);
+        $log->message = 'System Data';
+        discovery_log($log);
 
-        $device->id = $this->m_system->find_system($device, $display);
+        $device->id = $this->m_system->find_system($device);
 
         if (!empty($discovery->devices_assigned_to_org)) {
             $device->org_id = $discovery->devices_assigned_to_org;
@@ -424,22 +466,22 @@ if (!empty($_POST['data'])) {
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             unset($log->id, $command_log_id);
 
-            $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . '(System ID ' . $device->id . ')';
+            $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $device->original_last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
             $device->original_last_seen_by = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen_by');
-            $this->m_system->update_system($device, $display);
-            $log->file = 'input';
+            $this->m_system->update_system($device);
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
-            $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . '(System ID ' . $device->id . ')';
+            $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
         } else {
             // we have a new system - INSERT
             $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
             discovery_log($log);
-            $device->id = $this->m_system->insert_system($device, $display);
+            $device->id = $this->m_system->insert_system($device);
             $log->system_id = $device->id;
-            $log->file = 'input';
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
@@ -472,26 +514,31 @@ if (!empty($_POST['data'])) {
         $this->m_audit_log->create($device->id, $user, $device->last_seen_by, $device->audits_ip, '', '', $device->last_seen);
         unset($user);
 
+
         // update any network interfaces and ip addresses retrieved by SNMP
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $found = new stdClass();
             $found->item = array();
             $found->item = $network_interfaces;
-            $this->m_devices_components->process_component('network', $device, $found, $display);
+            $this->m_devices_components->process_component('network', $device, $found);
             unset($found);
         }
 
         // insert any ip addresses
         if (isset($ip->item) and count($ip->item) > 0) {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
-            $this->m_devices_components->process_component('ip', $device, $ip, $display);
+            $this->m_devices_components->process_component('ip', $device, $ip);
         }
 
         // finish off with updating any network IPs that don't have a matching interface
@@ -499,32 +546,38 @@ if (!empty($_POST['data'])) {
 
         // insert any modules
         if (isset($modules) and count($modules) > 0) {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Processing found modules for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $found = new stdClass();
             $found->item = array();
             $found->item = $modules;
-            $this->m_devices_components->process_component('module', $device, $found, $display);
+            $this->m_devices_components->process_component('module', $device, $found);
             unset($found);
         }
 
         // insert any found virtual machines
         if (isset($guests) and is_array($guests) and count($guests) > 0) {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Processing found VMs for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $found = new stdClass();
             $found->item = array();
             $found->item = $guests;
-            $this->m_devices_components->process_component('vm', $device, $found, $display);
+            $this->m_devices_components->process_component('vm', $device, $found);
             unset($found);
         }
 
         if (!empty($credentials_snmp) and $input->snmp_status == 'true') {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'SNMP credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
@@ -532,7 +585,9 @@ if (!empty($_POST['data'])) {
         }
 
         if (!empty($credentials_ssh) and $input->ssh_status == 'true') {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'SSH credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
@@ -540,7 +595,9 @@ if (!empty($_POST['data'])) {
         }
 
         if (isset($credentials_windows) and $input->wmi_status == 'true') {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Windows credential update for ' . $device->ip . '(System ID ' . $device->id . ')';
             discovery_log($log);
@@ -568,14 +625,16 @@ if (!empty($_POST['data'])) {
             unset($temp);
         }
         if (count($nmap_result) > 0) {
-            $log->file = 'input';
+            $log->ip = $device->ip;
+            $log->discovery_id = $device->discovery_id;
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Processing Nmap ports for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $found = new stdClass();
             $found->item = array();
             $found->item = $nmap_result;
-            $this->m_devices_components->process_component('nmap', $device, $found, $display);
+            $this->m_devices_components->process_component('nmap', $device, $found);
         }
 
         // insert a blank to indicate we're finished this part of the discovery
@@ -595,7 +654,7 @@ if (!empty($_POST['data'])) {
 
         # Audit via Windows
         if ($input->wmi_status == "true" and $credentials_windows) {
-            $log->file = 'input';
+            $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'Starting windows audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
@@ -645,7 +704,7 @@ if (!empty($_POST['data'])) {
             // *nix Open-AudIT server auditing a Windows target
             if (php_uname('s') != 'Windows NT') {
                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
-                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi";
+                $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
                 if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                     if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
                         # All complete!
@@ -684,7 +743,7 @@ if (!empty($_POST['data'])) {
                     unset($temp);
 
                     if ($display == 'y') {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi";
+                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
                         exec($command_string, $output, $return_var);
                         $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
@@ -705,7 +764,7 @@ if (!empty($_POST['data'])) {
                         $output = null;
                         $return_var = null;
                     } else {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=0  system_id=".$device->id." last_seen_by=audit_wmi";
+                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=0  system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
                         $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
                         pclose(popen($command_string, "r"));
                     }
@@ -720,7 +779,7 @@ if (!empty($_POST['data'])) {
                     $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                     $source = 'audit_windows_' . $ts . '.vbs';
-                    $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi";
+                    $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi discovery_id=".$discovery->id;
                     if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                             $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             stdlog($log);
@@ -879,10 +938,10 @@ if (!empty($_POST['data'])) {
                 # successfully copied and chmodded the audit script
                 if (!empty($credentials_ssh->sudo)) {
                     # run the audit script as a normal user, using sudo
-                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
                 } else {
                     # run the script without using sudo
-                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh';
+                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
                 }
                 $result = ssh_command($device->ip, $credentials_ssh, $command, $log);
                 if ($unlink != '') {
@@ -891,7 +950,7 @@ if (!empty($_POST['data'])) {
             }
             # audit ESX
             if ($audit_script == 'audit_esxi.sh') {
-                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y last_seen_by=audit_ssh create_file=n debugging=0 echo_output=y system_id='.$device->id.' 2>/dev/null';
+                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y last_seen_by=audit_ssh create_file=n debugging=0 echo_output=y system_id='.$device->id.'  discovery_id='.$discovery->id.' 2>/dev/null';
                 if ($result = ssh_command($device->ip, $credentials_ssh, $command, $log)) {
                     if ($result['status'] == 0) {
                         $script_result = '';
@@ -916,7 +975,7 @@ if (!empty($_POST['data'])) {
                                 if (!isset($esx_details->ip) or $esx_details->ip == '') {
                                     $esx_details->ip = $device->ip;
                                 }
-                                $esx_details->system_id = $this->m_system->find_system($esx_details, $display);
+                                $esx_details->system_id = $this->m_system->find_system($esx_details);
                                 $esx_details->last_seen = $device->last_seen;
 
                                 if (isset($esx_details->system_id) and $esx_details->system_id != '') {
