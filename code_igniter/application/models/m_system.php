@@ -61,20 +61,29 @@ class M_system extends MY_Model
         }
     }
 
-    public function find_system($details, $display = 'n')
+    public function find_system($details)
     {
         # we are searching for a system.id.
         $details = (object) $details;
         $details->id = '';
 
-        $log_details = new stdClass();
-        $log_details->severity = 7;
-        $log_details->file = 'system';
-        if ($display != 'y') {
-            $display = 'n';
+        $CI = & get_instance();
+        $CI->load->helper('log');
+
+        $log = new stdClass();
+        if (!empty($details->discovery_id)) {
+            $log->discovery_id = $details->discovery_id;
+        } else {
+            $log->discovery_id = null;
         }
-        $log_details->display = $display;
-        unset($display);
+        $log->system_id = null;
+        $log->timestamp = null;
+        $log->severity = 7;
+        $log->pid = getmypid();
+        $log->file = 'm_system';
+        $log->function = 'find_system';
+        $log->message = '';
+        $log_message = array(); // we will store our message until we get a system.id, then wrtie them to the log
 
         # TODO: fix this by making sure (snmp in particular) calls with the proper variable name
         if (!isset($details->mac_address) and (isset($details->mac))) {
@@ -83,28 +92,36 @@ class M_system extends MY_Model
 
         # check if we have an ip address or a hostname (possibly a fqdn)
         if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
-            # not an ip - check it's not a fqdn
             if (strpos($details->hostname, '.') !== false) {
                 # it's a fqdn
+                $log_message[] = "Provided hostname contains a '.'. Assuming a FQDN (" . $details->hostname . ").";
                 if (empty($details->fqdn)) {
                     $details->fqdn = $details->hostname;
+                    $log_message[] = "No FQDN provided, storing hostname as FQDN (" . $details->fqdn . ").";
                 }
                 $i = explode(".", $details->hostname);
                 $hostname = $i[0];
+                $log_message[] = "Using first split '.' from hostname as hostname (" . $hostname . ").";
                 unset($i);
             }
         } else {
             # we have an ip address in the hostname field - remove it
             # likely because DNS is not fully setup and working correctly
+            $log_message[] = "Provided hostame is actually an IP address (" . $details->hostname . ").";
             if (empty($details->ip)) {
                 $details->ip = $details->hostname;
+                $log_message[] = "No IP provided, but provided hostname is an IP. Storing in ip (" . $details->ip . ").";
             }
+            $log_message[] = "Removing provided hostname because it's actually an IP (" . $details->hostname . ").";
             unset($details->hostname);
         }
 
         if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '.' and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
-        } else {
+            $log_message[] = "No FQDN provided, but hostname and comain provided - setting FQDN (" . $details->fqdn . ").";
+        }
+
+        if (empty($details->fqdn)) {
             $details->fqdn = '';
         }
 
@@ -112,6 +129,7 @@ class M_system extends MY_Model
             $details->mac_address = strtolower($details->mac_address);
             if ($details->mac_address == '00:00:00:00:00:00') {
                 unset($details->mac_address);
+                $log_message[] = "All 00: mac address provided, unsetting.";
             }
         } else {
             unset($details->mac_address);
@@ -119,6 +137,9 @@ class M_system extends MY_Model
 
         if (empty($details->ip) or $details->ip == '0.0.0.0' or $details->ip == '000.000.000.000') {
             $details->ip = '';
+            $log_message[] = "IP possibly not provided, or blank or all zero's. Setting to blank.";
+        } else {
+            $log->ip = $details->ip;
         }
 
         if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and !empty($details->uuid) and !empty($details->hostname)) {
@@ -129,8 +150,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on hostname + uuid for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on hostname + uuid: ' . $details->hostname . ' + ' . $details->uuid . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
         }
@@ -143,8 +168,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on hostname + dbus_identifier for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on hostname + dbus_identifier: ' . $details->hostname . ' + ' . $details->dbus_identifier . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
         }
@@ -157,8 +186,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on hostname + serial for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on hostname + serial: ' . $details->hostname . ' + ' . $details->serial . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
         }
@@ -171,8 +204,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on dbus_identifier for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on dbus_identifier: ' . $details->dbus_identifier . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
         }
@@ -185,8 +222,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on fqdn for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on fqdn: ' . $details->fqdn . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
         }
@@ -199,8 +240,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on serial + type for '.ip_address_from_db($details->ip).' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on serial + type: ' . $details->serial . ' + ' . $details->type . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
         }
@@ -218,8 +263,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on mac address for '.$details->ip.' (System ID '.$details->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on Mac Address (details): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
 
@@ -240,8 +289,12 @@ class M_system extends MY_Model
                             $row = $query->row();
                             if (count($row) > 0) {
                                 $details->id = $row->id;
-                                $log_details->message = 'HIT on mac address from audit result for '.strtolower($mac).' (System ID '.$row->id.')';
-                                stdlog($log_details);
+                                $log->system_id = $details->id;
+                                $log_message[] = 'HIT on Mac Address (audit): ' . $mac . ' (System ID ' . $details->id . ')';
+                                foreach ($log_message as $message) {
+                                    $log->message = $message;
+                                    discovery_log($log);
+                                }
                                 return $details->id;
                             }
                         }
@@ -262,8 +315,16 @@ class M_system extends MY_Model
                 $row = $query->row();
                 if (count($row) > 0) {
                     $details->id = $row->id;
-                    $log_details->message = 'HIT on ip_address in network table for '.$details->ip.' (System ID '.$row->id.')';
-                    stdlog($log_details);
+                    if (!empty($details->system_id)) {
+                        $log->system_id = $details->id;
+                    } else if (!empty($details->id)) {
+                        $log->system_id = $details->id;
+                    }
+                    $log_message[] = 'HIT on IP Address (network table): ' . $details->ip . ' (System ID ' . $details->id . ')';
+                    foreach ($log_message as $message) {
+                        $log->message = $message;
+                        discovery_log($log);
+                    }
                     return $details->id;
                 }
 
@@ -276,8 +337,12 @@ class M_system extends MY_Model
                 $row = $query->row();
                 if (count($row) > 0) {
                     $details->id = $row->id;
-                    $log_details->message = 'HIT on ip for '.$details->ip.' (System ID '.$row->id.')';
-                    stdlog($log_details);
+                    $log->system_id = $details->id;
+                    $log_message[] = 'HIT on IP Address (system table): ' . $details->ip . ' (System ID ' . $details->id . ')';
+                    foreach ($log_message as $message) {
+                        $log->message = $message;
+                        discovery_log($log);
+                    }
                     return $details->id;
                 }
             }
@@ -291,8 +356,12 @@ class M_system extends MY_Model
             $row = $query->row();
             if (count($row) > 0) {
                 $details->id = $row->id;
-                $log_details->message = 'HIT on hostname for '.$details->ip.' (System ID '.$row->id.')';
-                stdlog($log_details);
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on hostname: ' . $details->hostname . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
                 return $details->id;
             }
 
@@ -311,43 +380,35 @@ class M_system extends MY_Model
                         $row = $query->row();
                         if (count($row) > 0) {
                             $details->id = $row->id;
-                            $log_details->message = 'HIT on hostname short for '.$details->ip.' (System ID '.$row->id.')';
-                            stdlog($log_details);
+                            $log->system_id = $details->id;
+                            $log_message[] = 'HIT on hostname (short): ' . $hostname . ' (System ID ' . $details->id . ')';
+                            foreach ($log_message as $message) {
+                                $log->message = $message;
+                                discovery_log($log);
+                            }
                             return $details->id;
                         }
                     }
-                }
-            }
-
-            # check short hostname in database
-            if (isset($details->hostname) and strlen($details->hostname) > 15 and empty($details->id)) {
-                $i = explode(".", $details->hostname);
-                $hostname = $i[0];
-                $hostname = substr($hostname, 0, 15);
-                $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.status = 'production'";
-                $sql = $this->clean_sql($sql);
-                $data = array("$hostname");
-                $query = $this->db->query($sql, $data);
-                $row = $query->row();
-                if (count($row) > 0) {
-                    $details->id = $row->id;
-                    $log_details->message = 'HIT on short hostname '.$details->ip.' (System ID '.$row->id.')';
-                    stdlog($log_details);
-                    return $details->id;
                 }
             }
         }
 
         $temp = @(string) $details->id;
         if (is_null($temp) or $temp == '') {
-            $log_details->message = 'System ID not found.';
-            stdlog($log_details);
+            $log_message[] = 'Could not find a match for the device with IP '  . $details->ip;
+            foreach ($log_message as $message) {
+                $log->message = $message;
+                discovery_log($log);
+            }
         } else {
-            $log_details->message = 'Returning System ID '.$details->id.' for '.@$details->ip;
-            stdlog($log_details);
+            $log_message[] = 'Returning system_id for device with IP '  . $details->ip . ' (' . $details->id . ')';
+            foreach ($log_message as $message) {
+                $log->message = $message;
+                discovery_log($log);
+            }
         }
-        unset($log_details);
-
+        unset($log_message);
+        unset($log);
         return $details->id;
     }
 
