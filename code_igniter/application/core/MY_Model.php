@@ -172,7 +172,7 @@ class MY_Model extends CI_Model
         $model = @$caller['class'];
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
-        if (stripos($sql, 'insert into')) {
+        if (stripos($sql, 'insert into') !== false) {
             // this is an insert - return the insert_id
             $insert_id = true;
         } else {
@@ -190,7 +190,7 @@ class MY_Model extends CI_Model
         // run the query
         $query = $this->db->query($sql, $data);
         // get the insert id
-        if ($insert_id) {
+        if ($insert_id === true) {
             $result = $this->db->insert_id();
         }
         // store the query in our response object
@@ -221,7 +221,7 @@ class MY_Model extends CI_Model
             return false;
         } else {
             // no error, so get the result
-            if (!$insert_id) {
+            if ($insert_id === false) {
                 $result = $query->result();
             }
         }
