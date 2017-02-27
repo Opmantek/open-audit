@@ -100,6 +100,23 @@ if (! function_exists('discovery_log')) {
      */
     function discovery_log($log = null)
     {
+        /*
+        All attributes are optional
+        $log->discovery_id,            The ID of the discovery being performed (if known)
+        $log->system_id,
+        $log->severity,
+        $log->severity_text,           Will be calculated from int(severity)
+        $log->pid,
+        $log->ip,
+        $log->file,
+        $log->function,
+        $log->message,                 a user fiendly message
+        $log->command,                 the command that was run (usually a command shell or SNMP command)
+        $log->command_status,          usually the return error status
+        $log->command_time_to_execute, the time the below took to run
+        $log->command_output           if a string, the result of the command
+        */
+
         error_reporting(E_ALL);
         $CI = & get_instance();
 
