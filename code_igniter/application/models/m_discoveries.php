@@ -127,7 +127,7 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "/* discoveries::read */ " . "SELECT * FROM discoveries WHERE id = ?";
+        $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result[0]->other = json_decode($result[0]->other);
@@ -229,7 +229,7 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "/* m_discoveries::read_sub_resource */ " . "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id`";
+        $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id`";
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
         return ($result);
@@ -291,18 +291,25 @@ class M_discoveries extends MY_Model
                                     " echo_output=n" .
                                     " create_file=n" .
                                     " debugging=" . $debugging .
-                                    " subnet_timestamp=" . $discovery->id .
+                                    " discovery_id=" . $discovery->id .
                                     " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
                 if (php_uname('s') == 'Linux') {
                     $command_string = 'nohup ' . $command_string;
                 }
                 @exec($command_string, $output, $return_var);
+                $this->log->detail = $command_string;
                 if ($return_var != '0') {
                     $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has failed';
                     $this->session->set_flashdata('error', $message);
+                    $this->log->status = 'executing script - failure';
+                    $this->log->summary = $message;
+                    stdlog($this->log);
                 } else {
                     $message =  'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has started';
                     $this->session->set_flashdata('success', $message);
+                    $this->log->status = 'executing script - success';
+                    $this->log->summary = $message;
+                    stdlog($this->log);
                 }
             }
 
@@ -317,7 +324,7 @@ class M_discoveries extends MY_Model
                                     " echo_output=n" .
                                     " create_file=n" .
                                     " debugging=0" .
-                                    " subnet_timestamp=" . $discovery->id .
+                                    " discovery_id=" . $discovery->id .
                                     " os_scan=" . $nmap_os;
                 pclose(popen($command_string, "r"));
             }
