@@ -44,11 +44,11 @@
 # Below are the default settings
 SECONDS=0
 
-# submit the audit to the Open-AudIT server
-submit_online="y"
-
 # create an XML text file of the result in the current directory
 create_file="y"
+
+# submit the audit to the Open-AudIT server
+submit_online="y"
 
 # the address of the OAv2 server "submit" page
 # url="http://localhost/index.php/system/add_system"
@@ -59,11 +59,13 @@ url="http://localhost/open-audit/index.php/input/devices"
 # 2 = verbose debug
 # 3 = verbose debug and no safety
 debugging=1
+
+discovery_id=""
+help=""
+last_seen_by="audit_ssh"
 org_id=""
 system_id=""
-help=""
 version="1.14"
-last_seen_by="audit"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
@@ -79,10 +81,11 @@ for arg; do
 		submit_online) submit_online="$VAL";;
 		create_file)   create_file="$VAL";;
 		debugging)     debugging="$VAL";;
-		man_org_id)    man_org_id="$VAL";;
+		org_id)        org_id="$VAL";;
 		url)           url="$VAL";;
 		system_id)     system_id="$VAL";;
 		last_seen_by)  last_seen_by="$VAL";;
+		discovery_id)  discovery_id="$VAL";;
 		*) ;;
 	esac
 done
@@ -104,25 +107,28 @@ if [[ $help = "y" ]]; then
 	echo ""
 	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=3)."
 	echo ""
+	echo "  create_file"
+	echo "    *y - Create an XML file containing the audit result."
+	echo "     n - Do not create an XML result file."
+	echo ""
 	echo "  debugging"
 	echo "     0 - No output."
 	echo "     1 - Minimal Output (headings only)."
 	echo "     2 - Verbose output (headings and timings)."
 	echo "    *3 - Verbose output and the safety switch removed. If a command fails, you will see the error message and the script may halt."
 	echo ""
-	echo "  url"
-	echo "    *http://localhost/index.php/system/add_system - The http url of the Open-AudIT Server used to submit the result to."
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+	echo ""
+	echo "  org_id"
+	echo "     * - The Open-AudIT id of the organisation you would like this machine assigned to. This is not populated by default."
 	echo ""
 	echo "  submit_online"
 	echo "     y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
 	echo "    *n - Do not submit the audit result"
 	echo ""
-	echo "  create_file"
-	echo "    *y - Create an XML file containing the audit result."
-	echo "     n - Do not create an XML result file."
-	echo ""
-	echo "  org_id"
-	echo "     * - The Open-AudIT id of the orgganisation you would like this machine assigned to. This is not populated by default."
+	echo "  url"
+	echo "    *http://localhost/index.php/system/add_system - The http url of the Open-AudIT Server used to submit the result to."
 	echo ""
 	echo ""
 	echo "NOTE - The netstat section can take a few minutes to complete."
@@ -181,15 +187,18 @@ system_timestamp=$(eval "date +\"%Y-%m-%d %T\" $safety")
 system_hostname=$(eval "uname -n $safety")
 
 if [[ "$debugging" -gt 0 ]]; then
-	echo "---------------------"
-	echo "Starting audit on   $system_hostname"
+	echo "----------------------------"
+	echo "Open-AudIT AIX audit script"
+	echo "(c) Opmantek, 2014."
+	echo "----------------------------"
 	echo "My PID is           $$"
 	echo "Audit Start Time    $system_timestamp"
 	echo "Create File         $create_file"
 	echo "Submit Online       $submit_online"
 	echo "Debugging Level     $debugging"
-	if [[ $man_org_id != "" ]]; then echo "Org Id              $man_org_id"; fi
-	echo "---------------------" 
+	echo "Discovery ID        $discovery_id"
+	echo "Org Id              $org_id"
+	echo "----------------------------"
 fi
 
 START="$SECONDS"
@@ -253,6 +262,7 @@ cat >"$xml_file" <<EndOfFile
 		<class>server</class>
 		<id>$(escape_xml "$system_id")</id>
 		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>
+		<discovery_id>$(escape_xml "$discovery_id")</discovery_id>
 	</sys>
 EndOfFile
 FINISH=$((SECONDS-START))

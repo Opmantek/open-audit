@@ -78,6 +78,8 @@ self_delete='n'
 # 2 = verbose debug
 debugging=2
 
+discovery_id=""
+
 # Display help
 help="n"
 
@@ -223,6 +225,8 @@ for arg in "$@"; do
 			create_file="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"discovery_id" )
+			discovery_id="$parameter_value" ;;
 		"echo_output" )
 			echo_output="$parameter_value" ;;
 		"help" )
@@ -269,6 +273,9 @@ if [ "$help" = "y" ]; then
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
 	echo ""
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
 	echo "     *n - Do not display this output."
@@ -292,9 +299,17 @@ fi
 start_time=$(timer)
 system_timestamp=`date +'%F %T'`
 if [ $debugging -gt 0 ]; then 
-	echo "Starting audit"
-	echo "Audit Start Time : $system_timestamp"
-	echo "-------------------" 
+	echo "----------------------------"
+	echo "Open-AudIT ESXi audit script"
+	echo "(c) Opmantek, 2014."
+	echo "----------------------------"
+	echo "Audit Start Time    $system_timestamp"
+	echo "Create File         $create_file"
+	echo "Submit Online       $submit_online"
+	echo "Debugging Level     $debugging"
+	echo "Discovery ID        $discovery_id"
+	echo "Org Id              $org_id"
+	echo "----------------------------"
 fi
 
 # SYSTEM
@@ -380,6 +395,7 @@ echo "		<os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"<
 echo "		<org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
 echo "		<id>"$(escape_xml "$system_id")"</id>" >> $xml_file
 echo "		<last_seen_by>"$(escape_xml "$last_seen_by")"</last_seen_by>" >> $xml_file
+echo "		<discovery_id>$(escape_xml "$discovery_id")</discovery_id>" >> $xml_file
 echo "	</sys>" >> $xml_file
 
 

@@ -47,6 +47,8 @@ submit_online = "y"
 ' create an XML text file of the result in the current directory
 create_file = "n"
 
+discovery_id = ""
+
 ' the address of the Open-AudIT server "submit" page
 url = "http://localhost/open-audit/index.php/input/devices"
 
@@ -145,6 +147,9 @@ For Each strArg in objArgs
 
 	case "debugging"
 	debugging = argValue
+
+	case "discovery_id"
+	discovery_id = argValue
 
 	case "help"
 	help = argValue
@@ -247,6 +252,9 @@ if (help = "y") then
 	wscript.echo "     2 - Verbose output."
 	wscript.echo "     3 - Very Verbose output."
 	wscript.echo ""
+    wscript.echo "  discovery_id"
+    wscript.echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+    wscript.echo ""
 	wscript.echo "  /? or /help or help=y"
 	wscript.echo "      y - Display this help output."
 	wscript.echo "     *n - Do not display this output."
@@ -343,29 +351,32 @@ end if'
 if debugging > "0" then wscript.echo "starting audit - " & strcomputer end if
 
 if debugging > "2" then
-	wscript.echo "Argurments"
-	wscript.echo "-------------------"
+    wscript.echo "----------------------------"
+    wscript.echo "Open-AudIT Windows audit script"
+    wscript.echo "(c) Opmantek, 2014."
+    wscript.echo "----------------------------"
+	wscript.echo "audit_dns: " & audit_dns
+	wscript.echo "audit_mount_point: " & audit_mount_point
+	wscript.echo "audit_netstat: " & audit_netstat
+	wscript.echo "audit_software: " & audit_software
 	wscript.echo "create_file: " & create_file
 	wscript.echo "debugging: " & debugging
+	wscript.echo "details_to_lower: " & details_to_lower
+	wscript.echo "discovery_id: " & discovery_id
+	wscript.echo "hide_audit_window: " & hide_audit_window
 	wscript.echo "ldap: " & ldap
 	wscript.echo "org_id: " & org_id
 	wscript.echo "ping_target: " & ping_target
-	wscript.echo "audit_netstat: " & audit_netstat
 	wscript.echo "self_delete: " & self_delete
-	wscript.echo "audit_software: " & audit_software
-	wscript.echo "audit_dns: " & audit_dns
-	wscript.echo "audit_mount_point: " & audit_mount_point
 	wscript.echo "strcomputer: " & strcomputer
-	wscript.echo "struser: " & struser
 	wscript.echo "strpass: " & strpass
+	wscript.echo "struser: " & struser
 	wscript.echo "submit_online: " & submit_online
 	wscript.echo "system_id: " & system_id
 	wscript.echo "url: " & url
 	wscript.echo "use_proxy: " & use_proxy
 	wscript.echo "windows_user_work_1: " & windows_user_work_1
 	wscript.echo "windows_user_work_2: " & windows_user_work_2
-	wscript.echo "details_to_lower: " & details_to_lower
-	wscript.echo "hide_audit_window: " & hide_audit_window
 	wscript.echo "-------------------"
 end if
 
@@ -786,6 +797,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	result.WriteText "		<active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
 	result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
 	result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
+	result.WriteText "		<discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
 	result.WriteText "	</sys>" & vbcrlf
 	end if
 	objRecordSet.MoveNext
@@ -1279,6 +1291,7 @@ result.WriteText "		<os_installation_date>" & escape_xml(system_pc_date_os_insta
 result.WriteText "		<org_id>" & escape_xml(org_id) & "</org_id>" & vbcrlf
 result.WriteText "		<cluster_name>" & escape_xml(man_cluster_name) & "</cluster_name>" & vbcrlf
 result.WriteText "		<last_seen_by>" & escape_xml(last_seen_by) & "</last_seen_by>" & vbcrlf
+result.WriteText "		<discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 

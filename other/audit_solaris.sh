@@ -55,6 +55,8 @@ submit_online="y"
 # create an XML text file of the result in the current directory
 create_file="n"
 
+discovery_id=""
+
 # the address of the Open-AudIT server "submit" page
 url="http://localhost/open-audit/index.php/discovery/process_subnet"
 
@@ -259,6 +261,8 @@ for arg in "$@"; do
                         create_file="$parameter_value" ;;
                 "debugging" )
                         debugging="$parameter_value" ;;
+                "discovery_id" )
+                        discovery_id="$parameter_value" ;;
                 "org_id" )
                         org_id="$parameter_value" ;;
                 "self_delete" )
@@ -293,6 +297,9 @@ if [ "$help" = "y" ]; then
     echo "     0 - No output."
     echo "     1 - Minimal Output."
     echo "    *2 - Verbose output."
+    echo ""
+    echo "  discovery_id"
+    echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
     echo ""
     echo "  -h or --help or help=y"
     echo "      y - Display this help output."
@@ -329,14 +336,18 @@ system_timestamp=`date +'%F %T'`
 nPID="$$"
 
 if [ $debugging -gt 0 ]; then
-        echo "My PID is : $nPID"
-        echo "Audit Start Time : $system_timestamp"
-        echo "Submit Online: $submit_online"
-        echo "Create File: $create_file"
-        echo "Debugging: $debugging"
-        echo "Self Delete: $self_delete"
-        echo "Org Id: $org_id"
-        echo "-------------------"
+    echo "----------------------------"
+    echo "Open-AudIT Solaris audit script"
+    echo "(c) Opmantek, 2014."
+    echo "----------------------------"
+    echo "My PID is           $nPID"
+    echo "Audit Start Time    $system_timestamp"
+    echo "Create File         $create_file"
+    echo "Submit Online       $submit_online"
+    echo "Debugging Level     $debugging"
+    echo "Discovery ID        $discovery_id"
+    echo "Org Id              $org_id"
+    echo "----------------------------"
 fi
 
 #========================
@@ -455,6 +466,7 @@ echo "              <memory_count>"$(escape_xml "$system_pc_memory")"</memory_co
 echo "              <processor_count>"$(escape_xml "$processor_physical_count")"</processor_count>" >> $xml_file
 echo "              <os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
 echo "              <org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
+echo "              <discovery_id>"$(escape_xml "$discovery_id")"</discovery_id>" >> $xml_file
 echo "      </sys>" >> $xml_file
 
 ############################################

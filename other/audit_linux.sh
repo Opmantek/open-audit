@@ -57,6 +57,8 @@
 # submit the audit to the Open-AudIT server
 submit_online="n"
 
+discovery_id=""
+
 # create an XML text file of the result in the current directory
 create_file="y"
 
@@ -270,6 +272,8 @@ for arg in "$@"; do
 			self_delete="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"discovery_id" )
+			discovery_id="$parameter_value" ;;
 		"display" )
 			display="$parameter_value" ;;
 		"help" )
@@ -322,6 +326,9 @@ if [ "$help" = "y" ]; then
 	echo "     0 - No output."
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
+	echo ""
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
 	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
@@ -378,10 +385,18 @@ system_timestamp=$(date +'%F %T')
 script_name=$(basename $0)
 
 if [ "$debugging" -gt 0 ]; then
-	echo "My PID is : $$"
-	echo "Audit Start Time : $system_timestamp"
-	echo "Audit Location: $audit_location"
-	echo "-------------------"
+	echo "----------------------------"
+	echo "Open-AudIT Linux audit script"
+	echo "(c) Opmantek, 2014."
+	echo "----------------------------"
+	echo "My PID is           $$"
+	echo "Audit Start Time    $system_timestamp"
+	echo "Create File         $create_file"
+	echo "Submit Online       $submit_online"
+	echo "Debugging Level     $debugging"
+	echo "Discovery ID        $discovery_id"
+	echo "Org Id              $org_id"
+	echo "----------------------------"
 fi
 
 IFS="$ORIGIFS";
@@ -775,6 +790,7 @@ echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
 echo "		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>"
 echo "		<id>$(escape_xml "$system_id")</id>"
+echo "		<discovery_id>$(escape_xml "$discovery_id")</discovery_id>"
 echo "	</sys>"
 } > "$xml_file"
 

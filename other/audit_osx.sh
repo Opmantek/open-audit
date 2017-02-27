@@ -41,6 +41,7 @@ export PATH=$PATH:/usr/sbin
 url="http://localhost/open-audit/index.php/input/devices"
 submit_online="n"
 create_file="y"
+discovery_id=""
 org_id=""
 terminal_print="n"
 debugging="3"
@@ -60,13 +61,18 @@ for arg in "$@"; do
 done
 
 if [  "$debugging" -gt 0 ]; then
-    echo "OPTIONS"
-    echo "-------"
-    echo "url: $url"
-    echo "submit_online: $submit_online"
-    echo "create_file: $create_file"
-    echo "debugging: $debugging"
-    echo "-------"
+    echo "----------------------------"
+    echo "Open-AudIT OSX audit script"
+    echo "(c) Opmantek, 2014."
+    echo "----------------------------"
+    echo "My PID is           $$"
+    echo "Audit Start Time    $system_timestamp"
+    echo "Create File         $create_file"
+    echo "Submit Online       $submit_online"
+    echo "Debugging Level     $debugging"
+    echo "Discovery ID        $discovery_id"
+    echo "Org Id              $org_id"
+    echo "----------------------------"
 fi
 
 if [ "$help" = "y" ]; then
@@ -88,6 +94,9 @@ if [ "$help" = "y" ]; then
     echo "     1 - Minimal Output."
     echo "     2 - Verbose output."
     echo "    *3 - Very Verbose output."
+    echo ""
+    echo "  discovery_id"
+    echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
     echo ""
     echo "  -h or --help or help=y"
     echo "      y - Display this help output."
@@ -166,6 +175,7 @@ echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
 echo  "     <os_installation_date>$system_pc_date_os_installation</os_installation_date>" >> $xml_file
 echo  "     <org_id>$org_id</org_id>" >> $xml_file
 echo  "     <last_seen_by>$last_seen_by</last_seen_by>" >> $xml_file
+echo  "     <discovery_id>$discovery_id</discovery_id>" >> $xml_file
 echo  " </sys>" >> $xml_file
 
 if [ "$debugging" -gt "0" ]; then

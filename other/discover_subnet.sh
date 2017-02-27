@@ -45,7 +45,7 @@ log_no_response="n"
 org_id=""
 submit_online="y"
 subnet_range=""
-subnet_timestamp=""
+discovery_id=""
 syslog="y"
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
@@ -100,6 +100,9 @@ if [ "$help" == "y" ]; then
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
 	echo ""
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+	echo ""
 	echo "  force_ping"
 	echo "    *n - When discovering devices, do not check for ping response."
 	echo "     y - Check for a ping response and only discover those devices that do respond."
@@ -125,9 +128,6 @@ if [ "$help" == "y" ]; then
 	echo ""
 	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
-	echo ""
-	echo "  subnet_timestamp"
-	echo "       - Set by the web GUI. Not used on the command line."
 	echo ""
 	echo "  sequential"
 	echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
@@ -186,7 +186,7 @@ else
 	exit 1
 fi
 
-log_entry="Discovery for $subnet_range submitted at $subnet_timestamp starting"
+log_entry="Discovery for $subnet_range submitted for discovery $discovery_id starting"
 write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
@@ -369,7 +369,7 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
 			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
 			result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
-			result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
+			result="$result		<discovery_id>$discovery_id</discovery_id>"$'\n'
 			if [ "$debugging" -gt 0 ]; then
 				result="$result		<debug>true</debug>"$'\n'
 			else
@@ -412,7 +412,7 @@ if [[ "$hosts" != "" ]]; then
 	done
 fi
 
-resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
+resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
 
 if [[ "$submit_online" == "y" ]]; then
 	if [[ $(uname) == "Linux" ]]; then
@@ -428,7 +428,7 @@ if [[ "$submit_online" == "y" ]]; then
 fi
 
 if [[ "$echo_output" == "y" ]]; then
-	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
+	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
 fi
 
 
@@ -437,5 +437,5 @@ if [[ "$create_file" == "y" ]]; then
 	echo "$result_file" > discovery_subnet.xml
 fi
 
-log_entry="Discovery for $subnet_range submitted at $subnet_timestamp completed"
+log_entry="Discovery for $subnet_range submitted for discovery $discovery_id completed"
 write_log "$log_entry"
