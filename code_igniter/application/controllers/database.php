@@ -5932,6 +5932,125 @@ class Database extends MY_Controller_new
             } else {
                 $this->data['output'] = 'Commencing 1.14.4 upgrade at ' . $this->config->config['timestamp'] . "\n\n";
             }
+
+            # attributes
+            $sql[] = "DROP TABLE IF EXISTS `attributes`";
+            $sql[] = "CREATE TABLE `attributes` (
+                      `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                      `resource` varchar(200) NOT NULL DEFAULT '',
+                      `type` varchar(200) NOT NULL DEFAULT '',
+                      `name` varchar(200) NOT NULL DEFAULT '',
+                      `value` varchar(200) NOT NULL DEFAULT '',
+                      `edited_by` varchar(200) NOT NULL DEFAULT '',
+                      `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+                      PRIMARY KEY (`id`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','','','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Desktop','desktop','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Hypervisor','hypervisor','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Laptop','laptop','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Server','server','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Tablet','tablet','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Virtual Desktop','virtual desktop','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Virtual Server','virtual server','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_class','Workstation','workstation','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Development','dev','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Disaster Recovery','dr','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Evaluation','eval','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Pre-Production','pre-prod','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Production','production','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Testing','test','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','Training','train','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_environment','User Acceptance Testing','uat','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_status','Deleted','deleted','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_status','Lost','lost','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_status','Maintenance','maintenance','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_status','Production','production','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_status','Retired','retired','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_status','Unallocated','unallocated','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Access Control','access control','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Access Point','access point','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Access Server','access server','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Access Token','access token','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','ADSL Modem','adsl modem','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Alarm','alarm','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Bar Code Reader','bar code reader','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','BDSL Modem','bdsl modem','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Bridge','bridge','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Broadband Router','broadband router','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Building Management','building management','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Cable Modem','cable modem','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Cell Phone','cell phone','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Cisco Module','cisco module','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Computer','computer','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Chassis','chassis','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','DSL Modem','dsl modem','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','DSLAM','dslam','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Environment Monitor','environment monitor','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Firewall','firewall','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Game Console','game console','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Gateway','gateway','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','General Purpose','general purpose','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Hub','hub','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','IP Phone','ip phone','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','KVM (Keyboard, Video, Mouse switch)','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Load Balancer','load balancer','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Media Device','media device','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Mobile Modem','mobile modem','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','NAS (Network Attached Storage)','nas','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Network Device','network device','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Network IDS (Intrusion Detection)','network ids','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Network Printer','network printer','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Network Scanner','network scanner','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','PBX','pbx','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','PDA','pda','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Power Distribution Unit','pdu','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Phone','phone','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Point of Sale','point of sale','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Power Device','power device','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Printer','printer','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Print Server','print server','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Projector','projector','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Proxy','proxy','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Proxy Server','proxy server','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Remote Access Controller (ILO / RSA)','remote access controller','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Remote Management','remote management','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Router','router','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','SAN (Storage Area Network)','san','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Satellite Phone','satellite phone','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Satellite Receiver','satellite receiver','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Scanner','scanner','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Security Camera','security camera','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Security Misc','security misc','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Serial to Ethernet Adapter','serial to ethernet','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Smart Phone','smart phone','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Specialized','specialized','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Storage Misc','storage misc','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Switch','switch','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Tablet','tablet','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Tape Library','tape library','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Telecom Misc','telecom misc','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Terminal','terminal','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Terminal Server','terminal server','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Time Clock','time clock','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Unknown','unknown','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','UPS (Uninterruptible Power Supply)','ups','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Video Conference','video conference','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','VoIP Adapter','voip adapter','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','VoIP Gateway','voip gateway','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','VoIP Phone','voip phone','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','VPN Terminator','vpn terminator','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','WAN Accelerator','wan accelerator','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','WAP (Wireless Access Point)','wap','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','WDM (Wavelength Division Multiplexer)','wdm','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Web Cache','web cache','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Web Camera','webcam','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Wireless Link','wireless link','system', NOW())";
+            $sql[] = "INSERT INTO `attributes` VALUES (NULL,'devices','device_type','Wireless Router','wireless router','system', NOW())";
+
+
+
+
             # configuration
             $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
             $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
