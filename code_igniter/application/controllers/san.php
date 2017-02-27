@@ -703,7 +703,7 @@ class San extends CI_Controller
             stdlog($log_details);
 
             $details->last_seen = $this->config->config['timestamp'];
-            $details->id = intval($this->m_system->find_system($details, 'y'));
+            $details->id = intval($this->m_system->find_system($details));
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 

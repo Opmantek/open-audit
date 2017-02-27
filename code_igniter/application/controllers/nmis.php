@@ -190,7 +190,7 @@ class Nmis extends MY_Controller_new
                 }
                 $device = dns_validate($device, 'n');
                 $device->omk_uuid = @$node['uuid'];
-                $device->id = $this->m_system->find_system($device, 'n');
+                $device->id = $this->m_system->find_system($device);
                 $device->status = 'production';
                 $device->credentials = new stdClass();
                 $device->credentials->description = 'Imported from NMIS';

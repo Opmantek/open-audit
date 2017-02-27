@@ -332,7 +332,7 @@ class System extends CI_Controller
             $details->type = 'computer';
         }
 
-        $i = $this->m_system->find_system($details, $display);
+        $i = $this->m_system->find_system($details);
         if ($i == '' and $received_system_id > '') {
             $i = $received_system_id;
         }
