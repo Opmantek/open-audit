@@ -303,14 +303,20 @@ class M_devices_components extends MY_Model
         $create_alerts = $this->config->config['discovery_create_alerts'];
         $delete_noncurrent = $this->config->config['delete_noncurrent'];
 
-
         $log = new stdClass();
+        $log->discovery_id = (string)@$details->discovery_id;
+        $log->system_id = (string)$details->id;
+        $log->timestamp = NULL;
         $log->severity = 7;
-        $log->type = 'system';
-        $log->discovery_id = null;
-        $log->system_id = $details->id;
+        $log->severity_text = '';
+        $log->pid = getmypid();
+        $log->ip = (string)$details->ip;
+        $log->file = 'm_devices_componenets';
+        $log->function = 'process_component';
+        $log->command = 'process audit';
         $log->message = '';
 
+        #echo "<pre>"; print_r($log); exit();
 
         $log_details = new stdClass();
         $log_details->message = '';
@@ -330,9 +336,9 @@ class M_devices_components extends MY_Model
 
         // ensure we have a valid table name
         if (!$this->db->table_exists($table)) {
-            $log_details->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log_details->severity = 5;
-            stdlog($log_details);
+            $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $log->severity = 4;
+            discovery_log($log);
             return;
         }
 
@@ -349,22 +355,22 @@ class M_devices_components extends MY_Model
 
         if ($table == '' or count($match_columns) == 0 or !isset($details->id)) {
             if ($table == '') {
-                $log_details->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
+                $log->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "No table name supplied - failed";
             }
             if (count($match_columns) == 0) {
-                $log_details->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
+                $log->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No columns to match supplied - failed";
             }
             # if (!isset($details->id)) { # this will be changed when we convert the system table
             if (!isset($details->id)) {
-                $log_details->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
+                $log->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No id supplied - failed";
             }
             $this->m_audit_log->update('debug', $message, $details->id, $details->last_seen);
             unset($message);
-            $log_details->severity = 5;
-            stdlog($log_details);
+            $log->severity = 5;
+            discovery_log($log);
             return;
         } else {
             $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
@@ -1206,6 +1212,8 @@ class M_devices_components extends MY_Model
         # prefer non-DHCP address (ORDER BY network.dhcp_enabled ASC)
         # secondary prefer private to public ip address (pubpriv)
 
+        $ip = '';
+
         # get the stored attribute for ip
         $sql = "SELECT `ip`, `last_seen` FROM `system` WHERE `system`.`id` = ?";
         $sql = $this->clean_sql($sql);
@@ -1243,12 +1251,14 @@ class M_devices_components extends MY_Model
             $result = $query->result();
 
             if (isset($result[0]->ip) and $result[0]->ip != '') {
+                $ip = $result[0]->ip;
                 $sql = "UPDATE system SET ip = ? WHERE id = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($result[0]->ip, "$id");
                 $query = $this->db->query($sql, $data);
             }
         }
+        return $ip;
     }
 
     public function update_missing_interfaces($system_id)
