@@ -175,6 +175,8 @@ class devices extends MY_Controller_new
             if (isset($this->response->data[0]->attributes->location_id)) {
                 $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             }
+            $this->load->model('m_attributes');
+            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
         } else {
             // return only the details of the linked org and location
             if (isset($this->response->data[0]->attributes->org_id)) {
@@ -256,6 +258,8 @@ class devices extends MY_Controller_new
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         $this->load->model('m_locations');
         $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+        $this->load->model('m_attributes');
+        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
         output($this->response);
         $log = new stdClass();
         $log->detail = json_encode($this->response->meta);
@@ -311,9 +315,8 @@ class devices extends MY_Controller_new
             if (! empty($temp)) {
                 $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             }
-            include 'include_device_types.php';
-            # TODO - change the below to use this->response->included
-            $this->response->types = $device_types;
+            $this->load->model('m_attributes');
+            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
         }

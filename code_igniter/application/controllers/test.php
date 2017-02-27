@@ -517,17 +517,6 @@ class test extends CI_Controller
     }
 
 
-
-
-    public function types ()
-    {
-        include 'include_device_types.php';
-        echo "<pre>\n";
-        foreach ($device_types as $key => $value) {
-            echo $key . ' = ' . $value . "\n";
-        }
-    }
-
     public function dns()
     {
         print gethostbyaddr('192.168.1.1');

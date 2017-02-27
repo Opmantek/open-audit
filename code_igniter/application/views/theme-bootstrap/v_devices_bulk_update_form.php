@@ -44,11 +44,22 @@ $field_count = intval(count($fields) / 2) + 1;
 
 $special = array();
 
-$special['orgs'] = '<div class="form-group"><label for="org_id" class="col-sm-4 control-label">Organisation</label><div class="col-sm-8 input-group"><select id="org_id" class="form-control" disabled><option value="" label=" "> </option>';
-foreach ($data['orgs'] as $item) {
-    $special['orgs'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
+$special['class'] = '<div class="form-group"><label for="class" class="col-sm-4 control-label">Class</label><div class="col-sm-8 input-group"><select id="class" class="form-control" disabled><option value="" label=" "> </option>';
+foreach ($this->response->included as $item) {
+    if ($item->type == 'attributes' and $item->attributes->type == 'device_class') {
+        $special['class'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+    }
 }
-$special['orgs'] .= '</select><span class="input-group-btn"><button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
+$special['class'] .= '</select><span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
+
+
+$special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value="" label=" "> </option>';
+foreach ($this->response->included as $item) {
+    if ($item->type == 'attributes' and $item->attributes->type == 'device_environment') {
+        $special['environment'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+    }
+}
+$special['environment'] .= '</select><span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
 $special['locations'] = '<div class="form-group"><label for="location_id" class="col-sm-4 control-label">Location</label><div class="col-sm-8 input-group"><select id="location_id" class="form-control" disabled><option value="" label=" "> </option>';
@@ -58,40 +69,36 @@ foreach ($data['locations'] as $item) {
 $special['locations'] .= '</select><span class="input-group-btn"><button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
+$special['orgs'] = '<div class="form-group"><label for="org_id" class="col-sm-4 control-label">Organisation</label><div class="col-sm-8 input-group"><select id="org_id" class="form-control" disabled><option value="" label=" "> </option>';
+foreach ($data['orgs'] as $item) {
+    $special['orgs'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
+}
+$special['orgs'] .= '</select><span class="input-group-btn"><button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
+
+
 $special['status'] = '<div class="form-group"><label for="status" class="col-sm-4 control-label">Status</label><div class="col-sm-8 input-group"><select id="status" class="form-control" disabled><option value="" label=" "> </option>';
-$special['status'] .= "<option value='deleted'>Deleted</option>";
-$special['status'] .= "<option value='production'>Lost</option>";
-$special['status'] .= "<option value='production'>Maintenance</option>";
-$special['status'] .= "<option value='production'>Production</option>";
-$special['status'] .= "<option value='production'>Retired</option>";
-$special['status'] .= "<option value='production'>Unallocated</option>";
+foreach ($this->response->included as $item) {
+    if ($item->type == 'attributes' and $item->attributes->type == 'device_status') {
+        $special['status'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+    }
+}
 $special['status'] .= '</select><span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
 $special['types'] = '<div class="form-group"><label for="type" class="col-sm-4 control-label">Type</label><div class="col-sm-8 input-group"><select id="type" class="form-control" disabled><option value="" label=" "> </option>';
-foreach ($this->response->types as $key => $value) {
-    if ($value != '&nbsp;') {
-        $special['types'] .= "<option value=\"".$key."\">".__($value)."</option>\n";
+foreach ($this->response->included as $item) {
+    if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
+        $special['types'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
     }
 }
 $special['types'] .= '</select><span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
-$special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value="" label=" "> </option>';
-$special['environment'] .= "<option value='dev'>Development</option>";
-$special['environment'] .= "<option value='dr'>Disaster Recovery</option>";
-$special['environment'] .= "<option value='eval'>Evaluation</option>";
-$special['environment'] .= "<option value='pre-prod'>PreProduction</option>";
-$special['environment'] .= "<option value='production'>Production</option>";
-$special['environment'] .= "<option value='test'>Testing</option>";
-$special['environment'] .= "<option value='train'>Training</option>";
-$special['environment'] .= "<option value='uat'>User Acceptance Testing</option>";
-$special['environment'] .= '</select><span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
-
 $special['nmis_export'] = '<div class="form-group"><label for="nmis_export" class="col-sm-4 control-label">NMIS Export</label><div class="col-sm-8 input-group"><select id="nmis_export" class="form-control" disabled><option value="" label=" "> </option>';
 $special['nmis_export'] .= "<option value='y'>Yes</option>";
 $special['nmis_export'] .= "<option value='n'>No</option>";
 $special['nmis_export'] .= '</select><span class="input-group-btn"><button id="edit_nmis_export" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_export"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
+
 
 $special['oae_manage'] = '<div class="form-group"><label for="oae_manage" class="col-sm-4 control-label">Manage in Open-AudIT Enterprise</label><div class="col-sm-8 input-group"><select id="oae_manage" class="form-control" disabled><option value="" label=" "> </option>';
 $special['oae_manage'] .= "<option value='y'>Yes</option>";

@@ -34,12 +34,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-if (php_uname('s') != 'Windows NT') {
-    include(str_replace('views/theme-bootstrap/v_devices_create_form.php', 'controllers/include_device_types.php', __FILE__));
-} else {
-    include(str_replace('views\\theme-bootstrap\\v_devices_create_form.php', 'controllers\\include_device_types.php', __FILE__));
-}
-
 ?>
 <div class="panel panel-default">
   <div class="panel-heading">
@@ -78,13 +72,13 @@ if (php_uname('s') != 'Windows NT') {
                         <div class="col-sm-8 input-group">
                             <select id="data[attributes][type]" name="data[attributes][type]" class="form-control" onChange="choose_type();">
                                 <option value=''>Choose</option>
-<?php
-foreach ($device_types as $key => $value) {
-    if ($key != '') {
-        echo "                                <option value='$key'>".__("$value")."</option>\n";
-    }
-}
-?>
+                                <?php
+                                foreach ($this->response->included as $item) {
+                                    if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
+                                        echo "<option value='" . $item->attributes->value . "'>".__($item->attributes->name)."</option>\n";
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -110,12 +104,17 @@ foreach ($device_types as $key => $value) {
                         <label for="data[attributes][status]" class="col-sm-3 control-label">Status</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][status]" name="data[attributes][status]">
-                                <option value="deleted">Deleted</option>
-                                <option value="lost">Lost</option>
-                                <option value="maintenance">Maintenance</option>
-                                <option value="production" selected>Production</option>
-                                <option value="retired">Retired</option>
-                                <option value="unallocated">Unallocated</option>
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'attributes' and $item->attributes->type == 'device_status') {
+                                    $selected = '';
+                                    if ($item->attributes->value == 'production') {
+                                        $selected = ' selected';
+                                    }
+                                    echo "<option value='" . $item->attributes->value . "'" . $selected . ">".__($item->attributes->name)."</option>\n";
+                                }
+                            }
+                            ?>
                             </select>
                         </div>
                     </div>
@@ -123,14 +122,17 @@ foreach ($device_types as $key => $value) {
                         <label for="data[attributes][environment]" class="col-sm-3 control-label">Environment</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][environment]" name="data[attributes][environment]">
-                                <option value="dev">Development</option>
-                                <option value="dr">Disaster Recovery</option>
-                                <option value="eval">Evaluation</option>
-                                <option value="pre-prod">Preproduction</option>
-                                <option value="production" selected>Production</option>
-                                <option value="test">Testing</option>
-                                <option value="train">Training</option>
-                                <option value="uat">User Acce[tance Testing</option>
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'attributes' and $item->attributes->type == 'device_environment') {
+                                    $selected = '';
+                                    if ($item->attributes->value == 'production') {
+                                        $selected = ' selected';
+                                    }
+                                    echo "<option value='" . $item->attributes->value . "'" . $selected . ">".__($item->attributes->name)."</option>\n";
+                                }
+                            }
+                            ?>
                             </select>
                         </div>
                     </div>

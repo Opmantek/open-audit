@@ -256,7 +256,6 @@ function receive_class() {
 
 function display_type() {
 	// we now pass the list of device types from the controller
-	// see the file controllers/include_device_types.php to edit
 	type_text = "<select id='type' onchange='send_type();'><?php foreach ($device_types as $key => $value) {
     echo "<option value='$key'>".__("$value")."</option>";
 } ?><\/select>";

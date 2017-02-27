@@ -34,11 +34,6 @@
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if (php_uname('s') != 'Windows NT') {
-    include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
-} else {
-    include(str_replace('views\\theme-bootstrap\\v_devices_read.php', 'controllers\\include_device_types.php', __FILE__));
-}
 
 # Check and set the $edit variable
 if ($this->m_users->get_user_permission('', 'devices', 'u')) {
@@ -60,6 +55,7 @@ if (!empty($this->response->data[0]->attributes)) {
 foreach ($this->response->included as $item) {
     $data[$item->type][] = $item->attributes;
 }
+
 if (empty($data['fields'])) {
     $data['fields'] = array();
 }
@@ -396,14 +392,16 @@ if (empty($data['mount_point'])) {
                             <div class="col-sm-8 input-group">
                                 <select id="type" class="form-control" disabled>
                                 <?php
-                                foreach ($device_types as $key => $value) {
-                                    if ($key == $data['system']->type) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
-                                    }
-                                    if ($key != '') {
-                                        echo "<option value='$key'$selected>".__("$value")."</option>";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_type') {
+                                        if ($item->value == $data['system']->type) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if ($item->value != '') {
+                                            echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                        }
                                     }
                                 }
                                 ?>
@@ -423,18 +421,21 @@ if (empty($data['mount_point'])) {
                             <div class="col-sm-8 input-group">
                                 <select id="class" class="form-control" disabled>
                                 <?php
-                                foreach ($device_class as $key => $value) {
-                                    if ($key == $data['system']->class) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_class') {
+                                        if ($item->value == $data['system']->class) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
                                     }
-                                    echo "<option value='$key'$selected>".__("$value")."</option>";
                                 }
                                 ?>
+                                
                                 </select>
                                 <?php if ($edit) { ?>
-                                <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                    <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                                 <?php } ?>
                             </div>
                         </div>
@@ -460,18 +461,23 @@ if (empty($data['mount_point'])) {
                             <div class="col-sm-8 input-group">
                                 <select id="environment" class="form-control" disabled>
                                 <?php
-                                foreach ($device_environment as $key => $value) {
-                                    if ($key == $data['system']->environment) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_environment') {
+                                        if ($item->value == $data['system']->environment) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if ($item->value != '') {
+                                            echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                        }
                                     }
-                                    echo "<option value='$key'$selected>".__("$value")."</option>";
                                 }
                                 ?>
+                                
                                 </select>
                                 <?php if ($edit) { ?>
-                                <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                    <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                                 <?php } ?>
                             </div>
                         </div>
@@ -481,20 +487,23 @@ if (empty($data['mount_point'])) {
                             <div class="col-sm-8 input-group">
                                 <select id="status" class="form-control" disabled>
                                 <?php
-                                foreach ($device_status as $key => $value) {
-                                    if ($key == $data['system']->status) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
-                                    }
-                                    if ($key != '') {
-                                        echo "<option value='$key'$selected>".__("$value")."</option>";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_status') {
+                                        if ($item->value == $data['system']->status) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if ($item->value != '') {
+                                            echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                        }
                                     }
                                 }
                                 ?>
+                                
                                 </select>
                                 <?php if ($edit) { ?>
-                                <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                    <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                                 <?php } ?>
                             </div>
                         </div>

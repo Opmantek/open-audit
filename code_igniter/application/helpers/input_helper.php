@@ -139,7 +139,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
         $action = '';
 
-        $collections = ' charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
+        $collections = ' attributes charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -923,7 +923,7 @@ if (! function_exists('inputRead')) {
 
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
-            if (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors') {
+            if (($CI->response->meta->collection != 'attributes') and (!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {
                 log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
                 //output();
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
