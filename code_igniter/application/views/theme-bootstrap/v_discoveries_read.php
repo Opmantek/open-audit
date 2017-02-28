@@ -276,8 +276,8 @@ $item = $this->response->data[0];
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->included as $item) {
-                        if ($item->type == 'discovery_log') {
-                            echo "<tr>\n"; ?>
+                        if ($item->type == 'discovery_log') { ?>
+                    <tr>
                         <td class="text-center"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
                         <td><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->file, REPLACE_FLAGS, CHARSET)?></td>
@@ -289,8 +289,8 @@ $item = $this->response->data[0];
                         <td><?php if ($item->attributes->command != '') { echo '<pre style="word-wrap: break-word; white-space: pre-wrap;">' . htmlspecialchars($item->attributes->command, REPLACE_FLAGS, CHARSET) . '</pre>'; } ?></td>
                     </tr>
                     <?php
-                    }
-                } ?></tbody>
+                        }
+                    } ?></tbody>
             </table>
         </div>
     </div>

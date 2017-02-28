@@ -111,7 +111,7 @@
                     <div class="form-group">
                         <label for="data[attributes][use_roles]" class="col-sm-3 control-label">Use Roles</label>
                         <div class="col-sm-8 input-group">
-                            <select id="data[attributes[[use_roles]" name="data[attributes][use_roles]" class="form-control">
+                            <select id="data[attributes[[use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]">
                                 <option value='n' selected>No</option>
                                 <option value='y'>Yes</option>
                             </select>

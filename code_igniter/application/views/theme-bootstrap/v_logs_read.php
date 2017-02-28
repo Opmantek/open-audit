@@ -78,7 +78,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="values" class="col-sm-3 control-label">Detail</label>
                         <div class="col-sm-8 input-group">
-                            <pre id="detail" name="detail">
+                            <pre>
                             <?php print_r(json_decode($item->attributes->detail)); ?>
                             </pre>
                         </div>

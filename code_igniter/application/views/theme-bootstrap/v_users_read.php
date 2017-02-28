@@ -230,7 +230,7 @@ $item = $this->response->data[0];
                 ?>
                 <tr>
                     <td><?php echo $org->id; ?></td><td><?php echo $org->attributes->name; ?></td><td><?php echo $org->attributes->parent_name; ?></td>
-                    <td style="text-align:center;"><input name="orgs" type="checkbox" value="<?php echo $org->id; ?>" <?php echo $checked; ?> disabled></td>
+                    <td style="text-align:center;"><input name="orgs" title="orgs" type="checkbox" value="<?php echo $org->id; ?>" <?php echo $checked; ?> disabled></td>
                 </tr>
         <?php
             }

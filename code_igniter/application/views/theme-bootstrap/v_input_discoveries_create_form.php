@@ -49,7 +49,7 @@
                     <div class="form-group">
                         <label for="form_details" class="col-sm-3 control-label">Data</label>
                         <div class="col-sm-8 input-group">
-                            <textarea class="form-control" rows="10" id="data" name="data"></textarea>
+                            <textarea class="form-control" rows="10" id="data" name="data" title="data"></textarea>
                         </div>
                     </div>
                 </div>

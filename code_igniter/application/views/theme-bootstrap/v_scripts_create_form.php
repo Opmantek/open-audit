@@ -74,7 +74,7 @@ foreach ($this->response->included as $item) {
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo str_replace("'", "", $item->attributes->name); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -168,7 +168,7 @@ foreach ($this->response->included as $item) {
                             <?php # TODO - enable per script file retrieval ?>
                             <?php # TODO - Maybe only display files per based_on ?>
                                 <tr>
-                                    <td><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked disabled></td>
+                                    <td><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked disabled></td>
                                     <td><?php echo htmlspecialchars($file->description, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->path, REPLACE_FLAGS, CHARSET); ?></td>
                                 </tr>
@@ -204,7 +204,7 @@ function based_on(){
         <?php } ?>
     }
     document.getElementById("options").innerHTML = based_on_text;
-};
+}
 </script>
 
 
@@ -231,7 +231,7 @@ function generate_options($option_list, $options, $files, $orgs) {
                             $return .= '<select name="data[options][org_id]" id="data[options][org_id]" class="form-control" aria-describedby="option_org_id">';
                             $return .= '<option value="" label=" "></option>';
                             foreach ($orgs as $org) {
-                                $return .= '<option value="' . $org->id . '">' . $org->name . '</option>';
+                                $return .= '<option value="' . $org->id . '">' . htmlentities($org->name, ENT_QUOTES) . '</option>';
                             }
                             $return .= '</select><span id="option_org_id" class="help-block">' . $option->help . '</span>';
                         }
@@ -245,7 +245,7 @@ function generate_options($option_list, $options, $files, $orgs) {
                             } else {
                                 $selected = '';
                             }
-                            $return .= '<option value="' . $value . '" ' . $selected . '>' . $value . '</option>';
+                            $return .= '<option value="' . $value . '" ' . $selected . '>' . htmlentities($value, ENT_QUOTES) . '</option>';
                         }
                         $return .= '</select><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
                         break;

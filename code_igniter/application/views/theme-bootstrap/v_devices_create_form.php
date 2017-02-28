@@ -398,7 +398,7 @@ function choose_type() {
     if (showDiv.indexOf("modem") != -1 || showDiv.indexOf("phone") != -1) {
         $("#phone").css('display', 'block');
     }
-};
+}
 
 
 

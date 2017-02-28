@@ -197,7 +197,7 @@ foreach ($this->response->included as $org) {
             <td>
         <?php echo $org->attributes->parent_name; ?>
             </td>
-            <td style="text-align:center;"><input name="data[attributes][orgs][]" type="checkbox" value="<?php echo $org->id; ?>"></td>
+            <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo $org->id; ?>"></td>
         </tr>
         <?php
     }

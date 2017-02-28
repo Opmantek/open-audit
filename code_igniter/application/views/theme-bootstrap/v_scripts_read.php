@@ -129,7 +129,7 @@ $item = $this->response->data[0];
                         <label for="edited_date" class="col-md-2 control-label"><?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?></label>
                         <div class="col-sm-10">
                             <div class="col-md-10 input-group">
-                                <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                                <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" title="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                                 <?php if (!empty($edit)) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -160,7 +160,7 @@ $item = $this->response->data[0];
                         <label for="edited_date" class="col-md-2 control-label"><?php echo htmlspecialchars($included->attributes->description, REPLACE_FLAGS, CHARSET); ?></label>
                             <div class="col-md-10">
                             <div class="col-md-10 input-group">
-                            <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($included->attributes->description, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($included->attributes->description, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($included->attributes->path, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($included->attributes->description, REPLACE_FLAGS, CHARSET); ?>" title="options.<?php echo htmlspecialchars($included->attributes->description, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($included->attributes->description, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($included->attributes->path, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             </div>
                         </div>
                     </div>

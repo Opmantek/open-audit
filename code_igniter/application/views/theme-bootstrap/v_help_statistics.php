@@ -88,8 +88,8 @@ if (php_uname('s') == "Windows NT") {
                 <tbody>
                     <tr>
                         <td style="vertical-align: middle;"><a href="http://www.fsf.org/licensing/licenses/agpl.html"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-agpl.png' style='width:120px' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-php.png' style='width:120ps' alt=''/></a></td>
-                        <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-code_igniter.png' style='width:120' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://www.php.net"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-php.png' style='width:120px' alt=''/></a></td>
+                        <td style="vertical-align: middle;"><a href="http://www.codeigniter.com"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-code_igniter.png' style='width:120px' alt=''/></a></td>
                         <td style="vertical-align: middle;"><a href="http://jquery.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-jquery.png' style='width:120px' alt=''/></a></td>
                         <td style="vertical-align: middle;"><a href="http://www.w3.org/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-w3c.png' style='width:120px' alt=''/></a></td>
                         <td style="vertical-align: middle;"><a href="http://mapicons.nicolasmollet.com/"><img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-miclogo-88x31.gif' style='width:120px' alt=''/></a></td>

@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<?php echo form_open_multipart($this->response->meta->collection.'/import');?>
+<form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">

@@ -36,6 +36,7 @@
 include "v_lang.php";
 ?><!DOCTYPE html>
 <html lang="en">
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <!-- <meta http-equiv="refresh" content="300" /> -->
@@ -212,6 +213,7 @@ function json_format($json)
                 if ($c > 0 && $json[$c-1] != '\\') {
                     $in_string = !$in_string;
                 }
+                break;
                 // fallthrough
             default:
                 $new_json .= $char;

@@ -400,7 +400,7 @@ if (empty($data['mount_point'])) {
                                             $selected = "";
                                         }
                                         if ($item->value != '') {
-                                            echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                            echo "<option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>";
                                         }
                                     }
                                 }
@@ -428,7 +428,7 @@ if (empty($data['mount_point'])) {
                                         } else {
                                             $selected = "";
                                         }
-                                        echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                        echo "<option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>";
                                     }
                                 }
                                 ?>
@@ -469,7 +469,7 @@ if (empty($data['mount_point'])) {
                                             $selected = "";
                                         }
                                         if ($item->value != '') {
-                                            echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                            echo "<option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>";
                                         }
                                     }
                                 }
@@ -495,7 +495,7 @@ if (empty($data['mount_point'])) {
                                             $selected = "";
                                         }
                                         if ($item->value != '') {
-                                            echo "<option value='$item->value'$selected>".__("$item->name")."</option>";
+                                            echo "<option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>";
                                         }
                                     }
                                 }
@@ -1245,9 +1245,9 @@ if (!empty($data['software'])) {
                             <th>Filename</th>
                             <th>Edited By</th>
                             <th>Edited Date</th>
-                            <th style="text-align:center;">Download</td>
+                            <th style="text-align:center;">Download</th>
                             <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
-                            <th style="text-align:center;">Delete</td>
+                            <th style="text-align:center;">Delete</th>
                             <?php } ?>
                         </tr>
                     </thead>
@@ -1561,7 +1561,6 @@ if ($data['system']->type == 'computer') {
                     ?>
                     </div>
                 </div>
-            </div>
         <?php
         }
     }
@@ -1697,7 +1696,7 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                     } else {
                         $selected = "";
                     }
-                    echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
+                    echo "                          <option value=\"" . $value . "\"" . $selected . ">".__("$value")."</option>\n";
                 }
 
                         echo '                        </select>';

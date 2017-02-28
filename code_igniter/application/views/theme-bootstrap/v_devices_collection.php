@@ -107,11 +107,11 @@ if (strpos($this->response->links->self, '?') !== false) {
         <h3 class="panel-title">
         <span class="text-left">Devices <?php echo $title ?></span>
         <span class="pull-right" style="padding-left:10px;">
-            <div class="btn-group" role="group" aria-label="...">
+            <span class="btn-group" role="group" aria-label="...">
                 <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=csv">csv</a></button>
                 <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=json">json</a></button>
                 <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=xml">xml</a></button>
-            </div>
+            </span>
         </span>
         <span class="pull-right"><button class="btn btn-xs btn-primary" type="button" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries">Queries</button></span>
         <span class="pull-right" style="padding-right:20px;"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>

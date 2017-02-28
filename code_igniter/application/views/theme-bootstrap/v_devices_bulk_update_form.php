@@ -127,7 +127,7 @@ var id = 0;
                                 <div class="form-group">
                                     <label for="form_factor" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', __($fields[$i]))); ?></label>
                                     <div class="col-sm-8 input-group">
-                                        <input type="text" class="form-control" id="<?php echo $fields[$i]; ?>" value="" disabled>
+                                        <input type="text" class="form-control" id="<?php echo $fields[$i]; ?>" title="<?php echo $fields[$i]; ?>" value="" disabled>
                                       <span class="input-group-btn">
                                         <button id="edit_<?php echo $fields[$i]; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $fields[$i]; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                                       </span>
@@ -147,7 +147,7 @@ var id = 0;
                                 <div class="form-group">
                                     <label for="form_factor" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', __($fields[$i]))); ?></label>
                                     <div class="col-sm-8 input-group">
-                                        <input type="text" class="form-control" id="<?php echo $fields[$i]; ?>" value="" disabled>
+                                        <input type="text" class="form-control" id="<?php echo $fields[$i]; ?>" title="<?php echo $fields[$i]; ?>" value="" disabled>
                                       <span class="input-group-btn">
                                         <button id="edit_<?php echo $fields[$i]; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $fields[$i]; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                                       </span>

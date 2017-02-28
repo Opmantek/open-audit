@@ -43,7 +43,7 @@
         // Center the modal in the viewport
         method.center = function () {
             var top, left;
-            top = Math.max($(window).height() - $modal.outerHeight(), 0) / 3;
+            // top = Math.max($(window).height() - $modal.outerHeight(), 0) / 3;
             top = 30;
             left = Math.max($(window).width() - $modal.outerWidth(), 0) / 2;
             $modal.css({
@@ -58,7 +58,13 @@
             var output = "";
             // setup our highlighting column
             var highlight_column = "";
-            var device_count = <?php echo $this->config->config['device_count']; ?>;
+            <?php
+                $device_count = 0;
+                if (!empty($this->config->config['device_count'])) {
+                    $device_count = intval($this->config->config['device_count']);
+                }
+            ?>
+            var device_count = <?php echo $device_count; ?>;
             license = "<?php echo $this->config->config['oae_license']; ?>";
             if (device_count < 20 && (license == "none" || license == "")) { highlight_column = "Enterprise 20 Nodes Free"; }
             if (device_count < 20 && license == "free") { highlight_column = "Enterprise 100 Nodes"; }

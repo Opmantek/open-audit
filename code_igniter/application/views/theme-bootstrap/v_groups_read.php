@@ -125,7 +125,7 @@ $item = $this->response->data[0];
                 <strong><?php echo __("Group Creation Rules"); ?></strong>
                     <p>You should have the following as the only part of your SELECT, DISTINCT(system.id)</p>
                     <p>You should include the WHERE @filter so Open-AudIT knows to restrict your query to the appropriate Orgs.</p>
-                    <p>An example<br /><pre class="wrap">SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.os_family = 'Debian'</pre></p>
+                    <p>An example<br /></p><pre class="wrap">SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.os_family = 'Debian'</pre>
                 </div>
 
 
