@@ -35,4 +35,3 @@
  */
 $edit = true;
 include('v_ldap_servers_read.php');
-?>

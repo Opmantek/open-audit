@@ -270,7 +270,7 @@ if (!empty($data['fields'])) {
                 <?php foreach ($this->response->devices as $item) { ?>
                 <tr>
                     <td style="text-align: center;"><a role="button" class="btn btn-sm btn-success" href="devices/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url()); ?>device_images/<?php echo strtolower(str_replace(" ", "_", htmlspecialchars($item->icon, REPLACE_FLAGS, CHARSET))); ?>.svg" style="border-width:0px; width:24px;" title="icon" alt="icon"/></td>
+                    <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url()); ?>device_images/<?php echo strtolower(str_replace(" ", "_", htmlspecialchars($item->icon, REPLACE_FLAGS, CHARSET))); ?>.svg" style="border-width:0; width:24px;" title="icon" alt="icon"/></td>
                     <td><?php echo $item->type; ?></td>
                     <td><?php echo $item->name; ?></td>
                     <td><?php echo $item->domain; ?></td>

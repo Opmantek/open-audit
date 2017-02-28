@@ -1,7 +1,7 @@
 <div class="row" style="padding-bottom:5px;">
     <div class="col-md-4">
         <a href="<?php echo $this->config->config['oa_web_index']; ?>">
-            <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/<?php echo htmlspecialchars($this->config->item('logo'), REPLACE_FLAGS, CHARSET)?>.png' alt='logo' style='border-width:0px;' />
+            <img src='<?php echo $this->config->config['oa_web_folder']; ?>/images/<?php echo htmlspecialchars($this->config->item('logo'), REPLACE_FLAGS, CHARSET)?>.png' alt='logo' style='border-width:0;' />
         </a>
     </div>
     <div class="col-md-2"></div>

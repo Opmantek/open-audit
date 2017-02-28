@@ -35,4 +35,3 @@
  */
 $edit = true;
 include('v_fields_read.php');
-?>

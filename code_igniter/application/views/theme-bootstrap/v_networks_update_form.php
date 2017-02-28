@@ -35,4 +35,3 @@
  */
 $edit = true;
 include('v_networks_read.php');
-?>

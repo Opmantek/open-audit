@@ -35,4 +35,3 @@
  */
 $edit = true;
 include('v_locations_read.php');
-?>
