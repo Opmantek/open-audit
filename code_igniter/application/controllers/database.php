@@ -52,7 +52,7 @@ class Database extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
+
     */
     public function __construct()
     {
@@ -1901,7 +1901,7 @@ class Database extends MY_Controller_new
             $query = $this->db->query($sql);
             $row = $query->row();
             if ($row->systems > "0") {
-                $this->data['output'] .= "<br /><span style=\"color:red;\">NOTE</span> Please click <a href=\"../admin_group/list_groups\" style=\"color: blue;\">this link</a> (or go to Admin -> List Groups) and update (icon on the right) the new Group for 'Items in Default Location'.<br />";
+                $this->data['output'] .= "<br /><span style=\"color:red;\">NOTE</span> Please click <a href=\"../groups\" style=\"color: blue;\">this link</a> (or go to Admin -> List Groups) and update (icon on the right) the new Group for 'Items in Default Location'.<br />";
             }
         }
 

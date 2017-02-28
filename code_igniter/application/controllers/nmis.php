@@ -52,7 +52,7 @@ class Nmis extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
+
     */
     public function __construct()
     {
@@ -169,6 +169,7 @@ class Nmis extends MY_Controller_new
         $nodes_in_file = 0;
         $nodes_collect = 0;
         $nodes_total = 0;
+        $nodes_array = array();
         foreach ($nodes as $node) {
             $nodes_in_file++;
             if (@$node['collect'] == 'true') {

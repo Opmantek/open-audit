@@ -52,7 +52,7 @@ class Configuration extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
+
     */
     public function __construct()
     {
@@ -84,6 +84,7 @@ class Configuration extends MY_Controller_new
     */
     public function index()
     {
+        return;
     }
 
     /**
@@ -95,6 +96,7 @@ class Configuration extends MY_Controller_new
     public function _remap()
     {
         $this->{$this->response->meta->action}();
+        return;
     }
 
     /**
@@ -106,6 +108,7 @@ class Configuration extends MY_Controller_new
     public function create()
     {
         include 'include_create.php';
+        return;
     }
 
     /**
@@ -117,6 +120,7 @@ class Configuration extends MY_Controller_new
     public function read()
     {
         include 'include_read.php';
+        return;
     }
 
     /**
@@ -128,6 +132,7 @@ class Configuration extends MY_Controller_new
     public function update()
     {
         include 'include_update.php';
+        return;
     }
 
     /**
@@ -139,6 +144,7 @@ class Configuration extends MY_Controller_new
     public function delete()
     {
         include 'include_delete.php';
+        return;
     }
 
     /**
@@ -150,6 +156,7 @@ class Configuration extends MY_Controller_new
     public function collection()
     {
         include 'include_collection.php';
+        return;
     }
 
     /**
@@ -161,6 +168,7 @@ class Configuration extends MY_Controller_new
     public function create_form()
     {
         include 'include_create_form.php';
+        return;
     }
 
     /**
@@ -172,6 +180,7 @@ class Configuration extends MY_Controller_new
     public function update_form()
     {
         include 'include_update_form.php';
+        return;
     }
 }
 // End of file roles.php

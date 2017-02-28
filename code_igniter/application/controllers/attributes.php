@@ -52,7 +52,6 @@ class Attributes extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
     */
     public function __construct()
     {
@@ -74,6 +73,7 @@ class Attributes extends MY_Controller_new
         $this->load->model('m_attributes');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
+        return;
     }
 
     /**
@@ -84,6 +84,7 @@ class Attributes extends MY_Controller_new
     */
     public function index()
     {
+        return;
     }
 
     /**
@@ -95,6 +96,7 @@ class Attributes extends MY_Controller_new
     public function _remap()
     {
         $this->{$this->response->meta->action}();
+        return;
     }
 
     /**
@@ -106,6 +108,7 @@ class Attributes extends MY_Controller_new
     public function collection()
     {
         include 'include_collection.php';
+        return;
     }
 }
 // End of file connections.php

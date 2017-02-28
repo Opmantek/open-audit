@@ -52,7 +52,6 @@ class Charts extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
     */
     public function __construct()
     {
@@ -75,6 +74,7 @@ class Charts extends MY_Controller_new
         $this->load->model('m_orgs');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
+        return;
     }
 
     /**
@@ -85,6 +85,7 @@ class Charts extends MY_Controller_new
     */
     public function index()
     {
+        return;
     }
 
     /**
@@ -96,6 +97,7 @@ class Charts extends MY_Controller_new
     public function _remap()
     {
         $this->{$this->response->meta->action}();
+        return;
     }
 
     /**
@@ -109,6 +111,7 @@ class Charts extends MY_Controller_new
         $this->response->data = $this->m_charts->read_chart();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
+        return;
     }
 
     /**
@@ -122,6 +125,7 @@ class Charts extends MY_Controller_new
         $this->response->data = $this->m_charts->read_charts();
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
+        return;
     }
 }
 // End of file charts.php

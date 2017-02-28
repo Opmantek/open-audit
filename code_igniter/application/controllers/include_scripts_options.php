@@ -47,7 +47,6 @@
      *
      * @link     http://www.open-audit.org
      *
-     * @return Admin
      */
         $options = array();
 

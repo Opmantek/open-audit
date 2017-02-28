@@ -52,7 +52,6 @@ class discovery extends CI_Controller
     * Constructor
     *
     * @access    public
-    * @return    NULL
     */
     public function __construct()
     {

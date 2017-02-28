@@ -52,7 +52,7 @@ class Help extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
+
     */
     public function __construct()
     {

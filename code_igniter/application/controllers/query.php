@@ -67,18 +67,18 @@ class query extends MY_Controller
      *
      * @link		http://www.open-audit.org
      *
-     * @return JSON
+     * @return      string JSON
      *
-     * @param 		string report      The name of one of the available reports below (missing_devices, new_software, new_devices) (default = new_devices)
+     * @param 		string             The name of one of the available reports below (missing_devices, new_software, new_devices) (default = new_devices)
      * @param		date   start_date  The date you wish to report FROM (default = 30 days ago)
      * @param		date   end_date    The date you wish to report TO (default = today)
      */
     public function graph()
     {
         $debug = 'n';
+        $time_start = new DateTime();
+        $start = $time_start->getTimestamp();
         if ($debug == 'y') {
-            $time_start = new DateTime();
-            $start = $time_start->getTimestamp();
             echo "<pre>\n";
         }
 
@@ -176,7 +176,6 @@ class query extends MY_Controller
 
         if ($json == 'y') {
             $return_json = array();
-            $each_json = array();
             // populate the dataset from the returned SQL object
             $dataset = array();
             foreach ($result as $line) {

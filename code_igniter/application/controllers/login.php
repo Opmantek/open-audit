@@ -63,11 +63,6 @@ class login extends CI_Controller
         unset($log_details);
     }
 
-    /**
-     * [index description].
-     *
-     * @return [type] [description]
-     */
     public function index()
     {
         redirect('logon');
@@ -83,7 +78,6 @@ class login extends CI_Controller
         $uri_string = uri_string();
         // set the form url so if nothing in the session and requested special login page, it has a default
         if ($form_url == '' and $uri_string == 'login/index/main/list_groups') {
-            $form_url = 'main/list_groups';
             $form_url = 'summaries';
         }
 
@@ -185,11 +179,6 @@ class login extends CI_Controller
         $this->load->view('v_login', $data);
     }
 
-    /**
-     * [audit_my_pc description].
-     *
-     * @return [type] [description]
-     */
     public function audit_my_pc()
     {
         $client = 'win';
@@ -326,11 +315,6 @@ class login extends CI_Controller
         }
     }
 
-    /**
-     * [process_login_get description].
-     *
-     * @return [type] [description]
-     */
     public function login_auth()
     {
         // this uses the GET/POST variables to log the user in and set a cookie.

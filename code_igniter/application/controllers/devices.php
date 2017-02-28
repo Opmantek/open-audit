@@ -154,7 +154,7 @@ class devices extends MY_Controller_new
                         } else {
                             $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
                         }
-                        if ($result) {
+                        if ($result !== false) {
                             $this->response->included = array_merge($this->response->included, $result);
                         }
                     } else {

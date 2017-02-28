@@ -122,7 +122,8 @@ class change extends MY_Controller
         $details['user_id'] = $this->user->id;
         $details['alert_ack_time'] = $this->config->config['timestamp'];
         $this->load->model("m_change_log");
-        $result = $this->m_change_log->updateChange($details);
+        #$result = $this->m_change_log->updateChange($details);
+        $this->m_change_log->updateChange($details);
         redirect('/');
     }
 
