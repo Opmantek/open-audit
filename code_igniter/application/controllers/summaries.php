@@ -52,7 +52,6 @@ class Summaries extends MY_Controller_new
     * Constructor
     *
     * @access    public
-    * @return    NULL
     */
     public function __construct()
     {
@@ -82,6 +81,7 @@ class Summaries extends MY_Controller_new
         $this->load->model('m_orgs');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
+        return;
     }
 
     /**
@@ -92,6 +92,7 @@ class Summaries extends MY_Controller_new
     */
     public function index()
     {
+        return;
     }
 
     /**
@@ -102,7 +103,8 @@ class Summaries extends MY_Controller_new
     */
     public function _remap()
     {
-        $this->{$this->response->meta->action}();
+        $this->{$this->{'response'}->{'meta'}->{'action'}}();
+        return;
     }
 
     /**
@@ -114,6 +116,7 @@ class Summaries extends MY_Controller_new
     public function create()
     {
         include 'include_create.php';
+        return;
     }
 
     /**
@@ -125,6 +128,7 @@ class Summaries extends MY_Controller_new
     public function read()
     {
         include 'include_read.php';
+        return;
     }
 
     /**
@@ -136,6 +140,7 @@ class Summaries extends MY_Controller_new
     public function update()
     {
         include 'include_update.php';
+        return;
     }
 
     /**
@@ -147,6 +152,7 @@ class Summaries extends MY_Controller_new
     public function delete()
     {
         include 'include_delete.php';
+        return;
     }
 
     /**
@@ -161,6 +167,7 @@ class Summaries extends MY_Controller_new
             $this->response->included = array_merge($this->response->included, $this->m_summaries->read_sub_resource());
         }
         include 'include_collection.php';
+        return;
     }
 
     /**
@@ -184,6 +191,7 @@ class Summaries extends MY_Controller_new
         }
         $this->response->included = array_merge($this->response->included, $tables);
         include 'include_create_form.php';
+        return;
     }
 
     /**
@@ -195,6 +203,7 @@ class Summaries extends MY_Controller_new
     public function update_form()
     {
         include 'include_update_form.php';
+        return;
     }
 
     /**
@@ -207,6 +216,7 @@ class Summaries extends MY_Controller_new
     {
         $this->response->data = $this->m_summaries->execute();
         output();
+        return;
     }
 
     /**
@@ -220,6 +230,7 @@ class Summaries extends MY_Controller_new
         $this->load->model('m_database');
         $this->response->data = $this->m_database->read('summaries');
         include 'include_import_form.php';
+        return;
     }
 
     /**
@@ -231,6 +242,7 @@ class Summaries extends MY_Controller_new
     public function import()
     {
         include 'include_import.php';
+        return;
     }
 }
 // End of file summaries.php

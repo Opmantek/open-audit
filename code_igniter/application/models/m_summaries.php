@@ -194,6 +194,7 @@ class M_summaries extends MY_Model
             }
             $result[$i]->attributes->link_execute = $result[$i]->links->self . '?action=execute&format=json&debug=true';
         }
+        unset($this->log);
         return ($result);
     }
 
