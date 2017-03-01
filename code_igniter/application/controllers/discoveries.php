@@ -44,7 +44,6 @@
 * @author   Mark Unwin <marku@opmantek.com>
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
-* @return   NULL
  */
 class Discoveries extends MY_Controller_new
 {
