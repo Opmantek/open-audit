@@ -360,6 +360,7 @@ class M_devices extends MY_Model
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT " . $properties . " FROM `" . $sub_resource . "` LEFT JOIN system ON (system.id = `" . $sub_resource . "`.system_id) WHERE system.id = " . $id . " " . $sub_resource_id . " " . $currency . " " . $filter . " " . $limit . " " . $sort;
             $data = array($CI->user->id);
         }
+
         $result = $this->run_sql($sql, $data);
 
         if ($sub_resource == 'credential') {
@@ -371,7 +372,7 @@ class M_devices extends MY_Model
 
         $result = $this->format_data($result, 'devices/' . $id . '/' . $sub_resource);
         if (count($result) == 0) {
-            return null;
+            return false;
         } else {
             return ($result);
         }
