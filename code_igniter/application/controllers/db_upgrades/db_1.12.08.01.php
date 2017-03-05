@@ -27,37 +27,31 @@
 *
 **/
 
-$this->db_log('Upgrade database to 1.12.8.1 commenced');
+$this->log_db('Upgrade database to 1.12.8.1 commenced');
 
 $fields = $this->db->list_fields('system');
 $fields = implode($fields, "','");
 $fields = "'" . $fields . "'";
 $sql = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
 $query = $this->db->query($sql);
-$result = $query->result();
-$this->db_log($this->db->last_query());
-
+$this->log_db($this->db->last_query());
 unset($fields);
 
-$sql = "ALTER TABLE system ADD omk_uuid text NOT NULL AFTER last_user";
-$query = $this->db->query($sql);
-$result = $query->result();
-$this->db_log($this->db->last_query());
+$this->alter_table('system', 'omk_uuid', "ADD omk_uuid text NOT NULL AFTER last_user", 'add');
 
 $sql = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y',NOW(),0,'Should we delete any attributes that are not present when we audit a device.')";
 $query = $this->db->query($sql);
-$result = $query->result();
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
 $query = $this->db->query($sql);
-$result = $query->result();
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
 $query = $this->db->query($sql);
-$result = $query->result();
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 
-$this->db_log('Upgrade database to 1.12.8.1 completed');
+$this->log_db('Upgrade database to 1.12.8.1 completed');
+$this->config->config['internal_version'] = '20160810';
+$this->config->config['display_version'] = '1.12.8.1';

@@ -27,7 +27,7 @@
 *
 **/
 
-$this->db_log('Upgrade database to 1.10 commenced');
+$this->log_db('Upgrade database to 1.10 commenced');
 
 # We know these tables aren't used - drop them
 $tables = array('oa_change_log', 'oa_contact', 'oa_location_org', 'oa_asset_line', 'oa_asset_order', 'oa_device_col', 'oa_device', 'oa_graph', 'sys_sw_antivirus', 'oa_switch_ports', 'sys_sw_share_perms');
@@ -38,10 +38,10 @@ unset($tables);
 
 
 # bios
-if ($this->db->table_exists('sys_hw_bios')) {
+if ($this->db->table_exists('sys_hw_bios') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_bios')) {
     $sql = "DELETE `sys_hw_bios` FROM `sys_hw_bios` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_bios`.`system_id` WHERE `sys_hw_bios`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_bios', 'bios_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_bios', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
@@ -57,10 +57,10 @@ $this->rename_table('sys_hw_bios', 'bios');
 
 
 # disk
-if ($this->db->table_exists('sys_hw_hard_drive')) {
-    $sql = "DELETE `sys_hw_hard_drive` FROM `sys_hw_hard_drive` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_hard_drive.system_id` WHERE `sys_hw_hard_drive`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_hard_drive') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_hard_drive')) {
+    $sql = "DELETE `sys_hw_hard_drive` FROM `sys_hw_hard_drive` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_hard_drive`.`system_id` WHERE `sys_hw_hard_drive`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_hard_drive', 'hard_drive_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_hard_drive', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -86,13 +86,13 @@ $this->rename_table('sys_hw_hard_drive', 'disk');
 
 
 # dns
-if ($this->db->table_exists('sys_sw_dns')) {
-    $sql = "DELETE `sys_sw_dns` FROM `sys_sw_dns` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_dns.system_id` WHERE `sys_sw_dns`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_dns') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_dns')) {
+    $sql = "DELETE `sys_sw_dns` FROM `sys_sw_dns` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_dns`.`system_id` WHERE `sys_sw_dns`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    $sql = "DELETE `sys_sw_dns` FROM `sys_sw_dns` WHERE `(dns_name = '' AND dns_full_name = '')";
+    $this->log_db($this->db->last_query());
+    $sql = "DELETE `sys_sw_dns` FROM `sys_sw_dns` WHERE (`dns_name` = '' AND `dns_full_name` = '')";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_dns', 'dns_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_dns', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -106,7 +106,7 @@ $this->rename_table('sys_sw_dns', 'dns');
 
 
 # graphs
-$this->drop_table("sys_hw_graph");
+$this->drop_table("graph");
 $sql = "CREATE TABLE `graph` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `system_id` int(10) unsigned DEFAULT NULL,
@@ -123,27 +123,27 @@ PRIMARY KEY (`id`), KEY `system_id` (`system_id`),
 CONSTRAINT `sys_hw_graph_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE)
 ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 if ($this->db->table_exists('sys_hw_graphs_disk') and $this->db->table_exists('graph')) {
     $sql = "INSERT INTO `graph` SELECT NULL, system_id, 'partition', partition_id, 'partition', used_percent, free_percent, used, free, total as size, `timestamp` FROM `sys_hw_graphs_disk`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->drop_table("sys_hw_graphs_disk");
 
 
 # log
-if ($this->db->table_exists('sys_sw_log')) {
-    $sql = "DELETE `sys_sw_log` FROM `sys_sw_log` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_log.system_id` WHERE `sys_sw_log`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_log') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_log')) {
+    $sql = "DELETE `sys_sw_log` FROM `sys_sw_log` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_log`.`system_id` WHERE `sys_sw_log`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_log', 'log_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_log', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
 $this->alter_table('sys_sw_log', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
 $this->alter_table('sys_sw_log', 'first_timestamp', "first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current");
 $this->alter_table('sys_sw_log', 'timestamp', "last_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER first_seen");
-$this->alter_table('sys_sw_log', 'log_name name', "varchar(50) NOT NULL DEFAULT '' AFTER last_seen");
+$this->alter_table('sys_sw_log', 'log_name', "name varchar(50) NOT NULL DEFAULT '' AFTER last_seen");
 $this->alter_table('sys_sw_log', 'log_file_name', "file_name varchar(250) NOT NULL DEFAULT '' AFTER name");
 $this->alter_table('sys_sw_log', 'log_file_size', " file_size int unsigned NOT NULL DEFAULT '0' AFTER file_name");
 $this->alter_table('sys_sw_log', 'log_max_file_size', "max_file_size int unsigned NOT NULL DEFAULT '0' AFTER file_size");
@@ -152,10 +152,10 @@ $this->rename_table("sys_sw_log", "log");
 
 
 # memory
-if ($this->db->table_exists('sys_hw_memory')) {
+if ($this->db->table_exists('sys_hw_memory') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_memory')) {
     $sql = "DELETE `sys_hw_memory` FROM `sys_hw_memory` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_memory`.`system_id` WHERE `sys_hw_memory`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_memory', 'memory_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_memory', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
@@ -172,10 +172,10 @@ $this->alter_table('sys_hw_memory', 'memory_tag', "tag varchar(100) NOT NULL DEF
 $this->rename_table("sys_hw_memory", "memory");
 
 # module
-if ($this->db->table_exists('sys_hw_module')) {
-    $sql = "DELETE `sys_hw_module` FROM `sys_hw_module` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_module.system_id` WHERE `sys_hw_module`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_module') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_module')) {
+    $sql = "DELETE `sys_hw_module` FROM `sys_hw_module` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_module`.`system_id` WHERE `sys_hw_module`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_module', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
 $this->alter_table('sys_hw_module', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
@@ -189,10 +189,10 @@ $this->alter_table('sys_hw_module', 'asset_id', "asset_ident varchar(100) NOT NU
 $this->rename_table("sys_hw_module", "module");
 
 # monitor
-if ($this->db->table_exists('sys_hw_monitor')) {
-    $sql = "DELETE `sys_hw_monitor` FROM `sys_hw_monitor` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_monitor.system_id` WHERE `sys_hw_monitor`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_monitor') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_monitor')) {
+    $sql = "DELETE `sys_hw_monitor` FROM `sys_hw_monitor` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_monitor`.`system_id` WHERE `sys_hw_monitor`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_monitor', 'monitor_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_monitor', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
@@ -205,18 +205,18 @@ $this->alter_table('sys_hw_monitor', 'man_description', "description varchar(200
 $this->alter_table('sys_hw_monitor', 'device_id', "device varchar(100) NOT NULL DEFAULT '' AFTER description");
 $this->alter_table('sys_hw_monitor', 'manufacture_date', "manufacture_date varchar(20) NOT NULL DEFAULT '' AFTER device");
 $this->alter_table('sys_hw_monitor', 'size', "size tinyint unsigned NOT NULL DEFAULT '0' AFTER manufacture_date");
-$this->alter_table('sys_hw_monitor', 'man_serial', "DROP man_serial");
-$this->alter_table('sys_hw_monitor', 'man_value', "DROP man_value");
-$this->alter_table('sys_hw_monitor', 'man_purchase_order_number', "DROP man_purchase_order_number");
-$this->alter_table('sys_hw_monitor', 'man_date_purchased', "DROP man_date_purchased");
+$this->alter_table('sys_hw_monitor', 'man_serial', "DROP man_serial", 'drop');
+$this->alter_table('sys_hw_monitor', 'man_value', "DROP man_value", 'drop');
+$this->alter_table('sys_hw_monitor', 'man_purchase_order_number', "DROP man_purchase_order_number", 'drop');
+$this->alter_table('sys_hw_monitor', 'man_date_purchased', "DROP man_date_purchased", 'drop');
 $this->rename_table("sys_hw_monitor", "monitor");
 
 
 # motherboard
-if ($this->db->table_exists('sys_hw_motherboard')) {
-    $sql = "DELETE `sys_hw_motherboard` FROM `sys_hw_motherboard` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_motherboard.system_id` WHERE `sys_hw_motherboard`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_motherboard') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_motherboard')) {
+    $sql = "DELETE `sys_hw_motherboard` FROM `sys_hw_motherboard` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_motherboard`.`system_id` WHERE `sys_hw_motherboard`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_motherboard', 'motherboard_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_motherboard', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -232,10 +232,10 @@ $this->rename_table("sys_hw_motherboard", "motherboard");
 
 
 # optical drive
-if ($this->db->table_exists('sys_hw_optical_drive')) {
-    $sql = "DELETE `sys_hw_optical_drive` FROM `sys_hw_optical_drive` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_optical_drive.system_id` WHERE `sys_hw_optical_drive`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_optical_drive') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_optical_drive')) {
+    $sql = "DELETE `sys_hw_optical_drive` FROM `sys_hw_optical_drive` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_optical_drive`.`system_id` WHERE `sys_hw_optical_drive`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_optical_drive', 'optical_drive_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_optical_drive', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -250,10 +250,10 @@ $this->rename_table("sys_hw_optical_drive", "optical");
 
 
 # netstat
-if ($this->db->table_exists('sys_sw_netstat')) {
-    $sql = "DELETE `sys_sw_netstat` FROM `sys_sw_netstat` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_netstat.system_id` WHERE `sys_sw_netstat`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_netstat') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_netstat')) {
+    $sql = "DELETE `sys_sw_netstat` FROM `sys_sw_netstat` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_netstat`.`system_id` WHERE `sys_sw_netstat`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_netstat', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
 $this->alter_table('sys_sw_netstat', 'first_timestamp', "first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current");
@@ -263,10 +263,10 @@ $this->rename_table("sys_sw_netstat", "netstat");
 
 
 # network card
-if ($this->db->table_exists('sys_hw_network_card')) {
-    $sql = "DELETE `sys_hw_network_card` FROM `sys_hw_network_card` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_network_card.system_id` WHERE `sys_hw_network_card`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_network_card') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_network_card')) {
+    $sql = "DELETE `sys_hw_network_card` FROM `sys_hw_network_card` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_network_card`.`system_id` WHERE `sys_hw_network_card`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_network_card', 'net_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_network_card', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -297,43 +297,43 @@ $this->alter_table('sys_hw_network_card', 'net_dns_domain_suffix', "DROP net_dns
 $this->alter_table('sys_hw_network_card', 'net_wins_primary', "DROP net_wins_primary", 'drop');
 $this->alter_table('sys_hw_network_card', 'net_wins_secondary', "DROP net_wins_secondary", 'drop');
 $this->alter_table('sys_hw_network_card', 'net_wins_lmhosts_enabled', "DROP net_wins_lmhosts_enabled", 'drop');
-$this->alter_table('sys_hw_network_card', 'net_mac_address', "DROP KEY net_mac_address", 'drop');
-$this->alter_table('sys_hw_network_card', '', "ADD KEY mac (`mac`)", 'add');
+$this->drop_key('sys_hw_network_card', 'net_mac_address');
+$this->add_key('sys_hw_network_card', 'mac');
 $this->rename_table("sys_hw_network_card", "network");
 
 
 # partition
-if ($this->db->table_exists('sys_hw_partition')) {
-    $sql = "DELETE `sys_hw_partition` FROM `sys_hw_partition` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_partition.system_id` WHERE `sys_hw_partition`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_partition') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_partition')) {
+    $sql = "DELETE `sys_hw_partition` FROM `sys_hw_partition` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_partition`.`system_id` WHERE `sys_hw_partition`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_type` = 'volume'                                        WHERE `partition_type` = 'Volume'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_type` = 'local'                                         WHERE `partition_type` = 'Local Disk'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_type` = 'local removable'                               WHERE `partition_type` = 'Removable Disk'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_type` = 'local'                                         WHERE `partition_type` = 'local hard disk'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_mount_type` = 'partition', partition_type = 'local'     WHERE `partition_type` = 'partition'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_mount_type` = 'mount point', partition_type = 'smb'     WHERE `partition_type` = 'Network Drive'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_mount_type` = 'mount point'                             WHERE `partition_type` LIKE 'raid%'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_mount_type` = 'mount point'                             WHERE `partition_mount_type` = 'lvm'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $sql = "UPDATE sys_hw_partition SET `partition_mount_type` = 'other' WHERE (`partition_mount_type` != 'partition' AND `partition_mount_type` != 'mount point')";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_partition', 'partition_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_partition', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -360,10 +360,10 @@ $this->rename_table("sys_hw_partition", "partition");
 
 
 # processor
-if ($this->db->table_exists('sys_hw_processor')) {
-    $sql = "DELETE `sys_hw_processor` FROM `sys_hw_processor` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_processor.system_id` WHERE `sys_hw_processor`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_processor') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_processor')) {
+    $sql = "DELETE `sys_hw_processor` FROM `sys_hw_processor` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_processor`.`system_id` WHERE `sys_hw_processor`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_processor', 'processor_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_processor', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -374,7 +374,7 @@ $this->alter_table('sys_hw_processor', 'processor_count', "physical_count tinyin
 if ($this->db->table_exists('sys_hw_processor')) {
     $sql = "UPDATE `sys_hw_processor` SET physical_count = 1 WHERE `physical_count` = 0 OR `physical_count` = ''";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_processor', 'processor_cores', "core_count tinyint unsigned NOT NULL default '1' AFTER physical_count");
 $this->alter_table('sys_hw_processor', 'processor_logical', "logical_count tinyint unsigned NOT NULL default '1' AFTER core_count");
@@ -385,12 +385,12 @@ $this->alter_table('sys_hw_processor', 'processor_architecture', "architecture v
 $this->alter_table('sys_hw_processor', 'socket', "ADD socket varchar(100) NOT NULL default '' AFTER architecture", 'add');
 $this->alter_table('sys_hw_processor', 'processor_power_management_supported', "DROP COLUMN processor_power_management_supported", 'drop');
 $this->rename_table("sys_hw_processor", "processor");
-$sql = "UPDATE `processor` SET `manufacturer` = 'Intel'` WHERE `manufacturer = 'GenuineIntel'";
+$sql = "UPDATE `processor` SET `manufacturer` = 'Intel' WHERE `manufacturer` = 'GenuineIntel'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
-$sql = "UPDATE `processor` SET `manufacturer` = 'AMD'` WHERE `manufacturer = 'AuthenticAMD'";
+$this->log_db($this->db->last_query());
+$sql = "UPDATE `processor` SET `manufacturer` = 'AMD' WHERE `manufacturer` = 'AuthenticAMD'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 
 # san (new table)
@@ -414,14 +414,14 @@ $sql = "CREATE TABLE `san` (
     CONSTRAINT `san_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE)
     ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 
 # scsi controller
-if ($this->db->table_exists('sys_hw_scsi_controller')) {
-    $sql = "DELETE `sys_hw_scsi_controller` FROM `sys_hw_scsi_controller` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_scsi_controller.system_id` WHERE `sys_hw_scsi_controller`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_scsi_controller') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_scsi_controller')) {
+    $sql = "DELETE `sys_hw_scsi_controller` FROM `sys_hw_scsi_controller` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_scsi_controller`.`system_id` WHERE `sys_hw_scsi_controller`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_scsi_controller', 'scsi_controller_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_scsi_controller', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -437,10 +437,10 @@ $this->rename_table("sys_hw_scsi_controller", "scsi");
 
 
 # group
-if ($this->db->table_exists('sys_sw_group')) {
-    $sql = "DELETE `sys_sw_group` FROM `sys_sw_group` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_group.system_id` WHERE `sys_sw_group`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_group') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_group')) {
+    $sql = "DELETE `sys_sw_group` FROM `sys_sw_group` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_group`.`system_id` WHERE `sys_sw_group`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_group', 'group_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_group', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -455,10 +455,10 @@ $this->rename_table("sys_sw_group", "user_group");
 
 
 # pagefile
-if ($this->db->table_exists('sys_sw_pagefile')) {
-    $sql = "DELETE `sys_sw_pagefile` FROM `sys_sw_pagefile` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_pagefile.system_id` WHERE `sys_sw_pagefile`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_pagefile') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_pagefile')) {
+    $sql = "DELETE `sys_sw_pagefile` FROM `sys_sw_pagefile` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_pagefile`.`system_id` WHERE `sys_sw_pagefile`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_pagefile', 'pagefile_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_pagefile', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -473,10 +473,10 @@ $this->rename_table("sys_sw_pagefile", "pagefile");
 
 
 # print queue
-if ($this->db->table_exists('sys_sw_print_queue')) {
-    $sql = "DELETE `sys_sw_print_queue` FROM `sys_sw_print_queue` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_print_queue.system_id` WHERE `sys_sw_print_queue`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_print_queue') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_print_queue')) {
+    $sql = "DELETE `sys_sw_print_queue` FROM `sys_sw_print_queue` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_print_queue`.`system_id` WHERE `sys_sw_print_queue`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_print_queue', 'queue_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_print_queue', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -501,10 +501,10 @@ $this->rename_table("sys_sw_print_queue", "print_queue");
 
 
 # route
-if ($this->db->table_exists('sys_sw_route')) {
-    $sql = "DELETE `sys_sw_route` FROM `sys_sw_route` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_route.system_id` WHERE `sys_sw_route`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_route') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_route')) {
+    $sql = "DELETE `sys_sw_route` FROM `sys_sw_route` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_route`.`system_id` WHERE `sys_sw_route`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_route', 'route_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_route', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -516,10 +516,10 @@ $this->rename_table("sys_sw_route", "route");
 
 
 # service
-if ($this->db->table_exists('sys_sw_service')) {
-    $sql = "DELETE `sys_sw_service` FROM `sys_sw_service` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_service.system_id` WHERE `sys_sw_service`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_service') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_service')) {
+    $sql = "DELETE `sys_sw_service` FROM `sys_sw_service` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_service`.`system_id` WHERE `sys_sw_service`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->drop_key('sys_sw_service', 'timestamp');
 $this->drop_key('sys_sw_service', 'first_timestamp');
@@ -546,10 +546,10 @@ $this->add_key('sys_sw_service', 'description');
 $this->rename_table("sys_sw_service", "service");
 
 # share
-if ($this->db->table_exists('sys_sw_share')) {
-    $sql = "DELETE `sys_sw_share` FROM `sys_sw_share` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_share.system_id` WHERE `sys_sw_share`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_share') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_share')) {
+    $sql = "DELETE `sys_sw_share` FROM `sys_sw_share` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_share`.`system_id` WHERE `sys_sw_share`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_share', 'share_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_share', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -565,10 +565,10 @@ $this->rename_table("sys_sw_share", "share");
 
 
 # software
-if ($this->db->table_exists('sys_sw_software')) {
-    $sql = "DELETE `sys_sw_software` FROM `sys_sw_software` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_software.system_id` WHERE `sys_sw_software`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_software') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_software')) {
+    $sql = "DELETE `sys_sw_software` FROM `sys_sw_software` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_software`.`system_id` WHERE `sys_sw_software`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_software', 'software_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_software', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -607,10 +607,10 @@ $this->rename_table("sys_sw_software", "software");
 
 
 # software key
-if ($this->db->table_exists('sys_sw_software_key')) {
-    $sql = "DELETE `sys_sw_software_key` FROM `sys_sw_software_key` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_software_key.system_id` WHERE `sys_sw_software_key`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_software_key') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_software_key')) {
+    $sql = "DELETE `sys_sw_software_key` FROM `sys_sw_software_key` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_software_key`.`system_id` WHERE `sys_sw_software_key`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_software_key', 'key_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_software_key', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -625,10 +625,10 @@ $this->rename_table("sys_sw_software_key", "software_key");
 
 
 # sound
-if ($this->db->table_exists('sys_hw_sound')) {
-    $sql = "DELETE `sys_hw_sound` FROM `sys_hw_sound` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_sound.system_id` WHERE `sys_hw_sound`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_sound') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_sound')) {
+    $sql = "DELETE `sys_hw_sound` FROM `sys_hw_sound` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_sound`.`system_id` WHERE `sys_hw_sound`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_sound', 'sound_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_sound', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -642,10 +642,10 @@ $this->rename_table("sys_hw_sound", "sound");
 
 
 # user
-if ($this->db->table_exists('sys_sw_user')) {
-    $sql = "DELETE `sys_sw_user` FROM `sys_sw_user` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_user.system_id` WHERE `sys_sw_user`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_user') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_user')) {
+    $sql = "DELETE `sys_sw_user` FROM `sys_sw_user` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_user`.`system_id` WHERE `sys_sw_user`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_user', 'user_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_user', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -667,10 +667,10 @@ $this->rename_table("sys_sw_user", "user");
 
 
 # variable
-if ($this->db->table_exists('sys_sw_variable')) {
-    $sql = "DELETE `sys_sw_variable` FROM `sys_sw_variable` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_variable.system_id` WHERE `sys_sw_variable`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_variable') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_variable')) {
+    $sql = "DELETE `sys_sw_variable` FROM `sys_sw_variable` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_variable`.`system_id` WHERE `sys_sw_variable`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_variable', 'variable_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_variable', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -683,10 +683,10 @@ $this->rename_table("sys_sw_variable", "variable");
 
 
 # video
-if ($this->db->table_exists('sys_hw_video')) {
-    $sql = "DELETE `sys_hw_video` FROM `sys_hw_video` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_video.system_id` WHERE `sys_hw_video`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_hw_video') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_hw_video')) {
+    $sql = "DELETE `sys_hw_video` FROM `sys_hw_video` LEFT JOIN `system` ON `system`.`system_id` = `sys_hw_video`.`system_id` WHERE `sys_hw_video`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_hw_video', 'video_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_hw_video', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -698,22 +698,22 @@ $this->alter_table('sys_hw_video', 'video_description', "model varchar(100) NOT 
 $this->alter_table('sys_hw_video', 'video_device_id', "device varchar(100) NOT NULL DEFAULT '' AFTER model");
 $this->alter_table('sys_hw_video', 'video_memory', "size int unsigned NOT NULL DEFAULT '0' AFTER device");
 $this->alter_table('sys_hw_video', 'video_caption', "caption varchar(100) NOT NULL DEFAULT '' AFTER size");
-$this->alter_table('sys_hw_video', 'video_current_horizontal_res', "DROP video_current_horizontal_res");
-$this->alter_table('sys_hw_video', 'video_current_vertical_res', "DROP video_current_vertical_res");
-$this->alter_table('sys_hw_video', 'video_current_number_colours', "DROP video_current_number_colours");
-$this->alter_table('sys_hw_video', 'video_current_refresh_rate', "DROP video_current_refresh_rate");
-$this->alter_table('sys_hw_video', 'video_driver_date', "DROP video_driver_date");
-$this->alter_table('sys_hw_video', 'video_driver_version', "DROP video_driver_version");
-$this->alter_table('sys_hw_video', 'video_max_refresh_rate', "DROP video_max_refresh_rate");
-$this->alter_table('sys_hw_video', 'video_min_refresh_rate', "DROP video_min_refresh_rate");
+$this->alter_table('sys_hw_video', 'video_current_horizontal_res', "DROP video_current_horizontal_res", 'drop');
+$this->alter_table('sys_hw_video', 'video_current_vertical_res', "DROP video_current_vertical_res", 'drop');
+$this->alter_table('sys_hw_video', 'video_current_number_colours', "DROP video_current_number_colours", 'drop');
+$this->alter_table('sys_hw_video', 'video_current_refresh_rate', "DROP video_current_refresh_rate", 'drop');
+$this->alter_table('sys_hw_video', 'video_driver_date', "DROP video_driver_date", 'drop');
+$this->alter_table('sys_hw_video', 'video_driver_version', "DROP video_driver_version", 'drop');
+$this->alter_table('sys_hw_video', 'video_max_refresh_rate', "DROP video_max_refresh_rate", 'drop');
+$this->alter_table('sys_hw_video', 'video_min_refresh_rate', "DROP video_min_refresh_rate", 'drop');
 $this->rename_table("sys_hw_video", "video");
 
 
 # vm
-if ($this->db->table_exists('sys_sw_virtual_machine')) {
-    $sql = "DELETE `sys_sw_virtual_machine` FROM `sys_sw_virtual_machine` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_virtual_machine.system_id` WHERE `sys_sw_virtual_machine`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_virtual_machine') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_virtual_machine')) {
+    $sql = "DELETE `sys_sw_virtual_machine` FROM `sys_sw_virtual_machine` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_virtual_machine`.`system_id` WHERE `sys_sw_virtual_machine`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_virtual_machine', 'current', "ADD current enum('y', 'n') NOT NULL DEFAULT 'y' AFTER system_id", 'add');
 $this->alter_table('sys_sw_virtual_machine', 'first_timestamp', "first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER current");
@@ -740,10 +740,10 @@ $this->rename_table("sys_hw_warranty", "warranty");
 
 
 # windows
-if ($this->db->table_exists('sys_sw_windows')) {
-    $sql = "DELETE `sys_sw_windows` FROM `sys_sw_windows` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_windows.system_id` WHERE `sys_sw_windows`.`timestamp` <> `system`.`timestamp`";
+if ($this->db->table_exists('sys_sw_windows') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_windows')) {
+    $sql = "DELETE `sys_sw_windows` FROM `sys_sw_windows` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_windows`.`system_id` WHERE `sys_sw_windows`.`timestamp` <> `system`.`timestamp`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->alter_table('sys_sw_windows', 'windows_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
 $this->alter_table('sys_sw_windows', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
@@ -767,7 +767,7 @@ $this->alter_table('sys_sw_windows', 'windows_organisation', "organisation varch
 $this->alter_table('sys_sw_windows', 'windows_language', "language varchar(50) NOT NULL DEFAULT '' AFTER organisation");
 $this->alter_table('sys_sw_windows', 'windows_registered_user', "registered_user varchar(100) NOT NULL DEFAULT '' AFTER language");
 $this->alter_table('sys_sw_windows', 'windows_service_pack', "service_pack varchar(20) NOT NULL DEFAULT '' AFTER registered_user");
-$this->alter_table('sys_sw_windows', 'windows_versio', "version varchar(20) NOT NULL DEFAULT '' AFTER service_pack");
+$this->alter_table('sys_sw_windows', 'windows_version', "version varchar(20) NOT NULL DEFAULT '' AFTER service_pack");
 $this->alter_table('sys_sw_windows', 'windows_install_directory', "install_directory varchar(20) NOT NULL DEFAULT '' AFTER version");
 $this->alter_table('sys_sw_windows', 'windows_active_directory_ou', "active_directory_ou varchar(200) NOT NULL DEFAULT '' AFTER install_directory");
 $this->alter_table('sys_sw_windows', 'windows_workgroup', "workgroup varchar(255) NOT NULL DEFAULT '' AFTER active_directory_ou");
@@ -775,25 +775,26 @@ $this->rename_table("sys_sw_windows", "windows");
 
 
 # oa_alert_log -> change_log (list of detected changes)
-$this->drop_table("change_log");
-
-$this->drop_foreign_key('oa_alert_log', "oa_alert_log_user_id");
-$this->drop_foreign_key('oa_alert_log', "oa_alert_log_system_id");
-$this->drop_foreign_key('oa_alert_log', "oa_alert_oa_change");
-$this->drop_key('oa_alert_log', "oa_alert_log_user_id");
-$this->drop_key('oa_alert_log', "oa_alert_change_id");
-$this->alter_table('oa_alert_log', 'alert_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
-$this->alter_table('oa_alert_log', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
-$this->alter_table('oa_alert_log', 'alert_table', "db_table varchar(50) NOT NULL DEFAULT '' AFTER system_id");
-$this->alter_table('oa_alert_log', 'alert_foreign_row', "db_row int(10) unsigned NOT NULL DEFAULT '0' AFTER db_table");
-$this->alter_table('oa_alert_log', 'db_action', "ADD db_action enum('', 'create', 'update', 'delete') NOT NULL DEFAULT '' AFTER db_row", 'add');
-$this->alter_table('oa_alert_log', 'alert_details', "details varchar(200) NOT NULL DEFAULT '' AFTER db_action");
-$this->alter_table('oa_alert_log', 'alert_ack_time', "ack_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER user_id");
-$this->alter_table('oa_alert_log', 'alert_note note', "varchar(200) NOT NULL DEFAULT '' AFTER ack_time");
-$this->alter_table('oa_alert_log', 'external_change_id', "external_ident varchar(200) NOT NULL DEFAULT '' AFTER ack_time");
-$this->alter_table('oa_alert_log', 'external_change_link', "external_link varchar(200) NOT NULL DEFAULT '' AFTER external_ident");
-$this->add_foreign_key('oa_alert_log', 'change_log_system_id', "FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE");
-$this->rename_table("oa_alert_log", "change_log");
+if ($this->db->table_exists('oa_alert_log')) {
+    $this->drop_table("change_log");
+    $this->drop_foreign_key('oa_alert_log', "oa_alert_log_user_id");
+    $this->drop_foreign_key('oa_alert_log', "oa_alert_log_system_id");
+    $this->drop_foreign_key('oa_alert_log', "oa_alert_oa_change");
+    $this->drop_key('oa_alert_log', "oa_alert_log_user_id");
+    $this->drop_key('oa_alert_log', "oa_alert_change_id");
+    $this->alter_table('oa_alert_log', 'alert_id', "id int(10) unsigned NOT NULL AUTO_INCREMENT");
+    $this->alter_table('oa_alert_log', 'system_id', "system_id int(10) unsigned DEFAULT NULL AFTER id");
+    $this->alter_table('oa_alert_log', 'alert_table', "db_table varchar(50) NOT NULL DEFAULT '' AFTER system_id");
+    $this->alter_table('oa_alert_log', 'alert_foreign_row', "db_row int(10) unsigned NOT NULL DEFAULT '0' AFTER db_table");
+    $this->alter_table('oa_alert_log', 'db_action', "ADD db_action enum('', 'create', 'update', 'delete') NOT NULL DEFAULT '' AFTER db_row", 'add');
+    $this->alter_table('oa_alert_log', 'alert_details', "details varchar(200) NOT NULL DEFAULT '' AFTER db_action");
+    $this->alter_table('oa_alert_log', 'alert_ack_time', "ack_time datetime NOT NULL DEFAULT '0000-00-00 00:00:00' AFTER user_id");
+    $this->alter_table('oa_alert_log', 'external_change_link', "external_link varchar(200) NOT NULL DEFAULT '' AFTER ack_time");
+    $this->alter_table('oa_alert_log', 'external_change_id', "external_ident varchar(200) NOT NULL DEFAULT '' AFTER external_link");
+    $this->alter_table('oa_alert_log', 'alert_note', "note varchar(200) NOT NULL DEFAULT '' AFTER external_ident");
+    $this->add_foreign_key('oa_alert_log', 'change_log_system_id', "FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE");
+    $this->rename_table("oa_alert_log", "change_log");
+}
 
 
 # sys_man_audits -> audit_log (list of audits)
@@ -812,12 +813,12 @@ $sql = "CREATE TABLE audit_log (
     CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 if ($this->db->table_exists('sys_man_audits')) {
-    $sql = "INSERT INTO audit_log SELECT NULL, system_id, system_audits_username, system_audits_type, system_audits_ip, audit_debug, audit_wmi_fails, `timestamp` FROM `sys_man_audits";
+    $sql = "INSERT INTO audit_log SELECT NULL, system_id, system_audits_username, system_audits_type, system_audits_ip, audit_debug, audit_wmi_fails, `timestamp` FROM `sys_man_audits`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 $this->drop_table("sys_man_audits");
 
@@ -842,25 +843,26 @@ $sql = "CREATE TABLE edit_log (
     CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (user_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
-if ($this->db->table_exists('oa_audit_log')) {
-    $sql = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the ', SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5), ' attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5) as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM `LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value` FROM `oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id` WHERE `audit_log_event_details LIKE 'man_%'";
+if ($this->db->table_exists('oa_audit_log') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'oa_audit_log')) {
+    $sql = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the ', SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5), ' attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, SUBSTRING(`audit_log_event_details`, 5, LOCATE(' ', `audit_log_event_details`) - 5) as db_column, `timestamp`, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as `previous_value` FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE `audit_log_event_details` LIKE 'man_%'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the name attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, 'name' as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM `LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value` FROM `oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id` WHERE `audit_log_event_details LIKE 'hostname - %'";
+    $sql = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited the name attribute.') as details, 'user' as source, '1000' as weight, 'system' as db_table, 'name' as db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as `previous_value` FROM oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE `audit_log_event_details` LIKE 'hostname - %'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM `LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as previous_value` FROM `oa_audit_log LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id` WHERE `audit_log_event_details LIKE 'additional_field_item%'";
+    $sql = "INSERT INTO edit_log SELECT NULL as id, oa_audit_log.user_id, system_id, CONCAT(oa_user.user_full_name, ' edited a custom attribute.') as details, 'user' as source, '1000' as weight, 'sys_additional_fields_data' as db_table, '' db_column, timestamp, SUBSTRING(`audit_log_event_details` FROM LOCATE(' - ', `audit_log_event_details`)+3) as value, '' as `previous_value` FROM `oa_audit_log` LEFT JOIN oa_user on oa_audit_log.user_id = oa_user.user_id WHERE `audit_log_event_details` LIKE 'additional_field_item%'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
     $this->drop_table("oa_audit_log");
 }
 
 # tasks (scheduled tasks / cron)
 $this->drop_table("sys_sw_scheduled_task");
+$this->drop_table("task");
 $sql = "CREATE TABLE `task` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `system_id` int(10) unsigned DEFAULT NULL,
@@ -882,11 +884,11 @@ $sql = "CREATE TABLE `task` (
       CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 # server - new table
 $this->drop_table("server");
-$sql[] = "CREATE TABLE server ( id int(10) unsigned NOT NULL AUTO_INCREMENT,
+$sql = "CREATE TABLE server ( id int(10) unsigned NOT NULL AUTO_INCREMENT,
     system_id int(10) unsigned DEFAULT NULL,
     current enum('y', 'n') NOT NULL DEFAULT 'y',
     first_seen datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -905,11 +907,11 @@ $sql[] = "CREATE TABLE server ( id int(10) unsigned NOT NULL AUTO_INCREMENT,
     CONSTRAINT server_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE )
     ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 # server item - new table
 $this->drop_table("server_item");
-$sql[] = "CREATE TABLE server_item (
+$sql = "CREATE TABLE server_item (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     system_id int(10) unsigned DEFAULT NULL,
     current enum('y', 'n') NOT NULL DEFAULT 'y',
@@ -937,63 +939,74 @@ $sql[] = "CREATE TABLE server_item (
     CONSTRAINT server_item_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE)
     ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 if ($this->db->table_exists('sys_sw_database')) {
     if ($this->db->table_exists('sys_sw_database_details')) {
-        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 RTM'           ` WHERE `db_version LIKE '11.0.2100%' OR db_version LIKE '11.00.2100%'";
+        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 RTM' WHERE `db_version` LIKE '11.0.2100%' OR db_version LIKE '11.00.2100%'";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 Service Pack 1'` WHERE `db_version LIKE '11.0.3000%' OR db_version LIKE '11.00.3000%'";
+        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 Service Pack 1' WHERE `db_version` LIKE '11.0.3000%' OR db_version LIKE '11.00.3000%'";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 Service Pack 2'` WHERE `db_version LIKE '11.0.5058%' OR db_version LIKE '11.00.5058%'";
+        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2012 Service Pack 2' WHERE `db_version` LIKE '11.0.5058%' OR db_version LIKE '11.00.5058%'";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 Community Technology Preview 1 (CTP1)'` WHERE `db_version LIKE '11.0.9120%' OR db_version LIKE '11.00.9120%'";
+        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 Community Technology Preview 1 (CTP1)' WHERE `db_version` LIKE '11.0.9120%' OR db_version LIKE '11.00.9120%'";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 Community Technology Preview 2 (CTP2)'` WHERE `db_version LIKE '12.0.1524%' OR db_version LIKE '12.00.1524%'";
+        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 Community Technology Preview 2 (CTP2)' WHERE `db_version` LIKE '12.0.1524%' OR db_version LIKE '12.00.1524%'";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 RTM'                                  ` WHERE `db_version LIKE '12.0.2000%' OR db_version LIKE '12.00.2000%'";
+        $sql = "UPDATE sys_sw_database SET db_version_string = 'SQL Server 2014 RTM' WHERE `db_version` LIKE '12.0.2000%' OR db_version LIKE '12.00.2000%'";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "DELETE `sys_sw_database` FROM `sys_sw_database` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_database.system_id` WHERE `sys_sw_database`.`timestamp` <> `system`.`timestamp`";
-        $sql = "INSERT INTO server SELECT db_id, sys_sw_database.system_id, 'y', sys_sw_database.first_timestamp, sys_sw_database.timestamp, 'database', db_type, db_version_string, '', db_version, '', db_edition, '', '', db_port` FROM `sys_sw_database LEFT JOIN system ON sys_sw_database.system_id = system.system_id AND sys_sw_database.timestamp = system.last_seen";
-        $sql = "DELETE `sys_sw_database_details` FROM `sys_sw_database_details` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_database_details.system_id` WHERE `sys_sw_database_details`.`timestamp` <> `system`.`timestamp`";
-        $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
 
-        $sql = "INSERT INTO server_item SELECT NULL, sys_sw_database.system_id, 'y', sys_sw_database_details.first_timestamp, sys_sw_database_details.timestamp, sys_sw_database_details.db_id, 'database', sys_sw_database.db_type, sys_sw_database_details.details_name, '', sys_sw_database_details.details_internal_id, '', '', '', '', '', sys_sw_database_details.details_instance, sys_sw_database_details.details_filename, sys_sw_database_details.details_current_size, '', '', '', ''` FROM `sys_sw_database_details LEFT JOIN sys_sw_database ON sys_sw_database_details.db_id = sys_sw_database.db_id AND sys_sw_database_details.timestamp = sys_sw_database.timestamp";
+        if ($this->db->table_exists('sys_sw_database') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_database')) {
+            $sql = "DELETE `sys_sw_database` FROM `sys_sw_database` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_database`.`system_id` WHERE `sys_sw_database`.`timestamp` <> `system`.`timestamp`";
+            $query = $this->db->query($sql);
+            $this->log_db($this->db->last_query());
+        }
+
+        $sql = "INSERT INTO server SELECT db_id, sys_sw_database.system_id, 'y', sys_sw_database.first_timestamp, sys_sw_database.timestamp, 'database', db_type, db_version_string, '', db_version, '', db_edition, '', '', db_port FROM `sys_sw_database` LEFT JOIN system ON sys_sw_database.system_id = system.system_id AND sys_sw_database.timestamp = system.last_seen";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
+
+        if ($this->db->table_exists('sys_sw_database_details') and $this->db->field_exists('system_id', 'system') and $this->db->field_exists('timestamp', 'system') and $this->db->field_exists('timestamp', 'sys_sw_database_details')) {
+            $sql = "DELETE `sys_sw_database_details` FROM `sys_sw_database_details` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_database_details`.`system_id` WHERE `sys_sw_database_details`.`timestamp` <> `system`.`timestamp`";
+            $query = $this->db->query($sql);
+            $this->log_db($this->db->last_query());
+        }
+
+        $sql = "INSERT INTO server_item SELECT NULL, sys_sw_database.system_id, 'y', sys_sw_database_details.first_timestamp, sys_sw_database_details.timestamp, sys_sw_database_details.db_id, 'database', sys_sw_database.db_type, sys_sw_database_details.details_name, '', sys_sw_database_details.details_internal_id, '', '', '', '', '', sys_sw_database_details.details_instance, sys_sw_database_details.details_filename, sys_sw_database_details.details_current_size, '', '', '', '' FROM `sys_sw_database_details` LEFT JOIN `sys_sw_database` ON sys_sw_database_details.db_id = sys_sw_database.db_id AND sys_sw_database_details.timestamp = sys_sw_database.timestamp";
+        $query = $this->db->query($sql);
+        $this->log_db($this->db->last_query());
     }
 }
 
 if ($this->db->table_exists('sys_sw_web_server')) {
     if ($this->db->table_exists('sys_sw_web_site')) {
-        $sql = "DELETE `sys_sw_web_server` FROM `sys_sw_web_server` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_web_server.system_id` WHERE `sys_sw_web_server`.`timestamp` <> `system`.`timestamp`";
+        $sql = "DELETE `sys_sw_web_server` FROM `sys_sw_web_server` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_web_server`.`system_id` WHERE `sys_sw_web_server`.`timestamp` <> `system`.`timestamp`";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "INSERT INTO server SELECT NULL, sys_sw_web_server.system_id, 'y', sys_sw_web_server.first_timestamp, sys_sw_web_server.timestamp, 'web', 'IIS', '', '', sys_sw_web_server.webserver_version, '', '', sys_sw_web_server.webserver_state, '', ''` FROM `sys_sw_web_server";
+        $sql = "INSERT INTO server SELECT NULL, sys_sw_web_server.system_id, 'y', sys_sw_web_server.first_timestamp, sys_sw_web_server.timestamp, 'web', 'IIS', '', '', sys_sw_web_server.webserver_version, '', '', sys_sw_web_server.webserver_state, '', '' FROM `sys_sw_web_server`";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "DELETE `sys_sw_web_site` FROM `sys_sw_web_site` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_web_site.system_id` WHERE `sys_sw_web_site`.`timestamp` <> `system`.`timestamp`";
+        $sql = "DELETE `sys_sw_web_site` FROM `sys_sw_web_site` LEFT JOIN `system` ON `system`.`system_id` = `sys_sw_web_site`.`system_id` WHERE `sys_sw_web_site`.`timestamp` <> `system`.`timestamp`";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
 
-        $sql = "INSERT INTO server_item SELECT NULL as id, sys_sw_web_site.system_id, 'y' as current, sys_sw_web_site.first_timestamp as first_seen, sys_sw_web_site.timestamp as last_seen, '' as server_id, 'website' as type, 'IIS' as parent_name, sys_sw_web_site.site_description as name, sys_sw_web_site.site_description as description, sys_sw_web_site.site_internal_id as id_internal, '' as ip, '' as hostname, '' as port, sys_sw_web_site.site_state as status, '' as parent_id, sys_sw_web_site.site_app_pool as instance, sys_sw_web_site.site_path as path, sys_sw_web_site.site_size as size, '' as log_status, sys_sw_web_site.site_log_format as log_format, sys_sw_web_site.site_log_directory as log_path, sys_sw_web_site.site_log_rotation as log_rotation` FROM `sys_sw_web_site";
+        $sql = "INSERT INTO server_item SELECT NULL as id, sys_sw_web_site.system_id, 'y' as current, sys_sw_web_site.first_timestamp as first_seen, sys_sw_web_site.timestamp as last_seen, '' as server_id, 'website' as type, 'IIS' as parent_name, sys_sw_web_site.site_description as name, sys_sw_web_site.site_description as description, sys_sw_web_site.site_internal_id as id_internal, '' as ip, '' as hostname, '' as port, sys_sw_web_site.site_state as status, '' as parent_id, sys_sw_web_site.site_app_pool as instance, sys_sw_web_site.site_path as path, sys_sw_web_site.site_size as size, '' as log_status, sys_sw_web_site.site_log_format as log_format, sys_sw_web_site.site_log_directory as log_path, sys_sw_web_site.site_log_rotation as log_rotation FROM `sys_sw_web_site`";
         $query = $this->db->query($sql);
-        $this->db_log($this->db->last_query());
+        $this->log_db($this->db->last_query());
     }
 }
 
@@ -1006,74 +1019,78 @@ $this->drop_table("sys_sw_web_site");
 $this->drop_table("sys_sw_web_server");
 
 if ($this->db->field_exists('man_description', 'system')) {
-    $sql = "UPDATE system SET description = '', man_description = ''` WHERE `man_description LIKE 'general purpose|%' AND description = man_description";
+    $sql = "UPDATE system SET description = '', man_description = '' WHERE `man_description` LIKE 'general purpose|%' AND `description` = `man_description`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 
-    $sql = "UPDATE system SET description = '', man_description = ''` WHERE `man_description LIKE '%\%)' AND description = man_description";
+    $sql = "UPDATE system SET description = '', man_description = '' WHERE `man_description` LIKE '%\%)' AND `description` = `man_description`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 
-    $sql = "UPDATE system SET description = '', man_description = ''` WHERE `man_description LIKE '%|%|%' AND description = man_description";
+    $sql = "UPDATE system SET description = '', man_description = '' WHERE `man_description` LIKE '%|%|%' AND `description` = `man_description`";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 
-$sql[] = "UPDATE oa_config SET config_value = '20160104'` WHERE `config_name = 'internal_version'";
+$sql = "UPDATE oa_config SET config_value = '20160104' WHERE `config_name` = 'internal_version'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
-$sql[] = "UPDATE oa_config SET config_value = '1.10'` WHERE `config_name = 'display_version'";
+$sql = "UPDATE oa_config SET config_value = '1.10' WHERE `config_name` = 'display_version'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
-$this->load->model('m_oa_report');
-if ($this->db->table_exists('oa_report')) {
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Changes'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    if ($this->db->affected_rows() > 0) {
-        $this->m_oa_report->activate_file('Changes - Acknowledged');
-    }
+$this->log_db('Upgrade database to 1.10 completed');
+$this->config->config['internal_version'] = '20160104';
+$this->config->config['display_version'] = '1.10';
 
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Alerts'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    if ($this->db->affected_rows() > 0) {
-        $this->m_oa_report->activate_file('Changes');
-    }
+// As at 1.14, m_oa_report no longer exists
 
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Alerts - Hardware'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    if ($this->db->affected_rows() > 0) {
-        $this->m_oa_report->activate_file('Changes - Hardware');
-    }
+// $this->load->model('m_oa_report');
+// if ($this->db->table_exists('oa_report')) {
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Changes'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+//     if ($this->db->affected_rows() > 0) {
+//         $this->m_oa_report->activate_file('Changes - Acknowledged');
+//     }
 
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Alerts - Netstat Ports'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    if ($this->db->affected_rows() > 0) {
-        $this->m_oa_report->activate_file('Changes - Netstat Ports');
-    }
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+//     if ($this->db->affected_rows() > 0) {
+//         $this->m_oa_report->activate_file('Changes');
+//     }
 
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Alerts - New Systems'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    if ($this->db->affected_rows() > 0) {
-        $this->m_oa_report->activate_file('Changes - New Devices');
-    }
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Hardware'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+//     if ($this->db->affected_rows() > 0) {
+//         $this->m_oa_report->activate_file('Changes - Hardware');
+//     }
 
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Alerts - Software'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-    if ($this->db->affected_rows() > 0) {
-        $this->m_oa_report->activate_file('Changes - Software');
-    }
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Netstat Ports'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+//     if ($this->db->affected_rows() > 0) {
+//         $this->m_oa_report->activate_file('Changes - Netstat Ports');
+//     }
 
-    $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name = 'Alerts - Software Updates'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-}
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - New Systems'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+//     if ($this->db->affected_rows() > 0) {
+//         $this->m_oa_report->activate_file('Changes - New Devices');
+//     }
 
-$this->db_log('Upgrade database to 1.10 completed');
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Software'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+//     if ($this->db->affected_rows() > 0) {
+//         $this->m_oa_report->activate_file('Changes - Software');
+//     }
+
+//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Software Updates'";
+//     $query = $this->db->query($sql);
+//     $this->log_db($this->db->last_query());
+// }

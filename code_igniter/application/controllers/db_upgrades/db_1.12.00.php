@@ -27,25 +27,22 @@
 *
 **/
 
-$this->db_log('Upgrade database to 1.10.1 commenced');
+$this->log_db('Upgrade database to 1.12 commenced');
 
-
-if ($this->db->table_exists('variable') and !$this->db->field_exists('program', 'variable')) {
-    $sql = "ALTER TABLE variable ADD program varchar(100) NOT NULL default '' AFTER last_seen";
+if ($this->db->table_exists('system') and !$this->db->field_exists('comments', 'system')) {
+    $sql = "ALTER TABLE system ADD comments text NOT NULL AFTER description";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
-
-    $sql = "UPDATE variable SET program = 'environment'";
-    $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 
-$sql = "UPDATE oa_config SET config_value = '20160126' WHERE config_name = 'internal_version'";
+$sql = "UPDATE oa_config SET config_value = '20160130' WHERE config_name = 'internal_version'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_config SET config_value = '1.10.1' WHERE config_name = 'display_version'";
+$sql = "UPDATE oa_config SET config_value = '1.12' WHERE config_name = 'display_version'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
-$this->db_log('Upgrade database to 1.10.1 completed');
+$this->log_db('Upgrade database to 1.12 completed');
+$this->config->config['internal_version'] = '20160130';
+$this->config->config['display_version'] = '1.12';

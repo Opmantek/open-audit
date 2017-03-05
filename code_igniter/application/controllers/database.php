@@ -192,11 +192,26 @@ class Database extends MY_Controller_new
     private function drop_foreign_key($table = '', $key = '')
     {
         if ($table == '' or $key == '') {
-            $this->log_db("Required attributes not provided to 'drop_foreign_key'");
+            $this->log_db("WARNING - Required attributes not provided to 'drop_foreign_key'");
+            return;
+        }
+        # SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'openaudit' AND `TABLE_NAME` = 'bios';
+        # $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $table . "'";
+        # SHOW TABLES WHERE Tables_in_openaudit = 'ip';
+        $sql = "SHOW TABLES WHERE Tables_in_" . $this->db->database . " = '" . $table . "'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if ($this->db->_error_message()) {
+            $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
+            log_error('ERR-0023', $this->db->_error_message());
+            return;
+        }
+        if (count($result) === 0) {
+            $this->log_db("WARNING - Table '" . $table . "' does not exist as passed to 'drop_foreign_key'.");
             return;
         }
         # SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'bios' AND CONSTRAINT_NAME = 'bios_system_id';
-        $sql = "SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND CONSTRAINT_NAME = '" . $key . "'";
+        $sql = "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND CONSTRAINT_NAME = '" . $key . "'";
         $query = $this->db->query($sql);
         $result = $query->result();
         if ($this->db->_error_message()) {
@@ -214,7 +229,7 @@ class Database extends MY_Controller_new
             }
             return;
         } else {
-            $this->log_db("Key '" . $key . "' does not exist in table '" . $table . "' as passed to drop_foreign_key.");
+            $this->log_db("WARNING - Key '" . $key . "' does not exist in table '" . $table . "' as passed to drop_foreign_key.");
             return;
         }
     }
@@ -230,11 +245,27 @@ class Database extends MY_Controller_new
     private function add_foreign_key($table = '', $key = '', $value = '')
     {
         if ($table == '' or $key == '' or $value == '') {
-            $this->log_db("Required attributes not provided to 'add_foreign_key'");
+            $this->log_db("WARNING - Required attributes not provided to 'add_foreign_key'");
             return;
         }
+        # SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'openaudit' AND `TABLE_NAME` = 'bios';
+        # $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $table . "'";
+        # SHOW TABLES WHERE Tables_in_openaudit = 'ip';
+        $sql = "SHOW TABLES WHERE Tables_in_" . $this->db->database . " = '" . $table . "'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if ($this->db->_error_message()) {
+            $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
+            log_error('ERR-0023', $this->db->_error_message());
+            return;
+        }
+        if (count($result) === 0) {
+            $this->log_db("WARNING - Table '" . $table . "' does not exist as passed to 'add_foreign_key'.");
+            return;
+        }
+
         # SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'bios' AND CONSTRAINT_NAME = 'bios_system_id';
-        $sql = "SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND CONSTRAINT_NAME = '" . $key . "'";
+        $sql = "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND CONSTRAINT_NAME = '" . $key . "'";
         $query = $this->db->query($sql);
         $result = $query->result();
         if ($this->db->_error_message()) {
@@ -253,7 +284,7 @@ class Database extends MY_Controller_new
             }
             return;
         } else {
-            $this->log_db("Key '" . $key . "' already exists in table '" . $table . "' as passed to add_foreign_key.");
+            $this->log_db("WARNING - Key '" . $key . "' already exists in table '" . $table . "' as passed to add_foreign_key.");
             return;
         }
     }
@@ -269,11 +300,26 @@ class Database extends MY_Controller_new
     private function drop_key($table = '', $key = '')
     {
         if ($table == '' or $key == '') {
-            $this->log_db("Required attributes not provided to 'drop_key'");
+            $this->log_db("WARNING - Required attributes not provided to 'drop_key'");
             return;
         }
-        # SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'bios' AND CONSTRAINT_NAME = 'bios_system_id';
-        $sql = "SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND CONSTRAINT_NAME = '" . $key . "'";
+        # SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'openaudit' AND `TABLE_NAME` = 'bios';
+        # $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $table . "'";
+        # SHOW TABLES WHERE Tables_in_openaudit = 'ip';
+        $sql = "SHOW TABLES WHERE Tables_in_" . $this->db->database . " = '" . $table . "'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if ($this->db->_error_message()) {
+            $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
+            log_error('ERR-0023', $this->db->_error_message());
+            return;
+        }
+        if (count($result) === 0) {
+            $this->log_db("WARNING - Table '" . $table . "' does not exist as passed to 'drop_key'.");
+            return;
+        }
+        # SHOW INDEX FROM `system` WHERE Key_name = 'ip';
+        $sql = "SHOW INDEX FROM `" . $table . "` WHERE Key_name = '" . $key . "'";
         $query = $this->db->query($sql);
         $result = $query->result();
         if ($this->db->_error_message()) {
@@ -291,7 +337,7 @@ class Database extends MY_Controller_new
             }
             return;
         } else {
-            $this->log_db("Key '" . $key . "' does not exist in table '" . $table . "' as passed to drop_key.");
+            $this->log_db("WARNING - Key '" . $key . "' does not exist in table '" . $table . "' as passed to drop_key.");
             return;
         }
     }
@@ -307,11 +353,26 @@ class Database extends MY_Controller_new
     private function add_key($table = '', $key = '')
     {
         if ($table == '' or $key == '') {
-            $this->log_db("Required attributes not provided to 'add_key')");
+            $this->log_db("WARNING - Required attributes not provided to 'add_key')");
             return;
         }
-        # SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = 'openaudit' AND TABLE_NAME = 'bios' AND CONSTRAINT_NAME = 'bios_system_id';
-        $sql = "SELECT CONSTRAINT_NAME FROM information_schema.TABLE_CONSTRAINTS WHERE CONSTRAINT_SCHEMA = '" . $this->db->database . "' AND TABLE_NAME = '" . $table . "' AND CONSTRAINT_NAME = '" . $key . "'";
+        # SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'openaudit' AND `TABLE_NAME` = 'bios';
+        # $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $table . "'";
+        # SHOW TABLES WHERE Tables_in_openaudit = 'ip';
+        $sql = "SHOW TABLES WHERE Tables_in_" . $this->db->database . " = '" . $table . "'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if ($this->db->_error_message()) {
+            $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
+            log_error('ERR-0023', $this->db->_error_message());
+            return;
+        }
+        if (count($result) === 0) {
+            $this->log_db("WARNING - Table '" . $table . "' does not exist as passed to 'add_key'.");
+            return;
+        }
+        # SHOW INDEX FROM `system` WHERE Key_name = 'ip';
+        $sql = "SHOW INDEX FROM `" . $table . "` WHERE Key_name = '" . $key . "'";
         $query = $this->db->query($sql);
         $result = $query->result();
         if ($this->db->_error_message()) {
@@ -329,7 +390,7 @@ class Database extends MY_Controller_new
             }
             return;
         } else {
-            $this->log_db("Key '" . $key . "' already exists in table '" . $table . "' as passed to add_key.");
+            $this->log_db("WARNING - Key '" . $key . "' already exists in table '" . $table . "' as passed to add_key.");
             return;
         }
     }
@@ -347,7 +408,7 @@ class Database extends MY_Controller_new
             $this->log_db("Required attribute 'table' not provided to 'alter_table'");
         }
         # DROP TABLE `bios` IF EXISTS;
-        $sql = "DROP TABLE `" . $table . "` IF EXISTS";
+        $sql = "DROP TABLE IF EXISTS `" . $table . "`";
         $this->db->query($sql);
         $this->log_db($this->db->last_query());
         if ($this->db->_error_message()) {
@@ -369,11 +430,11 @@ class Database extends MY_Controller_new
     private function rename_table($table = '', $new_table = '')
     {
         if ($table == '') {
-            $this->log_db("Required attribute 'table' not provided to 'rename_table'");
+            $this->log_db("WARNING - Required attribute 'table' not provided to 'rename_table'");
             return;
         }
         if ($new_table == '') {
-            $this->log_db("Required attribute 'new_table' not provided to 'rename_table'");
+            $this->log_db("WARNING - Required attribute 'new_table' not provided to 'rename_table'");
             return;
         }
         # SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'openaudit' AND `TABLE_NAME` = 'bios';
@@ -385,20 +446,19 @@ class Database extends MY_Controller_new
             log_error('ERR-0023', $this->db->_error_message());
             return;
         }
-        if (count($result) === 1) {
-            # RENAME TABLE `sys_hw_bios` TO `bios`;
-            $sql = "RENAME TABLE `" . $table . "` TO `" . $new_table . "`";
-            $query = $this->db->query($sql);
-            $this->log_db($this->db->last_query());
-            if ($this->db->_error_message()) {
-                $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
-                log_error('ERR-0023', $this->db->_error_message());
-            }
-            return;
-        } else {
-            $this->log_db("Table '" . $table . "' does not exist as passed to 'rename_table'.");
+        if (count($result) === 0) {
+            $this->log_db("WARNING - Table '" . $table . "' does not exist as passed to 'rename_table'.");
             return;
         }
+        # RENAME TABLE `sys_hw_bios` TO `bios`;
+        $sql = "RENAME TABLE `" . $table . "` TO `" . $new_table . "`";
+        $query = $this->db->query($sql);
+        $this->log_db($this->db->last_query());
+        if ($this->db->_error_message()) {
+            $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
+            log_error('ERR-0023', $this->db->_error_message());
+        }
+        return;
     }
 
     /**
@@ -414,19 +474,19 @@ class Database extends MY_Controller_new
     private function alter_table($table = '', $column = '', $change = '', $type = 'change')
     {
         if ($table == '') {
-            $this->log_db("Required attribute 'table' not provided to 'alter_table' when attempting to run " . $change);
+            $this->log_db("WARNING - Required attribute 'table' not provided to 'alter_table' when attempting to run " . $change);
             return;
         }
         if ($change == '') {
-            $this->log_db("Required attribute 'change' not provided to 'alter_table' when changing '$table'");
+            $this->log_db("WARNING - Required attribute 'change' not provided to 'alter_table' when changing '$table'");
             return;
         }
         if (empty($type) or ($type !== 'change' and $type !== 'add' and $type !== 'drop')) {
-            $this->log_db("Required attribute 'type' not provided to 'alter_table' when attempting to run " . $change);
+            $this->log_db("WARNING - Required attribute 'type' not provided to 'alter_table' when attempting to run " . $change);
             return;
         }
         if (empty($column) and $type !== 'add') {
-            $this->log_db("Required attribute 'column' not provided to 'alter_table' when attempting to run " . $change);
+            $this->log_db("WARNING - Required attribute 'column' not provided to 'alter_table' when attempting to run " . $change);
             return;
         }
         # Check we have a table named $table in the DB
@@ -440,12 +500,12 @@ class Database extends MY_Controller_new
             return;
         }
         if (count($result) !== 1) {
-            $this->log_db("Table '" . $table . "' does not exist as passed to 'alter_table'.");
+            $this->log_db("WARNING - Table '" . $table . "' does not exist as passed to 'alter_table'.");
             return;
         }
         # See if we have a column named $column in the DB
-        # SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = 'openaudit' AND `TABLE_NAME` = 'bios' AND `COLUMN_NAME` = 'system_id';
-        $sql = "SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $table . "' AND `COLUMN_NAME` = '" . $column . "'";
+        # SHOW COLUMNS FROM `ip` WHERE Field = 'netmask';
+        $sql = "SHOW COLUMNS FROM `" . $table . "` WHERE Field = '" . $column . "'";
         $query = $this->db->query($sql);
         $result = $query->result();
         if ($this->db->_error_message()) {
@@ -475,7 +535,7 @@ class Database extends MY_Controller_new
                     return;
                 }
             } else {
-                $this->log_db("Column '" . $column . "' does not exist in '" . $table . "' when it should as passed to 'alter_table'.");
+                $this->log_db("WARNING - Column '" . $column . "' does not exist in '" . $table . "' when it should as passed to 'alter_table'.");
                 return;
             }
         } else {
@@ -489,18 +549,23 @@ class Database extends MY_Controller_new
                 }
                 return;
             } else {
-                $this->log_db("Column '" . $column . "' exists in '" . $table . "' when it shoud not as passed to 'alter_table'.");
+                $this->log_db("WARNING - Column '" . $column . "' exists in '" . $table . "' when it shoud not as passed to 'alter_table'.");
                 return;
             }
         }
     }
 
-    private function log_db($message = '', $severity = 7)
+    private function log_db($message = '', $severity = 5)
     {
         $log = new stdClass();
-        $log->message = $message;
-        $log->status = 'running sql';
+        $log->type = 'system';
         $log->severity = $severity;
+        $log->user = $this->user->full_name;
+        $log->collection = 'database';
+        $log->action = 'upgrade';
+        $log->status = 'running sql';
+        $log->summary = 'running sql';
+        $log->detail = $message;
         stdlog($log);
         unset($log);
         $this->data['output'] .= $message . "\n\n";
@@ -509,65 +574,78 @@ class Database extends MY_Controller_new
     public function update()
     {
         error_reporting(E_ALL);
-        $this->db_log = array();
+
+
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 7;
+        $log->user = $this->user->full_name;
+        $log->collection = 'database';
+        $log->action = 'upgrading database';
+        $log->status = 'running sql';
+        $log->summary = 'running sql';
+        $log->detail = 'log test';
+        stdlog($log);
+
+        $this->log_db = array();
         $db_internal_version = $this->config->item('internal_version');
         $this->data['output'] = "";
         
-        include "db_upgrades/pre_1.10.php";
+        include "db_upgrades/db_1.08.04.php";
 
         if (($db_internal_version < '20160104') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.10
-            include "db_upgrades/db_1.10.php";
+            include "db_upgrades/db_1.10.00.php";
         }
 
         if (($db_internal_version < '20160126') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.10.1
-            include "db_upgrades/db_1.10.1.php";
+            include "db_upgrades/db_1.10.01.php";
         }
 
         if (($db_internal_version < '20160130') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12
-            include "db_upgrades/db_1.12.php";
+            include "db_upgrades/db_1.12.00.php";
         }
 
         if (($db_internal_version < '20160303') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.2
-            include "db_upgrades/db_1.12.2.php";
+            include "db_upgrades/db_1.12.02.php";
         }
 
         if (($db_internal_version < '20160401') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.4
-            include "db_upgrades/db_1.12.4.php";
+            include "db_upgrades/db_1.12.04.php";
         }
 
         if (($db_internal_version < '20160409') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.6
-            include "db_upgrades/db_1.12.6.php";
+            include "db_upgrades/db_1.12.06.php";
         }
 
         if (($db_internal_version < '20160620') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.8
-            include "db_upgrades/db_1.12.8.php";
+            include "db_upgrades/db_1.12.08.00.php";
         }
 
         if (($db_internal_version < '20160810') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.12.8.1
-            include "db_upgrades/db_1.12.8.1.php";
+            include "db_upgrades/db_1.12.08.01.php";
         }
 
         if (($db_internal_version < '20160904') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.14
-            include "db_upgrades/db_1.14.php";
+            include "db_upgrades/db_1.14.00.php";
         }
 
         if (($db_internal_version < '20161130') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.14.2
-            include "db_upgrades/db_1.14.2.php";
+            include "db_upgrades/db_1.14.02.php";
         }
 
         if (($db_internal_version < '20170104') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.14.4
-            include "db_upgrades/db_1.14.4.php";
+            include "db_upgrades/db_1.14.04.php";
         }
 
         $this->data['include'] = 'v_database_update';

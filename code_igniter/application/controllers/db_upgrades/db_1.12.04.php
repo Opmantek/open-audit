@@ -27,17 +27,17 @@
 *
 **/
 
-$this->db_log('Upgrade database to 1.12.4 commenced');
+$this->log_db('Upgrade database to 1.12.4 commenced');
 
 if ($this->db->table_exists('oa_group')) {
     $sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
     $query = $this->db->query($sql);
-    $this->db_log($this->db->last_query());
+    $this->log_db($this->db->last_query());
 }
 
 $this->alter_table('oa_group', 'group_category', "group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'");
 
-$this->alter_table('print_queue', 'system_key', "system_key device varchar(200) NOT NULL DEFAULT ''");
+$this->alter_table('print_queue', 'system_key', "device varchar(200) NOT NULL DEFAULT ''");
 
 $this->alter_table('print_queue', 'ip', "DROP ip", 'drop');
 
@@ -45,20 +45,20 @@ $this->alter_table('print_queue', 'type', 'DROP type', 'drop');
 
 $this->alter_table('print_queue', 'type', "ADD type varchar(100) NOT NULL DEFAULT '' AFTER duplex", 'add');
 
-$this->alter_table('print_queue', 'connection_status', "connection_status status varchar(100) NOT NULL DEFAULT '' AFTER type");
+$this->alter_table('print_queue', 'connection_status', "status varchar(100) NOT NULL DEFAULT '' AFTER type");
 
 $this->alter_table('print_queue', 'capabilities', "ADD capabilities varchar(200) NOT NULL DEFAULT ''", 'add');
 
 $this->alter_table('print_queue', 'driver', "ADD driver varchar(200) NOT NULL DEFAULT ''", 'add');
 
-$this->alter_table('print_queue', '', "");
-
 $sql = "UPDATE oa_config SET config_value = '20160401' WHERE config_name = 'internal_version'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE oa_config SET config_value = '1.12.4' WHERE config_name = 'display_version'";
 $query = $this->db->query($sql);
-$this->db_log($this->db->last_query());
+$this->log_db($this->db->last_query());
 
-$this->db_log('Upgrade database to 1.12.4 completed');
+$this->log_db('Upgrade database to 1.12.4 completed');
+$this->config->config['internal_version'] = '20160401';
+$this->config->config['display_version'] = '1.12.4';

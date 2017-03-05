@@ -2828,4 +2828,6 @@ if (($db_internal_version < '20151112') and ($this->db->platform() == 'mysql')) 
     $log_details->message = 'Upgrade database to 1.8.4 completed';
     stdlog($log_details);
     unset($log_details);
+    $this->config->config['internal_version'] = '20151112';
+    $this->config->config['display_version'] = '1.8.4';
 }
