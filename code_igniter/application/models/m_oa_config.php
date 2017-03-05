@@ -100,7 +100,8 @@ class M_oa_config extends MY_Model
             $user_prefix = 'user_';
         }
 
-        $sql = "SELECT oa_config.*, oa_user." . $user_prefix . "full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user." . $user_prefix . "id";
+        #$sql = "SELECT oa_config.*, oa_user." . $user_prefix . "full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user." . $user_prefix . "id";
+        $sql = "SELECT oa_config.*, `" . $CI->user->db_table . "`.`" . $CI->user->db_prefix . "full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = `" . $CI->user->db_table . "`." . $CI->user->db_prefix . "id";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();

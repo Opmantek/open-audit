@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   1.14.2
 
  *
@@ -183,7 +183,6 @@ class M_users extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('users', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'users');
@@ -196,10 +195,11 @@ class M_users extends MY_Model
         $this->log->status = 'pre';
         $this->log->summary = 'retrieving orgs';
         stdlog($this->log);
-        if (empty($this->user->orgs)) {
+        $CI = & get_instance();
+        if (empty($CI->user->orgs)) {
             return array();
         }
-        $user_orgs = json_decode($this->user->orgs);
+        $user_orgs = json_decode($CI->user->orgs);
         $sql = "SELECT * FROM oa_org";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
@@ -274,7 +274,7 @@ class M_users extends MY_Model
                 $user_roles = json_decode($result[0]->roles);
             } else {
                 if (intval($this->config->config['internal_version']) < 20160904) {
-                    unset ($this->response->errors);
+                    unset($this->response->errors);
                 }
                 $user_roles = array();
             }
@@ -380,16 +380,41 @@ class M_users extends MY_Model
             $user_prefix = 'user_';
         }
 
+        $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'oa_user'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (count($result) !== 1) {
+            $db_table = 'users';
+        } else {
+            $db_table = 'oa_user';
+        }
+        # See if we have a column named $column in the DB
+        # SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = 'openaudit' AND `TABLE_NAME` = 'bios' AND `COLUMN_NAME` = 'system_id';
+        $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE `TABLE_SCHEMA` = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $db_table . "' AND `COLUMN_NAME` = 'user_id'";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        if (count($result) !== 1) {
+            $db_id_column = 'id';
+            $db_prefix = '';
+        } else {
+            $db_id_column = 'user_id';
+            $db_prefix = 'user_';
+        }
+
+
         if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
             // user is logged in, return the $this->user object
-            $sql = "SELECT * FROM oa_user WHERE oa_user." . $user_prefix . "id = ? LIMIT 1";
+            $sql = "SELECT * FROM `" . $db_table . "` WHERE `" . $db_table . "`.`" . $db_id_column . "` = ? LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array(intval($this->session->userdata['user_id']));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
                 // set the user object
                 $CI->user = $query->row();
-                if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+                $CI->user->db_table = $db_table;
+                $CI->user->db_prefix = $db_prefix;
+                $CI->user->db_id_column = $db_id_column;
+                if ($CI->user->db_id_column == 'user_id') {
                     $CI->user->id = $CI->user->user_id;
                     $CI->user->name = $CI->user->user_name;
                     $CI->user->password = $CI->user->user_password;
