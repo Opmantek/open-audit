@@ -123,7 +123,7 @@ class devices extends MY_Controller_new
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'fields,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,partition,pagefile,print_queue,processor,purchase,route,san,scsi,service,server,server_item,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,print_queue,processor,purchase,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource != '') {
             if ($this->response->meta->sub_resource == 'partition_graph') {
