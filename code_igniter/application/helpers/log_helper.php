@@ -404,10 +404,10 @@ if (! function_exists('stdlog')) {
         }
 
         if (intval($CI->config->config['internal_version']) <= 20160820) {
-            $sql = "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = '" . $CI->db->database . "' AND TABLE_NAME = 'logs'";
+            $sql = "/* log_helper */" . "SELECT * FROM information_schema.tables WHERE TABLE_SCHEMA = '" . $CI->db->database . "' AND TABLE_NAME = 'logs'";
             $query = $CI->db->query($sql);
             $result = $query->result();
-            if (count($result) == 0) {
+            if (count($result) === 0) {
                 $sql = "CREATE TABLE `logs` (
                       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                       `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -432,6 +432,12 @@ if (! function_exists('stdlog')) {
 
         $sql = "/* log_helper */" . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $query = $CI->db->query($sql, $log);
+
+        if ($CI->db->_error_message()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
 
