@@ -43,14 +43,26 @@ $sql = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y',NOW(),0,'Sho
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_config SET config_value = '20160810' WHERE config_name = 'internal_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+# set our versions
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE `oa_config` SET `config_value` = '20160810' WHERE `config_name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '20160810' WHERE `name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE config_name = 'display_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
-
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE oa_config SET config_value = '1.12.8.1' WHERE `config_name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '1.12.8.1' WHERE `name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $this->log_db('Upgrade database to 1.12.8.1 completed');
 $this->config->config['internal_version'] = '20160810';

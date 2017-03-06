@@ -51,13 +51,26 @@ $this->alter_table('print_queue', 'capabilities', "ADD capabilities varchar(200)
 
 $this->alter_table('print_queue', 'driver', "ADD driver varchar(200) NOT NULL DEFAULT ''", 'add');
 
-$sql = "UPDATE oa_config SET config_value = '20160401' WHERE config_name = 'internal_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+# set our versions
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE `oa_config` SET `config_value` = '20160401' WHERE `config_name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '20160401' WHERE `name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_config SET config_value = '1.12.4' WHERE config_name = 'display_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE oa_config SET config_value = '1.12.4' WHERE `config_name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '1.12.4' WHERE `name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $this->log_db('Upgrade database to 1.12.4 completed');
 $this->config->config['internal_version'] = '20160401';

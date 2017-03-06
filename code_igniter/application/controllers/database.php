@@ -633,6 +633,11 @@ class Database extends MY_Controller_new
             include "db_upgrades/db_1.12.08.01.php";
         }
 
+        if (($db_internal_version < '20160811') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 1.12.10
+            include "db_upgrades/db_1.12.10.php";
+        }
+
         if (($db_internal_version < '20160904') and ($this->db->platform() == 'mysql')) {
             # upgrade for 1.14
             include "db_upgrades/db_1.14.00.php";

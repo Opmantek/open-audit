@@ -107,6 +107,11 @@ $this->rename_table('sys_sw_dns', 'dns');
 
 # graphs
 $this->drop_table("graph");
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
 $sql = "CREATE TABLE `graph` (
 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
 `system_id` int(10) unsigned DEFAULT NULL,
@@ -120,10 +125,11 @@ $sql = "CREATE TABLE `graph` (
 `size` int unsigned NOT NULL DEFAULT '0',
 `timestamp` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
 PRIMARY KEY (`id`), KEY `system_id` (`system_id`),
-CONSTRAINT `sys_hw_graph_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE)
+CONSTRAINT `sys_hw_graph_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`" . $system_id . "`) ON DELETE CASCADE)
 ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
 if ($this->db->table_exists('sys_hw_graphs_disk') and $this->db->table_exists('graph')) {
     $sql = "INSERT INTO `graph` SELECT NULL, system_id, 'partition', partition_id, 'partition', used_percent, free_percent, used, free, total as size, `timestamp` FROM `sys_hw_graphs_disk`";
     $query = $this->db->query($sql);
@@ -395,6 +401,11 @@ $this->log_db($this->db->last_query());
 
 # san (new table)
 $this->drop_table('san');
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
 $sql = "CREATE TABLE `san` (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     system_id int(10) unsigned DEFAULT NULL,
@@ -411,7 +422,7 @@ $sql = "CREATE TABLE `san` (
     date_of_manufacture varchar(100) NOT NULL DEFAULT '',
     notes text NOT NULL DEFAULT '',
     PRIMARY KEY (`id`), KEY `system_id` (`system_id`),
-    CONSTRAINT `san_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE)
+    CONSTRAINT `san_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`" . $system_id . "`) ON DELETE CASCADE)
     ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -799,6 +810,11 @@ if ($this->db->table_exists('oa_alert_log')) {
 
 # sys_man_audits -> audit_log (list of audits)
 $this->drop_table("audit_log");
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
 $sql = "CREATE TABLE audit_log ( 
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     system_id int(10) unsigned DEFAULT '0',
@@ -810,7 +826,7 @@ $sql = "CREATE TABLE audit_log (
     timestamp datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
     PRIMARY KEY (id),
     KEY system_id (system_id),
-    CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE
+    CONSTRAINT audit_log_system_id FOREIGN KEY (system_id) REFERENCES system (" . $system_id . ") ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -824,6 +840,16 @@ $this->drop_table("sys_man_audits");
 
 # oa_audit_log -> edit_log (list of edits by who [user||audit||snmp||etc])
 $this->drop_table("edit_log");
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
+if ($this->db->field_exists('user_id', 'oa_user')) {
+    $user_id = 'user_id';
+} else {
+    $user_id = 'id';
+}
 $sql = "CREATE TABLE edit_log (
     id int(10) NOT NULL AUTO_INCREMENT,
     user_id int(10) unsigned DEFAULT NULL,
@@ -839,8 +865,8 @@ $sql = "CREATE TABLE edit_log (
     PRIMARY KEY (id),
     KEY user_id (user_id),
     KEY edit_log_system_id (system_id),
-    CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE,
-    CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (user_id)
+    CONSTRAINT edit_log_system_id FOREIGN KEY (system_id) REFERENCES system (" . $system_id . ") ON DELETE CASCADE,
+    CONSTRAINT edit_log_user_id FOREIGN KEY (user_id) REFERENCES oa_user (" . $user_id . ")
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -863,6 +889,11 @@ if ($this->db->table_exists('oa_audit_log') and $this->db->field_exists('system_
 # tasks (scheduled tasks / cron)
 $this->drop_table("sys_sw_scheduled_task");
 $this->drop_table("task");
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
 $sql = "CREATE TABLE `task` (
       `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
       `system_id` int(10) unsigned DEFAULT NULL,
@@ -881,13 +912,18 @@ $sql = "CREATE TABLE `task` (
       `runas` varchar(50) NOT NULL DEFAULT '',
       PRIMARY KEY (`id`),
       KEY `system_id` (`system_id`),
-      CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`system_id`) ON DELETE CASCADE
+      CONSTRAINT `task_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`" . $system_id . "`) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # server - new table
 $this->drop_table("server");
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
 $sql = "CREATE TABLE server ( id int(10) unsigned NOT NULL AUTO_INCREMENT,
     system_id int(10) unsigned DEFAULT NULL,
     current enum('y', 'n') NOT NULL DEFAULT 'y',
@@ -904,13 +940,18 @@ $sql = "CREATE TABLE server ( id int(10) unsigned NOT NULL AUTO_INCREMENT,
     ip varchar(45) NOT NULL DEFAULT '',
     port smallint unsigned NOT NULL DEFAULT '0',
     PRIMARY KEY (id), KEY system_id (system_id),
-    CONSTRAINT server_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE )
+    CONSTRAINT server_system_id FOREIGN KEY (system_id) REFERENCES system (" . $system_id . ") ON DELETE CASCADE )
     ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # server item - new table
 $this->drop_table("server_item");
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
 $sql = "CREATE TABLE server_item (
     id int(10) unsigned NOT NULL AUTO_INCREMENT,
     system_id int(10) unsigned DEFAULT NULL,
@@ -936,7 +977,7 @@ $sql = "CREATE TABLE server_item (
     log_path varchar(100) NOT NULL DEFAULT '',
     log_rotation varchar(100) NOT NULL DEFAULT '',
     PRIMARY KEY (id), KEY system_id (system_id),
-    CONSTRAINT server_item_system_id FOREIGN KEY (system_id) REFERENCES system (system_id) ON DELETE CASCADE)
+    CONSTRAINT server_item_system_id FOREIGN KEY (system_id) REFERENCES system (" . $system_id . ") ON DELETE CASCADE)
     ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -1032,65 +1073,27 @@ if ($this->db->field_exists('man_description', 'system')) {
     $this->log_db($this->db->last_query());
 }
 
-$sql = "UPDATE oa_config SET config_value = '20160104' WHERE `config_name` = 'internal_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+# set our versions
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE `oa_config` SET `config_value` = '20160104' WHERE `config_name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '20160104' WHERE `name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_config SET config_value = '1.10' WHERE `config_name` = 'display_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE oa_config SET config_value = '1.10' WHERE `config_name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '1.10' WHERE `name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $this->log_db('Upgrade database to 1.10 completed');
 $this->config->config['internal_version'] = '20160104';
 $this->config->config['display_version'] = '1.10';
-
-// As at 1.14, m_oa_report no longer exists
-
-// $this->load->model('m_oa_report');
-// if ($this->db->table_exists('oa_report')) {
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Changes'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-//     if ($this->db->affected_rows() > 0) {
-//         $this->m_oa_report->activate_file('Changes - Acknowledged');
-//     }
-
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-//     if ($this->db->affected_rows() > 0) {
-//         $this->m_oa_report->activate_file('Changes');
-//     }
-
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Hardware'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-//     if ($this->db->affected_rows() > 0) {
-//         $this->m_oa_report->activate_file('Changes - Hardware');
-//     }
-
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Netstat Ports'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-//     if ($this->db->affected_rows() > 0) {
-//         $this->m_oa_report->activate_file('Changes - Netstat Ports');
-//     }
-
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - New Systems'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-//     if ($this->db->affected_rows() > 0) {
-//         $this->m_oa_report->activate_file('Changes - New Devices');
-//     }
-
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Software'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-//     if ($this->db->affected_rows() > 0) {
-//         $this->m_oa_report->activate_file('Changes - Software');
-//     }
-
-//     $sql = "DELETE `oa_report` FROM `oa_report` WHERE `report_name` = 'Alerts - Software Updates'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-// }

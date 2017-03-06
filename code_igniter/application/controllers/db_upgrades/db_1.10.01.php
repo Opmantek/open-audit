@@ -35,23 +35,27 @@ $sql = "UPDATE variable SET program = 'environment'";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-// if ($this->db->table_exists('variable') and !$this->db->field_exists('program', 'variable')) {
-//     $sql = "ALTER TABLE variable ADD program varchar(100) NOT NULL default '' AFTER last_seen";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
+# set our versions
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE `oa_config` SET `config_value` = '20160126' WHERE `config_name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '20160126' WHERE `name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-//     $sql = "UPDATE variable SET program = 'environment'";
-//     $query = $this->db->query($sql);
-//     $this->log_db($this->db->last_query());
-// }
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE oa_config SET config_value = '1.10.1' WHERE `config_name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '1.10.1' WHERE `name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_config SET config_value = '20160126' WHERE config_name = 'internal_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-$sql = "UPDATE oa_config SET config_value = '1.10.1' WHERE config_name = 'display_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
 
 $this->log_db('Upgrade database to 1.10.1 completed');
 $this->config->config['internal_version'] = '20160126';

@@ -117,9 +117,15 @@ $sql = "UPDATE `ip` SET `network` = REPLACE(`network`, ' ', '')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y',NOW(),0,'Should we only accept data from the blessed subnets list.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "INSERT INTO `oa_config` VALUES ('blessed_subnets_use','y','y',NOW(),0,'Should we only accept data from the blessed subnets list.')";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} else {
+    $sql = "INSERT INTO `configuration` VALUES (NULL, 'blessed_subnets_use','y','y','system',NOW(),'Should we only accept data from the blessed subnets list.')";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 # new table for network descriptions and blessed subnets
 $this->drop_table('networks');
@@ -128,9 +134,11 @@ $sql = "CREATE TABLE `networks` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `networks` SELECT NULL, REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', '')  AS name, TRIM(both '\t' from group_description) as description, 'system upgrade' as edited_by, NOW() as edited_date FROM oa_group WHERE group_category = 'network' AND SUBSTR(REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''),1,LOCATE('/',REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''))-1) != `group_description`";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_group')) {
+    $sql = "INSERT INTO `networks` SELECT NULL, REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', '')  AS name, TRIM(both '\t' from group_description) as description, 'system upgrade' as edited_by, NOW() as edited_date FROM oa_group WHERE group_category = 'network' AND SUBSTR(REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''),1,LOCATE('/',REPLACE(REPLACE(`group_name`, ' ', ''), 'Network-', ''))-1) != `group_description`";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $sql = "INSERT INTO `networks` (SELECT NULL, ip.network as name, '' as description, 'system upgrade' as edited_by, NOW() as edited_date FROM ip WHERE network NOT IN (SELECT networks.name FROM networks) AND ip.network != '' GROUP BY ip.network)";
 $query = $this->db->query($sql);
@@ -142,48 +150,73 @@ $sql = "CREATE TABLE `chart` ( `when` datetime NOT NULL DEFAULT '2000-01-01 00:0
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'audit' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `new_count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'audit' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+if ($this->db->field_exists('man_org_id', 'system')) {
+    $org_column = 'man_org_id';
+} else {
+    $org_column = 'org_id';
+}
+if ($this->db->field_exists('system_id', 'system')) {
+    $system_id = 'system_id';
+} else {
+    $system_id = 'id';
+}
+if ($this->db->field_exists('first_timestamp', 'system')) {
+    $first_timestamp = 'first_timestamp';
+} else {
+    $first_timestamp = 'first_seen';
+}
+$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'audit' as `what`, system." . $org_column . " as `org_id`, count(audit_log.system_id) AS `new_count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system." . $system_id . ") WHERE audit_log.type = 'audit' AND system." . $org_column . " IS NOT NULL GROUP BY system." . $org_column . ", DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'snmp' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'snmp' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'snmp' as `what`, system." . $org_column . " as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system." . $system_id . ") WHERE audit_log.type = 'snmp' AND system." . $org_column . " IS NOT NULL GROUP BY system." . $org_column . ", DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'nmap' as `what`, system.man_org_id as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system.system_id) WHERE audit_log.type = 'nmap' AND system.man_org_id IS NOT NULL GROUP BY system.man_org_id, DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
+$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(audit_log.timestamp) as `when`, 'nmap' as `what`, system." . $org_column . " as `org_id`, count(audit_log.system_id) AS `count` FROM audit_log LEFT JOIN system ON (audit_log.system_id = system." . $system_id . ") WHERE audit_log.type = 'nmap' AND system." . $org_column . " IS NOT NULL GROUP BY system." . $org_column . ", DATE(audit_log.timestamp) ORDER BY DATE(audit_log.timestamp))";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(change_log.timestamp) as `when`, CONCAT(change_log.db_table, '_', change_log.db_action) as `what`, system.man_org_id as `org_id`, count(change_log.id) AS `count` FROM change_log LEFT JOIN system ON (change_log.system_id = system.system_id) WHERE DATE(change_log.timestamp) >= '2015-01-01' AND change_log.db_table != 'system' GROUP BY system.man_org_id, CONCAT(change_log.db_table, '_', change_log.db_action), DATE(change_log.timestamp) ORDER BY DATE(change_log.timestamp))";
+$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(change_log.timestamp) as `when`, CONCAT(change_log.db_table, '_', change_log.db_action) as `what`, system." . $org_column . " as `org_id`, count(change_log.id) AS `count` FROM change_log LEFT JOIN system ON (change_log.system_id = system." . $system_id . ") WHERE DATE(change_log.timestamp) >= '2015-01-01' AND change_log.db_table != 'system' GROUP BY system." . $org_column . ", CONCAT(change_log.db_table, '_', change_log.db_action), DATE(change_log.timestamp) ORDER BY DATE(change_log.timestamp))";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(`first_timestamp`) as `when`, 'system_create' as `what`, system.man_org_id as `org_id`, count(system_id) AS `count` FROM system WHERE DATE(`first_timestamp`) >= '2015-01-01' GROUP BY DATE(`first_timestamp`), man_org_id ORDER BY DATE(`first_timestamp`))";
+$sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) (SELECT DATE(`" . $first_timestamp . "`) as `when`, 'system_create' as `what`, system." . $org_column . " as `org_id`, count(" . $system_id . ") AS `count` FROM system WHERE DATE(`" . $first_timestamp . "`) >= '2015-01-01' GROUP BY DATE(`" . $first_timestamp . "`), " . $org_column . " ORDER BY DATE(`" . $first_timestamp . "`))";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 // update any leftover group definitions by changing man_icon to icon
-$sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_group')) {
+    $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_icon', 'icon')";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_group_column')) {
+    $sql = "UPDATE oa_group_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 // update any leftover report definitions by changing man_icon to icon
-$sql = "UPDATE oa_report SET report_sql = REPLACE(report_sql, 'man_icon', 'icon')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_report')) {
+    $sql = "UPDATE oa_report SET report_sql = REPLACE(report_sql, 'man_icon', 'icon')";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_report_column')) {
+    $sql = "UPDATE oa_report_column SET column_variable = 'icon' WHERE column_variable = 'man_icon'";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 # have to re-run this as we left it in the original SQL script.
-$sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_group')) {
+    $sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
+    $query = $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $this->alter_table('oa_group', 'group_category', "group_category enum('application','device','general','location','network','org','os') NOT NULL DEFAULT 'general'");
 
@@ -196,15 +229,26 @@ foreach ($this->m_configuration->read_subnet() as $subnet) {
 }
 
 # set our versions
-$sql = "UPDATE oa_config SET config_value = '20160409' WHERE config_name = 'internal_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE `oa_config` SET `config_value` = '20160409' WHERE `config_name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '20160409' WHERE `name` = 'internal_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
-$sql = "UPDATE oa_config SET config_value = '1.12.6' WHERE config_name = 'display_version'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "UPDATE oa_config SET config_value = '1.12.6' WHERE `config_name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} elseif ($this->db->table_exists('configuration')) {
+    $sql = "UPDATE `configuration` SET `value` = '1.12.6' WHERE `name` = 'display_version'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $this->log_db('Upgrade database to 1.12.6 completed');
 $this->config->config['internal_version'] = '20160409';
 $this->config->config['display_version'] = '1.12.6';
-
