@@ -535,7 +535,11 @@ class Database extends MY_Controller_new
                     return;
                 }
             } else {
-                $this->log_db("WARNING - Column '" . $column . "' does not exist in '" . $table . "' when it should as passed to 'alter_table'.");
+                if ($type === 'change') {
+                    $this->log_db("WARNING - Column '" . $column . "' does not exist in '" . $table . "' when it should as passed to 'alter_table'.");
+                } else {
+                    $this->log_db("NOTICE - Column '" . $column . "' does not exist in '" . $table . "' when it should as passed to 'alter_table' for drop column.");
+                }
                 return;
             }
         } else {
