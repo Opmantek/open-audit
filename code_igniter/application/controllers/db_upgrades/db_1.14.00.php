@@ -444,67 +444,67 @@ $sql = "CREATE TABLE `groups` (
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"All Devices\", \"All the devices a user is authorised to view.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"All Devices\", \"All the devices a user is authorised to view.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Apple Computers\", \"Devices with type = computer and os_family like OSX.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND (os_family LIKE '%osx' OR os_family LIKE '%macos%')\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Apple Computers\", \"Devices with type = computer and os_family like OSX.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND (os_family LIKE '%osx' OR os_family LIKE '%macos%')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Centos Computers\", \"Devices with type = computer and os_family like Centos.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'centos'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Centos Computers\", \"Devices with type = computer and os_family like Centos.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'centos'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Computers\", \"Devices with type = computer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Computers\", \"Devices with type = computer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Debian Computers\", \"Devices with type = computer and os_family like Debian.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'debian'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Debian Computers\", \"Devices with type = computer and os_family like Debian.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'debian'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Linux Computers\", \"Devices with type = computer and os_group like Linux.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'linux'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Linux Computers\", \"Devices with type = computer and os_group like Linux.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'linux'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Open-AudIT Enterprise Managed Devices\", \"Devices Managed by Open-AudIT Enterprise.\", \"SELECT distinct(system.id) FROM system WHERE @filter AND system.status = 'production' and oae_manage = 'y'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Open-AudIT Enterprise Managed Devices\", \"Devices Managed by Open-AudIT Enterprise.\", \"SELECT distinct(system.id) FROM system WHERE @filter AND system.status = 'production' and oae_manage = 'y'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Printers\", \"Devices with type = printer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'printer'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Printers\", \"Devices with type = printer.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'printer'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Public IP Devices\", \"Devices with a public IP address and a status of production.\", \"SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = 'y') WHERE @filter AND ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Public IP Devices\", \"Devices with a public IP address and a status of production.\", \"SELECT distinct(system.id) FROM system LEFT JOIN ip ON (ip.system_id = system.id AND ip.current = 'y') WHERE @filter AND ((( ip.ip > '000.000.000.000' AND ip.ip < '010.000.000.000' ) OR ( ip.ip > '010.255.255.255' AND ip.ip < '169.254.0.0' ) OR ( ip.ip > '169.254.255.255' AND ip.ip < '172.016.000.000' ) OR ( ip.ip > '172.31.255.255' AND ip.ip < '192.168.000.000' ) OR ip.ip > '192.168.255.255' ) OR ( ( system.ip > '000.000.000.000' AND system.ip < '010.000.000.000' ) OR ( system.ip > '010.255.255.255' AND system.ip < '169.254.0.0' ) OR ( system.ip > '169.254.255.255' AND system.ip < '172.016.000.000' ) OR ( system.ip > '172.31.255.255' AND system.ip < '192.168.000.000' ) OR system.ip > '192.168.255.255' )) AND system.status = 'production'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"RedHat Computers\", \"Devices with type = computer and os_family like RedHat.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'redhat'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"RedHat Computers\", \"Devices with type = computer and os_family like RedHat.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_family LIKE 'redhat'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Routers\", \"Devices with type = router.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'router'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Routers\", \"Devices with type = router.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'router'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Switches\", \"Devices with type = switch.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'switch'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Switches\", \"Devices with type = switch.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'switch'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Virtual Hosts\", \"Devices with class = hypervisor.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = 'hypervisor'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Virtual Hosts\", \"Devices with class = hypervisor.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.class = 'hypervisor'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Computers\", \"Devices with type = computer and os_group like Windows.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'windows'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Computers\", \"Devices with type = computer and os_group like Windows.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_group LIKE 'windows'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Servers\", \"Devices with type = computer and os_name like Windows Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_name LIKE '%windows%server%'\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Servers\", \"Devices with type = computer and os_name like Windows Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND os_name LIKE '%windows%server%'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Workstations\", \"Devices with type = computer and os_name like Windows and os_name not like Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%')\", \"\", \"y\", \"system\", '2001-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Workstations\", \"Devices with type = computer and os_name like Windows and os_name not like Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -875,23 +875,23 @@ $sql = "INSERT INTO queries VALUES (NULL, 1, \"Billing Report\", \"Name, last se
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Files\", \"Any changes in the table 'file'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table = 'files'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
+$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Files\", \"Any changes in the table 'file'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table = 'files'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Hardware\", \"Any changes created in the tables 'bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound' and 'video'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table in ('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound', 'video')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
+$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Hardware\", \"Any changes created in the tables 'bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound' and 'video'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'optical', 'partition', 'processor', 'network', 'scsi', 'sound', 'video')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - New Devices\", \"Any changes in the table 'system'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table = 'system'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
+$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - New Devices\", \"Any changes in the table 'system'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table = 'system'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Settings\", \"Any changes in the tables 'dns', 'ip', 'log', netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group' and 'variable'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table in ('dns', 'ip', 'log', 'netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group', 'variable')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
+$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Settings\", \"Any changes in the tables 'dns', 'ip', 'log', netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group' and 'variable'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('dns', 'ip', 'log', 'netstat', 'pagefile', 'print_queue', 'route', 'task', 'user', 'user_group', 'variable')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Software\", \"Any changes in the tables 'service', 'server', 'server_item', 'software' and 'software_key'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.ack_time = '2001-01-01 00:00:00' AND change_log.db_table in ('service', 'server', 'server_item', 'software', 'software_key')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
+$sql = "INSERT INTO queries VALUES (NULL, 1, \"Changes - Software\", \"Any changes in the tables 'service', 'server', 'server_item', 'software' and 'software_key'.\", \"SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE change_log.ack_time = '2000-01-01 00:00:00' AND change_log.db_table in ('service', 'server', 'server_item', 'software', 'software_key')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

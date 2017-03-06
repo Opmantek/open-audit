@@ -406,23 +406,23 @@ if ($this->config->item('default_network_address') != '') {
 $options['debugging'] = 1;
 $options = json_encode($options);
 
-$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_aix.sh', '" . $options . "', 'The default audit AIX config.', 'audit_aix.sh', '', 'system', '2001-01-01 00:00:00')";
+$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_aix.sh', '" . $options . "', 'The default audit AIX config.', 'audit_aix.sh', '', 'system', '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_esx.sh', '" . $options . "', 'The default audit ESX config.', 'audit_esx.sh', '', 'system', '2001-01-01 00:00:00')";
+$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_esx.sh', '" . $options . "', 'The default audit ESX config.', 'audit_esx.sh', '', 'system', '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_linux.sh', '" . $options . "', 'The default audit Linux config.', 'audit_linux.sh', '', 'system', '2001-01-01 00:00:00')";
+$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_linux.sh', '" . $options . "', 'The default audit Linux config.', 'audit_linux.sh', '', 'system', '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_osx.sh', '" . $options . "', 'The default audit OSX config.', 'audit_osx.sh', '', 'system', '2001-01-01 00:00:00')";
+$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_osx.sh', '" . $options . "', 'The default audit OSX config.', 'audit_osx.sh', '', 'system', '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', '2001-01-01 00:00:00')";
+$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', '2000-01-01 00:00:00')";
 $query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
