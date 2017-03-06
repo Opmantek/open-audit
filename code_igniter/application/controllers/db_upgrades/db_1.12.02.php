@@ -31,49 +31,49 @@ $this->log_db('Upgrade database to 1.12.2 commenced');
 
 if ($this->db->field_exists('man_class', 'system')) {
     $sql = "UPDATE system SET man_class = 'virtual server' WHERE (manufacturer LIKE '%vmware%' OR manufacturer LIKE '%Parallels%') AND os_family IN ('Windows 2008', 'Windows 2012', 'Windows 2003')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "UPDATE system SET man_class = 'hypervisor' WHERE os_family LIKE 'VMware ESX%'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "UPDATE system SET man_class = 'virtual desktop' WHERE manufacturer LIKE '%vmware%' AND os_family IN ('Windows XP', 'Windows 7', 'Windows 8', 'Windows 10')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
 
 if ($this->db->table_exists('oa_config')) {
     $sql = "DELETE FROM `oa_config` WHERE config_name = 'discovery_mac_match'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `oa_config` VALUES ('discovery_mac_match','n','y',NOW(),0,'Should we match a device based only on its mac address during discovery.')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_directory'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_directory','/tmp/','y',NOW(),0,'The directory the script is copied into on the target device.')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "DELETE FROM `oa_config` WHERE config_name = 'discovery_linux_script_permissions'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `oa_config` VALUES ('discovery_linux_script_permissions','700','y',NOW(),0,'The permissions set on the audit_linux.sh script when it is copied to the target device.')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "DELETE FROM `oa_config` WHERE config_name = 'discovery_nmap_os'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `oa_config` VALUES ('discovery_nmap_os','n','y',NOW(),0,'When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
 
@@ -82,13 +82,13 @@ $this->alter_table('oa_user', 'permissions', "ADD permissions text NOT NULL defa
 if ($this->db->table_exists('oa_org')) {
     if($this->db->field_exists('org_name', 'oa_org')) {
         $sql = "UPDATE oa_org SET org_name = 'Default Organisation' WHERE org_name = '' AND org_id = 0";
-        $query = $this->db->query($sql);
+        $this->db->query($sql);
         $this->log_db($this->db->last_query());
     }
 
     if($this->db->field_exists('org_comments', 'oa_org')) {
         $sql = "UPDATE oa_org SET org_comments = '' WHERE org_comments = 'Default Organisation.' AND org_id = 0";
-        $query = $this->db->query($sql);
+        $this->db->query($sql);
         $this->log_db($this->db->last_query());
     }
 }
@@ -128,18 +128,16 @@ $sql = "CREATE TABLE `oa_user_org` (
           CONSTRAINT `oa_user_org_user_id` FOREIGN KEY (`user_id`) REFERENCES `" . $user_table . "` (`" . $user_id . "`) ON DELETE CASCADE,
           CONSTRAINT `oa_user_org_org_id` FOREIGN KEY (`org_id`) REFERENCES `" . $org_table . "` (`" . $org_id . "`) ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 if ($this->db->table_exists('oa_group_user')) {
     $sql = "INSERT INTO oa_user_org (SELECT NULL, oa_user.user_id, 0, 10, '' FROM oa_user LEFT JOIN oa_group_user ON (oa_user.user_id = oa_group_user.user_id AND oa_group_user.group_user_access_level = 10) WHERE oa_user.user_admin = 'y' OR oa_group_user.group_id = 1 GROUP BY oa_user.user_id)";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
 
 $this->drop_table('ip');
-
-$this->drop_table("graph");
 if ($this->db->field_exists('system_id', 'system')) {
     $system_id = 'system_id';
 } else {
@@ -164,16 +162,16 @@ $sql = "CREATE TABLE `ip` (
   KEY `mac` (`mac`),
   CONSTRAINT `ip_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`" . $system_id . "`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 if ($this->db->table_exists('sys_hw_network_card_ip')) {
     $sql = "INSERT INTO ip (SELECT NULL, system_id, 'y', first_timestamp, `timestamp`, net_mac_address, net_index, ip_address_v4, ip_subnet, NULL, '4', '', '' FROM sys_hw_network_card_ip WHERE ip_address_version = '4')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO ip (SELECT NULL, system_id, 'y', first_timestamp, `timestamp`, net_mac_address, net_index, ip_address_v6, NULL, ip_subnet, '6', '', '' FROM sys_hw_network_card_ip WHERE ip_address_version = '6')";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
     $this->drop_table('sys_hw_network_card_ip');
@@ -199,7 +197,7 @@ if ($this->db->table_exists('oa_group')) {
         $dynamic_select = str_replace("ip.ip_address_v4", "ip.ip", $dynamic_select);
         $dynamic_select = str_replace("sys_hw_network_card_ip.system_id", "ip.system_id", $dynamic_select);
         $sql = "UPDATE oa_group SET group_dynamic_select = \"" . $dynamic_select . "\" WHERE group_id = " . intval($group->group_id);
-        $query = $this->db->query($sql);
+        $this->db->query($sql);
         $this->log_db($this->db->last_query());
     }
 }
@@ -213,7 +211,7 @@ if ($this->db->table_exists('oa_group')) {
         $this->data['output'] .= 'WARNING - the folloing group has been deleted as it used incompatible SQL. We no longer have a table named sys_hw_network_ip_address (it is now \'ip\' with renamed columns). Please recreate this group: ' . $row->group_name . '\n<br />The SQL for this group was: ' . $row->group_dynamic_select . "<br /><br />\n";
     }
     $sql = "DELETE oa_group FROM oa_group WHERE group_dynamic_select like '%sys_hw_network_card_ip%'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
 

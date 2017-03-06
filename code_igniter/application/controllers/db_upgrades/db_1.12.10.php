@@ -28,6 +28,7 @@
 **/
 
 $this->log_db('Upgrade database to 1.12.10 commenced');
+$sql = array();
 
 # configuration
 if ($this->db->table_exists('oa_config')) {
@@ -74,8 +75,15 @@ if ($this->db->table_exists('oa_config')) {
 
 # fix our user <-> org table
 if ($this->db->table_exists('oa_user_org') and $this->db->table_exists('oa_user')) {
-    $sql[] = "DELETE FROM oa_user_org";
-    $sql[] = "INSERT INTO oa_user_org (id, user_id, org_id, access_level, permissions) SELECT NULL, id, 0, 10, '' FROM oa_user";
+    $query = "SELECT * FROM oa_org WHERE id = 0";
+    $query_exec = $this->db->query($query);
+    $query_result = $query_exec->result();
+        $sql[] = "DELETE FROM oa_user_org";
+    if (count($query_result) === 1) {
+        $sql[] = "INSERT INTO oa_user_org (id, user_id, org_id, access_level, permissions) SELECT NULL, id, 0, 10, '' FROM oa_user";
+    } else {
+        $sql[] = "INSERT INTO oa_user_org (id, user_id, org_id, access_level, permissions) SELECT NULL, id, 1, 10, '' FROM oa_user";
+    }
 }
 
 foreach ($sql as $this_query) {

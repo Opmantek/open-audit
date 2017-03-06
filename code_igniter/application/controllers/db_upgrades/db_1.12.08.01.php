@@ -29,19 +29,27 @@
 
 $this->log_db('Upgrade database to 1.12.8.1 commenced');
 
-$fields = $this->db->list_fields('system');
-$fields = implode($fields, "','");
-$fields = "'" . $fields . "'";
-$sql = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
-unset($fields);
+if ($this->db->table_exists('additional_field')) {
+    $fields = $this->db->list_fields('system');
+    $fields = implode($fields, "','");
+    $fields = "'" . $fields . "'";
+    $sql = "UPDATE additional_field SET name = CONCAT(`name`, '_1') WHERE name in (" . $fields . ")";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+    unset($fields);
+}
 
 $this->alter_table('system', 'omk_uuid', "ADD omk_uuid text NOT NULL AFTER last_user", 'add');
 
-$sql = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y',NOW(),0,'Should we delete any attributes that are not present when we audit a device.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "INSERT INTO `oa_config` VALUES ('delete_noncurrent','n','y','2000-01-01 00:00:00',0,'Should we delete any attributes that are not present when we audit a device.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} else {
+    $sql = "INSERT INTO `configuration` VALUES (NULL, 'delete_noncurrent','n','y','system','2000-01-01 00:00:00','Should we delete any attributes that are not present when we audit a device.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 # set our versions
 if ($this->db->table_exists('oa_config')) {

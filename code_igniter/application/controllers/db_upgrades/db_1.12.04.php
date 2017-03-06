@@ -31,7 +31,7 @@ $this->log_db('Upgrade database to 1.12.4 commenced');
 
 if ($this->db->table_exists('oa_group')) {
     $sql = "UPDATE oa_group SET group_category = 'org' WHERE group_category = 'owner'";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
 

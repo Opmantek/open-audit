@@ -29,11 +29,7 @@
 
 $this->log_db('Upgrade database to 1.12 commenced');
 
-if ($this->db->table_exists('system') and !$this->db->field_exists('comments', 'system')) {
-    $sql = "ALTER TABLE system ADD comments text NOT NULL AFTER description";
-    $query = $this->db->query($sql);
-    $this->log_db($this->db->last_query());
-}
+$this->alter_table('system', 'comments', "ADD comments text NOT NULL AFTER description", 'add');
 
 # set our versions
 if ($this->db->table_exists('oa_config')) {

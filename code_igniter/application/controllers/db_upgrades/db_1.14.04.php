@@ -55,7 +55,7 @@ if (count($result) === 0) {
       `detail` text NOT NULL,
       PRIMARY KEY (`id`)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-    $query = $this->db->query($sql);
+    $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
 
@@ -72,7 +72,7 @@ $sql = "CREATE TABLE `attributes` (
     `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
     PRIMARY KEY (`id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = array();
@@ -192,13 +192,13 @@ unset($sql);
 
 # fields
 $sql = "UPDATE `fields` SET `type` = 'varchar' WHERE `type` != 'list'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('fields', 'type', "`type` enum('varchar','list') NOT NULL DEFAULT 'varchar'");
 
 $sql = "UPDATE `fields` SET `placement` = 'custom' WHERE `placement` != 'system'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('fields', 'placement', "`placement` enum('custom','system') NOT NULL DEFAULT 'system'");
@@ -268,17 +268,17 @@ if ($this->db->table_exists($table)) {
 }
 
 # oa_org
-$sql = "UPDATE `oa_org` SET `edited_date` = '2000-01-01 00:00:00' WHERE `id` = `";
+$sql = "UPDATE `oa_org` SET `edited_date` = '2000-01-01 00:00:00' WHERE `id` = 1";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # oa_reports
-$sql = "DELETE FROM `oa_report` WHERE `report_name` LIKE 'Enterprise - %'";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
 $table = 'oa_report';
 if ($this->db->table_exists($table)) {
+    $sql = "DELETE FROM `oa_report` WHERE `report_name` LIKE 'Enterprise - %'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+
     $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
     $this->log_db($command);
     exec($command, $backup);
@@ -340,7 +340,7 @@ unset($sql);
 
 # scripts
 $sql = "DELETE FROM `scripts` WHERE `based_on` = 'audit_esx.sh'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $options = array();
@@ -355,11 +355,11 @@ $options['debugging'] = 1;
 $options = json_encode($options);
 
 $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_esxi.sh', 1, '" . $options . "', 'The default audit ESXi config.', 'audit_esxi.sh', '', 'system',' 2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh', 1, '" . $options . "', 'The default audit Solaris config.', 'audit_solaris.sh', '', 'system',' 2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 unset($options);
@@ -368,26 +368,43 @@ unset($options);
 $this->alter_table('system', 'last_seen', "`last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER first_seen");
 $this->drop_key('system', 'system_id');
 
-# set our versions
-if ($this->db->table_exists('oa_config')) {
-    $sql = "UPDATE `oa_config` SET `config_value` = '20170104' WHERE `config_name` = 'internal_version'";
-    $this->db->query($sql);
-    $this->log_db($this->db->last_query());
-} elseif ($this->db->table_exists('configuration')) {
-    $sql = "UPDATE `configuration` SET `value` = '20170104' WHERE `name` = 'internal_version'";
-    $this->db->query($sql);
+# Reindex our configuration table
+$sql = "SELECT * FROM configuration ORDER BY `name`";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+$result = $query->result();
+
+$sql = "DELETE FROM `configuration`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "ALTER TABLE `configuration` AUTO_INCREMENT = 1";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+foreach ($result as $item) {
+    if ($item->edited_by === 'system') {
+        $item->edited_date = '2000-01-01 00:00:00';
+    }
+    $sql = "INSERT INTO `configuration` VALUES (NULL, ?, ?, ?, ?, ?, ?)";
+    $data = array((string)$item->name,
+                (string)$item->value,
+                (string)$item->editable,
+                (string)$item->edited_by,
+                (string)$item->edited_date,
+                (string)$item->description);
+    $query = $this->db->query($sql, $data);
     $this->log_db($this->db->last_query());
 }
 
-if ($this->db->table_exists('oa_config')) {
-    $sql = "UPDATE oa_config SET config_value = '1.14.4' WHERE `config_name` = 'display_version'";
-    $this->db->query($sql);
-    $this->log_db($this->db->last_query());
-} elseif ($this->db->table_exists('configuration')) {
-    $sql = "UPDATE `configuration` SET `value` = '1.14.4' WHERE `name` = 'display_version'";
-    $this->db->query($sql);
-    $this->log_db($this->db->last_query());
-}
+# set our versions
+$sql = "UPDATE `configuration` SET `value` = '20170104' WHERE `name` = 'internal_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `configuration` SET `value` = '1.14.4' WHERE `name` = 'display_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 #$this->db->db_debug = $temp_debug;
 $this->log_db("Upgrade database to 1.14.4 completed");

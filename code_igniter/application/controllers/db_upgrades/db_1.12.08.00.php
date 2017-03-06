@@ -114,21 +114,21 @@ if ($this->db->field_exists('man_form_factor', 'system')) {
 }
 
 $sql = "UPDATE system SET printer_color = 'y' WHERE LOWER(printer_color) ='true' OR LOWER(printer_color) = 't'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE system SET printer_color = 'n' WHERE LOWER(printer_color) ='false' OR LOWER(printer_color) = 'f'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('system', 'printer_color', "printer_color enum('y','n','') NOT NULL DEFAULT ''");
 
 $sql = "UPDATE system SET printer_duplex = 'y' WHERE LOWER(printer_duplex) ='true' OR LOWER(printer_duplex) = 't'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE system SET printer_duplex = 'n' WHERE LOWER(printer_duplex) ='false' OR LOWER(printer_duplex) = 'f'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('system', 'printer_duplex', "printer_duplex enum('y','n','') NOT NULL DEFAULT ''");
@@ -187,11 +187,11 @@ $this->alter_table('system', 'man_serial_sim', "serial_sim varchar(100) NOT NULL
 $this->alter_table('system', 'nmis_export', "nmis_export enum('true','false','y','n') NOT NULL DEFAULT 'false'");
 
 $sql = "UPDATE system SET nmis_export = 'n' WHERE LOWER(nmis_export) ='false'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE system SET nmis_export = 'y' WHERE LOWER(nmis_export) ='true'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('system', 'nmis_export', "`nmis_export` enum('y','n') NOT NULL DEFAULT 'n'");
@@ -230,7 +230,7 @@ foreach ($tables as $table) {
         $result = $query->result();
         if (count($result) === 1) {
             $sql = "DELETE FROM `" . $table . "` WHERE `" . $table . "`.`system_id` NOT IN (SELECT system.id FROM system)";
-            $query = $this->db->query($sql);
+            $this->db->query($sql);
             $this->log_db($this->db->last_query());
         }
     }
@@ -351,39 +351,39 @@ $this->alter_table('oa_change', 'change_backout_plan', "backout_plan text NOT NU
 
 $this->drop_table('cluster');
 $sql = "CREATE TABLE `cluster` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `type` enum('high availability', 'load balancing', 'perforance', 'storage', 'other'), `purpose` enum('application', 'database', 'file', 'virtualisation', 'web', 'other'), `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE system SET hostname = name";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE system SET dns_hostname = name";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "UPDATE system SET dns_domain = domain";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
  
 $sql = "DROP FUNCTION IF EXISTS cidr_to_mask";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "CREATE FUNCTION cidr_to_mask (cidr INT(2)) RETURNS CHAR(15) DETERMINISTIC RETURN INET_NTOA(CONV(CONCAT(REPEAT(1,cidr),REPEAT(0,32-cidr)),2,10))";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->drop_table('files');
 
 $sql = "CREATE TABLE `files` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `path` varchar(45) NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->drop_table('file');
 
 $sql = "CREATE TABLE `file` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `files_id` int(10) unsigned DEFAULT NULL, `name` varchar(250) NOT NULL DEFAULT '', `full_name` text NOT NULL DEFAULT '', `size` int(10) unsigned NOT NULL DEFAULT '0', `directory` text NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `last_changed` varchar(100) NOT NULL DEFAULT '', `meta_last_changed` varchar(100) NOT NULL DEFAULT '', `permission` varchar(250) NOT NULL DEFAULT '', `owner` varchar(100) NOT NULL DEFAULT '', `group` varchar(100) NOT NULL DEFAULT '', `type` varchar(100) NOT NULL DEFAULT '', `version` varchar(100) NOT NULL DEFAULT '', `inode` bigint unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `file_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
             # fix a previous missed item
@@ -392,7 +392,7 @@ $this->alter_table('partition', 'type', "`type` varchar(100) NOT NULL DEFAULT 'l
 $this->drop_table('scripts');
 
 $sql = "CREATE TABLE `scripts` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(250) NOT NULL DEFAULT '', `options` text NOT NULL DEFAULT '', `description` varchar(200) NOT NULL DEFAULT '', `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $options = array();
@@ -407,130 +407,148 @@ $options['debugging'] = 1;
 $options = json_encode($options);
 
 $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_aix.sh', '" . $options . "', 'The default audit AIX config.', 'audit_aix.sh', '', 'system', '2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_esx.sh', '" . $options . "', 'The default audit ESX config.', 'audit_esx.sh', '', 'system', '2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_linux.sh', '" . $options . "', 'The default audit Linux config.', 'audit_linux.sh', '', 'system', '2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_osx.sh', '" . $options . "', 'The default audit OSX config.', 'audit_osx.sh', '', 'system', '2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_windows.vbs', '" . $options . "', 'The default audit Windows config.', 'audit_windows.vbs', '', 'system', '2000-01-01 00:00:00')";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'custom' WHERE placement = 'view_summary_custom'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('additional_field')) {
+    $sql = "UPDATE additional_field SET placement = 'custom' WHERE placement = 'view_summary_custom'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'location' WHERE placement = 'view_summary_location'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'location' WHERE placement = 'view_summary_location'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'network' WHERE placement = 'view_summary_network'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'network' WHERE placement = 'view_summary_network'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'purchase' WHERE placement = 'view_summary_purchase'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'purchase' WHERE placement = 'view_summary_purchase'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'san' WHERE placement = 'view_hardware_san'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'san' WHERE placement = 'view_hardware_san'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'san_disk' WHERE placement = 'view_hardware_san_disk'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'san_disk' WHERE placement = 'view_hardware_san_disk'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'system' WHERE placement = 'system_details'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'system' WHERE placement = 'system_details'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE additional_field SET placement = 'windows' WHERE placement = 'view_summary_windows'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 $this->drop_table('credential');
 
 $sql = "CREATE TABLE `credential` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `current` enum('y','n') NOT NULL DEFAULT 'y', `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other', `credentials` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `credential_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->drop_table('credentials');
 
 $sql = "CREATE TABLE `credentials` (  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(200) NOT NULL DEFAULT '',  `description` text NOT NULL,  `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other',  `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '',  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',  PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('oa_user_org', 'org_id', "`org_id` int(10) unsigned NOT NULL DEFAULT '0'");
 
 // update any leftover group definitions by changing man_icon to icon
-$sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_group')) {
+    $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.man_', 'system.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'man_', 'system.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.ip_address', 'system.ip')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.ip_address', 'system.ip')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.system_id', 'system.id')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.system_id', 'system.id')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.timestamp', 'system.last_seen')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_display_sql = REPLACE(group_display_sql, 'system.timestamp', 'system.last_seen')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.man_', 'system.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'man_', 'system.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'man_', 'system.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.ip_address', 'system.ip')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.ip_address', 'system.ip')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.system_id', 'system.id')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.system_id', 'system.id')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.timestamp', 'system.last_seen')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "UPDATE oa_group SET group_dynamic_select = REPLACE(group_dynamic_select, 'system.timestamp', 'system.last_seen')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 
 $this->drop_table('nmap');
 $sql = "CREATE TABLE `nmap` (`id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL,`current` enum('y','n') NOT NULL DEFAULT 'y', `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `protocol` enum('tcp','udp','tcp6','udp6','tcp4','udp4','') NOT NULL DEFAULT '', `ip` varchar(45) NOT NULL DEFAULT '', `port` int(5) NOT NULL DEFAULT '0', `program` varchar(250) NOT NULL DEFAULT '', PRIMARY KEY (`id`), KEY `system_id` (`system_id`),CONSTRAINT `nmap_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # set our versions
-$sql = "DELETE FROM `oa_config` WHERE config_name = 'discovery_use_dns'";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "DELETE FROM `oa_config` WHERE config_name = 'discovery_use_dns'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y',NOW(),0,'Should we use DNS for looking up the hostname and domain.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "INSERT INTO `oa_config` VALUES ('discovery_use_dns','y','y',NOW(),0,'Should we use DNS for looking up the hostname and domain.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y',NOW(),0,'The API key for Google Maps.')";
-$query = $this->db->query($sql);
-$this->log_db($this->db->last_query());
+    $sql = "INSERT INTO `oa_config` VALUES ('maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y',NOW(),0,'The API key for Google Maps.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+} else {
+    $sql = "DELETE FROM `configuration` WHERE name = 'discovery_use_dns'";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+
+    $sql = "INSERT INTO `configuration` VALUES (NULL, 'discovery_use_dns','y','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+
+    $sql = "INSERT INTO `configuration` VALUES (NULL, 'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system','2000-01-01 00:00:00','The API key for Google Maps.')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 # Move of default config values for credentials into credential sets
 $this->load->model('m_configuration');
@@ -602,9 +620,11 @@ if (!empty($this->config->config['default_ipmi_username']) and !empty($this->con
     }
 }
 
-$sql = "DELETE FROM oa_config WHERE config_name IN ('default_ipmi_password', 'default_ipmi_username', 'default_snmp_community', 'default_ssh_password', 'default_ssh_username', 'default_windows_username', 'default_windows_domain', 'default_windows_password')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
+if ($this->db->table_exists('oa_config')) {
+    $sql = "DELETE FROM oa_config WHERE config_name IN ('default_ipmi_password', 'default_ipmi_username', 'default_snmp_community', 'default_ssh_password', 'default_ssh_username', 'default_windows_username', 'default_windows_domain', 'default_windows_password')";
+    $this->db->query($sql);
+    $this->log_db($this->db->last_query());
+}
 
 # populate our new credential table with the system.access_details columns
 $sql = "SELECT NOW() as `timestamp`";
@@ -617,49 +637,51 @@ $sql = "DELETE FROM `credential`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "SELECT id, access_details FROM system WHERE access_details != ''";
-$query = $this->db->query($sql);
-$result = $query->result();
-$this->log_db($this->db->last_query());
+if ($this->db->field_exists('access_details', 'system')) {
+    $sql = "SELECT id, access_details FROM system WHERE access_details != ''";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    $this->log_db($this->db->last_query());
 
-foreach ($result as $device) {
-    $creds = $this->encrypt->decode($device->access_details);
-    $creds = json_decode($creds);
-    $newcreds = array();
-    if (!empty($creds->snmp_community)) {
-        $cred = new stdClass();
-        $cred->community = $creds->snmp_community;
-        $credentials = (string)$this->encrypt->encode(json_encode($cred));
-        $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SNMP credentials.', 'Migrated from device upon upgrade.', 'snmp', ?, 'system', ?)";
-        $data = array(intval($device->id), (string)$credentials, "$timestamp");
-        $this->db->query($sql, $data);
-        $this->log_db($this->db->last_query());
-        unset($cred);
-        unset($credentials);
-    }
-    if (!empty($creds->windows_username)) {
-        $cred = new stdClass();
-        $cred->username = $creds->windows_username . '@' . $creds->windows_domain;
-        $cred->password = $creds->windows_password;
-        $credentials = (string)$this->encrypt->encode(json_encode($cred));
-        $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device Windows credentials.', 'Migrated from device upon upgrade.', 'windows', ?, 'system', ?)";
-        $data = array(intval($device->id), (string)$credentials, "$timestamp");
-        $this->db->query($sql, $data);
-        $this->log_db($this->db->last_query());
-        unset($cred);
-        unset($credentials);
-    }
-    if (!empty($creds->ssh_username)) {
-        $cred = new stdClass();
-        $cred->username = $creds->ssh_username;
-        $cred->password = $creds->ssh_password;
-        $credentials = (string)$this->encrypt->encode(json_encode($cred));
-        $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SSH credentials.', 'Migrated from device upon upgrade.', 'ssh', ?, 'system', ?)";
-        $data = array(intval($device->id), (string)$credentials, "$timestamp");
-        $this->db->query($sql, $data);
-        $this->log_db($this->db->last_query());
-        unset($cred);
-        unset($credentials);
+    foreach ($result as $device) {
+        $creds = $this->encrypt->decode($device->access_details);
+        $creds = json_decode($creds);
+        $newcreds = array();
+        if (!empty($creds->snmp_community)) {
+            $cred = new stdClass();
+            $cred->community = $creds->snmp_community;
+            $credentials = (string)$this->encrypt->encode(json_encode($cred));
+            $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SNMP credentials.', 'Migrated from device upon upgrade.', 'snmp', ?, 'system', ?)";
+            $data = array(intval($device->id), (string)$credentials, "$timestamp");
+            $this->db->query($sql, $data);
+            $this->log_db($this->db->last_query());
+            unset($cred);
+            unset($credentials);
+        }
+        if (!empty($creds->windows_username)) {
+            $cred = new stdClass();
+            $cred->username = $creds->windows_username . '@' . $creds->windows_domain;
+            $cred->password = $creds->windows_password;
+            $credentials = (string)$this->encrypt->encode(json_encode($cred));
+            $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device Windows credentials.', 'Migrated from device upon upgrade.', 'windows', ?, 'system', ?)";
+            $data = array(intval($device->id), (string)$credentials, "$timestamp");
+            $this->db->query($sql, $data);
+            $this->log_db($this->db->last_query());
+            unset($cred);
+            unset($credentials);
+        }
+        if (!empty($creds->ssh_username)) {
+            $cred = new stdClass();
+            $cred->username = $creds->ssh_username;
+            $cred->password = $creds->ssh_password;
+            $credentials = (string)$this->encrypt->encode(json_encode($cred));
+            $sql = "INSERT INTO credential VALUES (NULL, ?, 'y', 'Device SSH credentials.', 'Migrated from device upon upgrade.', 'ssh', ?, 'system', ?)";
+            $data = array(intval($device->id), (string)$credentials, "$timestamp");
+            $this->db->query($sql, $data);
+            $this->log_db($this->db->last_query());
+            unset($cred);
+            unset($credentials);
+        }
     }
 }
 

@@ -32,7 +32,7 @@ $this->log_db('Upgrade database to 1.10.1 commenced');
 $this->alter_table('variable', 'program', "ADD program varchar(100) NOT NULL default '' AFTER last_seen", 'add');
 
 $sql = "UPDATE variable SET program = 'environment'";
-$query = $this->db->query($sql);
+$this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # set our versions
