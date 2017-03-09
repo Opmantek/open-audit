@@ -121,33 +121,38 @@ fi
 if [ "$debugging" -gt "0" ]; then
     echo "System Info"
 fi
-system_timestamp=`date +'%F %T'`
-system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
-system_hostname=`hostname | cut -d. -f1`
+system_timestamp=$(date +'%F %T')
+system_uuid=$(system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g')
+system_hostname=$(hostname | cut -d. -f1)
 if [[ $system_hostname == *"."* ]]; then
-    system_domain=`hostname | cut -d. -f2-`
+    system_domain=$(hostname | cut -d. -f2-)
 else
     system_domain=""
 fi
-system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
+system_os_version=$(sw_vers | grep "ProductVersion:" | cut -f2)
+system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
+system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
 system_os_name="OSX $system_os_version"
-system_serial=`system_profiler SPHardwareDataType | grep "Serial Number (system):" | cut -d":" -f2 | sed 's/^ *//g'`
-system_model=`system_profiler SPHardwareDataType | grep "Model Identifier:" | cut -d":" -f2 | sed 's/^ *//g'`
+system_serial=$(system_profiler SPHardwareDataType | grep 'Serial Number (system):' | cut -d':' -f2 | sed 's/^ *//g')
+system_model=$(system_profiler SPHardwareDataType | grep 'Model Identifier:' | cut -d':' -f2 | sed 's/^ *//g')
 # todo - below displays days and stops at hours
 # system_uptime=`system_profiler SPSoftwareDataType | grep "Time since boot:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_uptime=""
 system_form_factor=""
 system_pc_os_bit="64"
-system_pc_memory=`system_profiler SPHardwareDataType | grep "Memory:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
-system_pc_memory=`expr $system_pc_memory \* 1024 \* 1024`
-processor_count=`system_profiler SPHardwareDataType | grep "Number of Processors" | cut -d: -f2`
-system_pc_date_os_installation=`date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S"`
+system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d':' -f2 | sed 's/^ *//g' | cut -d' ' -f1)
+system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
+processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
+system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
 man_class=""
 if [[ "$system_model" == *"MacBook"* ]]; then
     system_form_factor="laptop"
     man_class="laptop"
 fi
-
+if [[ "$system_model" == *"Macmini"* ]]; then
+    system_form_factor="desktop"
+    man_class="desktop"
+fi
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
@@ -312,18 +317,42 @@ fi
 # model not available on USB connected disks
 # partition count not available
 # scsi logical unit not available
+echo "OS: $system_os_version"
+echo "MAJ: $system_os_version_major"
+echo "MIN: $system_os_version_minor"
 
 echo "  <disk>" >> $xml_file
 partition_each=""
+if [ "$debugging" -gt 3 ]; then
+    echo "COMMAND: diskutil list | grep "^/" | cut -d/ -f3 | cut -d\" \" -f1"
+fi
 for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
     hard_drive_index=$disk
+    if [ "$debugging" -gt 3 ]; then
+        echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Device / Media Name:\" | cut -d\":\" -f2- | sed 's/^ *//g'"
+    fi
     hard_drive_caption=$(diskutil info "$disk" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g')
+    if [ "$debugging" -gt 3 ]; then
+        echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Protocol:\" | cut -d\":\" -f2- | sed 's/^ *//g'"
+    fi
     hard_drive_interface_type=$(diskutil info "$disk" | grep "^ " | grep "Protocol:" | cut -d":" -f2- | sed 's/^ *//g')
-    if [ "$system_os_version" > "10.11" ]; then
+    if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Disk Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+        fi
         hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: echo \"$hard_drive_size / 1000 / 1000 \" | bc | cut -d\".\" -f1"
+        fi
         hard_drive_size=$(echo "$hard_drive_size / 1000 / 1000 " | bc | cut -d"." -f1)
     else
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Total Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+        fi
         hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: echo \"$hard_drive_size / 1000 / 1000 \" | bc | cut -d\".\" -f1"
+        fi
         hard_drive_size=$(echo "$hard_drive_size / 1000 / 1000 " | bc | cut -d"." -f1)
     fi
     
@@ -355,7 +384,7 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
         partition_mount_point=$(diskutil info "$disk" | grep "^ " | grep "Mount Point:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_name=$(diskutil info "$disk" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_size="$hard_drive_size"
-        if [ "$system_os_version" > "10.11" ]; then
+        if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
             partition_free_space=""
             partition_used_space=""
         else
@@ -402,7 +431,7 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
             if [ "$partition_name" == "Not applicable (no file system)" ]; then
                 partition_name=$(diskutil info "$partition" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g' | sed 's/ *$//g')
             fi
-            if [ "$system_os_version" > "10.11" ]; then
+            if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
                 # Sierra has removed 'Volume Free Space' and changed 'Total Size' to 'Disk Size' in diskutil
                 partition_size=$(diskutil info "$partition" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
                 partition_free_space=""
