@@ -247,10 +247,10 @@ $config['encryption_key'] = "openaudit";
 | 'time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']        = 'ci_session';
+#$config['sess_cookie_name']        = 'ci_session';
 $config['sess_cookie_name']        = 'openaudit';
 $config['sess_expiration']        = 7200;
-$config['sess_expiration']        = 0;
+#$config['sess_expiration']        = 0;
 $config['sess_encrypt_cookie']    = true;
 $config['sess_use_database']    = true;
 $config['sess_table_name']        = 'oa_user_sessions';
