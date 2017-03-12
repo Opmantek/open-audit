@@ -1943,7 +1943,7 @@ IFS='
 '
 echo "	<software>" >> "$xml_file"
 case $system_os_family in
-		'Ubuntu' | 'Debian' | 'LinuxMint' )
+		'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
