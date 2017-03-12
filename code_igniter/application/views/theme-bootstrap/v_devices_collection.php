@@ -66,6 +66,7 @@ if (strpos($this->response->links->self, '?') !== false) {
     $export_link .= '?';
 }
 
+if ($this->response->meta->sub_resource !== 'group') {
 ?>
 <div class="collapse" id="queries">
 <div class="panel panel-default">
@@ -102,6 +103,8 @@ if (strpos($this->response->links->self, '?') !== false) {
     </div>
 </div>
 </div>
+<?php } ?>
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -113,7 +116,9 @@ if (strpos($this->response->links->self, '?') !== false) {
                 <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=xml">xml</a></button>
             </span>
         </span>
+        <?php if ($this->response->meta->sub_resource !== 'group') { ?>
         <span class="pull-right"><button class="btn btn-xs btn-primary" type="button" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries">Queries</button></span>
+        <?php } ?>
         <span class="pull-right" style="padding-right:20px;"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
         </h3>
     </div>
