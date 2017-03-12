@@ -213,7 +213,7 @@ class logon extends CI_Controller
             if (!empty($url)) {
                 redirect($this->session->userdata('url'));
             } else {
-                redirect('summaries');
+                redirect('home');
             }
         } else {
             $this->user->id = intval($this->user->id);
