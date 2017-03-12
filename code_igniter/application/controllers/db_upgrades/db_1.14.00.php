@@ -514,7 +514,7 @@ $sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Servers\", \"Devices with t
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Workstations\", \"Devices with type = computer and os_name like Windows and os_name not like Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%')\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
+$sql = "INSERT INTO groups VALUES(NULL, 1, \"Windows Workstations\", \"Devices with type = computer and os_name like Windows and os_name not like Server.\", \"SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.type = 'computer' AND system.os_name LIKE '%windows%' AND system.os_name NOT LIKE '%server%'\", \"\", \"y\", \"system\", '2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
