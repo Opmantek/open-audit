@@ -1397,6 +1397,12 @@ if (!function_exists('format_mac')) {
             $mac_address = implode(":", $mymac);
         }
 
+        if (substr_count($mac_address, ':') != 0) {
+            return($mac_address);
+        } else {
+            return "";
+        }
+
         return($mac_address);
     }
 }
