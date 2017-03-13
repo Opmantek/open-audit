@@ -343,6 +343,9 @@ $sql = "DELETE FROM `scripts` WHERE `based_on` = 'audit_esx.sh'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# system
+$this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT ''");
+
 $options = array();
 $options['submit_online'] = 'y';
 $options['create_file'] = 'n';

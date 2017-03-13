@@ -2469,7 +2469,7 @@ CREATE TABLE `system` (
   `printer_shared_name` varchar(50) NOT NULL DEFAULT '',
   `printer_color` enum('y','n','') NOT NULL DEFAULT '',
   `printer_duplex` enum('y','n','') NOT NULL DEFAULT '',
-  `status` enum('production','deleted','lost','maintenance','retired','unallocated') NOT NULL DEFAULT 'production',
+  `status` varchar(100) NOT NULL DEFAULT '',
   `environment` enum('production','dev','dr','eval','pre-prod','test','train','uat') NOT NULL DEFAULT 'production',
   `class` enum('desktop','laptop','tablet','workstation','server','virtual server','virtual desktop','hypervisor','') NOT NULL DEFAULT '',
   `function` varchar(100) NOT NULL DEFAULT '',
