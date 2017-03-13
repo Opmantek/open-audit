@@ -116,7 +116,20 @@ class Users extends MY_Controller_new
     */
     public function read()
     {
-        include 'include_read.php';
+        $this->load->helper('url');
+        if ( $this->uri->segment(3) != 'cookie') {
+            include 'include_read.php';
+        } else {
+            # Only allow users with config update permission (which should only be those with Admin role)
+            if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
+                $this->response->data = $this->{'m_users'}->read($this->response->meta->id);
+                $userdata = array('user_id' => $this->response->meta->id, 'user_debug' => '');
+                $this->session->set_userdata($userdata);
+                print_r(json_encode($this->response));
+            } else {
+                return;
+            }
+        }
     }
 
     /**
@@ -197,6 +210,7 @@ class Users extends MY_Controller_new
     {
         include 'include_import.php';
     }
+
 }
 // End of file roles.php
-// Location: ./controllers/roles.php
+// Location: ./controllers/users.php
