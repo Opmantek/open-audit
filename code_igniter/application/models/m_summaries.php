@@ -299,6 +299,12 @@ class M_summaries extends MY_Model
         $this->load->model('m_users');
         $data = array();
 
+        if ($this->m_users->get_user_permission('', 'attributes', 'r')) {
+            $sql = "SELECT COUNT(*) AS `count` FROM `attributes`";
+            $count = $this->run_sql($sql);
+            $data[] = array("name" => 'Attributes', "collection" => "attributes", "icon" => 'th-list', "count" => $count[0]->count);
+        }
+
         if ($this->m_users->get_user_permission('', 'configuration', 'r')) {
             $sql = "SELECT COUNT(*) AS `count` FROM `configuration`";
             $count = $this->run_sql($sql);

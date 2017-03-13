@@ -33,7 +33,8 @@ $this->response->data[] = $temp;
 unset($temp);
 
 $collection = $this->response->meta->collection;
-if ($collection == 'credentials' or
+if ($collection == 'attributes' or
+    $collection == 'credentials' or
     $collection == 'connections' or
     $collection == 'discoveries' or
     $collection == 'fields' or

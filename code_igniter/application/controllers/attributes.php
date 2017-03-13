@@ -98,6 +98,52 @@ class Attributes extends MY_Controller_new
         return;
     }
 
+
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
+    {
+        include 'include_create.php';
+    }
+
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function read()
+    {
+        include 'include_read.php';
+    }
+
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
+    {
+        include 'include_update.php';
+    }
+
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+
     /**
     * Collection of objects
     *
@@ -109,6 +155,53 @@ class Attributes extends MY_Controller_new
         include 'include_collection.php';
         return;
     }
+
+
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create_form()
+    {
+        include 'include_create_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update_form()
+    {
+        include 'include_update_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
+    {
+        $this->load->model('m_database');
+        $this->response->data = $this->m_database->read('attributes');
+        include 'include_import_form.php';
+    }
+
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import()
+    {
+        include 'include_import.php';
+    }
 }
-// End of file connections.php
-// Location: ./controllers/connections.php
+// End of file attributes.php
+// Location: ./controllers/attributes.php

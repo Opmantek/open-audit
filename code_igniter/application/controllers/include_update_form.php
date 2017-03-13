@@ -40,7 +40,8 @@ if (count($this->response->data) == 0) {
     }
 }
 $collection = $this->response->meta->collection;
-if ($collection == 'credentials' or
+if ($collection == 'attributes' or
+    $collection == 'credentials' or
     $collection == 'connections' or
     $collection == 'discoveries' or
     $collection == 'fields' or

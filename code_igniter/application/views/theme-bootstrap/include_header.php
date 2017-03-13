@@ -85,6 +85,21 @@
               <ul class="dropdown-menu">
 
                 <?php
+                if ($this->m_users->get_user_permission('', 'attributes', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Attributes</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/attributes'>List Attributes</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'attributes', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/attributes/create'>Create Attribute</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/attributes/import'>Import Multiple Attributes</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
                 if ($this->m_users->get_user_permission('', 'connections', 'r')) { ?>
                     <li class="dropdown-submenu">
                         <a href="#">Connections</a>
