@@ -348,9 +348,6 @@ $sql = "DELETE FROM `scripts` WHERE `based_on` = 'audit_esx.sh'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-# system
-$this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT ''");
-
 $options = array();
 $options['submit_online'] = 'y';
 $options['create_file'] = 'n';
@@ -374,6 +371,7 @@ unset($options);
 
 # system
 $this->alter_table('system', 'last_seen', "`last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER first_seen");
+$this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT ''");
 $this->drop_key('system', 'system_id');
 
 # Reindex our configuration table
