@@ -143,7 +143,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and !empty($details->uuid) and !empty($details->hostname)) {
-            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status = 'production' LIMIT 1";
+            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->uuid", "$details->hostname");
             $query = $this->db->query($sql, $data);
@@ -161,7 +161,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_hostname_dbus']) == 'y' and !empty($details->dbus_identifier) and !empty($details->hostname)) {
-            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.dbus_identifier = ? AND system.status = 'production' LIMIT 1";
+            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", "$details->dbus_identifier");
             $query = $this->db->query($sql, $data);
@@ -179,7 +179,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_hostname_serial']) == 'y' and !empty($details->serial) and !empty($details->hostname)) {
-            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.serial = ? AND system.status = 'production' LIMIT 1";
+            $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", "$details->serial");
             $query = $this->db->query($sql, $data);
@@ -197,7 +197,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_dbus']) == 'y' and !empty($details->dbus_identifier)) {
-            $sql = "SELECT system.id FROM system WHERE system.dbus_identifier = ? AND system.status = 'production' LIMIT 1";
+            $sql = "SELECT system.id FROM system WHERE system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->dbus_identifier");
             $query = $this->db->query($sql, $data);
@@ -215,7 +215,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_fqdn']) == 'y' and empty($details->id) and !empty($details->fqdn)) {
-            $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status = 'production' LIMIT 1";
+            $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
@@ -233,7 +233,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_serial_type']) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->type)) {
-            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status = 'production' LIMIT 1";
+            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->serial", "$details->type");
             $query = $this->db->query($sql, $data);
@@ -252,9 +252,9 @@ class M_system extends MY_Model
 
         if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
             if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
-                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status = 'production' LIMIT 1";
+                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
             } else {
-                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status = 'production' LIMIT 1";
+                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
             }
 
             $sql = $this->clean_sql($sql);
@@ -279,9 +279,9 @@ class M_system extends MY_Model
                         if ($mac != '' and $mac != '00:00:00:00:00:00') {
                             # check the ip table
                             if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
-                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status = 'production' LIMIT 1";
+                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
                             } else {
-                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status = 'production' LIMIT 1";
+                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
                             }
                             $sql = $this->clean_sql($sql);
                             $data = array("$mac");
@@ -308,7 +308,7 @@ class M_system extends MY_Model
 
             # first check the ip table as eny existing devices that have been seen
             # by more than just Nmap will have an entry here
-                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status = 'production' LIMIT 1";
+                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status != 'deleted' LIMIT 1";
                 $sql = $this->clean_sql($sql);
                 $data = array(ip_address_to_db($details->ip), "$details->ip");
                 $query = $this->db->query($sql, $data);
@@ -330,7 +330,7 @@ class M_system extends MY_Model
 
             # next check the system table for a ip match
             if (empty($details->id)) {
-                $sql = "SELECT system.id FROM system WHERE system.ip = ? and system.status = 'production'";
+                $sql = "SELECT system.id FROM system WHERE system.ip = ? and system.status != 'deleted'";
                 $sql = $this->clean_sql($sql);
                 $data = array(ip_address_to_db($details->ip));
                 $query = $this->db->query($sql, $data);
@@ -349,7 +349,7 @@ class M_system extends MY_Model
         }
 
         if (strtolower($this->config->config['match_hostname']) == 'y' and empty($details->id) and !empty($details->hostname)) {
-            $sql = "SELECT system.id FROM system WHERE (system.hostname = ?) AND system.status = 'production'";
+            $sql = "SELECT system.id FROM system WHERE (system.hostname = ?) AND system.status != 'deleted'";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname");
             $query = $this->db->query($sql, $data);
@@ -374,7 +374,7 @@ class M_system extends MY_Model
                     $hostname = $i[0];
                     if (strlen($hostname) == 15) {
                         # We do have a 15 character hostname - check if this exists in the DB
-                        $sql = "SELECT system.id FROM system WHERE system.hostname LIKE '".$hostname."%' AND system.status = 'production'";
+                        $sql = "SELECT system.id FROM system WHERE system.hostname LIKE '".$hostname."%' AND system.status != 'deleted'";
                         $sql = $this->clean_sql($sql);
                         $query = $this->db->query($sql);
                         $row = $query->row();
