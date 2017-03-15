@@ -41,6 +41,11 @@ if ($this->response->meta->collection == 'fields') {
     $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
 }
 
+if ($this->response->meta->collection == 'licenses') {
+    $this->load->model('m_licenses');
+    $this->response->included = array_merge($this->response->included, $this->m_licenses->execute());
+}
+
 if ($this->response->meta->collection == 'orgs') {
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
 }

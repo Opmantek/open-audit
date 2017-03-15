@@ -59,6 +59,11 @@ if ($collection == 'attributes' or
     $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 }
 
+if ($this->response->meta->collection == 'licenses') {
+    $this->load->model('m_licenses');
+    $this->response->included = array_merge($this->response->included, $this->m_licenses->execute());
+}
+
 if ($collection == 'connections' or
     $collection == 'discoveries') {
     $this->load->model('m_locations');

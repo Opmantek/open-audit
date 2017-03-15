@@ -47,9 +47,9 @@
                     <th class="text-center"><?php echo __('ID')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Organisation')?></th>
-                    <th><?php echo __('Type')?></th>
-                    <th><?php echo __('Description')?></th>
-                    <th><?php echo __('Match String')?></th>
+                    <th class="text-center"><?php echo __('Org Descendants')?></th>
+                    <th class="text-center"><?php echo __('Purchased')?></th>
+                    <th class="text-center"><?php echo __('Used')?></th>
                     <?php if ($this->m_users->get_user_permission('', 'licenses', 'u')) { ?>
                     <th class="text-center"><?php echo __('Edit')?></th>
                     <?php } ?>
@@ -64,9 +64,18 @@
                     <td class="text-center"><a class="btn btn-sm btn-success" href="licenses/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                     <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->match_string, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->org_descendants, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->purchase_count, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center">
+                    <?php if ($item->attributes->used_count > $item->attributes->purchase_count) {
+                        echo '<span class="btn btn-sm btn-danger">';
+                    } else {
+                        echo '<span class="btn btn-sm btn-success">';
+                    }
+                    echo htmlspecialchars($item->attributes->used_count, REPLACE_FLAGS, CHARSET)
+                    ?>
+                    </span>
+                    </td>
                     <?php if ($this->m_users->get_user_permission('', 'licenses', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="licenses/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                     <?php } ?>

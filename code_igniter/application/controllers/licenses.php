@@ -184,10 +184,7 @@ class Licenses extends MY_Controller_new
     public function execute()
     {
         $this->response->data = $this->m_licenses->execute();
-        echo "<pre>\n";
-        echo "LICENSE\n";
-        print_r($this->response->data);
-        exit();
+        output($this->response);
     }
 }
 // End of file locations.php

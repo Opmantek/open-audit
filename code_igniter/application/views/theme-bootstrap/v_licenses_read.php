@@ -83,6 +83,44 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
+                        <label for="org_descendants" class="col-sm-3 control-label">Organisation Descendants</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="org_descendants" name="org_descendants" disabled>
+                            <option value="y"<?php if ($item->attributes->org_descendants === 'y') { echo ' selected'; } ?>>Yes</option>
+                            <option value="n"<?php if ($item->attributes->org_descendants === 'n') { echo ' selected'; } ?>>No</option>
+                            </select>
+                                <?php if (!empty($edit)) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_org_descendants" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_descendants"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purchase_count" class="col-sm-3 control-label">Purchase Count</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" placeholder="" value="<?php echo htmlspecialchars($item->attributes->purchase_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_purchase_count" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="purchase_count"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="used_count" class="col-sm-3 control-label">Used Count</label>
+                        <?php if ($item->attributes->used_count > $item->attributes->purchase_count) { ?>
+                        <div class="col-sm-8 input-group has-warning">
+                        <?php } else { ?>
+                        <div class="col-sm-8 input-group has-success">
+                        <?php } ?>
+                            <input type="text" class="form-control" id="used_count" name="used_count" placeholder="" value="<?php echo htmlspecialchars($item->attributes->used_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
@@ -107,18 +145,6 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="type" class="col-sm-3 control-label">Type</label>
-                        <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="type" name="type" placeholder="" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
@@ -136,3 +162,36 @@ $item = $this->response->data[0];
         </div>
     </div>
 </form>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Device ID</th>
+                            <th>Device Name</th>
+                            <th>Software Name</th>
+                            <th>Software Version</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($this->response->included as $item) {
+                            if ($item->type == 'licenses') {
+                                echo "<tr>\n";
+                                echo '    <td class="text-center"><a class="btn btn-sm btn-success" href="devices/' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '">' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '</a></td>';
+                                echo "    <td>" . $item->{'attributes'}->{'system.name'} . "</td>\n";
+                                echo "    <td>" . $item->{'attributes'}->{'software.name'} . "</td>\n";
+                                echo "    <td>" . $item->{'attributes'}->{'software.version'} . "</td>\n";
+                                echo "</tr>\n";
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

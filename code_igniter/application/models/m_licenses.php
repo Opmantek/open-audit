@@ -53,16 +53,13 @@ class M_licenses extends MY_Model
         if (empty($CI->response->meta->received_data->org_id)) {
             $CI->response->meta->received_data->org_id = 1;
         }
-        $CI->response->meta->received_data->attributes->invoice_id = 0;
-        $CI->response->meta->received_data->attributes->invoice_item_id = 0;
-        $sql = "INSERT INTO `licenses` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array(  $CI->response->meta->received_data->attributes->org_id,
-                        $CI->response->meta->received_data->attributes->invoice_id,
-                        $CI->response->meta->received_data->attributes->invoice_item_id,
-                        $CI->response->meta->received_data->attributes->name,
+        $sql = "INSERT INTO `licenses` VALUES (NULL, ?, ?, ?, ?, 0, ?, ?, ?, NOW())";
+        $data = array(  $CI->response->meta->received_data->attributes->name,
+                        $CI->response->meta->received_data->attributes->org_id,
+                        $CI->response->meta->received_data->attributes->org_descendants,
+                        $CI->response->meta->received_data->attributes->purchase_count,
                         $CI->response->meta->received_data->attributes->description,
                         $CI->response->meta->received_data->attributes->match_string,
-                        $CI->response->meta->received_data->attributes->type,
                         $CI->user->full_name);
         $id = intval($this->run_sql($sql, $data));
         return ($id);
@@ -81,6 +78,28 @@ class M_licenses extends MY_Model
         $sql = "SELECT * FROM licenses WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+
+        if ($result[0]->org_descendants == 'n') {
+            $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id = ? AND software.name LIKE ?";
+            $data = array(intval($result[0]->org_id), (string)$result[0]->match_string);
+            $data_result = $this->run_sql($sql, $data);
+            if (!empty($data_result[0]->count)) {
+                $result[0]->used_count = $data_result[0]->count;
+            }
+            unset ($sql, $data, $data_result);
+        } else {
+            $children = $CI->m_orgs->get_children($result[0]->org_id);
+            $children[] = $result[0]->org_id;
+            $children = implode(',', $children);
+            $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id IN (?) AND software.name LIKE ?";
+            $data = array((string)$children, (string)$result[0]->match_string);
+            $data_result = $this->run_sql($sql, $data);
+            if (!empty($data_result[0]->count)) {
+                $result[0]->used_count = $data_result[0]->count;
+            }
+            unset ($sql, $data, $data_result);
+        }
+
         $result = $this->format_data($result, 'licenses');
         return($result);
     }
@@ -90,52 +109,20 @@ class M_licenses extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'updating data';
         stdlog($this->log);
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->file = 'system';
         $CI = & get_instance();
-
-        $sql = 'UPDATE `licenses` SET ';
-        $data = array();
-        $log->message = json_encode($CI->response->meta->received_data);
-        stdlog($log);
-        if ( !empty($CI->response->meta->received_data->attributes->options)) {
-            $received_options = new stdClass();
-            foreach ($CI->response->meta->received_data->attributes->options as $key => $value) {
-                    $received_options->$key = $value;
-            }
-            $select = "SELECT * FROM licenses WHERE id = ?";
-            $existing_options = $this->run_sql($select, array($CI->response->meta->id));
-            $existing_options = json_decode($existing_options[0]->options);
-            $new_options = new stdClass();
-            foreach ($existing_options as $existing_key => $existing_value) {
-                if (!empty($received_options->$existing_key)) {
-                    $new_options->$existing_key = $received_options->$existing_key;
+        $sql = '';
+        $fields = ' name org_id org_descendants purchase_count description match_string ';
+        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+            if (strpos($fields, ' '.$key.' ') !== false) {
+                if ($sql == '') {
+                    $sql = "SET `" . $key . "` = '" . $value . "'";
                 } else {
-                    $new_options->$existing_key = $existing_options->$existing_key;
+                    $sql .= ", `" . $key . "` = '" . $value . "'";
                 }
             }
-            $sql .= "`options` = ?, ";
-            $data[] = (string)json_encode($new_options);
         }
-        
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
-            $sql .= "`name` = ?, ";
-            $data[] = $CI->response->meta->received_data->attributes->name;
-        }
-
-        if (!empty($CI->response->meta->received_data->attributes->description)) {
-            $sql .= "`description` = ?, ";
-            $data[] = $CI->response->meta->received_data->attributes->description;
-        }
-
-        if ($sql == 'UPDATE `licenses` SET ') {
-            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
-        }
-        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
-        $data[] = (string)$CI->user->full_name;
-        $data[] = intval($CI->response->meta->id);
-        $this->run_sql($sql, $data);
+        $sql = "UPDATE `licenses` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
+        $this->run_sql($sql);
         return;
     }
 
@@ -161,19 +148,43 @@ class M_licenses extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
+        $CI->load->model('m_orgs');
         $sql = $this->collection_sql('licenses', 'sql');
         $result = $this->run_sql($sql, array());
+        foreach ($result as $item) {
+            if ($item->org_descendants == 'n') {
+                $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id = ? AND software.name LIKE ?";
+                $data = array(intval($item->org_id), (string)$item->match_string);
+                $data_result = $this->run_sql($sql, $data);
+                if (!empty($data_result[0]->count)) {
+                    $item->used_count = $data_result[0]->count;
+                }
+                unset ($sql, $data, $data_result);
+            } else {
+                $children = $CI->m_orgs->get_children($item->org_id);
+                $children[] = $item->org_id;
+                $children = implode(',', $children);
+                $sql = "SELECT count(software.name) AS `count` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE system.org_id IN (?) AND software.name LIKE ?";
+                $data = array((string)$children, (string)$item->match_string);
+                $data_result = $this->run_sql($sql, $data);
+                if (!empty($data_result[0]->count)) {
+                    $item->used_count = $data_result[0]->count;
+                }
+                unset ($sql, $data, $data_result);
+            }
+        }
         $result = $this->format_data($result, 'licenses');
         return ($result);
     }
 
     public function execute($id = 0)
     {
-        if ($id = 0) {
+        if ($id == 0) {
             $CI = & get_instance();
             $id = $CI->response->meta->id;
         }
-        $sql = "SELECT * FROM licenses WHERE id = " . intval($id);
+        $id = intval($id);
+        $sql = "SELECT * FROM licenses WHERE id = $id";
         $result = $this->run_sql($sql, array());
         if (empty($result[0])) {
             // log an error, no matching license
@@ -181,8 +192,9 @@ class M_licenses extends MY_Model
         } else {
             $license = $result[0];
         }
-        $sql = "SELECT system.id, system.name, software.name, software.version FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE software.name LIKE '%" . $license->match_string . "%'";
+        $sql = "SELECT system.id AS `system.id`, system.name AS `system.name`, software.name AS `software.name`, software.version AS `software.version` FROM system LEFT JOIN software ON (system.id = software.system_id AND software.current = 'y') WHERE software.name LIKE '" . $license->match_string . "'";
         $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'licenses');
         return ($result);
     }
 

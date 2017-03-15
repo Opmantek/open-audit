@@ -57,7 +57,7 @@
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                             <input required="true" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
                         </div>
                     </div>
 
@@ -75,6 +75,23 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][org_descendants]" class="col-sm-3 control-label">Organisation Descendants</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][org_descendants]" name="data[attributes][org_descendants]">
+                            <option value="y">Yes</option>
+                            <option value="n">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][purchase_count]" class="col-sm-3 control-label">Purchace Count</label>
+                        <div class="col-sm-8 input-group">
+                             <input required="true" type="text" class="form-control" id="data[attributes][purchase_count]" name="data[attributes][purchase_count]">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]">
@@ -84,20 +101,7 @@
                     <div class="form-group">
                         <label for="data[attributes][match_string]" class="col-sm-3 control-label">Match String</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][match_string]" name="data[attributes][match_string]">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
-                        <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][type]" name="data[attributes][type]">
-                                <option value = ''></option>
-                                <option value='software' selected><?php echo __('Software'); ?></option>
-                                <option value='hardware'><?php echo __('Hardware'); ?></option>
-                                <option value='service'><?php echo __('Service'); ?></option>
-                                <option value='other'><?php echo __('Other'); ?></option>
-                            </select>
+                             <input required="true" type="text" class="form-control" id="data[attributes][match_string]" name="data[attributes][match_string]">
                         </div>
                     </div>
 
@@ -118,6 +122,7 @@
                 </div>
 
                 <div class="col-md-6">
+                    <p><br /><strong>NOTE</strong> - You can use the percent % sign as a wildcard in the match_string.</p>
                 </div>
             </div>
 
