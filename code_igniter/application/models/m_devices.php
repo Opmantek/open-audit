@@ -768,7 +768,7 @@ class M_devices extends MY_Model
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
 
         if ($CI->response->meta->format == 'screen') {
-            $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status`", $sql);
+            $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.manufacturer AS `system.manufacturer`, system.os_family AS `system.os_family`, system.status AS `system.status`", $sql);
         }
         $sql = "/* m_devices::group */ " . $sql;
         $result = $this->run_sql($sql, array());
@@ -947,8 +947,8 @@ class M_devices extends MY_Model
         // We assign a weight to the submitted data and compare it to what we already have for each column
         // Valid weights and the sources are:
         // 1000 - user or import (import should set as user as well)
-        // 2000 - audit, ssh, wmi
-        // 3000 - snmp
+        // 2000 - audit, audit_ssh, audit_wmi
+        // 3000 - snmp, ssh, nmap (note - ssh and snmp because they may contain data from nmap)
         // 4000 - ad (active directory)
         // 5000 - nmap
         // The lower the value, the higher the priority is given
@@ -961,13 +961,13 @@ class M_devices extends MY_Model
             case 'audit':
             case 'audit_ssh':
             case 'audit_wmi':
-            case 'ssh':
             case 'windows':
             case 'wmi':
                 $weight = 2000;
                 break;
 
             case 'snmp':
+            case 'ssh':
             case 'nmis':
                 $weight = 3000;
                 break;

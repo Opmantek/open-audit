@@ -1804,7 +1804,7 @@ class M_system extends MY_Model
         // Valid weights and the sources are:
         // 1000 - user or import (import should set as user as well)
         // 2000 - audit, ssh, wmi
-        // 3000 - snmp
+        // 3000 - snmp, nmis, ssh (note - ssh and snmp because they may contain nmap data from a discovery)
         // 4000 - ad (active directory)
         // 5000 - nmap
         // The lower the value, the higher the priority is given
@@ -1817,13 +1817,13 @@ class M_system extends MY_Model
             case 'audit':
             case 'audit_ssh':
             case 'audit_wmi':
-            case 'ssh':
             case 'windows':
             case 'wmi':
                 $weight = 2000;
                 break;
 
             case 'snmp':
+            case 'ssh':
             case 'nmis':
                 $weight = 3000;
                 break;
