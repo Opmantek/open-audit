@@ -51,6 +51,7 @@ $this->load->model('m_devices_components');
 $this->load->model('m_orgs');
 $this->load->model('m_scripts');
 // our required helpers
+$this->load->helper('mac');
 $this->load->helper('network');
 $this->load->helper('snmp');
 $this->load->helper('snmp_oid');
@@ -199,6 +200,7 @@ if (!empty($_POST['data'])) {
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             }
         }
+
         $device->id = $this->m_system->find_system($device);
         if (!empty($device->id)) {
             $log->system_id = $device->id;
@@ -418,9 +420,26 @@ if (!empty($_POST['data'])) {
             $device->type = 'voip phone';
         }
 
-        $log->command_output = json_encode($details->system);
-        $log->message = 'System Data';
-        discovery_log($log);
+        if (empty($device->manufacturer) and !empty($input->mac_address)) {
+            $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
+                $log->message = 'MAC ' . $input->mac_address . ' matched to manufacturer ' . $device->manufacturer;
+                discovery_log($log);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+        }
+
+        if (empty($device->manufacturer) and !empty($device->mac_address)) {
+            $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
+                $log->message = 'MAC ' . $input->mac_address . ' matched to manufacturer ' . $device->manufacturer;
+                discovery_log($log);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+        }
+
+
+
+
+        // $log->command_output = json_encode($device->system);
+        // $log->message = 'System Data';
+        // discovery_log($log);
 
         $device->id = $this->m_system->find_system($device);
 
