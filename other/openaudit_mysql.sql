@@ -1150,7 +1150,7 @@ CREATE TABLE `log` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `name` varchar(50) NOT NULL DEFAULT '',
-  `file_name` varchar(250) NOT NULL DEFAULT '',
+  `file_name` text NOT NULL,
   `file_size` int(10) unsigned NOT NULL DEFAULT '0',
   `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
   `overwrite` varchar(30) NOT NULL DEFAULT '',

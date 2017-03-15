@@ -213,6 +213,9 @@ $this->alter_table('locations', 'icon', "DROP `icon`", 'drop');
 $this->alter_table('locations', 'comments', "DROP `comments`", 'drop');
 $this->alter_table('locations', 'group_id', "DROP `group_id`", 'drop');
 
+# log
+$this->alter_table('log', 'file_name', "`file_name` text NOT NULL");
+
 # oa_change
 $sql = "DELETE FROM oa_change WHERE id = 1";
 $this->db->query($sql);
