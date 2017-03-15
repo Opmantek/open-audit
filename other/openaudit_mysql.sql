@@ -1068,13 +1068,13 @@ DROP TABLE IF EXISTS `licenses`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `licenses` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `invoice_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `invoice_item_id` int(10) unsigned NOT NULL DEFAULT '0',
   `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_descendants` enum('y','n') NOT NULL DEFAULT 'y',
+  `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `used_count` int(10) unsigned NOT NULL DEFAULT '0',
   `description` text NOT NULL,
   `match_string` text NOT NULL,
-  `type` enum('','software','hardware','service','other') NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)

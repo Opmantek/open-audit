@@ -208,6 +208,28 @@ $this->alter_table('fields', 'values', "`values` text NOT NULL");
 # files
 $this->alter_table('files', 'path', "`path` text NOT NULL");
 
+# licenses
+$this->drop_table('licenses');
+$sql = "CREATE TABLE `licenses` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `org_descendants` enum('y','n') NOT NULL DEFAULT 'y',
+  `purchase_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `used_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `description` text NOT NULL,
+  `match_string` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO licenses (SELECT NULL AS `id`, `select_name` AS `name`, 1 AS `org_id`, 'y' AS `org_decendants`, `group_amount` AS `count`,  0 AS `used_count`, '' AS `description`, `select_name` AS `match_string`, 'system' AS `edited_by`, NOW() AS `edited_on` FROM oa_asset_select)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # locations
 $this->alter_table('locations', 'icon', "DROP `icon`", 'drop');
 $this->alter_table('locations', 'comments', "DROP `comments`", 'drop');
