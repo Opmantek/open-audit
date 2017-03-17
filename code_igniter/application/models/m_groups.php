@@ -44,59 +44,6 @@ class M_groups extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($data = null)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $data_array = array();
-        $sql = "INSERT INTO `groups` (";
-        $sql_data = "";
-        if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
-                $data = $CI->response->meta->received_data->attributes;
-            } else {
-                log_error('ERR-0010', 'm_groups::create');
-                return false;
-            }
-        }
-        // TODO - fix the second test below to use a regex to account for multiple spaces
-        if (stripos($data->sql, 'where @filter') === false or stripos($data->sql, 'where @filter or') !== false) {
-            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
-            // Ensure the user creating this query has the admin role
-            $allowed = false;
-            foreach ($CI->user->roles as $key => $value) {
-                if ($value == 'admin') {
-                    $allowed = true;
-                }
-            }
-            if (!$allowed) {
-                unset($allowed);
-                log_error('ERR-0022', 'm_groups::create');
-                return false;
-            }
-            unset($allowed);
-        }
-        foreach ($this->db->field_data('groups') as $field) {
-            if (!empty($data->{$field->name}) and $field->name != 'id') {
-                $sql .= "`" . $field->name . "`, ";
-                $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$field->name};
-            }
-        }
-        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->sql)) {
-            log_error('ERR-0021', 'm_groups::create');
-            return false;
-        }
-        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
-        $sql_data .= '?, NOW()';                 // the user.name and timestamp
-        $data_array[] = $CI->user->full_name;    // the user.name
-        $sql .= ") VALUES (" . $sql_data . ")";
-        $id = intval($this->run_sql($sql, $data_array));
-        return ($id);
-    }
-
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -112,49 +59,6 @@ class M_groups extends MY_Model
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'groups');
         return ($result);
-    }
-
-    public function update()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = '';
-        $data_items = array();
-        $fields = ' name org_id description sql ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if ($key == 'sql') {
-                // TODO - fix the second test below to use a regex to account for multiple spaces
-                if (stripos($value, 'where @filter') === false or stripos($value, 'where @filter or') !== false) {
-                    // We don't have the HIGHLY RECOMMENDED @filter in our SQL
-                    // Ensure the user creating this query has the admin role
-                    $allowed = false;
-                    foreach ($CI->user->roles as $item => $string) {
-                        if ($string == 'admin') {
-                            $allowed = true;
-                        }
-                    }
-                    if (!$allowed) {
-                        unset($allowed);
-                        log_error('ERR-0022', 'm_groups::create');
-                        return false;
-                    }
-                    unset($allowed);
-                }
-            }
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = ?";
-                } else {
-                    $sql .= ", `" . $key . "` = ?";
-                }
-                $data_items[] = $value;
-            }
-        }
-        $sql = "UPDATE `groups` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, $data_items);
-        return;
     }
 
     public function delete($id = '')

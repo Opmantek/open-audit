@@ -46,14 +46,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" placeholder="" value="<?php echo htmlspecialchars($item->attributes->id, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo htmlspecialchars($item->attributes->id, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -100,7 +100,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="purchase_count" class="col-sm-3 control-label">Purchase Count</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" placeholder="" value="<?php echo htmlspecialchars($item->attributes->purchase_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="purchase_count" name="purchase_count" value="<?php echo htmlspecialchars($item->attributes->purchase_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_purchase_count" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="purchase_count"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -109,21 +109,21 @@ $item = $this->response->data[0];
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <?php if ($item->attributes->used_count > $item->attributes->purchase_count) { ?>
+                    <div class="form-group has-error">
+                    <?php } else { ?>
+                    <div class="form-group has-success">
+                    <?php } ?>
                         <label for="used_count" class="col-sm-3 control-label">Used Count</label>
-                        <?php if ($item->attributes->used_count > $item->attributes->purchase_count) { ?>
-                        <div class="col-sm-8 input-group has-warning">
-                        <?php } else { ?>
-                        <div class="col-sm-8 input-group has-success">
-                        <?php } ?>
-                            <input type="text" class="form-control" id="used_count" name="used_count" placeholder="" value="<?php echo htmlspecialchars($item->attributes->used_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="used_count" name="used_count" value="<?php echo htmlspecialchars($item->attributes->used_count, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -135,7 +135,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="match_string" class="col-sm-3 control-label">Match String</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="match_string" name="match_string" placeholder="" value="<?php echo htmlspecialchars($item->attributes->match_string, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="match_string" name="match_string" value="<?php echo htmlspecialchars($item->attributes->match_string, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_match_string" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="match_string"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -147,14 +147,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                 </div>

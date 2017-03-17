@@ -44,42 +44,6 @@ class M_connections extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($data = null)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $data_array = array();
-        $sql = "INSERT INTO `connections` (";
-        $sql_data = "";
-        if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
-                $data = $CI->response->meta->received_data->attributes;
-            } else {
-                log_error('ERR-0010', 'm_connections::create');
-                return false;
-            }
-        }
-        foreach ($this->db->field_data('connections') as $field) {
-            if (!empty($data->{$field->name}) and $field->name != 'id') {
-                $sql .= "`" . $field->name . "`, ";
-                $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$field->name};
-            }
-        }
-        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name)) {
-            log_error('ERR-0021', 'm_connections::create');
-            return false;
-        }
-        $sql .= '`edited_by`, `edited_date`';        // the user.name and timestamp
-        $sql_data .= '?, NOW()';                 // the user.name and timestamp
-        $data_array[] = $CI->user->full_name;    // the user.name
-        $sql .= ") VALUES (" . $sql_data . ")";
-        $id = intval($this->run_sql($sql, $data_array));
-        return ($id);
-    }
-
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -95,28 +59,6 @@ class M_connections extends MY_Model
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'connections');
         return ($result);
-    }
-
-    public function update()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' org_id name provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "UPDATE `connections` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql);
-        return;
     }
 
     public function delete($id = '')

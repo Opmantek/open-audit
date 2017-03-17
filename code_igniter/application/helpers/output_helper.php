@@ -239,13 +239,15 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         header($CI->response->meta->header);
-        $CI->response->meta->user = $CI->user;
+        #$CI->response->meta->user = $CI->user;
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
             $CI->response->include = 'v_error';
             $include = 'v_error';
         } else {
-            $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
+            if (empty($CI->response->meta->include)) {
+                $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
+            }
             $CI->response->include = $CI->response->meta->include;
             $CI->response->heading = $CI->response->meta->heading;
         }

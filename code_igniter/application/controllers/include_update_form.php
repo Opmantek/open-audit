@@ -28,17 +28,17 @@
 
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
 $this->response->meta->filtered = count($this->response->data);
+
 if (count($this->response->data) == 0) {
     log_error('ERR-0002', $this->response->meta->collection . ':read');
     $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called update.');
     if ($this->response->meta->format === 'json') {
         output($this->response);
     } else {
-        $this->response->meta->action = 'collection';
-        include 'include_collection.php';
-        exit();
+        reditect($this->response->meta->collection);
     }
 }
+
 $collection = $this->response->meta->collection;
 if ($collection == 'attributes' or
     $collection == 'credentials' or
@@ -46,6 +46,7 @@ if ($collection == 'attributes' or
     $collection == 'discoveries' or
     $collection == 'fields' or
     $collection == 'files' or
+    $collection == 'groups' or
     $collection == 'ldap_servers' or
     $collection == 'licenses' or
     $collection == 'locations' or

@@ -36,12 +36,7 @@
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
+        <?php include('include_read_panel_header.php'); ?>
 
         <div class="panel-body">
             <div class="row">
@@ -57,7 +52,7 @@
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                         </div>
                     </div>
 
@@ -134,16 +129,16 @@ if (empty($this->config->config['default_network_address'])) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][created_by]" class="col-sm-3 control-label">Created By</label>
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][created_by]" name="data[attributes][created_by]" placeholder="<?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="<?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][created_on]" class="col-sm-3 control-label">Created On</label>
+                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][created_on]" name="data[attributes][created_on]" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="<?php echo date('Y-m-d H:i:s'); ?>" disabled>
                         </div>
                     </div>
 

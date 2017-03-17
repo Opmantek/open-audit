@@ -25,6 +25,20 @@
 #
 # *****************************************************************************
 
+$this->load->model('m_database');
+$db_table = $this->response->meta->collection;
+if ($this->response->meta->collection === 'devices') {
+	$db_table = 'system';
+}
+if ($this->response->meta->collection === 'orgs') {
+	$db_table = 'oa_org';
+}
+if ($this->response->meta->collection === 'users') {
+	$db_table = 'oa_user';
+}
+$this->response->data = $this->m_database->read($db_table);
+
+$this->response->meta->include = 'v_collection_import_form';
 output($this->response);
 
 $log = new stdClass();

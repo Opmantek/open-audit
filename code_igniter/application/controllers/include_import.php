@@ -28,6 +28,13 @@
 $this->load->model('m_users');
 $this->load->helper('file');
 $this->load->helper('log');
+$this->load->helper('error');
+if ($collection !== 'devices') {
+    $this->load->model('m_collection');
+} else {
+    $this->load->model('m_devices');
+}
+
 $this->response->meta->flash = new stdClass();
 $csv = @array_map('str_getcsv', file($_FILES['file_import']['tmp_name']));
 if (!$csv) {
@@ -67,7 +74,20 @@ foreach ($csv as $key => $value) {
         }
         unset($test);
         unset($id);
-        $id = $this->{'m_'.$this->response->meta->collection}->create($item);
+        if (!empty($item->id)) {
+            $id = $item->id;
+            if ($collection !== 'devices') {
+                $this->{'m_collection'}->update($item, $this->response->meta->collection);
+            } else {
+                $this->{'m_devices'}->update($item, $this->response->meta->collection);
+            }
+        } else {
+            if ($collection !== 'devices') {
+                $id = $this->{'m_collection'}->create($item, $this->response->meta->collection);
+            } else {
+                $id = $this->{'m_devices'}->create($item, $this->response->meta->collection);
+            }
+        }
         if (!empty($id)) {
             // set a flash
             $this->response->meta->flash->status = 'success';
@@ -90,9 +110,9 @@ if ($this->response->meta->format === 'json') {
     #$this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
     output($this->response);
 } else {
-    $this->response->meta->action = 'collection';
-    #include 'include_collection.php';
-    redirect($this->response->meta->collection);
+    #$this->response->meta->action = 'collection';
+    #redirect($this->response->meta->collection);
+    echo "";
 }
 
 $log = new stdClass();

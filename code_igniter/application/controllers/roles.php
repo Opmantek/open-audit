@@ -175,6 +175,17 @@ class Roles extends MY_Controller_new
     }
 
     /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
+    {
+        include 'include_import_form.php';
+    }
+
+    /**
     * Process the supplied data and create a new object
     *
     * @access public

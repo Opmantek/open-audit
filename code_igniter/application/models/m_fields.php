@@ -44,52 +44,6 @@ class M_fields extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($data = null)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $data_array = array();
-        $sql = "INSERT INTO `fields` (";
-        $sql_data = "";
-        if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
-                $data = $CI->response->meta->received_data->attributes;
-            } else {
-                log_error('ERR-0010', 'm_fields::create');
-                return false;
-            }
-        }
-        foreach ($this->db->field_data('fields') as $field) {
-            if (!empty($data->{$field->name}) and $field->name != 'id') {
-                $sql .= "`" . $field->name . "`, ";
-                $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$field->name};
-            }
-        }
-        # set a default for placement
-        if (empty($data->placement)) {
-            $data->placement = 'system';
-        }
-        if (empty($data->org_id)) {
-            $data->org_id = 1;
-        }
-        if (empty($data->type)) {
-            $data->type = 'varchar';
-        }
-        if (count($data_array) == 0 or empty($data->name)) {
-            log_error('ERR-0021', 'm_fields::create');
-            return false;
-        }
-        $sql .= 'edited_by, edited_date';        // the user.name and timestamp
-        $sql_data .= '?, NOW()';                 // the user.name and timestamp
-        $data_array[] = $CI->user->full_name;    // the user.name
-        $sql .= ") VALUES (" . $sql_data . ")";
-        $id = intval($this->run_sql($sql, $data_array));
-        return ($id);
-    }
-
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -105,28 +59,6 @@ class M_fields extends MY_Model
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'fields');
         return ($result);
-    }
-
-    public function update()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' name type values placement org_id group_id ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "UPDATE `fields` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
-        return;
     }
 
     public function delete($id = '')

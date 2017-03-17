@@ -36,12 +36,7 @@
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
+        <?php include('include_read_panel_header.php'); ?>
 
         <div class="panel-body">
             <div class="row">
@@ -77,7 +72,7 @@
                     <div class="form-group">
                         <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" value="">
                         </div>
                     </div>
 
@@ -91,14 +86,14 @@
                     <div class="form-group">
                         <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
                         </div>
                     </div>
                 </div>

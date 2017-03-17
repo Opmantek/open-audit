@@ -181,8 +181,6 @@ class Connections extends MY_Controller_new
     */
     public function import_form()
     {
-        $this->load->model('m_database');
-        $this->response->data = $this->m_database->read('connections');
         include 'include_import_form.php';
     }
 

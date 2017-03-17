@@ -105,6 +105,7 @@ class Credentials extends MY_Controller_new
     */
     public function create()
     {
+        $this->load->library('encrypt');
         include 'include_create.php';
     }
 

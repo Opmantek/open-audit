@@ -53,14 +53,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="value" class="col-sm-3 control-label">Value</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="value" name="value" placeholder="" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit) and $item->attributes->editable == 'y') { ?>
                             <span class="input-group-btn">
                                 <button id="edit_value" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="value"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

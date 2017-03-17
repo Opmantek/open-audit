@@ -25,33 +25,21 @@
 #
 # *****************************************************************************
 
+$this->load->model('m_collection');
+$this->response->meta->id = $this->{'m_collection'}->create();
 
-$this->response->meta->id = $this->{'m_'.$this->response->meta->collection}->create();
 if (! empty($this->response->meta->id)) {
     if ($this->response->meta->format === 'json') {
         $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
         output($this->response);
     } else {
-        $this->response->meta->flash = new stdClass();
-        $this->response->meta->flash->status = 'success';
-        $this->response->meta->flash->message = 'New object in ' . $this->response->meta->collection . ' created.';
-        $this->response->meta->action = 'collection';
-        if ($this->response->meta->collection == 'orgs') {
-            redirect('orgs');
-        } else {
-            include 'include_collection.php';
-        }
+        redirect($this->response->meta->collection);
     }
 } else {
     if ($this->response->meta->format === 'json') {
         output($this->response);
     } else {
-        $this->response->meta->flash = new stdClass();
-        $this->response->meta->flash->status = 'danger';
-        $this->response->meta->flash->message = @$this->response->errors[0]->detail;
-        unset($this->response->errors);
-        $this->response->meta->action = 'collection';
-        include 'include_collection.php';
+        redirect($this->response->meta->collection);
     }
 }
 $log = new stdClass();

@@ -94,6 +94,7 @@ class orgs extends MY_Controller_new
     */
     private function create()
     {
+        $this->response->meta->received_data->attributes->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $this->response->meta->received_data->attributes->name));
         include 'include_create.php';
     }
 

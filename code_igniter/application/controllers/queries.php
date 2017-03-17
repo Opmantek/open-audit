@@ -105,6 +105,23 @@ class Queries extends MY_Controller_new
     */
     public function create()
     {
+        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or 
+            stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
+            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+            // Ensure the user creating this query has the admin role
+            $allowed = false;
+            foreach ($this->user->roles as $key => $value) {
+                if ($value == 'admin') {
+                    $allowed = true;
+                }
+            }
+            if (!$allowed) {
+                unset($allowed);
+                log_error('ERR-0022', 'queries::create');
+                redirect('/queries');
+            }
+            unset($allowed);
+        }
         include 'include_create.php';
     }
 
@@ -127,6 +144,23 @@ class Queries extends MY_Controller_new
     */
     public function update()
     {
+        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or 
+            stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
+            // We don't have the HIGHLY RECOMMENDED @filter in our SQL
+            // Ensure the user creating this query has the admin role
+            $allowed = false;
+            foreach ($this->user->roles as $key => $value) {
+                if ($value == 'admin') {
+                    $allowed = true;
+                }
+            }
+            if (!$allowed) {
+                unset($allowed);
+                log_error('ERR-0022', 'queries::create');
+                redirect('/queries');
+            }
+            unset($allowed);
+        }
         include 'include_update.php';
     }
 

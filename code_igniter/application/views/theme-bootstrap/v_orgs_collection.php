@@ -47,7 +47,7 @@
                         <th><?php echo __('ID')?></th>
                         <th><?php echo __('Systems')?></th>
                         <th><?php echo __('Organisation Name')?></th>
-                        <th><?php echo __('Comment')?></th>
+                        <th><?php echo __('Description')?></th>
                         <th><?php echo __('Parent Name')?></th>
                         <th><?php echo __('AD Group')?></th>
                         <th class="text-center"><?php echo __('Devices')?></th>
@@ -66,7 +66,7 @@
                             <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo intval($item->id); ?></a></td>
                             <td class="text-center"><?php echo $item->attributes->device_count?></td>
                             <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->comments, REPLACE_FLAGS, CHARSET)?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
                             <td><?php echo htmlspecialchars($item->attributes->parent_name, REPLACE_FLAGS, CHARSET)?></td>
                             <td><?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET)?></td>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>

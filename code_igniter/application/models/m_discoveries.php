@@ -44,78 +44,6 @@ class M_discoveries extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($data = null)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $data_array = array();
-        $sql = "INSERT INTO `discoveries` (";
-        $sql_data = "";
-        if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
-                $data = $CI->response->meta->received_data->attributes;
-            } else {
-                log_error('ERR-0010', 'm_discoveries::create');
-                return false;
-            }
-        }
-
-        if ($data->type == 'subnet') {
-            if (empty($data->other->subnet)) {
-                log_error('ERR-0024', 'm_discoveries::create');
-                return false;
-            } else {
-                $data->description = $data->other->subnet;
-            }
-        } else if ($data->type == 'active directory') {
-            $data->description = $data->other->ad_domain;
-        } else {
-            $data->description = '';
-        }
-        $data->other = json_encode($data->other);
-        foreach ($this->db->field_data('discoveries') as $field) {
-            if (!empty($data->{$field->name}) and $field->name != 'id') {
-                $sql .= "`" . $field->name . "`, ";
-                $sql_data .= "?, ";
-                $data_array[] = (string)$data->{$field->name};
-            }
-        }
-        if (count($data_array) == 0 or empty($data->org_id) or empty($data->name) or empty($data->other) or empty($data->network_address)) {
-            log_error('ERR-0021', 'm_discoveries::create');
-            return false;
-        }
-        $sql .= '`created_by`, `created_on`';    // the user.name and timestamp
-        $sql_data .= '?, NOW()';                 // the user.name and timestamp
-        $data_array[] = $CI->user->full_name;    // the user.name
-        $sql .= ") VALUES (" . $sql_data . ")";
-        $this->run_sql($sql, $data_array);
-        $sql = "SELECT id FROM discoveries WHERE name = ? and org_id = ? and other = ?";
-        $new_discovery = $this->run_sql($sql, array($data->name, $data->org_id, $data->other));
-        $id = $new_discovery[0]->id;
-
-        $data->other = json_decode($data->other);
-        if ($data->type == 'subnet' and strpos($data->other->subnet, '/') !== false) {
-            $CI->load->model('m_networks');
-            $network = new stdClass();
-            $network->name = $data->other->subnet;
-            $network->org_id = $data->org_id;
-            $network->description = $data->name;
-            $CI->m_networks->upsert($network);
-        } else {
-            if ($data->type == 'subnet' and filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
-                $CI->load->model('m_networks');
-                $CI->load->helper('network');
-                $temp = network_details($data->other->subnet.'/30');
-                $network = new stdClass();
-                $network->name = $temp->network.'/'.$temp->network_slash;
-                $network->org_id = $data->org_id;
-                $CI->m_networks->upsert($network);
-            }
-        }
-        return $id;
-    }
 
     public function read($id = '')
     {
@@ -133,57 +61,6 @@ class M_discoveries extends MY_Model
         $result[0]->other = json_decode($result[0]->other);
         $result = $this->format_data($result, 'discoveries');
         return ($result);
-    }
-
-    public function update()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' name org_id location_id network_address type system_id other device_count last_run complete devices_assigned_to_org devices_assigned_to_location ';
-
-        if ( !empty($CI->response->meta->received_data->attributes->other)) {
-            $received_other = new stdClass();
-            foreach ($CI->response->meta->received_data->attributes->other as $key => $value) {
-                    $received_other->$key = $value;
-            }
-            $select = "SELECT * FROM discoveries WHERE id = ?";
-            $result = $this->run_sql($select, array($CI->response->meta->id));
-            $existing_other = json_decode($result[0]->other);
-            $new_other = new stdClass();
-            foreach ($existing_other as $existing_key => $existing_value) {
-                if (!empty($received_other->$existing_key)) {
-                    $new_other->$existing_key = $received_other->$existing_key;
-                } else {
-                    $new_other->$existing_key = $existing_other->$existing_key;
-                }
-            }
-            unset($CI->response->meta->received_data->attributes->other);
-            $CI->response->meta->received_data->attributes->other = (string)json_encode($new_other);
-            if (!empty($received_other->subnet)) {
-                $CI->response->meta->received_data->attributes->description = $received_other->subnet;
-                $fields .= ' description ';
-            }
-            if (!empty($received_other->ad_domain)) {
-                $CI->response->meta->received_data->attributes->description = $received_other->ad_domain;
-                $fields .= ' description ';
-            }
-        }
-
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "/* discoveries::update */ " . "UPDATE `discoveries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql);
-        return;
     }
 
     public function delete($id = '')

@@ -96,6 +96,7 @@ class login extends CI_Controller
             $this->load->model('m_networks');
             $network = new stdClass();
             $network->name = $subnet;
+            $network->network = $subnet;
             $network->org_id = 0;
             $network->description = 'Auto inserted local server subnet';
             $this->m_networks->upsert($network);
@@ -334,6 +335,7 @@ class login extends CI_Controller
         foreach ($this->m_configuration->read_subnet() as $subnet) {
             $network = new stdClass();
             $network->name = $subnet;
+            $network->network = $subnet;
             $network->org_id = 0;
             $network->description = 'Auto inserted local server subnet';
             $this->m_networks->upsert($network);

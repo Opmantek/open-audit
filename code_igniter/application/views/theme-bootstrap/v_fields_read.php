@@ -46,14 +46,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="id" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="id" name="id" placeholder="" value="<?php echo intval($item->attributes->id); ?>" disabled>
+                            <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -103,7 +103,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="values" class="col-sm-3 control-label">Values</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="values" name="values" placeholder="" value="<?php echo htmlspecialchars($item->attributes->values, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="values" name="values" value="<?php echo htmlspecialchars($item->attributes->values, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_values" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="values"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

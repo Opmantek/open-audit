@@ -44,27 +44,6 @@ class M_licenses extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        if (empty($CI->response->meta->received_data->org_id)) {
-            $CI->response->meta->received_data->org_id = 1;
-        }
-        $sql = "INSERT INTO `licenses` VALUES (NULL, ?, ?, ?, ?, 0, ?, ?, ?, NOW())";
-        $data = array(  $CI->response->meta->received_data->attributes->name,
-                        $CI->response->meta->received_data->attributes->org_id,
-                        $CI->response->meta->received_data->attributes->org_descendants,
-                        $CI->response->meta->received_data->attributes->purchase_count,
-                        $CI->response->meta->received_data->attributes->description,
-                        $CI->response->meta->received_data->attributes->match_string,
-                        $CI->user->full_name);
-        $id = intval($this->run_sql($sql, $data));
-        return ($id);
-    }
-
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -102,28 +81,6 @@ class M_licenses extends MY_Model
 
         $result = $this->format_data($result, 'licenses');
         return($result);
-    }
-
-    public function update()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'updating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' name org_id org_descendants purchase_count description match_string ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "UPDATE `licenses` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql);
-        return;
     }
 
     public function delete($id = '')

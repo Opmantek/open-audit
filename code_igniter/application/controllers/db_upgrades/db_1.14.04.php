@@ -191,6 +191,10 @@ foreach ($sql as $query) {
 }
 unset($sql);
 
+# discoveries
+$this->alter_table('discoveries', 'created_by', "`edited_by` varchar(200) NOT NULL DEFAULT ''");
+$this->alter_table('discoveries', 'created_on', "`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'");
+
 # fields
 $sql = "UPDATE `fields` SET `type` = 'varchar' WHERE `type` != 'list'";
 $this->db->query($sql);
@@ -206,6 +210,7 @@ $this->alter_table('fields', 'placement', "`placement` enum('custom','system') N
 $this->alter_table('fields', 'values', "`values` text NOT NULL");
 
 # files
+$this->alter_table('files', 'name', "`name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add')
 $this->alter_table('files', 'path', "`path` text NOT NULL");
 
 # licenses
@@ -237,6 +242,12 @@ $this->alter_table('locations', 'group_id', "DROP `group_id`", 'drop');
 
 # log
 $this->alter_table('log', 'file_name', "`file_name` text NOT NULL");
+
+# networks
+$this->alter_table('networks', 'network', "`network` varchar(200) NOT NULL DEFAULT '' AFTER `name`", 'add');
+$sql = "UPDATE `networks` SET `network` = `name`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # oa_change
 $sql = "DELETE FROM oa_change WHERE id = 1";
@@ -294,6 +305,7 @@ if ($this->db->table_exists($table)) {
 }
 
 # oa_org
+$this->alter_table('oa_org', 'comments', "`description` text NOT NULL");
 $sql = "UPDATE `oa_org` SET `edited_date` = '2000-01-01 00:00:00' WHERE `id` = 1";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -360,8 +372,8 @@ unset($sql);
 $sql[] = "DELETE FROM `roles`";
 $sql[] = "INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"configuration\":\"crud\",\"database\":\"crud\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00')";
 $sql[] = "INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"errors\":\"r\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"users\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00')";
-$sql[] = "INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"baselines\":\"crud\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"errors\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00')";
-$sql[] = "INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"baselines\":\"r\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_user','system','2000-01-01 00:00:00')";
+$sql[] = "INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"baselines\":\"crud\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"errors\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00')";
+$sql[] = "INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"baselines\":\"r\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_user','system','2000-01-01 00:00:00')";
 foreach ($sql as $query) {
       $this->db->query($query);
       $this->log_db($this->db->last_query());

@@ -61,6 +61,7 @@ if (!empty($this->response->meta->collection) and $this->response->meta->collect
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-table.min.js"></script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/jquery.tablesorter.min.js"></script>
+    <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/bootstrap-filestyle.min.js"></script>
     <!-- Open-AudIT specific items -->
     <script>
 <?php

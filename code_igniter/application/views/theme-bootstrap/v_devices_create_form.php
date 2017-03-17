@@ -36,12 +36,13 @@
 
 ?>
 <div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left">Devices</span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <span class="text-left">Devices</span>
+            <span class="pull-right"><a class="btn btn-xs btn-info" href="../index.php/devices">List Devices</a></span>
+        </h3>
+    </div>
+
   <div class="panel-body">
     <form action="<?php echo $this->response->links->self; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
     <fieldset>

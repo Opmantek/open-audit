@@ -178,7 +178,7 @@ if (!empty($data['fields'])) {
             echo '                    <div class="form-group">
                 <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
                 <div class="input-group">
-                  <input disabled type="text" class="form-control" placeholder="" id="' . $field->{'name'} . '" name="' . $field->{'name'} . '" value="">
+                  <input disabled type="text" class="form-control"  id="' . $field->{'name'} . '" name="' . $field->{'name'} . '" value="">
                   <span class="input-group-btn">
                     <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                   </span>

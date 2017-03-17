@@ -309,7 +309,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="name" class="col-sm-4 control-label"><?php echo __('Name')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system']->name; ?>">
+                                <input disabled type="text" class="form-control"  id="name" name="name" value="<?php echo $data['system']->name; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -321,7 +321,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
+                                <input disabled type="text" class="form-control"  id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                 <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -332,7 +332,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="domain" class="col-sm-4 control-label"><?php echo __('Domain')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="domain" name="domain" value="<?php echo $data['system']->domain; ?>">
+                                <input disabled type="text" class="form-control"  id="domain" name="domain" value="<?php echo $data['system']->domain; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                 <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -344,7 +344,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
                             <div class="col-sm-8 input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
+                              <input disabled type="text" class="form-control"  id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -355,7 +355,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('DNS Domain')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system']->dns_domain; ?>">
+                                <input disabled type="text" class="form-control"  id="dns_domain" name="dns_domain" value="<?php echo $data['system']->dns_domain; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -366,7 +366,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('FQDN')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="fqdn" name="fqdn" value="<?php echo $data['system']->fqdn; ?>">
+                                <input disabled type="text" class="form-control"  id="fqdn" name="fqdn" value="<?php echo $data['system']->fqdn; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="fqdn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -378,7 +378,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="ip" class="col-sm-4 control-label"><?php echo __('IP')?></label>
                             <div class="col-sm-8 input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="ip" name="ip" value="<?php echo $data['system']->ip; ?>">
+                              <input disabled type="text" class="form-control"  id="ip" name="ip" value="<?php echo $data['system']->ip; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                 <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -446,7 +446,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
                             <div class="col-sm-8 input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system']->function; ?>">
+                              <input disabled type="text" class="form-control"  id="function" name="function" value="<?php echo $data['system']->function; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -511,7 +511,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
                             <div class="col-sm-8 input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system']->description; ?>">
+                              <input disabled type="text" class="form-control"  id="description" name="description" value="<?php echo $data['system']->description; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -523,7 +523,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="os_group" class="col-sm-4 control-label"><?php echo __('OS Group')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="os_group" name="os_group" value="<?php echo $data['system']->os_group; ?>">
+                                <input disabled type="text" class="form-control"  id="os_group" name="os_group" value="<?php echo $data['system']->os_group; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -535,7 +535,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="os_family" class="col-sm-4 control-label"><?php echo __('OS Family')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="os_family" name="os_family" value="<?php echo $data['system']->os_family; ?>">
+                                <input disabled type="text" class="form-control"  id="os_family" name="os_family" value="<?php echo $data['system']->os_family; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -547,7 +547,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
                             <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
+                                <input disabled type="text" class="form-control"  id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -562,7 +562,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="manufacturer" class="col-sm-4 control-label"><?php echo __('Manufacturer')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="manufacturer" placeholder="" value="<?php echo $data['system']->manufacturer; ?>" disabled>
+                                <input type="text" class="form-control" id="manufacturer" value="<?php echo $data['system']->manufacturer; ?>" disabled>
                                     <?php if ($edit) { ?>
                                     <span class="input-group-btn">
                                         <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -573,7 +573,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="model" class="col-sm-4 control-label"><?php echo __('Model')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="model" placeholder="" value="<?php echo $data['system']->model; ?>" disabled>
+                                <input type="text" class="form-control" id="model" value="<?php echo $data['system']->model; ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -584,7 +584,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="serial" class="col-sm-4 control-label"><?php echo __('Serial')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system']->serial; ?>" disabled>
+                                <input type="text" class="form-control" id="serial" value="<?php echo $data['system']->serial; ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -598,7 +598,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="form_factor" class="col-sm-4 control-label"><?php echo __('Form Factor')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="form_factor" placeholder="" value="<?php echo $data['system']->form_factor; ?>" disabled>
+                                <input type="text" class="form-control" id="form_factor" value="<?php echo $data['system']->form_factor; ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -619,26 +619,26 @@ if (empty($data['mount_point'])) {
                                     $uptime = intval($data['system']->uptime/ 86400) . ' days, ' . gmdate("H:i:s", $data['system']->uptime);
                                 }
                                 ?>
-                                <input type="text" class="form-control" id="uptime" placeholder="" value="<?php echo $uptime; ?>" readonly>
+                                <input type="text" class="form-control" id="uptime" value="<?php echo $uptime; ?>" readonly>
                                 <?php unset($uptime); ?>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="snmp_oid" class="col-sm-4 control-label"><?php echo __('SNMP OID')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="snmp_oid" placeholder="" value="<?php echo $data['system']->snmp_oid; ?>" readonly>
+                                <input type="text" class="form-control" id="snmp_oid" value="<?php echo $data['system']->snmp_oid; ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last_seen" class="col-sm-4 control-label"><?php echo __('Last Seen On')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="last_seen" placeholder="" value="<?php echo $data['system']->last_seen; ?>" readonly>
+                                <input type="text" class="form-control" id="last_seen" value="<?php echo $data['system']->last_seen; ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="last_seen_by" class="col-sm-4 control-label"><?php echo __('Last Seen By')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="last_seen_by" placeholder="" value="<?php echo $data['system']->last_seen_by; ?>" readonly>
+                                <input type="text" class="form-control" id="last_seen_by" value="<?php echo $data['system']->last_seen_by; ?>" readonly>
                             </div>
                         </div>
                         <?php
@@ -647,7 +647,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="cluster_name" class="col-sm-4 control-label"><?php echo __('Cluster Name')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system']->cluster_name; ?>" disabled>
+                                <input type="text" class="form-control" id="cluster_name" value="<?php echo $data['system']->cluster_name; ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -664,7 +664,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="vm_host" class="col-sm-4 control-label"><?php echo __('VM Host')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_host" placeholder="" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
+                                <input type="text" class="form-control" id="vm_host" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -675,7 +675,7 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="vm_group" class="col-sm-4 control-label"><?php echo __('VM Group')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system']->vm_group; ?>" disabled>
+                                <input type="text" class="form-control" id="vm_group" value="<?php echo $data['system']->vm_group; ?>" disabled>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn">
                                     <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -692,13 +692,13 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="printer_duplex" class="col-sm-4 control-label"><?php echo __('Printer Duplex')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_duplex" placeholder="" value="<?php echo $data['system']->printer_duplex; ?>" readonly>
+                                <input type="text" class="form-control" id="printer_duplex" value="<?php echo $data['system']->printer_duplex; ?>" readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="printer_colour" class="col-sm-4 control-label"><?php echo __('Printer Colour')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_colour" placeholder="" value="<?php echo $data['system']->printer_color; ?>" readonly>
+                                <input type="text" class="form-control" id="printer_colour" value="<?php echo $data['system']->printer_color; ?>" readonly>
                             </div>
                         </div>
                         <?php
@@ -786,7 +786,7 @@ foreach ($list as $item) {
                         <div class="form-group">
                             <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
+                                <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" value="<?php echo $value; ?>" readonly>
                             </div>
                         </div>
                     <?php
@@ -835,7 +835,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                 <div class="form-group">
                     <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
                     <div class="col-sm-8 input-group">
-                      <input type="text" class="form-control" id="<?php echo $item; ?>" placeholder="" value="<?php echo $data['system']->{$item}; ?>" disabled>
+                      <input type="text" class="form-control" id="<?php echo $item; ?>" value="<?php echo $data['system']->{$item}; ?>" disabled>
                       <span class="input-group-btn">
                         <button id="edit_<?php echo $item; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                       </span>
@@ -934,7 +934,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                     ?><div class="form-group"><!-- 5 -->
                         <label for="included_location_<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="included_location_<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+                            <input type="text" class="form-control" id="included_location_<?php echo $key; ?>" value="<?php echo $value; ?>" disabled>
                         </div>
                     </div><!-- 5 -->
                             <?php
@@ -964,7 +964,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                     if ($key != 'location_name') {
                     ?><label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                     <div class="col-sm-8 input-group"><!-- 6 -->
-                        <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
+                        <input type="text" class="form-control" id="<?php echo $key; ?>" value="<?php echo $value; ?>" disabled>
                         <?php
                         if ($key != 'dummy_location_id') {
                         ?><?php if ($edit) { ?><span class="input-group-btn">
@@ -1019,7 +1019,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
           <div class="form-group"><!-- 5 -->
           <label for="owner" class="col-sm-4 control-label">Owner</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
-            <input type="text" class="form-control" id="owner" placeholder="" value="<?php echo $data['system']->owner; ?>" disabled>
+            <input type="text" class="form-control" id="owner" value="<?php echo $data['system']->owner; ?>" disabled>
             <?php if ($edit) { ?>
             <span class="input-group-btn">
               <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
@@ -1033,7 +1033,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
 <div class="form-group"><!-- 5 -->
           <label for="org_id" class="col-sm-4 control-label">Organisation ID</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
-            <input type="text" class="form-control" id="org_id" placeholder="" value="<?php echo $data['system']->org_id; ?>" disabled>
+            <input type="text" class="form-control" id="org_id" value="<?php echo $data['system']->org_id; ?>" disabled>
             <?php if ($edit) { ?>
             <span class="input-group-btn">
               <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id">
@@ -1047,7 +1047,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
           <div class="form-group"><!-- 5 -->
           <label for="owner" class="col-sm-4 control-label">Comments</label>
           <div class="col-sm-8 input-group"><!-- 6 -->
-            <input type="text" class="form-control" id="comments" placeholder="" value="<?php echo $data['system']->comments; ?>" disabled>
+            <input type="text" class="form-control" id="comments" value="<?php echo $data['system']->comments; ?>" disabled>
             <?php if ($edit) { ?>
             <span class="input-group-btn">
               <button id="edit_comments" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="comments">
@@ -1495,7 +1495,7 @@ if ($data['system']->type == 'computer') {
                                 <div class="form-group">
                                     <label for="<?php echo $item . '_' . $key . '_' . $item_row->id; ?>" class="col-sm-4 control-label"><?php echo __($show_key)?></label>
                                     <div class="col-sm-8 input-group">
-                                        <input type="text" class="form-control" id="<?php echo $item . '_' . $key . '_' . $item_row->id; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
+                                        <input type="text" class="form-control" id="<?php echo $item . '_' . $key . '_' . $item_row->id; ?>" value="<?php echo $value; ?>" readonly>
                                     </div>
                                 </div>
                             <?php
@@ -1671,7 +1671,7 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                 echo '                    <div class="form-group">
                     <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
                     <div class="col-sm-8 input-group">
-                      <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">';
+                      <input disabled type="text" class="form-control"  id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">';
                       if ($edit) {
                         echo '
                       <span class="input-group-btn">

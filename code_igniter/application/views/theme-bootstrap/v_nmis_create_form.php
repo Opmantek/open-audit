@@ -38,8 +38,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
+                <span class="text-left">NMIS Import</span>
             </h3>
         </div>
 

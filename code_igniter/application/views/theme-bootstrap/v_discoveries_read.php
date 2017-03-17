@@ -53,7 +53,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="name" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -85,21 +85,21 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" placeholder="" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="type" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="type" name="type" placeholder="" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="type" name="type" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="network_address" class="col-sm-3 control-label">Network Address</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="network_address" name="network_address" placeholder="" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="network_address" name="network_address" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_network_address" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="network_address"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -151,16 +151,16 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="created_by" class="col-sm-3 control-label">Created By</label>
+                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="created_by" name="created_by" value="<?php echo htmlspecialchars($item->attributes->created_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="created_on" class="col-sm-3 control-label">Created On</label>
+                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="created_on" name="created_on" value="<?php echo htmlspecialchars($item->attributes->created_on, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
@@ -174,7 +174,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="complete" class="col-sm-3 control-label">Complete</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="complete" name="complete" placeholder="" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_complete" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="complete"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -191,7 +191,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="other.subnet" class="col-sm-3 control-label">Subnet</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.subnet" name="other.subnet" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.subnet" name="other.subnet" value="<?php echo htmlspecialchars($item->attributes->other->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_other.subnet" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.subnet"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -205,7 +205,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="other.ad_server" class="col-sm-3 control-label">AD Server</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_server, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" value="<?php echo htmlspecialchars($item->attributes->other->ad_server, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_other.ad_server" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_server"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -216,7 +216,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="other.ad_domain" class="col-sm-3 control-label">AD Domain</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" placeholder="" value="<?php echo htmlspecialchars($item->attributes->other->ad_domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" value="<?php echo htmlspecialchars($item->attributes->other->ad_domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_other.ad_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="other.ad_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

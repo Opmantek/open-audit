@@ -105,6 +105,14 @@ class Users extends MY_Controller_new
     */
     public function create()
     {
+        // JSON encode our roles
+        if (!empty($this->response->meta->received_data->attributes->roles)) {
+            $this->response->meta->received_data->attributes->roles = json_encode($this->response->meta->received_data->attributes->roles);
+        }
+        // JSON encode our orgs
+        if (!empty($this->response->meta->received_data->attributes->orgs)) {
+            $this->response->meta->received_data->attributes->orgs = json_encode(array_map('intval', $this->response->meta->received_data->attributes->orgs));
+        }
         include 'include_create.php';
     }
 
@@ -140,6 +148,14 @@ class Users extends MY_Controller_new
     */
     public function update()
     {
+        // JSON encode our roles
+        if (!empty($this->response->meta->received_data->attributes->roles)) {
+            $this->response->meta->received_data->attributes->roles = json_encode($this->response->meta->received_data->attributes->roles);
+        }
+        // JSON encode our orgs
+        if (!empty($this->response->meta->received_data->attributes->orgs)) {
+            $this->response->meta->received_data->attributes->orgs = json_encode(array_map('intval', $this->response->meta->received_data->attributes->orgs));
+        }
         include 'include_update.php';
     }
 

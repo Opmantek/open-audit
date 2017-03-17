@@ -85,7 +85,14 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="table" class="col-sm-3 control-label">Table</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="table" name="table" value="<?php echo htmlspecialchars($item->attributes->table, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <select class="form-control" id="table" name="table" disabled>
+                            <?php
+                            foreach ($this->response->included as $table) {
+                                if ($table->type == 'table') { ?>
+                                    <option value="<?php echo $table->attributes->name; ?>"<?php if ($item->attributes->table === $table->attributes->name) { echo ' selected'; } ?>><?php echo htmlspecialchars($table->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                <?php
+                                }
+                            } ?></select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_table" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="table"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

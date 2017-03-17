@@ -191,6 +191,21 @@
                 } ?>
 
                 <?php
+                if ($this->m_users->get_user_permission('', 'licenses', 'r')) { ?>
+                    <li class="dropdown-submenu">
+                        <a href="#">Licenses</a>
+                        <ul class="dropdown-menu" style="min-width:250px;">
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/licenses'>List Licenses</a></li>
+                            <?php if ($this->m_users->get_user_permission('', 'licenses', 'c')) { ?>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/licenses/create'>Create Licenses</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/licenses/import'>Import Multiple Licenses</a></li>
+                            <?php } ?>
+                        </ul>
+                    </li>
+                <?php
+                } ?>
+
+                <?php
                 if ($this->m_users->get_user_permission('', 'locations', 'r')) { ?>
                     <li class="dropdown-submenu">
                         <a href="#">Locations</a>
@@ -422,10 +437,10 @@
             </li>
       </ul>
 
-      <form class="navbar-form navbar-right" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
+      <form id="search_form" name="search_form" class="navbar-form navbar-right" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
         <div class="form-group">
           <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Name or IP">
-          <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]"  value='["system"]' />
+          <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
           <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip"]' />
         </div>
         <button type="submit" class="btn btn-default btn-sm">Submit</button>

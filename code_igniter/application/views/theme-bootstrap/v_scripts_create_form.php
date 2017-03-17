@@ -43,12 +43,7 @@ foreach ($this->response->included as $item) {
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title">
-                <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-                <span class="pull-right"></span>
-            </h3>
-        </div>
+        <?php include('include_read_panel_header.php'); ?>
 
         <div class="panel-body">
             <div class="row">
@@ -57,14 +52,14 @@ foreach ($this->response->included as $item) {
                     <div class="form-group">
                         <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                         </div>
                     </div>
 
@@ -82,16 +77,16 @@ foreach ($this->response->included as $item) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[description]" class="col-sm-3 control-label">Description</label>
+                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[description]" name="data[description]" placeholder="" value="">
+                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[based_on]" class="col-sm-3 control-label">Based On</label>
+                        <label for="data[attributes][based_on]" class="col-sm-3 control-label">Based On</label>
                         <div class="col-sm-8 input-group">
-                            <select id="data[based_on]" name="data[based_on]" onChange="based_on();" class="form-control">
+                            <select id="data[attributes][based_on]" name="data[attributes][based_on]" onChange="based_on();" class="form-control">
                                 <option value='' label=' '></option>
                                 <option value='audit_aix.sh'>Audit AIX</option>
                                 <option value='audit_esx.sh'>Audit ESX</option>
@@ -103,16 +98,16 @@ foreach ($this->response->included as $item) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[edited_by]" class="col-sm-3 control-label">Edited By</label>
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[edited_by]" name="data[edited_by]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[edited_date]" class="col-sm-3 control-label">Edited Date</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[edited_date]" name="data[edited_date]" placeholder="" value="" disabled>
+                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
                         </div>
                     </div>
                 </div>
@@ -157,9 +152,9 @@ foreach ($this->response->included as $item) {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td>Select</td>
-                                    <td>Description</td>
-                                    <td>Path</td>
+                                    <th>Use</th>
+                                    <th>Name</th>
+                                    <th>Path</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -168,7 +163,8 @@ foreach ($this->response->included as $item) {
                             <?php # TODO - enable per script file retrieval ?>
                             <?php # TODO - Maybe only display files per based_on ?>
                                 <tr>
-                                    <td><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked disabled></td>
+                                    <td class="text-center"><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked></td>
+                                    <td><?php echo htmlspecialchars($file->name, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->description, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->path, REPLACE_FLAGS, CHARSET); ?></td>
                                 </tr>
@@ -195,7 +191,7 @@ if (!empty($data['script_option'])) {
 
 <script>
 function based_on(){
-    switch(document.getElementById("data[based_on]").value)
+    switch(document.getElementById("data[attributes][based_on]").value)
     {
         <?php foreach ($script_options as $key => $value) { ?>
         case "<?php echo $key; ?>":
@@ -225,7 +221,7 @@ function generate_options($option_list, $options, $files, $orgs) {
                     case 'url';
                     case 'date':
                         if ($option->name != 'org_id') {
-                            $return .= '<input type="' . $option->type . '" class="form-control" id="data[options][' . $option->name . ']" name="data[options][' . $option->name . ']" placeholder="" value="' . $option->default . '" aria-describedby="option_' . $option->name . '"><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
+                            $return .= '<input type="' . $option->type . '" class="form-control" id="data[options][' . $option->name . ']" name="data[options][' . $option->name . ']" value="' . $option->default . '" aria-describedby="option_' . $option->name . '"><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
 
                         } else {
                             $return .= '<select name="data[options][org_id]" id="data[options][org_id]" class="form-control" aria-describedby="option_org_id">';

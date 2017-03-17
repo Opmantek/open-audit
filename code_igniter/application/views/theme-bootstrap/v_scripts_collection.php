@@ -76,7 +76,11 @@
                           <td class="text-center"><a class="btn btn-sm btn-info" href="scripts/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                           <?php } ?>
                           <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
-                          <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                            <?php if ($item->attributes->name !== $item->attributes->based_on) { ?>
+                              <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                            <?php } else { ?>
+                              <td></td>
+                            <?php } ?>
                           <?php } ?>
                     </tr>
                     <?php endforeach; ?>
