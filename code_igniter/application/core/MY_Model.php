@@ -172,11 +172,15 @@ class MY_Model extends CI_Model
         $model = @$caller['class'];
         $sql = str_replace(array("\r", "\r\n", "\n", "\t"), ' ', $sql);
         $sql = preg_replace('!\s+!', ' ', $sql);
-        if (stripos($sql, 'insert into') !== false) {
+        if (stripos($sql, 'insert into') === 0) {
             // this is an insert - return the insert_id
-            $insert_id = true;
+            $return = 'insert_id';
+        } elseif (stripos($sql, 'update ') === 0) {
+            $return = 'affected_rows';
+        } elseif (stripos($sql, 'delete from ') === 0) {
+            $return = 'affected_rows';
         } else {
-            $insert_id = false;
+            $return = 'result';
         }
         $sql = strtolower('/* ' . $model . '::' . $function .' */ ') . $sql;
         $sql = trim($sql);
@@ -190,9 +194,17 @@ class MY_Model extends CI_Model
         // run the query
         $query = $this->db->query($sql, $data);
         // get the insert id
-        if ($insert_id === true) {
-            $result = $this->db->insert_id();
+        if ($return === 'insert_id') {
+            $result = @$this->db->insert_id();
+        } elseif ($return === 'affected_rows') {
+            $result = @$this->db->affected_rows();
+        } else {
+            $result = @$query->result();
         }
+        if (empty($result)) {
+            $result = false;
+        }
+
         // store the query in our response object
         $CI->response->meta->sql[] = $this->db->last_query();
         // log the query
@@ -220,10 +232,8 @@ class MY_Model extends CI_Model
             }
             return false;
         } else {
-            // no error, so get the result
-            if ($insert_id === false) {
-                $result = $query->result();
-            }
+            // no error, so return the result
+             return ($result);
         }
         // return what we have
         return ($result);
