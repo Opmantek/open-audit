@@ -180,7 +180,11 @@ $sql[] = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Web C
 $sql[] = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Wireless Link','wireless link','system',' 2000-01-01 00:00:00')";
 $sql[] = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Wireless Router','wireless router','system',' 2000-01-01 00:00:00')";
 
+# bios
+$this->alter_table('bios', 'description', "`description` text NOT NULL");
+
 # configuration
+$this->alter_table('configurarion', 'description', "`description` text NOT NULL");
 $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
 $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.')";
@@ -192,6 +196,7 @@ foreach ($sql as $query) {
 unset($sql);
 
 # discoveries
+$this->alter_table('discoveries', 'description', "`description` text NOT NULL");
 $this->alter_table('discoveries', 'created_by', "`edited_by` varchar(200) NOT NULL DEFAULT ''");
 $this->alter_table('discoveries', 'created_on', "`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'");
 
@@ -210,6 +215,7 @@ $this->alter_table('fields', 'placement', "`placement` enum('custom','system') N
 $this->alter_table('fields', 'values', "`values` text NOT NULL");
 
 # files
+$this->alter_table('files', 'description', "`description` text NOT NULL");
 $this->alter_table('files', 'name', "`name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add')
 $this->alter_table('files', 'path', "`path` text NOT NULL");
 
@@ -242,6 +248,15 @@ $this->alter_table('locations', 'group_id', "DROP `group_id`", 'drop');
 
 # log
 $this->alter_table('log', 'file_name', "`file_name` text NOT NULL");
+
+# module
+$this->alter_table('module', 'description', "`description` text NOT NULL");
+
+# monitor
+$this->alter_table('monitor', 'description', "`description` text NOT NULL");
+
+# network
+$this->alter_table('network', 'description', "`description` text NOT NULL");
 
 # networks
 $this->alter_table('networks', 'network', "`network` varchar(200) NOT NULL DEFAULT '' AFTER `name`", 'add');
@@ -349,8 +364,18 @@ if ($this->db->table_exists($table)) {
 # oa_user
 $this->alter_table('oa_user', 'lang', "`lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en'");
 
+# optical
+$this->alter_table('optical', 'description', "`description` text NOT NULL");
+
 # partition
 $this->alter_table('partition', 'name', "`name` text NOT NULL");
+$this->alter_table('partition', 'description', "`description` text NOT NULL");
+
+# print_queue
+$this->alter_table('print_queue', 'description', "`description` text NOT NULL");
+
+#processor
+$this->alter_table('processor', 'description', "`description` text NOT NULL");
 
 # queries
 $sql = array();
@@ -381,6 +406,7 @@ foreach ($sql as $query) {
 unset($sql);
 
 # scripts
+$this->alter_table('scripts', 'description', "`description` text NOT NULL");
 $sql = "DELETE FROM `scripts` WHERE `based_on` = 'audit_esx.sh'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -406,10 +432,25 @@ $this->log_db($this->db->last_query());
 
 unset($options);
 
+# server
+$this->alter_table('server', 'description', "`description` text NOT NULL");
+
+# server_item
+$this->alter_table('server_item', 'description', "`description` text NOT NULL");
+
+# service
+$this->alter_table('service', 'description', "`description` text NOT NULL");
+
+# share
+$this->alter_table('share', 'description', "`description` text NOT NULL");
+
 # system
 $this->alter_table('system', 'last_seen', "`last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER first_seen");
 $this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT ''");
 $this->drop_key('system', 'system_id');
+
+# user_group
+$this->alter_table('user_group', 'description', "`description` text NOT NULL");
 
 # Reindex our configuration table
 $sql = "SELECT * FROM configuration ORDER BY `name`";
