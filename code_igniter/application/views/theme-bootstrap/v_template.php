@@ -89,14 +89,24 @@ include "include_header.php";
 if (!empty($this->response->errors) and !empty($this->response->errors[0]->title) and !empty($this->response->errors[0]->detail)) {
     echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
 }
+
 $temp = @$this->session->flashdata('error');
 if (!empty($temp)) {
-    echo '<div class="alert alert-danger" role="alert">' . $this->session->flashdata('error') . "</div>\n";
+    echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $this->session->flashdata('error') . "</div>\n";
 }
 $temp = @$this->session->flashdata('success');
 if (!empty($temp)) {
-    echo '<div class="alert alert-success" role="alert">' . $this->session->flashdata('success') . "</div>\n";
+    echo '<div class="alert alert-success alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $this->session->flashdata('success') . "</div>\n";
 }
+$temp = @$this->session->flashdata('warning');
+if (!empty($temp)) {
+    echo '<div class="alert alert-warning alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $this->session->flashdata('warning') . "</div>\n";
+}
+$temp = @$this->session->flashdata('info');
+if (!empty($temp)) {
+    echo '<div class="alert alert-info alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $this->session->flashdata('info') . "</div>\n";
+}
+
 $temp1 = @$this->session->flashdata('error');
 $temp2 = @$this->response->errors[0]->detail;
 if (!empty($temp1) and !empty($temp2)) {
