@@ -99,19 +99,20 @@ class M_connections extends MY_Model
 
         $sql = $this->collection_sql('connections', 'sql');
         $result = $this->run_sql($sql, array());
-
-        for ($i=0; $i < count($result); $i++) {
-            foreach ($orgs as $org) {
-                if ($org->id == $result[$i]->org_id) {
-                    $result[$i]->org_name = $org->name;
+        if ($result !== false) {
+            for ($i=0; $i < count($result); $i++) {
+                foreach ($orgs as $org) {
+                    if ($org->id == $result[$i]->org_id) {
+                        $result[$i]->org_name = $org->name;
+                    }
                 }
-            }
-            foreach ($items as $item) {
-                if ($item->id == $result[$i]->location_id_a) {
-                    $result[$i]->location_name_a = $item->name;
-                }
-                if ($item->id == $result[$i]->location_id_b) {
-                    $result[$i]->location_name_b = $item->name;
+                foreach ($items as $item) {
+                    if ($item->id == $result[$i]->location_id_a) {
+                        $result[$i]->location_name_a = $item->name;
+                    }
+                    if ($item->id == $result[$i]->location_id_b) {
+                        $result[$i]->location_name_b = $item->name;
+                    }
                 }
             }
         }
