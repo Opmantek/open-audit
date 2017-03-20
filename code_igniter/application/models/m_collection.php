@@ -184,8 +184,12 @@ class M_collection extends MY_Model
 
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
-        $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
-        return ($id);
+        if (!empty($id)) {
+            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
+            return ($id);
+        } else {
+            return false;
+        }
     }
 
 
@@ -302,8 +306,8 @@ class M_collection extends MY_Model
             $sql .= ", `edited_date` = NOW()";
         }
         $sql = "UPDATE `" . $db_table . "` " . $sql . " WHERE id = " . $id;
-        $this->run_sql($sql);
-        return;
+        $test = $this->run_sql($sql);
+        return $test;
     }
 
     public function update_fields($collection = '') {
