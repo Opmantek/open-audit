@@ -267,6 +267,42 @@ class M_users extends MY_Model
         return true;
     }
 
+    public function has_role($role = '', $roles = array()) {
+        if ($role == '') {
+            return false;
+        }
+        if (count($roles) === 0) {
+            $roles = $this->user->roles;
+        }
+        if (empty($roles)) {
+            return false;
+        }
+        foreach ($roles as $thisrole) {
+            if ($role == $thisrole) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function has_org($org = '', $orgs = '') {
+        if ($org == '') {
+            return false;
+        }
+        if ($orgs == '') {
+            $orgs = $this->user->orgs;
+        }
+        if (empty($orgs)) {
+            return false;
+        }
+        foreach ($orgs as $thisorg) {
+            if ($org == $thisorg) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function validate()
     {
         $this->log->function = strtolower(__METHOD__);
@@ -367,7 +403,7 @@ class M_users extends MY_Model
                 return true;
             }
         }
-        log_error('ERR-0018', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+        log_error('ERR-0018', $CI->response->meta->collection . '::' . $CI->response->meta->action . ', org_id:' . $org_id);
         return false;
     }
 }
