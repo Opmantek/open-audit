@@ -239,7 +239,7 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         header($CI->response->meta->header);
-        #$CI->response->meta->user = $CI->user;
+        $CI->response->meta->user = $CI->user;
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
             $CI->response->include = 'v_error';
