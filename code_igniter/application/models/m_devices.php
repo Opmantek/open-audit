@@ -217,24 +217,26 @@ class M_devices extends MY_Model
         $fields = $this->run_sql($sql, array());
         // this is our array of field.id's that are acceptable on this device
         $field_list = array();
-        foreach ($fields as $field) {
-            // get this field.org_id children
-            $orgs = array($field->org_id);
-            $orgs = array_merge($orgs, $CI->m_orgs->get_children($field->org_id));
-            foreach ($orgs as $key => $value) {
-                if ($device_org_id == $value) {
-                    $sql = "SELECT COUNT(*) AS `count` FROM (" . str_replace("@filter", "1=1", $field->group_sql) . ") a WHERE a.id = $device_id";
-                    $result = $this->run_sql($sql, $data);
-                    if ($result[0]->count == 1) {
-                        $field_list[] = $field;
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                // get this field.org_id children
+                $orgs = array($field->org_id);
+                $orgs = array_merge($orgs, $CI->m_orgs->get_children($field->org_id));
+                foreach ($orgs as $key => $value) {
+                    if ($device_org_id == $value) {
+                        $sql = "SELECT COUNT(*) AS `count` FROM (" . str_replace("@filter", "1=1", $field->group_sql) . ") a WHERE a.id = $device_id";
+                        $result = $this->run_sql($sql, $data);
+                        if ($result[0]->count == 1) {
+                            $field_list[] = $field;
+                        }
                     }
                 }
             }
-        }
-        // remove the sql and group name
-        foreach ($field_list as &$field) {
-            unset($field->group_sql);
-            unset($field->group_name);
+            // remove the sql and group name
+            foreach ($field_list as &$field) {
+                unset($field->group_sql);
+                unset($field->group_name);
+            }
         }
         $result = $this->format_data($field_list, 'fields');
         return($result);
@@ -366,7 +368,9 @@ class M_devices extends MY_Model
         if ($sub_resource == 'credential') {
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
-                $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+                if (!empty($result[$i]->credentials)) {
+                    $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+                }
             }
         }
 
@@ -523,11 +527,11 @@ class M_devices extends MY_Model
             $target = BASEPATH."../application/attachments/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
             if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                 $sql = "INSERT INTO `attachment` VALUES (NULL, ?, ?, ?, ?, NOW())";
-                $data = array(intval($CI->response->meta->id), 
-                            $CI->response->meta->received_data->attributes->title,
-                            "$target",
-                            $CI->user->full_name);
-                $query = $this->db->query($sql, $data);
+                $data = array(intval($CI->response->meta->id),
+                        $CI->response->meta->received_data->attributes->title,
+                        "$target",
+                        $CI->user->full_name);
+                $this->db->query($sql, $data);
                 return true;
             } else {
                 $log->severity = 5;
