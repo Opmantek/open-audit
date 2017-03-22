@@ -295,6 +295,10 @@ if [[ "$hosts" != "" ]]; then
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					host_is_up="true"
 				fi
+				NEEDLE="closed "
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					host_is_up="true"
+				fi
 			fi
 
 			NEEDLE="MAC Address:"

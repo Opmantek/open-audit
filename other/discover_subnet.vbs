@@ -329,8 +329,13 @@ for each host in hosts_in_subnet
             nmap_ports = nmap_ports & "," & port & "/" & program
         end if
 
-        if instr(lcase(line), "host is up") then
-            host_is_up = "true"
+        if instr(lcase(line), "/tcp") then
+            if instr(lcase(line), "open") then
+                host_is_up = "true"
+            end if
+            if instr(lcase(line), "closed ") then
+                host_is_up = "true"
+            end if
         end if
 
         if instr(lcase(line), "mac address:") then
@@ -377,6 +382,7 @@ for each host in hosts_in_subnet
             if instr(lcase(line), "open") then
                 nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
+                host_is_up = "true"
             end if
         end if
     Loop
