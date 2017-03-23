@@ -248,7 +248,7 @@ if (! function_exists('output')) {
             if (empty($CI->response->meta->include)) {
                 $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             }
-            $CI->response->include = $CI->response->meta->include;
+            $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             $CI->response->heading = $CI->response->meta->heading;
         }
         $CI->load->view('v_template', $CI->response);
@@ -290,7 +290,8 @@ if (! function_exists('output')) {
         }
     }
 
-    function output_convert($data) {
+    function output_convert($data)
+    {
         $CI = & get_instance();
         $CI->load->helper('network_helper');
         foreach ($data as $row) {
@@ -302,13 +303,11 @@ if (! function_exists('output')) {
                         foreach ($row->attributes as $key => $value) {
                             if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                                 $row->attributes->$key = intval($value);
-                            
                             } elseif ((strrpos($key, '_id') === strlen($key)-3) or
                                       (strrpos($key, '_count') === strlen($key)-6) or
                                       (strrpos($key, '_percent') === strlen($key)-8) or
                                       (strrpos($key, '_size') === strlen($key)-5)) {
                                 $row->attributes->$key = intval($value);
-                            
                             } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
                                     (strrpos($key, 'next_hop') === strlen($key)-8) or
                                     (strrpos($key, 'destination') === strlen($key)-11)) {
