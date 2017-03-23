@@ -857,27 +857,29 @@ class M_devices extends MY_Model
             $previous_value = '';
 
             // check our custom fields
-            foreach ($fields as $field) {
-                if ($key == $field->name) {
-                    # we have a custom field - get the original value (if it exists)
-                    foreach ($ids as $id) {
-                        $sql = "SELECT id, value FROM field WHERE system_id = ? AND fields_id = ?";
-                        $result = $this->run_sql($sql, array(intval($id), $field->id));
-                        if (!empty($result[0]->value)) {
-                            $previous_value = $result[0]->value;
-                            $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
-                            $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
-                            // TODO - add an entry into the change log
-                        } else {
-                            $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
-                            $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
-                            $previous_value = '';
-                            // TODO - add an entry into the change log
+            if (!empty($fields)) {
+                foreach ($fields as $field) {
+                    if ($key == $field->name) {
+                        # we have a custom field - get the original value (if it exists)
+                        foreach ($ids as $id) {
+                            $sql = "SELECT id, value FROM field WHERE system_id = ? AND fields_id = ?";
+                            $result = $this->run_sql($sql, array(intval($id), $field->id));
+                            if (!empty($result[0]->value)) {
+                                $previous_value = $result[0]->value;
+                                $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
+                                $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
+                                // TODO - add an entry into the change log
+                            } else {
+                                $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
+                                $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
+                                $previous_value = '';
+                                // TODO - add an entry into the change log
+                            }
+                            // insert an entry into the edit table
+                            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
+                            $data = array(intval($CI->user->id), intval($id), (string)$source, 1000, (string)$key, (string)$value, (string)$previous_value);
+                            $this->run_sql($sql, $data);
                         }
-                        // insert an entry into the edit table
-                        $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                        $data = array(intval($CI->user->id), intval($id), (string)$source, 1000, (string)$key, (string)$value, (string)$previous_value);
-                        $this->run_sql($sql, $data);
                     }
                 }
             }
