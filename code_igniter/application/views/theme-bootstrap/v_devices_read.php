@@ -435,7 +435,7 @@ if (empty($data['mount_point'])) {
                                 
                                 </select>
                                 <?php if ($edit) { ?>
-                                    <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                    <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                                 <?php } ?>
                             </div>
                         </div>
@@ -477,7 +477,7 @@ if (empty($data['mount_point'])) {
                                 
                                 </select>
                                 <?php if ($edit) { ?>
-                                    <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                    <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                                 <?php } ?>
                             </div>
                         </div>
@@ -503,7 +503,7 @@ if (empty($data['mount_point'])) {
                                 
                                 </select>
                                 <?php if ($edit) { ?>
-                                    <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                    <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
                                 <?php } ?>
                             </div>
                         </div>
