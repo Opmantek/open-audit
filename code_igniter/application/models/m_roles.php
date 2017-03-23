@@ -204,6 +204,7 @@ class M_roles extends MY_Model
         }
         # get the response data
         $sql = "SELECT " . $properties . " FROM `roles` " . $filter . " " . $sort . " " . $limit;
+        $sql = "SELECT * FROM `roles`";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'roles');
         return ($result);
