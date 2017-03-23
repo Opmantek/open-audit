@@ -3156,7 +3156,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 
 	' The LocalService account
 	result.WriteText "		<item>" & vbcrlf
-	result.WriteText "			<name>NT AUTHORITY\LocalService</name>" & vbcrlf
+	result.WriteText "			<name>LocalService</name>" & vbcrlf
 	result.WriteText "			<caption>NT AUTHORITY\LocalService</caption>" & vbcrlf
 	result.WriteText "			<sid></sid>" & vbcrlf
 	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
@@ -3171,7 +3171,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 
 	' The NetworkService account
 	result.WriteText "		<item>" & vbcrlf
-	result.WriteText "			<name>NT AUTHORITY\NetworkService</name>" & vbcrlf
+	result.WriteText "			<name>NetworkService</name>" & vbcrlf
 	result.WriteText "			<caption>NT AUTHORITY\NetworkService</caption>" & vbcrlf
 	result.WriteText "			<sid></sid>" & vbcrlf
 	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
