@@ -192,7 +192,7 @@ if (!empty($data['fields'])) {
                     <select id="' . $field->{'name'} . '" class="form-control" disabled>' . "\n";
                       echo "                          <option value='' > </option>\n";
             foreach (explode(',', $field->{'values'}) as $key => $value) {
-                        echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
+                        echo "                          <option value='$value'>".__("$value")."</option>\n";
             }
 
                     echo '                        </select>
