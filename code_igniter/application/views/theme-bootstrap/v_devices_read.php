@@ -555,7 +555,6 @@ if (empty($data['mount_point'])) {
                                 <?php } ?>
                             </div>
                         </div>
-<?php insert_additional_fields('system', $data['fields'], $edit); ?>
 
                     </div>
                     <div class="col-md-5">
@@ -796,7 +795,6 @@ foreach ($list as $item) {
             }
         }
         ?>
-        <?php insert_additional_fields($item, $data['fields'], $edit); ?>
       </div>
     </div>
 </div>
@@ -903,7 +901,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
       <div class="panel-body">
         <?php
         if (isset($data['fields']) and count($data['fields']) > 0) {
-            insert_additional_fields('custom', $data['fields'], $edit);
+            insert_additional_fields('', $data['fields'], $edit);
         } ?>
       </div>
     </div>
@@ -1003,7 +1001,6 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                     <?php
                         }
                     }
-                    insert_additional_fields($item, $data['fields'], $edit);
                 ?></div><!-- 4 -->
             </div><!-- 3 -->
         </div><!-- 2 -->
@@ -1448,7 +1445,6 @@ foreach ($list as $item) {
                     </tbody>
                 </table>
               </div>
-                <?php insert_additional_fields($item, $data['fields'], $edit); ?>
             </div>
         </div>
         <?php
