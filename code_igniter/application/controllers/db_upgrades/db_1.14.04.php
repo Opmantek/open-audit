@@ -216,7 +216,7 @@ $this->alter_table('fields', 'values', "`values` text NOT NULL");
 
 # files
 $this->alter_table('files', 'description', "`description` text NOT NULL");
-$this->alter_table('files', 'name', "`name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add')
+$this->alter_table('files', 'name', "ADD `name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add');
 $this->alter_table('files', 'path', "`path` text NOT NULL");
 
 # licenses
@@ -259,7 +259,7 @@ $this->alter_table('monitor', 'description', "`description` text NOT NULL");
 $this->alter_table('network', 'description', "`description` text NOT NULL");
 
 # networks
-$this->alter_table('networks', 'network', "`network` varchar(200) NOT NULL DEFAULT '' AFTER `name`", 'add');
+$this->alter_table('networks', 'network', "ADD `network` varchar(200) NOT NULL DEFAULT '' AFTER `name`", 'add');
 $sql = "UPDATE `networks` SET `network` = `name`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
