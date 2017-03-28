@@ -1348,6 +1348,7 @@ $list = array ('alert_log', 'audit_log', 'change_log', 'edit_log', 'dns', 'file'
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
     $list[] = 'disk';
 }
+
 foreach ($list as $item) {
     if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -1458,9 +1459,7 @@ foreach ($list as $item) {
 <?php
 // combo style displays
 if ($data['system']->type == 'computer') {
-    $list = array ('network' => 'ip',
-                   'disk' => 'partition',
-                   'server' => 'server_item');
+    $list = array ('disk' => 'partition', 'network' => 'ip', 'server' => 'server_item');
     foreach ($list as $item => $sub_item) {
         if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -1557,6 +1556,7 @@ if ($data['system']->type == 'computer') {
                     ?>
                     </div>
                 </div>
+            </div>
         <?php
         }
     }
