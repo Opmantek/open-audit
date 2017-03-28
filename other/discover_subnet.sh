@@ -423,7 +423,11 @@ if [[ "$submit_online" == "y" ]]; then
 		# -b   = background the wget command
 		# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 		# -q   = quiet (no output)
-		wget -b -O - -q --no-check-certificate "$url" --post-data=data="$resultcomplete" 1>/dev/null
+		if [[ "$echo_output" == "y" ]]; then
+			wget -b -O - --no-check-certificate "$url" --post-data=data="$resultcomplete"
+		else
+			wget -b -O - -q --no-check-certificate "$url" --post-data=data="$resultcomplete" 1>/dev/null
+		fi
 	fi
 
 	if [[ $(uname) == "Darwin" ]]; then
