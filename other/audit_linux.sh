@@ -1576,170 +1576,244 @@ fi
 if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
-echo "	<disk>" >> "$xml_file"
-partition_result=""
-for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
-	hard_drive_caption="/dev/$disk"
-	hard_drive_index="$disk"
-	hard_drive_interface_type=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_BUS= | cut -d= -f2)
-	test=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_ATA_SATA= | cut -d= -f2)
-	if [ "$test" = "1" ]; then
-		hard_drive_interface_type="sata"
-	fi
-
-	hard_drive_model=$(udevadm info -a -n /dev/"$disk" 2>/dev/null | grep "ATTRS{model}==" | head -n 1 | cut -d\" -f2)
-	if [ -z "$hard_drive_model" ]; then
-		hard_drive_model=$(lsblk -lbndo MODEL /dev/"$disk")
-	fi
-	hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL_SHORT= | cut -d= -f2)
-	hard_drive_size=$(lsblk -lbndo SIZE /dev/"$disk")
-	if [ "$hard_drive_size" -gt 1048576 ]; then
+if [[ "$system_os_name" == "CentOS release 5"* ]]; then
+	echo "	<disk>" >> "$xml_file"
+	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | cut -d" " -f2 | cut -d: -f1); do
+		hard_drive_caption="$disk"
+		hard_drive_index=$(echo "$hard_drive_caption" | cut -d/ -f3)
+		hard_drive_interface_type=""
+		hard_drive_manufacturer=""
+		hard_drive_model=$(smartctl -i "$hard_drive_caption" | grep "Device Model" | cut -d: -f2)
+		hard_drive_serial=$(smartctl -i "$hard_drive_caption" | grep "Serial Number" | cut -d: -f2)
+		hard_drive_size=$(smartctl -i "$hard_drive_caption" | grep "User Capacity" | cut -d: -f2 | cut -db -f1 | sed 's/,//g')
 		hard_drive_size=$((hard_drive_size / 1024 / 1024))
-	else
-		hard_drive_size="0"
-	fi
-	hard_drive_device_id="/dev/$disk"
-	hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | grep -v "^$disk\$" -c)
-	hard_drive_status=""
-	hard_drive_model_family=""
-	hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
+		hard_drive_device_id="$disk"
+		partition_count=$(fdisk -l "$disk" | grep "^$disk" | wc -l)
+		hard_drive_status=""
+		hard_drive_firmware=$(smartctl -i "$hard_drive_caption" | grep "Firmware Version" | cut -d: -f2)
+		hard_drive_model_family=""
+		{
+		echo "		<item>"
+		echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
+		echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
+		echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
+		echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$hard_drive_model")</model>"
+		echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
+		echo "			<size>$(escape_xml "$hard_drive_size")</size>"
+		echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
+		echo "			<partition_count>$(escape_xml "$partition_count")</partition_count>"
+		echo "			<status>$(escape_xml "$hard_drive_status")</status>"
+		echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
+		echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
+		echo "		</item>"
+		} >> "$xml_file"
+		for partition in $(fdisk -l "$disk" 2>&1 | grep "^/dev/" | cut -d" " -f1); do
+			partition_serial=""
+			partition_name=""
+			partition_description=""
+			partition_device_id="$partition"
+			partition_disk_index="$hard_drive_index"
+			partition_mount_point=$(mount | grep "$partition" | cut -d" " -f3)
 
-	mycommand="lshw -class disk 2>/dev/null"
-	mydelimiter="*-disk"
-	mymatch="logical name: /dev/$disk"
-	myvariable="vendor:"
-	myresult=$(between_output "$mycommand" "$mydelimiter" "$mymatch" "$myvariable")
-	myresult=$(echo "$myresult" | cut -d: -f2)
-	hard_drive_manufacturer=$(trim "$myresult")
-	if [ -z "$hard_drive_manufacturer" ]; then
-		hard_drive_manufacturer=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_VENDOR= | cut -d= -f2)
-	fi
+			partition_size=$(df -k "$partition" | grep "^$partition" | tr -s " " | cut -d" " -f2)
+			partition_size=$((partition_size / 1024))
 
-	if [ -n "$(which smartctl 2>/dev/null)" ]; then
-		# use smart tools as they are installed
-		hard_drive_status=$(smartctl -H /dev/"$disk" 2>/dev/null | grep "SMART overall" | cut -d: -f2)
-		hard_drive_model_family=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Model Family" | cut -d: -f2)
-	fi
+			partition_used=$(df -k "$partition" | grep "^$partition" | tr -s " " | cut -d" " -f3)
+			partition_used=$((partition_used / 1024))
 
-	# some hacks
-	if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Crucial" ; then
-		hard_drive_manufacturer="Crucial"
-	fi
+			partition_free=$(df -k "$partition" | grep "^$partition" | tr -s " " | cut -d" " -f4)
+			partition_free=$((partition_free / 1024))
 
-	if echo "$hard_drive_manufacturer" | grep -q "VMware" ; then
-		hard_drive_manufacturer="VMware"
-		hard_drive_model_family="VMware"
-		hard_drive_model="VMware Virtual Disk"
-	fi
-
-	if echo "$hard_drive_model" | grep -q "VMware" || echo "$hard_drive_model" | grep -q "Virtual" ; then
-		hard_drive_model="VMware Virtual Disk"
-	fi
-
-	{
-	echo "		<item>"
-	echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
-	echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
-	echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
-	echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
-	echo "			<model>$(escape_xml "$hard_drive_model")</model>"
-	echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
-	echo "			<size>$(escape_xml "$hard_drive_size")</size>"
-	echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
-	echo "			<partition_count>$(escape_xml "$hard_drive_partitions")</partition_count>"
-	echo "			<status>$(escape_xml "$hard_drive_status")</status>"
-	echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
-	echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
-	echo "		</item>"
-	} >> "$xml_file"
-
-	PREVIFS=$IFS
-	IFS="$NEWLINEIFS";
-	for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
-	#for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ | sed -e "s/ (/_(/g" ); do
-		if [ -n "$partition" ] && [ "$partition" != "$disk" ]; then
-
-			# partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
-			partition_mount_type=$(lsblk -lno NAME,TYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_mount_type=$(trim "$partition_mount_type")
-			if [ "$partition_mount_type" = "part" ]; then
-				partition_mount_type="partition"
-				partition_type="local"
-			else
-				partition_mount_type="mount point"
-				partition_type="$partition_mount_type"
-			fi
-
-			#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
-			partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_mount_point=$(trim "$partition_mount_point")
-
-			#partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-			partition_name=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_name=$(trim "$partition_name")
-
-			#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
-			#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
-			partition_size=$((partition_size / 1024 / 1024))
-
-			#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
-			partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_format=$(trim "$partition_format")
-
-			#partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-			partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_caption=$(trim "$partition_caption")
-
-			partition_device_id="/dev/$partition"
-			partition_disk_index="$disk"
-			partition_bootable=""
-			partition_quotas_supported=""
-			partition_quotas_enabled=""
-
-			#partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
-			partition_serial=$(lsblk -lno NAME,UUID /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_serial=$(trim "$partition_serial")
-
-			#partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
-			partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
-			if [ -z "$partition_free_space" ] && [ -n "$partition_serial" ]; then
-				partition_free_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $4}')
-			fi
-			#partition_used_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $3}')
-			partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
-			if [ -z "$partition_used_space" ] && [ -n "$partition_serial" ]; then
-				partition_used_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $3}')
-			fi
-
-			if [ "$partition_format" = "swap" ]; then
-				partition_used_space=$(free -m | grep -i swap | awk '{print $3}')
-				partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
-			fi
-
+			partition_format=$(mount | grep "$partition" | cut -d" " -f5)
 			partition_result=$partition_result"
-		<item>
-			<serial>$(escape_xml "$partition_serial")</serial>
-			<name>$(escape_xml "$partition_name")</name>
-			<description>$(escape_xml "$partition_caption")</description>
-			<device>$(escape_xml "$partition_device_id")</device>
-			<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>
-			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
-			<mount_type>$(escape_xml "$partition_mount_type")</mount_type>
-			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
-			<size>$(escape_xml "$partition_size")</size>
-			<free>$(escape_xml "$partition_free_space")</free>
-			<used>$(escape_xml "$partition_used_space")</used>
-			<format>$(escape_xml "$partition_format")</format>
-			<type>$(escape_xml "$partition_type")</type>
-		</item>"
-
-		fi
+				<item>
+					<serial>$(escape_xml "$partition_serial")</serial>
+					<name>$(escape_xml "$partition_name")</name>
+					<description>$(escape_xml "$partition_description")</description>
+					<device>$(escape_xml "$partition_device_id")</device>
+					<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
+					<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+					<mount_type>partition</mount_type>
+					<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+					<size>$(escape_xml "$partition_size")</size>
+					<free>$(escape_xml "$partition_free")</free>
+					<used>$(escape_xml "$partition_used")</used>
+					<format>$(escape_xml "$partition_format")</format>
+					<bootable></bootable>
+					<type>partition</type>
+				</item>"
+		done
 	done
-	IFS=$PREVIFS
-done
-echo "	</disk>" >> "$xml_file"
+	echo "	</disk>" >> "$xml_file"
+
+else
+	echo "	<disk>" >> "$xml_file"
+	partition_result=""
+	for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
+
+		hard_drive_caption="/dev/$disk"
+		hard_drive_index="$disk"
+		hard_drive_interface_type=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_BUS= | cut -d= -f2)
+		test=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_ATA_SATA= | cut -d= -f2)
+		if [ "$test" = "1" ]; then
+			hard_drive_interface_type="sata"
+		fi
+
+		hard_drive_model=$(udevadm info -a -n /dev/"$disk" 2>/dev/null | grep "ATTRS{model}==" | head -n 1 | cut -d\" -f2)
+		if [ -z "$hard_drive_model" ]; then
+			hard_drive_model=$(lsblk -lbndo MODEL /dev/"$disk")
+		fi
+		hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL_SHORT= | cut -d= -f2)
+		hard_drive_size=$(lsblk -lbndo SIZE /dev/"$disk")
+		if [ "$hard_drive_size" -gt 1048576 ]; then
+			hard_drive_size=$((hard_drive_size / 1024 / 1024))
+		else
+			hard_drive_size="0"
+		fi
+		hard_drive_device_id="/dev/$disk"
+		hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | grep -v "^$disk\$" -c)
+		hard_drive_status=""
+		hard_drive_model_family=""
+		hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
+
+		mycommand="lshw -class disk 2>/dev/null"
+		mydelimiter="*-disk"
+		mymatch="logical name: /dev/$disk"
+		myvariable="vendor:"
+		myresult=$(between_output "$mycommand" "$mydelimiter" "$mymatch" "$myvariable")
+		myresult=$(echo "$myresult" | cut -d: -f2)
+		hard_drive_manufacturer=$(trim "$myresult")
+		if [ -z "$hard_drive_manufacturer" ]; then
+			hard_drive_manufacturer=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_VENDOR= | cut -d= -f2)
+		fi
+
+		if [ -n "$(which smartctl 2>/dev/null)" ]; then
+			# use smart tools as they are installed
+			hard_drive_status=$(smartctl -H /dev/"$disk" 2>/dev/null | grep "SMART overall" | cut -d: -f2)
+			hard_drive_model_family=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Model Family" | cut -d: -f2)
+		fi
+
+		# some hacks
+		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Crucial" ; then
+			hard_drive_manufacturer="Crucial"
+		fi
+
+		if echo "$hard_drive_manufacturer" | grep -q "VMware" ; then
+			hard_drive_manufacturer="VMware"
+			hard_drive_model_family="VMware"
+			hard_drive_model="VMware Virtual Disk"
+		fi
+
+		if echo "$hard_drive_model" | grep -q "VMware" || echo "$hard_drive_model" | grep -q "Virtual" ; then
+			hard_drive_model="VMware Virtual Disk"
+		fi
+
+		{
+		echo "		<item>"
+		echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
+		echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
+		echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
+		echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$hard_drive_model")</model>"
+		echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
+		echo "			<size>$(escape_xml "$hard_drive_size")</size>"
+		echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
+		echo "			<partition_count>$(escape_xml "$hard_drive_partitions")</partition_count>"
+		echo "			<status>$(escape_xml "$hard_drive_status")</status>"
+		echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
+		echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
+		echo "		</item>"
+		} >> "$xml_file"
+
+		PREVIFS=$IFS
+		IFS="$NEWLINEIFS";
+		for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
+		#for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ | sed -e "s/ (/_(/g" ); do
+			if [ -n "$partition" ] && [ "$partition" != "$disk" ]; then
+
+				# partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
+				partition_mount_type=$(lsblk -lno NAME,TYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_mount_type=$(trim "$partition_mount_type")
+				if [ "$partition_mount_type" = "part" ]; then
+					partition_mount_type="partition"
+					partition_type="local"
+				else
+					partition_mount_type="mount point"
+					partition_type="$partition_mount_type"
+				fi
+
+				#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
+				partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_mount_point=$(trim "$partition_mount_point")
+
+				#partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+				partition_name=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_name=$(trim "$partition_name")
+
+				#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
+				#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
+				partition_size=$((partition_size / 1024 / 1024))
+
+				#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
+				partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_format=$(trim "$partition_format")
+
+				#partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+				partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_caption=$(trim "$partition_caption")
+
+				partition_device_id="/dev/$partition"
+				partition_disk_index="$disk"
+				partition_bootable=""
+				partition_quotas_supported=""
+				partition_quotas_enabled=""
+
+				#partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
+				partition_serial=$(lsblk -lno NAME,UUID /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_serial=$(trim "$partition_serial")
+
+				#partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
+				partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
+				if [ -z "$partition_free_space" ] && [ -n "$partition_serial" ]; then
+					partition_free_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $4}')
+				fi
+				#partition_used_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $3}')
+				partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
+				if [ -z "$partition_used_space" ] && [ -n "$partition_serial" ]; then
+					partition_used_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $3}')
+				fi
+
+				if [ "$partition_format" = "swap" ]; then
+					partition_used_space=$(free -m | grep -i swap | awk '{print $3}')
+					partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
+				fi
+
+				partition_result=$partition_result"
+			<item>
+				<serial>$(escape_xml "$partition_serial")</serial>
+				<name>$(escape_xml "$partition_name")</name>
+				<description>$(escape_xml "$partition_caption")</description>
+				<device>$(escape_xml "$partition_device_id")</device>
+				<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>
+				<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+				<mount_type>$(escape_xml "$partition_mount_type")</mount_type>
+				<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+				<size>$(escape_xml "$partition_size")</size>
+				<free>$(escape_xml "$partition_free_space")</free>
+				<used>$(escape_xml "$partition_used_space")</used>
+				<format>$(escape_xml "$partition_format")</format>
+				<type>$(escape_xml "$partition_type")</type>
+			</item>"
+
+			fi
+		done
+		IFS=$PREVIFS
+	done
+	echo "	</disk>" >> "$xml_file"
+fi
 
 
 ##################################
