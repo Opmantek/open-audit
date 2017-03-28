@@ -95,10 +95,19 @@ if (!empty($_POST['data'])) {
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
-            $discovery = $result[0];
-            $syslog->summary = 'Discovery ' . $discovery->name . ' staring to process.';
-            $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
-            stdlog($syslog);
+            if (!empty($result[0])) {
+                $discovery = $result[0];
+                $syslog->summary = 'Discovery ' . $discovery->name . ' staring to process.';
+                $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
+                stdlog($syslog);
+            } else {
+                $discovery = new stdClass();
+                $discovery->id = '';
+                $discovery->discard = '';
+                $syslog->summary = 'Invalid discovery id provided to input::discovery';
+                $syslog->message = 'The discovery_id was invalid and could not be used to successfully retrieve information';
+                stdlog($syslog);
+            }
         } else {
             $syslog->severity = 4;
             $syslog->summary = 'No discovery id provided';
