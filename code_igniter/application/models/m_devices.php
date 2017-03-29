@@ -1231,6 +1231,9 @@ class M_devices extends MY_Model
                     (strpos(strtolower($details->os_name), "ios") !== false)) {
                     $details->icon = 'apple';
                 }
+                if (strripos($details->os_name, "arch") !== false) {
+                    $details->icon = 'arch';
+                }
                 if (strripos($details->os_name, "bsd") !== false) {
                     $details->icon = 'bsd';
                 }
@@ -1255,6 +1258,9 @@ class M_devices extends MY_Model
                 }
                 if (strripos($details->os_name, "slackware") !== false) {
                     $details->icon = 'slackware';
+                }
+                if (strripos($details->os_name, "solus") !== false) {
+                    $details->icon = 'solus';
                 }
                 if (strripos($details->os_name, "suse") !== false) {
                     $details->icon = 'suse';
