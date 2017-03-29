@@ -494,9 +494,9 @@ if [ -z "$system_uuid" ]; then
 fi
 
 # Get the hostname & DNS domain
-system_hostname=$(hostname -s)
-system_domain=$(hostname -d)
-system_fqdn=$(hostname -f)
+system_hostname=$(hostname | cut -d. -f1)
+system_domain=$(hostname -d | grep -v \(none\))
+system_fqdn=$(hostname -f | grep -v \(none\))
 
 dns_hostname=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f1)
 dns_domain=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f2-)
@@ -555,6 +555,13 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 			system_os_family="Suse"
 		fi
 		break;
+	fi
+
+	if [ -z "$system_os_family" ]; then
+		if [ -e "/etc/arch-release" ]; then
+			system_os_name="Arch Linux";
+			system_os_family="Arch";
+		fi
 	fi
 
 	# CentOS based - must come before RedHat based
