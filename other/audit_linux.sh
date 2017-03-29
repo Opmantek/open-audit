@@ -396,6 +396,7 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Debugging Level     $debugging"
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
+	echo "Script Name         $script_name"
 	echo "----------------------------"
 fi
 
@@ -638,7 +639,7 @@ if [ -z "$system_model" ]; then
 fi
 
 # get the systemd identifier
-dbus_identifier=$(cat /etc/machine-id)
+dbus_identifier=$(cat /etc/machine-id 2>/dev/null)
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
@@ -1251,7 +1252,7 @@ for net_connection_id in $(ls /sys/class/net/) ; do
 		net_card_model="Virtual Bonded NIC"
 		net_card_description="Virtual Bonded NIC ($net_connection_id)"
 		net_card_enabled=""
-		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
+		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate 2>/dev/null)
 		if [ "$net_card_status" = "up" ]; then
 				net_card_status="Connected"
 		else
