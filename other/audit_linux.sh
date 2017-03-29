@@ -610,14 +610,21 @@ system_os_icon=$(lcase "$system_os_family")
 # Get the System Serial Number
 system_serial=""
 system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
-if [ -z "$system_serial" ]; then
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
+		system_serial=$(lshal 2>/dev/null | grep "system.hardware.serial" | cut -d\' -f2)
 	fi
 fi
-if [ -z "$system_serial" ]; then
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
+
+# Some old distro's return 0
+#if [ "$system_serial" = "0" ]; then
+#	system_serial=""
+# fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
@@ -631,10 +638,7 @@ if [ -z "$system_model" ]; then
 fi
 
 # get the systemd identifier
-#dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
-# I had to remove this as it is NOT reset/re-generated when ESX clones a machine, hence false positive matching occurs
-# Also /etc/machine-id is the same - not recreated.
-dbus_identifier=""
+dbus_identifier=$(cat /etc/machine-id)
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
