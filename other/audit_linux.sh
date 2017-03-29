@@ -1588,7 +1588,21 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
 
+old="no"
+if [[ "$system_os_name" == "CentOS release 4"* ]]; then
+	old="yes"
+fi
 if [[ "$system_os_name" == "CentOS release 5"* ]]; then
+	old="yes"
+fi
+if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "4" ]; then
+	old="yes"
+fi
+if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "5" ]; then
+	old="yes"
+fi
+
+if [ "$old" = "yes" ]; then
 	echo "	<disk>" >> "$xml_file"
 	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | cut -d" " -f2 | cut -d: -f1); do
 		hard_drive_caption="$disk"
