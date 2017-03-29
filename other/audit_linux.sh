@@ -2065,6 +2065,32 @@ case $system_os_family in
 				echo "		</item>" >> "$xml_file"
 			done
 			;;
+		'Solus' )
+			for package in $(eopkg list-installed | cut -d" " -f1); do
+				version=$(eopkg blame "$package" | grep "Name: $package" | cut -d" " -f4 | cut -d, -f1)
+				description=$(eopkg info "$package" | grep Summary | cut -d: -f2 | head -n1)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
+			;;
+		'Arch' )
+			for package in $(pacman -Q 2>/dev/null | cut -d" " -f1); do
+				version=$(pacman -Q -i "$package" 2>/dev/null | grep "^Version" | cut -d: -f2)
+				description=$(pacman -Q -i "$package" 2>/dev/null | grep "^Description" | cut -d: -f2)
+				url=$(pacman -Q -i "$package" 2>/dev/null | grep "^URL" | cut -d: -f2)
+				installed_on=$(pacman -Q -i "$package" 2>/dev/null | grep "^Install Date" | cut -d: -f2)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "			<url>$(escape_xml $url)</url>" >> "$xml_file"
+				echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
+			;;
 esac
 echo "	</software>" >> "$xml_file"
 
