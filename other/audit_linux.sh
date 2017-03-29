@@ -1934,17 +1934,20 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Environment Variable Info"
 fi
 echo "	<variable>" >> "$xml_file"
-for variable in $(env); do
-	name=$( echo "$variable" | cut -d= -f1 )
-	value=${variable#*=}
-	if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
-		echo "		<item>" >> "$xml_file"
-		echo "			<program>environment</program>" >> "$xml_file"
-		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
-		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
-		echo "		</item>" >> "$xml_file"
-	fi
-done
+# Arch throws encoded characters in, just ignore Arch for now
+if [ "$system_os_family" != "Arch" ]; then
+	for variable in $(env); do
+		name=$( echo "$variable" | cut -d= -f1 )
+		value=${variable#*=}
+		if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
+			echo "		<item>" >> "$xml_file"
+			echo "			<program>environment</program>" >> "$xml_file"
+			echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
+			echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
+			echo "		</item>" >> "$xml_file"
+		fi
+	done
+fi
 
 # Puppet facts
 if [ -n "$(which facter 2>/dev/null)" ]; then
