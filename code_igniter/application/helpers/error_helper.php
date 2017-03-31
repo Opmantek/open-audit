@@ -162,7 +162,7 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0010']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0010']->severity = 3;
         $error_array['ERR-0010']->title = "Cannot create resource with supplied data";
-        $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a reserved word has been used for a field name or there is already a field with this name.';
+        $error_array['ERR-0010']->detail = 'Cannot create resource with supplied data. Likely a reserved word has been used for a field name or there is already a field with this name or an invalid value for a field has been supplied.';
 
         $error_array['ERR-0011'] = new stdClass();
         $error_array['ERR-0011']->code = 'ERR-0011';

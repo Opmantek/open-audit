@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   1.14.4
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -91,16 +90,20 @@ class M_collection extends MY_Model
             }
             if ($data->type == 'subnet') {
                 $this->load->model('m_networks');
-                if (strpos($data->other->subnet, '/') !== false) {
+                $this->load->helper('network');
+                $temp = network_details($data->other->subnet);
+                if (!empty($temp->error) and filter_var($data->other->subnet, FILTER_VALIDATE_IP) === false) {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
+                    log_error('ERR-0010', 'm_collections::create (invalid subnet supplied)');
+                    return;
+                } elseif  (strpos($data->other->subnet, '/') !== false) {
                     $network = new stdClass();
                     $network->name = $data->other->subnet;
                     $network->network = $data->other->subnet;
                     $network->org_id = $data->org_id;
                     $network->description = $data->name;
                     $this->m_networks->upsert($network);
-                }
-                if (filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
-                    $this->load->helper('network');
+                } elseif (filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
                     $temp = network_details($data->other->subnet.'/30');
                     $network = new stdClass();
                     $network->name = $temp->network.'/'.$temp->network_slash;
@@ -220,7 +223,7 @@ class M_collection extends MY_Model
 
 
         if ($collection === 'credentials') {
-            if ( !empty($data->credentials)) {
+            if (!empty($data->credentials)) {
                 $received_credentials = new stdClass();
                 foreach ($data->credentials as $key => $value) {
                         $received_credentials->$key = $value;
@@ -242,7 +245,7 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
-            if ( !empty($data->other)) {
+            if (!empty($data->other)) {
                 $received_other = new stdClass();
                 foreach ($data->other as $key => $value) {
                         $received_other->$key = $value;
@@ -262,6 +265,13 @@ class M_collection extends MY_Model
                 $data->other = (string)json_encode($new_other);
                 if (!empty($received_other->subnet)) {
                     $data->description = 'Subnet - ' . $received_other->subnet;
+                    $this->load->helper('network');
+                    $temp = network_details($received_other->subnet);
+                    if (!empty($temp->error) and filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
+                        $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid subnet attribute supplied.');
+                        log_error('ERR-0010', 'm_collections::create (invalid subnet supplied)');
+                        return;
+                    }
                 }
                 if (!empty($received_other->ad_domain)) {
                     $data->description = 'Active Directory - ' . $received_other->ad_domain;
@@ -315,7 +325,6 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
-
             case "attributes":
                 return(' name org_id resource type value ');
                 break;
@@ -395,7 +404,6 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
-
             case "attributes":
                 return(array('name','org_id','type','resource','value'));
                 break;
