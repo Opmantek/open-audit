@@ -53,13 +53,13 @@ class M_collection extends MY_Model
                 $data = $CI->response->meta->received_data->attributes;
                 $collection = $CI->response->meta->collection;
             } else {
-                log_error('ERR-0010', 'm_collections::create (' . $collection . ')');
+                log_error('ERR-0010', 'm_collection::create (' . $collection . ')');
                 return false;
             }
         }
 
         if ($collection === '') {
-            log_error('ERR-0010', 'm_collections::create (no collection)');
+            log_error('ERR-0010', 'm_collection::create (no collection)');
             return false;
         } else {
             $db_table = $collection;
@@ -68,8 +68,6 @@ class M_collection extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data (' . $collection . ')';
         stdlog($this->log);
-
-
 
         if ($collection === 'credentials') {
             $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
@@ -158,7 +156,7 @@ class M_collection extends MY_Model
         foreach ($mandatory_fields as $mandatory_field) {
             if (empty($data->{$mandatory_field})) {
                 $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
-                log_error('ERR-0021', 'm_collections::create (' . $collection . ')');
+                log_error('ERR-0021', 'm_collection::create (' . $collection . ')');
                 return false;
             }
         }
@@ -206,13 +204,13 @@ class M_collection extends MY_Model
                 $data->id = $CI->response->meta->id;
                 $collection = $CI->response->meta->collection;
             } else {
-                log_error('ERR-0010', 'm_collections::create');
+                log_error('ERR-0010', 'm_collection::create');
                 return false;
             }
         }
 
         if ($collection === '') {
-            log_error('ERR-0010', 'm_collections::create');
+            log_error('ERR-0010', 'm_collection::create');
             return false;
         } else {
             $db_table = $collection;
@@ -461,7 +459,7 @@ class M_collection extends MY_Model
                 break;
 
             case "summaries":
-                return(array('name','org_id','table column'));
+                return(array('name','org_id','table', 'column'));
                 break;
 
             case "users":

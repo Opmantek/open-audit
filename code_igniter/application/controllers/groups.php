@@ -145,8 +145,9 @@ class Groups extends MY_Controller_new
     */
     public function update()
     {
-        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or 
-            stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
+        if (!empty($this->response->meta->received_data->attributes->sql) and
+            (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or 
+            stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false)) {
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
             $allowed = false;
