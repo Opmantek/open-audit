@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   1.14.2
+# @version   1.14.4
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -396,6 +396,7 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Debugging Level     $debugging"
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
+	echo "Script Name         $script_name"
 	echo "----------------------------"
 fi
 
@@ -494,9 +495,9 @@ if [ -z "$system_uuid" ]; then
 fi
 
 # Get the hostname & DNS domain
-system_hostname=$(hostname -s)
-system_domain=$(hostname -d)
-system_fqdn=$(hostname -f)
+system_hostname=$(hostname | cut -d. -f1)
+system_domain=$(hostname -d | grep -v \(none\))
+system_fqdn=$(hostname -f | grep -v \(none\))
 
 dns_hostname=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f1)
 dns_domain=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f2-)
@@ -557,6 +558,13 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 		break;
 	fi
 
+	if [ -z "$system_os_family" ]; then
+		if [ -e "/etc/arch-release" ]; then
+			system_os_name="Arch Linux";
+			system_os_family="Arch";
+		fi
+	fi
+
 	# CentOS based - must come before RedHat based
 	if [ "$system_release_file" = "/etc/centos-release" ]; then
 		if [ -z "$system_os_family" ]; then
@@ -603,14 +611,21 @@ system_os_icon=$(lcase "$system_os_family")
 # Get the System Serial Number
 system_serial=""
 system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
-if [ -z "$system_serial" ]; then
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
+		system_serial=$(lshal 2>/dev/null | grep "system.hardware.serial" | cut -d\' -f2)
 	fi
 fi
-if [ -z "$system_serial" ]; then
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
+
+# Some old distro's return 0
+#if [ "$system_serial" = "0" ]; then
+#	system_serial=""
+# fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
@@ -624,10 +639,7 @@ if [ -z "$system_model" ]; then
 fi
 
 # get the systemd identifier
-#dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
-# I had to remove this as it is NOT reset/re-generated when ESX clones a machine, hence false positive matching occurs
-# Also /etc/machine-id is the same - not recreated.
-dbus_identifier=""
+dbus_identifier=$(cat /etc/machine-id 2>/dev/null)
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
@@ -1240,7 +1252,7 @@ for net_connection_id in $(ls /sys/class/net/) ; do
 		net_card_model="Virtual Bonded NIC"
 		net_card_description="Virtual Bonded NIC ($net_connection_id)"
 		net_card_enabled=""
-		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
+		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate 2>/dev/null)
 		if [ "$net_card_status" = "up" ]; then
 				net_card_status="Connected"
 		else
@@ -1577,7 +1589,21 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
 
+old="no"
+if [[ "$system_os_name" == "CentOS release 4"* ]]; then
+	old="yes"
+fi
 if [[ "$system_os_name" == "CentOS release 5"* ]]; then
+	old="yes"
+fi
+if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "4" ]; then
+	old="yes"
+fi
+if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "5" ]; then
+	old="yes"
+fi
+
+if [ "$old" = "yes" ]; then
 	echo "	<disk>" >> "$xml_file"
 	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | cut -d" " -f2 | cut -d: -f1); do
 		hard_drive_caption="$disk"
@@ -1909,17 +1935,20 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Environment Variable Info"
 fi
 echo "	<variable>" >> "$xml_file"
-for variable in $(env); do
-	name=$( echo "$variable" | cut -d= -f1 )
-	value=${variable#*=}
-	if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
-		echo "		<item>" >> "$xml_file"
-		echo "			<program>environment</program>" >> "$xml_file"
-		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
-		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
-		echo "		</item>" >> "$xml_file"
-	fi
-done
+# Arch throws encoded characters in, just ignore Arch for now
+if [ "$system_os_family" != "Arch" ]; then
+	for variable in $(env); do
+		name=$( echo "$variable" | cut -d= -f1 )
+		value=${variable#*=}
+		if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
+			echo "		<item>" >> "$xml_file"
+			echo "			<program>environment</program>" >> "$xml_file"
+			echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
+			echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
+			echo "		</item>" >> "$xml_file"
+		fi
+	done
+fi
 
 # Puppet facts
 if [ -n "$(which facter 2>/dev/null)" ]; then
@@ -2034,6 +2063,32 @@ case $system_os_family in
 				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
 				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
+			;;
+		'Solus' )
+			for package in $(eopkg list-installed | cut -d" " -f1); do
+				version=$(eopkg blame "$package" | grep "Name: $package" | cut -d" " -f4 | cut -d, -f1)
+				description=$(eopkg info "$package" | grep Summary | cut -d: -f2 | head -n1)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
+			;;
+		'Arch' )
+			for package in $(pacman -Q 2>/dev/null | cut -d" " -f1); do
+				version=$(pacman -Q -i "$package" 2>/dev/null | grep "^Version" | cut -d: -f2)
+				description=$(pacman -Q -i "$package" 2>/dev/null | grep "^Description" | cut -d: -f2)
+				url=$(pacman -Q -i "$package" 2>/dev/null | grep "^URL" | cut -d: -f2)
+				installed_on=$(pacman -Q -i "$package" 2>/dev/null | grep "^Install Date" | cut -d: -f2)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "			<url>$(escape_xml $url)</url>" >> "$xml_file"
+				echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 				echo "		</item>" >> "$xml_file"
 			done
 			;;
