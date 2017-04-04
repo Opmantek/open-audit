@@ -37,7 +37,6 @@
 $sortcolumn = 2;
 ?>
 <a href="#faq-1" ><?php echo __('How Does Open-AudIT store it\'s data ?')?></a><br />
-<a href="#faq-2" ><?php echo __('How do Users, Groups &amp; Systems work ?')?></a><br />
 <a href="#faq-3" ><?php echo __('Columns in Reports &amp; Groups')?></a><br />
 <a href="#faq-4" ><?php echo __('Printer Logic')?></a><br />
 <br />
@@ -134,44 +133,6 @@ Where possible, the first option will be chosen and where possible on subsequent
 	</tr>
 </table>
 </fieldset>
-<br />
-<br />
-<br />
-<div id="faq-2" >
-<br />
-<fieldset class='niceforms'>
-<legend><span style='font-size: 12pt;'>&nbsp;<?php echo __('How do Users, Groups &amp; Systems work ?')?></span></legend>
-Each User has an entry in the oa_user table.<br />
-Each Group has an entry in the oa_group table.<br />
-Each System has an entry in the system table.<br />
-<br />
-A group uses a SQL query to determine the systems that belong to it.<br />
-<br />
-Each system has an entry in oa_group_system noting it's system_id and the group_id from the oa_group table.<br /><br />
-Thus, a system can belong to more than one group and one group can have more than one system.<br />
-<br />
-Each user has an entry in oa_group_user noting it's user_id and the group_id from oa_group.<br />
-Also stored is the level of access that user has for that group.<br />
-0 - no access<br />
-3 - view only in "list" type screens<br />
-5 - view basic individual system details<br />
-7 - view "sensitive" details about a system<br />
-10 - edit system details and custom data<br />
-<br />
-So, if a user wishes to view a group, it is first checked that his group_access_level is at least 3.<br />
-The user_id is known (cookie). <br />
-The group_id is known (in the url).<br />
-If it is, the group is listed as per the details from oa_group.<br />
-If it is not (ie - the user has a group_access_level of 0 or null), the user is redirected to the "list all groups" type page (the Home page).<br />
-<br />
-The same principle applies to individual systems.<br />
-The user_id is known.<br />
-The system_id is known.<br />
-They are combined and the group_access_level is determined, hence access granted or denied.<br />
-The highest group_access_level is used - not the lowest.<br />
-Thus, if a system belongs to more than one group, but a user has differing levels of access to those groups, the highest level will be applied and used.<br />
-</fieldset>
-</div>
 <br />
 <br />
 <br />

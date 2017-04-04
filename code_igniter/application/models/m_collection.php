@@ -139,7 +139,6 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'users') {
-            $db_table = 'oa_user';
             if (!empty($data->password)) {
                 // password - get 256 random bits in hex
                 $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
@@ -274,7 +273,6 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'users') {
-            $db_table = 'oa_user';
             if (!empty($data->password)) {
                 // password - get 256 random bits in hex
                 $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));

@@ -257,9 +257,6 @@ class MY_Model extends CI_Model
         }
 
         $table = $endpoint;
-        if ($table == 'users') {
-            $table = 'oa_user';
-        }
 
         // total count
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {

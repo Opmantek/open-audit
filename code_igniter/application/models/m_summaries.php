@@ -325,7 +325,11 @@ class M_summaries extends MY_Model
         }
 
         if ($this->m_users->get_user_permission('', 'users', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `oa_user` WHERE org_id IN (" . $CI->user->org_list . ")";
+            if ($this->db->table_exists('users')) {
+                $sql = "SELECT COUNT(*) AS `count` FROM `users` WHERE org_id IN (" . $CI->user->org_list . ")";
+            } else {
+                $sql = "SELECT COUNT(*) AS `count` FROM `oa_user` WHERE org_id IN (" . $CI->user->org_list . ")";
+            }
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Users', "collection" => "users", "icon" => 'users', "count" => $count[0]->count);
         }

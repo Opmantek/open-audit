@@ -54,7 +54,7 @@ class M_users extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT oa_user.*, orgs.name AS `org_name` FROM oa_user LEFT JOIN orgs ON (oa_user.org_id = orgs.id) WHERE oa_user.id = ?";
+        $sql = "SELECT users.*, orgs.name AS `org_name` FROM users LEFT JOIN orgs ON (users.org_id = orgs.id) WHERE users.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'users');
@@ -74,7 +74,7 @@ class M_users extends MY_Model
         }
         if ($id != 1) {
             // attempt to delete the item
-            $sql = "DELETE FROM `oa_user` WHERE id = ?";
+            $sql = "DELETE FROM `users` WHERE id = ?";
             $data = array($id);
             $this->run_sql($sql, $data);
             return true;
@@ -172,7 +172,11 @@ class M_users extends MY_Model
             }
         } else {
             $user_id = intval($user_id);
-            $sql = "SELECT roles FROM oa_user WHERE id = ?";
+            if ($this->db->table_exists('users')) {
+                $sql = "SELECT roles FROM users WHERE id = ?";
+            } else {
+                $sql = "SELECT roles FROM oa_user WHERE id = ?";
+            }
             $data = array($user_id);
             $result = $this->run_sql($sql, $data);
             if (!empty($result[0]->roles)) {
@@ -234,9 +238,6 @@ class M_users extends MY_Model
         }
         if ($collection == 'orgs') {
             $org_id_name = 'id';
-        }
-        if ($collection == 'users') {
-            $table = 'oa_user';
         }
 
         if ($table == '') {
@@ -320,10 +321,10 @@ class M_users extends MY_Model
             $user_prefix = 'user_';
         }
 
-        $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'oa_user'";
+        $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'users'";
         $query = $this->db->query($sql);
         $result = $query->result();
-        if (count($result) !== 1) {
+        if (count($result) !== 0) {
             $db_table = 'users';
         } else {
             $db_table = 'oa_user';

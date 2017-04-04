@@ -57,7 +57,11 @@ class M_oa_config extends MY_Model
             $edited_by = 'config_edited_by';
         #}
 
-        $sql = "SELECT oa_config.*, oa_user.full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.id";
+        if ($this->db->table_exists('users')) {
+            $sql = "SELECT oa_config.*, users.full_name FROM oa_config LEFT JOIN users ON oa_config.$edited_by = users.id";
+        } else {
+            $sql = "SELECT oa_config.*, oa_user.full_name FROM oa_config LEFT JOIN oa_user ON oa_config.$edited_by = oa_user.id";
+        }
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();

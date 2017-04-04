@@ -283,8 +283,8 @@ if (! function_exists('inputRead')) {
                     $table = 'scripts';
                     break;
                 case 'users':
-                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM oa_user WHERE name LIKE ? LIMIT 1";
-                    $table = 'oa_user';
+                    $sql = "/* input_helper::inputRead */" . "SELECT id FROM users WHERE name LIKE ? LIMIT 1";
+                    $table = 'users';
                     break;
             }
             if ($sql != '') {

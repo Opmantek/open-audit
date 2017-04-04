@@ -127,7 +127,9 @@ class M_logon extends MY_Model
                     }
                     // Successful bind, therefore valid AD username and password
                     if (strtolower($ldap->use_roles) != 'y') {
-                        if ($this->db->field_exists('user_name', 'oa_user')) {
+                        if ($this->db->table_exists('users')) {
+                            $sql = "/* m_logon::logon */" . "SELECT * FROM users WHERE name = ? AND active = 'y' LIMIT 1";
+                        } elseif ($this->db->field_exists('user_name', 'oa_user')) {
                             $sql = "/* m_logon::logon */" . "SELECT * FROM oa_user WHERE user_name = ? AND user_active = 'y' LIMIT 1";
                         } else {
                             $sql = "/* m_logon::logon */" . "SELECT * FROM oa_user WHERE name = ? AND active = 'y' LIMIT 1";
@@ -244,7 +246,11 @@ class M_logon extends MY_Model
                     $user->orgs = json_encode($user->orgs);
 
                     if (!empty($user->roles) and !empty($user->orgs)) {
-                        $user_sql = "/* m_logon::logon */" . "SELECT * FROM oa_user WHERE name = ? and ldap = ? and active = 'y' LIMIT 1";
+                        if ($this->table_exists('users')) {
+                            $user_sql = "/* m_logon::logon */" . "SELECT * FROM users WHERE name = ? and ldap = ? and active = 'y' LIMIT 1";
+                        } else {
+                            $user_sql = "/* m_logon::logon */" . "SELECT * FROM oa_user WHERE name = ? and ldap = ? and active = 'y' LIMIT 1";
+                        }
                         $user_data = array((string)$user->name, (string)$user->ldap);
                         $user_query = $this->db->query($user_sql, $user_data);
                         $user_result = $user_query->result();
@@ -252,14 +258,22 @@ class M_logon extends MY_Model
                             // The user does not exist, insert
                             $log->message = "New user $username logged on (AD account).";
                             $log->severity = 5;
-                            $user_sql = "/* m_logon::logon */" . "INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                            if ($this->table_exists('users')) {
+                                $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                            } else {
+                                $user_sql = "/* m_logon::logon */" . "INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                            }
                             $user_query = $this->db->query($user_sql, (array)$user);
                             $user->id = $this->db->insert_id();
                         } else {
                             // The user exists, update
                             $log->message = "Existing user $username logged on (AD account).";
                             $log->severity = 6;
-                            $user_sql = "/* m_logon::logon */" . "UPDATE oa_user SET full_name = ?, email = ?, orgs = ?, roles = ?, ldap = ? WHERE id = ?";
+                            if ($this->table_exists('users')) {
+                                $user_sql = "/* m_logon::logon */" . "UPDATE users SET full_name = ?, email = ?, orgs = ?, roles = ?, ldap = ? WHERE id = ?";
+                            } else {
+                                $user_sql = "/* m_logon::logon */" . "UPDATE oa_user SET full_name = ?, email = ?, orgs = ?, roles = ?, ldap = ? WHERE id = ?";
+                            }
                             $user_data = array($user->full_name,
                                                 $user->email,
                                                 $user->orgs,
@@ -297,7 +311,9 @@ class M_logon extends MY_Model
         }
 
         // Check for a local account
-        if ($this->db->field_exists('user_name', 'oa_user')) {
+        if ($this->db->table_exists('users')) {
+            $sql = "/* m_logon::logon */" . "SELECT * FROM users WHERE name = ? and active = 'y'";
+        } elseif ($this->db->field_exists('user_name', 'oa_user')) {
             $sql = "/* m_logon::logon */" . "SELECT `user_id` AS `id`, `user_name` AS `name`, `user_password` AS `password` FROM oa_user WHERE user_name = ?";
         } else {
             $sql = "/* m_logon::logon */" . "SELECT * FROM oa_user WHERE name = ? and active = 'y'";

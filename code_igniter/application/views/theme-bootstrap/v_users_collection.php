@@ -64,7 +64,7 @@
                     <tr>
                         <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                             <?php refine('users.name', $item->attributes->name); ?>
-                        <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
+                            <?php refine('users.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                             <?php refine('users.name', $item->attributes->full_name); ?>
                             <?php refine('users.name', $item->attributes->email); ?>
                             <?php refine('users.roles', $item->attributes->roles, $roles); ?>

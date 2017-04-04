@@ -212,7 +212,7 @@ class Users extends MY_Controller_new
     public function import_form()
     {
         $this->load->model('m_database');
-        $this->response->data = $this->m_database->read('oa_user');
+        $this->response->data = $this->m_database->read('users');
         include 'include_import_form.php';
     }
 

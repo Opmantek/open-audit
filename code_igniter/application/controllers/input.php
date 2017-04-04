@@ -113,9 +113,8 @@ class input extends CI_Controller
     public function _remap()
     {
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
-            $this->load->model('m_oa_user');
             $this->load->model('m_users');
-            $this->m_oa_user->validate_user();
+            $this->m_users->validate_user();
             $this->response = new stdClass();
             $this->response->meta = new stdClass();
             $this->response->meta->collection = '';

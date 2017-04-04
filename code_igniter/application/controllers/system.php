@@ -191,7 +191,7 @@ class System extends CI_Controller
         $this->benchmark->mark('code_start');
         if (isset($this->session->userdata['user_id'])) {
             $temp_user_id = $this->session->userdata['user_id'];
-            $sql = "/* system::add_system */ SELECT full_name FROM oa_user WHERE id = ?";
+            $sql = "/* system::add_system */ SELECT full_name FROM users WHERE id = ?";
             $data = array($this->session->userdata['user_id']);
             $query = $this->db->query($sql, $data);
             $result = $query->result();
