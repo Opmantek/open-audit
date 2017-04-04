@@ -30,9 +30,6 @@ $db_table = $this->response->meta->collection;
 if ($this->response->meta->collection === 'devices') {
 	$db_table = 'system';
 }
-if ($this->response->meta->collection === 'orgs') {
-	$db_table = 'oa_org';
-}
 if ($this->response->meta->collection === 'users') {
 	$db_table = 'oa_user';
 }

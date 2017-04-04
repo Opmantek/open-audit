@@ -191,7 +191,7 @@ class M_logon extends MY_Model
                     $roles_query = $this->db->query($roles_sql);
                     $roles = $roles_query->result();
                     // Orgs
-                    $orgs_sql = "/* m_logon::logon */" . "SELECT * FROM oa_org";
+                    $orgs_sql = "/* m_logon::logon */" . "SELECT * FROM orgs";
                     $orgs_query = $this->db->query($orgs_sql);
                     $orgs = $orgs_query->result();
                     // Groups

@@ -55,7 +55,7 @@ class M_networks extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) WHERE networks.id = ? AND networks.org_id IN (" . $CI->user->org_list . ")";
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) WHERE networks.id = ? AND networks.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');

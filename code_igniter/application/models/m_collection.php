@@ -114,10 +114,6 @@ class M_collection extends MY_Model
             }
         }
 
-        if ($collection == 'orgs') {
-            $db_table = 'oa_org';
-        }
-
         if ($collection === 'roles') {
             $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
             $permissions = new stdClass();
@@ -275,10 +271,6 @@ class M_collection extends MY_Model
                     $data->description = 'Active Directory - ' . $received_other->ad_domain;
                 }
             }
-        }
-
-        if ($collection == 'orgs') {
-            $db_table = 'oa_org';
         }
 
         if ($collection === 'users') {

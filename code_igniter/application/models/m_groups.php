@@ -89,7 +89,7 @@ class M_groups extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        $sql = "SELECT groups.*, oa_org.name AS `org_name` FROM groups LEFT JOIN oa_org ON (groups.org_id = oa_org.id) WHERE groups.org_id IN (" . $CI->user->org_list . ") GROUP BY groups.name";
+        $sql = "SELECT groups.*, orgs.name AS `org_name` FROM groups LEFT JOIN orgs ON (groups.org_id = orgs.id) WHERE groups.org_id IN (" . $CI->user->org_list . ") GROUP BY groups.name";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'groups');
         return ($result);

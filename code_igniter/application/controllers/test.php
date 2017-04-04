@@ -227,7 +227,7 @@ class test extends CI_Controller
         $user_orgs = $query->result();
         print_r($user_orgs);
 
-        $sql = "SELECT * FROM oa_org";
+        $sql = "SELECT * FROM orgs";
         $query = $this->db->query($sql);
         $this->orgs = $query->result();
         print_r($this->orgs);
@@ -297,7 +297,7 @@ class test extends CI_Controller
 
         $instring = implode(',', $org_id_list) . "\n";
         echo $instring . "\n";
-        // $sql = "SELECT system.id, hostname, type, org_id, org_name FROM system LEFT JOIN oa_org ON system.org_id = oa_org.org_id WHERE org_id IN (" . $instring . ")";
+        // $sql = "SELECT system.id, hostname, type, org_id, org_name FROM system LEFT JOIN orgs ON system.org_id = orgs.id WHERE orgs.id IN (" . $instring . ")";
         // echo $sql . "\n";
         // $query = $this->db->query($sql);
         // $result = $query->result();
@@ -325,7 +325,7 @@ class test extends CI_Controller
         $dashboard->total['type'] = count($result);
 
         $dashboard->org = array();
-        $sql = "SELECT count(system_id) AS count, system.org_id, oa_org.name FROM system LEFT JOIN oa_org ON system.org_id = oa_org.id WHERE org_id IN (" . $instring . ") GROUP BY org_id";
+        $sql = "SELECT count(system_id) AS count, system.org_id, orgs.name FROM system LEFT JOIN orgs ON system.org_id = orgs.id WHERE org_id IN (" . $instring . ") GROUP BY org_id";
         $query = $this->db->query($sql);
         $result = $query->result();
         foreach ($result as $row) {
@@ -422,7 +422,7 @@ class test extends CI_Controller
     {
         $org_id_list = array();
         $org_id = intval($org_id);
-        $sql = "SELECT id FROM oa_org WHERE parent_id = ? AND id != 0";
+        $sql = "SELECT id FROM orgs WHERE parent_id = ? AND id != 0";
         $data = array($org_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -439,7 +439,7 @@ class test extends CI_Controller
     {
         $org_id_list = array();
         $org_id = intval($org_id);
-        $sql = "SELECT org_id FROM oa_org WHERE org_parent_id = ? AND org_id != 0";
+        $sql = "SELECT org_id FROM orgs WHERE parent_id = ? AND id != 0";
         $data = array($org_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -480,7 +480,7 @@ class test extends CI_Controller
 
         $test = array();
         $test[] = "system.type = 'bridge'";
-        $test[] = "oa_org.name = 'OpenDealerExchange'";
+        $test[] = "orgs.name = 'OpenDealerExchange'";
         $test[] = "locations.name = 'Pune - India'";
         $test[] = "system.os_family = 'Ubuntu'";
         $test[] = "server.type = 'web'";
@@ -502,8 +502,8 @@ class test extends CI_Controller
             echo $item . "\n";
             if ($table == 'oa_location') {
                 $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN oa_location ON system.location_id = oa_location.id WHERE $item AND system.status = 'production' AND system.org_id IN (" . $instring . ") ";
-            } elseif ($table == 'oa_org') {
-                $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN oa_org ON system.org_id = oa_org.id WHERE $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") ";
+            } elseif ($table == 'orgs') {
+                $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN orgs ON system.org_id = orgs.id WHERE $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") ";
             } elseif ($table != 'system') {
                 $sql = "SELECT system.id, system.hostname, system.type, $column FROM system LEFT JOIN $table ON system.id = $table.system_id WHERE $table.current = 'y' AND $item AND system.status = 'production'  AND system.org_id IN (" . $instring . ") GROUP BY system.id, $column";
             } else {

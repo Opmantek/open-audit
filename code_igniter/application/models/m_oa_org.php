@@ -43,7 +43,7 @@ class M_oa_org extends MY_Model
 
     public function check_org_name($name, $id)
     {
-        $sql = "SELECT id FROM oa_org WHERE name = ? AND id <> ?";
+        $sql = "SELECT id FROM orgs WHERE name = ? AND id <> ?";
         $sql = $this->clean_sql($sql);
         $data = array($name, $id);
         $query = $this->db->query($sql, $data);
@@ -57,7 +57,7 @@ class M_oa_org extends MY_Model
 
     public function get_group_id($id)
     {
-        $sql = "SELECT group_id FROM oa_org WHERE id = ? LIMIT 1";
+        $sql = "SELECT group_id FROM orgs WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
@@ -67,7 +67,7 @@ class M_oa_org extends MY_Model
 
     public function set_group_id($id, $group_id)
     {
-        $sql = "UPDATE oa_org SET group_id = ? WHERE id = ? ";
+        $sql = "UPDATE orgs SET group_id = ? WHERE id = ? ";
         $sql = $this->clean_sql($sql);
         $data = array("$group_id", "$id");
         $query = $this->db->query($sql, $data);
@@ -75,7 +75,7 @@ class M_oa_org extends MY_Model
 
     public function select_org($name)
     {
-        $sql = "SELECT id FROM oa_org WHERE name = ? LIMIT 1";
+        $sql = "SELECT id FROM orgs WHERE name = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array("$name");
         $query = $this->db->query($sql, $data);
@@ -90,7 +90,7 @@ class M_oa_org extends MY_Model
 
     public function get_org_details($id)
     {
-        $sql = "SELECT o1.*, o2.name as parent_name, count(oa_group_sys.system_id) as total FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN oa_group_sys ON oa_group_sys.group_id = o1.group_id where o1.id = ? GROUP BY o1.id LIMIT 1";
+        $sql = "SELECT o1.*, o2.name as parent_name, count(oa_group_sys.system_id) as total FROM orgs o1 LEFT JOIN orgs o2 ON o1.parent_id = o2.id LEFT JOIN oa_group_sys ON oa_group_sys.group_id = o1.group_id where o1.id = ? GROUP BY o1.id LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array("$id");
         $query = $this->db->query($sql, $data);
@@ -100,7 +100,7 @@ class M_oa_org extends MY_Model
 
     public function get_org_name($id)
     {
-        $sql = "SELECT name FROM oa_org WHERE id = ? LIMIT 1";
+        $sql = "SELECT name FROM orgs WHERE id = ? LIMIT 1";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -110,7 +110,7 @@ class M_oa_org extends MY_Model
 
     public function get_all_orgs()
     {
-        $sql = "SELECT o1.*, o2.name as parent_name FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id GROUP BY o1.id ORDER BY o1.name";
+        $sql = "SELECT o1.*, o2.name as parent_name FROM orgs o1 LEFT JOIN orgs o2 ON o1.parent_id = o2.id GROUP BY o1.id ORDER BY o1.name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -119,7 +119,7 @@ class M_oa_org extends MY_Model
 
     public function get_org_names()
     {
-        $sql = "SELECT name, id FROM oa_org ORDER BY name";
+        $sql = "SELECT name, id FROM orgs ORDER BY name";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
@@ -128,7 +128,7 @@ class M_oa_org extends MY_Model
 
     public function get_system_org($id)
     {
-        $sql = "SELECT a.*, b.name as parent_name FROM oa_org a LEFT JOIN system ON a.id = system.org_id LEFT JOIN oa_org b ON b.id = a.parent_id WHERE system.id = ?";
+        $sql = "SELECT a.*, b.name as parent_name FROM orgs a LEFT JOIN system ON a.id = system.org_id LEFT JOIN orgs b ON b.id = a.parent_id WHERE system.id = ?";
         $sql = $this->clean_sql($sql);
         $data = array($id);
         $query = $this->db->query($sql, $data);
@@ -138,9 +138,9 @@ class M_oa_org extends MY_Model
 
     public function add_org($org)
     {
-        $sql = "INSERT INTO oa_org (name, parent_id, comments) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO orgs (name, parent_id, description) VALUES (?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$org->name", "$org->parent_id", "$org->comments");
+        $data = array("$org->name", "$org->parent_id", "$org->description");
         $query = $this->db->query($sql, $data);
         return ($this->db->insert_id());
     }
@@ -155,16 +155,16 @@ class M_oa_org extends MY_Model
         $sql = "UPDATE system SET org_id = '1' WHERE org_id = ?";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
-        $sql = "DELETE FROM oa_org WHERE id = ?";
+        $sql = "DELETE FROM orgs WHERE id = ?";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
     }
 
     public function edit_org($org)
     {
-        $sql = "UPDATE oa_org SET name = ?, parent_id = ?, comments = ? WHERE id = ?";
+        $sql = "UPDATE orgs SET name = ?, parent_id = ?, description = ? WHERE id = ?";
         $sql = $this->clean_sql($sql);
-        $data = array("$org->name", "$org->parent_id", "$org->comments", "$org->id", );
+        $data = array("$org->name", "$org->parent_id", "$org->description", "$org->id", );
         if ($query = $this->db->query($sql, $data)) {
             return(true);
         } else {

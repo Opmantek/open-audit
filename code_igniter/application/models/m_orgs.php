@@ -54,7 +54,7 @@ class M_orgs extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT oa_org.*, COUNT(DISTINCT system.id) as `device_count` FROM oa_org LEFT JOIN system ON (oa_org.id = system.org_id) WHERE oa_org.id = ?";
+        $sql = "SELECT orgs.*, COUNT(DISTINCT system.id) as `device_count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE orgs.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'orgs');
@@ -73,7 +73,7 @@ class M_orgs extends MY_Model
             $id = intval($id);
         }
         if ($id != 1) {
-            $sql = "DELETE FROM `oa_org` WHERE id = ?";
+            $sql = "DELETE FROM `orgs` WHERE id = ?";
             $data = array($id);
             $this->run_sql($sql, $data);
             return true;
@@ -120,7 +120,7 @@ class M_orgs extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM oa_org o1 LEFT JOIN oa_org o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
+        $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM orgs o1 LEFT JOIN orgs o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
         $result = $this->run_sql($sql, $data);
         return($result);
     }
@@ -129,7 +129,7 @@ class M_orgs extends MY_Model
     {
         $org_list = array();
         if (empty($this->orgs)) {
-            $sql = "SELECT * FROM oa_org";
+            $sql = "SELECT * FROM orgs";
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $this->orgs = $query->result();
@@ -152,7 +152,7 @@ class M_orgs extends MY_Model
         }
         $CI = & get_instance();
         if (empty($CI->orgs)) {
-            $sql = "SELECT * FROM oa_org";
+            $sql = "SELECT * FROM orgs";
             $CI->orgs = $this->run_sql($sql, array());
         }
         $children = $this->get_children($parent_id);

@@ -54,7 +54,7 @@ class M_users extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT oa_user.*, oa_org.name AS `org_name` FROM oa_user LEFT JOIN oa_org ON (oa_user.org_id = oa_org.id) WHERE oa_user.id = ?";
+        $sql = "SELECT oa_user.*, orgs.name AS `org_name` FROM oa_user LEFT JOIN orgs ON (oa_user.org_id = orgs.id) WHERE oa_user.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'users');
@@ -105,7 +105,7 @@ class M_users extends MY_Model
             return array();
         }
         $user_orgs = json_decode($CI->user->orgs);
-        $sql = "SELECT * FROM oa_org";
+        $sql = "SELECT * FROM orgs";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $this->orgs = $query->result();
@@ -233,7 +233,6 @@ class M_users extends MY_Model
             $table = 'system';
         }
         if ($collection == 'orgs') {
-            $table = 'oa_org';
             $org_id_name = 'id';
         }
         if ($collection == 'users') {

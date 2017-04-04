@@ -260,9 +260,6 @@ class MY_Model extends CI_Model
         if ($table == 'users') {
             $table = 'oa_user';
         }
-        if ($table == 'orgs') {
-            $table = 'oa_org';
-        }
 
         // total count
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
@@ -313,9 +310,9 @@ class MY_Model extends CI_Model
         }
         if ($filter != '') {
             $filter = substr($filter, 5);
-            $filter = ' WHERE oa_org.id IN (' . $CI->user->org_list . ') AND ' . $filter;
+            $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
         } else {
-            $filter = ' WHERE oa_org.id IN (' . $CI->user->org_list . ')';
+            $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ')';
         }
         $return['filter'] = $filter;
 
@@ -323,7 +320,7 @@ class MY_Model extends CI_Model
         $sort = '';
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
             if ($CI->response->meta->sort == '') {
-                if ($table == 'oa_org') {
+                if ($table == 'orgs') {
                     $sort = 'ORDER BY ' . $table . '.name';
                 } else {
                     $sort = 'ORDER BY ' . $table . '.id';
@@ -348,23 +345,23 @@ class MY_Model extends CI_Model
         if ($type == 'sql') {
             
             if ($endpoint == 'locations') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, oa_org.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN oa_org ON (locations.org_id = oa_org.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
             
             } else if ($endpoint == 'fields') {
-                $sql = "SELECT " . $return['properties'] . ", oa_org.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN oa_org ON (fields.org_id = oa_org.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
             
             } else if ($endpoint == 'networks') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, oa_org.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN oa_org ON (networks.org_id = oa_org.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
             
             } else if ($endpoint == 'orgs') {
-                $sql = "SELECT oa_org.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM oa_org LEFT JOIN oa_org o2 ON oa_org.parent_id = o2.id LEFT JOIN system ON (oa_org.id = system.org_id) " . $return['filter'] . " GROUP BY oa_org.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) " . $return['filter'] . " GROUP BY orgs.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($endpoint == 'queries') {
-                $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(oa_org.name) AS `org_name` FROM `queries` LEFT JOIN oa_org ON (`queries`.org_id = oa_org.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
-                $sql = "SELECT queries.*, oa_org.name AS `org_name` FROM queries LEFT JOIN oa_org ON (queries.org_id = oa_org.id) GROUP BY queries.name";
+                $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(orgs.name) AS `org_name` FROM `queries` LEFT JOIN orgs ON (`queries`.org_id = orgs.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) GROUP BY queries.name";
 
             } else {
-                $sql = "SELECT " . $return['properties'] . ", oa_org.name AS `org_name` FROM `" . $table . "` LEFT JOIN oa_org ON (`" . $table . "`.org_id = oa_org.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name` FROM `" . $table . "` LEFT JOIN orgs ON (`" . $table . "`.org_id = orgs.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
             }
             return($sql);
         } else {

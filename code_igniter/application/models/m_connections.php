@@ -90,7 +90,7 @@ class M_connections extends MY_Model
         $CI = & get_instance();
 
         // get a list of Orgs and Locations so we can populate the names
-        $sql = "SELECT id, name FROM oa_org";
+        $sql = "SELECT id, name FROM orgs";
         $result = $this->run_sql($sql, array());
         $orgs = $result;
         $sql = "SELECT id, name FROM connections";

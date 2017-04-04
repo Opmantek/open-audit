@@ -96,7 +96,7 @@ class M_summaries extends MY_Model
         $result = $this->format_data($result, 'summaries');
         $tables = ' field audit_log bios change_log credential disk dns edit_log file ip log memory module monitor motherboard netstat network nmap optical partition pagefile print_queue processor purchase route san scsi service server server_item share software software_key sound task user user_group variable video vm windows ';
         for ($i=0; $i < count($result); $i++) {
-            if ($result[$i]->attributes->table == 'oa_org') {
+            if ($result[$i]->attributes->table == 'orgs') {
                 $org_id = 'id';
             } else {
                 $org_id = 'org_id';
@@ -150,7 +150,7 @@ class M_summaries extends MY_Model
         $data = array($id);
         $dashboard = $this->run_sql($sql, $data);
 
-        if ($dashboard[0]->table == 'oa_org') {
+        if ($dashboard[0]->table == 'orgs') {
             $org_id = 'id';
         } else {
             $org_id = 'org_id';
@@ -176,7 +176,7 @@ class M_summaries extends MY_Model
                 $collection = 'networks';
                 break;
 
-            case 'oa_org':
+            case 'orgs':
                 $collection = 'orgs';
                 break;
 
@@ -301,7 +301,7 @@ class M_summaries extends MY_Model
         }
 
         if ($this->m_users->get_user_permission('', 'orgs', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `oa_org` WHERE id IN (" . $CI->user->org_list . ")";
+            $sql = "SELECT COUNT(*) AS `count` FROM `orgs` WHERE id IN (" . $CI->user->org_list . ")";
             $count = $this->run_sql($sql);
             $data[] = array("name" => 'Orgs', "collection" => "orgs", "icon" => 'bank', "count" => $count[0]->count);
         }

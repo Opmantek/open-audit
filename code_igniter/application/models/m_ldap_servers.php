@@ -85,7 +85,7 @@ class M_ldap_servers extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT ldap_servers.*, oa_org.name AS `org_name` FROM ldap_servers LEFT JOIN oa_org ON (ldap_servers.org_id = oa_org.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (" . $CI->user->org_list . ")";
+        $sql = "SELECT ldap_servers.*, orgs.name AS `org_name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'ldap_servers');

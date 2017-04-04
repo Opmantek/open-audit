@@ -782,7 +782,7 @@ class M_system extends MY_Model
 
     public function get_non_production_systems()
     {
-        $sql = "SELECT system.id, system.hostname, system.last_seen, oa_org.name as org_name FROM system LEFT JOIN oa_org ON system.org_id = oa_org.id WHERE status != 'production'";
+        $sql = "SELECT system.id, system.hostname, system.last_seen, orgs.name as org_name FROM system LEFT JOIN orgs ON system.org_id = orgs.id WHERE status != 'production'";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
         $result = $query->result();
