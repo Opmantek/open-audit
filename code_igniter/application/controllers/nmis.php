@@ -45,7 +45,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class Nmis extends MY_Controller_new
+class Nmis extends MY_Controller
 {
     /**
     * Constructor
@@ -110,7 +110,6 @@ class Nmis extends MY_Controller_new
         $log->severity = 6;
         $log->message = 'NMIS import, importing nodes from ' . $file;
         stdlog($log);
-        $this->load->model('m_system');
         $this->load->model('m_devices');
         $timestamp = $this->config->config['timestamp'];
         $node_array = array();
@@ -190,7 +189,7 @@ class Nmis extends MY_Controller_new
                 }
                 $device = dns_validate($device, 'n');
                 $device->omk_uuid = @$node['uuid'];
-                $device->id = $this->m_system->find_system($device);
+                $device->id = $this->m_device->match($device);
                 $device->status = 'production';
                 $device->credentials = new stdClass();
                 $device->credentials->description = 'Imported from NMIS';

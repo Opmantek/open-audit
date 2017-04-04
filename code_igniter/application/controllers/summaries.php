@@ -45,7 +45,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class Summaries extends MY_Controller_new
+class Summaries extends MY_Controller
 {
     /**
     * Constructor

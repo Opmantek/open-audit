@@ -1,4 +1,8 @@
 <?php
+if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+#
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,28 +28,35 @@
 #
 # *****************************************************************************
 
-/**
+/*
+ * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
- *
  * 
  * @version   1.14.4
- *
+
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_database_update' and $include != 'v_database_update_form') {
-    redirect('database?action=update');
-}
-
-# Define our constans for use in htmlspecialchars
-if (!defined('CHARSET')) {
-    define('CHARSET', 'UTF-8');
-    if (phpversion() >= 5.4) {
-        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
-    } else {
-        define('REPLACE_FLAGS', ENT_COMPAT);
+if (! function_exists('version_padded')) {
+    function version_padded($version)
+    {
+        if (empty($version)) {
+            return '';
+        }
+        $version_padded = '';
+        $pieces = array();
+        $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $version);
+        foreach ($pieces as $piece) {
+            if (strlen($piece) > 10) {
+                $version_padded .= $piece;
+            } else {
+                $version_padded .= mb_substr("00000000000000000000".$piece, -10);
+            }
+        }
+        return $version_padded;
     }
 }
 
-include "theme-bootstrap/v_template.php";
+/* End of file software_version_helper.php */
+/* Location: ./system/application/helpers/software_version_helper.php */

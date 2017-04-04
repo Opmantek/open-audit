@@ -49,6 +49,7 @@
 <body onload="document.form.username.focus();">
 <br />
 <form class="form-horizontal" id="form" name="form" method="post" action="logon">
+<input type="hidden" name="url" id="url" value="<?php echo @$this->response->meta->url; ?>" />
 <div class="row">
 <div class="col-md-8  col-md-offset-2 text-center">
     <div class="panel panel-default">
@@ -99,6 +100,7 @@
                         <div class="sol-sm-8">
                         <br />Don't forget about the Open-AudIT wiki for all your documentation.<br /><a target='_blank' href='https://community.opmantek.com/display/OA/Home'>https://community.opmantek.com/display/OA/Home</a>
                         </div>
+                        <span align='center'><br /><input type="button" class="btn btn-sm btn-default" name="audit" id="audit" onclick="audit_my_pc()" value="Audit My PC" /></span><br />&nbsp;
                     </div>
 <?php
 $temp = @$this->session->flashdata('error');
@@ -113,18 +115,30 @@ if (!empty($temp)) {
 </div>
 </div>
 </form>
+<pre>
+<?php print_r($this->response); ?>
+</pre>
 <script type="text/javascript">
     function audit_my_pc()
     {
-        location.href = "/open-audit/index.php/login/audit_my_pc";
+        var testWin = navigator.userAgent.match(/Windows NT/i);
+        if (testWin) {
+            location.href = "/open-audit/index.php/util/audit_my_pc/win";
+        }
+        var testLin = navigator.userAgent.match(/Linux /i);
+        if (testLin) {
+            location.href = "/open-audit/index.php/util/audit_my_pc/lin";
+        }
+        var testOsx = navigator.userAgent.match(/Mac OS X/i);
+        if (testOsx) {
+            location.href = "/open-audit/index.php/util/audit_my_pc/osx";
+        }
     }
-<?php if ($this->config->config['device_count'] == '0') {
-    ?>
+
+    <?php if ($this->config->config['device_count'] == '0') { ?>
     document.getElementById("username").value = "admin";
     document.getElementById("password").value = "password";
-    <?php
-}
-    ?>
+    <?php } ?>
 </script>
 </body>
 </html>

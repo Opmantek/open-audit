@@ -176,7 +176,6 @@ class M_devices extends MY_Model
         }
         $CI = & get_instance();
         $this->load->model('m_devices_components');
-        $this->load->model('m_system');
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
         $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'devices');
@@ -953,10 +952,11 @@ class M_devices extends MY_Model
         // We assign a weight to the submitted data and compare it to what we already have for each column
         // Valid weights and the sources are:
         // 1000 - user or import (import should set as user as well)
-        // 2000 - audit, audit_ssh, audit_wmi
-        // 3000 - snmp, ssh, nmap (note - ssh and snmp because they may contain data from nmap)
-        // 4000 - ad (active directory)
-        // 5000 - nmap
+        // 2000 - audit, audit_ssh, audit_wmi, windows, wmi
+        // 3000 - snmp, ssh, nmis (note - ssh and snmp because they may contain data from nmap)
+        // 4000 - ipmi
+        // 5000 - ad (active directory)
+        // 6000 - nmap
         // The lower the value, the higher the priority is given
 
         switch ($set_by) {
@@ -1398,7 +1398,7 @@ class M_devices extends MY_Model
                     $details->icon = 'unknown';
                 }
             }
-            $sql = "UPDATE system SET icon = ? WHERE id = ?";
+            $sql = "/* m_devices::update_icons */" . " UPDATE system SET icon = ? WHERE id = ?";
             $data = array("$details->icon", "$details->id");
             $query = $this->db->query($sql, $data);
         }

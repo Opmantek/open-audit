@@ -531,18 +531,10 @@ class M_devices_components extends MY_Model
         ### SOFTWARE ###
         # need to pad the version
         if ((string)$table == 'software') {
+            $this->load->helper('software_version');
             for ($i=0; $i<count($input->item); $i++) {
                 if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
-                    $pieces = array();
-                    $pieces = preg_split("/[\s,\+\-\_\.\\\+\~]+/", $input->item[$i]->version);
-                    $input->item[$i]->version_padded = (string)'';
-                    foreach ($pieces as $piece) {
-                        if (strlen($piece) > 10 ) {
-                            $input->item[$i]->version_padded .= $piece;
-                        } else {
-                            $input->item[$i]->version_padded .= mb_substr("00000000000000000000".$piece, -10);
-                        }
-                    }
+                    $input->item[$i]->version_padded = version_padded($input->item[$i]->version);
                 } else {
                     $input->item[$i]->version_padded = '';
                 }

@@ -70,7 +70,6 @@ class input extends CI_Controller
         $this->load->helper('ssh');
         $this->load->helper('wmi');
         $this->load->library('session');
-        $this->load->model('m_system');
         $this->load->model('m_configuration');
         $this->load->model('m_networks');
         $this->m_configuration->load();

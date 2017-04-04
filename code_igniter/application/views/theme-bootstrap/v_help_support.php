@@ -46,12 +46,14 @@ $data['os_version'] = '';
 $data['os_database'] = $this->db->platform()." (version ".$this->db->version().")";
 $data['os_webserver'] = getenv("SERVER_SOFTWARE");
 
-$sql = "SELECT @@global.time_zone";
+$sql = "SELECT IF(@@session.time_zone = 'SYSTEM', @@system_time_zone, @@session.time_zone) as timezone";
 $query = $this->db->query($sql);
 $result = $query->result();
-$data['timezone_database'] = $result[0]->{'@@global.time_zone'};
+$data['timezone_database'] = $result[0]->timezone;
 $data['timezone_php'] = date_default_timezone_get();
 $data['timezone_os'] = '';
+
+
 
 $data['php_version'] = phpversion();
 $data['php_error_reporting'] = ini_get('error_reporting');
@@ -64,7 +66,7 @@ $data['php_upload_max_filesize'] = ini_get('upload_max_filesize');
 $data['php_ext_ldap'] = extension_loaded('ldap');
 $data['php_ext_mbstring'] = extension_loaded('mbstring');
 $data['php_ext_mcrypt'] = extension_loaded('mcrypt');
-$data['php_ext_mysql'] = extension_loaded('mysql');
+$data['php_ext_mysqli'] = extension_loaded('mysqli');
 $data['php_ext_posix'] = extension_loaded('posix');
 $data['php_ext_snmp'] = extension_loaded('snmp');
 $data['php_ext_xml'] = extension_loaded('xml');
@@ -224,7 +226,7 @@ if (php_uname('s') == 'Linux') {
         exec($command_string, $output, $return_var);
         $data['timezone_os'] = @$output[0];
     }
-    $data['timezone_os'] = trim($data['os_timezone']);
+    $data['timezone_os'] = trim($data['timezone_os']);
 }
 
 

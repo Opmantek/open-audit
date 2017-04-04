@@ -252,7 +252,7 @@ class M_oa_user extends MY_Model
                             $log_details->severity = 5;
                             $log_details->message = 'Admin credentials required (html request)';
                             stdlog($log_details);
-                            // redirect to the login page
+                            // redirect to the logon page
                             redirect('main/list_groups');
                         }
                     }
@@ -290,8 +290,8 @@ class M_oa_user extends MY_Model
                     // set the original requested URL
                     $requested_url = array('url'  => current_url());
                     $this->session->set_userdata($requested_url);
-                    // redirect to the login page
-                    redirect('login/index');
+                    // redirect to the logon page
+                    redirect('logon');
                 }
             }
         }
@@ -359,8 +359,8 @@ class M_oa_user extends MY_Model
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);
-                // redirect to the login page
-                redirect('login/index');
+                // redirect to the logon page
+                redirect('logon');
             }
         }
 
@@ -414,8 +414,8 @@ class M_oa_user extends MY_Model
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);
-                // redirect to the login page
-                redirect('login/index');
+                // redirect to the logon page
+                redirect('logon');
             }
         }
 
@@ -475,8 +475,8 @@ class M_oa_user extends MY_Model
                             // set the original requested URL
                             $requested_url = array('url'  => current_url());
                             $this->session->set_userdata($requested_url);
-                            // redirect to the login page
-                            redirect('login/index');
+                            // redirect to the logon page
+                            redirect('logon');
                         }
                     }
                 } else {
@@ -564,8 +564,8 @@ class M_oa_user extends MY_Model
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);
-                // redirect to the login page
-                redirect('login/index/main/list_groups');
+                // redirect to the logon page
+                redirect('logon');
             }
         } else {
             // correct credentials supplied
@@ -597,8 +597,8 @@ class M_oa_user extends MY_Model
                         $log_details->severity = 5;
                         $log_details->message = 'Admin credentials required (html request)';
                         stdlog($log_details);
-                        // redirect to the login page
-                        redirect('main/list_groups');
+                        // redirect to the logon page
+                        redirect('logon');
                     }
                 }
             } else {

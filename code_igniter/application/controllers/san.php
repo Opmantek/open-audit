@@ -57,7 +57,6 @@ class San extends CI_Controller
         $log->status = 'start';
         $log->function = strtolower(__METHOD__);
         stdlog($log);
-        $this->load->model('m_system');
         // No need for user to be logged in
         // Have to be able to submit systems via the audit script
         $this->data['title'] = 'Open-AudIT';
@@ -94,7 +93,7 @@ class San extends CI_Controller
             stdlog($log_details);
 
             $this->load->model('m_devices_components');
-            $this->load->model('m_system');
+            $this->load->model('m_device');
             $this->load->model('m_audit_log');
             $this->load->helper('url');
 
@@ -702,7 +701,7 @@ class San extends CI_Controller
             stdlog($log_details);
 
             $details->last_seen = $this->config->config['timestamp'];
-            $details->id = intval($this->m_system->find_system($details));
+            $details->id = intval($this->m_device->match($details));
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
@@ -714,7 +713,7 @@ class San extends CI_Controller
             if ($details->id == '') {
                 // insert a new system
                 $details->first_seen = $details->last_seen;
-                $details->id = $this->m_system->insert_system($details);
+                $details->id = $this->m_device->insert($details);
                 $log_details = new stdClass();
                 $log_details->severity = 7;
                 $log_details->file = 'system';
@@ -733,7 +732,7 @@ class San extends CI_Controller
                 unset($log_details);
                 $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
                 $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
-                $this->m_system->update_system($details);
+                $this->m_device->update($details);
                 echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
             }
             $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');

@@ -1343,7 +1343,6 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
 
 <?php
 // table style displays
-#$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
 $list = array ('alert_log', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'mount_point', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
     $list[] = 'disk';
@@ -1375,6 +1374,10 @@ foreach ($list as $item) {
                                         # some special cases for cisco modules
                                         if ($item == 'module') {
                                             if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
+                                                echo '<th>' . ucwords(str_replace('_', ' ', $key)) . '</th>';
+                                            }
+                                        } elseif ($item == 'change_log') {
+                                            if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
                                                 echo '<th>' . ucwords(str_replace('_', ' ', $key)) . '</th>';
                                             }
                                         } else {
@@ -1418,6 +1421,10 @@ foreach ($list as $item) {
                                                 } else {
                                                     echo "<td>" . $value . "</td>\n";
                                                 }
+                                            }
+                                        } elseif ($item == 'change_log') {
+                                            if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
+                                                echo '<td>' . $value . '</td>';
                                             }
                                         } elseif ($item == 'vm'and $key == 'guest_system_id') {
                                             if (!empty($value)) {

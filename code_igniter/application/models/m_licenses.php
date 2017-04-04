@@ -146,7 +146,7 @@ class M_licenses extends MY_Model
         $sql = "SELECT * FROM licenses WHERE id = $id";
         $result = $this->run_sql($sql, array());
         if (empty($result[0])) {
-            // log an error, no matching license
+            // TODO log an error, no matching license
             return;
         } else {
             $license = $result[0];

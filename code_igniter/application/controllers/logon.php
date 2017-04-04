@@ -144,6 +144,7 @@ class logon extends CI_Controller
     */
     public function index()
     {
+        $this->response->meta->url = @$this->session->userdata('url');
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
             $temp = @$this->session->userdata('user_id');
             if (!empty($temp)) {
@@ -189,6 +190,7 @@ class logon extends CI_Controller
 
         $this->load->model('m_logon');
         $this->m_logon->logon();
+
         if (empty($this->user->id)) {
             // user not validated
             if ($this->response->meta->format != 'json') {
@@ -209,11 +211,11 @@ class logon extends CI_Controller
 
 
         if ($this->response->meta->format != 'json') {
-            $url = @$this->session->userdata('url');
+            $url = @$this->input->post('url');
             if (!empty($url)) {
                 redirect($this->session->userdata('url'));
             } else {
-                redirect('home');
+                redirect('summaries');
             }
         } else {
             $this->user->id = intval($this->user->id);

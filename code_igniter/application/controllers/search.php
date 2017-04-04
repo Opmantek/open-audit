@@ -45,7 +45,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class Search extends MY_Controller_new
+class Search extends MY_Controller
 {
     /**
     * Constructor
@@ -106,10 +106,8 @@ class Search extends MY_Controller_new
     */
     public function create()
     {
-        #echo "<pre>\n";
         $this->response->data = $this->m_search->create();
         $this->response->meta->total = count($this->response->data);
-        #$this->response->meta->format = 'json';
         output($this->response);
     }
 

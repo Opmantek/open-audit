@@ -33,8 +33,8 @@ $this->load->helper('error');
 // our required models
 $this->load->model('m_audit_log');
 $this->load->model('m_devices');
+$this->load->model('m_device');
 $this->load->model('m_devices_components');
-$this->load->model('m_system');
 
 // check if the submitting IP is in the list of allowable subnets
 $this->load->model('m_networks');
@@ -133,7 +133,7 @@ $log->message = "Valid XML result received.";
 $ids[] = discovery_log($log);
 
 # this inserts all the (or any) retrieved mac addresses into the sys XML section
-# which are then compared against in the m_system->find_system function to match a device
+# which are then compared against in the m_device->match function to match a device
 foreach ($xml->children() as $child) {
     if ($child->getName() === 'network') {
         foreach ($child->children() as $card) {
@@ -187,10 +187,10 @@ if (!isset($details->type)) {
 }
 
 # todo - finding device
-$log->message = "Running find_system function.";
+$log->message = "Running devices::match function.";
 $ids[] = discovery_log($log);
 
-$i = $this->m_system->find_system($details);
+$i = $this->m_device->match($details);
 
 if ($i == '' and $received_system_id > '') {
     $i = $received_system_id;
@@ -217,7 +217,7 @@ $details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
 if ((string) $i === '') {
     // insert a new system
-    $details->id = $this->m_system->insert_system($details);
+    $details->id = $this->m_device->insert($details);
     $log->system_id = $details->id;
     $log->ip = @$details->ip;
     $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
@@ -237,7 +237,7 @@ if ((string) $i === '') {
     discovery_log($log);
     $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
     $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
-    $this->m_system->update_system($details);
+    $this->m_device->update($details);
     echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
 }
 

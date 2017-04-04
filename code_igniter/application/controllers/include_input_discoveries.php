@@ -47,6 +47,7 @@ $syslog->message = '';
 $this->load->model('m_audit_log');
 $this->load->model('m_credentials');
 $this->load->model('m_devices');
+$this->load->model('m_device');
 $this->load->model('m_devices_components');
 $this->load->model('m_orgs');
 $this->load->model('m_scripts');
@@ -210,7 +211,7 @@ if (!empty($_POST['data'])) {
             }
         }
 
-        $device->id = $this->m_system->find_system($device);
+        $device->id = $this->m_device->match($device);
         if (!empty($device->id)) {
             $log->system_id = $device->id;
             $log->message = "Device with ID " . $device->id . " found on initial Nmap result.";
@@ -443,14 +444,11 @@ if (!empty($_POST['data'])) {
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
         }
 
-
-
-
         // $log->command_output = json_encode($device->system);
         // $log->message = 'System Data';
         // discovery_log($log);
 
-        $device->id = $this->m_system->find_system($device);
+        $device->id = $this->m_device->match($device);
 
         if (!empty($discovery->devices_assigned_to_org)) {
             $device->org_id = $discovery->devices_assigned_to_org;
@@ -498,7 +496,7 @@ if (!empty($_POST['data'])) {
             discovery_log($log);
             $device->original_last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
             $device->original_last_seen_by = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen_by');
-            $this->m_system->update_system($device);
+            $this->m_device->update($device);
             $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
             $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
@@ -507,7 +505,7 @@ if (!empty($_POST['data'])) {
             // we have a new system - INSERT
             $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
             discovery_log($log);
-            $device->id = $this->m_system->insert_system($device);
+            $device->id = $this->m_device->insert($device);
             $log->system_id = $device->id;
             $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
@@ -1003,19 +1001,19 @@ if (!empty($_POST['data'])) {
                                 if (!isset($esx_details->ip) or $esx_details->ip == '') {
                                     $esx_details->ip = $device->ip;
                                 }
-                                $esx_details->system_id = $this->m_system->find_system($esx_details);
+                                $esx_details->system_id = $this->m_device->match($esx_details);
                                 $esx_details->last_seen = $device->last_seen;
 
                                 if (isset($esx_details->system_id) and $esx_details->system_id != '') {
                                     // we have an existing device
                                     $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by');
                                     $esx_details->original_last_seen = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen');
-                                    $this->m_system->update_system($esx_details);
+                                    $this->m_device->update($esx_details);
                                     $log->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
                                     stdlog($log);
                                 } else {
                                     // we have a new system
-                                    $esx_details->system_id = $this->m_system->insert_system($esx_details);
+                                    $esx_details->system_id = $this->m_device->insert($esx_details);
                                     $log->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
                                     stdlog($log);
                                 }
