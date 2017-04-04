@@ -46,8 +46,8 @@
                 <tr>
                 <th style="text-align:center;"><?php echo __('ID')?></th>
                 <th><?php echo __('Name')?></th>
-                <th><?php echo __('Description')?></th>
                 <th><?php echo __('Organisation')?></th>
+                <th><?php echo __('Description')?></th>
                 <th style="text-align:center;"><?php echo __('Execute')?></th>
                 <?php if ($this->m_users->get_user_permission('', 'queries', 'u')) { ?>
                 <th style="text-align:center;"><?php echo __('Edit')?></th>
@@ -61,9 +61,9 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('queries.name', $item->attributes->name); ?>
+                    <?php refine('queries.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('queries.description', $item->attributes->description); ?>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="devices?sub_resource=query&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <?php if ($this->m_users->get_user_permission('', 'queries', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>

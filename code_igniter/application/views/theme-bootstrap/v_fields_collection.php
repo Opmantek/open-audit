@@ -62,10 +62,10 @@
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
                         <td class="text-center"><a class="btn btn-sm btn-success" href="fields/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                        <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->placement, REPLACE_FLAGS, CHARSET)?></td>
+                        <?php refine('fields.name', $item->attributes->name); ?>
+                        <?php refine('fields.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                        <?php refine('fields.type', $item->attributes->type); ?>
+                        <?php refine('fields.placement', $item->attributes->placement); ?>
                         <td><?php echo htmlspecialchars($item->attributes->{'groups.name'}, REPLACE_FLAGS, CHARSET)?></td>
                         <?php if ($this->m_users->get_user_permission('', 'fields', 'u')) { ?>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="fields/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>

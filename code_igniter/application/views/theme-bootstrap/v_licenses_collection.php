@@ -62,12 +62,13 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="licenses/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->org_descendants, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->purchase_count, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('licenses.name', $item->attributes->name); ?>
+                    <?php refine('licenses.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('licenses.org_descendants', $item->attributes->org_descendants); ?>
+                    <?php refine('licenses.purchase_count', $item->attributes->purchase_count); ?>
                     <td class="text-center">
-                    <?php if ($item->attributes->used_count > $item->attributes->purchase_count) {
+                    <?php
+                    if ($item->attributes->used_count > $item->attributes->purchase_count) {
                         echo '<span class="btn btn-sm btn-danger">';
                     } else {
                         echo '<span class="btn btn-sm btn-success">';

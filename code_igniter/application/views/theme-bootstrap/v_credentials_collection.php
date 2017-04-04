@@ -63,12 +63,12 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="credentials/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('credentials.name', $item->attributes->name); ?>
+                    <?php refine('credentials.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('credentials.description', $item->attributes->description); ?>
+                    <?php refine('credentials.type', $item->attributes->type); ?>
+                    <?php refine('credentials.edited_by', $item->attributes->edited_by); ?>
+                    <?php refine('credentials.edited_date', $item->attributes->edited_date); ?>
                     <?php if ($this->m_users->get_user_permission('', 'credentials', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="credentials/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                     <?php } ?>

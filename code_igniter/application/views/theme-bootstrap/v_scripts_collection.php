@@ -65,12 +65,12 @@
                     foreach ($this->response->data as $item): ?>
                     <tr>
                           <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                          <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                          <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                          <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                          <td><?php echo htmlspecialchars($item->attributes->based_on, REPLACE_FLAGS, CHARSET)?></td>
-                          <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
-                          <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
+                            <?php refine('scripts.name', $item->attributes->name); ?>
+                            <?php refine('scripts.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                            <?php refine('scripts.description', $item->attributes->description); ?>
+                            <?php refine('scripts.based_on', $item->attributes->based_on); ?>
+                            <?php refine('scripts.edited_by', $item->attributes->edited_by); ?>
+                            <?php refine('scripts.edited_date', $item->attributes->edited_date); ?>
                           <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
                           <?php if ($this->m_users->get_user_permission('', 'scripts', 'u')) { ?>
                           <td class="text-center"><a class="btn btn-sm btn-info" href="scripts/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>

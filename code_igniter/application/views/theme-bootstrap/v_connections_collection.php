@@ -64,13 +64,13 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="connections/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo @htmlspecialchars($item->attributes->location_name_a, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo @htmlspecialchars($item->attributes->location_name_b, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->provider, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->service_type, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->speed, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('connections.name', $item->attributes->name); ?>
+                    <?php refine('connections.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('connections.location_name_a', $item->attributes->location_name_a); ?>
+                    <?php refine('connections.location_name_b', $item->attributes->location_name_b); ?>
+                    <?php refine('connections.provider', $item->attributes->provider); ?>
+                    <?php refine('connections.service_type', $item->attributes->service_type); ?>
+                    <?php refine('connections.speed', $item->attributes->speed); ?>
                     <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="connections/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                     <?php } ?>

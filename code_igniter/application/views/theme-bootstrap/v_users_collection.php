@@ -63,11 +63,11 @@
                 <?php $roles = @implode(', ', json_decode($item->attributes->roles)); ?>
                     <tr>
                         <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                        <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
+                            <?php refine('users.name', $item->attributes->name); ?>
                         <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET)?></td>
-                        <td><?php echo htmlspecialchars($roles, REPLACE_FLAGS, CHARSET)?></td>
+                            <?php refine('users.name', $item->attributes->full_name); ?>
+                            <?php refine('users.name', $item->attributes->email); ?>
+                            <?php refine('users.roles', $item->attributes->roles, $roles); ?>
                         <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
                         <td class="text-center"><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                         <?php } ?>

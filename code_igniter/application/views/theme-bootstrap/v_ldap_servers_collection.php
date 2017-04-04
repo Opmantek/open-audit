@@ -63,12 +63,12 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="ldap_servers/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->lang, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->host, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->domain, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('ldap_servers.name', $item->attributes->name); ?>
+                    <?php refine('ldap_servers.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('ldap_servers.description', $item->attributes->description); ?>
+                    <?php refine('ldap_servers.lang', $item->attributes->lang); ?>
+                    <?php refine('ldap_servers.host', $item->attributes->host); ?>
+                    <?php refine('ldap_servers.domain', $item->attributes->domain); ?>
                     <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="ldap_servers/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
                     <?php } ?>

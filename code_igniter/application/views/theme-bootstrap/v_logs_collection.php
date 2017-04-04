@@ -61,16 +61,16 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="logs/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->timestamp, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->severity_text, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->pid, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->user, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->collection, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->action, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->function, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->summary, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('logs.timestamp', $item->attributes->timestamp); ?>
+                    <?php refine('logs.type', $item->attributes->type); ?>
+                    <?php refine('logs.severity_text', $item->attributes->severity_text); ?>
+                    <?php refine('logs.pid', $item->attributes->pid); ?>
+                    <?php refine('logs.user', $item->attributes->user); ?>
+                    <?php refine('logs.collection', $item->attributes->collection); ?>
+                    <?php refine('logs.action', $item->attributes->action); ?>
+                    <?php refine('logs.function', $item->attributes->function); ?>
+                    <?php refine('logs.status', $item->attributes->status); ?>
+                    <?php refine('logs.summary', $item->attributes->summary); ?>
                     <?php
                         if ($item->attributes->status == 'finish') {
                             echo "</tr><tr><td colspan=\"11\">&nbsp;</td>";

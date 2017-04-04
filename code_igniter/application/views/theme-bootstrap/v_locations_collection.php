@@ -65,13 +65,13 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
-                    <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->org_name, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->address, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->city, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->state, REPLACE_FLAGS, CHARSET)?></td>
-                    <td><?php echo htmlspecialchars($item->attributes->country, REPLACE_FLAGS, CHARSET)?></td>
+                    <?php refine('locations.name', $item->attributes->name); ?>
+                    <?php refine('locations.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('locations.type', $item->attributes->type); ?>
+                    <?php refine('locations.address', $item->attributes->address); ?>
+                    <?php refine('locations.city', $item->attributes->city); ?>
+                    <?php refine('locations.state', $item->attributes->state); ?>
+                    <?php refine('locations.country', $item->attributes->country); ?>
                     <td class="text-center"><a href="devices?location_id=<?php echo intval($item->id); ?>" role="button" class="btn btn-sm btn-primary" aria-label="Left Align"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
                     <?php if ($this->m_users->get_user_permission('', 'locations', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>

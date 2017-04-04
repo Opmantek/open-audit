@@ -65,10 +65,10 @@
                         <tr>
                             <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo intval($item->id); ?></a></td>
                             <td class="text-center"><?php echo $item->attributes->device_count?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->parent_name, REPLACE_FLAGS, CHARSET)?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->ad_group, REPLACE_FLAGS, CHARSET)?></td>
+                            <?php refine('orgs.name', $item->attributes->name); ?>
+                            <?php refine('orgs.description', $item->attributes->description); ?>
+                            <?php refine('orgs.parent_id', $item->attributes->parent_id, $item->attributes->parent_name); ?>
+                            <?php refine('orgs.ad_group', $item->attributes->ad_group); ?>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
                             <?php if ($this->m_users->get_user_permission('', 'orgs', 'u')) { ?>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
