@@ -304,7 +304,10 @@ class MY_Model extends CI_Model
             $reserved = ' properties limit resource action sort current offset format ';
             foreach ($CI->response->meta->filter as $item) {
                 if (strpos(' '.$item->name.' ', $reserved) === false) {
-                    $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    // We MUST have a name like 'connections.name', not just 'name'
+                    if (strpos($item->name, '.') !== false) {
+                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                    }
                 }
             }
         }
