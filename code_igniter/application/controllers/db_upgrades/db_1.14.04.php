@@ -480,6 +480,9 @@ $this->alter_table('system', 'last_seen', "`last_seen` datetime NOT NULL DEFAULT
 $this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT ''");
 $this->drop_key('system', 'system_id');
 
+# users
+$this->rename_table('oa_user', 'users');
+
 # user_group
 $this->alter_table('user_group', 'description', "`description` text NOT NULL");
 

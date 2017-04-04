@@ -1615,44 +1615,6 @@ LOCK TABLES `oa_temp` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oa_user`
---
-
-DROP TABLE IF EXISTS `oa_user`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_user` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `password` varchar(250) NOT NULL,
-  `full_name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `roles` text NOT NULL,
-  `orgs` text NOT NULL,
-  `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
-  `active` varchar(1) NOT NULL DEFAULT 'y',
-  `ldap` text NOT NULL,
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `user_id_index` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_user`
---
-
-LOCK TABLES `oa_user` WRITE;
-/*!40000 ALTER TABLE `oa_user` DISABLE KEYS */;
-INSERT INTO `oa_user` VALUES (1,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','[\"admin\",\"org_admin\"]','[1]','en','y','','','2000-01-01 00:00:00');
-INSERT INTO `oa_user` VALUES (2,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','[\"admin\",\"org_admin\"]','[1]','en','y','','','2000-01-01 00:00:00');
-INSERT INTO `oa_user` VALUES (3,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','[\"admin\",\"org_admin\"]','[1]','en','y','','','2000-01-01 00:00:00');
-/*!40000 ALTER TABLE `oa_user` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `oa_user_sessions`
 --
 
@@ -2626,6 +2588,44 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `password` varchar(250) NOT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `roles` text NOT NULL,
+  `orgs` text NOT NULL,
+  `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
+  `active` varchar(1) NOT NULL DEFAULT 'y',
+  `ldap` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `user_id_index` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'admin',1,'0ab0a153e5bbcd80c50a02da8c97f3c87686eb8512f5457d30e328d2d4448c8968e9f4875c2eb61356197b851dd33f90658b20b32139233b217be54d903ca3b6','Administrator','admin@openaudit','[\"admin\",\"org_admin\"]','[1]','en','y','','','2000-01-01 00:00:00');
+INSERT INTO `users` VALUES (2,'open-audit_enterprise',1,'43629bd846bb90e40221d5276c832857ca51e49e325f7344704543439ffd6b6d3a963a32a41f55fca6d995fd302acbe03ea7d8bf2b3af91d662d497b0ad9ba1e','Open-AudIT Enterprise','','[\"admin\",\"org_admin\"]','[1]','en','y','','','2000-01-01 00:00:00');
+INSERT INTO `users` VALUES (3,'nmis',1,'5a7f9a638ea430196d765ef8d3875eafd64ee3d155ceddaced75467a76b97ab24080cba4a2e74cde03799a6a49dbc5c36ee204eff1d5f42e08cf7a423fdf9757','NMIS','','[\"admin\",\"org_admin\"]','[1]','en','y','','','2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
