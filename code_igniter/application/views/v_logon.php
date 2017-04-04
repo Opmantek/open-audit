@@ -115,9 +115,7 @@ if (!empty($temp)) {
 </div>
 </div>
 </form>
-<pre>
-<?php print_r($this->response); ?>
-</pre>
+
 <script type="text/javascript">
     function audit_my_pc()
     {
