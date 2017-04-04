@@ -102,7 +102,7 @@ class M_attributes extends MY_Model
 
         for ($i=0; $i < count($result); $i++) {
             foreach ($orgs as $org) {
-                if ($org->id == $result[$i]->org_id) {
+                if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
                     $result[$i]->org_name = $org->name;
                 }
             }
