@@ -162,6 +162,7 @@ var id = 0;
     </div>
 </div>
 
+
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -212,7 +213,7 @@ if (!empty($data['fields'])) {
 </div>
 
 
-
+<!--
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -241,8 +242,7 @@ if (!empty($data['fields'])) {
         </div>
     </div>
 </div>
-
-
+-->
 
 <div class="panel panel-default">
     <div class="panel-heading">

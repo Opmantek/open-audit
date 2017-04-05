@@ -834,17 +834,19 @@ class M_devices extends MY_Model
             } elseif (!empty($CI->response->meta->ids)) {
                 $ids = explode(',', $CI->response->meta->ids);
             }
-            # set out last seen by
-            if (! empty($CI->response->attributes->last_seen_by)) {
-                $source = $CI->response->attributes->last_seen_by;
+            # set our last seen by
+            if (! empty($CI->response->received_data->attributes->last_seen_by)) {
+                $source = $CI->response->received_data->attributes->last_seen_by;
             } else {
                 $source = 'user';
             }
             $received_data = $CI->response->meta->received_data->attributes;
         }
 
+        $CI->load->model('m_edit_log');
+        $CI->load->model('m_orgs');
         $system_fields = implode(' ', $this->db->list_fields('system'));
-        $sql = "SELECT id, name FROM fields";
+        $sql = "SELECT id, name, group_id, org_id FROM fields";
         $fields = $this->run_sql($sql, array());
 
         // loop through our supplied data and test if it's a custom field or a system field,
@@ -857,25 +859,36 @@ class M_devices extends MY_Model
             if (!empty($fields)) {
                 foreach ($fields as $field) {
                     if ($key == $field->name) {
-                        # we have a custom field - get the original value (if it exists)
+                        # we have a custom field
+
+                        # check if this device is in the org and group associated with the field
+                        $field_orgs = $CI->m_orgs->get_children($field->org_id);
+                        $field_orgs[] = $field->org_id;
+                        $field_orgs = implode(',', $field_orgs);
+                        $sql = "SELECT `sql` FROM `groups` WHERE id = ?";
+                        $data = array($field->group_id);
+                        $result = $this->run_sql($sql, $data);
+                        $test_sql = $result[0]->sql;
+                        $test_sql = str_replace('@filter', 'system.org_id IN (' . $field_orgs . ')', $test_sql);
+                        $test_sql .= ' AND system.id = ?';
+                        # get the original value (if it exists)
                         foreach ($ids as $id) {
-                            $sql = "SELECT id, value FROM field WHERE system_id = ? AND fields_id = ?";
-                            $result = $this->run_sql($sql, array(intval($id), $field->id));
-                            if (!empty($result[0]->value)) {
-                                $previous_value = $result[0]->value;
-                                $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
-                                $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
-                                // TODO - add an entry into the change log
-                            } else {
-                                $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
-                                $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
-                                $previous_value = '';
-                                // TODO - add an entry into the change log
+                            $result = $this->run_sql($test_sql, array(intval($id)));
+                            if (!empty($result)) {
+                                $sql = "SELECT id, value, fields_id FROM field WHERE system_id = ? AND fields_id = ?";
+                                $result = $this->run_sql($sql, array(intval($id), $field->id));
+                                if (!empty($result[0]->value)) {
+                                    $previous_value = $result[0]->value;
+                                    $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
+                                    $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
+                                    $CI->m_edit_log->create(intval($id), 'Field data was updated', 'field', $field->name, '', $value, $previous_value);
+                                } else {
+                                    $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
+                                    $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
+                                    $previous_value = '';
+                                    $CI->m_edit_log->create(intval($id), 'Field data was created', 'field', $field->name, '', $value, '');
+                                }
                             }
-                            // insert an entry into the edit table
-                            $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
-                            $data = array(intval($CI->user->id), intval($id), (string)$source, 1000, (string)$key, (string)$value, (string)$previous_value);
-                            $this->run_sql($sql, $data);
                         }
                     }
                 }
