@@ -81,7 +81,7 @@ class M_collection extends MY_Model
                 } else {
                     $data->description = $data->other->subnet;
                 }
-            } else if ($data->type == 'active directory') {
+            } elseif ($data->type == 'active directory') {
                 if (empty($data->other->ad_server) or empty($data->other->ad_domain)) {
                     if (empty($data->other->ad_server)) {
                         $temp = "Active Directory Server";
@@ -121,8 +121,8 @@ class M_collection extends MY_Model
                     $network->description = $data->name;
                     $this->m_networks->upsert($network);
                 }
-                $data->other = json_encode($data->other);
             }
+            $data->other = json_encode($data->other);
         }
 
         if ($collection === 'roles') {
