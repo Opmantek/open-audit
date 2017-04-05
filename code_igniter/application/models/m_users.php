@@ -101,10 +101,24 @@ class M_users extends MY_Model
         $this->log->summary = 'retrieving orgs';
         stdlog($this->log);
         $CI = & get_instance();
-        if (empty($CI->user->orgs)) {
+
+        if (empty($user_id)) {
+            $user_orgs = json_decode($CI->user->orgs);
+        } else {
+            $sql = "/* m_users::get_orgs */ " .  "SELECT orgs FROM users WHERE id = ?";
+            $query = $this->db->query($sql, array($user_id));
+            $result = $query->result();
+            if (count($result) > 0) {
+                $user_orgs = json_decode($result[0]->orgs);
+            } else {
+                return array();
+            }
+        }
+
+        if (empty($user_orgs)) {
             return array();
         }
-        $user_orgs = json_decode($CI->user->orgs);
+        
         $sql = "SELECT * FROM orgs";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
