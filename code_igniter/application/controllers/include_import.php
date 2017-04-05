@@ -59,6 +59,10 @@ $count_good = 0;
 $count_bad = 0;
 $count_update = 0;
 $count_create = 0;
+if ($this->response->meta->collection === 'devices') {
+    $last_seen_by = 'user';
+    $last_seen = date('Y-m-d H:i:s');
+}
 foreach ($csv as $key => $value) {
     $item = new stdClass();
     for ($i=0; $i < count($value); $i++) {
@@ -86,6 +90,10 @@ foreach ($csv as $key => $value) {
         if ($test === false) {
             $count_bad += 1;
         } else {
+            if ($this->response->meta->collection === 'devices') {
+                $item->last_seen_by = $last_seen_by;
+                $item->last_seen = $last_seen;
+            }
             $test = false;
             if (!empty($item->id)) {
                 # UPDATE
@@ -141,8 +149,6 @@ if ($this->response->meta->format === 'json') {
     output($this->response);
 } else {
     redirect($this->response->meta->collection);
-    #$this->response->meta->collection = 'collection';
-    #output($this->response);
 }
 
 $log = new stdClass();

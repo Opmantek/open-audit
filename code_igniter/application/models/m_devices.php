@@ -1206,6 +1206,7 @@ class M_devices extends MY_Model
             if ($details->type == 'computer') {
                 // determine icon for computer
                 // most generic to most specific
+                $details->icon = 'computer';
 
                 // manufacturer based
                 if (strripos($details->manufacturer, "apple") !== false) {

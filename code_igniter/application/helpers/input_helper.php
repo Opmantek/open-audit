@@ -950,7 +950,7 @@ if (! function_exists('inputRead')) {
             redirect('database?action=update');
         }
 
-        if (!empty($CI->response->meta->id) and
+        if (!empty($CI->response->meta->id) and $CI->response->meta->id != 888888888888 and
             $CI->response->meta->collection != 'charts' and
             $CI->response->meta->collection != 'configuration' and
             $CI->response->meta->collection != 'database' and
