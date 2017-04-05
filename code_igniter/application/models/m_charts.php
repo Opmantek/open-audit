@@ -130,7 +130,6 @@ class M_charts extends MY_Model
 
         $sql = "SELECT DISTINCT `what`, DATE(MAX(`when`)) AS start, DATE(MIN(`when`)) AS `end` FROM chart GROUP BY `what`";
         $result = $this->run_sql($sql, array());
-        $this->count_data($result);
         return $result;
     }
 
@@ -199,18 +198,4 @@ class M_charts extends MY_Model
         }
         return($result);
     }
-
-    private function count_data($result)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        // do we have any retrieved rows?
-        $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-        }
-    }
-
 }

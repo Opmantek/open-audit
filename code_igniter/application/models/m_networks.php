@@ -232,17 +232,4 @@ class M_networks extends MY_Model
             return false;
         }
     }
-
-    private function count_data($result)
-    {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        // do we have any retrieved rows?
-        $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-        }
-    }
 }

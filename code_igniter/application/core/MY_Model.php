@@ -71,8 +71,6 @@ class MY_Model extends CI_Model
         } else {
             $link = $type;
         }
-        // echo "\$result is of type: " . gettype($result);
-        // print_r($result); echo "\n";
         foreach ($result as $entry) {
             $item = new stdClass();
             $item->id = '';

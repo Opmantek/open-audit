@@ -242,16 +242,4 @@ class M_search extends MY_Model
         $result = $this->format_data($result, 'files');
         return ($result);
     }
-
-    private function count_data($result)
-    {
-        // do we have any retrieved rows?
-        $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-        }
-    }
-
 }

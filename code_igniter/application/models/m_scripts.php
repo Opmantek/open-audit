@@ -248,16 +248,4 @@ class M_scripts extends MY_Model
         #}
         return $file;
     }
-
-    private function count_data($result)
-    {
-        // do we have any retrieved rows?
-        $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-        }
-    }
-
 }

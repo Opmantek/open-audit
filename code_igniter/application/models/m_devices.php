@@ -565,13 +565,11 @@ class M_devices extends MY_Model
             $CI->response->meta->total = intval($result[0]->total);
         } else {
             $result = array();
-            $this->count_data($result);
             return false;
         }
         unset($result);
         $sql = "/* m_devices::collection */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
-        $this->count_data($result);
         if ($CI->response->meta->format == 'json' or $CI->response->meta->format == 'json_data') {
             $sql = "/* m_devices::collection */ " . "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
             $seen_by = $this->run_sql($sql, array());
@@ -926,17 +924,6 @@ class M_devices extends MY_Model
                     }
                 }
             }
-        }
-    }
-
-    private function count_data($result)
-    {
-        // do we have any retrieved rows?
-        $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
         }
     }
 
