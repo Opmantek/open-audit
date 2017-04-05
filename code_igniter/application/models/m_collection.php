@@ -82,7 +82,18 @@ class M_collection extends MY_Model
                     $data->description = $data->other->subnet;
                 }
             } else if ($data->type == 'active directory') {
-                $data->description = $data->other->ad_domain;
+                if (empty($data->other->ad_server) or empty($data->other->ad_domain)) {
+                    if (empty($data->other->ad_server)) {
+                        $temp = "Active Directory Server";
+                    } else {
+                        $temp = "Active Directory Domain";
+                    }
+                    log_error('ERR-0024', 'm_discoveries::create');
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no ' . $temp . ' supplied.');
+                    redirect('/discoveries');
+                } else {
+                    $data->description = $data->other->ad_domain;
+                }
             } else {
                 $data->description = '';
             }
