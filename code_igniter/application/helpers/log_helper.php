@@ -430,7 +430,7 @@ if (! function_exists('stdlog')) {
             }
         }
 
-        $sql = "/* log_helper */" . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "/* log_helper */ " . "INSERT INTO `logs` VALUES (NULL, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $query = $CI->db->query($sql, $log);
 
         if ($CI->db->_error_message()) {
@@ -759,7 +759,7 @@ if (! function_exists('stdlog1')) {
         }
 
         if ($log->database == 'not_yet') {
-            $sql = "/* log_helper::stdlog */ INSERT INTO logs VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "/* log_helper::stdlog */ " . "INSERT INTO logs VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $data = array((string)$log->name,
                             intval($log->org_id),
                             intval($log->severity),
