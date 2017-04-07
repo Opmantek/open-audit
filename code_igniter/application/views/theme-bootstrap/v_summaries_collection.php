@@ -68,8 +68,8 @@
                     <tr>
                         <th class="text-center"><?php echo __('ID')?></th>
                         <th><?php echo __('Name')?></th>
-                        <td class="text-center"><?php echo __('Count'); ?></td>
-                        <td class="text-center"><?php echo __('View'); ?></td>
+                        <th class="text-center"><?php echo __('Count'); ?></th>
+                        <th class="text-center"><?php echo __('Execute'); ?></th>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'u')) { ?>
                         <th class="text-center"><?php echo __('Edit')?></th>
                         <?php } ?>
