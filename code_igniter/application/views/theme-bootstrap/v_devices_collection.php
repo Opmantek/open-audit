@@ -174,9 +174,14 @@ if (!empty($this->response->data)) { ?>
                 $properties = array();
             }
             foreach ($properties as $key => $value) {
-                if (strpos($key, '.') !== false) {
-                    $key = substr($key, strpos($key, '.')+1);
-                }
+                // if (strpos($key, '.') !== false) {
+                //     $key = substr($key, strpos($key, '.')+1);
+                // }
+                $key = str_replace('system.', '', $key);
+                $key = str_replace('.', ' ', $key);
+                $key = str_replace('locations ', 'location ', $key);
+                $key = str_replace('orgs ', 'org ', $key);
+
                 if (strrpos($key, 'ip_padded') === strlen($key)-9) {
                     continue;
                 }
