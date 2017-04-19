@@ -77,6 +77,9 @@ self_delete="n"
 # 2 = verbose debug
 debugging=2
 
+# Version
+version="1.14.4"
+
 # Display help
 help="n"
 
@@ -303,6 +306,7 @@ if [ "$help" = "y" ]; then
 	echo ""
 	echo "-----------------------------"
 	echo "Open-AudIT Linux Audit script"
+	echo "Version: $version"
 	echo "-----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
@@ -390,6 +394,7 @@ if [ "$debugging" -gt 0 ]; then
 	echo "(c) Opmantek, 2014."
 	echo "----------------------------"
 	echo "My PID is           $$"
+	echo "Script Version      $version"
 	echo "Audit Start Time    $system_timestamp"
 	echo "Create File         $create_file"
 	echo "Submit Online       $submit_online"
@@ -569,7 +574,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 	if [ "$system_release_file" = "/etc/centos-release" ]; then
 		if [ -z "$system_os_family" ]; then
 			system_os_family="CentOS";
-			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
+			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
 			if [ -z "$system_os_version" ]; then
 				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
 			fi
@@ -589,7 +594,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 			system_os_family="Fedora"
 		fi
 		if [ -z "$system_os_version" ]; then
-			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
+			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
 			if [ -z "$system_os_version" ]; then
 				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
 			fi
@@ -677,7 +682,12 @@ system_uptime=$(cut -d. -f1 < /proc/uptime)
 
 # Get the System Form factor
 system_form_factor=""
-if [ "$system_model" = "Bochs" -o "$system_model" = "KVM" -o "$system_model" = "Virtual Machine" -o "$system_model" = "VMware Virtual Platform" -o "$system_model" = "OpenVZ" -o "$system_model" = "VirtualBox" ]; then
+if [ "$system_model" = "Bochs" -o \
+	 "$system_model" = "KVM" -o \
+	 "$system_model" = "Virtual Machine" -o \
+	 "$system_model" = "VMware Virtual Platform" -o \
+	 "$system_model" = "OpenVZ" -o \
+	 "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
 else
 	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#")
@@ -774,6 +784,7 @@ xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 echo "data=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
 echo "	<sys>"
+echo "		<script_version>$version</script_version>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
 echo "		<hostname>$(escape_xml "$system_hostname")</hostname>"
 echo "		<domain>$(escape_xml "$system_domain")</domain>"
@@ -1596,23 +1607,31 @@ fi
 if [[ "$system_os_name" == "CentOS release 5"* ]]; then
 	old="yes"
 fi
-if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "4" ]; then
-	old="yes"
-fi
-if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "5" ]; then
-	old="yes"
+if [ "$system_os_family" == "RedHat" -o "$system_os_family" == "Centos" ]; then
+	if (( $(echo "$system_os_version >= 4" | bc -l) )); then
+		if (( $(echo "$system_os_version < 6" | bc -l) )); then
+			old="yes"
+		fi
+	fi
 fi
 
+# if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "5" ]; then
+# 	old="yes"
+# fi
+
 if [ "$old" = "yes" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "Running old disk checking for RHEL/CentOS 4/5."
+	fi
 	echo "	<disk>" >> "$xml_file"
 	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | cut -d" " -f2 | cut -d: -f1); do
 		hard_drive_caption="$disk"
 		hard_drive_index=$(echo "$hard_drive_caption" | cut -d/ -f3)
 		hard_drive_interface_type=""
-		hard_drive_manufacturer=""
-		hard_drive_model=$(smartctl -i "$hard_drive_caption" | grep "Device Model" | cut -d: -f2)
-		hard_drive_serial=$(smartctl -i "$hard_drive_caption" | grep "Serial Number" | cut -d: -f2)
-		hard_drive_size=$(smartctl -i "$hard_drive_caption" | grep "User Capacity" | cut -d: -f2 | cut -db -f1 | sed 's/,//g')
+		hard_drive_manufacturer=$(smartctl -i "$hard_drive_caption" | grep "Vendor:" | cut -d: -f2)
+		hard_drive_model=$(smartctl -i "$hard_drive_caption" | grep "Product:" | cut -d: -f2)
+		hard_drive_serial=$(smartctl -i "$hard_drive_caption" | grep "Serial Number:" | cut -d: -f2)
+		hard_drive_size=$(smartctl -i "$hard_drive_caption" | grep "User Capacity:" | cut -d: -f2 | cut -db -f1 | sed 's/,//g')
 		hard_drive_size=$((hard_drive_size / 1024 / 1024))
 		hard_drive_device_id="$disk"
 		partition_count=$(fdisk -l "$disk" | grep "^$disk" | wc -l)
@@ -1643,33 +1662,28 @@ if [ "$old" = "yes" ]; then
 			partition_disk_index="$hard_drive_index"
 			partition_mount_point=$(mount | grep "$partition" | cut -d" " -f3)
 
-			partition_size=$(df -k "$partition" | grep "^$partition" | tr -s " " | cut -d" " -f2)
-			partition_size=$((partition_size / 1024))
-
-			partition_used=$(df -k "$partition" | grep "^$partition" | tr -s " " | cut -d" " -f3)
-			partition_used=$((partition_used / 1024))
-
-			partition_free=$(df -k "$partition" | grep "^$partition" | tr -s " " | cut -d" " -f4)
-			partition_free=$((partition_free / 1024))
+			partition_size=$(df -k "$partition" | tail -n1 | tr -s " " | cut -d" " -f2)
+			partition_used=$(df -k "$partition" | tail -n1 | tr -s " " | cut -d" " -f3)
+			partition_free=$(df -k "$partition" | tail -n1 | tr -s " " | cut -d" " -f4)
 
 			partition_format=$(mount | grep "$partition" | cut -d" " -f5)
 			partition_result=$partition_result"
-				<item>
-					<serial>$(escape_xml "$partition_serial")</serial>
-					<name>$(escape_xml "$partition_name")</name>
-					<description>$(escape_xml "$partition_description")</description>
-					<device>$(escape_xml "$partition_device_id")</device>
-					<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
-					<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
-					<mount_type>partition</mount_type>
-					<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
-					<size>$(escape_xml "$partition_size")</size>
-					<free>$(escape_xml "$partition_free")</free>
-					<used>$(escape_xml "$partition_used")</used>
-					<format>$(escape_xml "$partition_format")</format>
-					<bootable></bootable>
-					<type>partition</type>
-				</item>"
+		<item>
+			<serial>$(escape_xml "$partition_serial")</serial>
+			<name>$(escape_xml "$partition_name")</name>
+			<description>$(escape_xml "$partition_description")</description>
+			<device>$(escape_xml "$partition_device_id")</device>
+			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
+			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+			<mount_type>partition</mount_type>
+			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+			<size>$(escape_xml "$partition_size")</size>
+			<free>$(escape_xml "$partition_free")</free>
+			<used>$(escape_xml "$partition_used")</used>
+			<format>$(escape_xml "$partition_format")</format>
+			<bootable></bootable>
+			<type>partition</type>
+		</item>"
 		done
 	done
 	echo "	</disk>" >> "$xml_file"
@@ -1818,21 +1832,21 @@ else
 				fi
 
 				partition_result=$partition_result"
-			<item>
-				<serial>$(escape_xml "$partition_serial")</serial>
-				<name>$(escape_xml "$partition_name")</name>
-				<description>$(escape_xml "$partition_caption")</description>
-				<device>$(escape_xml "$partition_device_id")</device>
-				<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>
-				<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
-				<mount_type>$(escape_xml "$partition_mount_type")</mount_type>
-				<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
-				<size>$(escape_xml "$partition_size")</size>
-				<free>$(escape_xml "$partition_free_space")</free>
-				<used>$(escape_xml "$partition_used_space")</used>
-				<format>$(escape_xml "$partition_format")</format>
-				<type>$(escape_xml "$partition_type")</type>
-			</item>"
+		<item>
+			<serial>$(escape_xml "$partition_serial")</serial>
+			<name>$(escape_xml "$partition_name")</name>
+			<description>$(escape_xml "$partition_caption")</description>
+			<device>$(escape_xml "$partition_device_id")</device>
+			<hard_drive_index>$(escape_xml "$partition_disk_index")</hard_drive_index>
+			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+			<mount_type>$(escape_xml "$partition_mount_type")</mount_type>
+			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+			<size>$(escape_xml "$partition_size")</size>
+			<free>$(escape_xml "$partition_free_space")</free>
+			<used>$(escape_xml "$partition_used_space")</used>
+			<format>$(escape_xml "$partition_format")</format>
+			<type>$(escape_xml "$partition_type")</type>
+		</item>"
 
 			fi
 		done
