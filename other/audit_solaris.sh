@@ -447,31 +447,32 @@ xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
-echo "      <sys>" >> $xml_file
-echo "              <uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
-echo "              <hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
-echo "              <domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
-echo "              <fqdn>"$(escape_xml "$system_fqdn")"</fqdn>" >> $xml_file
-echo "              <ip>"$(escape_xml "$ip")"</ip>" >> $xml_file
-echo "              <description></description>" >> $xml_file
-echo "              <type>computer</type>" >> $xml_file
-echo "              <icon>solaris</icon>" >> $xml_file
-echo "              <os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
-echo "              <os_family>Solaris</os_family>" >> $xml_file
-echo "              <os_name>"$(escape_xml "$system_os_name")"</os_name>" >> $xml_file
-echo "              <os_version>"$(escape_xml "$system_os_version")"</os_version>" >> $xml_file
-echo "              <serial>"$(escape_xml "$system_serial")"</serial>" >> $xml_file
-echo "              <model>"$(escape_xml "$system_model")"</model>" >> $xml_file
-echo "              <manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> $xml_file
-#echo "              <uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
-echo "              <form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
-echo "              <os_bit>"$(escape_xml "$system_pc_os_bit")"</os_bit>" >> $xml_file
-echo "              <memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
-echo "              <processor_count>"$(escape_xml "$processor_physical_count")"</processor_count>" >> $xml_file
-echo "              <os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
-echo "              <org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
-echo "              <discovery_id>"$(escape_xml "$discovery_id")"</discovery_id>" >> $xml_file
-echo "      </sys>" >> $xml_file
+echo "    <sys>" >> $xml_file
+echo "          <script_version>$version</script_version>" >> $xml_file
+echo "          <uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
+echo "          <hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
+echo "          <domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
+echo "          <fqdn>"$(escape_xml "$system_fqdn")"</fqdn>" >> $xml_file
+echo "          <ip>"$(escape_xml "$ip")"</ip>" >> $xml_file
+echo "          <description></description>" >> $xml_file
+echo "          <type>computer</type>" >> $xml_file
+echo "          <icon>solaris</icon>" >> $xml_file
+echo "          <os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file
+echo "          <os_family>Solaris</os_family>" >> $xml_file
+echo "          <os_name>"$(escape_xml "$system_os_name")"</os_name>" >> $xml_file
+echo "          <os_version>"$(escape_xml "$system_os_version")"</os_version>" >> $xml_file
+echo "          <serial>"$(escape_xml "$system_serial")"</serial>" >> $xml_file
+echo "          <model>"$(escape_xml "$system_model")"</model>" >> $xml_file
+echo "          <manufacturer>"$(escape_xml "$system_manufacturer")"</manufacturer>" >> $xml_file
+#echo "          <uptime>"$(escape_xml "$system_uptime")"</uptime>" >> $xml_file
+echo "          <form_factor>"$(escape_xml "$system_form_factor")"</form_factor>" >> $xml_file
+echo "          <os_bit>"$(escape_xml "$system_pc_os_bit")"</os_bit>" >> $xml_file
+echo "          <memory_count>"$(escape_xml "$system_pc_memory")"</memory_count>" >> $xml_file
+echo "          <processor_count>"$(escape_xml "$processor_physical_count")"</processor_count>" >> $xml_file
+echo "          <os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
+echo "          <org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
+echo "          <discovery_id>"$(escape_xml "$discovery_id")"</discovery_id>" >> $xml_file
+echo "    </sys>" >> $xml_file
 
 ############################################
 # OBP SECTION, Sparc does not have a BIOS  #

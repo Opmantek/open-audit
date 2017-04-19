@@ -376,6 +376,7 @@ xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file
+echo "		<script_version>$version</script_version>" >> $xml_file
 echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
 echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
 echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file

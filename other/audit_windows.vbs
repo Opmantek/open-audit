@@ -787,21 +787,22 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 	if os_group = "Windows" then
 	result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 	result.WriteText "<system>" & vbcrlf
-	result.WriteText "	<sys>" & vbcrlf
-	result.WriteText "		<id>" & system_id & "</id>" & vbcrlf
-	result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
-	result.WriteText "		<ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
-	result.WriteText "		<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
-	result.WriteText "		<type>computer</type>" & vbcrlf
-	result.WriteText "		<icon>" & escape_xml(icon) & "</icon>" & vbcrlf
-	result.WriteText "		<os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
-	result.WriteText "		<os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
-	result.WriteText "		<os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
-	result.WriteText "		<active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
-	result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
-	result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
-	result.WriteText "		<discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
-	result.WriteText "	</sys>" & vbcrlf
+	result.WriteText "    <sys>" & vbcrlf
+	result.WriteText "        <script_version>" & version & "</script_version>" & vbcrlf
+	result.WriteText "		  <id>" & system_id & "</id>" & vbcrlf
+	result.WriteText "		  <hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
+	result.WriteText "		  <ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
+	result.WriteText "		  <domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
+	result.WriteText "		  <type>computer</type>" & vbcrlf
+	result.WriteText "		  <icon>" & escape_xml(icon) & "</icon>" & vbcrlf
+	result.WriteText "		  <os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
+	result.WriteText "		  <os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
+	result.WriteText "		  <os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
+	result.WriteText "		  <active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
+	result.WriteText "		  <last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
+	result.WriteText "		  <last_seen_by>active directory</last_seen_by>" & vbcrlf
+	result.WriteText "		  <discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
+	result.WriteText "    </sys>" & vbcrlf
 	end if
 	objRecordSet.MoveNext
 	Loop
@@ -1270,6 +1271,7 @@ end if
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
+result.WriteText "      <script_version>" & version & "</script_version>" & vbcrlf
 result.WriteText "		<id>" & escape_xml(system_id) & "</id>" & vbcrlf
 result.WriteText "		<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
 result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf

@@ -243,6 +243,7 @@ cat >"$xml_file" <<EndOfFile
 <?xml version="1.0" encoding="UTF-8"?> 
 <system>
 	<sys>
+		<script_version>$version</script_version>
 		<uuid>$(escape_xml "$system_uuid")></uuid>
 		<hostname>$(escape_xml "$system_hostname")</hostname>
 		<domain>$(escape_xml "$system_domain")</domain>
