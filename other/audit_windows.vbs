@@ -99,6 +99,9 @@ self_delete = "n"
 ' 3 = very verbose debug
 debugging = "1"
 
+' Version
+version = "1.14.4"
+
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
 ' Only set this value if your audit host is on a different domain than audit targets and you are not using audit_domain.vbs - IE, you are running "cscript audit_windows.vbs COMPUTER" where COMPUTER is on a seperate domain than the PC you are running the command on. This would then apply to ALL systems audited like this. This would be the exception rather than the rule. Do not do this unless you know what you are doing :-)
@@ -235,8 +238,8 @@ next
 
 if (help = "y") then
 	wscript.echo "------------------------------"
-	wscript.echo "Open-AudIT Domain Audit Script"
-	wscript.echo "(c) Opmantek, 2014."
+	wscript.echo "Open-AudIT Windows audit script"
+	wscript.echo "Version: " & version
 	wscript.echo "------------------------------"
 	wscript.echo "This script should be run against a Windows based computer. It audits the target Windows computer and creates a result which can be submitted to the Open-AudIT server or saved as an XML file."
 	wscript.echo ""
@@ -350,10 +353,10 @@ end if'
 ' start the script
 if debugging > "0" then wscript.echo "starting audit - " & strcomputer end if
 
-if debugging > "2" then
+if debugging > "0" then
     wscript.echo "----------------------------"
     wscript.echo "Open-AudIT Windows audit script"
-    wscript.echo "(c) Opmantek, 2014."
+    wscript.echo "Version: " & version
     wscript.echo "----------------------------"
 	wscript.echo "audit_dns: " & audit_dns
 	wscript.echo "audit_mount_point: " & audit_mount_point

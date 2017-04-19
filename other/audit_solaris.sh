@@ -72,6 +72,9 @@ self_delete="n"
 # 2 = verbose debug
 debugging=2
 
+# Version
+version="1.14.4"
+
 # Display help
 help="n"
 
@@ -278,6 +281,7 @@ if [ "$help" = "y" ]; then
     echo ""
     echo "-----------------------------"
     echo "Open-AudIT Solaris Audit script"
+    echo "Version: $version"
     echo "-----------------------------"
     echo "This script should be run on a Solaris based computer using root or sudo access rights."
     echo ""
@@ -338,7 +342,7 @@ nPID="$$"
 if [ $debugging -gt 0 ]; then
     echo "----------------------------"
     echo "Open-AudIT Solaris audit script"
-    echo "(c) Opmantek, 2014."
+    echo "Version: $version"
     echo "----------------------------"
     echo "My PID is           $nPID"
     echo "Audit Start Time    $system_timestamp"

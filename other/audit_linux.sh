@@ -305,7 +305,7 @@ done
 if [ "$help" = "y" ]; then
 	echo ""
 	echo "-----------------------------"
-	echo "Open-AudIT Linux Audit script"
+	echo "Open-AudIT Linux audit script"
 	echo "Version: $version"
 	echo "-----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
@@ -391,10 +391,9 @@ script_name=$(basename $0)
 if [ "$debugging" -gt 0 ]; then
 	echo "----------------------------"
 	echo "Open-AudIT Linux audit script"
-	echo "(c) Opmantek, 2014."
+	echo "Version: $version"
 	echo "----------------------------"
 	echo "My PID is           $$"
-	echo "Script Version      $version"
 	echo "Audit Start Time    $system_timestamp"
 	echo "Create File         $create_file"
 	echo "Submit Online       $submit_online"

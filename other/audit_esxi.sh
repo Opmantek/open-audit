@@ -78,6 +78,9 @@ self_delete='n'
 # 2 = verbose debug
 debugging=2
 
+# Version
+version="1.14.4"
+
 discovery_id=""
 
 # Display help
@@ -256,7 +259,8 @@ done
 if [ "$help" = "y" ]; then
 	echo ""
 	echo "----------------------------"
-	echo "Open-AudIT ESXi Audit script"
+	echo "Open-AudIT ESXi audit script"
+	echo "Version: $version"
 	echo "----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
@@ -301,7 +305,7 @@ system_timestamp=`date +'%F %T'`
 if [ $debugging -gt 0 ]; then 
 	echo "----------------------------"
 	echo "Open-AudIT ESXi audit script"
-	echo "(c) Opmantek, 2014."
+	echo "Version: $version"
 	echo "----------------------------"
 	echo "Audit Start Time    $system_timestamp"
 	echo "Create File         $create_file"

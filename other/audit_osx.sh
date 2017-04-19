@@ -48,6 +48,9 @@ debugging="3"
 system_id=""
 last_seen_by="audit"
 
+# Version
+version="1.14.4"
+
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
 
@@ -63,7 +66,7 @@ done
 if [  "$debugging" -gt 0 ]; then
     echo "----------------------------"
     echo "Open-AudIT OSX audit script"
-    echo "(c) Opmantek, 2014."
+    echo "Version: $version"
     echo "----------------------------"
     echo "My PID is           $$"
     echo "Audit Start Time    $system_timestamp"
@@ -78,8 +81,8 @@ fi
 if [ "$help" = "y" ]; then
     echo ""
     echo "---------------------------"
-    echo "Open-AudIT OSX Audit script"
-    echo "(c) Opmantek, 2014.        "
+    echo "Open-AudIT OSX audit script"
+    echo "Version: $version"
     echo "---------------------------"
     echo "This script should be run on a Mac OSX based computer using root or sudo access rights."
     echo ""

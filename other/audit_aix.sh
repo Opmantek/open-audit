@@ -60,6 +60,9 @@ url="http://localhost/open-audit/index.php/input/devices"
 # 3 = verbose debug and no safety
 debugging=1
 
+# Version
+version="1.14.4"
+
 discovery_id=""
 help=""
 last_seen_by="audit_ssh"
@@ -102,6 +105,7 @@ if [[ $help = "y" ]]; then
 	echo "----------------------------"
 	echo "Open-AudIT AIX audit script"
 	echo "(c) Opmantek, 2014."
+	echo "Version: $version"
 	echo "----------------------------"
 	echo "This script should be used on IBM AIX machines to generate a result file and submit it to the Open-AudIT Server."
 	echo ""
@@ -143,7 +147,7 @@ if [[ $version = "y" ]]; then
 	echo "Open-AudIT AIX audit script"
 	echo "(c) Opmantek, 2014."
 	echo "----------------------------"
-	echo "Version: 1.14"
+	echo "Version: $version"
 fi
 
 pwd=$(pwd)
@@ -189,7 +193,7 @@ system_hostname=$(eval "uname -n $safety")
 if [[ "$debugging" -gt 0 ]]; then
 	echo "----------------------------"
 	echo "Open-AudIT AIX audit script"
-	echo "(c) Opmantek, 2014."
+	echo "Version: $version"
 	echo "----------------------------"
 	echo "My PID is           $$"
 	echo "Audit Start Time    $system_timestamp"
