@@ -89,6 +89,9 @@ if (! function_exists('windows_credentials')) {
                     discovery_log($log);
                     unset($log->command);
                     return $credential;
+                } else {
+                    $log->message = "Credential set for Windows named " . $credential->name . " not working on " . $ip;
+                    discovery_log($log);
                 }
             }
         }

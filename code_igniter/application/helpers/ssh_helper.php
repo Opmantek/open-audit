@@ -37,7 +37,7 @@ if (!defined('BASEPATH')) {
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('ssh_create_keyfile')) {
-    function ssh_create_keyfile ($key_string, $display = 'n')
+    function ssh_create_keyfile($key_string, $display = 'n')
     {
         if (strtolower($display) != 'y') {
             $display = 'n';
@@ -62,17 +62,17 @@ if (! function_exists('ssh_create_keyfile')) {
             $ssh_keyfile = $CI->config->config['base_path'] . '\\other\\scripts\\key_' . date('y_m_d_H_i_s');
         }
 
-        $fp = fopen($ssh_keyfile, 'w') or die ("Could not open $ssh_keyfile for writing");
-        chmod($ssh_keyfile, 0600) or die ("Could not chmod $ssh_keyfile to 0666");
-        fwrite($fp, $key_string) or die ("Could not write into $ssh_keyfile");
-        fclose($fp) or die ("Could not close $ssh_keyfile");
+        $fileopen = fopen($ssh_keyfile, 'w') or die("Could not open $ssh_keyfile for writing");
+        chmod($ssh_keyfile, 0600) or die("Could not chmod $ssh_keyfile to 0666");
+        fwrite($fileopen, $key_string) or die("Could not write into $ssh_keyfile");
+        fclose($fileopen) or die("Could not close $ssh_keyfile");
         return($ssh_keyfile);
     }
 }
 
 if (! function_exists('ssh_credentials')) {
     /**
-     * The SSH credentials test. 
+     * The SSH credentials test.
      *
      * @access    public
      *
@@ -86,8 +86,11 @@ if (! function_exists('ssh_credentials')) {
      *
      * @return    false || credentials object with an additional flag for 'sudo' and root
      */
-    function ssh_credentials($ip = '', $credentials = array(), $log)
+    function ssh_credentials($ip = '', $credentials = array(), $log = null)
     {
+        if (is_null($log)) {
+            $log = stdClass();
+        }
         $log->file = 'ssh_helper';
         $log->function = 'ssh_credentials';
         $log->command = '';
@@ -125,6 +128,8 @@ if (! function_exists('ssh_credentials')) {
                     $result = false;
                     $result = ssh_command($ip, $credential, 'uname', $log);
                     if ($result['status'] == 0) {
+                        $log->message = "Credential set for SSH Key " . $credential->name . " working on " . $ip;
+                        discovery_log($log);
                         return($credential);
                     }
                 }
@@ -153,8 +158,7 @@ if (! function_exists('ssh_credentials')) {
                             # Did we use root?
                         if ($credential->root) {
                             # yes we did use root
-                            $log->function = 'ssh_credentials';
-                            $log->message = "SSH credentials complete. Credential set" . $from . "working on " . $ip;
+                            $log->message = "SSH credentials complete. Credential set (using root)" . $from . "working on " . $ip;
                             discovery_log($log);
                             return $credential;
                         } else {
@@ -168,6 +172,8 @@ if (! function_exists('ssh_credentials')) {
                                     # yes, we can use sudo
                                     if ($result['status'] == 0) {
                                         # the command ran AND we got no returned error status - we can use sudo
+                                        $log->message = "SSH credentials complete. Credential set (using sudo)" . $from . "working on " . $ip;
+                                        discovery_log($log);
                                         $credential->sudo = $sudo_binary;
                                         return $credential;
                                     } else {
@@ -184,6 +190,9 @@ if (! function_exists('ssh_credentials')) {
                             }
                         }
                     }
+                } else {
+                    $log->message = "Credential set for SSH" . $from . " not working on " . $ip;
+                    discovery_log($log);
                 }
             }
         }
@@ -195,12 +204,10 @@ if (! function_exists('ssh_credentials')) {
             if (!empty($connected[0]->name)) {
                 $from = ' named ' . $connected[0]->name . ' ';
             }
-            $log->function = 'ssh_credentials';
             $log->message = "SSH credentials complete. Credential set from" . $from . "working on " . $ip;
             discovery_log($log);
             return $connected[0];
         } else {
-            $log->function = 'ssh_credentials';
             $log->message = "SSH credentials complete. No credentials found for " . $ip;
             discovery_log($log);
             return false;
@@ -210,7 +217,7 @@ if (! function_exists('ssh_credentials')) {
 
 if (! function_exists('ssh_command')) {
     /**
-     * The SSH credentials test. 
+     * The SSH credentials test.
      *
      * @access    public
      *
