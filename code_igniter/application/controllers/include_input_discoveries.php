@@ -450,6 +450,7 @@ if (!empty($_POST['data'])) {
 
         $device->id = $this->m_device->match($device);
 
+        $device->org_id = $discovery->org_id;
         if (!empty($discovery->devices_assigned_to_org)) {
             $device->org_id = $discovery->devices_assigned_to_org;
         }
