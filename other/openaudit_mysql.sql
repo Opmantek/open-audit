@@ -341,7 +341,7 @@ DROP TABLE IF EXISTS `configuration`;
 CREATE TABLE `configuration` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL DEFAULT '',
-  `value` varchar(250) NOT NULL DEFAULT '',
+  `value` longtext NOT NULL,
   `editable` varchar(1) NOT NULL DEFAULT 'n',
   `edited_by` varchar(100) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

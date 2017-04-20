@@ -185,6 +185,7 @@ $this->alter_table('bios', 'description', "`description` text NOT NULL");
 
 # configuration
 $this->alter_table('configurarion', 'description', "`description` text NOT NULL");
+$this->alter_table('configurarion', 'value', "`value` longtext NOT NULL");
 $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
 $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.')";
