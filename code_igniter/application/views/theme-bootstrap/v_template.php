@@ -120,7 +120,12 @@ $temp = @$this->response->meta->flash;
 if (!empty($temp)) {
     echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
 }
-include($include.'.php');
+
+if ($this->response->meta->action == 'import_form') {
+    include('v_collection_import_form.php');
+} else {
+    include($include.'.php');
+}
 
 unset($this->response->meta->user->password);
 unset($this->response->data);
