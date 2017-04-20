@@ -211,23 +211,38 @@ class devices extends MY_Controller
             $device->last_seen = $this->config->config['timestamp'];
             $this->load->model('m_devices');
             $id = $this->m_devices->create($device);
-            redirect('devices/' . $id);
+            if ($this->response->meta->format == 'screen') {
+                redirect('devices/' . $id);
+            } else {
+                $this->response->data = $this->m_devices->read($id);
+                output($this->response);
+            }
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'audit_input') {
             unset($_POST['data']);
             unset($_FILES);
             $input = $_POST['upload_input'];
-            $discovery_id = NULL;
+            $discovery_id = null;
             include "include_input_devices.php";
-            redirect('devices/' . $details->id);
+            if ($this->response->meta->format == 'screen') {
+                redirect('devices/' . $details->id);
+            } else {
+                $this->response->data = $this->m_devices->read($details->id);
+                output($this->response);
+            }
         }
 
         if (!empty($_POST['input_type']) and $_POST['input_type'] == 'file_input') {
             unset($_POST['data']);
-            $discovery_id = NULL;
+            $discovery_id = null;
             include "include_input_devices.php";
-            redirect('devices/' . $details->id);
+            if ($this->response->meta->format == 'screen') {
+                redirect('devices/' . $details->id);
+            } else {
+                $this->response->data = $this->m_devices->read($details->id);
+                output($this->response);
+            }
         }
     }
 

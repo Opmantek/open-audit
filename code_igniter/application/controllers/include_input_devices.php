@@ -123,10 +123,12 @@ try {
     $xml = new SimpleXMLElement($xml_input, LIBXML_NOCDATA);
 } catch (Exception $error) {
     $errors = libxml_get_errors();
-    echo "Invalid XML.<br />\n<pre>\n";
-    print_r($errors);
+    if ($this->response->meta->format == 'screen') {
+        echo "Invalid XML.<br />\n<pre>\n";
+        print_r($errors);
+    }
     log_error('ERR-0012');
-    print_r($this->response->errors);
+    print_r($this->response);
     exit;
 }
 $log->message = "Valid XML result received.";
@@ -222,13 +224,15 @@ if ((string) $i === '') {
     $log->ip = @$details->ip;
     $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
     discovery_log($log);
-    # In the case where we inserted a new device, find_system will add a log entry, but have no 
+    # In the case where we inserted a new device, find_system will add a log entry, but have no
     # associated system_id. Update this one row.
     $sql = "/* include_input_devices */" . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
     $data = array($log->system_id, $log->pid);
     $query = $this->db->query($sql, $data);
     $details->original_last_seen = "";
-    echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+    if ($this->response->meta->format == 'screen') {
+        echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+    }
 } else {
     // update an existing system
     $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
@@ -238,7 +242,9 @@ if ((string) $i === '') {
     $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
     $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
     $this->m_device->update($details);
-    echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+    if ($this->response->meta->format == 'screen') {
+        echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+    }
 }
 
 $sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
@@ -250,7 +256,9 @@ if (!empty($details->discovery_id)) {
     $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
     $data = array(intval($details->id), intval(getmypid()));
     $query = $this->db->query($sql, $data);
-    echo $this->db->last_query();
+    if ($this->response->meta->format == 'screen') {
+        echo $this->db->last_query();
+    }
 } else {
     # we were supplied an audit result, but no discovery_id
     # delete all dicovery logs where system_id = our ID and log.pid != our pid
@@ -340,11 +348,14 @@ $this->m_devices_components->set_initial_address($details->id);
 
 $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
 $this->benchmark->mark('code_end');
-echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
+if ($this->response->meta->format == 'screen') {
+    echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
+}
 $i = (string) $xml->sys[0]->hostname;
 
 $log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
 $log->status = 'complete';
 stdlog($log);
-
-echo '</body></html>';
+if ($this->response->meta->format == 'screen') {
+    echo '</body></html>';
+}
