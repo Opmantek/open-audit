@@ -93,9 +93,6 @@ class M_attributes extends MY_Model
         $sql = "SELECT id, name FROM orgs";
         $result = $this->run_sql($sql, array());
         $orgs = $result;
-        $sql = "SELECT id, name FROM attributes";
-        $result = $this->run_sql($sql, array());
-        $items = $result;
 
         $sql = $this->collection_sql('attributes', 'sql');
         $result = $this->run_sql($sql, array());

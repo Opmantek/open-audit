@@ -261,6 +261,8 @@ class MY_Model extends CI_Model
             // get the total count
             if ($endpoint == 'orgs') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
+            } elseif ($endpoint == 'configuration') {
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "`";
             } else {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
             }
@@ -304,10 +306,16 @@ class MY_Model extends CI_Model
             }
         }
         if ($filter != '') {
-            $filter = substr($filter, 5);
-            $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
+            if ($endpoint != 'configuration') {
+                $filter = substr($filter, 5);
+                $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
+            } else {
+                $filter = ' WHERE ' . substr($filter, 4);
+            }
         } else {
-            $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ')';
+            if ($endpoint != 'configuration') {
+                $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ')';
+            }
         }
         $return['filter'] = $filter;
 
@@ -354,6 +362,9 @@ class MY_Model extends CI_Model
             } else if ($endpoint == 'queries') {
                 $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(orgs.name) AS `org_name` FROM `queries` LEFT JOIN orgs ON (`queries`.org_id = orgs.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
                 $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) GROUP BY queries.name";
+
+            } else if ($endpoint == 'configuration') {
+                $sql = "SELECT configuration.* FROM configuration " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
             } else {
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name` FROM `" . $table . "` LEFT JOIN orgs ON (`" . $table . "`.org_id = orgs.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];

@@ -93,7 +93,7 @@ class M_connections extends MY_Model
         $sql = "SELECT id, name FROM orgs";
         $result = $this->run_sql($sql, array());
         $orgs = $result;
-        $sql = "SELECT id, name FROM connections";
+        $sql = "SELECT id, name FROM locations";
         $result = $this->run_sql($sql, array());
         $items = $result;
 
@@ -101,6 +101,8 @@ class M_connections extends MY_Model
         $result = $this->run_sql($sql, array());
         if ($result !== false) {
             for ($i=0; $i < count($result); $i++) {
+                $result[$i]->location_name_a = '';
+                $result[$i]->location_name_b = '';
                 foreach ($orgs as $org) {
                     if ($org->id == $result[$i]->org_id) {
                         $result[$i]->org_name = $org->name;

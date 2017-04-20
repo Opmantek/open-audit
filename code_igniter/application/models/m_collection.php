@@ -43,6 +43,69 @@ class M_collection extends MY_Model
         $this->log->type = 'system';
     }
 
+    public function collection($collection = '')
+    {
+        $CI = & get_instance();
+
+        if ($collection === '') {
+            log_error('ERR-0010', 'm_collection::collection (no collection)');
+            return false;
+        }
+
+        // get a list of Orgs and Locations so we can populate the names
+        $sql = "SELECT id, name FROM orgs";
+        $result = $this->run_sql($sql, array());
+        $orgs = $result;
+
+        // locations
+        $sql = "SELECT id, name FROM locations";
+        $result = $this->run_sql($sql, array());
+        $locations = $result;
+
+        $sql = $this->collection_sql($collection, 'sql');
+        $result = $this->run_sql($sql, array());
+
+        for ($i=0; $i < count($result); $i++) {
+            foreach ($orgs as $org) {
+                if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
+                    $result[$i]->org_name = $org->name;
+                }
+            }
+        }
+
+        if ($collection == 'connections') {
+            if ($result !== false) {
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->location_name_a = '';
+                    $result[$i]->location_name_b = '';
+                    foreach ($locations as $location) {
+                        if ($location->id == $result[$i]->location_id_a) {
+                            $result[$i]->location_name_a = $location->name;
+                        }
+                        if ($location->id == $result[$i]->location_id_b) {
+                            $result[$i]->location_name_b = $location->name;
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($collection == 'configuration' and $CI->response->meta->collection == 'configuration' and count($CI->response->meta->filter) == 0) {
+            $item = new stdClass;
+            $item->id = 888888;
+            $item->name = 'web_internal_version';
+            $item->value = $this->config->config['web_internal_version'];
+            $item->editable = 'n';
+            $item->edited_by = '';
+            $item->edited_date = '';
+            $item->description = 'The internal numerical version of the Open-AudIT files.';
+            $result[] = $item;
+        }
+
+        $result = $this->format_data($result, $collection);
+        return ($result);
+    }
+
     public function create($data = null, $collection = '')
     {
         $CI = & get_instance();
