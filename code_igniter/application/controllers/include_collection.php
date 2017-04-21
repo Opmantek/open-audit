@@ -26,9 +26,10 @@
 # *****************************************************************************
 unset($this->response->data);
 
-if ($this->response->meta->collection === 'summaries' or 
-    $this->response->meta->collection === 'database' or 
-    $this->response->meta->collection === 'logs') {
+if ($this->response->meta->collection === 'database' or
+    $this->response->meta->collection === 'logs' or
+    $this->response->meta->collection === 'roles' or
+    $this->response->meta->collection === 'summaries') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else {
     $this->load->model('m_collection');

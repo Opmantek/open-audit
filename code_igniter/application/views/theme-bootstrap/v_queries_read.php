@@ -83,6 +83,26 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
+                        <label for="type" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="type" name="type" disabled>
+                                <option value="Change"<?php if ($item->attributes->type == 'Change') { echo " selected"; } ?>>Change</option>
+                                <option value="Device"<?php if ($item->attributes->type == 'Device') { echo " selected"; } ?>>Device</option>
+                                <option value="Hardware"<?php if ($item->attributes->type == 'Hardware') { echo " selected"; } ?>>Hardware</option>
+                                <option value="Network"<?php if ($item->attributes->type == 'Network') { echo " selected"; } ?>>Network</option>
+                                <option value="Server"<?php if ($item->attributes->type == 'Server') { echo " selected"; } ?>>Server</option>
+                                <option value="Software"<?php if ($item->attributes->type == 'Software') { echo " selected"; } ?>>Software</option>
+                                <option value="User"<?php if ($item->attributes->type == 'User') { echo " selected"; } ?>>User</option>
+                            </select>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>

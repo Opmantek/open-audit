@@ -139,7 +139,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
         $action = '';
 
-        $collections = ' attributes charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries roles scripts search summaries users ';
+        $collections = ' attributes charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries users ';
         $collection = '';
 
         # Allow for URLs thus:

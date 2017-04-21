@@ -440,7 +440,7 @@ class M_collection extends MY_Model
                 break;
 
             case "queries":
-                return(' name org_id description sql ');
+                return(' name org_id description sql type ');
                 break;
 
             case "roles":
@@ -452,7 +452,7 @@ class M_collection extends MY_Model
                 break;
 
             case "summaries":
-                return(' name org_id table column ');
+                return(' name org_id table column type ');
                 break;
 
             case "users":
@@ -519,7 +519,7 @@ class M_collection extends MY_Model
                 break;
 
             case "queries":
-                return(array('name','org_id','sql'));
+                return(array('name','org_id','sql','type'));
                 break;
 
             case "roles":
@@ -531,7 +531,7 @@ class M_collection extends MY_Model
                 break;
 
             case "summaries":
-                return(array('name','org_id','table', 'column'));
+                return(array('name','org_id','table','column','type'));
                 break;
 
             case "users":
