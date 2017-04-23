@@ -63,7 +63,7 @@ if (! function_exists('ssh_create_keyfile')) {
         }
 
         $fileopen = fopen($ssh_keyfile, 'w') or die("Could not open $ssh_keyfile for writing");
-        chmod($ssh_keyfile, 0600) or die("Could not chmod $ssh_keyfile to 0666");
+        chmod($ssh_keyfile, 0600) or die("Could not chmod $ssh_keyfile to 0600");
         fwrite($fileopen, $key_string) or die("Could not write into $ssh_keyfile");
         fclose($fileopen) or die("Could not close $ssh_keyfile");
         return($ssh_keyfile);
