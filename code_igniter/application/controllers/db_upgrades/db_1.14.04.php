@@ -189,6 +189,7 @@ $this->alter_table('configurarion', 'value', "`value` longtext NOT NULL");
 $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
 $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.')";
+$sql[] = "INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'n','system',NOW(),'The unique identfier of this Open-AudIT server.')";
 
 foreach ($sql as $query) {
       $this->db->query($query);

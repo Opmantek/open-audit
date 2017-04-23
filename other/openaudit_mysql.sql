@@ -403,6 +403,7 @@ INSERT INTO `configuration` VALUES (44,'oae_url','/omk/oae','y','system','2000-0
 INSERT INTO `configuration` VALUES (45,'page_refresh','300','y','system','2000-01-01 00:00:00','Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
 INSERT INTO `configuration` VALUES (46,'rss_enable','y','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
 INSERT INTO `configuration` VALUES (47,'rss_url','https://community.opmantek.com/rss/OA.xml','y','system','2000-01-01 00:00:00','The RSS feed URL.');
+INSERT INTO `configuration` VALUES (48,'uuid',UUID(),'n','system',NOW(),'The unique identfier of this Open-AudIT server.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
