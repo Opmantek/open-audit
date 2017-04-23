@@ -251,6 +251,20 @@ $this->alter_table('locations', 'group_id', "DROP `group_id`", 'drop');
 # log
 $this->alter_table('log', 'file_name', "`file_name` text NOT NULL");
 
+$this->drop_table('maps');
+$sql = "CREATE TABLE `maps` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `name` varchar(100) NOT NULL,
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # module
 $this->alter_table('module', 'description', "`description` text NOT NULL");
 
