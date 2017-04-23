@@ -442,7 +442,7 @@ $this->drop_table('groups');
 $sql = "CREATE TABLE `groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `sql` text NOT NULL,
   `link` text NOT NULL,

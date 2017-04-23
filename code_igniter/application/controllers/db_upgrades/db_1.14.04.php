@@ -186,6 +186,7 @@ $this->alter_table('bios', 'description', "`description` text NOT NULL");
 # configuration
 $this->alter_table('configurarion', 'description', "`description` text NOT NULL");
 $this->alter_table('configurarion', 'value', "`value` longtext NOT NULL");
+$this->alter_table('configurarion', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
 $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL, 'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.')";
@@ -197,10 +198,17 @@ foreach ($sql as $query) {
 }
 unset($sql);
 
+# connections
+$this->alter_table('connections', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
 # discoveries
 $this->alter_table('discoveries', 'description', "`description` text NOT NULL");
 $this->alter_table('discoveries', 'created_by', "`edited_by` varchar(200) NOT NULL DEFAULT ''");
 $this->alter_table('discoveries', 'created_on', "`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'");
+$this->alter_table('discoveries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
+# dns
+$this->alter_table('dns', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # fields
 $sql = "UPDATE `fields` SET `type` = 'varchar' WHERE `type` != 'list'";
@@ -208,6 +216,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->alter_table('fields', 'type', "`type` enum('varchar','list') NOT NULL DEFAULT 'varchar'");
+$this->alter_table('fields', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 $sql = "UPDATE `fields` SET `placement` = 'custom' WHERE `placement` != 'system'";
 $this->db->query($sql);
@@ -216,10 +225,16 @@ $this->log_db($this->db->last_query());
 $this->alter_table('fields', 'placement', "`placement` enum('custom','system') NOT NULL DEFAULT 'system'");
 $this->alter_table('fields', 'values', "`values` text NOT NULL");
 
+# file
+$this->alter_table('file', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
 # files
 $this->alter_table('files', 'description', "`description` text NOT NULL");
-$this->alter_table('files', 'name', "ADD `name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add');
+$this->alter_table('files', 'name', "ADD `name` varchar(200) NOT NULL DEFAULT '' AFTER `id`", 'add');
 $this->alter_table('files', 'path', "`path` text NOT NULL");
+
+# groups
+$this->alter_table('groups', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # licenses
 $this->drop_table('licenses');
@@ -247,15 +262,17 @@ $this->log_db($this->db->last_query());
 $this->alter_table('locations', 'icon', "DROP `icon`", 'drop');
 $this->alter_table('locations', 'comments', "DROP `comments`", 'drop');
 $this->alter_table('locations', 'group_id', "DROP `group_id`", 'drop');
+$this->alter_table('locations', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # log
 $this->alter_table('log', 'file_name', "`file_name` text NOT NULL");
+$this->alter_table('log', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 $this->drop_table('maps');
 $sql = "CREATE TABLE `maps` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -341,6 +358,7 @@ $sql = "UPDATE `oa_org` SET `edited_date` = '2000-01-01 00:00:00' WHERE `id` = 1
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 $this->rename_table('oa_org', 'orgs');
+$this->alter_table('orgs', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # oa_reports
 $table = 'oa_report';
@@ -384,17 +402,22 @@ $this->alter_table('oa_user', 'lang', "`lang` enum('de','en','es','fr','pt-br') 
 # optical
 $this->alter_table('optical', 'description', "`description` text NOT NULL");
 
+# pagefile
+$this->alter_table('pagefile', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
 # partition
 $this->alter_table('partition', 'name', "`name` text NOT NULL");
 $this->alter_table('partition', 'description', "`description` text NOT NULL");
 
 # print_queue
 $this->alter_table('print_queue', 'description', "`description` text NOT NULL");
+$this->alter_table('print_queue', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 #processor
 $this->alter_table('processor', 'description', "`description` text NOT NULL");
 
 # queries
+$this->alter_table('queries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql = array();
 $sql[] = "DELETE FROM `queries`";
 $this->alter_table('queries', 'type', "ADD `type` enum('Change','Device','Hardware','Network','Server','Software','User','') NOT NULL DEFAULT '' AFTER `name`", 'add');
@@ -473,6 +496,7 @@ foreach ($sql as $query) {
 unset($sql);
 
 # roles
+$this->alter_table('roles', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql[] = "DELETE FROM `roles`";
 $sql[] = "INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"configuration\":\"crud\",\"database\":\"crud\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00')";
 $sql[] = "INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"errors\":\"r\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00')";
@@ -486,6 +510,7 @@ unset($sql);
 
 # scripts
 $this->alter_table('scripts', 'description', "`description` text NOT NULL");
+$this->alter_table('scripts', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql = "DELETE FROM `scripts` WHERE `based_on` = 'audit_esx.sh'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -513,17 +538,28 @@ unset($options);
 
 # server
 $this->alter_table('server', 'description', "`description` text NOT NULL");
+$this->alter_table('server', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # server_item
 $this->alter_table('server_item', 'description', "`description` text NOT NULL");
+$this->alter_table('server_item', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # service
 $this->alter_table('service', 'description', "`description` text NOT NULL");
+$this->alter_table('service', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # share
 $this->alter_table('share', 'description', "`description` text NOT NULL");
+$this->alter_table('share', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
+# software
+$this->alter_table('software', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
+# software_key
+$this->alter_table('software_key', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # summaries
+$this->alter_table('summaries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql[] = "DELETE FROM `summaries`";
 
 $this->alter_table('summaries', 'type', "ADD `type` enum('Change','Device','Hardware','Network','Server','Software','User','') NOT NULL DEFAULT '' AFTER `org_id`", 'add');
@@ -553,15 +589,30 @@ $sql[] = "INSERT INTO `summaries` VALUES (11,'Software Keys',1,'Software','softw
 $sql[] = "INSERT INTO `summaries` VALUES (12,'Active Directory OU\'s',1,'Network','windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00')";
 
 # system
+$this->alter_table('system', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $this->alter_table('system', 'last_seen', "`last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER first_seen");
 $this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT ''");
 $this->drop_key('system', 'system_id');
 
+# task
+$this->alter_table('task', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
+# user
+$this->alter_table('user', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
 # users
 $this->rename_table('oa_user', 'users');
+$this->alter_table('users', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # user_group
 $this->alter_table('user_group', 'description', "`description` text NOT NULL");
+$this->alter_table('user_group', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
+# variable
+$this->alter_table('variable', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
+# vm
+$this->alter_table('vm', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # Reindex our configuration table
 $sql = "SELECT * FROM configuration ORDER BY `name`";

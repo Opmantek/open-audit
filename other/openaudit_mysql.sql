@@ -340,7 +340,7 @@ DROP TABLE IF EXISTS `configuration`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `configuration` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `value` longtext NOT NULL,
   `editable` varchar(1) NOT NULL DEFAULT 'n',
   `edited_by` varchar(100) NOT NULL DEFAULT '',
@@ -417,7 +417,7 @@ DROP TABLE IF EXISTS `connections`;
 CREATE TABLE `connections` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `provider` varchar(100) NOT NULL,
   `service_type` varchar(100) NOT NULL,
   `product_name` varchar(100) NOT NULL,
@@ -519,7 +519,7 @@ DROP TABLE IF EXISTS `discoveries`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `discoveries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
@@ -643,7 +643,7 @@ CREATE TABLE `dns` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `fqdn` varchar(200) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
@@ -732,7 +732,7 @@ DROP TABLE IF EXISTS `fields`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `fields` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `group_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('varchar','list') NOT NULL DEFAULT 'varchar',
@@ -767,7 +767,7 @@ CREATE TABLE `file` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `files_id` int(10) unsigned DEFAULT NULL,
-  `name` varchar(250) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `full_name` text NOT NULL,
   `size` int(10) unsigned NOT NULL DEFAULT '0',
   `directory` text NOT NULL,
@@ -804,7 +804,7 @@ DROP TABLE IF EXISTS `files`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `files` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `path` text NOT NULL,
   `description` text NOT NULL,
@@ -868,7 +868,7 @@ DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `sql` text NOT NULL,
   `link` text NOT NULL,
@@ -1101,7 +1101,7 @@ DROP TABLE IF EXISTS `locations`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `locations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('Airforce','Airport','Ambulance Station','Army','Cloud','Conference Center','Court House','Data Center','Depot','District','Doctors Office','Embassy','Factory','Fire Station','Guard','Head Office','High School','Hospital','Hotel','House','Library','Light House','Marina','Mobile Phone Tower','Motel','Navy','Newsagent','Nursing Home','Observatory','Office','Oil Rig','Police','Power Plant','Power Substation','Prison','Radio Station','Regional','Resort','Retail','School','Security','Stadium','Train Station','Travel Agency','TV Station','University','Warehouse','Workshop') NOT NULL DEFAULT 'Office',
   `room` varchar(100) NOT NULL DEFAULT '',
@@ -1151,7 +1151,7 @@ CREATE TABLE `log` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(50) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `file_name` text NOT NULL,
   `file_size` int(10) unsigned NOT NULL DEFAULT '0',
   `max_file_size` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1213,7 +1213,7 @@ DROP TABLE IF EXISTS `maps`;
 CREATE TABLE `maps` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -1706,7 +1706,7 @@ DROP TABLE IF EXISTS `orgs`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `orgs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `parent_id` int(10) unsigned DEFAULT '1',
   `description` text NOT NULL,
   `ad_group` varchar(100) NOT NULL DEFAULT '',
@@ -1739,7 +1739,7 @@ CREATE TABLE `pagefile` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `size` int(10) unsigned NOT NULL DEFAULT '0',
   `initial_size` int(10) unsigned NOT NULL DEFAULT '0',
   `max_size` int(10) unsigned NOT NULL DEFAULT '0',
@@ -1817,7 +1817,7 @@ CREATE TABLE `print_queue` (
   `model` varchar(100) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `device` varchar(200) NOT NULL DEFAULT '',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `port_name` varchar(100) NOT NULL DEFAULT '',
   `shared` varchar(100) NOT NULL DEFAULT '',
   `shared_name` varchar(100) NOT NULL DEFAULT '',
@@ -1889,7 +1889,7 @@ DROP TABLE IF EXISTS `queries`;
 CREATE TABLE `queries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `type` enum('Change','Device','Hardware','Network','Server','Software','User','') NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `sql` text NOT NULL,
@@ -1952,7 +1952,7 @@ DROP TABLE IF EXISTS `roles`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `roles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `permissions` text NOT NULL,
   `ad_group` varchar(100) NOT NULL DEFAULT '',
@@ -2055,7 +2055,7 @@ DROP TABLE IF EXISTS `scripts`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `scripts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(250) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `options` text NOT NULL,
   `description` text NOT NULL,
@@ -2129,7 +2129,7 @@ CREATE TABLE `server` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `type` varchar(100) NOT NULL DEFAULT '',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `full_name` varchar(100) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `version` varchar(100) NOT NULL DEFAULT '',
@@ -2169,7 +2169,7 @@ CREATE TABLE `server_item` (
   `server_id` int(10) unsigned DEFAULT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
   `parent_name` varchar(100) NOT NULL DEFAULT '',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `id_internal` varchar(100) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
@@ -2212,7 +2212,7 @@ CREATE TABLE `service` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `executable` text NOT NULL,
   `user` varchar(100) NOT NULL DEFAULT '',
@@ -2250,7 +2250,7 @@ CREATE TABLE `share` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` text NOT NULL,
-  `name` varchar(250) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `path` varchar(250) NOT NULL DEFAULT '',
   `size` int(10) unsigned NOT NULL DEFAULT '0',
   `users` varchar(200) NOT NULL DEFAULT '',
@@ -2282,7 +2282,7 @@ CREATE TABLE `software` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(255) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `version` varchar(255) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `location` varchar(255) NOT NULL DEFAULT '',
@@ -2328,7 +2328,7 @@ CREATE TABLE `software_key` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(250) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `string` varchar(100) NOT NULL DEFAULT '',
   `rel` varchar(100) NOT NULL DEFAULT '',
   `edition` varchar(100) NOT NULL DEFAULT '',
@@ -2387,7 +2387,7 @@ DROP TABLE IF EXISTS `summaries`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `summaries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('Change','Device','Hardware','Network','Server','Software','User','') NOT NULL DEFAULT '',
   `table` varchar(100) NOT NULL DEFAULT '',
@@ -2430,7 +2430,7 @@ DROP TABLE IF EXISTS `system`;
 CREATE TABLE `system` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `uuid` varchar(100) NOT NULL DEFAULT '',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `ip` varchar(45) NOT NULL DEFAULT '',
   `hostname` varchar(100) NOT NULL DEFAULT '',
   `dns_hostname` varchar(100) NOT NULL DEFAULT '',
@@ -2553,7 +2553,7 @@ CREATE TABLE `task` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `next_run` varchar(50) NOT NULL DEFAULT '',
   `status` varchar(50) NOT NULL DEFAULT '',
   `last_run` varchar(50) NOT NULL DEFAULT '',
@@ -2591,7 +2591,7 @@ CREATE TABLE `user` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `caption` varchar(255) NOT NULL DEFAULT '',
   `sid` varchar(100) NOT NULL DEFAULT '',
   `domain` varchar(100) NOT NULL DEFAULT '',
@@ -2626,7 +2626,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
+  `name` varchar(200) NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
@@ -2668,7 +2668,7 @@ CREATE TABLE `user_group` (
   `current` enum('y','n') NOT NULL DEFAULT 'y',
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `sid` varchar(100) NOT NULL DEFAULT '',
   `members` text NOT NULL,
@@ -2701,7 +2701,7 @@ CREATE TABLE `variable` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `program` varchar(100) NOT NULL DEFAULT '',
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
@@ -2765,7 +2765,7 @@ CREATE TABLE `vm` (
   `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `guest_system_id` int(10) unsigned DEFAULT NULL,
-  `name` varchar(100) NOT NULL DEFAULT '',
+  `name` varchar(200) NOT NULL DEFAULT '',
   `vm_id` int(12) unsigned DEFAULT NULL,
   `uuid` text NOT NULL,
   `vm_group` text NOT NULL,
