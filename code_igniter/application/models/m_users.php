@@ -105,13 +105,17 @@ class M_users extends MY_Model
         if (empty($user_id)) {
             $user_orgs = json_decode($CI->user->orgs);
         } else {
-            $sql = "/* m_users::get_orgs */ " .  "SELECT orgs FROM users WHERE id = ?";
-            $query = $this->db->query($sql, array($user_id));
-            $result = $query->result();
-            if (count($result) > 0) {
-                $user_orgs = json_decode($result[0]->orgs);
+            if ($this->db->table_exists('oa_user')) {
+                return array(1);
             } else {
-                return array();
+                $sql = "/* m_users::get_orgs */ " .  "SELECT orgs FROM users WHERE id = ?";
+                $query = $this->db->query($sql, array($user_id));
+                $result = $query->result();
+                if (count($result) > 0) {
+                    $user_orgs = json_decode($result[0]->orgs);
+                } else {
+                    return array();
+                }
             }
         }
 

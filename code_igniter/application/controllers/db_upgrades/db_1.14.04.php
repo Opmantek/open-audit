@@ -328,7 +328,7 @@ if ($this->db->table_exists($table)) {
     exec($command, $backup);
     $backup = implode("\n", $backup);
     $source_name = $table . '_backup.sql';
-    @unlink($this->config->config['base_path'] . '/other/' . $source_name);
+    #@unlink($this->config->config['base_path'] . '/other/' . $source_name);
     $proceed = true;
     try {
         $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
@@ -533,7 +533,7 @@ $this->log_db($this->db->last_query());
 $sql = "INSERT INTO `scripts` VALUES (NULL,'audit_solaris.sh', 1, '" . $options . "', 'The default audit Solaris config.', 'audit_solaris.sh', '', 'system',' 2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
-
+unset($sql);
 unset($options);
 
 # server
@@ -560,6 +560,7 @@ $this->alter_table('software_key', 'name', "`name` varchar(200) NOT NULL DEFAULT
 
 # summaries
 $this->alter_table('summaries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+
 $sql[] = "DELETE FROM `summaries`";
 
 $this->alter_table('summaries', 'type', "ADD `type` enum('Change','Device','Hardware','Network','Server','Software','User','') NOT NULL DEFAULT '' AFTER `org_id`", 'add');
