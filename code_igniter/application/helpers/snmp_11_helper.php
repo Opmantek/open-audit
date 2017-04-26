@@ -656,7 +656,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
 
     $details->serial = my_snmp_get($ip, $credentials, ".1.3.6.1.4.1.11.2.36.1.1.2.9.0");
 
-    if ($credentials->credentials0->version == '1') {
+    if (!empty($credentials->credentials->version) and $credentials->credentials->version == '1') {
         # model is a hex encoded string in HP Laserjets using snmp v1
         if (empty($details->model)) {
             $model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.11.2.3.9.4.2.1.1.3.2.0");
