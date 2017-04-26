@@ -90,6 +90,7 @@ $item = $this->response->data[0];
                                 <option value="Device"<?php if ($item->attributes->type == 'Device') { echo " selected"; } ?>>Device</option>
                                 <option value="Hardware"<?php if ($item->attributes->type == 'Hardware') { echo " selected"; } ?>>Hardware</option>
                                 <option value="Network"<?php if ($item->attributes->type == 'Network') { echo " selected"; } ?>>Network</option>
+                                <option value="Other"<?php if ($item->attributes->type == 'Other') { echo " selected"; } ?>>Other</option>
                                 <option value="Server"<?php if ($item->attributes->type == 'Server') { echo " selected"; } ?>>Server</option>
                                 <option value="Software"<?php if ($item->attributes->type == 'Software') { echo " selected"; } ?>>Software</option>
                                 <option value="User"<?php if ($item->attributes->type == 'User') { echo " selected"; } ?>>User</option>
