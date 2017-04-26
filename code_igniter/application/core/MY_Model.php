@@ -191,6 +191,17 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
+        // store the query in our response object
+        $CI->response->meta->sql[] = $this->db->last_query();
+        // log the query
+        $this->load->helper('log');
+        $sqllog = new stdClass();
+        $sqllog->function =  strtolower($model . '::' . $function);
+        $sqllog->status = 'running sql';
+        $sqllog->type = 'system';
+        $sqllog->summary = $this->db->last_query();
+        stdlog($sqllog);
+
         // get the insert id
         if ($return === 'insert_id') {
             $result = @$this->db->insert_id();
@@ -203,16 +214,6 @@ class MY_Model extends CI_Model
             $result = false;
         }
 
-        // store the query in our response object
-        $CI->response->meta->sql[] = $this->db->last_query();
-        // log the query
-        $this->load->helper('log');
-        $sqllog = new stdClass();
-        $sqllog->function =  strtolower($model . '::' . $function);
-        $sqllog->status = 'running sql';
-        $sqllog->type = 'system';
-        $sqllog->summary = $this->db->last_query();
-        stdlog($sqllog);
         // restore the original setting to db_debug
         $this->db->db_debug = $temp_debug;
         // do we have an error?
