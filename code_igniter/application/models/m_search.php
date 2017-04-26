@@ -96,7 +96,7 @@ class M_search extends MY_Model
                 $sql_select = '';
                 $sql_where = '';
                 $columns = $this->db->field_data($table);
-                $sql = "/* m_search::create */" . "SELECT `$table`.*, system.id AS `system.id`, system.name AS `system.name`, system.type AS `system.type`, system.icon AS `system.icon` FROM $table LEFT JOIN system ON (`$table`.system_id = system.id AND `$table`.current = 'y') WHERE system.org_id IN (" . $CI->user->org_list . ") AND ( ";
+                $sql = "SELECT `$table`.*, system.id AS `system.id`, system.name AS `system.name`, system.type AS `system.type`, system.icon AS `system.icon` FROM `$table` LEFT JOIN `system` ON (`$table`.system_id = system.id AND `$table`.current = 'y') WHERE system.org_id IN (" . $CI->user->org_list . ") AND ( ";
                 foreach ($columns as $column) {
                     if ($column->name != 'id' and $column->name != 'system_id' and $column->name != 'current' and $column->name != 'first_seen' and $column->name != 'last_seen') {
                         if ($column == 'ip') {
@@ -115,34 +115,35 @@ class M_search extends MY_Model
                 $sql = substr($sql, 0, -3);
                 $sql .= ")";
                 $result = $this->run_sql($sql);
-                $new_result = array();
-                foreach ($result as $item) {
-                    foreach ($item as $item_key => $item_value) {
-                        if ($item_key == 'ip') {
-                            $temp = explode('.', $value);
-                            for ($i=0; $i < count($temp); $i++) { 
-                                $temp[$i] = substr('000'.$temp[$i], -3);
+                if (!empty($result)) {
+                    $new_result = array();
+                    foreach ($result as $item) {
+                        foreach ($item as $item_key => $item_value) {
+                            if ($item_key == 'ip') {
+                                $temp = explode('.', $value);
+                                for ($i=0; $i < count($temp); $i++) { 
+                                    $temp[$i] = substr('000'.$temp[$i], -3);
+                                }
+                                $temp_value = implode('.', $temp);
+                            } else {
+                                $temp_value = $value;
                             }
-                            $temp_value = implode('.', $temp);
-                        } else {
-                            $temp_value = $value;
-                        }
-                        if (stripos($item_value, $temp_value) !== false) {
-                            $new_item = new stdClass();
-                            $new_item->{'system.id'} = $item->{'system.id'};
-                            $new_item->{'system.icon'} = $item->{'system.icon'};
-                            $new_item->{'system.type'} = $item->{'system.type'};
-                            $new_item->{'system.name'} = $item->{'system.name'};
-                            $new_item->{'table'} = $table;
-                            $new_item->{'column'} = $item_key;
-                            $new_item->{'value'} = $item_value;
-                            $new_result[] = $new_item;
-                            unset($new_item);
+                            if (stripos($item_value, $temp_value) !== false) {
+                                $new_item = new stdClass();
+                                $new_item->{'system.id'} = $item->{'system.id'};
+                                $new_item->{'system.icon'} = $item->{'system.icon'};
+                                $new_item->{'system.type'} = $item->{'system.type'};
+                                $new_item->{'system.name'} = $item->{'system.name'};
+                                $new_item->{'table'} = $table;
+                                $new_item->{'column'} = $item_key;
+                                $new_item->{'value'} = $item_value;
+                                $new_result[] = $new_item;
+                                unset($new_item);
+                            }
                         }
                     }
-                    
+                    $return = array_merge($return, $this->format_data($new_result, 'devices'));
                 }
-                $return = array_merge($return, $this->format_data($new_result, 'devices'));
             }
             $columns = $this->db->field_data("system");
             $sql = "/* m_search::create */" . "SELECT * FROM `system` WHERE system.org_id IN (" . $CI->user->org_list . ") AND ( ";
@@ -162,32 +163,34 @@ class M_search extends MY_Model
             $sql .= ")";
             $result = $this->run_sql($sql);
             $new_result = array();
-            foreach ($result as $item) {
-                foreach ($item as $item_key => $item_value) {
-                    if ($item_key == 'ip') {
-                        $temp = explode('.', $value);
-                        for ($i=0; $i < count($temp); $i++) { 
-                            $temp[$i] = substr('000'.$temp[$i], -3);
+            if (!empty($result)) {
+                foreach ($result as $item) {
+                    foreach ($item as $item_key => $item_value) {
+                        if ($item_key == 'ip') {
+                            $temp = explode('.', $value);
+                            for ($i=0; $i < count($temp); $i++) { 
+                                $temp[$i] = substr('000'.$temp[$i], -3);
+                            }
+                            $temp_value = implode('.', $temp);
+                        } else {
+                            $temp_value = $value;
                         }
-                        $temp_value = implode('.', $temp);
-                    } else {
-                        $temp_value = $value;
-                    }
-                    if (stripos($item_value, $value) !== false) {
-                        $new_item = new stdClass();
-                        $new_item->{'system.id'} = $item->{'id'};
-                        $new_item->{'system.icon'} = $item->{'icon'};
-                        $new_item->{'system.type'} = $item->{'type'};
-                        $new_item->{'system.name'} = $item->{'name'};
-                        $new_item->{'table'} = 'system';
-                        $new_item->{'column'} = $item_key;
-                        $new_item->{'value'} = $item_value;
-                        $new_result[] = $new_item;
-                        unset($new_item);
+                        if (stripos($item_value, $value) !== false) {
+                            $new_item = new stdClass();
+                            $new_item->{'system.id'} = $item->{'id'};
+                            $new_item->{'system.icon'} = $item->{'icon'};
+                            $new_item->{'system.type'} = $item->{'type'};
+                            $new_item->{'system.name'} = $item->{'name'};
+                            $new_item->{'table'} = 'system';
+                            $new_item->{'column'} = $item_key;
+                            $new_item->{'value'} = $item_value;
+                            $new_result[] = $new_item;
+                            unset($new_item);
+                        }
                     }
                 }
+                $return = array_merge($return, $this->format_data($new_result, 'devices'));
             }
-            $return = array_merge($return, $this->format_data($new_result, 'devices'));
         }
         return $return;
     }
