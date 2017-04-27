@@ -60,7 +60,7 @@ class M_devices extends MY_Model
     private function build_filter()
     {
         $CI = & get_instance();
-        $reserved = ' properties limit sub_resource action sort current offset format ';
+        $reserved = ' properties limit sub_resource action sort current offset format graph report_name ';
         $filter = '';
         foreach ($CI->response->meta->filter as $item) {
             if (strpos(' '.$item->name.' ', $reserved) === false) {

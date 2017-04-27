@@ -204,7 +204,7 @@ class logon extends CI_Controller
             }
         }
 
-        if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
+        if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $this->response->meta->format == 'screen') {
             redirect('database');
             exit();
         }
@@ -218,9 +218,15 @@ class logon extends CI_Controller
                 redirect('summaries');
             }
         } else {
-            $this->user->id = intval($this->user->id);
-            $this->user->org_id = intval($this->user->org_id);
-            $this->user->roles = json_decode($this->user->roles);
+            if (!empty($this->user->id)) {
+                $this->user->id = intval($this->user->id);
+            }
+            if (!empty($this->user->org_id)) {
+                $this->user->org_id = intval($this->user->org_id);
+            }
+            if (!empty($this->user->roles)) {
+                $this->user->roles = json_decode($this->user->roles);
+            }
             print_r(json_encode($this->user));
         }
     }
@@ -250,30 +256,6 @@ class logon extends CI_Controller
                  (`severity` = 6 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_6']) . " DAY)) OR
                  (`severity` = 7 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_7']) . " DAY))";
             $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 0 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_0']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 1 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_1']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 2 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_2']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 3 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_3']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 4 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_4']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 5 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_5']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 6 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_6']) . " DAY)";
-            // $query = $this->db->query($sql);
-
-            // $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE `severity` = 7 AND `timestamp` < UNIX_TIMESTAMP(NOW() - INTERVAL " . intval($this->config->config['log_retain_level_7']) . " DAY)";
-            // $query = $this->db->query($sql);
         }
 
 

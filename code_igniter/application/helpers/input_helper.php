@@ -786,7 +786,7 @@ if (! function_exists('inputRead')) {
         $filter = array();
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         if ($CI->response->meta->query_string != '') {
-            $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids ';
+            $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids graph report_name ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));

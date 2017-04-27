@@ -28,7 +28,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   1.14.4
 
  *
@@ -57,7 +57,6 @@ class test extends CI_Controller
                 redirect('main/list_groups');
             }
         }
-
     }
 
     public function index()
@@ -65,4 +64,57 @@ class test extends CI_Controller
         redirect('/');
     }
 
+    public function snmp()
+    {
+        # NOTE - must edit code to return blank in snmp_helper::my_snmp_get
+        echo "<pre>\n";
+        $this->load->helper('snmp_helper');
+        $dir = BASEPATH.'../application/helpers/';
+        $dir_files = scandir($dir);
+        $file_list = array();
+        $this->load->helper('snmp_oid_helper');
+        foreach ($dir_files as $file) {
+            if (strpos($file, 'snmp_') !== false and strpos($file, '_helper.php') !== false and $file != 'snmp_helper.php' and $file != 'snmp_oid_helper.php') {
+                $file_list[] = $file;
+            }
+        }
+        $oids = array();
+        $devices = array();
+        foreach ($file_list as $file) {
+            if (file_exists($dir.$file)) {
+                echo "processing $file\n";
+                include $dir.$file;
+                unset($lines);
+                $lines = file($dir.$file);
+                foreach ($lines as $line) {
+                    if (stripos($line, 'if ($oid ==')) {
+                        $explode = explode("'", $line);
+                        $oid = $explode[1];
+                        $oids[] = $oid;
+                        $device = $get_oid_details('', '', $oid);
+                        foreach ($device as $key => $value) {
+                            $device->$key = $value;
+                        }
+                        if (empty($device->manufacturer)) {
+                            $device->manufacturer = get_oid($oid);
+                        }
+                        if (empty($device->model)) {
+                            $device->model = '';
+                        }
+                        if (empty($device->type)) {
+                            $device->type = 'unknown';
+                        }
+                        $device->oid = $oid;
+                        $devices[] = $device;
+                        unset($device);
+                    }
+                }
+            }
+        }
+        echo "FILES: " . count($file_list) . "\n";
+        echo "OIDS: " . count($oids) . "\n";
+        foreach ($devices as $device) {
+            echo '"'.$device->oid.'","'.$device->manufacturer.'","'.$device->type.'","'.$device->model."\"\n";
+        }
+    }
 }
