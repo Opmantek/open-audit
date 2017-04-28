@@ -58,7 +58,9 @@ class M_discoveries extends MY_Model
         $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $result[0]->other = json_decode($result[0]->other);
+        if (!empty($result[0]->other)) {
+            $result[0]->other = json_decode($result[0]->other);
+        }
         $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
