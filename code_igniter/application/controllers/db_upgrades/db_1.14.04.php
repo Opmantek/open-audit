@@ -420,7 +420,7 @@ $this->alter_table('processor', 'description', "`description` text NOT NULL");
 $this->alter_table('queries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql = array();
 $sql[] = "DELETE FROM `queries`";
-$this->alter_table('queries', 'type', "ADD `type` enum('Change','Device','Hardware','Network','Other',Server','Software','User','') NOT NULL DEFAULT '' AFTER `name`", 'add');
+$this->alter_table('queries', 'category', "ADD `category` enum('Change','Device','Hardware','Network','Other','Server','Software','User','') NOT NULL DEFAULT '' AFTER `name`", 'add');
 
 $sql[] = "INSERT INTO `queries` VALUES (1,1,'Audit Dates','Device','The first and last times a device was audited.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.os_name AS `system.os_name`, system.first_seen AS `system.first_seen`, system.last_seen AS `system.last_seen`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM system LEFT JOIN audit_log ON (audit_log.system_id = system.id) WHERE @filter GROUP BY system.id','','y','system','2000-01-01 00:00:00')";
 
@@ -563,7 +563,7 @@ $this->alter_table('summaries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''
 
 $sql[] = "DELETE FROM `summaries`";
 
-$this->alter_table('summaries', 'type', "ADD `type` enum('Change','Device','Hardware','Network','Other',Server','Software','User','') NOT NULL DEFAULT '' AFTER `org_id`", 'add');
+$this->alter_table('summaries', 'category', "ADD `category` enum('Change','Device','Hardware','Network','Other','Server','Software','User','') NOT NULL DEFAULT '' AFTER `org_id`", 'add');
 
 $sql[] = "INSERT INTO `summaries` VALUES (1,'Device Classes',1,'Device','system','class','','system','2000-01-01 00:00:00')";
 
