@@ -218,6 +218,9 @@ class Queries extends MY_Controller
     public function execute()
     {
         $this->response->data = $this->m_queries->execute();
+        $this->response->meta->include = 'v_devices_collection';
+        $this->response->meta->filtered = count($this->response->data);
+        $this->response->meta->total = count($this->response->data);
         output();
     }
 
