@@ -560,8 +560,7 @@ if (empty($data['mount_point'])) {
                             <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
                             <div class="col-sm-8 input-group">
                                 <input disabled type="text" class="form-control"  id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
-                                <?php if ($edit) {
-                                    ?><span class="input-group-btn">
+                                <?php if ($edit) { ?><span class="input-group-btn">
                                     <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_name">
                                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                     </button>
@@ -1024,7 +1023,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                         foreach ($items as $item) {
                         ?>
                         <div class="form-group">
-                            <label for="<?php echo $item ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
+                            <label for="<?php echo $item ?>" class="col-sm-4 control-label">Device Specific <?php echo ucwords(str_replace('_', ' ', str_replace('location_', '', $item))); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item} ?>">
                                 <?php if ($edit) { ?>
