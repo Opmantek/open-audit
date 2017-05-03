@@ -86,7 +86,9 @@ class M_scripts extends MY_Model
         $sql = "SELECT * FROM scripts WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
-        $result[0]->options = json_decode($result[0]->options);
+        if (!empty($result[0]->options)) {
+            $result[0]->options = json_decode($result[0]->options);
+        }
         $result = $this->format_data($result, 'scripts');
         return($result);
     }
