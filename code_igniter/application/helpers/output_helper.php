@@ -62,6 +62,9 @@ if (! function_exists('output')) {
         if (!empty($CI->response->data) and count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
         }
+        if (empty($CI->response->data)) {
+            $CI->response->data = false;
+        }
         if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }

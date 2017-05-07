@@ -264,8 +264,6 @@ class MY_Model extends CI_Model
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
             } elseif ($endpoint == 'configuration') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "`";
-            } elseif ($endpoint == 'reports') {
-                $sql = "SELECT COUNT(*) as `count` FROM ((SELECT CONCAT('queries/',queries.id) as `link`, queries.type as `type`, queries.id as `id`, queries.name as `name`, queries.org_id as `org_id` FROM queries WHERE queries.org_id IN (" . $CI->user->org_list . ")) UNION ALL (SELECT CONCAT('summaries/',summaries.id) as `link`, summaries.type as `type`, summaries.id as `id`, summaries.name as `name`, summaries.org_id as `org_id` FROM summaries WHERE summaries.org_id IN (" . $CI->user->org_list . "))) a";
             } else {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
             }

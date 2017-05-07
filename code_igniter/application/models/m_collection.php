@@ -140,7 +140,10 @@ class M_collection extends MY_Model
                 $data = $CI->response->meta->received_data->attributes;
                 $collection = $CI->response->meta->collection;
             } else {
-                log_error('ERR-0010', 'm_collection::create (' . $collection . ')');
+                # TODO - is this error being included in the response?
+                # testing creating a script from OAE was failing (no ->attributes), but didn't seem to
+                # return the error object as part of the response
+                log_error('ERR-0010', 'm_collection::create (' . $collection . ') No attributes received.');
                 return false;
             }
         }
@@ -163,7 +166,7 @@ class M_collection extends MY_Model
         if ($collection === 'discoveries') {
             if ($data->type == 'subnet') {
                 if (empty($data->other->subnet)) {
-                    log_error('ERR-0024', 'm_discoveries::create');
+                    log_error('ERR-0024', 'm_collection::create (discoveries)');
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
                     redirect('/discoveries');
                 } else {
@@ -176,7 +179,7 @@ class M_collection extends MY_Model
                     } else {
                         $temp = "Active Directory Domain";
                     }
-                    log_error('ERR-0024', 'm_discoveries::create');
+                    log_error('ERR-0024', 'm_collection::create (ad discoveries)');
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no ' . $temp . ' supplied.');
                     redirect('/discoveries');
                 } else {
@@ -191,9 +194,9 @@ class M_collection extends MY_Model
                 $temp = network_details($data->other->subnet);
                 if (!empty($temp->error) and filter_var($data->other->subnet, FILTER_VALIDATE_IP) === false) {
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
-                    log_error('ERR-0010', 'm_collections::create (invalid subnet supplied)');
+                    log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
                     return;
-                } elseif  (strpos($data->other->subnet, '/') !== false) {
+                } elseif (strpos($data->other->subnet, '/') !== false) {
                     $network = new stdClass();
                     $network->name = $data->other->subnet;
                     $network->network = $data->other->subnet;
@@ -230,7 +233,6 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'scripts') {
-            #echo "<pre>"; print_r($data); print_r($CI->response->meta); print_r($_POST); exit();
             if (empty($data->options) and !empty($CI->response->meta->received_data->options)) {
                 $data->options = $CI->response->meta->received_data->options;
             }
@@ -247,7 +249,6 @@ class M_collection extends MY_Model
                 $data->password = $salt.$hash;
             }
         }
-
 
         $mandatory_fields = $this->mandatory_fields($collection);
         foreach ($mandatory_fields as $mandatory_field) {
@@ -291,7 +292,7 @@ class M_collection extends MY_Model
     public function update($data = null, $collection = '')
     {
         $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
+        $this->log->status = 'updating data';
         stdlog($this->log);
         $CI = & get_instance();
 
@@ -301,13 +302,13 @@ class M_collection extends MY_Model
                 $data->id = $CI->response->meta->id;
                 $collection = $CI->response->meta->collection;
             } else {
-                log_error('ERR-0010', 'm_collection::create');
+                log_error('ERR-0010', 'm_collection::update');
                 return false;
             }
         }
 
         if ($collection === '') {
-            log_error('ERR-0010', 'm_collection::create');
+            log_error('ERR-0010', 'm_collection::update');
             return false;
         } else {
             $db_table = $collection;
@@ -371,6 +372,32 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'scripts') {
+            if (!empty($data->options)) {
+                $received = new stdClass();
+                foreach ($data->options as $key => $value) {
+                        $received->$key = $value;
+                }
+                $select = "SELECT * FROM scripts WHERE id = ?";
+                $query = $this->db->query($select, array($data->id));
+                $result = $query->result();
+                if (!empty($this->encrypt->decode($result[0]->options))) {
+                    $existing = json_decode($this->encrypt->decode($result[0]->options));
+                } else {
+                    $existing = new stdClass();
+                }
+                $new = new stdClass();
+                foreach ($existing as $existing_key => $existing_value) {
+                    if (!empty($received->$existing_key)) {
+                        $new->$existing_key = $received->$existing_key;
+                    } else {
+                        $new->$existing_key = $existing->$existing_key;
+                    }
+                }
+                $data->options = (string)$this->encrypt->encode(json_encode($new));
+            }
+        }
+
         if ($collection === 'users') {
             if (!empty($data->password)) {
                 // password - get 256 random bits in hex
@@ -383,8 +410,6 @@ class M_collection extends MY_Model
         }
 
         $update_fields = $this->update_fields($collection);
-        $mandatory_fields = $this->mandatory_fields($collection);
-        $id = $data->id;
         $sql = '';
 
         foreach ($data as $key => $value) {
@@ -402,12 +427,13 @@ class M_collection extends MY_Model
         if ($this->db->field_exists('edited_date', $db_table)) {
             $sql .= ", `edited_date` = NOW()";
         }
-        $sql = "UPDATE `" . $db_table . "` " . $sql . " WHERE id = " . $id;
+        $sql = "UPDATE `" . $db_table . "` " . $sql . " WHERE id = " . intval($data->id);
         $test = $this->run_sql($sql);
         return $test;
     }
 
-    public function update_fields($collection = '') {
+    public function update_fields($collection = '')
+    {
         if (empty($collection)) {
             return('');
         }
@@ -486,7 +512,8 @@ class M_collection extends MY_Model
         }
     }
 
-    public function mandatory_fields($collection = '') {
+    public function mandatory_fields($collection = '')
+    {
         if (empty($collection)) {
             return('');
         }

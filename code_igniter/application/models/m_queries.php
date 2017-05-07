@@ -215,7 +215,7 @@ class M_queries extends MY_Model
             $filter .= $user_filter;
         }
         $sql = str_replace('WHERE @filter', "WHERE $filter", $sql);
-        $sql .= $CI->response->meta->internal->limit;
+        $sql .= ' ' . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'queries');
         return $result;
