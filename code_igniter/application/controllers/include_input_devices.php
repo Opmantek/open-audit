@@ -24,7 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
+$this->response->meta->format = 'screen';
 $this->benchmark->mark('code_start');
 
 // load our required helpers
@@ -101,9 +101,12 @@ $log_message = array();
 # that we will later update with our system_id
 $ids = array();
 
-if (!empty($_POST['data'])) {
-    $input = html_entity_decode($_POST['data']);
-}
+// if (!empty($_POST['data'])) {
+//     $input = html_entity_decode($_POST['data']);
+//     $myfile = fopen("/tmp/audit.txt", "w");
+//     fwrite($myfile, $input);
+//     fclose($myfile);
+// }
 
 if (empty($input)) {
     log_error('ERR-0021');
@@ -243,7 +246,7 @@ if ((string) $i === '') {
     $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
     $this->m_device->update($details);
     if ($this->response->meta->format == 'screen') {
-        echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 }
 
