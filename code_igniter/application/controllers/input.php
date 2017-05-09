@@ -113,7 +113,7 @@ class input extends CI_Controller
     {
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
             $this->load->model('m_users');
-            $this->m_users->validate_user();
+            $this->m_users->validate();
             $this->response = new stdClass();
             $this->response->meta = new stdClass();
             $this->response->meta->collection = '';
