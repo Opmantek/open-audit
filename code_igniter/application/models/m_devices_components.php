@@ -380,10 +380,12 @@ class M_devices_components extends MY_Model
         }
 
         // make sure we have an entry for each match column, even if it's empty
-        foreach ($match_columns as $match_column) {
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]) and !isset($input->item[$i]->$match_column)) {
-                    $input->item[$i]->$match_column = '';
+        if ($table != 'netstat') {
+            foreach ($match_columns as $match_column) {
+                for ($i=0; $i<count($input->item); $i++) {
+                    if (isset($input->item[$i]) and !isset($input->item[$i]->$match_column)) {
+                        $input->item[$i]->$match_column = '';
+                    }
                 }
             }
         }
@@ -1062,19 +1064,21 @@ class M_devices_components extends MY_Model
 
     public function format_netstat_data($input, $details)
     {
-        define('NL_NIX', "\n");
-        define('NL_WIN', "\r\n");
-        define('NL_MAC', "\r");
-
-        if (strpos($input[0], NL_WIN) !== false) {
-            #echo "win\n";
-        } elseif (strpos($input[0], NL_MAC) !== false) {
-            #echo "mac\n";
-        } elseif (strpos($input[0], NL_NIX) !== false) {
-            #echo "nix\n";
+        $lines = array();
+        foreach ($input->item as $item) {
+            $lines[] = $item->line;
+        }
+        if (count($lines) == 0) {
+            define('NL_NIX', "\n");
+            define('NL_WIN', "\r\n");
+            define('NL_MAC', "\r");
+            $input = str_replace(array(NL_WIN, NL_MAC, NL_NIX), "\n", $input);
+            $lines = explode("\n", $input);
         }
 
-        $input[0] = str_replace(array(NL_WIN, NL_MAC, NL_NIX), "\n", $input[0]);
+        $input = null;
+        $input_array = array();
+        $CI = & get_instance();
 
         // need to parse the input based on os_group.
         if (strtolower($details->os_group) == "windows") {
@@ -1083,9 +1087,6 @@ class M_devices_components extends MY_Model
             } else {
                 $offset = 3;
             }
-            $lines = explode("\n", $input);
-            $input = null;
-            $input_array = array();
             foreach ($lines as $line) {
                 $i = new stdClass();
                 if (strpos($line, ":") !== false) {
@@ -1110,15 +1111,16 @@ class M_devices_components extends MY_Model
                     }
                     $i->program = trim($i->program);
                     if (isset($i->protocol)) {
-                        $input_array[] = $i;
+                        if ($i->program !== 'dns' and $i->program !== '[dns.exe]') {
+                            $input_array[] = $i;
+                        } else if ($CI->config->config['process_netstat_windows_dns'] === 'y') {
+                            $input_array[] = $i;
+                        }
                     }
                 }
             }
         }
         if (strtolower($details->os_group) == "linux") {
-            $lines = explode("\n", $input[0]);
-            $input = null;
-            $input_array = array();
             foreach ($lines as $line) {
                 $i = new stdClass();
                 if (strpos($line, ":") !== false) {
@@ -1149,14 +1151,13 @@ class M_devices_components extends MY_Model
                     }
                     if ($i->protocol != '') {
                         $input_array[] = $i;
+                        print_r($i);
                     }
                 }
             }
         }
+
         if (strtolower($details->os_family) == "ibm aix") {
-            $lines = explode("\n", $input[0]);
-            $input = null;
-            $input_array = array();
             foreach ($lines as $line) {
                 if ($line > '') {
                     $i = new stdClass();
