@@ -1046,6 +1046,12 @@ if (!empty($_POST['data'])) {
         } // close the 'skip'
         $log->file = 'input';
         $log->function = 'discoveries';
+        if (!empty($device->type)) {
+            $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
+        } else {
+            $log->message = "Discovery found an unknown device at IP address $device->ip.";
+        }
+        discovery_log($log);
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but audit result may be incoming.";
         discovery_log($log);
     }
