@@ -355,8 +355,8 @@ class MY_Model extends CI_Model
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
             
             } else if ($endpoint == 'networks') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.name = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
-            
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+
             } else if ($endpoint == 'orgs') {
                 $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) " . $return['filter'] . " GROUP BY orgs.id " . $return['sort'] . " " . $return['limit'];
 
