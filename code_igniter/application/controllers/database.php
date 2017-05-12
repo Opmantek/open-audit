@@ -70,6 +70,7 @@ class Database extends MY_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('log');
+        $this->load->helper('network');
         $this->load->helper('error');
         $this->load->model('m_database');
         $this->load->model('m_orgs');

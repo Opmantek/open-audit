@@ -237,6 +237,19 @@ $this->alter_table('files', 'path', "`path` text NOT NULL");
 # groups
 $this->alter_table('groups', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 
+# ip
+$sql = "SELECT `system`.`id`, `system`.`ip` FROM `system` WHERE `system`.`id` NOT IN (SELECT `ip`.`system_id` FROM `ip`) AND `system`.`ip` != ''";
+$query = $this->db->query($sql);
+$result = $query->result();
+foreach ($result as $row) {
+    $ip_details = network_details($row->ip . '/24');
+    $cidr = $ip_details->network_slash;
+    $netmask = $ip_details->netmask;
+    $network = $ip_details->network . '/' . $cidr;
+    $sql = "INSERT INTO `ip` VALUES (NULL, " . intval($row->id) . ", 'y', NOW(), NOW(), '', '', '$row->ip', '$netmask', '$cidr', 4, '$network', '')";
+    $this->db->query($sql);
+}
+
 # licenses
 $this->drop_table('licenses');
 $sql = "CREATE TABLE `licenses` (
