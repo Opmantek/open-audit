@@ -170,7 +170,7 @@ class M_collection extends MY_Model
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
                     redirect('/discoveries');
                 } else {
-                    $data->description = $data->other->subnet;
+                    $data->description = 'Subnet - ' . $data->other->subnet;
                 }
             } elseif ($data->type == 'active directory') {
                 if (empty($data->other->ad_server) or empty($data->other->ad_domain)) {
@@ -183,7 +183,7 @@ class M_collection extends MY_Model
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no ' . $temp . ' supplied.');
                     redirect('/discoveries');
                 } else {
-                    $data->description = $data->other->ad_domain;
+                    $data->description = 'Active Directory - ' . $data->other->ad_domain;
                 }
             } else {
                 $data->description = '';

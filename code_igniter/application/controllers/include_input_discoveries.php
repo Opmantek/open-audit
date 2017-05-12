@@ -98,6 +98,7 @@ if (!empty($_POST['data'])) {
             $result = $query->result();
             if (!empty($result[0])) {
                 $discovery = $result[0];
+                $discovery->other = json_decode($discovery->other);
                 $syslog->summary = 'Discovery ' . $discovery->name . ' staring to process.';
                 $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
                 stdlog($syslog);
@@ -462,6 +463,7 @@ if (!empty($_POST['data'])) {
         if (!empty($device->id)) {
             // we have a system id - UPDATE
             $log->system_id = $device->id;
+            $action = 'update';
 
             // remove any old logs for this device
             $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
@@ -504,6 +506,7 @@ if (!empty($_POST['data'])) {
             discovery_log($log);
         } else {
             // we have a new system - INSERT
+            $action = 'insert';
             $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
             discovery_log($log);
             $device->id = $this->m_device->insert($device);
@@ -543,18 +546,50 @@ if (!empty($_POST['data'])) {
 
 
         // update any network interfaces and ip addresses retrieved by SNMP
+        $log->ip = $device->ip;
+        $log->discovery_id = $device->discovery_id;
+        $log->file = 'include_input_discoveries';
+        $log->function = 'discoveries';
+        $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        discovery_log($log);
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
-            $log->ip = $device->ip;
-            $log->discovery_id = $device->discovery_id;
-            $log->file = 'include_input_discoveries';
-            $log->function = 'discoveries';
-            $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
-            discovery_log($log);
             $found = new stdClass();
             $found->item = array();
             $found->item = $network_interfaces;
             $this->m_devices_components->process_component('network', $device, $found);
             unset($found);
+        } else {
+            if ($action == 'insert') {
+                # Create an entry in the ip table so our 'networks' find the device
+                $network_interfaces = array();
+                $network = new stdClass();
+                $network->system_id = $device->id;
+                if (!empty($device->mac)) {
+                    $network->mac = $device->mac;
+                }
+                $network->ip = ip_address_to_db($device->ip);
+                if (strpos($discovery->other->subnet, '/') !== false) {
+                    $network_details = network_details($discovery->other->subnet);
+                    $network->netmask = $network_details->netmask;
+                    $network->cidr = $network_details->network_slash;
+                    $network->network = $discovery->other->subnet;
+                    $network->set_by = 'discovery auto';
+                } else {
+                    $network->netmask = '255.255.255.0';
+                    $network->cidr = '24';
+                    $network_details = explode('.', $device->ip);
+                    $network->network = $network_details[0] . '.' .  $network_details[1] . '.' .  $network_details[2] . '.0/24';
+                    $network->set_by = 'discovery guess';
+                }
+                unset($network_details);
+                $network->version = 4;
+                $network_interfaces[] = $network;
+                $found = new stdClass();
+                $found->item = array();
+                $found->item = $network_interfaces;
+                $this->m_devices_components->process_component('ip', $device, $found);
+                unset($found);
+            }
         }
 
         // insert any ip addresses
@@ -633,7 +668,8 @@ if (!empty($_POST['data'])) {
 
         // $device->id is now set
         if ($display == 'y') {
-            echo 'DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
+            echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
+            print_r($device);
         }
 
         // process and store the Nmap result

@@ -101,12 +101,12 @@ $log_message = array();
 # that we will later update with our system_id
 $ids = array();
 
-// if (!empty($_POST['data'])) {
-//     $input = html_entity_decode($_POST['data']);
+if (!empty($_POST['data'])) {
+    $input = html_entity_decode($_POST['data']);
 //     $myfile = fopen("/tmp/audit.txt", "w");
 //     fwrite($myfile, $input);
 //     fclose($myfile);
-// }
+}
 
 if (empty($input)) {
     log_error('ERR-0021');
