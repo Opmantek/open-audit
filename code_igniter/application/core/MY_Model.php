@@ -200,9 +200,9 @@ class MY_Model extends CI_Model
         $sqllog->status = 'running sql';
         $sqllog->type = 'system';
         $sqllog->summary = $this->db->last_query();
-        stdlog($sqllog);
+        # log below so we don't break the insert id on the next lines
 
-        // get the insert id
+        // get the insert id or affected rows, etc
         if ($return === 'insert_id') {
             $result = @$this->db->insert_id();
         } elseif ($return === 'affected_rows') {
@@ -218,6 +218,8 @@ class MY_Model extends CI_Model
         $this->db->db_debug = $temp_debug;
         // do we have an error?
         if ($this->db->_error_message()) {
+            # need to log down here for the above so we can use $this->db to get the last insert id
+            stdlog($sqllog);
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
             if (!empty($CI->response)) {
                 if (!empty($CI->response->errors)) {
@@ -232,8 +234,12 @@ class MY_Model extends CI_Model
             return false;
         } else {
             // no error, so return the result
+            # need to log down here for the above so we can use $this->db to get the last insert id
+            stdlog($sqllog);
              return ($result);
         }
+        # need to log down here for the above so we can use $this->db to get the last insert id
+        stdlog($sqllog);
         // return what we have
         return ($result);
     }
