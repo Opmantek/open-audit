@@ -391,7 +391,8 @@ class devices extends MY_Controller
             $data->other = new stdClass();
             $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
             $this->load->model('m_discoveries');
-            $discovery_id = $this->m_discoveries->create($data);
+            $this->load->model('m_collection');
+            $discovery_id = $this->m_collection->create($data, 'discoveries');
             $this->m_discoveries->execute($discovery_id);
             redirect('devices/'.$this->response->data[0]->attributes->id);
         } elseif ($this->response->meta->sub_resource == 'attachment') {
