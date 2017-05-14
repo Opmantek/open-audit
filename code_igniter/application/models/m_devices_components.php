@@ -306,7 +306,7 @@ class M_devices_components extends MY_Model
         $log = new stdClass();
         $log->discovery_id = (string)@$details->discovery_id;
         $log->system_id = (string)$details->id;
-        $log->timestamp = NULL;
+        $log->timestamp = null;
         $log->severity = 7;
         $log->severity_text = '';
         $log->pid = getmypid();
@@ -401,11 +401,18 @@ class M_devices_components extends MY_Model
                 if (!isset($input->item[$i]->type)) {
                     $input->item[$i]->type = '';
                 }
-                # calculate the network this address is on (assuming we have an ip AND subnet)
-                if (isset($input->item[$i]->ip) and $input->item[$i]->ip != '' and isset($input->item[$i]->netmask) and $input->item[$i]->netmask != '' and $input->item[$i]->netmask != '0.0.0.0') {
+                if (!isset($input->item[$i]->version) or $input->item[$i]->version != '6') {
+                    $input->item[$i]->version = 4;
+                }
+                # Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
+                if ($input->item[$i]->version == 4 and (empty($input->item[$i]->netmask) or $input->item[$i]->netmask != '0.0.0.0')) {
+                    $input->item[$i]->netmask = '255.255.255.0';
+                }
+                # calculate the network this address is on
+                if ($input->item[$i]->version == 4 and !empty($input->item[$i]->ip)) {
                     $temp_long = ip2long($input->item[$i]->netmask);
                     $temp_base = ip2long('255.255.255.255');
-                    $temp_subnet = 32-log(($temp_long ^ $temp_base)+1,2);
+                    $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
                     $net = network_details($input->item[$i]->ip.'/'.$temp_subnet);
                     if (isset($net->network) and $net->network != '') {
                         #$input->item[$i]->network = $net->network.' / '.$temp_subnet;
@@ -433,9 +440,6 @@ class M_devices_components extends MY_Model
                             $input->item[$i]->mac = implode(":", $mymac);
                         }
                     }
-                }
-                if (!isset($input->item[$i]->version) or $input->item[$i]->version != '6') {
-                    $input->item[$i]->version = 4;
                 }
                 # ensure we have the correctly padded ip v4 address
                 if ($input->item[$i]->version == 4) {
