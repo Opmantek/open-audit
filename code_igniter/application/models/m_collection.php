@@ -111,7 +111,7 @@ class M_collection extends MY_Model
                     if (!empty($data_result[0]->count)) {
                         $item->used_count = $data_result[0]->count;
                     }
-                    unset ($sql, $data, $data_result);
+                    unset($sql, $data, $data_result);
                 } else {
                     $children = $CI->m_orgs->get_children($item->org_id);
                     $children[] = $item->org_id;
@@ -122,7 +122,7 @@ class M_collection extends MY_Model
                     if (!empty($data_result[0]->count)) {
                         $item->used_count = $data_result[0]->count;
                     }
-                    unset ($sql, $data, $data_result);
+                    unset($sql, $data, $data_result);
                 }
             }
         }
