@@ -49,7 +49,7 @@ class test extends CI_Controller
 
         // must be an admin to access this page
         $this->load->model('m_users');
-        $this->m_users->validate_user();
+        $this->m_users->validate();
         if (stripos($this->user->roles, '"admin"') === false) {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
@@ -62,6 +62,34 @@ class test extends CI_Controller
     public function index()
     {
         redirect('/');
+    }
+
+    public function nettest()
+    {
+        $this->load->helper('network');
+        $network = '192.168.1.0/24';
+        echo "<pre>\n";
+        print_r(network_details($network));
+        echo "</pre>\n";
+    }
+
+    public function ip()
+    {
+        $this->load->helper('network');
+        echo "<pre>\n";
+        $sql = "SELECT `system`.`id`, `system`.`ip` FROM `system` WHERE `system`.`id` NOT IN (SELECT `ip`.`system_id` FROM `ip`)";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as $row) {
+            $ip_details = network_details($row->ip . '/24');
+            $cidr = $ip_details->network_slash;
+            $netmask = $ip_details->netmask;
+            $network = $ip_details->network . '/' . $cidr;
+            $sql = "INSERT INTO `ip` VALUES (NULL, " . intval($row->id) . ", 'y', NOW(), NOW(), '', '', '$row->ip', '$netmask', '$cidr', 4, '$network', '')";
+            echo $sql . "\n";
+#            $this->db->query($sql);
+#            echo $this->db->last_query() . "\n";
+        }
     }
 
     public function snmp()
