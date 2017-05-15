@@ -394,7 +394,11 @@ class devices extends MY_Controller
             $this->load->model('m_collection');
             $discovery_id = $this->m_collection->create($data, 'discoveries');
             $this->m_discoveries->execute($discovery_id);
-            redirect('devices/'.$this->response->data[0]->attributes->id);
+            if ($this->response->meta->format != 'json') {
+                redirect('devices/'.$this->response->data[0]->attributes->id);
+            } else {
+                output($this->response);
+            }
         } elseif ($this->response->meta->sub_resource == 'attachment') {
             $this->response->meta->action = 'create_form_attachment';
             $this->response->data = array();
