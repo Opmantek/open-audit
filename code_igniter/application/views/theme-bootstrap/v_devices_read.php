@@ -1255,7 +1255,7 @@ if (!empty($data['software'])) {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Title</th>
+                            <th>Name</th>
                             <th>Filename</th>
                             <th>Edited By</th>
                             <th>Edited Date</th>
@@ -1277,14 +1277,14 @@ if (!empty($data['software'])) {
                             $filename = preg_replace('/'.$data['system']->id . '_/', '', $filename, 1);
                             echo '<tr>';
                             echo "<td>" . $item->id . "</td>";
-                            echo "<td>" . $item->title . "</td>";
+                            echo "<td>" . $item->name . "</td>";
                             echo "<td>" . $filename . "</td>";
                             echo "<td>" . $item->edited_by . "</td>";
                             echo "<td>" . $item->edited_date . "</td>";
                             ?>
                             <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $this->response->links->self; ?>?sub_resource=attachment&sub_resource_id=<?php echo intval($item->id); ?>&action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
                             <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
-                            <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="attachment" data-name="<?php echo htmlspecialchars($item->title, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                            <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="attachment" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
                             <?php } ?>
                             <?php
                             echo '</tr>';

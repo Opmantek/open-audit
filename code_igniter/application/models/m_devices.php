@@ -527,7 +527,7 @@ class M_devices extends MY_Model
             if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                 $sql = "INSERT INTO `attachment` VALUES (NULL, ?, ?, ?, ?, NOW())";
                 $data = array(intval($CI->response->meta->id),
-                        $CI->response->meta->received_data->attributes->title,
+                        $CI->response->meta->received_data->attributes->name,
                         "$target",
                         $CI->user->full_name);
                 $this->db->query($sql, $data);

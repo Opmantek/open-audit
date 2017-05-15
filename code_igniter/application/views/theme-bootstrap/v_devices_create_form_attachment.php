@@ -53,10 +53,10 @@
         </div>
 
         <div class="form-group">
-            <label for="data[attributes][title]" class="col-sm-2 control-label">Title</label>
+            <label for="data[attributes][name]" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input tabindex="1" type="text" class="form-control" id="data[attributes][title]" name="data[attributes][title]" value="">
+                    <input tabindex="1" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                 </div>
             </div>
         </div>
