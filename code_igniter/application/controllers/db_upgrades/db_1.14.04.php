@@ -59,6 +59,8 @@ if (count($result) === 0) {
     $this->log_db($this->db->last_query());
 }
 
+# attachments
+$this->alter_table('attachment', 'title', "`name` varchar(200) NOT NULL DEFAULT ''");
 
 # attributes
 $this->drop_table('attributes');
