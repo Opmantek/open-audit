@@ -209,6 +209,7 @@ $this->alter_table('discoveries', 'description', "`description` text NOT NULL");
 $this->alter_table('discoveries', 'created_by', "`edited_by` varchar(200) NOT NULL DEFAULT ''");
 $this->alter_table('discoveries', 'created_on', "`edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00'");
 $this->alter_table('discoveries', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+$this->alter_table('discoveries', 'limit', "ADD `limit` int(10) unsigned NOT NULL DEFAULT '0' AFTER `device_count`", 'add');
 
 # dns
 $this->alter_table('dns', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");

@@ -530,6 +530,7 @@ CREATE TABLE `discoveries` (
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
   `other` text NOT NULL,
   `device_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `limit` int(10) unsigned NOT NULL DEFAULT '0',
   `discard` enum('y','n') NOT NULL DEFAULT 'n',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

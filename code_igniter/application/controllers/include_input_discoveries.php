@@ -152,10 +152,6 @@ if (!empty($_POST['data'])) {
             # Our ip address matched an ip in the discovery_ip_exclude list - skip it
             $log->message = $input->ip . ' is in the list of excluded ip addresses - skipping.';
             discovery_log($log);
-            // $syslog->severity = 7;
-            // $syslog->summary = $input->ip . ' is in the list of excluded ip addresses - skipping.';
-            // $syslog->message = '';
-            // stdlog($syslog);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             continue;
         }
@@ -169,6 +165,12 @@ if (!empty($_POST['data'])) {
 
         if (!empty($input->system_id)) {
             $log->system_id = intval($input->system_id);
+        }
+
+        if ($discovery->device_count >= $discovery->limit and $discovery->limit != 0) {
+            $log->message = "License count exceeded. Not processing device " . $input->ip;
+            discovery_log($log);
+            exit();
         }
 
         $log->message = 'Received data for ' . $input->ip . ', now starting to process';
