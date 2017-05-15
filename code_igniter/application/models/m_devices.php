@@ -774,25 +774,29 @@ class M_devices extends MY_Model
         $sql = "/* m_devices::group */ " . $sql;
         $result = $this->run_sql($sql, array());
 
-        for ($i=0; $i < count($result); $i++) {
-            foreach ($CI->response->meta->filter as $item) {
-                if (isset($result[$i]->{$item->name})) {
-                    if ($item->operator == '=') {
-                        if ($result[$i]->{$item->name} != $item->value) {
-                            unset($result[$i]);
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                foreach ($CI->response->meta->filter as $item) {
+                    if (isset($result[$i]->{$item->name})) {
+                        if ($item->operator == '=') {
+                            if ($result[$i]->{$item->name} != $item->value) {
+                                unset($result[$i]);
+                            }
                         }
-                    }
-                    if ($item->operator == '!=') {
-                        if ($result[$i]->{$item->name} == $item->value) {
-                            unset($result[$i]);
+                        if ($item->operator == '!=') {
+                            if ($result[$i]->{$item->name} == $item->value) {
+                                unset($result[$i]);
+                            }
                         }
                     }
                 }
             }
+            $CI->response->meta->total = count($result);
+        } else {
+            $CI->response->meta->total = 0;
         }
-        $CI->response->meta->total = count($result);
 
-        if (!empty($CI->response->meta->limit)) {
+        if (!empty($CI->response->meta->limit) and !empty($result)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
         $result = $this->format_data($result, 'devices');
