@@ -92,16 +92,23 @@ class M_devices extends MY_Model
         $CI = & get_instance();
         $reserved = ' properties limit sub_resource action sort current offset format ';
         $join = '';
+        $tables = '';
         if (count($CI->response->meta->filter) > 0) {
             foreach ($CI->response->meta->filter as $item) {
                 if (strpos($item->name, '.') !== false) {
                     $table = substr($item->name, 0, strpos($item->name, '.'));
-                    if ($table != 'system') {
-                        $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
+                    if ($table != 'system' and stripos($tables, ' ' . $table . ' ') !== false) {
+                        if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
+                            $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
+                        } else {
+                            $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id AND ' . $table . '.current = "' . $CI->response->meta->current . '") ';
+                        }
                     }
+                    $tables .= " $table ";
                 }
             }
         }
+        $CI->response->meta->internal->join = $join;
         return($join);
     }
 
