@@ -208,7 +208,12 @@ class MY_Model extends CI_Model
         } elseif ($return === 'affected_rows') {
             $result = @$this->db->affected_rows();
         } else {
-            $result = @$query->result();
+            if ($query) {
+                $result = @$query->result();
+            } else {
+                $result = false;
+                #echo "<pre>\n"; print_r($this->response); exit();
+            }
         }
         if (empty($result)) {
             $result = false;
