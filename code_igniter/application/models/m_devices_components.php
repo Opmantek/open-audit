@@ -726,7 +726,9 @@ class M_devices_components extends MY_Model
                     // We have existing items and this is a new item - raise an alert
                     $alert_details = '';
                     foreach ($match_columns as $key => $value) {
-                        $alert_details .= $value . ' is ' . $input_item->$value . ', ';
+                        if (!empty($input_item->$value)) {
+                            $alert_details .= $value . ' is ' . $input_item->$value . ', ';
+                        }
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item added to $table - " . $alert_details;
