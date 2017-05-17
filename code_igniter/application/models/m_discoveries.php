@@ -132,6 +132,7 @@ class M_discoveries extends MY_Model
         $temp = $this->run_sql($sql, $data);
         if (!empty($temp[0])) {
             $discovery = $temp[0];
+            $CI->response->data = $temp;
         } else {
             $this->log->status = 'error';
             $this->log->summary = 'Discovery ID provided does not exist';
@@ -141,8 +142,8 @@ class M_discoveries extends MY_Model
 
         // reset our device counter
         $limit = intval($CI->response->meta->limit);
-        $sql = "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', last_run = NOW(), limit = $limit WHERE id = ?";
-        $data = array(intval($id));
+        $sql = "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', `last_run` = NOW(), `limit` = ? WHERE id = ?";
+        $data = array(intval($limit), intval($id));
         $this->run_sql($sql, $data);
 
         if (!empty($this->config->config['discovery_nmap_os'])) {
