@@ -60,11 +60,13 @@ if ($this->response->meta->collection == 'roles') {
 }
 
 if ($this->response->meta->collection == 'users') {
-        $this->load->model('m_roles');
-        $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
-        $this->load->model('m_orgs');
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+    $this->load->model('m_roles');
+    $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
+    $this->load->model('m_orgs');
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+    if (!empty($this->response->data[0]->attributes)) {
         $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
+    }
 }
 
 if (!empty($this->response->data[0]->attributes->org_id) and $this->response->meta->collection != 'users') {
