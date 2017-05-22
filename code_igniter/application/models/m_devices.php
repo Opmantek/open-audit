@@ -97,7 +97,7 @@ class M_devices extends MY_Model
             foreach ($CI->response->meta->filter as $item) {
                 if (strpos($item->name, '.') !== false) {
                     $table = substr($item->name, 0, strpos($item->name, '.'));
-                    if ($table != 'system' and stripos($tables, ' ' . $table . ' ') !== false) {
+                    if ($table != 'system' and stripos($tables, ' ' . $table . ' ') === false) {
                         if ($table == 'change_log' or $table == 'edit_log' or $table == 'audit_log') {
                             $join .= ' LEFT JOIN `' . $table . '` ON (system.id = `' . $table . '`.system_id) ';
                         } else {
@@ -693,7 +693,7 @@ class M_devices extends MY_Model
         $sql = "/* m_devices::query */ " . "SELECT * FROM queries WHERE id = " . intval($CI->response->meta->sub_resource_id);
         $result = $this->run_sql($sql, array());
         $query = $result[0];
-        $CI->response->meta->sub_resource_name = $query->name;
+        $CI->response->meta->sub_resource_name = $query->menu_category . ' - ' . $query->name;
         #$sql = "SELECT a.* FROM (" . $query->query . ") a WHERE a.`system.id` IN (" . $device_sql . ")";
 
         // $device_sql = "WHERE system.id IN (SELECT system.id FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . ")";
@@ -744,7 +744,7 @@ class M_devices extends MY_Model
         }
         $CI->response->meta->total = count($result);
 
-        if (!empty($CI->response->meta->limit)) {
+        if (!empty($CI->response->meta->limit) and !empty($result)) {
             $result = array_splice($result, $CI->response->meta->offset, $CI->response->meta->limit);
         }
         $result = $this->format_data($result, 'devices');
