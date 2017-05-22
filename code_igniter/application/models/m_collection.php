@@ -216,6 +216,10 @@ class M_collection extends MY_Model
             $data->other = json_encode($data->other);
         }
 
+        if ($collection === 'orgs') {
+            $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+        }
+
         if ($collection === 'roles') {
             $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
             $permissions = new stdClass();
@@ -263,7 +267,6 @@ class M_collection extends MY_Model
         $sql = "INSERT INTO `" . $db_table . "` (";
         $sql_data = "";
         $update_fields = $this->update_fields($collection);
-
         foreach ($data as $key => $value) {
             if (strpos($update_fields, ' '.$key.' ') !== false) {
                 $sql .= "`" . $key . "`, ";
@@ -487,7 +490,7 @@ class M_collection extends MY_Model
                 break;
 
             case "orgs":
-                return(' name description parent_id ');
+                return(' name description parent_id ad_group ');
                 break;
 
             case "queries":
@@ -495,7 +498,7 @@ class M_collection extends MY_Model
                 break;
 
             case "roles":
-                return(' name description permissions ');
+                return(' name description permissions ad_group ');
                 break;
 
             case "scripts":
