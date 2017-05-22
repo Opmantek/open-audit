@@ -103,13 +103,13 @@ class Reports extends MY_Controller
     */
     public function collection()
     {
-        #include 'include_collection.php';
-        # from MY_Model.php
-        #} elseif ($endpoint == 'reports') {
-        #    $sql = "SELECT COUNT(*) as `count` FROM ((SELECT CONCAT('queries/',queries.id) as `link`, queries.type as `type`, queries.id as `id`, queries.name as `name`, queries.org_id as `org_id` FROM queries WHERE queries.org_id IN (" . $CI->user->org_list . ")) UNION ALL (SELECT CONCAT('summaries/',summaries.id) as `link`, summaries.type as `type`, summaries.id as `id`, summaries.name as `name`, summaries.org_id as `org_id` FROM summaries WHERE summaries.org_id IN (" . $CI->user->org_list . "))) a";
         $this->load->model('m_collection');
         $this->response->data = $this->m_collection->collection('queries');
-        $this->response->data = array_merge($this->response->data, $this->m_collection->collection('summaries'));
+        $summaries = $this->m_collection->collection('summaries');
+        foreach ($summaries as $summary) {
+            $summary->attributes->menu_display = 'y';
+        }
+        $this->response->data = array_merge($this->response->data, $summaries);
         $this->response->meta->total = count($this->response->data);
         output($this->response);
     }
