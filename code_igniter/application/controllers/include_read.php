@@ -43,7 +43,9 @@ if ($this->response->meta->collection == 'fields') {
 
 if ($this->response->meta->collection == 'licenses') {
     $this->load->model('m_licenses');
-    $this->response->included = array_merge($this->response->included, $this->m_licenses->execute());
+    $temp = $this->m_licenses->execute();
+    $this->response->included = array_merge($this->response->included, $temp);
+    $this->response->data[0]->attributes->used_count = intval(count($temp));
 }
 
 if ($this->response->meta->collection == 'orgs') {

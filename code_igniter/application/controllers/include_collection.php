@@ -42,6 +42,15 @@ if (empty($this->response->meta->total) and !empty($this->response->meta->filter
     $this->response->meta->total = $this->response->meta->filtered;
 }
 
+if ($this->response->meta->collection === 'licenses') {
+    if (count($this->response->meta->total) < 100) {
+        for ($i=0; $i < count($this->response->data); $i++) {
+            $temp = $this->m_licenses->execute($this->response->data[$i]->attributes->id);
+            $this->response->data[$i]->attributes->used_count = intval(count($temp));
+        }
+    }
+}
+
 output($this->response);
 
 $log = new stdClass();
