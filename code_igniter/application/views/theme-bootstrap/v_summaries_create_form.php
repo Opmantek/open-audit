@@ -70,6 +70,22 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][menu_category]" class="col-sm-4 control-label"><%== l($human_column) %></label>
+                        <div class="col-sm-7 input-group">
+                            <select class="form-control" id="data[attributes][menu_category]" name="data[attributes][menu_category]">
+                                <option value="" label=" "></option>
+                                <option value="Change">Change</option>
+                                <option value="Device">Device</option>
+                                <option value="Hardware">Hardware</option>
+                                <option value="Network">Network</option>
+                                <option value="Server">Server</option>
+                                <option value="Software">Software</option>
+                                <option value="User">User</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][table]" class="col-sm-3 control-label">Table</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][table]" name="data[attributes][table]">
