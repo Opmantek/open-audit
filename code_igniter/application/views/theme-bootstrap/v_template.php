@@ -121,7 +121,7 @@ if (!empty($temp)) {
     echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
 }
 
-if ($this->response->meta->action == 'import_form') {
+if (!empty($this->response->meta->action) and $this->response->meta->action == 'import_form') {
     include('v_collection_import_form.php');
 } else {
     include($include.'.php');
