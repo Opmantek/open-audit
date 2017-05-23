@@ -92,6 +92,16 @@ class Util extends CI_Controller
         echo json_encode($json);
     }
 
+    public function timestamp()
+    {
+        $json = new stdClass();
+        $this->load->helper('url');
+        $this->load->helper('input');
+        $unix_timestamp = $this->uri->segment(3, 0);
+        $json->datetime = from_unix_timestamp($unix_timestamp);
+        echo json_encode($json);
+    }
+
     public function audit_my_pc()
     {
         $this->load->helper('url');

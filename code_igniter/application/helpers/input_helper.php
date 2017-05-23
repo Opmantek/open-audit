@@ -35,6 +35,30 @@
 
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
+if (! function_exists('from_unix_timestamp')) {
+    function from_unix_timestamp($timestamp) {
+        $wildcard = false;
+        if (strpos($timestamp, '%') !== false) {
+            $timestamp = str_replace('%', '', $timestamp);
+            $wildcard = true;
+        }
+        if (!is_numeric($timestamp)) {
+            return $timestamp;
+        }
+        $sql = "/* input_helper::from_unix_timestamp */ " . "SELECT FROM_UNIXTIME(" . $timestamp . ") as `timestamp`";
+        $CI = & get_instance();
+        $CI->response->meta->sql[] = $sql;
+        $query = $CI->db->query($sql);
+        $result = $query->result();
+        $datetime = $result[0]->timestamp;
+        $datetime = str_replace(' 00:00:00', '', $datetime);
+        if ($wildcard === true) {
+            $datetime = '%' . $datetime . '%';
+        }
+        return $datetime;
+    }
+}
+
 if (! function_exists('inputRead')) {
     /**
      * The standard input function for Open-AudIT.
@@ -836,6 +860,15 @@ if (! function_exists('inputRead')) {
                     $CI->response->meta->filter [] = $query;
                 }
                 unset($query);
+            }
+        }
+
+        # Accept first_seen, last_seen, edited_date and timestamp as numeric unix_timestamp's and convert them to a local timestamp string
+        foreach ($CI->response->meta->filter as $filter) {
+            $item = substr($filter->name, strpos($filter->name, '.')+1);
+            $value = str_replace('%', '', $filter->value);
+            if (($item === 'first_seen' or $item === 'last_seen' or $item === 'when' or $item === 'edited_date' or $item === 'timestamp') and is_numeric($value)) {
+                $filter->value = from_unix_timestamp($filter->value);
             }
         }
 
