@@ -627,14 +627,8 @@ if (empty($data['mount_point'])) {
                         <div class="form-group">
                             <label for="uptime" class="col-sm-4 control-label"><?php echo __('Uptime')?></label>
                             <div class="col-sm-8 input-group">
-                                <?php
-                                if (!isset($data['system']->uptime) or $data['system']->uptime == '') {
-                                    $uptime = '';
-                                } else {
-                                    $uptime = intval($data['system']->uptime/ 86400) . ' days, ' . gmdate("H:i:s", $data['system']->uptime);
-                                }
-                                ?><input type="text" class="form-control" id="uptime" value="<?php echo $uptime; ?>" readonly>
-                            <?php unset($uptime); ?></div>
+                                <input type="text" class="form-control" id="uptime" value="<?php echo $data['system']->uptime_formatted; ?>" readonly>
+                            </div>
                         </div>
 
                         <div class="form-group">
