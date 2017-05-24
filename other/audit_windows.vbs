@@ -521,141 +521,141 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 
 	if ((pc_alive = 1) or (ping_target = "n")) then
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem creating WBEM object (0) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem creating WBEM object (0) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	wmiNameSpace.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			wmiNameSpace.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set oReg = wmiNameSpace.Get("StdRegProv")
-	Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set oReg = wmiNameSpace.Get("StdRegProv")
+			Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	objWMIService.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			objWMIService.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	objWMIService2.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			objWMIService2.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 	end if ' pc_alive or ping_target = n
 else
 	' localhost or no credentials passed, therefore auditing as the user running this script
 	if ((pc_alive = 1) or (ping_target = "n")) then
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2")
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
-	error_returned = Err.Number
-	error_description = Err.Description
-	if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "1" then wscript.echo "Problem authenticating (9) to " &  strcomputer end if
-	if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "1" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
+			error_returned = Err.Number
+			error_description = Err.Description
+			if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "1" then wscript.echo "Problem authenticating (9) to " &  strcomputer end if
+				if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "1" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 	end if ' pc_alive or ping_target = n
 end if
 
@@ -663,225 +663,232 @@ end if
 if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 
 	if ((pc_alive = 0) and (ping_target = "y")) then
-	if debugging > "1" then wscript.echo "Computer " &  strcomputer & " is not responding to ping." end if
+		if debugging > "1" then wscript.echo "Computer " &  strcomputer & " is not responding to ping." end if
 	end if
 
 	if (error_returned <> 0) then
-	if debugging > "1" then wscript.echo "Cannot connect to " & strcomputer end if
+		if debugging > "1" then wscript.echo "Cannot connect to " & strcomputer end if
 	end if
 
 	if debugging > "1" then wscript.echo "Attempting Active Directory data retrieval." end if
 
 	if ldap = "" then
-	if debugging > "1" then wscript.echo "No default LDAP provided, using local settings." end if
-	set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
-	set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
-	for each objItem in colItems
-	ldap = "LDAP://" & LCase(objItem.Domain)
-	next
+		if debugging > "1" then wscript.echo "No default LDAP provided, using local settings." end if
+		set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+		set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
+		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
+		for each objItem in colItems
+			ldap = "LDAP://" & LCase(objItem.Domain)
+		next
 	end if
 
 	if ldap > "" then
-	if debugging > "1" then wscript.echo "LDAP domain: " & ldap end if
-	' retrieve what details we can from AD
-	Set objConnection = CreateObject("ADODB.Connection")
-	Set objCommand =   CreateObject("ADODB.Command")
-	objConnection.Provider = "ADsDSOObject"
-	objConnection.Open "Active Directory Provider"
-	Set objCOmmand.ActiveConnection = objConnection
-	objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, dnshostname, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'"
-	objCommand.Properties("Page Size") = 10000
-	objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
-	Set objRecordSet = objCommand.Execute
-	if objRecordSet.RecordCount > 0 then
-	if debugging > "1" then wscript.echo "LDAP details retrieved." end if
-	objRecordSet.MoveFirst
-	Do Until objRecordSet.EOF
-	system_hostname = ""
-	ip_address = ""
-	computer_dns = ""
-	family = ""
-	os_group = ""
-	os_name = ""
-	computer_ou = ""
-	last_seen = ""
-	icon = ""
-	last_logon = ""
-	dns_hostname = ""
-	on error resume next
-	set objLastLogon = objRecordSet.Fields("lastlogon").Value
-	intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
-	intLastLogonTime = intLastLogonTime / (60 * 10000000)
-	intLastLogonTime = intLastLogonTime / 1440
-	thistime = intLastLogonTime + #1/1/1601#
-	last_logon = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
-	on error goto 0
-	last_pass = ""
-	on error resume next
-	set objLastLogon = objRecordSet.Fields("pwdLastSet").Value
-	intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
-	intLastLogonTime = intLastLogonTime / (60 * 10000000)
-	intLastLogonTime = intLastLogonTime / 1440
-	thistime = intLastLogonTime + #1/1/1601#
-	last_pass = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
-	on error goto 0
+		if debugging > "1" then wscript.echo "LDAP domain: " & ldap end if
+		' retrieve what details we can from AD
+		Set objConnection = CreateObject("ADODB.Connection")
+		Set objCommand =   CreateObject("ADODB.Command")
+		objConnection.Provider = "ADsDSOObject"
+		objConnection.Open "Active Directory Provider"
+		Set objCOmmand.ActiveConnection = objConnection
+		objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, dnshostname, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'"
+		objCommand.Properties("Page Size") = 10000
+		objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
+		Set objRecordSet = objCommand.Execute
+		if objRecordSet.RecordCount > 0 then
+			if debugging > "1" then wscript.echo "LDAP details retrieved." end if
+			objRecordSet.MoveFirst
+			Do Until objRecordSet.EOF
+				system_hostname = ""
+				ip_address = ""
+				computer_dns = ""
+				family = ""
+				os_group = ""
+				os_name = ""
+				computer_ou = ""
+				last_seen = ""
+				icon = ""
+				last_logon = ""
+				dns_hostname = ""
+				on error resume next
+					set objLastLogon = objRecordSet.Fields("lastlogon").Value
+					intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
+					intLastLogonTime = intLastLogonTime / (60 * 10000000)
+					intLastLogonTime = intLastLogonTime / 1440
+					thistime = intLastLogonTime + #1/1/1601#
+					last_logon = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
+				on error goto 0
+				last_pass = ""
+				on error resume next
+					set objLastLogon = objRecordSet.Fields("pwdLastSet").Value
+					intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
+					intLastLogonTime = intLastLogonTime / (60 * 10000000)
+					intLastLogonTime = intLastLogonTime / 1440
+					thistime = intLastLogonTime + #1/1/1601#
+					last_pass = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
+				on error goto 0
 
-	if (last_logon > last_pass) then
-	last_seen = last_logon
-	else
-	last_seen = last_pass
-	end if
+				if (last_logon > last_pass) then
+					last_seen = last_logon
+				else
+					last_seen = last_pass
+				end if
 
-	if instr(lcase(objRecordSet.Fields("operatingsystem").Value), "windows") then
-	os_group = "Windows"
-	else
-	os_group = ""
-	end if
+				if instr(lcase(objRecordSet.Fields("operatingsystem").Value), "windows") then
+					os_group = "Windows"
+				else
+					os_group = ""
+				end if
 
-	system_hostname = objRecordSet.Fields("Name").Value
-	dns_hostname = objRecordSet.Fields("dnshostname").Value
+				system_hostname = objRecordSet.Fields("Name").Value
+				dns_hostname = objRecordSet.Fields("dnshostname").Value
 
-	if details_to_lower = "y" then
-	system_hostname = lcase(system_hostname)
-	dns_hostname = lcase(dns_hostname)
-	end if
+				if details_to_lower = "y" then
+					system_hostname = lcase(system_hostname)
+					dns_hostname = lcase(dns_hostname)
+				end if
 
-	strParams = "%comspec% /c NSlookup " & dns_hostname
-	if debugging > "1" then wscript.echo "Looking up DNS entry for " & dns_hostname end if
-	Set objExecObj = objShell.exec(strParams)
-	Do While Not objExecObj.StdOut.AtEndOfStream
-		strText = objExecObj.StdOut.Readline()
-		If instr(strText, "Server") then
-			strServer = trim(replace(strText,"Server:",""))
-		Elseif instr (strText, "Name") Then
-			strhost = trim(replace(strText,"Name:",""))
-		Elseif instr (strText, "Address") Then
-			man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
-		End if
-	Loop
-	if stradd = 1 then man_ip_address = "0.0.0.0" end if
+				strParams = "%comspec% /c NSlookup " & dns_hostname
+				if debugging > "1" then wscript.echo "Looking up DNS entry for " & dns_hostname end if
+				Set objExecObj = objShell.exec(strParams)
+				Do While Not objExecObj.StdOut.AtEndOfStream
+					strText = objExecObj.StdOut.Readline()
+					If instr(strText, "Server") then
+						strServer = trim(replace(strText,"Server:",""))
+					Elseif instr (strText, "Name") Then
+						strhost = trim(replace(strText,"Name:",""))
+					Elseif instr (strText, "Address") Then
+						man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
+					End if
+				Loop
+				if stradd = 1 then man_ip_address = "0.0.0.0" end if
 
-	computer_ou = lcase(ou(objRecordSet.Fields("distinguishedName").Value))
-	i = split(computer_ou, ",")
-	for j = 1 to ubound(i)
-	if instr(i(j), "dc=") then
-	computer_dns = computer_dns & "." & i(j)
-	end if
-	next
-	computer_dns = replace(computer_dns, ".dc=", ".")
-	computer_dns = mid(computer_dns, 2)
+				computer_ou = lcase(ou(objRecordSet.Fields("distinguishedName").Value))
+				i = split(computer_ou, ",")
+				for j = 1 to ubound(i)
+					if instr(i(j), "dc=") then
+						computer_dns = computer_dns & "." & i(j)
+					end if
+				next
+				computer_dns = replace(computer_dns, ".dc=", ".")
+				computer_dns = mid(computer_dns, 2)
 
-	' i = split(dns_hostname, ".")
-	' for j = 1 to ubound(i)
-	' 	computer_dns = computer_dns & "." & i(j)
-	' next
+				' i = split(dns_hostname, ".")
+				' for j = 1 to ubound(i)
+				' 	computer_dns = computer_dns & "." & i(j)
+				' next
 
-	if details_to_lower = "y" then
-	computer_dns = lcase(computer_dns)
-	end if
+				if details_to_lower = "y" then
+					computer_dns = lcase(computer_dns)
+				end if
 
-	os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
-	family = os_family(objRecordSet.Fields("operatingsystem").Value)
-	icon = lcase(replace(family, " ", "_"))
-	if os_group = "Windows" then
-	result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
-	result.WriteText "<system>" & vbcrlf
-	result.WriteText "    <sys>" & vbcrlf
-	result.WriteText "        <script_version>" & version & "</script_version>" & vbcrlf
-	result.WriteText "		  <id>" & system_id & "</id>" & vbcrlf
-	result.WriteText "		  <hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
-	result.WriteText "		  <ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
-	result.WriteText "		  <domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
-	result.WriteText "		  <type>computer</type>" & vbcrlf
-	result.WriteText "		  <icon>" & escape_xml(icon) & "</icon>" & vbcrlf
-	result.WriteText "		  <os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
-	result.WriteText "		  <os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
-	result.WriteText "		  <os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
-	result.WriteText "		  <active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
-	result.WriteText "		  <last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
-	result.WriteText "		  <last_seen_by>active directory</last_seen_by>" & vbcrlf
-	result.WriteText "		  <discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
-	result.WriteText "    </sys>" & vbcrlf
-	end if
-	objRecordSet.MoveNext
-	Loop
-	result.WriteText "</system>" & vbcrlf
-	if debugging > "1" then
-	result.position = 0
-	result_text = result.readtext
-	wscript.echo result_text
-	end if
-	if debugging > "1" then wscript.echo "LDAP Seen Days: " & ldap_seen_days end if
-	if debugging > "1" then wscript.echo "LDAP Actual Days: " & datediff("d", last_seen, Now) end if
-	if debugging > "1" then wscript.echo "LDAP Seen Date: " & ldap_seen_date end if
-	if debugging > "1" then wscript.echo "LDAP Actual Date: " & last_seen end if
-	hit = 0
-	if cint(ldap_seen_days) > cint(datediff("d", last_seen, Now)) then
-	' hit
-	if debugging > "0" then wscript.echo "PC not able to be audited but seen by Active Directory " & datediff("d", last_seen, Now)  & " days ago." & vbcrlf & "As this is less than " & ldap_seen_days & ", using AD details for audit." end if
-	hit = 1
-	elseif cdate(ldap_seen_date) < cdate(last_seen) then
-	' hit
-	if debugging > "0" then wscript.echo "PC not able to be audited but seen in Active Directory on " & last_seen & "." & vbcrlf & "As this is after " & ldap_seen_date & ", using AD details for audit." end if
-	hit = 1
-	else
-	if debugging > "0" then wscript.echo "PC not able to be audited and last seen by Active Directory on " & last_seen & "." & vbcrlf & "As this is before " & ldap_seen_date & ", no audit recorded." end if
-	hit = 0
-	end if
+				os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
+				family = os_family(objRecordSet.Fields("operatingsystem").Value)
+				icon = lcase(replace(family, " ", "_"))
+				if os_group = "Windows" then
+					result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
+					result.WriteText "<system>" & vbcrlf
+					result.WriteText "    <sys>" & vbcrlf
+					result.WriteText "        <script_version>" & version & "</script_version>" & vbcrlf
+					result.WriteText "		  <id>" & system_id & "</id>" & vbcrlf
+					result.WriteText "		  <hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
+					result.WriteText "		  <ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
+					result.WriteText "		  <domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
+					result.WriteText "		  <type>computer</type>" & vbcrlf
+					result.WriteText "		  <icon>" & escape_xml(icon) & "</icon>" & vbcrlf
+					result.WriteText "		  <os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
+					result.WriteText "		  <os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
+					result.WriteText "		  <os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
+					result.WriteText "		  <active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
+					result.WriteText "		  <last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
+					result.WriteText "		  <last_seen_by>active directory</last_seen_by>" & vbcrlf
+					result.WriteText "		  <discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
+					result.WriteText "    </sys>" & vbcrlf
+				end if
+				objRecordSet.MoveNext
+			Loop
 
-	if (submit_online = "y" and hit = 1) then
-	if debugging > "0" then wscript.echo "Submitting audit online" end if
-	Err.clear
-	XmlObj = "ServerXMLHTTP"
-	Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-	objHTTP.setTimeouts 5000, 5000, 5000, 120000
-	objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-	objHTTP.Open "POST", url, False
-	objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-	result.position = 0
-	objHTTP.Send "data=" + urlEncode(result.ReadText()) + vbcrlf
-	if (objHTTP.ResponseText > "" and debugging > "2") then
-	wscript.echo
-	wscript.echo
-	wscript.echo "Response"
-	wscript.echo "--------"
-	wscript.echo objHTTP.ResponseText
-	if (inStr(objHTTP.ResponseText, "error")) then
-	wscript.sleep 50000
-	end if
-	end if
-	if debugging > "0" then wscript.echo "Audit Submitted" end if
-	end if
+			result.WriteText "</system>" & vbcrlf
+			if debugging > "1" then
+				result.position = 0
+				result_text = result.readtext
+				wscript.echo result_text
+			end if
+			if debugging > "1" then wscript.echo "LDAP Seen Days: " & ldap_seen_days end if
+			if debugging > "1" then wscript.echo "LDAP Actual Days: " & datediff("d", last_seen, Now) end if
+			if debugging > "1" then wscript.echo "LDAP Seen Date: " & ldap_seen_date end if
+			if debugging > "1" then wscript.echo "LDAP Actual Date: " & last_seen end if
+			hit = 0
+			if cint(ldap_seen_days) > cint(datediff("d", last_seen, Now)) then
+				' hit
+				if debugging > "0" then
+					wscript.echo "PC not able to be audited but seen by Active Directory " & datediff("d", last_seen, Now)  & " days ago." & vbcrlf & "As this is less than " & ldap_seen_days & ", using AD details for audit."
+				end if
+				hit = 1
+			elseif cdate(ldap_seen_date) < cdate(last_seen) then
+				' hit
+				if debugging > "0" then
+					wscript.echo "PC not able to be audited but seen in Active Directory on " & last_seen & "." & vbcrlf & "As this is after " & ldap_seen_date & ", using AD details for audit."
+				end if
+				hit = 1
+			else
+				if debugging > "0" then
+					wscript.echo "PC not able to be audited and last seen by Active Directory on " & last_seen & "." & vbcrlf & "As this is before " & ldap_seen_date & ", no audit recorded."
+				end if
+				hit = 0
+			end if
 
-	if (create_file = "y" and hit = 1) then
-	if debugging > "0" then wscript.echo "Creating output File" end if
-	' Write the results to a file
-	file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
-	OutputFile = system_hostname & "-" & file_timestamp & ".xml"
-	if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
-	Err.clear
-	on error resume next
-	result.position = 0
-	result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem writing to file." end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	else
-	if debugging > "0" then wscript.echo "Output file created." end if
-	end if
-	end if
-	else ' count > 0
-	if debugging > "0" then
-	wscript.echo "PC not able to be audited and not found in Active Directory."
-	wscript.echo "Active Directory used for search was: " & ldap
-	wscript.echo "No audit recorded."
-	end if
-	end if ' count > 0
+			if (submit_online = "y" and hit = 1) then
+				if debugging > "0" then wscript.echo "Submitting audit online" end if
+				Err.clear
+				XmlObj = "ServerXMLHTTP"
+				Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+				objHTTP.setTimeouts 5000, 5000, 5000, 120000
+				objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+				objHTTP.Open "POST", url, False
+				objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+				result.position = 0
+				objHTTP.Send "data=" + urlEncode(result.ReadText()) + vbcrlf
+				if (objHTTP.ResponseText > "" and debugging > "2") then
+					wscript.echo
+					wscript.echo
+					wscript.echo "Response"
+					wscript.echo "--------"
+					wscript.echo objHTTP.ResponseText
+					if (inStr(objHTTP.ResponseText, "error")) then
+					wscript.sleep 50000
+					end if
+				end if
+				if debugging > "0" then wscript.echo "Audit Submitted" end if
+			end if
+
+			if (create_file = "y" and hit = 1) then
+				if debugging > "0" then wscript.echo "Creating output File" end if
+				' Write the results to a file
+				file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
+				OutputFile = system_hostname & "-" & file_timestamp & ".xml"
+				if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
+				Err.clear
+				on error resume next
+				result.position = 0
+				result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
+				error_returned = Err.Number
+				error_description = Err.Description
+				on error goto 0
+				if (error_returned <> 0) then
+					if debugging > "0" then wscript.echo "Problem writing to file." end if
+					if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+					if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+				else
+					if debugging > "0" then wscript.echo "Output file created." end if
+				end if
+			end if
+		else ' count > 0
+			if debugging > "0" then
+				wscript.echo "PC not able to be audited and not found in Active Directory."
+				wscript.echo "Active Directory used for search was: " & ldap
+				wscript.echo "No audit recorded."
+			end if
+		end if ' count > 0
 	end if ' ldap > ""
 	if debugging > "2" then wscript.sleep 10000 end if
 	wscript.quit
