@@ -38,7 +38,7 @@ if (!defined('BASEPATH')) {
  */
 if (! function_exists('log_error')) {
 
-    function log_error($error_code, $model = '')
+    function log_error($error_code, $model = '', $message = '')
     {
         $CI = & get_instance();
         # ensure we have an array in the $response object to hold our error
@@ -55,6 +55,10 @@ if (! function_exists('log_error')) {
         if (function_exists('getError')) {
             $error = getError($error->code, $model);
             $error->summary = $error->title;
+        }
+
+        if (!empty($message)) {
+            $error->message = $message;
         }
 
         // log the details of the error to the log file
