@@ -164,7 +164,7 @@ class logon extends CI_Controller
     }
 
     /**
-    * Index that is unused
+    *
     *
     * @access public
     * @return NULL
