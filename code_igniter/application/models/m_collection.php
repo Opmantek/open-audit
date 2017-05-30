@@ -258,7 +258,7 @@ class M_collection extends MY_Model
         foreach ($mandatory_fields as $mandatory_field) {
             if (empty($data->{$mandatory_field})) {
                 $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
-                log_error('ERR-0021', 'm_collection::create (' . $collection . ')');
+                log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $mandatory_field);
                 return false;
             }
         }
@@ -474,7 +474,7 @@ class M_collection extends MY_Model
                 break;
 
             case "ldap_servers":
-                return(' name org_id description lang host domain refresh use_roles ');
+                return(' name org_id description lang host port secure domain type version base_dn user_dn user_membership_attribute use_roles refresh  ');
                 break;
 
             case "licenses":
@@ -554,7 +554,7 @@ class M_collection extends MY_Model
                 break;
 
             case "ldap_servers":
-                return(array('name','org_id','lang','host','domain','refresh','use_roles'));
+                return(array('name','org_id','lang','host','port','secure','domain','type','version','use_roles','refresh'));
                 break;
 
             case "licenses":
