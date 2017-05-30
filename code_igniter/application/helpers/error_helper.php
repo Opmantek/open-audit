@@ -269,6 +269,33 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0025']->title = '';
         $error_array['ERR-0025']->detail = 'Update did not supply PATCH data.';
 
+        $error_array['ERR-0026'] = new stdClass();
+        $error_array['ERR-0026']->code = 'ERR-0026';
+        $error_array['ERR-0026']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0026']->severity = 3;
+        $error_array['ERR-0026']->title = "Could not search LDAP";
+        $error_array['ERR-0026']->detail = 'When attempting to search LDAP, something went wrong. Check user_dn and base_dn.';
+
+        $error_array['ERR-0027'] = new stdClass();
+        $error_array['ERR-0027']->code = 'ERR-0027';
+        $error_array['ERR-0027']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0027']->severity = 3;
+        $error_array['ERR-0027']->title = "Could not retrieve entries from LDAP";
+        $error_array['ERR-0027']->detail = 'When attempting to retrieve the search data entries from LDAP, something went wrong.';
+
+        $error_array['ERR-0028'] = new stdClass();
+        $error_array['ERR-0028']->code = 'ERR-0028';
+        $error_array['ERR-0028']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0028']->severity = 3;
+        $error_array['ERR-0028']->title = "Could not bind to LDAP using dn_account";
+        $error_array['ERR-0028']->detail = 'When attempting to bind to LDAP, failed. Check dn_account and dn_password.';
+
+        $error_array['ERR-0029'] = new stdClass();
+        $error_array['ERR-0029']->code = 'ERR-0029';
+        $error_array['ERR-0029']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0029']->severity = 3;
+        $error_array['ERR-0029']->title = "Could not bind to LDAP using user credentials";
+        $error_array['ERR-0029']->detail = 'When attempting to bind to LDAP, failed. Check user credentials.';
 
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
