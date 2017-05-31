@@ -160,7 +160,7 @@ if (! function_exists('inputRead')) {
         $CI->response->links = array();
         $CI->response->included = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
 
         $collections = ' attributes charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries users ';
@@ -476,6 +476,13 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->id = intval($CI->response->meta->id);
             }
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'test') {
+            // test a single item
+            $CI->response->meta->action = 'test';
+            $CI->response->meta->id = intval($CI->response->meta->id);
+            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = test.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'update' and empty($CI->response->meta->ids)) {
@@ -931,6 +938,7 @@ if (! function_exists('inputRead')) {
         $permission['sub_resource_delete'] = 'd';
         $permission['sub_resource_download'] = 'r';
         $permission['sub_resource_read'] = 'r';
+        $permission['test'] = 'u';
         $permission['update'] = 'u';
         $permission['update_form'] = 'u';
         $permission['unknown'] = 'unknown action';
