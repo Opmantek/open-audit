@@ -124,6 +124,20 @@ if ($table == 'credentials') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
+if ($table == 'devices') {
+    $dictionary->about = '<p>Open-Audit automatically populates attributes of devices that have been found during the audit process. However, it is possible to add devices manually in 3 different ways.<br /><br />
+    <ul><li>Manual input - Fill in the relevant attributes for the device.</li>
+    <li>Copy and paste an audit report</li>
+    <li>Upload an audit report file</li></ul><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->last_seen = 'The last time that Open-AudIT retrieved details of this device.';
+    $dictionary->columns->last_seen_by = 'The process that was used last to retrieve details about the device';
+}
+
 if ($table == 'discoveries') {
     $dictionary->about = '<p>Discoveries are at the very heart of what Open-AudIT does.<br /><br />
     How else would you know "What is on my network?"<br /><br />
