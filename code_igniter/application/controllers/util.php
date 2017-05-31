@@ -89,6 +89,7 @@ class Util extends CI_Controller
         }
         $this->load->helper('software_version');
         $json->version_padded = version_padded($json->version);
+        header('Content-Type: application/json');
         echo json_encode($json);
     }
 
@@ -99,6 +100,7 @@ class Util extends CI_Controller
         $this->load->helper('input');
         $unix_timestamp = $this->uri->segment(3, 0);
         $json->datetime = from_unix_timestamp($unix_timestamp);
+        header('Content-Type: application/json');
         echo json_encode($json);
     }
 
@@ -139,6 +141,15 @@ class Util extends CI_Controller
                 echo $value;
             }
         }
+    }
+
+    public function dictionary()
+    {
+        $this->load->helper('url');
+        $table = $this->uri->segment(3, 0);
+        include 'include_dictionary.php';
+        header('Content-Type: application/json');
+        echo json_encode($dictionary);
     }
 }
 // End of file util.php
