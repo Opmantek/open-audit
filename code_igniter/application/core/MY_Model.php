@@ -41,6 +41,7 @@ class MY_Model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->library('encrypt');
     }
 
     public function format_data($result, $type)
@@ -197,9 +198,10 @@ class MY_Model extends CI_Model
         $this->load->helper('log');
         $sqllog = new stdClass();
         $sqllog->function =  strtolower($model . '::' . $function);
-        $sqllog->status = 'running sql';
+        $sqllog->status = 'success';
+        $sqllog->summary = 'running sql';
         $sqllog->type = 'system';
-        $sqllog->summary = $this->db->last_query();
+        $sqllog->detail = $this->db->last_query();
         # log below so we don't break the insert id on the next lines
 
         // get the insert id or affected rows, etc
@@ -224,6 +226,8 @@ class MY_Model extends CI_Model
         // do we have an error?
         if ($this->db->_error_message()) {
             # need to log down here for the above so we can use $this->db to get the last insert id
+            $sqllog->status = 'failure';
+            $sqllog->detail .= ' - FAILURE - ' . $this->db->_error_message();
             stdlog($sqllog);
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
             if (!empty($CI->response)) {
@@ -241,10 +245,8 @@ class MY_Model extends CI_Model
             // no error, so return the result
             # need to log down here for the above so we can use $this->db to get the last insert id
             stdlog($sqllog);
-             return ($result);
+            return ($result);
         }
-        # need to log down here for the above so we can use $this->db to get the last insert id
-        stdlog($sqllog);
         // return what we have
         return ($result);
     }
