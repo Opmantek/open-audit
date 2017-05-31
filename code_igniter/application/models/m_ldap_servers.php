@@ -67,8 +67,17 @@ class M_ldap_servers extends MY_Model
                         (string)$CI->response->meta->received_data->attributes->description,
                         (string)$CI->response->meta->received_data->attributes->lang,
                         (string)$CI->response->meta->received_data->attributes->host,
+                        (string)$CI->response->meta->received_data->attributes->port,
+                        (string)$CI->response->meta->received_data->attributes->secure,
                         (string)$CI->response->meta->received_data->attributes->domain,
+                        (string)$CI->response->meta->received_data->attributes->type,
+                        (string)$CI->response->meta->received_data->attributes->version,
+                        (string)$CI->response->meta->received_data->attributes->base_dn,
+                        (string)$CI->response->meta->received_data->attributes->user_dn,
+                        (string)$CI->response->meta->received_data->attributes->user_membership_attribute,
                         (string)$CI->response->meta->received_data->attributes->use_roles,
+                        (string)$CI->response->meta->received_data->attributes->dn_account,
+                        (string)$CI->response->meta->received_data->attributes->dn_password,
                         (string)$CI->response->meta->received_data->attributes->refresh,
                         (string)$CI->user->full_name);
         $id = intval($this->run_sql($sql, $data));
@@ -88,6 +97,13 @@ class M_ldap_servers extends MY_Model
         $sql = "SELECT ldap_servers.*, orgs.name AS `org_name` FROM ldap_servers LEFT JOIN orgs ON (ldap_servers.org_id = orgs.id) WHERE ldap_servers.id = ? AND ldap_servers.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
+        if (!empty($result)) {
+            foreach ($result as $row) {
+                if (!empty($row->dn_password)) {
+                    $row->dn_password = (string)$this->encrypt->decode($row->dn_password);
+                }
+            }
+        }
         $result = $this->format_data($result, 'ldap_servers');
         return $result;
     }

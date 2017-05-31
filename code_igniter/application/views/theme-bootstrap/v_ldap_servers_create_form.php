@@ -57,12 +57,19 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
-                            <?php
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]"><?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'orgs') { ?>
+                                <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
@@ -70,9 +77,91 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
+                        <label for="data[attributes][domain]" class="col-sm-3 control-label">Domain</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]">
+                             <input type="text" class="form-control" id="data[attributes][domain]" name="data[attributes][domain]" placeholder="your.domain.com">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][host]" class="col-sm-3 control-label">Host</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][host]" name="data[attributes][host]" placeholder="192.168.1.88">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][port]" class="col-sm-3 control-label">Port</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][port]" name="data[attributes][port]" placeholder="389" value="389">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][secure]" class="col-sm-3 control-label">Use Secure (LDAPS)</label>
+                        <div class="col-sm-8 input-group">
+                            <select required class="form-control" id="data[attributes][secure]" name="data[attributes][secure]">
+                                <option value="n">No</option>
+                                <option value="y">Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][version]" class="col-sm-3 control-label">Version</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][version]" name="data[attributes][version]" placeholder="3" value="3">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][use_roles]" class="col-sm-3 control-label">Use LDAP for Roles</label>
+                        <div class="col-sm-8 input-group">
+                            <select id="data[attributes[[use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]">
+                                <option value='n' selected>No</option>
+                                <option value='y'>Yes</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-8 input-group">
+                            <select required class="form-control" id="data[attributes][type]" name="data[attributes][type]">
+                                <option value="active directory">Active Directory</option>
+                                <option value="openldap">OpenLDAP</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][base_dn]" class="col-sm-3 control-label">Base DN</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][base_dn]" name="data[attributes][base_dn]" placeholder="cn=Users,dc=your,dc=domain,dc=com" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][user_dn]" class="col-sm-3 control-label">User DN</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][user_dn]" name="data[attributes][user_dn]" placeholder="cn=@username,ou=people" value="cn=@username,ou=people" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][user_membership_attribute]" class="col-sm-3 control-label">User Membership Attribute</label>
+                        <div class="col-sm-8 input-group">
+                            <input required type="text" class="form-control" id="data[attributes][user_membership_attribute]" name="data[attributes][user_membership_attribute]" placeholder="memberUid" value="memberUid" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][refresh]" class="col-sm-3 control-label">Refresh</label>
+                        <div class="col-sm-8 input-group">
+                             <input type="text" class="form-control" id="data[attributes][refresh]" name="data[attributes][refresh]" placeholder="24" value="24">
                         </div>
                     </div>
 
@@ -90,40 +179,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][host]" class="col-sm-3 control-label">Host</label>
+                        <label for="data[attributes][dn_account]" class="col-sm-3 control-label">DN Account</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][host]" name="data[attributes][host]" placeholder="192.168.1.88">
+                            <input required type="text" class="form-control" id="data[attributes][dn_account]" name="data[attributes][dn_account]" placeholder="cn=Administrator,cn=Users,dc=your,dc=domain,dc=com" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][domain]" class="col-sm-3 control-label">Domain</label>
+                        <label for="data[attributes][dn_password]" class="col-sm-3 control-label">DN Password</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][domain]" name="data[attributes][domain]" placeholder="your.domain.com">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][use_roles]" class="col-sm-3 control-label">Use Roles</label>
-                        <div class="col-sm-8 input-group">
-                            <select id="data[attributes[[use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]">
-                                <option value='n' selected>No</option>
-                                <option value='y'>Yes</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][refresh]" class="col-sm-3 control-label">Refresh</label>
-                        <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][refresh]" name="data[attributes][refresh]" placeholder="24" value="24">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="data[attributes][refreshed]" class="col-sm-3 control-label">Refreshed</label>
-                        <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][refreshed]" name="data[attributes][refreshed]" disabled>
+                             <input type="text" class="form-control" id="data[attributes][dn_password]" name="data[attributes][dn_password]" placeholder="your DN Account password" value="">
                         </div>
                     </div>
 
@@ -157,3 +222,21 @@
         </div>
     </div>
 </form>
+
+<script>
+$(document).ready(function(){
+    $('#data\\[attributes\\]\\[type\\]').change(function() {
+        var $type = $(this).val();
+        if ($type == "active directory") {
+            $("#data\\[attributes\\]\\[user_dn\\]").attr("disabled", true);
+            $("#data\\[attributes\\]\\[user_membership_attribute\\]").attr("disabled", true);
+            $("#data\\[attributes\\]\\[base_dn\\]").attr("placeholder", 'cn=Users,dc=your,dc=domain,dc=com');
+        }
+        if ($type == "openldap") {
+            $("#data\\[attributes\\]\\[user_dn\\]").attr("disabled", false);
+            $("#data\\[attributes\\]\\[user_membership_attribute\\]").attr("disabled", false);
+            $("#data\\[attributes\\]\\[base_dn\\]").attr("placeholder", 'dc=your,dc=domain,dc=com');
+        }
+    });
+});
+</script>

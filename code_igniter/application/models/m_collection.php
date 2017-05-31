@@ -41,6 +41,7 @@ class M_collection extends MY_Model
         $this->log = new stdClass();
         $this->log->status = 'reading data';
         $this->log->type = 'system';
+        $this->load->library('encrypt');
     }
 
     public function collection($collection = '')
@@ -216,8 +217,16 @@ class M_collection extends MY_Model
             $data->other = json_encode($data->other);
         }
 
+        if ($collection === 'ldap_servers') {
+            if (!empty($data->dn_password)) {
+                $data->dn_password = (string)$this->encrypt->encode($data->dn_password);
+            }
+        }
+
         if ($collection === 'orgs') {
-            $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+            if (!empty($data->name)) {
+                $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+            }
         }
 
         if ($collection === 'roles') {
@@ -375,6 +384,12 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'ldap_servers') {
+            if (!empty($data->dn_password)) {
+                $data->dn_password = (string)$CI->encrypt->encode($data->dn_password);
+            }
+        }
+
         if ($collection === 'scripts') {
             if (!empty($data->options)) {
                 $received = new stdClass();
@@ -474,7 +489,7 @@ class M_collection extends MY_Model
                 break;
 
             case "ldap_servers":
-                return(' name org_id description lang host port secure domain type version base_dn user_dn user_membership_attribute use_roles refresh  ');
+                return(' name org_id description lang host port secure domain type version base_dn user_dn user_membership_attribute use_roles dn_account dn_password refresh ');
                 break;
 
             case "licenses":

@@ -63,6 +63,18 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
+                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="org_id" class="col-sm-3 control-label">Organisation</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
@@ -83,30 +95,14 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <label for="domain" class="col-sm-3 control-label">Domain</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="domain" name="domain" value="<?php echo htmlspecialchars($item->attributes->domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="lang" class="col-sm-3 control-label">Language</label>
-                        <div class="col-sm-8 input-group">
-                            <select tabindex="3" class="data_type form-control" id="lang" name="lang" title='Language' disabled>
-                                <option value='de' <?php if ($item->attributes->lang == 'de') { echo "selected"; }?>>German</option>
-                                <option value='en' <?php if ($item->attributes->lang == 'en') { echo "selected"; }?>>English</option>
-                                <option value='es' <?php if ($item->attributes->lang == 'es') { echo "selected"; }?>>Spanish</option>
-                                <option value='fr' <?php if ($item->attributes->lang == 'fr') { echo "selected"; }?>>French</option>
-                                <option value='pt-br' <?php if ($item->attributes->lang == 'pt-br') { echo "selected"; }?>>Brazilian Portuguese</option>
-                            </select>
-                            <span class="input-group-btn">
-                                <button id="edit_lang" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="lang"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
                         </div>
                     </div>
 
@@ -123,12 +119,37 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="domain" class="col-sm-3 control-label">Domain</label>
+                        <label for="port" class="col-sm-3 control-label">Port</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="domain" name="domain" value="<?php echo htmlspecialchars($item->attributes->domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="port" name="port" value="<?php echo htmlspecialchars($item->attributes->port, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_port" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="port"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secure" class="col-sm-3 control-label">Use Secure (LDAPS)</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="data_type form-control" id="secure" name="secure" disabled>
+                                <option value='y' <?php if ($item->attributes->secure == 'y') { echo "selected"; }?>>Yes</option>
+                                <option value='n' <?php if ($item->attributes->secure == 'n') { echo "selected"; }?>>No</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button id="edit_secure" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="secure"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="version" class="col-sm-3 control-label">Version</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="version" name="version" value="<?php echo htmlspecialchars($item->attributes->version, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_version" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="version"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
@@ -137,13 +158,65 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="use_roles" class="col-sm-3 control-label">Use Roles</label>
                         <div class="col-sm-8 input-group">
-                            <select class="data_type form-control" id="use_roles" name="use_roles" title='Use Roles' disabled>
+                            <select class="data_type form-control" id="use_roles" name="use_roles" disabled>
                                 <option value='n' <?php if ($item->attributes->use_roles == 'n') { echo "selected"; }?>>No</option>
                                 <option value='y' <?php if ($item->attributes->use_roles == 'y') { echo "selected"; }?>>Yes</option>
                             </select>
                             <span class="input-group-btn">
                                 <button id="edit_use_roles" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="use_roles"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="type" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="data_type form-control" id="type" name="type" disabled>
+                                <option value='active directory' <?php if ($item->attributes->type == 'active directory') { echo "selected"; }?>>Active Directory</option>
+                                <option value='openldap' <?php if ($item->attributes->type == 'openldap') { echo "selected"; }?>>OpenLDAP</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="base_dn" class="col-sm-3 control-label">Base DN</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="base_dn" name="base_dn" value="<?php echo htmlspecialchars($item->attributes->base_dn, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_base_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="base_dn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user_dn" class="col-sm-3 control-label">User DN</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="user_dn" name="user_dn" value="<?php echo htmlspecialchars($item->attributes->user_dn, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_user_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="user_dn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user_membership_attribute" class="col-sm-3 control-label">user_membership_attribute</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="user_membership_attribute" name="user_membership_attribute" value="<?php echo htmlspecialchars($item->attributes->user_membership_attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_user_membership_attribute" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="user_membership_attribute"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -160,9 +233,42 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="refreshed" class="col-sm-3 control-label">Refreshed</label>
+                        <label for="lang" class="col-sm-3 control-label">Language</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="refreshed" name="refreshed" value="<?php echo htmlspecialchars($item->attributes->refreshed, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <select class="data_type form-control" id="lang" name="lang" title='Language' disabled>
+                                <option value='de' <?php if ($item->attributes->lang == 'de') { echo "selected"; }?>>German</option>
+                                <option value='en' <?php if ($item->attributes->lang == 'en') { echo "selected"; }?>>English</option>
+                                <option value='es' <?php if ($item->attributes->lang == 'es') { echo "selected"; }?>>Spanish</option>
+                                <option value='fr' <?php if ($item->attributes->lang == 'fr') { echo "selected"; }?>>French</option>
+                                <option value='pt-br' <?php if ($item->attributes->lang == 'pt-br') { echo "selected"; }?>>Brazilian Portuguese</option>
+                            </select>
+                            <span class="input-group-btn">
+                                <button id="edit_lang" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="lang"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dn_account" class="col-sm-3 control-label">DN Account</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="dn_account" name="dn_account" value="<?php echo htmlspecialchars($item->attributes->dn_account, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_base_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dn_account"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dn_password" class="col-sm-3 control-label">DN Password</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="password" class="form-control" id="dn_password" name="dn_password" value="<?php echo htmlspecialchars($item->attributes->dn_password, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_user_dn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dn_password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
 

@@ -195,6 +195,19 @@ class Ldap_servers extends MY_Controller
     {
         include 'include_import.php';
     }
+
+    /**
+    * Test a connection and bind to an LDAP server
+    *
+    * @access public
+    * @return NULL
+    */
+    // public function test()
+    // {
+    //     $ldap_server = $this->m_ldap_servers->read();
+    //     header('Content-Type: application/json');
+    //     echo json_encode($ldap_server);
+    // }
 }
-// End of file roles.php
-// Location: ./controllers/roles.php
+// End of file ldap_servers.php
+// Location: ./controllers/ldap_servers.php

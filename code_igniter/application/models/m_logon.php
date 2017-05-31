@@ -125,6 +125,7 @@ class M_logon extends MY_Model
                     }
                     ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
                     ldap_set_option(null, LDAP_OPT_PROTOCOL_VERSION, $ldap->version);
+                    $ldap->dn_password = (string)$this->encrypt->decode($ldap->dn_password);
                     if (count($ldap_servers == 1)) {
                         // We only have a single ldap_server. Add the domain to the username if not already present
                         if (empty($user['domain'])) {
@@ -140,6 +141,7 @@ class M_logon extends MY_Model
                     }
                     if ($ldap_connection = @ldap_connect($ldap_connect_string)) {
                         $log->summary = 'Connected to LDAP server at ' . $ldap->host;
+                        $log->details = '';
                         stdlog($log);
                         $bind_string = '';
                         $bind_password = '';
@@ -188,8 +190,6 @@ class M_logon extends MY_Model
                                     $ldap->filter = '(' . str_replace('@username', $user['username'], $temp[$i]) . ')';
                                 }
                             }
-
-
                         }
                         $log->summary = 'ldap filter';
                         $log->detail = (string)$ldap->filter;
@@ -238,6 +238,7 @@ class M_logon extends MY_Model
                             stdlog($log);
                             continue;
                         }
+                        $log->detail = '';
                         # get the roles groups and match
                         if ($ldap->type == 'active directory') {
                             foreach ($roles as $role) {
