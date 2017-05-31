@@ -643,7 +643,10 @@ if [ -z "$system_model" ]; then
 fi
 
 # get the systemd identifier
-dbus_identifier=$(cat /etc/machine-id 2>/dev/null)
+dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
+if [ -z "$dbus_identifier" ]; then
+	dbus_identifier=$(cat /etc/machine-id 2>/dev/null)
+fi
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
