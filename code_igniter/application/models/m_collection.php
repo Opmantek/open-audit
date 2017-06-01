@@ -399,7 +399,8 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM scripts WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
-                if (!empty($this->encrypt->decode($result[0]->options))) {
+                $test = @$this->encrypt->decode($result[0]->options);
+                if (!empty($test)) {
                     $existing = json_decode($this->encrypt->decode($result[0]->options));
                 } else {
                     $existing = new stdClass();
