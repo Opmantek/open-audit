@@ -1,8 +1,5 @@
-<?php 
-if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
-#
+<?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -27,26 +24,21 @@ if (!defined('BASEPATH')) {
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+**/
 
-/*
- * @package Open-AudIT
- * @author Mark Unwin <marku@opmantek.com>
- * 
- * @version   2.0a
+$this->log_db('Upgrade database to 2.0a commenced');
 
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- */
+# set our versions
+$sql = "UPDATE `configuration` SET `value` = '20170601' WHERE `name` = 'internal_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
-# Vendor Isilon
+$sql = "UPDATE `configuration` SET `value` = '2.0a' WHERE `name` = 'display_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
-$get_oid_details = function ($ip, $credentials, $oid) {
-    $details = new stdClass();
-
-    if ($oid == '1.3.6.1.4.1.12124.1') {
-        $details->type = 'storage misc';
-    }
-    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.3.1");
-    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12124.2.51.1.4.1");
-    return($details);
-};
+#$this->db->db_debug = $temp_debug;
+$this->log_db("Upgrade database to 2.0a completed");
+$this->config->config['internal_version'] = '20170601';
+$this->config->config['display_version'] = '2.0a';

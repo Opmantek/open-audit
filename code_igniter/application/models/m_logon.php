@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   1.14.4
+ * @version   2.0a
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -120,9 +120,11 @@ class M_logon extends MY_Model
                 foreach ($ldap_servers as $ldap) {
                     if ($ldap->type != 'active directory' and $ldap->type != 'openldap') {
                         $log->summary = 'Invalid LDAP server type supplied, skipping.';
+                        $log->detail = '';
                         stdlog($log);
                         continue;
                     }
+                    ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5); 
                     ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
                     ldap_set_option(null, LDAP_OPT_PROTOCOL_VERSION, $ldap->version);
                     $ldap->dn_password = (string)$this->encrypt->decode($ldap->dn_password);
@@ -140,9 +142,6 @@ class M_logon extends MY_Model
                         $ldap_connect_string = 'ldap://' . $ldap->host . ':' . $ldap->port;
                     }
                     if ($ldap_connection = @ldap_connect($ldap_connect_string)) {
-                        $log->summary = 'Connected to LDAP server at ' . $ldap->host;
-                        $log->details = '';
-                        stdlog($log);
                         $bind_string = '';
                         $bind_password = '';
                         if ($ldap->type == 'active directory') {
@@ -157,7 +156,7 @@ class M_logon extends MY_Model
                             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
                         }
                         if (empty($bind)) {
-                            $log->summary = 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ', skipping';
+                            $log->summary = 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ' or the LDAP server could not be reached, skipping.';
                             $log->detail = (string)ldap_error($ldap_connection);
                             stdlog($log);
                             continue;
@@ -380,7 +379,7 @@ class M_logon extends MY_Model
                         }
                     } else {
                         # ERROR - could not connect to LDAP / AD server
-                        $log->summary = "LDAP connect failed for LDAP server at " . $ldap->host;
+                        $log->summary = "LDAP connect failed for LDAP server at " . $ldap->host . '. Check your host, port and secure settings. Attempted to use ' . $ldap_connect_string;
                         $log->detail = (string)ldap_error($ldap_connection);
                         stdlog($log);
                         continue;
