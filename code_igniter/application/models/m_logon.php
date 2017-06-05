@@ -92,14 +92,18 @@ class M_logon extends MY_Model
         }
 
         // Roles
-        $roles_sql = "/* m_logon::logon */" . "SELECT * FROM roles";
-        $roles_query = $this->db->query($roles_sql);
-        $roles = $roles_query->result();
+        if ($this->db->table_exists('roles')) {
+            $roles_sql = "/* m_logon::logon */" . "SELECT * FROM roles";
+            $roles_query = $this->db->query($roles_sql);
+            $roles = $roles_query->result();
+        }
 
         // Orgs
-        $orgs_sql = "/* m_logon::logon */" . "SELECT * FROM orgs";
-        $orgs_query = $this->db->query($orgs_sql);
-        $orgs = $orgs_query->result();
+        if ($this->db->table_exists('orgs')) {
+            $orgs_sql = "/* m_logon::logon */" . "SELECT * FROM orgs";
+            $orgs_query = $this->db->query($orgs_sql);
+            $orgs = $orgs_query->result();
+        }
 
         // Auth against any configured LDAP servers
         if ($this->db->table_exists('ldap_servers')) {
