@@ -596,7 +596,7 @@ $sql[] = "INSERT INTO `summaries` VALUES (5,'Form Factors',1,'Device','system','
 
 $sql[] = "INSERT INTO `summaries` VALUES (6,'Manufacturers',1,'Device','system','manufacturer','system.model','system','2000-01-01 00:00:00')";
 
-$sql[] = "INSERT INTO `summaries` VALUES (7,'Operating Systems',1,'Device','system','os_family','','system','2000-01-01 00:00:00')";
+$sql[] = "INSERT INTO `summaries` VALUES (7,'Operating System Families',1,'Device','system','os_family','','system','2000-01-01 00:00:00')";
 
 $sql[] = "INSERT INTO `summaries` VALUES (8,'Server Types',1,'Server','server','type','server.name,server.full_name,server.version,server.status','system','2000-01-01 00:00:00')";
 
@@ -607,6 +607,8 @@ $sql[] = "INSERT INTO `summaries` VALUES (10,'Software',1,'Software','software',
 $sql[] = "INSERT INTO `summaries` VALUES (11,'Software Keys',1,'Software','software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system','2000-01-01 00:00:00')";
 
 $sql[] = "INSERT INTO `summaries` VALUES (12,'Active Directory OU\'s',1,'Network','windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00')";
+
+$sql[] = "INSERT INTO `summaries` VALUES (13,'Operating System Names',1,'Device','system','os_name','','system','2000-01-01 00:00:00')";
 
 # system
 $this->alter_table('system', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
