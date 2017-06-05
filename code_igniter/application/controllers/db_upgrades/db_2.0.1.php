@@ -1,8 +1,5 @@
 <?php
-if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -27,32 +24,21 @@ if (!defined('BASEPATH')) {
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+**/
 
-/*
- * @package Open-AudIT
- * @author Mark Unwin <marku@opmantek.com>
- * 
- * @version   2.0.1
+$this->log_db('Upgrade database to 2.0.1 commenced');
 
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- */
+# set our versions
+$sql = "UPDATE `configuration` SET `value` = '20170620' WHERE `name` = 'internal_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
-# Vendor Alcatel
+$sql = "UPDATE `configuration` SET `value` = '2.0.1' WHERE `name` = 'display_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
-$get_oid_details = function ($ip, $credentials, $oid) {
-    $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.3003.2.2.2.1') {
-        $details->model = 'OmniCore 5052';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.3003.2.2.2.2') {
-        $details->model = 'OmniCore 5022';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.3003.2.2.2.3') {
-        $details->model = 'OmniCore 5010';
-        $details->type = '';
-    }
-    return($details);
-};
+#$this->db->db_debug = $temp_debug;
+$this->log_db("Upgrade database to 2.0.1 completed");
+$this->config->config['internal_version'] = '20170620';
+$this->config->config['display_version'] = '2.0.1';

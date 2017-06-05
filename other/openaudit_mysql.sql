@@ -366,11 +366,11 @@ INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700'
 INSERT INTO `configuration` VALUES (8,'discovery_nmap_os','n','y','system','2000-01-01 00:00:00','When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `configuration` VALUES (9,'discovery_use_dns','y','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (10,'discovery_use_ipmi','y','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (11,'display_version','2.0a','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (11,'display_version','2.0.1','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (12,'download_reports','download','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (13,'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (14,'homepage','groups','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (15,'internal_version','20170601','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (15,'internal_version','20170620','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (16,'logo','logo-banner-oac-oae','y','system','2000-01-01 00:00:00','The logo to be used in Open-AudIT. Should be a 475x60 .png. Name should not include the file extension. logo-banner-oac-oae is the default.');
 INSERT INTO `configuration` VALUES (17,'log_level','5','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (18,'log_retain_level_0','180','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
