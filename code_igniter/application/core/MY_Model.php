@@ -275,7 +275,7 @@ class MY_Model extends CI_Model
             // get the total count
             if ($endpoint == 'orgs') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
-            } elseif ($endpoint == 'configuration') {
+            } elseif ($endpoint == 'configuration' or $endpoint == 'logs') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "`";
             } else {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
@@ -320,7 +320,7 @@ class MY_Model extends CI_Model
             }
         }
         if ($filter != '') {
-            if ($endpoint != 'configuration') {
+            if ($endpoint != 'configuration' and $endpoint != 'logs') {
                 $filter = substr($filter, 5);
                 $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
             } else {
@@ -363,10 +363,13 @@ class MY_Model extends CI_Model
             
             if ($endpoint == 'locations') {
                 $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
-            
+
+            } else if ($endpoint == 'logs') {
+                $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
+
             } else if ($endpoint == 'fields') {
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
-            
+
             } else if ($endpoint == 'networks') {
                 $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
 

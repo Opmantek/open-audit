@@ -380,7 +380,8 @@
                     <li class="dropdown-submenu">
                         <a href="#">Logs</a>
                         <ul class="dropdown-menu" style="min-width:250px;">
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs'>View Logs</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs?logs.type=access'>View Access Logs</a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs?logs.type=system'>View System Logs</a></li>
                             <?php if ($this->m_users->get_user_permission('', 'logs', 'd')) { ?>
                             <!--
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/#'>Purge Access Log</a></li>

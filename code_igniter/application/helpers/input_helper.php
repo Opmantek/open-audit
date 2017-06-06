@@ -841,7 +841,8 @@ if (! function_exists('inputRead')) {
                 }
 
                 $operator = substr($query->value, 0, 2);
-                if ($operator == 'in') {
+                $test = substr($query->value, 0, 4);
+                if ($operator == 'in' and $test != 'info') {
                     $query->value = "(" . substr($query->value, 2) . ")";
                     $query->operator = $operator;
                 }
