@@ -28,8 +28,12 @@
 $dictionary = new stdClass();
 $dictionary->table = $table;
 $dictionary->about = '';
+$dictionary->marketing = '';
 $dictionary->notes = '';
 $dictionary->columns = new stdClass();
+
+$link = 'For more detailed information, here is a link to the <em>' . $table . '</em> page on the Open-AudIT wiki <a href="https://community.opmantek.com/display/OA/' . $table . '">LINK</a>.';
+$purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" id="buy_more_licenses" data-toggle="modal" data-target="#myModalLicense">HERE</a>.</strong>';
 
 $id = 'The internal identifer column in the database.';
 $name = 'The name given to this item. Ideally it should be unique.';
@@ -37,8 +41,6 @@ $org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.'
 $description = 'Your description of this item.';
 $edited_by = 'The name of the user who last changed or added this item.';
 $edited_date = 'The date this item was changed or added.';
-$link = 'For more detailed information, here is a link to the <em>' . $table . '</em> page on the Open-AudIT wiki <a href="https://community.opmantek.com/display/OA/' . $table . '">LINK</a>.';
-
 $system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
 if ($table == 'attachments') {
@@ -85,6 +87,12 @@ if ($table == 'baselines') {
         Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br />
         For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Track your devices and see if they deviate from your required standard.<br /><br />
+    Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br />
+    For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br /><br />
+    You can create a baseline, run it against a group of devices and view the results. You can implement your baselines to be executed on a schedule. All results are kept and can be viewed and exported.<br /><br />
+    ' . $link . '<br /><br />
+    ' . $purchase_link . '<br /><br /></p>';
     $dictionary->notes = '<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br /><br />
         <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br /><br />
         <strong>Details</strong> - Baselines can compare netstat ports, users and software.<br /><br />
@@ -186,6 +194,11 @@ if ($table == 'files') {
 This feature works out of the box for Linux Open-AudIT servers, but needs a change to the service account name under a Windows Open-AudIT server.<br /><br />
 Supported clients are Windows and Linux.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Audit your computers and ensure any changed files are recorded. Open-AudIT can retrieve details about a file or directory of files and monitor these files for changes as per other attributes in the Open-AudIT database.<br /><br />
+    Details such as name, directory, size, hash, last changed and permissions are all recorded. This feature works on both Windows and Linux target machines.<br /><br />
+    This is ideal for monitoring configuration files in /etc on Linux machines (for example).<br /><br />
+    ' . $link . '<br /><br />
+    ' . $purchase_link . '<br /><br /></p>';
     $dictionary->notes = '<p>See the note about enabling this feature when running a Windows Open-AudIT server on the wiki, here - <a href="https://community.opmantek.com/display/OA/files#Files-EnablingtheFeatureUnderWindows">https://community.opmantek.com/display/OA/files#Files-EnablingtheFeatureUnderWindows</a>.<br /><br /></p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
