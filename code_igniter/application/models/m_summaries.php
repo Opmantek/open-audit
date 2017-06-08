@@ -209,6 +209,19 @@ class M_summaries extends MY_Model
                 $CI->response->meta->filtered = count($result);
             }
         }
+        if (empty($result)) {
+            $result = array();
+            $item = new stdClass();
+            $item->id = 0;
+            $item->type = 'summaries';
+            $item->attributes = new stdClass();
+            $item->attributes->id = 0;
+            $item->attributes->count = 0;
+            $item->attributes->name = '';
+            $item->attributes->link = '';
+            $result[] = $item;
+            unset($item);
+        }
         return ($result);
     }
 
