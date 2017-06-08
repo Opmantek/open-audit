@@ -338,6 +338,11 @@ An example query SQL showing attributes on devices that have an <code>os_group</
 if ($table == 'roles') {
     $dictionary->about = 'Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Creating role allows fine grained control over what your users can do within Open-AudIT.<br /><br />
+    The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br /><br />
+    Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br /><br />
+    ' . $link . '<br /><br />
+    ' . $purchase_link . '<br /><br /></p>';
     $dictionary->notes = '';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
