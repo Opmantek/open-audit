@@ -187,14 +187,22 @@ class M_charts extends MY_Model
             $data = array($CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->what);
         }
         $result = $this->run_sql($sql, $data);
-
-        foreach ($result as $item) {
-            if (!empty($item->timestamp)) {
-                $item->timestamp = intval($item->timestamp);
+        if (!empty($result)) {
+            foreach ($result as $item) {
+                if (!empty($item->timestamp)) {
+                    $item->timestamp = intval($item->timestamp);
+                }
+                if (empty($item->count)) {
+                    $item->count = 0;
+                }
             }
-            if (empty($item->count)) {
-                $item->count = 0;
-            }
+        } else {
+            $result = array();
+            $item = new stdClass();
+            $item->date = $CI->response->meta->internal->end;
+            $item->timestamp = strtotime($CI->response->meta->internal->end);
+            $item->count = 0;
+            $result[] = $item;
         }
         return($result);
     }
