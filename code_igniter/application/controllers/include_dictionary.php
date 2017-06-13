@@ -120,7 +120,7 @@ if ($table == 'credentials') {
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Credentials are encrypted when stored in the database.<br /><br />
     When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no \'s\' in the table name).<br /><br />
-    SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.</p>
+    SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br /><br /></p>
         ';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
