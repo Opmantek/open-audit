@@ -116,7 +116,7 @@ if ($table == 'connections') {
 if ($table == 'credentials') {
     $dictionary->about = '<p>Credentials are used to access devices.<br /><br />
     The only supplied credential is that of SNMP public.<br /><br />
-    Configuring credentiials should be one of the first things you do after installing Open-AudIT.<br /><br />
+    Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Credentials are encrypted when stored in the database.<br /><br />
     When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no \'s\' in the table name).<br /><br />
@@ -183,7 +183,7 @@ if ($table == 'fields') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->group_id = 'The group of devices this field applies to. To apply it to all devices, use the All Devices group. Linked to groups.id.';
     $dictionary->columns->type = 'This can be either a varchar (a text field) or a list (a list of values that can be selected).';
-    $dictionary->columns->values = 'A comma seperated list of values, one of which can be selected.';
+    $dictionary->columns->values = 'A comma separated list of values, one of which can be selected.';
     $dictionary->columns->placement = 'Where on the Device Details screen you would like to see this field appear.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
@@ -241,7 +241,7 @@ if ($table == 'ldap_servers') {
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = $description;
-    $dictionary->columns->lang = 'The default language assigned to any user created by this LDAp server.';
+    $dictionary->columns->lang = 'The default language assigned to any user created by this LDAP server.';
     $dictionary->columns->host = 'The ip address of the LDAP server.';
     $dictionary->columns->port = 'Default of <code>385</code>.';
     $dictionary->columns->secure = 'Do you want to use LDAP or LDAPS. Set to <code>y</code> or <code>n</code>.';
@@ -290,7 +290,7 @@ if ($table == 'locations') {
 
 if ($table == 'networks') {
     $dictionary->about = '<p>A network is derived from discovery entries and device attribtes.<br /><br />
-    Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configureation and set the attribute <code>blessed_subnets_use</code>.<br /><br />
+    Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
     $dictionary->columns->id = $id;
@@ -330,7 +330,7 @@ An example query SQL showing attributes on devices that have an <code>os_group</
     $dictionary->columns->description = $description;
     $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
     $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the \'Reports\' menu in the web interface.';
-    $dictionary->columns->menu_category = 'Which sub-menu should we diplay this query in.';
+    $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
