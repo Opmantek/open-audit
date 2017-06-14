@@ -3037,7 +3037,7 @@ if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number
 			' 	item = item & "         <schedule></schedule>" & vbcrlf
 			' 	item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
 			' 	item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
-			' 	item = item & "         <user><![CDATA[" & sTask(14) & "]]></user>" & vbcrlf
+			' 	item = item & "         <runas><![CDATA[" & sTask(14) & "]]></runas>" & vbcrlf
 			' 	item = item & "      </item>" & vbcrlf
 			' end if
 
@@ -3052,7 +3052,7 @@ if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number
 				item = item & "         <schedule></schedule>" & vbcrlf
 				item = item & "         <task><![CDATA[" & safeArraySubscript(sTask, 8, "") & "]]></task>" & vbcrlf
 				item = item & "         <state><![CDATA[" & safeArraySubscript(sTask, 11, "") & "]]></state>" & vbcrlf
-				item = item & "         <user><![CDATA[" & safeArraySubscript(sTask, 14, "") & "]]></user>" & vbcrlf
+				item = item & "         <runas><![CDATA[" & safeArraySubscript(sTask, 14, "") & "]]></runas>" & vbcrlf
 				item = item & "      </item>" & vbcrlf
 			end if
 
