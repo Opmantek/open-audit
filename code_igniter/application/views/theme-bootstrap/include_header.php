@@ -436,6 +436,25 @@
                     <li><a target='_blank' href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                 </ul>
             </li>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Modules')?> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <?php
+                    $modules = json_decode($this->config->config['modules']);
+                    foreach ($modules as $modules) {
+                        if (!empty($modules->installed)) {
+                            $url = $modules->link;
+                        } else {
+                            $url = $modules->url;
+                        }
+                    ?>
+                    <li><a href='<?php echo $url; ?>'><?php echo $modules->name; ?></a></li>
+                    <?php
+                    }
+                    ?>
+                </ul>
+            </li>
       </ul>
 
       <form id="search_form" name="search_form" class="navbar-form navbar-right" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">

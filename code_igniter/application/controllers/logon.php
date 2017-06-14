@@ -260,6 +260,23 @@ class logon extends CI_Controller
         }
 
 
+        # Get the installed application list from Enterprise
+        $installed = @json_decode(@file_get_contents('http://localhost/omk/.json'));
+        # get the available application list from file
+        $modules = @json_decode(@file_get_contents('/usr/local/open-audit/other/modules.json'));
+        foreach ($installed->products as $ins) {
+            foreach ($modules as $app) {
+                if ($app->name == $ins->name) {
+                    $app->installed = true;
+                    $app->version = $ins->version;
+                }
+            }
+        }
+        $modules = json_encode($modules);
+        # Update our config item with the new list
+        $this->m_configuration->update('modules', $modules, 'system');
+
+
         // Insert the local server subnet into the /networks
         foreach ($this->m_configuration->read_subnet() as $subnet) {
             $this->load->model('m_networks');
