@@ -263,7 +263,8 @@ class logon extends CI_Controller
         # Get the installed application list from Enterprise
         $installed = @json_decode(@file_get_contents('http://localhost/omk/.json'));
         # get the available application list from file
-        $modules = @json_decode(@file_get_contents('/usr/local/open-audit/other/modules.json'));
+        #$modules = @json_decode(@file_get_contents('/usr/local/open-audit/other/modules.json'));
+        $modules = @json_decode(@file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/other/modules.json'));
         foreach ($installed->products as $ins) {
             foreach ($modules as $app) {
                 if ($app->name == $ins->name) {
