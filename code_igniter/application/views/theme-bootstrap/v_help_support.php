@@ -225,8 +225,20 @@ if (php_uname('s') == 'Linux') {
         $command_string = 'cat /etc/timezone';
         exec($command_string, $output, $return_var);
         $data['timezone_os'] = @$output[0];
+        unset($output);
+        unset($command_string);
     }
     $data['timezone_os'] = trim($data['timezone_os']);
+
+    # winexe version
+    $command_string = "/usr/local/open-audit/other/winexe-static --version 2>&1";
+    exec($command_string, $output, $return_var);
+    if (isset($output[0]) and strpos($output[0], 'winexe') === 0) {
+        $data['prereq_winexe_version'] = $output[0];
+    }
+    unset($output);
+    unset($command_string);
+
 }
 
 
