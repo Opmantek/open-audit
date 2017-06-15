@@ -49,7 +49,7 @@ $(document).ready(function () {
 /* any Delete links */
 $(document).ready(function () {
     $('.delete_link').click(function () {
-        if (confirm('Are you sure?') !== true) {
+        if (confirm("Are you sure?\nThis will permanantly DELETE this entry for " + collection +".") !== true) {
             return;
         }
         var $id = $(this).attr('data-id');
