@@ -56,6 +56,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <?php if ($item->attributes->name != 'web_internal_version') { ?>
+                <?php if (strlen($item->attributes->value) > 30) { $item->attributes->value = substr($item->attributes->value, 0, 27) . '...'; } ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                     <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
