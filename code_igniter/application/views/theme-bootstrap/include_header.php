@@ -421,6 +421,7 @@
                 </ul>
             </li>
 
+            <?php if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
             <li class="dropdown">
             <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Upgrade Licenses')?> <span class="caret"></span></a>
@@ -436,6 +437,7 @@
                     <li><a target='_blank' href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                 </ul>
             </li>
+            <?php } ?>
 
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Modules')?> <span class="caret"></span></a>
