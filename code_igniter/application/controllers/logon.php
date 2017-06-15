@@ -241,6 +241,35 @@ class logon extends CI_Controller
     public function check_defaults()
     {
 
+        $oae_url = $this->config->config['oae_url'];
+        $oae_url = str_replace('/omk/oae', '/omk/open-audit', $oae_url);
+        if ($oae_url == '') {
+            $oae_url = '/omk/open-audit/';
+        }
+        # Add a trailing slash if not already present
+        if (substr($oae_url, -1, 1) != '/') {
+            $oae_url = $oae_url.'/';
+        }
+        // if we already have http... in the oae_url variable, no need to do anything.
+        if (strpos(strtolower($oae_url), 'http') === false) {
+            // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
+            // Make sure we have a leading /
+            if (substr($oae_url, 0, 1) != '/') {
+                $oae_url = '/'.$oae_url;
+            }
+            // need to create a link to OAE on port 8042 to check the license
+            // we cannot detect and use the browser http[s] as it may being used in the client browser,
+            //     but stripped by a https offload or proxy
+            $oae_license_url = 'http://localhost'.$oae_url.'license';
+            // we create a link for the browser using the same address + the path & file in oae_url
+            if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
+                $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
+            } else {
+                $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
+            }
+        }
+        ini_set('default_socket_timeout', 3);
+
         // Delete any old sessions stored int he DB
         $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
         $query = $this->db->query($sql);
@@ -261,7 +290,8 @@ class logon extends CI_Controller
 
 
         # Get the installed application list from Enterprise
-        $installed = @json_decode(@file_get_contents('http://localhost/omk/.json'));
+        $url = str_replace('open-audit/', '', $oae_url);
+        $installed = @json_decode(@file_get_contents($url . '.json'));
         # get the available application list from file
         #$modules = @json_decode(@file_get_contents('/usr/local/open-audit/other/modules.json'));
         $modules = @json_decode(@file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/other/modules.json'));
@@ -294,44 +324,14 @@ class logon extends CI_Controller
 
         // Get the license type and set our logo
         $license = '';
-        $oae_url = $this->config->config['oae_url'];
-        if ($oae_url > '') {
-            if (substr($oae_url, -1, 1) != '/') {
-                $oae_url = $oae_url.'/';
-            }
-            // if we already have http... in the oae_url variable, no need to do anything.
-            if (strpos(strtolower($oae_url), 'http') === false) {
-                // if we ONLY have a link thus - "/oae/omk" we assume the OAE install is on the same machine.
-                // Make sure we have a leading /
-                if (substr($oae_url, 0, 1) != '/') {
-                    $oae_url = '/'.$oae_url;
-                }
-                // need to create a link to OAE on port 8042 to check the license
-                // we cannot detect and use the browser http[s] as it may being used in the client browser,
-                //     but stripped by a https offload or proxy
-                $oae_license_url = 'http://localhost'.$oae_url.'license';
-                // we create a link for the browser using the same address + the path & file in oae_url
-                if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
-                    $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
-                } else {
-                    $oae_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url;
-                }
-            } else {
-                // we already have a URL like http://something/omk/oae/ - leave it alone
-                $oae_license_url = $oae_url.'license';
-            }
+        $oae_license_url = $oae_url.'license';
 
-            ini_set('default_socket_timeout', 3);
-            // get the license status from the OAE API
-            // license status are: valid, invalid, expired, none
-            $license = @file_get_contents($oae_license_url, false);
-            if ($license !== false) {
-                $license = json_decode($license);
-                if (json_last_error()) {
-                    $license = new stdClass();
-                    $license->license = 'none';
-                }
-            } else {
+        // get the license status from the OAE API
+        // license status are: valid, invalid, expired, none
+        $license = @file_get_contents($oae_license_url, false);
+        if ($license !== false) {
+            $license = json_decode($license);
+            if (json_last_error()) {
                 $license = new stdClass();
                 $license->license = 'none';
             }
