@@ -145,6 +145,7 @@ $(document).ready(function () {
             $(this).attr("data-action", "edit");
             $(this).attr("class", "btn btn-default edit_button");
             //document.getElementById('submit_'+attribute).remove();
+            attribute = attribute.replace(".", "\\.");
             $('#submit_' + attribute).remove();
         }
         if (action === "submit") {
