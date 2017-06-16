@@ -49,7 +49,7 @@ $(document).ready(function () {
 /* any Delete links */
 $(document).ready(function () {
     $('.delete_link').click(function () {
-        if (confirm('Are you sure?') !== true) {
+        if (confirm("Are you sure?\nThis will permanently DELETE this entry for " + collection +".") !== true) {
             return;
         }
         var $id = $(this).attr('data-id');
@@ -145,6 +145,7 @@ $(document).ready(function () {
             $(this).attr("data-action", "edit");
             $(this).attr("class", "btn btn-default edit_button");
             //document.getElementById('submit_'+attribute).remove();
+            attribute = attribute.replace(".", "\\.");
             $('#submit_' + attribute).remove();
         }
         if (action === "submit") {

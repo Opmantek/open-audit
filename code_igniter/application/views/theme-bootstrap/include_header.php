@@ -421,6 +421,7 @@
                 </ul>
             </li>
 
+            <?php if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
             <li class="dropdown">
             <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Upgrade Licenses')?> <span class="caret"></span></a>
@@ -434,6 +435,26 @@
                     <li><a target='_blank' href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
                     <li><a href='#' id='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
                     <li><a target='_blank' href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
+                </ul>
+            </li>
+            <?php } ?>
+
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Modules')?> <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <?php
+                    $modules = json_decode($this->config->config['modules']);
+                    foreach ($modules as $modules) {
+                        if (!empty($modules->installed)) {
+                            $url = $modules->link;
+                        } else {
+                            $url = $modules->url;
+                        }
+                    ?>
+                    <li><a href='<?php echo $url; ?>'><?php echo $modules->name; ?></a></li>
+                    <?php
+                    }
+                    ?>
                 </ul>
             </li>
       </ul>

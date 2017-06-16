@@ -91,9 +91,16 @@
                 </tr>
 
                 <tr>
-                    <td>Operating Systems</td>
+                    <td>Operating System Families</td>
                     <td>system</td>
                     <td>os_family</td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td>Operating System Names</td>
+                    <td>system</td>
+                    <td>os_name</td>
                     <td></td>
                 </tr>
 
