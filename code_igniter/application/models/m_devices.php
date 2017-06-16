@@ -896,15 +896,18 @@ class M_devices extends MY_Model
                         # get the original value (if it exists)
                         foreach ($ids as $id) {
                             $result = $this->run_sql($test_sql, array(intval($id)));
+                            # Only proceed if our system.id is in the fields assigned group
                             if (!empty($result)) {
                                 $sql = "SELECT id, value, fields_id FROM field WHERE system_id = ? AND fields_id = ?";
                                 $result = $this->run_sql($sql, array(intval($id), $field->id));
-                                if (!empty($result[0]->value)) {
+                                if (isset($result[0]->value)) {
+                                    # If our column exists, it must have a value (even blank) - update it
                                     $previous_value = $result[0]->value;
                                     $sql = "UPDATE field SET value = ?, timestamp = NOW() WHERE id = ?";
                                     $result = $this->run_sql($sql, array((string)$value, $result[0]->id));
                                     $CI->m_edit_log->create(intval($id), 'Field data was updated', 'field', $field->name, '', $value, $previous_value);
                                 } else {
+                                    # The row doesn't exist - insert a new one
                                     $sql = "INSERT INTO field VALUES (NULL, ?, ?, NOW(), ?)";
                                     $result = $this->run_sql($sql, array(intval($id), intval($field->id), (string)$value));
                                     $previous_value = '';
