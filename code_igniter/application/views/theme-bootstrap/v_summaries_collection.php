@@ -57,7 +57,7 @@
 </div>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading clearfix">
         <?php include('include_collection_panel_header.php'); ?>
     </div>
     <div class="panel-body">
