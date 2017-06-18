@@ -233,118 +233,33 @@ class M_summaries extends MY_Model
         $this->load->model('m_users');
         $data = array();
 
-        if ($this->m_users->get_user_permission('', 'attributes', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `attributes`";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Attributes', "collection" => "attributes", "icon" => 'th-list', "count" => $count[0]->count);
-        }
+        $collections = array('attributes' => 'th-list', 'configuration' => 'cogs', 'connections' => 'link', 'credentials' => 'shield', 'database' => 'database', 'devices' => 'tv', 'discoveries' => 'binoculars', 'fields' => 'list', 'groups' => 'tags', 'ldap_servers' => 'key', 'licenses' => 'leanpub', 'locations' => 'globe', 'logs' => 'bars', 'networks' => 'wifi', 'orgs' => 'bank', 'queries' => 'table', 'scripts' => 'code', 'summaries' => 'file-image-o', 'users' => 'users');
 
-        if ($this->m_users->get_user_permission('', 'configuration', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `configuration`";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Configuration', "collection" => "configuration", "icon" => 'cogs', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'connections', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `connections` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Connections', "collection" => "connections", "icon" => 'link', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'credentials', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `credentials` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Credentials', "collection" => "credentials", "icon" => 'shield', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'database', 'r')) {
-            $data[] = array("name" => 'Database', "collection" => "database", "icon" => 'database', "count" => count($this->db->list_tables()));
-        }
-
-        if ($this->m_users->get_user_permission('', 'devices', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `system` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Devices', "collection" => "devices", "icon" => 'tv', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'discoveries', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `discoveries` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Discoveries', "collection" => "discoveries", "icon" => 'binoculars', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'fields', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `fields` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Fields', "collection" => "fields", "icon" => 'list', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'groups', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `groups` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Groups', "collection" => "groups", "icon" => 'tags', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'ldap_servers', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `ldap_servers` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'LDAP', "collection" => "ldap_servers", "icon" => 'key', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'licenses', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `licenses` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Licenses', "collection" => "licenses", "icon" => 'leanpub', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'locations', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `locations` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Locations', "collection" => "locations", "icon" => 'globe', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'logs', 'r')) {
-            $data[] = array("name" => 'Logs', "collection" => "logs", "icon" => 'bars', "count" => 2);
-        }
-
-        if ($this->m_users->get_user_permission('', 'networks', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `networks` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Networks', "collection" => "networks", "icon" => 'wifi', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'orgs', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `orgs` WHERE id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Orgs', "collection" => "orgs", "icon" => 'bank', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'queries', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `queries` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Queries', "collection" => "queries", "icon" => 'table', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'scripts', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `scripts` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Scripts', "collection" => "scripts", "icon" => 'code', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'summaries', 'r')) {
-            $sql = "SELECT COUNT(*) AS `count` FROM `summaries` WHERE org_id IN (" . $CI->user->org_list . ")";
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Summaries', "collection" => "summaries", "icon" => 'file-image-o', "count" => $count[0]->count);
-        }
-
-        if ($this->m_users->get_user_permission('', 'users', 'r')) {
-            if ($this->db->table_exists('users')) {
-                $sql = "SELECT COUNT(*) AS `count` FROM `users` WHERE org_id IN (" . $CI->user->org_list . ")";
-            } else {
-                $sql = "SELECT COUNT(*) AS `count` FROM `oa_user` WHERE org_id IN (" . $CI->user->org_list . ")";
+        foreach ($collections as $collection => $value) {
+            if ($this->m_users->get_user_permission('', $collection, 'r')) {
+                if ($collection == 'database') {
+                    $count = count($this->db->list_tables());
+                } else if ($collection == 'logs') {
+                    $count = 2;
+                } else {
+                    if ($this->db->table_exists($collection)) {
+                        $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "`";
+                        $count = $this->run_sql($sql);
+                        $count = $count[0]->count;
+                    } else {
+                        $count = '';
+                    }
+                }
+                $item = new stdClass();
+                $item->type = 'collection';
+                $item->attributes = new stdClass();
+                $item->attributes->name = ucwords(str_replace('_', ' ', $collection));
+                $item->attributes->collection = $collection;
+                $item->attributes->icon = $value;
+                $item->attributes->count = $count;
+                $data[] = $item;
+                unset($item);
             }
-            $count = $this->run_sql($sql);
-            $data[] = array("name" => 'Users', "collection" => "users", "icon" => 'users', "count" => $count[0]->count);
         }
 
         return $data;
