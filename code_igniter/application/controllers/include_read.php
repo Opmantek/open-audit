@@ -27,18 +27,63 @@
 
 
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+$this->response->meta->filtered = count($this->response->data);
 
+if (count($this->response->data) == 0) {
+    log_error('ERR-0002', $this->response->meta->collection . ':read');
+    $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called update.');
+    if ($this->response->meta->format === 'json') {
+        output($this->response);
+    } else {
+        reditect($this->response->meta->collection);
+    }
+}
+
+# all
+$this->load->model('m_orgs');
+$this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+
+# attributes
+if ($this->response->meta->collection == 'attributes') {
+}
+
+# configuration
+if ($this->response->meta->collection == 'configuration') {
+}
+
+# connections
+if ($this->response->meta->collection == 'connections') {
+}
+
+# credentials
+if ($this->response->meta->collection == 'credentials') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
+}
+
+# database
+if ($this->response->meta->collection == 'connections') {
+}
+
+# discoveries
 if ($this->response->meta->collection == 'discoveries') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
-    $this->load->model('m_orgs');
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
     $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
 }
 
+# fields
 if ($this->response->meta->collection == 'fields') {
     $this->load->model('m_groups');
     $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+}
+
+# groups
+if ($this->response->meta->collection == 'groups') {
+}
+
+# ldap_servers
+if ($this->response->meta->collection == 'ldap_servers') {
 }
 
 if ($this->response->meta->collection == 'licenses') {
@@ -48,50 +93,52 @@ if ($this->response->meta->collection == 'licenses') {
     $this->response->data[0]->attributes->used_count = intval(count($temp));
 }
 
+# locations
+if ($this->response->meta->collection == 'locations') {
+}
+
+# locations
+if ($this->response->meta->collection == 'logs') {
+}
+
+# networks
+if ($this->response->meta->collection == 'networks') {
+}
+
+# orgs
 if ($this->response->meta->collection == 'orgs') {
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
 }
 
+# queries
+if ($this->response->meta->collection == 'queries') {
+}
+
+# scripts
 if ($this->response->meta->collection == 'scripts') {
         $this->load->model('m_files');
         $this->response->included = array_merge($this->response->included, $this->m_files->collection());
 }
 
+# summaries
+if ($this->response->meta->collection == 'summaries') {
+}
+
+# roles
 if ($this->response->meta->collection == 'roles') {
     $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
 }
 
+# users
 if ($this->response->meta->collection == 'users') {
     $this->load->model('m_roles');
     $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
-    $this->load->model('m_orgs');
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
     if (!empty($this->response->data[0]->attributes)) {
         $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
     }
 }
 
-if (!empty($this->response->data[0]->attributes->org_id) and $this->response->meta->collection != 'users') {
-    $this->load->model('m_orgs');
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->org_id));
-}
-
-$this->response->meta->filtered = count($this->response->data);
-
-if (count($this->response->data) == 0) {
-    log_error('ERR-0002', $this->response->meta->collection . ':read');
-    $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called read.');
-}
-
-if ($this->response->meta->format === 'json') {
-    output($this->response);
-} else {
-    if (count($this->response->data) == 0) {
-        redirect($this->response->meta->collection);
-    } else {
-        output($this->response);
-    }
-}
+output($this->response);
 
 $log = new stdClass();
 $log->object = $this->response->meta->collection;

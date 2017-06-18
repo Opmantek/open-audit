@@ -30,7 +30,7 @@ $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
 $this->response->meta->filtered = count($this->response->data);
 
 if (count($this->response->data) == 0) {
-    log_error('ERR-0002', $this->response->meta->collection . ':read');
+    log_error('ERR-0002', $this->response->meta->collection . ':update');
     $this->session->set_flashdata('error', 'No object could be retrieved when ' . $this->response->meta->collection . ' called update.');
     if ($this->response->meta->format === 'json') {
         output($this->response);
@@ -39,25 +39,51 @@ if (count($this->response->data) == 0) {
     }
 }
 
-$collection = $this->response->meta->collection;
-if ($collection == 'attributes' or
-    $collection == 'credentials' or
-    $collection == 'connections' or
-    $collection == 'discoveries' or
-    $collection == 'fields' or
-    $collection == 'files' or
-    $collection == 'groups' or
-    $collection == 'ldap_servers' or
-    $collection == 'licenses' or
-    $collection == 'locations' or
-    $collection == 'networks' or
-    $collection == 'orgs' or
-    $collection == 'queries' or
-    $collection == 'scripts' or
-    $collection == 'summaries' or
-    $collection == 'users') {
-    $this->load->model('m_orgs');
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+# all
+$this->load->model('m_orgs');
+$this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+
+# attributes
+if ($this->response->meta->collection == 'attributes') {
+}
+
+# configuration
+if ($this->response->meta->collection == 'configuration') {
+}
+
+# connections
+if ($this->response->meta->collection == 'connections') {
+}
+
+# credentials
+if ($this->response->meta->collection == 'credentials') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
+}
+
+# database
+if ($this->response->meta->collection == 'connections') {
+}
+
+# discoveries
+if ($this->response->meta->collection == 'discoveries') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
+    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+}
+
+# fields
+if ($this->response->meta->collection == 'fields') {
+    $this->load->model('m_groups');
+    $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+}
+
+# groups
+if ($this->response->meta->collection == 'groups') {
+}
+
+# ldap_servers
+if ($this->response->meta->collection == 'ldap_servers') {
 }
 
 if ($this->response->meta->collection == 'licenses') {
@@ -67,46 +93,56 @@ if ($this->response->meta->collection == 'licenses') {
     $this->response->data[0]->attributes->used_count = intval(count($temp));
 }
 
-if ($collection == 'connections' or
-    $collection == 'discoveries') {
-    $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+# locations
+if ($this->response->meta->collection == 'locations') {
 }
 
-if ($collection == 'fields') {
-    $this->load->model('m_groups');
-    $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+# locations
+if ($this->response->meta->collection == 'logs') {
 }
 
-if ($collection == 'scripts') {
-    $this->load->model('m_files');
-    $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+# networks
+if ($this->response->meta->collection == 'networks') {
 }
 
-if ($collection == 'users') {
+# orgs
+if ($this->response->meta->collection == 'orgs') {
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
+}
+
+# queries
+if ($this->response->meta->collection == 'queries') {
+}
+
+# scripts
+if ($this->response->meta->collection == 'scripts') {
+        $this->load->model('m_files');
+        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+}
+
+# summaries
+if ($this->response->meta->collection == 'summaries') {
+}
+
+# roles
+if ($this->response->meta->collection == 'roles') {
+    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
+}
+
+# users
+if ($this->response->meta->collection == 'users') {
     $this->load->model('m_roles');
     $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
-}
-
-if ($this->response->meta->collection == 'discoveries') {
-    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
-}
-
-unset($collection);
-
-if ($this->response->meta->format === 'json') {
-    output($this->response);
-} else {
-    if (count($this->response->data) == 0) {
-        redirect($this->response->meta->collection);
-    } else {
-        output($this->response);
+    if (!empty($this->response->data[0]->attributes)) {
+        $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
     }
 }
 
+output($this->response);
+
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
 if ($this->config->config['log_level'] < 6) {
     $log->severity = 5;
     $log->status = 'finish';
@@ -114,6 +150,6 @@ if ($this->config->config['log_level'] < 6) {
 } else {
     $log->severity = 6;
     $log->status = 'finish';
-    $log->detail = json_encode($this->response->meta); 
+    $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
