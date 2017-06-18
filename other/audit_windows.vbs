@@ -3597,7 +3597,7 @@ if (audit_software = "y") then
 	package_installed_by = ""
 	package_installed_on = ""
 
-	if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
+	if (windows_build_number > 5000) then
 	software_url = objItem2.URLUpdateInfo
 	software_install_source = objItem2.InstallSource
 	else
@@ -3913,11 +3913,8 @@ if address_width = "64" then
 end if
 
 
-
-
-
-	' hotfixes
-	if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
+' hotfixes
+if (windows_build_number > 5000) then
 	if debugging > "0" then wscript.echo "Hotfix info" end if
 	set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
 	if (not isnull(colItems2)) then
