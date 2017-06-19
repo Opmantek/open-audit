@@ -34,34 +34,36 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-            <span class="text-left">Resources</span>
-        </h3>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-        <?php
-        $i = 0;
-        foreach ($this->response->included as $endpoint) {
-            $i++;
-            echo '<div class="col-sm-1 text-center">' . __($endpoint['name']) . '<br /><a class="btn btn-app" href="' . $endpoint['collection'] . '"><span class="badge">' . $endpoint['count'] . '</span><i class="fa fa-' . $endpoint['icon']  . ' fa-3x fa-fw" style="font-size: 2vw;"></i></a></div>';
-            if ($i == 12) {
-                echo "</div><br /><br /><div class=\"row\">";
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <div class="panel-title clearfix">
+                Resources
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+            <?php
+            $i = 0;
+            foreach ($this->response->included as $endpoint) {
+                if (!empty($endpoint->type) and $endpoint->type == 'collection') {
+                    $i++;
+                    echo '<div class="col-sm-1 text-center">' . __($endpoint->attributes->name) . '<br /><a class="btn btn-app" href="' . $endpoint->attributes->collection . '"><span class="badge">' . $endpoint->attributes->count . '</span><i class="fa fa-' . $endpoint->attributes->icon  . ' fa-3x fa-fw" style="font-size: 2vw;"></i></a></div>';
+                    if ($i == 12) {
+                        echo "</div><br /><br /><div class=\"row\">";
+                    }
+                }
             }
-        }
-        ?>
+            ?>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="panel panel-default">
-    <div class="panel-heading clearfix">
-        <?php include('include_collection_panel_header.php'); ?>
-    </div>
-    <div class="panel-body">
-        <?php if (!empty($this->response->data)) { ?>
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix">
+            <?php include('include_collection_panel_header.php'); ?>
+        </div>
+        <div class="panel-body">
+            <?php if (!empty($this->response->data)) { ?>
             <br />
             <table class="table table-striped table-hover">
                 <thead>
@@ -79,7 +81,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($this->response->data as $item): ?>
+                <?php foreach ($this->response->data as $item) : ?>
                     <tr>
                         <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->attributes->id); ?>"><?php echo intval($item->attributes->id); ?></a></td>
                         <td><?php echo ucwords($item->attributes->name)?></td>
@@ -92,12 +94,12 @@
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>
                     </tr>
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
                 </tbody>
             </table>
-        <?php } ?>
+            <?php } ?>
+        </div>
     </div>
-</div>
 
 
 
