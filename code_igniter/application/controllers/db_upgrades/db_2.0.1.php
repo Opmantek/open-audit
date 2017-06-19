@@ -31,6 +31,8 @@ $this->log_db('Upgrade database to 2.0.1 commenced');
 
 # A config item for other Opmantek installed modules
 $sql = "INSERT INTO `configuration` VALUES (NULL, 'modules', '', 'n', 'system','2000-01-01 00:00:00', 'The list of installed Opmantek modules.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170620' WHERE `name` = 'internal_version'";

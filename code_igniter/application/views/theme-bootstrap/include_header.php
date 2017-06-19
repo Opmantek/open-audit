@@ -443,16 +443,18 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Modules')?> <span class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <?php
-                    $modules = json_decode($this->config->config['modules']);
-                    foreach ($modules as $modules) {
-                        if (!empty($modules->installed)) {
-                            $url = $modules->link;
-                        } else {
-                            $url = $modules->url;
+                    if (!empty($this->config->config['modules'])) {
+                        $modules = json_decode($this->config->config['modules']);
+                        foreach ($modules as $modules) {
+                            if (!empty($modules->installed)) {
+                                $url = $modules->link;
+                            } else {
+                                $url = $modules->url;
+                            }
+                        ?>
+                        <li><a href='<?php echo $url; ?>'><?php echo $modules->name; ?></a></li>
+                        <?php
                         }
-                    ?>
-                    <li><a href='<?php echo $url; ?>'><?php echo $modules->name; ?></a></li>
-                    <?php
                     }
                     ?>
                 </ul>
