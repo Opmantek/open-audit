@@ -553,71 +553,71 @@ if ($this->db->table_exists('oa_config')) {
 # Move of default config values for credentials into credential sets
 $this->load->model('m_configuration');
 $this->m_configuration->load();
-$this->load->model('m_credentials');
+$this->load->model('m_collection');
 $this->load->library('encrypt');
-$this->response = new stdClass();
-$this->response->meta = new stdClass();
-$this->response->meta->received_data = new stdClass();
-$this->response->meta->received_data->attributes = new stdClass();
 if (!empty($this->config->config['default_snmp_community'])) {
-    unset($this->response->meta->received_data->attributes->credentials);
-    $this->response->meta->received_data->attributes->credentials = new stdClass();
-    $this->response->meta->received_data->attributes->name = 'Default SNMP';
-    $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-    $this->response->meta->received_data->attributes->org_id = 1;
-    $this->response->meta->received_data->attributes->type = 'snmp';
-    $this->response->meta->received_data->attributes->credentials = new stdClass();
-    $this->response->meta->received_data->attributes->credentials->community = $this->config->config['default_snmp_community'];
-    if ($this->m_credentials->create()) {
+    $data = new stdClass();
+    $data->credentials = new stdClass();
+    $data->name = 'Default SNMP';
+    $data->description = 'Migrated from configuration.';
+    $data->org_id = 1;
+    $data->type = 'snmp';
+    $data->credentials = new stdClass();
+    $data->credentials->community = $this->config->config['default_snmp_community'];
+    if ($this->m_collection->create($data, 'credentials')) {
         $this->log_db("Default SNMP community migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default SNMP community into credentials. Please add this to the credential sets.");
     }
+    unset($data);
 }
 if (!empty($this->config->config['default_ssh_username']) and !empty($this->config->config['default_ssh_password'])) {
-    unset($this->response->meta->received_data->attributes->credentials);
-    $this->response->meta->received_data->attributes->credentials = new stdClass();
-    $this->response->meta->received_data->attributes->name = 'Default SSH';
-    $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-    $this->response->meta->received_data->attributes->org_id = 1;
-    $this->response->meta->received_data->attributes->type = 'ssh';
-    $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_ssh_username'];
-    $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_ssh_password'];
-    if ($id =$this->m_credentials->create()) {
+    $data = new stdClass();
+    $data->credentials = new stdClass();
+    $data->name = 'Default SSH';
+    $data->description = 'Migrated from configuration.';
+    $data->org_id = 1;
+    $data->type = 'ssh';
+    $data->credentials->username = $this->config->config['default_ssh_username'];
+    $data->credentials->password = $this->config->config['default_ssh_password'];
+    if ($this->m_collection->create(null, 'credentials')) {
         $this->log_db("Default SSH username and password migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default SSH username and password into credentials. Please add this to the credential sets.");
     }
+    unset($data);
 }
 if (!empty($this->config->config['default_windows_username']) and !empty($this->config->config['default_windows_password'])) {
-    unset($this->response->meta->received_data->attributes->credentials);
-    $this->response->meta->received_data->attributes->credentials = new stdClass();
-    $this->response->meta->received_data->attributes->name = 'Default Windows';
-    $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-    $this->response->meta->received_data->attributes->org_id = 1;
-    $this->response->meta->received_data->attributes->type = 'windows';
-    $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_windows_username'] . '@' . $this->config->config['default_windows_domain'];
-    $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_windows_password'];
-    if ($id =$this->m_credentials->create()) {
+    $data = new stdClass();
+    $data->credentials = new stdClass();
+    $data->name = 'Default Windows';
+    $data->description = 'Migrated from configuration.';
+    $data->org_id = 1;
+    $data->type = 'windows';
+    $data->credentials->username = $this->config->config['default_windows_username'] . '@' . $this->config->config['default_windows_domain'];
+    $data->credentials->password = $this->config->config['default_windows_password'];
+    if ($this->m_collection->create(null, 'credentials')) {
         $this->log_db("Default Windows username and password migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default Windows username and password into credentials. Please add this to the credential sets.");
     }
+    unset($data);
 }
 if (!empty($this->config->config['default_ipmi_username']) and !empty($this->config->config['default_ipmi_password'])) {
-    unset($this->response->meta->received_data->attributes->credentials);
-    $this->response->meta->received_data->attributes->credentials = new stdClass();
-    $this->response->meta->received_data->attributes->name = 'Default IPMI';
-    $this->response->meta->received_data->attributes->description = 'Migrated from configuration.';
-    $this->response->meta->received_data->attributes->org_id = 0;
-    $this->response->meta->received_data->attributes->type = 'ipmi';
-    $this->response->meta->received_data->attributes->credentials->username = $this->config->config['default_ipmi_username'];
-    $this->response->meta->received_data->attributes->credentials->password = $this->config->config['default_ipmi_password'];
-    if ($id =$this->m_credentials->create()) {
+    $data = new stdClass();
+    $data->credentials = new stdClass();
+    $data->name = 'Default IPMI';
+    $data->description = 'Migrated from configuration.';
+    $data->org_id = 0;
+    $data->type = 'ipmi';
+    $data->credentials->username = $this->config->config['default_ipmi_username'];
+    $data->credentials->password = $this->config->config['default_ipmi_password'];
+    if ($this->m_collection->create(null, 'credentials')) {
         $this->log_db("Default IPMI username and password migrated into credentials.");
     } else {
         $this->log_db("Could not migrate default IPMI username and password into credentials. Please add this to the credential sets.");
     }
+    unset($data);
 }
 
 if ($this->db->table_exists('oa_config')) {
