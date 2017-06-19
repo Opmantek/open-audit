@@ -34,6 +34,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $item = $this->response->data[0];
+if ($this->m_users->get_user_permission('', 'connections', 'u')) {
+    $edit = true;
+}
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">

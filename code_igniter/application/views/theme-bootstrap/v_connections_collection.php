@@ -52,9 +52,9 @@
                     <th><?php echo __('Provider')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Speed')?></th>
-                    <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
+                    <!-- <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
                     <th class="text-center"><?php echo __('Edit')?></th>
-                    <?php } ?>
+                    <?php } ?> -->
                     <?php if ($this->m_users->get_user_permission('', 'connections', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -63,7 +63,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="connections/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="connections/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('connections.name', $item->attributes->name); ?>
                     <?php refine('connections.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('connections.location_name_a', $item->attributes->location_name_a); ?>
@@ -71,9 +71,9 @@
                     <?php refine('connections.provider', $item->attributes->provider); ?>
                     <?php refine('connections.service_type', $item->attributes->service_type); ?>
                     <?php refine('connections.speed', $item->attributes->speed); ?>
-                    <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
+                    <!-- <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-info" href="connections/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } ?>
+                    <?php } ?> -->
                     <?php if ($this->m_users->get_user_permission('', 'connections', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
