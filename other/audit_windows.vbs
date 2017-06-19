@@ -970,7 +970,7 @@ processor_count = 0
 processor_logical = 0
 
 ' Only get this value if later OS than XP/2003
-if windows_build_number > 3790 then
+if (cint(windows_build_number) > 3790) then
 	set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
 	for each objItem in colItems
@@ -991,7 +991,7 @@ for each objItem in colItems
 	system_domain = objItem.Domain
 	if details_to_lower = "y" then system_domain = lcase(system_domain) end if
 
-	if (windows_build_number =< 3790) or (system_pc_num_processor = 0) then
+	if (cint(windows_build_number) =< 3790) or (system_pc_num_processor = 0) then
 	system_pc_num_processor = objItem.NumberOfProcessors
 	end if
 
@@ -999,7 +999,7 @@ for each objItem in colItems
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
 	windows_part_of_domain = False
-	if (windows_build_number >= 2600) then
+	if (cint(windows_build_number) >= 2600) then
 	windows_part_of_domain = objItem.PartOfDomain
 	end if
 
@@ -1024,7 +1024,7 @@ end if
 if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
 
 
-if (cint(windows_build_number)) > 5000 then
+if (cint(windows_build_number) > 5000) then
 	' Win7 or Win2008 last logged on info
 	oreg.getstringvalue hkey_local_machine, "software\microsoft\windows\currentversion\authentication\logonui", "lastloggedonuser", windows_user_name
 	if isnull(windows_user_name) then
@@ -1103,7 +1103,7 @@ end if
 ' occuring on Windows XP machines.
 ' below only checks when OS is XP or later (not 2000 or NT)
 system_uptime = ""
-if (windows_build_number > 2195) then
+if (cint(windows_build_number) > 2195) then
 	on error resume next
 	Set colItems = objWMIService.ExecQuery("Select * From Win32_PerfFormattedData_PerfOS_System",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PerfFormattedData_PerfOS_System)" : audit_wmi_fails = audit_wmi_fails & "Win32_PerfFormattedDataPerfOS_System " : end if
@@ -2628,7 +2628,7 @@ for each objItem in colItems
 	net_manufacturer = objItem2.Manufacturer
 	net_model = objItem2.ProductName
 	' below only checks when OS is XP or later (not 2000 or NT)
-	if (windows_build_number > 2195) then
+	if (cint(windows_build_number) > 2195) then
 	net_connection_id = objItem2.NetConnectionID
 	net_connection_status = WMINetConnectorStatus(objItem2.NetConnectionStatus)
 	if (objItem2.NetConnectionStatus = "2" or objItem2.NetConnectionStatus = "9") then
@@ -3012,7 +3012,7 @@ end if
 '        this will need extending to avoid creating false positive alerts
 '        because some built in Windows tasks have LONG names
 '        Fix the truncated name below and expand the database attribute to 250 characters
-if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number) > 7599) then
+if (strcomputer = "." and audit_location = "local" and cint(windows_build_number) > 7599) then
 	if debugging > "0" and strcomputer = "." then wscript.echo "scheduled tasks" end if
 	item = ""
 	strCommand = "schtasks.exe /query /v /fo csv"
@@ -3597,7 +3597,7 @@ if (audit_software = "y") then
 	package_installed_by = ""
 	package_installed_on = ""
 
-	if (windows_build_number > 5000) then
+	if (cint(windows_build_number) > 5000) then
 	software_url = objItem2.URLUpdateInfo
 	software_install_source = objItem2.InstallSource
 	else
@@ -3914,7 +3914,7 @@ end if
 
 
 ' hotfixes
-if (windows_build_number > 5000) then
+if (cint(windows_build_number) > 5000) then
 	if debugging > "0" then wscript.echo "Hotfix info" end if
 	set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
 	if (not isnull(colItems2)) then
@@ -6347,7 +6347,7 @@ end if
 
 'function route()
 ' below only checks when OS is XP or later (not 2000 or NT)
-if (windows_build_number > 2195) then
+if (cint(windows_build_number) > 2195) then
 	if debugging > "0" then wscript.echo "network routing info" end if
 	result.WriteText "	<route>" & vbcrlf
 	set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,32)
