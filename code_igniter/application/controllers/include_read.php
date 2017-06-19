@@ -35,7 +35,7 @@ if (count($this->response->data) == 0) {
     if ($this->response->meta->format === 'json') {
         output($this->response);
     } else {
-        reditect($this->response->meta->collection);
+        redirect($this->response->meta->collection);
     }
 }
 
@@ -136,6 +136,10 @@ if ($this->response->meta->collection == 'users') {
     if (!empty($this->response->data[0]->attributes)) {
         $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
     }
+}
+
+if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
+    $this->response->edit = true;
 }
 
 output($this->response);
