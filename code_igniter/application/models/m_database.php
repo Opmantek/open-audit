@@ -242,7 +242,7 @@ class M_database extends MY_Model
                 }
                 if ($format == 'sql') {
                     if (php_uname('s') == 'Windows NT') {
-                        $mysqldump = 'c:\\xampplite\\mysql\\bim\\mysqldump.exe';
+                        $mysqldump = 'c:\\xampplite\\mysql\\bin\\mysqldump.exe';
                     }
                     if (php_uname('s') == 'Darwin') {
                         $mysqldump = '/usr/local/mysql/bin/mysqldump';

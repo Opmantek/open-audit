@@ -46,7 +46,7 @@ if ($result[0]->count > 0) {
     $result = $query->result();
     if ($result[0]->count > 0) {
         // Move this Org
-        $sql = "INSERT INTO oa_org (SELECT NULL, `name`, 0, `comments`, 'system', NOW() FROM oa_org WHERE org_id = 1)";
+        $sql = "INSERT INTO oa_org (SELECT NULL, `name`, 0, `group_id`, `comments` FROM oa_org WHERE id = 1)";
         $this->db->query($sql);
         $org_1_id = $this->db->insert_id();
         $org_1_id = intval($org_1_id);
@@ -74,7 +74,7 @@ if ($result[0]->count > 0) {
     $this->log_db($this->db->last_query());
     if ($result[0]->count == 0) {
         // Insert the default Org
-        $sql = "INSERT INTO `oa_org` VALUES (1,'Default Organisation',1,'','system','2000-01-01 00:00:00')";
+        $sql = "INSERT INTO `oa_org` VALUES (1,'Default Organisation',1,'','')";
         $this->db->query($sql);
         $this->log_db($this->db->last_query());
     }
@@ -196,6 +196,10 @@ if (count($result) === 0) {
 } else {
     $this->alter_table('chart', 'org_id', "`org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`");
 }
+
+$sql = "DELETE FROM `chart` WHERE `org_id` NOT IN (SELECT `org_id` FROM `oa_org`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "UPDATE `chart` SET `org_id` = $org_1_id WHERE `org_id` = 1";
 $this->db->query($sql);
@@ -568,10 +572,19 @@ $sql = "CREATE TABLE `ldap_servers` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
-  `lang` varchar(200) NOT NULL DEFAULT '',
+  `lang` varchar(200) NOT NULL DEFAULT 'en',
   `host` varchar(200) NOT NULL DEFAULT '',
+  `port` varchar(200) NOT NULL DEFAULT '385',
+  `secure` enum('y','n') NOT NULL DEFAULT 'n',
   `domain` varchar(200) NOT NULL DEFAULT '',
+  `type` enum('active directory','openldap') NOT NULL DEFAULT 'active directory',
+  `version` int(1) unsigned NOT NULL default '3',
+  `base_dn` varchar(200) NOT NULL DEFAULT '',
+  `user_dn` varchar(200) NOT NULL DEFAULT '',
+  `user_membership_attribute` varchar(200) NOT NULL DEFAULT 'memberUid',
   `use_roles` enum('y','n') NOT NULL DEFAULT 'n',
+  `dn_account` varchar(200) NOT NULL DEFAULT '',
+  `dn_password` varchar(250) NOT NULL DEFAULT '',
   `refresh` int(10) unsigned NOT NULL DEFAULT '24',
   `refreshed` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -582,7 +595,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 if (!empty($this->config->config['ad_domain']) and !empty($this->config->config['ad_server'])) {
-    $sql = "INSERT INTO `ldap_servers` VALUES (NULL, 'Default Domain', 1, 'Migrated by system', 'en', '" . $this->config->config['ad_server'] . "', '" . $this->config->config['ad_domain'] . "', 'n', 'system', NOW())";
+    $sql = "INSERT INTO `ldap_servers` VALUES (NULL, 'Default Domain', 1, 'Migrated by system', 'en', '" . $this->config->config['ad_server'] . "', '385', 'n', " . $this->config->config['ad_domain'] . "', 'active directory', '3', '', '', '', 'n', '', '', 24, '2000-01-01 00:00:00', 'system', NOW())";
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
