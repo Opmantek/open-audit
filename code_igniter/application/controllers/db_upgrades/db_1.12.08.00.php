@@ -562,7 +562,6 @@ if (!empty($this->config->config['default_snmp_community'])) {
     $data->description = 'Migrated from configuration.';
     $data->org_id = 1;
     $data->type = 'snmp';
-    $data->credentials = new stdClass();
     $data->credentials->community = $this->config->config['default_snmp_community'];
     if ($this->m_collection->create($data, 'credentials')) {
         $this->log_db("Default SNMP community migrated into credentials.");
