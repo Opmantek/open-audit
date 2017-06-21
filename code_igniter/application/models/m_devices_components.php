@@ -843,6 +843,36 @@ class M_devices_components extends MY_Model
         if (mb_strpos($version, "13.0") === 0) {
             $version_string = "SQL Server 2016";
         }
+        if (mb_strpos($version, "13.00.4435.0") === 0 or mb_strpos($version, "13.0.4435.0") === 0) {
+            $version_string = "SQL Server 2016 Service Pack 1 CU3";
+        }
+        if (mb_strpos($version, "13.00.4422.0") === 0 or mb_strpos($version, "13.0.4422.0") === 0) {
+            $version_string = "SQL Server 2016 Service Pack 1 CU2";
+        }
+        if (mb_strpos($version, "13.00.4411.0") === 0 or mb_strpos($version, "13.0.4411.0") === 0) {
+            $version_string = "SQL Server 2016 Service Pack 1 CU1";
+        }
+        if (mb_strpos($version, "13.00.4001.0") === 0 or mb_strpos($version, "13.0.4001.0") === 0) {
+            $version_string = "SQL Server 2016 Service Pack 1";
+        }
+        if (mb_strpos($version, "13.00.2204.0") === 0 or mb_strpos($version, "13.0.2204.0") === 0) {
+            $version_string = "SQL Server 2016 RTM CU6";
+        }
+        if (mb_strpos($version, "13.00.2197.0") === 0 or mb_strpos($version, "13.0.2197.0") === 0) {
+            $version_string = "SQL Server 2016 RTM CU5";
+        }
+        if (mb_strpos($version, "13.00.2193.0") === 0 or mb_strpos($version, "13.0.2193.0") === 0) {
+            $version_string = "SQL Server 2016 RTM CU4";
+        }
+        if (mb_strpos($version, "13.00.2186.6") === 0 or mb_strpos($version, "13.0.2186.6") === 0) {
+            $version_string = "SQL Server 2016 RTM CU3";
+        }
+        if (mb_strpos($version, "13.00.2164.0") === 0 or mb_strpos($version, "13.0.2164.0") === 0) {
+            $version_string = "SQL Server 2016 RTM CU2";
+        }
+        if (mb_strpos($version, "13.00.2149.0") === 0 or mb_strpos($version, "13.0.2149.0") === 0) {
+            $version_string = "SQL Server 2016 RTM CU1";
+        }
         if (mb_strpos($version, "13.00.1601.5") === 0 or mb_strpos($version, "13.0.1601.5") === 0) {
             $version_string = "SQL Server 2016 RTM";
         }
@@ -893,6 +923,42 @@ class M_devices_components extends MY_Model
         // SQL 2014
         if (mb_strpos($version, "12.0") === 0) {
             $version_string = "SQL Server 2014";
+        }
+        if (mb_strpos($version, "12.00.5546.0") === 0 or mb_strpos($version, "12.0.5546.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 2 CU5";
+        }
+        if (mb_strpos($version, "12.00.5540.0") === 0 or mb_strpos($version, "12.0.5540.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 2 CU4";
+        }
+        if (mb_strpos($version, "12.00.5538.0") === 0 or mb_strpos($version, "12.0.5538.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 2 CU3";
+        }
+        if (mb_strpos($version, "12.00.5522.0") === 0 or mb_strpos($version, "12.0.5522.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 2 CU2";
+        }
+        if (mb_strpos($version, "12.00.5203.0") === 0 or mb_strpos($version, "12.0.5203.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 2 CU1";
+        }
+        if (mb_strpos($version, "12.00.5000.0") === 0 or mb_strpos($version, "12.0.5000.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 2";
+        }
+        if (mb_strpos($version, "12.00.4511.0") === 0 or mb_strpos($version, "12.0.4511.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU12";
+        }
+        if (mb_strpos($version, "12.00.4502.0") === 0 or mb_strpos($version, "12.0.4502.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU11";
+        }
+        if (mb_strpos($version, "12.00.4491.0") === 0 or mb_strpos($version, "12.0.4491.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU10";
+        }
+        if (mb_strpos($version, "12.00.4487.0") === 0 or mb_strpos($version, "12.0.4487.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU9";
+        }
+        if (mb_strpos($version, "12.00.4468.0") === 0 or mb_strpos($version, "12.0.4468.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU8";
+        }
+        if (mb_strpos($version, "12.00.4459.0") === 0 or mb_strpos($version, "12.0.4459.0") === 0) {
+            $version_string = "SQL Server 2014 Service Pack 1 CU7";
         }
         if (mb_strpos($version, "12.00.4457.0") === 0 or mb_strpos($version, "12.0.4457.0") === 0) {
             $version_string = "SQL Server 2014 Service Pack 1 CU6";
@@ -971,6 +1037,36 @@ class M_devices_components extends MY_Model
         }
 
         // SQL 2012
+        if (mb_strpos($version, "11.00.6598.0") === 0 or mb_strpos($version, "11.0.6598.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU9";
+        }
+        if (mb_strpos($version, "11.00.6594.0") === 0 or mb_strpos($version, "11.0.6594.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU8";
+        }
+        if (mb_strpos($version, "11.00.6579.0") === 0 or mb_strpos($version, "11.0.6579.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU7";
+        }
+        if (mb_strpos($version, "11.00.6567.0") === 0 or mb_strpos($version, "11.0.6567.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU6";
+        }
+        if (mb_strpos($version, "11.00.6544.0") === 0 or mb_strpos($version, "11.0.6544.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU5";
+        }
+        if (mb_strpos($version, "11.00.6540.0") === 0 or mb_strpos($version, "11.0.6540.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU4";
+        }
+        if (mb_strpos($version, "11.00.6537.0") === 0 or mb_strpos($version, "11.0.6537.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU3";
+        }
+        if (mb_strpos($version, "11.00.6523.0") === 0 or mb_strpos($version, "11.0.6523.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU2";
+        }
+        if (mb_strpos($version, "11.00.6518.0") === 0 or mb_strpos($version, "11.0.6518.0") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3 CU1";
+        }
+        if (mb_strpos($version, "11.00.6020") === 0 or mb_strpos($version, "11.0.6020") === 0) {
+            $version_string = "SQL Server 2012 Service Pack 3";
+        }
         if (mb_strpos($version, "11.00.5058") === 0 or mb_strpos($version, "11.0.5058") === 0 or mb_strpos($version, "11.2.5058.0") === 0) {
             $version_string = "SQL Server 2012 Service Pack 2";
         }
