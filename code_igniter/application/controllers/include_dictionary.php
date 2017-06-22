@@ -66,7 +66,7 @@ if ($table == 'attributes') {
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->resource = 'Currently only "devices" is a valid value.';
-    $dictionary->columns->value = 'The value for this paricular item.';
+    $dictionary->columns->value = 'The value for this particular item.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
