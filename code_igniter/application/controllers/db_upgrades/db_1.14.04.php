@@ -328,7 +328,7 @@ $this->drop_table('oa_config');
 
 # oa_group - not required anymore. Dump to a file for backup purposes
 if (php_uname('s') == 'Windows NT') {
-    $mysqldump = 'c:\\xampplite\\mysql\\bim\\mysqldump.exe';
+    $mysqldump = 'c:\\xampplite\\mysql\\bin\\mysqldump.exe';
 }
 if (php_uname('s') == 'Darwin') {
     $mysqldump = '/usr/local/mysql/bin/mysqldump';
@@ -341,25 +341,31 @@ if (php_uname('s') == 'Linux') {
 $table = 'oa_group';
 if ($this->db->table_exists($table)) {
     $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
-    $this->log_db($command);
+    $this->log_db(str_replace($this->db->password, '******', $command));
     exec($command, $backup);
     $backup = implode("\n", $backup);
     $source_name = $table . '_backup.sql';
-    #@unlink($this->config->config['base_path'] . '/other/' . $source_name);
-    $proceed = true;
-    try {
-        $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
-    } catch (Exception $e) {
-        $this->log_db('ERROR - Could not backup your ' . $table . ' table.');
-        $this->log_db($e->getMessage());
+    if (empty($backup)) {
+        $this->log_db('ERROR - No data retrieved from your ' . $table . ' table. Not dropping table from database. Please use the MySQL console to retrieve any ' . $table . ' items you require for v2.0.');
         $proceed = false;
+    } else {
+        $proceed = true;
+    }
+    if ($proceed === true) {
+        try {
+            $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
+        } catch (Exception $e) {
+            $proceed = false;
+            $this->log_db('ERROR - Could not backup your ' . $table . ' table.');
+            $this->log_db($e->getMessage());
+        }
     }
     if ($proceed === true) {
         try {
             fwrite($fp, $backup);
         } catch (Exception $e) {
-            $this->log_db('ERROR - Could not write your ' . $table . ' data to the file ' . $this->config->config['base_path'] . '/other/' . $source_name);
             $proceed = false;
+            $this->log_db('ERROR - Could not write your ' . $table . ' data to the file ' . $this->config->config['base_path'] . '/other/' . $source_name);
             $this->log_db($e->getMessage());
         }
         @fclose($fp);
@@ -385,7 +391,7 @@ if ($this->db->table_exists($table)) {
     $this->log_db($this->db->last_query());
 
     $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
-    $this->log_db($command);
+    $this->log_db(str_replace($this->db->password, '******', $command));
     exec($command, $backup);
     $backup = implode("\n", $backup);
     $source_name = $table . '_backup.sql';

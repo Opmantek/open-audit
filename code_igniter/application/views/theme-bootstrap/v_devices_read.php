@@ -1550,7 +1550,7 @@ if ($data['system']->type == 'computer') {
                                     <?php
                                     foreach ($data[$sub_item] as $sub_row) {
                                         if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or
-                                            ($item == 'disk' and !empty($sub_row->hard_drive_index) and $item_row->hard_drive_index == $sub_row->hard_drive_index) or
+                                            ($item == 'disk' and $sub_row->hard_drive_index != '' and $item_row->hard_drive_index == $sub_row->hard_drive_index) or
                                             ($item == 'server' and $item_row->name == $sub_row->parent_name)) { ?>
                                             <tr>
                                                 <?php

@@ -270,6 +270,34 @@ class logon extends CI_Controller
         }
         ini_set('default_socket_timeout', 3);
 
+        // Get the license type and set our logo
+        $license = '';
+        $oae_license_url = $oae_url.'license';
+
+        // get the license status from the OAE API
+        // license status are: valid, invalid, expired, none
+        $license = @file_get_contents($oae_license_url, false);
+        if ($license !== false) {
+            $license = json_decode($license);
+            if (json_last_error()) {
+                $license = new stdClass();
+                $license->license = 'none';
+            }
+        } else {
+            $license = new stdClass();
+            $license->license = 'none';
+        }
+
+        if ($license->license != 'none' and $license->license != 'commercial' and $license->license != 'free') {
+            $license->license = 'none';
+        }
+        $this->m_configuration->update('oae_license', (string)$license->license, 'system');
+        if ($license->license == 'commercial' or $license->license == 'free') {
+            $this->m_configuration->update('logo', 'logo-banner-oae', 'system');
+        } else {
+            $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
+        }
+
         // Delete any old sessions stored int he DB
         $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
         $query = $this->db->query($sql);
@@ -310,7 +338,7 @@ class logon extends CI_Controller
         }
 
 
-        // Insert the local server subnet into the /networks
+        // Upsert the local server subnet into the /networks
         foreach ($this->m_configuration->read_subnet() as $subnet) {
             $this->load->model('m_networks');
             $network = new stdClass();
@@ -320,34 +348,6 @@ class logon extends CI_Controller
             $network->description = 'Auto inserted local server subnet';
             $this->m_networks->upsert($network);
             unset($network);
-        }
-
-        // Get the license type and set our logo
-        $license = '';
-        $oae_license_url = $oae_url.'license';
-
-        // get the license status from the OAE API
-        // license status are: valid, invalid, expired, none
-        $license = @file_get_contents($oae_license_url, false);
-        if ($license !== false) {
-            $license = json_decode($license);
-            if (json_last_error()) {
-                $license = new stdClass();
-                $license->license = 'none';
-            }
-        } else {
-            $license = new stdClass();
-            $license->license = 'none';
-        }
-
-        if ($license->license != 'none' and $license->license != 'commercial' and $license->license != 'free') {
-            $license->license = 'none';
-        }
-        $this->m_configuration->update('oae_license', (string)$license->license, 'system');
-        if ($license->license == 'commercial' or $license->license == 'free') {
-            $this->m_configuration->update('logo', 'logo-banner-oae', 'system');
-        } else {
-            $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
         }
     }
 }
