@@ -44,30 +44,24 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                <th style="text-align:center;"><?php echo __('ID')?></th>
+                <th class="sorter-false col-xs-1 text-center"><?php echo __('Execute')?></th>
+                <th class="sorter-false col-xs-1 text-center"><?php echo __('View')?></th>
                 <th><?php echo __('Name')?></th>
                 <th><?php echo __('Organisation')?></th>
                 <th><?php echo __('Description')?></th>
-                <th style="text-align:center;"><?php echo __('Execute')?></th>
-                <?php if ($this->m_users->get_user_permission('', 'groups', 'u')) { ?>
-                <th style="text-align:center;"><?php echo __('Edit')?></th>
-                <?php } ?>
                 <?php if ($this->m_users->get_user_permission('', 'groups', 'd')) { ?>
-                <th style="text-align:center;"><?php echo __('Delete')?></th>
+                <th class="sorter-false col-xs-1 text-center"><?php echo __('Delete')?></th>
                 <?php } ?>
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($this->response->data as $item): ?>
+                <?php foreach ($this->response->data as $item) : ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="devices?sub_resource=group&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></a></td>
                     <?php refine('groups.name', $item->attributes->name); ?>
                     <?php refine('groups.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('groups.description', $item->attributes->description); ?>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="devices?sub_resource=group&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
-                    <?php if ($this->m_users->get_user_permission('', 'groups', 'u')) { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'groups', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
