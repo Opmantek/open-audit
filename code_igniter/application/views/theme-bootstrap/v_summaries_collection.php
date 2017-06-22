@@ -68,28 +68,22 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th class="text-center"><?php echo __('ID')?></th>
+                        <th class="col-xs-1 text-center"><?php echo __('Execute'); ?></th>
+                        <th class="col-xs-1 text-center"><?php echo __('View')?></th>
                         <th><?php echo __('Name')?></th>
-                        <th class="text-center"><?php echo __('Count'); ?></th>
-                        <th class="text-center"><?php echo __('Execute'); ?></th>
-                        <?php if ($this->m_users->get_user_permission('', 'summaries', 'u')) { ?>
-                        <th class="text-center"><?php echo __('Edit')?></th>
-                        <?php } ?>
+                        <th class="col-xs-1 text-center"><?php echo __('Count'); ?></th>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'd')) { ?>
-                        <th class="text-center"><?php echo __('Delete')?></th>
+                        <th class="col-xs-1 text-center"><?php echo __('Delete')?></th>
                         <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->attributes->id); ?>"><?php echo intval($item->attributes->id); ?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="summaries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->attributes->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                         <td><?php echo ucwords($item->attributes->name)?></td>
                         <td class="text-center"><?php echo ucwords($item->attributes->count)?></td>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="summaries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
-                        <?php if ($this->m_users->get_user_permission('', 'summaries', 'u')) { ?>
-                        <td class="text-center"><a class="btn btn-sm btn-info" href="summaries/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <?php } ?>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>
