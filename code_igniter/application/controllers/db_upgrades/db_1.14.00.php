@@ -34,6 +34,19 @@ $this->log_db('Upgrade database to 1.14 commenced');
 
 $this->drop_table('oa_user_org');
 
+# need to alter and purge the charts table before we touch the Orgs table
+$sql = "SHOW COLUMNS FROM `chart` WHERE Field = 'org_id'";
+$query = $this->db->query($sql);
+$result = $query->result();
+if (count($result) === 0) {
+    $this->alter_table('chart', 'org_id', "ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`", 'add');
+} else {
+    $this->alter_table('chart', 'org_id', "`org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`");
+}
+$sql = "DELETE FROM `chart` WHERE `org_id` NOT IN (SELECT `id` FROM `oa_org`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # our default Org and Locations are now id = 1
 $org_1_id = 1;
 $sql = "SELECT COUNT(*) AS `count` FROM oa_org WHERE id = 0";
@@ -188,19 +201,6 @@ $this->alter_table('change_log', 'timestamp', "`timestamp` datetime NOT NULL DEF
 
 
 # chart
-$sql = "SHOW COLUMNS FROM `chart` WHERE Field = 'org_id'";
-$query = $this->db->query($sql);
-$result = $query->result();
-if (count($result) === 0) {
-    $this->alter_table('chart', 'org_id', "ADD `org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`", 'add');
-} else {
-    $this->alter_table('chart', 'org_id', "`org_id` int unsigned NOT NULL DEFAULT 1 AFTER `what`");
-}
-
-$sql = "DELETE FROM `chart` WHERE `org_id` NOT IN (SELECT `org_id` FROM `oa_org`)";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
 $sql = "UPDATE `chart` SET `org_id` = $org_1_id WHERE `org_id` = 1";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -595,7 +595,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 if (!empty($this->config->config['ad_domain']) and !empty($this->config->config['ad_server'])) {
-    $sql = "INSERT INTO `ldap_servers` VALUES (NULL, 'Default Domain', 1, 'Migrated by system', 'en', '" . $this->config->config['ad_server'] . "', '385', 'n', " . $this->config->config['ad_domain'] . "', 'active directory', '3', '', '', '', 'n', '', '', 24, '2000-01-01 00:00:00', 'system', NOW())";
+    $sql = "INSERT INTO `ldap_servers` VALUES (NULL, 'Default Domain', 1, 'Migrated by system', 'en', '" . $this->config->config['ad_server'] . "', '385', 'n', '" . $this->config->config['ad_domain'] . "', 'active directory', '3', '', '', '', 'n', '', '', 24, '2000-01-01 00:00:00', 'system', NOW())";
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 }
@@ -1300,7 +1300,7 @@ if ($this->db->table_exists('additional_field')) {
             $new_group['org_id'] = 1;
             $new_group['name'] = $old_group->group_name . ' (used by fields)';
             $new_group['description'] = 'Migrated for use in fields.';
-            $new_group['sql'] = str_ireplace('where ', 'WHERE @filter', $old_group->group_dynamic_select);
+            $new_group['sql'] = str_ireplace('where ', 'WHERE @filter AND ', $old_group->group_dynamic_select);
             $new_group['link'] = '';
             $new_group['expose'] = 'n';
             $field_sql = "INSERT INTO `groups` VALUES (NULL, ?, ?, ?, ?, ?, ?, 'system', NOW())";
