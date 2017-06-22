@@ -121,6 +121,17 @@
                         <?php
                         $collections = array('attributes','baselines','connections','devices','database','fields','groups','ldap_servers','licenses','locations','maps','networks','queries','orgs','roles','summaries','users');
                         foreach ($collections as $collection) {
+                            if ($collection == 'maps') { ?>
+                                <li class="dropdown-submenu">
+                                    <a href="#"><?php echo ucwords(str_replace('_', ' ', $collection)); ?></a>
+                                    <ul class="dropdown-menu" style="min-width:250px;">
+                                        <li>
+                                            <a target="_blank" href='<?php echo $this->config->config['oae_url']; ?>/map'>Map</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            <?php
+                            }
                             if ($this->m_users->get_user_permission('', $collection, 'r')) { ?>
                                 <li class="dropdown-submenu">
                                     <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
