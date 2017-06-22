@@ -34,6 +34,11 @@ $sql = "INSERT INTO `configuration` VALUES (NULL, 'modules', '', 'n', 'system','
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# Update our URL if it's the default
+$sql = "UPDATE `configuration` SET `value` = '/omk/open-audit' WHERE `name` = 'oae_url' and value = '/omk/oae'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170620' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

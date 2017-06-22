@@ -400,7 +400,7 @@ INSERT INTO `configuration` VALUES (41,'nmis_url','','y','system','2000-01-01 00
 INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','','n','system','2000-01-01 00:00:00','Should we keep track of Windows netsta ports used by DNS above port 1000.');
 INSERT INTO `configuration` VALUES (43,'oae_license','','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (44,'oae_prompt','2015-06-01','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (45,'oae_url','/omk/oae','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (45,'oae_url','/omk/open-audit','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (46,'page_refresh','300','y','system','2000-01-01 00:00:00','Interval in seconds between auto-refreshing the page. Set to 0 to cancel auto-refresh.');
 INSERT INTO `configuration` VALUES (47,'rss_enable','y','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
 INSERT INTO `configuration` VALUES (48,'rss_url','https://community.opmantek.com/rss/OA.xml','y','system','2000-01-01 00:00:00','The RSS feed URL.');
