@@ -53,7 +53,7 @@ include "v_lang.php";
 
 
 <?php
-if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'locations' and ($this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
+if (!empty($this->response->meta->collection) and $this->response->meta->collection == 'locations' and ($this->response->meta->action == 'read' or $this->response->meta->action == 'update_form' or $this->response->meta->action == 'create_form')) { ?>
         <script src="http://maps.google.com/maps/api/js?key=<?php echo $this->config->config['maps_api_key']; ?>"></script>
     <?php
 } ?>

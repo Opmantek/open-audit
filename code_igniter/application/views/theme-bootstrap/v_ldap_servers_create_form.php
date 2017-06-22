@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
+                             <input required type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
                         </div>
                     </div>
 
@@ -79,14 +79,14 @@
                     <div class="form-group">
                         <label for="data[attributes][domain]" class="col-sm-3 control-label">Domain</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][domain]" name="data[attributes][domain]" placeholder="your.domain.com">
+                             <input required type="text" class="form-control" id="data[attributes][domain]" name="data[attributes][domain]" placeholder="your.domain.com">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="data[attributes][host]" class="col-sm-3 control-label">Host</label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][host]" name="data[attributes][host]" placeholder="192.168.1.88">
+                             <input required type="text" class="form-control" id="data[attributes][host]" name="data[attributes][host]" placeholder="192.168.1.88">
                         </div>
                     </div>
 
@@ -181,7 +181,7 @@
                     <div class="form-group">
                         <label for="data[attributes][dn_account]" class="col-sm-3 control-label">DN Account</label>
                         <div class="col-sm-8 input-group">
-                            <input required type="text" class="form-control" id="data[attributes][dn_account]" name="data[attributes][dn_account]" placeholder="cn=Administrator,cn=Users,dc=your,dc=domain,dc=com" value="">
+                            <input type="text" class="form-control" id="data[attributes][dn_account]" name="data[attributes][dn_account]" placeholder="cn=Administrator,cn=Users,dc=your,dc=domain,dc=com" value="">
                         </div>
                     </div>
 

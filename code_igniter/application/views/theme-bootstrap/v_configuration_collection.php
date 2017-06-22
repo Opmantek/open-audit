@@ -44,13 +44,12 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('View')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Value')?></th>
                     <th><?php echo __('Edited By')?></th>
                     <th><?php echo __('Edited On')?></th>
                     <th class="wrap"><?php echo __('Description')?></th>
-                    <th class="text-center"><?php echo __('Edit')?></th>
                 </tr>
             </thead>
             <tbody>
@@ -58,19 +57,12 @@
                 <?php if ($item->attributes->name != 'web_internal_version') { ?>
                 <?php if (strlen($item->attributes->value) > 30) { $item->attributes->value = substr($item->attributes->value, 0, 27) . '...'; } ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="configuration/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="configuration/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET)?></td>
                     <td><?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET)?></td>
                     <td class="wrap"><?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET)?></td>
-                    <?php if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
-                    <?php if ($item->attributes->editable == 'y') { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="configuration/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } else { ?>
-                    <td></td>
-                    <?php } ?>
-                    <?php } ?>
                 </tr>
                 <?php } ?>
                 <?php endforeach; ?>

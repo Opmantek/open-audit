@@ -90,7 +90,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="description" class="col-sm-3 control-label">Description</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->comments, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

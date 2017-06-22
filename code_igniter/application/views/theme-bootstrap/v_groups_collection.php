@@ -58,7 +58,7 @@
                 <?php foreach ($this->response->data as $item) : ?>
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="devices?sub_resource=group&sub_resource_id=<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('groups.name', $item->attributes->name); ?>
                     <?php refine('groups.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('groups.description', $item->attributes->description); ?>

@@ -44,15 +44,12 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('View')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Organisation')?></th>
                     <th class="text-center"><?php echo __('Org Descendants')?></th>
                     <th class="text-center"><?php echo __('Purchased')?></th>
                     <th class="text-center"><?php echo __('Used')?></th>
-                    <?php if ($this->m_users->get_user_permission('', 'licenses', 'u')) { ?>
-                    <th class="text-center"><?php echo __('Edit')?></th>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'licenses', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -61,7 +58,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="licenses/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="licenses/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('licenses.name', $item->attributes->name); ?>
                     <?php refine('licenses.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('licenses.org_descendants', $item->attributes->org_descendants); ?>
@@ -77,9 +74,6 @@
                     ?>
                     </span>
                     </td>
-                    <?php if ($this->m_users->get_user_permission('', 'licenses', 'u')) { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="licenses/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'licenses', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>

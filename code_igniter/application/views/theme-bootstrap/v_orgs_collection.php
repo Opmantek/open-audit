@@ -44,16 +44,13 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th><?php echo __('ID')?></th>
+                        <th class="text-center"><?php echo __('View')?></th>
                         <th><?php echo __('Systems')?></th>
                         <th><?php echo __('Organisation Name')?></th>
                         <th><?php echo __('Description')?></th>
                         <th><?php echo __('Parent Name')?></th>
                         <th><?php echo __('AD Group')?></th>
                         <th class="text-center"><?php echo __('Devices')?></th>
-                        <?php if ($this->m_users->get_user_permission('', 'orgs', 'u')) { ?>
-                        <th class="text-center"><?php echo __('Edit')?></th>
-                        <?php } ?>
                         <?php if ($this->m_users->get_user_permission('', 'orgs', 'd')) { ?>
                         <th class="text-center"><?php echo __('Delete')?></th>
                         <?php } ?>
@@ -63,16 +60,13 @@
                     <?php foreach ($this->response->data as $item):
                         ?>
                         <tr>
-                            <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo intval($item->id); ?></a></td>
+                            <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                             <td class="text-center"><?php echo $item->attributes->device_count?></td>
                             <?php refine('orgs.name', $item->attributes->name); ?>
                             <?php refine('orgs.description', $item->attributes->description); ?>
                             <?php refine('orgs.parent_id', $item->attributes->parent_id, $item->attributes->parent_name); ?>
                             <?php refine('orgs.ad_group', $item->attributes->ad_group); ?>
-                            <td class="text-center"><a role="button" class="btn btn-sm btn-primary" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
-                            <?php if ($this->m_users->get_user_permission('', 'orgs', 'u')) { ?>
-                            <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>/update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                            <?php } ?>
+                            <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="devices?org_id=<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
                             <?php if ($this->m_users->get_user_permission('', 'orgs', 'd')) { ?>
                             <?php if ($item->attributes->id != 0) { ?>
                                 <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>

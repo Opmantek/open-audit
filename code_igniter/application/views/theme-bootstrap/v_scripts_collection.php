@@ -44,7 +44,7 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                      <th style="text-align:center;"><?php echo __('ID')?></th>
+                      <th style="text-align:center;"><?php echo __('View')?></th>
                       <th><?php echo __('Name')?></th>
                       <th><?php echo __('Organisation')?></th>
                       <th><?php echo __('Description')?></th>
@@ -52,9 +52,6 @@
                       <th><?php echo __('Edited By')?></th>
                       <th><?php echo __('Edited Date')?></th>
                       <th style="text-align:center;"><?php echo __('Download')?></th>
-                      <?php if ($this->m_users->get_user_permission('', 'scripts', 'u')) { ?>
-                      <th style="text-align:center;"><?php echo __('Edit')?></th>
-                      <?php } ?>
                       <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
                       <th style="text-align:center;"><?php echo __('Delete')?></th>
                       <?php } ?>
@@ -64,17 +61,14 @@
                     <?php
                     foreach ($this->response->data as $item): ?>
                     <tr>
-                          <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                          <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                             <?php refine('scripts.name', $item->attributes->name); ?>
                             <?php refine('scripts.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                             <?php refine('scripts.description', $item->attributes->description); ?>
                             <?php refine('scripts.based_on', $item->attributes->based_on); ?>
                             <?php refine('scripts.edited_by', $item->attributes->edited_by); ?>
                             <?php refine('scripts.edited_date', $item->attributes->edited_date); ?>
-                          <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
-                          <?php if ($this->m_users->get_user_permission('', 'scripts', 'u')) { ?>
-                          <td class="text-center"><a class="btn btn-sm btn-info" href="scripts/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                          <?php } ?>
+                          <td class="text-center"><a class="btn btn-sm btn-info" href="<?php echo $item->links->self; ?>?action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
                           <?php if ($this->m_users->get_user_permission('', 'scripts', 'd')) { ?>
                             <?php if ($item->attributes->name !== $item->attributes->based_on) { ?>
                               <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>

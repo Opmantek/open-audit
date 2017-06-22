@@ -27,7 +27,7 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.1
 
  *
@@ -46,7 +46,6 @@ if (!empty($this->response->meta->groupby)) {
     $refine_link = str_replace('?groupby=' . $this->response->meta->groupby, '?', $refine_link);
     $refine_link = str_replace('&groupby=' . $this->response->meta->groupby, '', $refine_link);
     if (strpos($refine_link, 'properties=') !== false) {
-
         $refine_link = str_replace('properties=', 'properties=system.id,system.name,', $refine_link);
     } else {
         $refine_link .= '&properties=system.id,system.name';
@@ -106,21 +105,31 @@ if ($this->response->meta->sub_resource !== 'group') {
 <?php } ?>
 
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h3 class="panel-title">
-        <span class="text-left">Devices <?php echo $title ?></span>
-        <span class="pull-right" style="padding-left:10px;">
-            <span class="btn-group" role="group" aria-label="...">
-                <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=csv">csv</a></button>
-                <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=json">json</a></button>
-                <button type="button" class="btn btn-xs btn-default"><a href="<?php echo $export_link; ?>format=xml">xml</a></button>
-            </span>
-        </span>
-        <?php if ($this->response->meta->sub_resource !== 'group') { ?>
-        <span class="pull-right"><button class="btn btn-xs btn-primary" type="button" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries">Queries</button></span>
-        <?php } ?>
-        <span class="pull-right" style="padding-right:20px;"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
-        </h3>
+    <div class="panel-heading clearfix">
+        <div class="panel-title">
+            <div class="pull-left">Devices <?php echo $title ?></div>
+            <div class="pull-right" style="padding-left:10px;">
+                <div class="btn-group" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                            Export <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="<?php echo $export_link; ?>format=csv">CSV</a></li>
+                            <li><a href="<?php echo $export_link; ?>format=html">HTML</a></li>
+                            <li><a href="<?php echo $export_link; ?>format=json">JSON</a></li>
+                            <li><a href="<?php echo $export_link; ?>format=xml">XML</a></li>
+                        </ul>
+                        <?php if ($this->response->meta->sub_resource !== 'group') { ?>
+                        <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries">
+                            Queries
+                        </button>
+                        <?php } ?>
+                    </div>
+                </div>
+                &nbsp;&nbsp;&nbsp;<?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?>
+            </div>
+        </div>
     </div>
     <div class="panel-body">
         <div class="panel panel-default pull-right">
@@ -187,6 +196,7 @@ if (!empty($this->response->data)) { ?>
                 }
                 if ($key == 'system.id' or $key == 'id') {
                     $key = 'ID';
+                    $key = 'View';
                 }
                 $key = str_replace('_', ' ', $key);
                 $key = str_replace('os ', 'OS ', $key);
@@ -196,7 +206,7 @@ if (!empty($this->response->data)) { ?>
                 if ($key == 'Ip') {
                     $key = 'IP';
                 }
-                if (stripos($key, 'icon') !== false) {
+                if (stripos($key, 'icon') !== false or $key == 'View') {
                     echo "            <th class=\"text-center\">" . __($key) . "</th>\n";
                 } else {
                     echo "            <th>" . __($key) . "</th>\n";
@@ -206,7 +216,7 @@ if (!empty($this->response->data)) { ?>
                 foreach ($properties as $key => $value) {
                     if ($key == 'system.id') {
                         echo "            <th class=\"text-center\">\n";
-                        echo "              <button type=\"button\" class=\"btn btn-primary btn-xs bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
+                        echo "              <button type=\"button\" class=\"btn btn-primary btn-xs bulk_edit_button\">" . __('Bulk Edit') . "</button>&nbsp;\n";
                         echo "              <input type=\"checkbox\" name=\"select_all\" id=\"select_all\" onclick=\"select_all_click();\"/>\n";
                         echo "            </th>\n";
                     }
@@ -245,9 +255,8 @@ if (!empty($this->response->data)) { ?>
             }
 
             if (!empty($item->attributes->$property)) {
-
                 if ($property == 'id' or $property == 'system.id') {
-                    echo '<td><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
+                    echo '            <td class="text-center"><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>';
 
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
                     if (!empty($item->attributes->{$property . '_padded'})) {

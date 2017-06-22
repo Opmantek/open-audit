@@ -35,7 +35,7 @@
  */
 ?>
 <div class="panel panel-default">
-    <div class="panel-heading">
+    <div class="panel-heading clearfix">
         <?php include('include_collection_panel_header.php'); ?>
     </div>
     <div class="panel-body">
@@ -44,15 +44,12 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('View')?></th>
                     <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Resource')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Name (display)')?></th>
                     <th><?php echo __('Value (stored)')?></th>
-                    <?php if ($this->m_users->get_user_permission('', 'attributes', 'u')) { ?>
-                    <th class="text-center"><?php echo __('Edit')?></th>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'attributes', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -61,15 +58,12 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="attributes/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="attributes/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('attributes.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('attributes.resource', $item->attributes->resource); ?>
                     <?php refine('attributes.type', $item->attributes->type); ?>
                     <?php refine('attributes.name', $item->attributes->name); ?>
                     <?php refine('attributes.value', $item->attributes->value); ?>
-                    <?php if ($this->m_users->get_user_permission('', 'attributes', 'u')) { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="attributes/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'attributes', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>

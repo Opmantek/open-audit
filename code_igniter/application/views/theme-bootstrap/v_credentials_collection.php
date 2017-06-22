@@ -44,16 +44,13 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('View')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Description')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Edited By')?></th>
                     <th><?php echo __('Edited Date')?></th>
-                    <?php if ($this->m_users->get_user_permission('', 'credentials', 'u')) { ?>
-                    <th class="text-center"><?php echo __('Edit')?></th>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -62,16 +59,13 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="credentials/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="credentials/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('credentials.name', $item->attributes->name); ?>
                     <?php refine('credentials.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('credentials.description', $item->attributes->description); ?>
                     <?php refine('credentials.type', $item->attributes->type); ?>
                     <?php refine('credentials.edited_by', $item->attributes->edited_by); ?>
                     <?php refine('credentials.edited_date', $item->attributes->edited_date); ?>
-                    <?php if ($this->m_users->get_user_permission('', 'credentials', 'u')) { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="credentials/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>

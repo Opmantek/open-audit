@@ -44,17 +44,17 @@
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
+                        <th class="text-center"><?php echo __('View')?></th>
                         <th><?php echo __('Name')?></th>
                         <th><?php echo __('Row Count')?></th>
-                        <th class="text-center"><?php echo __('View')?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                         <td><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->count, REPLACE_FLAGS, CHARSET)?></td>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-play" aria-hidden="true"></a></td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

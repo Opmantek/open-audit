@@ -88,7 +88,7 @@ $item = $this->response->data[0];
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>

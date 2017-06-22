@@ -44,15 +44,12 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('View')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Full Name')?></th>
                     <th><?php echo __('Email')?></th>
                     <th><?php echo __('Roles')?></th>
-                    <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
-                    <th class="text-center"><?php echo __('Edit')?></th>
-                    <?php } ?>
                     <?php if ($this->m_users->get_user_permission('', 'users', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -62,15 +59,12 @@
                 <?php foreach ($this->response->data as $item): ?>
                 <?php $roles = @implode(', ', json_decode($item->attributes->roles)); ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                             <?php refine('users.name', $item->attributes->name); ?>
                             <?php refine('users.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                             <?php refine('users.name', $item->attributes->full_name); ?>
                             <?php refine('users.name', $item->attributes->email); ?>
                             <?php refine('users.roles', $item->attributes->roles, $roles); ?>
-                        <?php if ($this->m_users->get_user_permission('', 'users', 'u')) { ?>
-                        <td class="text-center"><a class="btn btn-sm btn-info" href="users/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                        <?php } ?>
                         <?php if ($this->m_users->get_user_permission('', 'users', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>
