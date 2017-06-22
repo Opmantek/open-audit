@@ -153,3 +153,9 @@ th.tablesorter-headerAsc {
     top:-7px;
     right:-7px;
 }
+
+.navbar-center {
+    position: absolute;
+    left: 46%;
+    transform: translatex(-50%);
+}
