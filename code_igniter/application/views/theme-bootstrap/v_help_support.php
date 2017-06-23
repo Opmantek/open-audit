@@ -34,7 +34,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (php_uname('s') == 'Windows NT') {
-    $files = "c:%5Cxampplite%5Copen-audit%5Cother%5Clog_system.log,\nc:%5Comk%5Clog%5Coae.log,\nc:%5Comk%5Clog%5CopCommon.log,\nc:%5Comk%5Clog%5CopDaemon.log,\nc:%5Comk%5Clog%5Cperformance.log,\nc:%5Comk%5Cconf%5CopCommon.nmis";
+    $files = "c:\\xampplite\\open-audit\\other\\log_system.log,\nc:\\omk\\log\\oae.log,\nc:\\omk\\log\\opCommon.log,\nc:\\omk\\log\\opDaemon.log,\nc:\\omk\\log\\performance.log,\nc:\\omk\\conf\\opCommon.nmis";
 } else {
     $files = "/usr/local/open-audit/other/log_system.log,\n/usr/local/omk/log/oae.log,\n/usr/local/omk/log/opCommon.log,\n/usr/local/omk/log/opDaemon.log,\n/usr/local/omk/log/performance.log,\n/usr/local/omk/conf/opCommon.nmis";
 }
@@ -82,8 +82,10 @@ if (php_uname('s') == 'Windows NT') {
     }
     unset($output);
     $test_path = 'c:\Program Files\Nmap\Nmap.exe';
-    if ($data['prereq_nmap'] == 'n' and file_exists($test_path)) {
+    if (file_exists($test_path)) {
         $data['prereq_nmap'] = 'c:\Program Files\Nmap\Nmap.exe';
+    } else {
+        $data['prereq_nmap'] = 'n';
     }
     $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
     if ($data['prereq_nmap'] == 'n' and file_exists($test_path)) {
