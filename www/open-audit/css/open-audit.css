@@ -154,8 +154,101 @@ th.tablesorter-headerAsc {
     right:-7px;
 }
 
+
+/* New Modal */
+.light-grey-block {
+    background-color: #EEEEF2;
+    border: 1px solid rgba(100, 100, 100, 0.16);
+}
+
+.market-cell {
+    padding: 15px;
+}
+
+.op-site-purple {
+    color: #475BDA;
+    font-weight: 300;
+}
+
+.market-cell-text {
+    height: 95px;
+    overflow: hidden;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.market-panel-heading-promote {
+    background-color: #3498DB !important;
+}
+
+.market-panel-heading {
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+.market-panel-heading-promote > h4 {
+    color: white !important;
+}
+
+
+
+
+
+
+
 .navbar-center {
     position: absolute;
     left: 46%;
     transform: translatex(-50%);
+}
+
+/* New GUI */
+.navbar {
+    background-image: linear-gradient(180deg, #485563 2%, #29323C 97%);
+    border-radius: 0px;
+    border:none;
+    margin-bottom:0px;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #efefef;
+}
+.navbar-brand{
+    font-size: 1em;
+}
+.navbar .navbar-brand {
+  color: #ffffff;
+}
+.navbar .navbar-brand img {
+  height: 19px;
+  width: 19px;
+}
+.navbar .navbar-link {
+  color: #ffffff;
+}
+.navbar .divider-vertical {
+  border-right: 1px solid lightgray;
+  border-left: 1px solid gray;
+}
+.navbar .nav > li > a {
+  color: #eeeeee;
+  text-shadow: 0 1px 0 #555555;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.navbar .nav > li > a:focus,
+.navbar .nav > li > a:hover {
+  color: #999999;
+  text-decoration: none;
+  background-color: transparent;
+}
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+  color: #777777;
+  text-decoration: none;
+  background-color: transparent;
+}
+.navbar-default .navbar-text {
+  color: #eeeeee;
+  text-shadow: 0 1px 0 #555555;
 }
