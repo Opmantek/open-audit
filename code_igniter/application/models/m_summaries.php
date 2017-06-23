@@ -46,6 +46,9 @@ class M_summaries extends MY_Model
 
     public function read($id = '')
     {
+        if (empty($this->log)) {
+            $this->log = new stdClass();
+        }
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         if ($id == '') {
@@ -85,6 +88,9 @@ class M_summaries extends MY_Model
 
     public function collection()
     {
+        if (empty($this->log)) {
+            $this->log = new stdClass();
+        }
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
