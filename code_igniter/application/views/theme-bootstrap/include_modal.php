@@ -4,12 +4,12 @@
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
-        $.get('https://opmantek.com/product_data/oae.json', function(data){
+        $.get('https://opmantek.com/product_data/open-audit.1json', function(data){
             modal.open({content: data, source: "online"});
         })
         .fail(function() {
             // get from OAE
-                $.get('/omk/data/oae.json', function(data){
+                $.get('/omk/data/open-audit.json', function(data){
                 modal.open({content: data, source: "offline"});
             })
         });
@@ -19,15 +19,15 @@
     // Menu click response
     $('a#buy_more_licenses').click(function(e){
         // get from opmantek.com
-        $.get('https://opmantek.com/product_data/oae.json', function(data){
+        $.get('/omk/data/open-audit.json', function(data){
+        //$.get('https://opmantek.com/product_data/open-audit.1json', function(data){
+            //console.log(data.version);
             modal.open({content: data, source: "online"});
-            highlightColumn();
         })
         .fail(function() {
             // get from OAC
-                $.get('/omk/data/oae.json', function(data){
-                modal.open({content: data, source: "offline"});
-                highlightColumn();
+            $.get('/omk/data/open-audit.json', function(data){
+            modal.open({content: data, source: "offline"});
             })
         });
     });
@@ -36,8 +36,8 @@
         var
         method = {},
         $overlay,
-        $modal,
         $content,
+        $data,
         $close;
 
         // Center the modal in the viewport
@@ -56,99 +56,133 @@
        method.open = function (settings) {
             // our generic output container column_variable
             var output = "";
-            // setup our highlighting column
-            var highlight_column = "";
-            <?php
-                $device_count = 0;
-                if (!empty($this->config->config['device_count'])) {
-                    $device_count = intval($this->config->config['device_count']);
-                }
-            ?>
-            var device_count = <?php echo $device_count; ?>;
-            license = "<?php echo $this->config->config['oae_license']; ?>";
-            if (device_count < 20 && (license == "none" || license == "")) { highlight_column = "Enterprise 20 Nodes Free"; }
-            if (device_count < 20 && license == "free") { highlight_column = "Enterprise 100 Nodes"; }
-            if (device_count < 20 && license == "commercial") { highlight_column = "Enterprise 100 Nodes"; }
-            if (device_count > 20) { highlight_column = "Enterprise 100 Nodes"; }
-            if (device_count > 100) { highlight_column = "Enterprise 500 Nodes"; }
-            if (device_count > 500) { highlight_column = "Enterprise X Nodes"; }
+            data = settings.content;
+            console.log(data.version);
+
             // css from OAE / Bootstrap
-            $content.empty().append("<link href=\"/open-audit/css/bootstrap.min.css\" rel=\"stylesheet\" />");
-            if (license == "none") {
-                $content.append('<h1>'+settings.content["header"][0]["text_nolicense"]+'</h1><span>'+settings.content["top_message_nolicense"]+'</span>');
-            } else {
-                $content.append('<h1>'+settings.content["header"][0]["text"]+'</h1><span>'+settings.content["top_message"]+'</span>');
-            }
-            $content.append('<br /><br />');
-            // table
-            var table = '<div id="modal_content"><table class="table table-bordered" id="nodeTable" width="100%">';
-            // table header
-            var colCount = 0;
-            var count = 0;
-            for (var i = 0; i < settings.content["table"]["header"].length; i++) {
-                table += "<th style=\"vertical-align:middle;\" class=\""+settings.content["table"]["header"][i]["class"]+"\">"+settings.content["table"]["header"][i]["text"]+"</th>";
-                if (settings.content["table"]["header"][i]["text"] == highlight_column) {
-                    count = colCount;
-                }
-                colCount++;
-            }
-            // table rows
-            var tableDataJsonRows = settings.content["table"]["rows"];
-            var rowData = "";
-            for (var i = 0; i < tableDataJsonRows.length; i++) {
-                var row = tableDataJsonRows[i];
-                rowData = "<tr>";
-                for (var j = 0; j < row.length; j++) {
-                    classText = row[j]["class"];
-                    classText = classText.replace(" info", "");
-                    if (j == count) {
-                        classText = classText + " info";
-                    }
-                    if (row[j].hasOwnProperty("button")) {
-                         if (row[j]["button"] === "Activate" && license == "free") {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<form action="/omk/opLicense/delete/Open-AudIT%20Enterprise" method="POST"><button type="submit" class="btn btn-success btn-sm" data-title="Immediately removes this license">Deactivate</button></form></td>';
+            $content.empty();
 
-                        } else if (row[j]["button"] === "Activate" && license == "none") {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<br /><a class="btn btn-success btn-sm" style="color:white;" href="/omk/oae/license_free">'+row[j]["button"]+'</a></td>';
+output += "<div class=\"modal-header\">\
+    <h4>" + data.header[0].text + "</h4>\
+</div>\
+<div class=\"modal-body\">\
+    <span>" + data.top_message + "</span>";
 
-                        } else if (row[j]["button"] === "Activate" && license == "commercial") {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'</td>';
 
+            output += "<div class=\"row market-row\">\
+                <div class=\"col-md-12\">\
+                    <h4>" + data.promotion.header.text + "</h4>\
+                </div>\
+            </div>";
+            $content.append(output);
+            output = "";
+            output += "<div class=\"row market-row\">";
+                 for (var i = 0; i < data.promotion.rows.length; i++) {
+                    output += "<div class=\"" + data['promotion']['columnSize'] + "\">\
+                        <div class=\"" + data['promotion']['cellClass'] + "\">\
+                            <div class=\"row\">\
+                                <div class=\"col-md-6\">\
+                                    <h5 class=\"op-site-purple\">" + data.promotion.rows[i].title + "</h5>\
+                                </div>\
+                                <div class=\"col-md-6\">\
+                                    <small class=\"pull-right\">" + data.promotion.rows[i].tag + "</small>\
+                                </div>\
+                            </div>\
+                            <div class=\"row\">\
+                                <div class=\"col-md-12\">\
+                                    <p class=\"market-cell-text\">" + data.promotion.rows[i].text + "</p>\
+                                </div>\
+                            </div>\
+                            <div class=\"row\">\
+                                <div class=\"col-md-12\">\
+                                    <a class=\"pull-right\" href=\"" + data.promotion.rows[i].linkURI + "\">" + data.promotion.rows[i].link + "</a>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>";
+                 }
+            output += "</div>";
+            $content.append(output);
+            output = "";
+
+
+
+
+output += "<div class=\"row market-row\">\
+         <div class=\"col-md-8\">\
+            <h4>" + data.compare.header.text + "</h4>\
+        </div>\
+        <div class=\"col-md-4\">\
+            <small class=\"pull-right\">" + data.compare.currencies[0].text + "</small>\
+        </div>\
+    </div>\
+    <div class=\"row market-row\">"
+        for (var j = 0; j < data.compare.editions.length; j++) {
+        output += "<div class=\"" + data.compare.columnSize + "\">\
+            <div class=\"panel panel-default market-compare-panel\">\
+                <div class=\"panel-heading market-panel-heading " + data.compare.editions[j].headerClass + "\">\
+                    <h4>" + data.compare.editions[j].title + "</h4>\
+                </div>\
+                <div class=\"panel-body\">\
+                    <div class=\"row\">\
+                        <div class=\"col-md-12\">\
+                            <p class=\"market-cell-text\">" + data.compare.editions[j].text + "</p>\
+                        </div>\
+                    </div>\
+                    <div class=\"row\">\
+                        <div class=\"col-md-12\">\
+                           <h3 class=\"text-center market-compare-price\">" + data.compare.editions[j].packages[0].prices[0].USD + "</h3>\
+                        </div>\
+                    </div>\
+                    <div class=\"row\">\
+                        <div class=\"col-md-12\">\
+                           <h4 class=\"text-center market-compare-text\">" + data.compare.editions[j].packages[0].text + "</h4>\
+                        </div>\
+                    </div>\
+                    <div class=\"row\">\
+                        <div class=\"col-md-12\">";
+                          if (data.compare.editions[j].packages[0].url) {
+                            output += "<a href=\"" + data.compare.editions[j].packages[0].url + "\" class=\"btn btn-block " + data.compare.editions[j].buttonClass + "\">" + data.compare.editions[j].buttonText + "</a>";
                         } else {
-                            rowData += '<td class="'+classText+'">';
-                            if (settings.source == "online") {
-                                rowData += row[j]["text"];
-                            }
-                            if (row[j]["button_link"] == "/omk/opLicense/") {
-                                rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'">'+row[j]["button"]+'</a>';
+                            output += "<a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[0].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\" class=\"btn btn-block " + data.compare.editions[j].buttonClass + "\"> " + data.compare.editions[j].buttonText + "</a>";
+                        }
+                        output += "</div>\
+                    </div>\
+                </div>";
+                if (data.compare.editions[j].packages.length > 1) {
+                    output += "<ul class=\"list-group\">";
+                        for (var x = 1; x < data.compare.editions[j].packages.length; x++) {
+                            if (data.compare.editions[j].packages[x].url) {
+                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.editions[j].packages[x].url + "\">" + data.compare.editions[j].packages[x].text + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
                             } else {
-                                if (row[j]["button"] == "Buy") {
-                                rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'http://'+location.host+'<?php echo $this->config->config['oae_url']; ?>/purchase_complete&cancel_redirect_url='+window.location.href+'">'+row[j]["button"]+'</a>';
-                                } else {
-                                    rowData += '<br /><a class="btn btn-success btn-sm" style="color:white;" href="'+row[j]["button_link"]+'" target="_blank">'+row[j]["button"]+'</a>';
-                                }
+                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[x].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\"> " + data.compare.editions[j].packages[x].text + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
                             }
-                            rowData += '</td>';
                         }
-                    } else {
-                        if (row[j].hasOwnProperty("image")) {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'<div class="pull-right"><span class="glyphicon glyphicon-camera" aria-hidden="true" onmouseover="imageModal(\''+row[j]["text"]+'\',\''+row[j]["image"]+'\');"></span></div></td>';
+                    output += "</ul>";
+                 }
+            output += "</div>\
+        </div>";
+        }
+    output += "</div>\
+    <div class=\"row market-row\">";
+        for (var q = 0; q < data.compare.editions.length; q++) {
+            output += "<div class=\"col-md-4\">\
+                <ul class=\"fa-ul\">";
+                    for (var w = 0; w < data.compare.editions[q].features.length; w++) {
+                        if (data.compare.editions[q].features[w].url) {
+                            output += "<li><i class=\"fa-li fa fa-check blue-check " + data.compare.editions[q].features[w].class + "\"></i><a class=\"" + data.compare.editions[q].features[w].class + "\" href=\"" + data.compare.editions[q].features[w].url + "\">" + data.compare.editions[q].features[w].text + "</a></li>";
                         } else {
-                            rowData += '<td class="'+classText+'">'+row[j]["text"]+'</td>';
+                            output += "<li><i class=\"fa-li fa fa-check blue-check " + data.compare.editions[q].features[w].class + "\"></i><span class=\"" + data.compare.editions[q].features[w].class + "\">" + data.compare.editions[q].features[w].text + "</span></li>";
                         }
                     }
-                }
-                rowData += "</tr>";
-                table += rowData;
-            }
+                output += "</ul>\
+            </div>";
+        }
+    output += "</div>";
+            $content.append(output);
 
-            // end of table
-            table += "</table></div>";
-            $content.append(table);
-            // bottom message
-            if (settings.content["bottom_message"] != "") {
-                $content.append("<span>"+settings.content["bottom_message"]+"</span><br />\n");
-            }
+
+
             // footer
             var footer = settings.content["footer"];
             var output = "";
@@ -160,14 +194,13 @@
                 if (button_link == "prompt_later") {
                     output += "<span id=\"button_prompt_later\"style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')); ?>\">"+footer[i]["button"]+"</a></span>\n";
                 }
-                //output += "<span style=\""+footer[i]["button_parent_style"]+"\"><a class=\"btn btn-default btn-sm\" href=\""+button_link+"\">"+footer[i]["button"]+"</a></span>\n";
             }
             $content.append(output);
             output = "<br /></dv>\n";
             $content.append(output);
             $modal.css({
                 //width: settings.width || 'auto',
-                width: settings.width || '1000px',
+                width: settings.width || '900px',
                 height: settings.height || 'auto'
             });
             method.center();
@@ -230,57 +263,5 @@
             modal.close();
         }
     });
-
-function imageModal(title, image) {
-    //document.getElementById("imageModalLabel").innerHTML = title;
-    modal_content_original = document.getElementById("modal_content").innerHTML;
-    modal_content_image = '<div class="row"><div class="col-md-6"><h3>'+title+'</h3></div>';
-    modal_content_image = modal_content_image+'<div class="col-md-6 text-right"><br /><a class="btn btn-default btn-sm" href="#" onclick="removeImageModal();">Back</a></div></div>';
-    modal_content_image = modal_content_image+'<a href="#" onclick="removeImageModal();"><img id="modalImage" src="<?php echo str_replace("index.php", "", site_url()); ?>/images/'+image+'" style="width: 800px;" /></a>';
-    document.getElementById("modal_content").innerHTML = modal_content_image;
-    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm\" href=\"#\" onclick=\"removeImageModal();\">Back</a>";
-    document.getElementById("button_prompt_never").innerHTML = "";
-}
-
-function removeImageModal() {
-    document.getElementById("modal_content").innerHTML = modal_content_original;
-    document.getElementById("button_prompt_later").innerHTML = "<a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' + 1 day')); ?>\">Ask me later</a>";
-    document.getElementById("button_prompt_never").innerHTML = "<a class=\"btn btn-default btn-sm dismiss_modal_button\" href=\"#\" data-value=\"2100-01-01\">Do now show me again</a>";
-}
-
-
-
-
-/* inline edit */
-$(document).ready(function () {
-    $(document).on('click', '.dismiss_modal_button', function (e) {
-        var value = $(this).attr("data-value");
-        //alert("Value is:"+value);
-        var data = {};
-        data["data"] = {};
-        data["data"]["id"] = "oae_prompt";
-        data["data"]["type"] = "configuration";
-        data["data"]["attributes"] = {};
-        data["data"]["attributes"]["value"] = value;
-        data["data"]["attributes"]["name"] = "oae_prompt";
-        data = JSON.stringify(data);
-        $.ajax({
-            type: "PATCH",
-            url: "configuration/oae_prompt",
-            contentType: "application/json",
-            data: {data : data},
-            success: function (data) {
-                /* alert( 'success' ); */
-            },
-            error: function (data) {
-                data = JSON.parse(data.responseText);
-                alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
-            }
-        });
-        modal.close();
-    });
-});
-
-
 
 </script>
