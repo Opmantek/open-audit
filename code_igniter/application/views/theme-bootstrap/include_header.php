@@ -35,13 +35,23 @@
                             <?php
                             if ($this->m_users->get_user_permission('', 'discoveries', 'r')) { ?>
                                 <li class="dropdown-submenu">
-                                    <a href="#">Discoveries</a>
+                                    <?php if ($this->config->config['oae_license'] == 'none') { ?>
+                                        <a href="#">Discoveries <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
+                                    <?php } else { ?>
+                                        <a href="#">Discoveries</a>
+                                    <?php } ?>
                                     <ul class="dropdown-menu" style="min-width:250px;">
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
-                                        <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration/discovery'>Configure Discoveries</a></li>
-                                        <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'>Schedule Discoveries</a></li>
+                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
+                                            <?php if ($this->config->config['oae_license'] == 'none') { ?>
+                                                <li class="disabled"><a href='#'>Configure Discoveries</a></li>
+                                                <li class="disabled"><a href='#'>Schedule Discoveries</a></li>
+                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/tasks'>Learn About Discoveries</a></li>
+                                            <?php } else { ?>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration/discovery'>Configure Discoveries</a></li>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'>Schedule Discoveries</a></li>
+                                            <?php } ?>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -114,25 +124,41 @@
                         <ul class="dropdown-menu">
                             <?php foreach ($categories as $category) { ?>
                             <li class="dropdown-submenu">
-                                <a><?php echo $category ?></a>
+                                <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
+                                    <a><?php echo $category ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
+                                <?php } else { ?>
+                                    <a><?php echo $category ?></a>
+                                <?php } ?>
                                 <ul class="dropdown-menu" style="min-width:250px;">
                                 <?php
                                 foreach ($reports as $item) {
                                     if ($category == $item->{'attributes'}->{'menu_category'}) {
                                         if ($item->{'attributes'}->{'menu_category'} == 'Discovery') {
-                                            $link = '<a href="' . $this->config->config['oae_url'] . '/reports/' . $item->id . '/execute">';
+                                            if ($this->config->config['oae_license'] == 'none') {
+                                                $link = '<li class="disabled"><a href="#">';
+                                            } else {
+                                                $link = '<li><a href="' . $this->config->config['oae_url'] . '/reports/' . $item->id . '/execute">';
+                                            }
                                         } else {
-                                            $link = '<a href="' . $this->config->config['oa_web_index'] . '/' . $item->{'type'} . '/' . $item->{'id'} . '/execute">';
+                                            $link = '<li><a href="' . $this->config->config['oa_web_index'] . '/' . $item->{'type'} . '/' . $item->{'id'} . '/execute">';
                                         }
                                     ?>
-                                        <li><?php echo $link; ?><?php echo $item->{'attributes'}->{'name'} ?></a></li>
+                                        <?php echo $link; ?><?php echo $item->{'attributes'}->{'name'} ?></a></li>
                                     <?php } ?>
+                                <?php } ?>
+                                <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
+                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/reports'>Learn About Reports</a></li>
                                 <?php } ?>
                                 </ul>
                             </li>
                             <?php } ?>
-                            <li><a href="<?php echo $this->config->config['oae_url']; ?>/tasks">Schedule Reports</a></li>
-                            <li><a href="<?php echo $this->config->config['oae_url']; ?>/multi_report">MultiReport</a></li>
+                            <?php if ($this->config->config['oae_license'] == 'none') { ?>
+                                <li><a href="#">Schedule Reports <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
+                                <li><a href="#">MultiReport <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
+                            <?php } else { ?>
+                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/tasks">Schedule Reports</a></li>
+                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/multi_report">MultiReport</a></li>
+                            <?php } ?>
                         </ul>
                     </li>
 
