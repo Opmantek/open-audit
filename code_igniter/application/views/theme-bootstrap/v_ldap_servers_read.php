@@ -209,7 +209,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="user_membership_attribute" class="col-sm-3 control-label">user_membership_attribute</label>
+                        <label for="user_membership_attribute" class="col-sm-3 control-label">User Membership Attribute</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="user_membership_attribute" name="user_membership_attribute" value="<?php echo htmlspecialchars($item->attributes->user_membership_attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
