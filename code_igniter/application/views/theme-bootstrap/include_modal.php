@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-    <?php if ($this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
+    <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
@@ -57,9 +57,6 @@
             // our generic output container column_variable
             var output = "";
             data = settings.content;
-            console.log(data.version);
-
-            // css from OAE / Bootstrap
             $content.empty();
 
 output += "<div class=\"modal-header\">\
@@ -184,6 +181,7 @@ output += "<div class=\"row market-row\">\
 
 
             // footer
+            <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
             var footer = settings.content["footer"];
             var output = "";
             for (var i = 0; i < footer.length; i++) {
@@ -198,6 +196,7 @@ output += "<div class=\"row market-row\">\
             $content.append(output);
             output = "<br /></dv>\n";
             $content.append(output);
+            <?php } ?>
             $modal.css({
                 //width: settings.width || 'auto',
                 width: settings.width || '900px',
@@ -241,16 +240,16 @@ output += "<div class=\"row market-row\">\
         return method;
     }());
 
-    <?php if ($include == 'v_main' and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($license != 'commercial')) { ?>
+    <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
-        $.get('https://opmantek.com/product_data/oae.json', function(data){
+        $.get('https://opmantek.com/product_data/open-audit.json', function(data){
             modal.open({content: data, source: "online"});
         })
         .fail(function() {
             // get from OAE
-                $.get('/omk/data/oae.json', function(data){
+                $.get('/omk/data/open-audit.json', function(data){
                 modal.open({content: data, source: "offline"});
             })
         });
@@ -263,5 +262,35 @@ output += "<div class=\"row market-row\">\
             modal.close();
         }
     });
+
+/* inline edit */
+$(document).ready(function () {
+    $(document).on('click', '.dismiss_modal_button', function (e) {
+        var value = $(this).attr("data-value");
+        //alert("Value is:"+value);
+        var data = {};
+        data["data"] = {};
+        data["data"]["id"] = "oae_prompt";
+        data["data"]["type"] = "configuration";
+        data["data"]["attributes"] = {};
+        data["data"]["attributes"]["value"] = value;
+        data["data"]["attributes"]["name"] = "oae_prompt";
+        data = JSON.stringify(data);
+        $.ajax({
+            type: "PATCH",
+            url: "configuration/oae_prompt",
+            contentType: "application/json",
+            data: {data : data},
+            success: function (data) {
+                /* alert( 'success' ); */
+            },
+            error: function (data) {
+                data = JSON.parse(data.responseText);
+                alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+            }
+        });
+        modal.close();
+    });
+});
 
 </script>
