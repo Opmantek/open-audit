@@ -186,9 +186,9 @@ $sql[] = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Wirel
 $this->alter_table('bios', 'description', "`description` text NOT NULL");
 
 # configuration
-$this->alter_table('configurarion', 'description', "`description` text NOT NULL");
-$this->alter_table('configurarion', 'value', "`value` longtext NOT NULL");
-$this->alter_table('configurarion', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
+$this->alter_table('configuration', 'description', "`description` text NOT NULL");
+$this->alter_table('configuration', 'value', "`value` longtext NOT NULL");
+$this->alter_table('configuration', 'name', "`name` varchar(200) NOT NULL DEFAULT ''");
 $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
 $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL,'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.')";
@@ -340,7 +340,8 @@ if (php_uname('s') == 'Linux') {
 }
 $table = 'oa_group';
 if ($this->db->table_exists($table)) {
-    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
+    #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
+    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' -h' . $this->db->hostname . ' ' . $this->db->database . ' ' . $table;
     $this->log_db(str_replace($this->db->password, '******', $command));
     exec($command, $backup);
     $backup = implode("\n", $backup);
@@ -374,6 +375,7 @@ if ($this->db->table_exists($table)) {
         $this->drop_table($table);
     }
 }
+unset($backup);
 
 # orgs
 $this->alter_table('oa_org', 'comments', "`description` text NOT NULL");
@@ -390,7 +392,8 @@ if ($this->db->table_exists($table)) {
     $this->db->query($sql);
     $this->log_db($this->db->last_query());
 
-    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
+    #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
+    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' -h' . $this->db->hostname . ' ' . $this->db->database . ' ' . $table;
     $this->log_db(str_replace($this->db->password, '******', $command));
     exec($command, $backup);
     $backup = implode("\n", $backup);
