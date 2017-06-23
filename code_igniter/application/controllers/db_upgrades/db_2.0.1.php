@@ -29,6 +29,9 @@
 
 $this->log_db('Upgrade database to 2.0.1 commenced');
 
+# summaries
+$this->alter_table('summaries', 'expose', "`menu_display` enum('y','n') NOT NULL DEFAULT 'y' AFTER `menu_category`");
+
 # A config item for other Opmantek installed modules
 $sql = "INSERT INTO `configuration` VALUES (NULL, 'modules', '', 'n', 'system','2000-01-01 00:00:00', 'The list of installed Opmantek modules.')";
 $this->db->query($sql);
@@ -36,6 +39,9 @@ $this->log_db($this->db->last_query());
 
 # Update our URL if it's the default
 $sql = "UPDATE `configuration` SET `value` = '/omk/open-audit' WHERE `name` = 'oae_url' and value = '/omk/oae'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+$sql = "UPDATE `configuration` SET `value` = '/omk/open-audit/map' WHERE `name` = 'maps_url' and value = '/omk/oae/map'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
