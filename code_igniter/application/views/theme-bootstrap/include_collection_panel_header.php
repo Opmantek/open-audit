@@ -43,7 +43,7 @@ if (strpos($this->response->links->self, '?') !== false) {
             $this->response->meta->collection != 'configuration' and
             $this->response->meta->collection != 'database' and
             $this->response->meta->collection != 'logs') { ?>
-                <a class="btn btn-default btn-sm" href="<?php echo $this->response->meta->collection; ?>/create" role="button"><?php echo __('Create'); ?></a>
+                <a class="btn btn-default btn-sm" href="<?php echo $this->config->config['oa_web_index'] . '/' . $this->response->meta->collection; ?>/create" role="button"><?php echo __('Create'); ?></a>
         <?php } ?>
         </div>
         &nbsp;&nbsp;&nbsp;<?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?>
