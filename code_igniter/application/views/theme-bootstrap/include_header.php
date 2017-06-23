@@ -27,7 +27,6 @@
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>List Credentials</a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'credentials', 'c')) { ?>
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'>Create Credentials</a></li>
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/import'>Import Multiple Credentials</a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -41,7 +40,8 @@
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/import'>Import Multiple Discoveries</a></li>
+                                        <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration/discovery'>Configure Discoveries</a></li>
+                                        <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'>Schedule Discoveries</a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -63,15 +63,15 @@
                                         <?php } ?>
                                         <?php if ($this->m_users->get_user_permission('', 'files', 'c')) { ?>
                                             <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
-                                                <li><a target="_blank" href="<?php echo $this->config->config['oae_url']; ?>/files/create">Create Files</a></li>
-                                                <li><a target="_blank" href="<?php echo $this->config->config['oae_url']; ?>/files/import">Import Multiple Files</a></li>
+                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/files/create">Create Files</a></li>
+                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/files/import">Import Multiple Files</a></li>
                                             <?php } else { ?>
                                                 <li class="disabled"><a href="#">Create Files</a></li>
                                                 <li class="disabled"><a href="#">Import Multiple Files</a></li>
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
-                                            <li><a target="_blank" style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/files'>Learn About Files</a></li>
+                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/files'>Learn About Files</a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -93,25 +93,48 @@
                         </ul>
                     </li>
 
+                    <?php # sort our queries, summaries and reports
+                    $reports = array();
+                    foreach ($this->response->included as $item) {
+                        if (($item->type == 'queries' or $item->type == 'summaries' or $item->type == 'reports') and $item->{'attributes'}->{'menu_display'} == 'y') {
+                            $item->name = $item->{'attributes'}->{'name'};
+                            $reports[] = $item;
+                        }
+                    }
+                    function my_comparison($a, $b) {
+                        return strcmp($a->name, $b->name);
+                    }
+                    usort($reports, 'my_comparison');
+                    ?>
+
                     <!-- The Report menu -->
-                        <?php $categories = array('Change','Device','Hardware','Network','Server','Software','User'); ?>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Report <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <?php foreach ($categories as $category) { ?>
-                                <li class="dropdown-submenu">
-                                    <a><?php echo $category ?></a>
-                                    <ul class="dropdown-menu" style="min-width:250px;">
-                                    <?php foreach ($this->response->included as $item) {
-                                        if ($item->type == 'queries' and $category == $item->{'attributes'}->{'menu_category'} and $item->{'attributes'}->{'menu_display'} == 'y') { ?>
-                                            <li><a href="<?php echo $item->{'type'} ?>/<?php $item->{'id'} ?>/execute"><?php echo $item->{'attributes'}->{'name'} ?></a></li>
-                                        <?php } ?>
+                    <?php $categories = array('Change','Device','Discovery','Hardware','Network','Server','Software','User'); ?>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Report <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <?php foreach ($categories as $category) { ?>
+                            <li class="dropdown-submenu">
+                                <a><?php echo $category ?></a>
+                                <ul class="dropdown-menu" style="min-width:250px;">
+                                <?php
+                                foreach ($reports as $item) {
+                                    if ($category == $item->{'attributes'}->{'menu_category'}) {
+                                        if ($item->{'attributes'}->{'menu_category'} == 'Discovery') {
+                                            $link = '<a href="' . $this->config->config['oae_url'] . '/reports/' . $item->id . '/execute">';
+                                        } else {
+                                            $link = '<a href="' . $this->config->config['oa_web_index'] . '/' . $item->{'type'} . '/' . $item->{'id'} . '/execute">';
+                                        }
+                                    ?>
+                                        <li><?php echo $link; ?><?php echo $item->{'attributes'}->{'name'} ?></a></li>
                                     <?php } ?>
-                                    </ul>
-                                </li>
                                 <?php } ?>
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
+                            <?php } ?>
+                            <li><a href="<?php echo $this->config->config['oae_url']; ?>/tasks">Schedule Reports</a></li>
+                            <li><a href="<?php echo $this->config->config['oae_url']; ?>/multi_report">MultiReport</a></li>
+                        </ul>
+                    </li>
 
 
                     <li class="dropdown">
@@ -126,7 +149,7 @@
                                     <a href="#"><?php echo ucwords(str_replace('_', ' ', $collection)); ?></a>
                                     <ul class="dropdown-menu" style="min-width:250px;">
                                         <li>
-                                            <a target="_blank" href='<?php echo $this->config->config['oae_url']; ?>/map'>Map</a>
+                                            <a href='<?php echo $this->config->config['oae_url']; ?>/map'>Map</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -148,12 +171,16 @@
 
                                         <?php if ($this->m_users->get_user_permission('', $collection, 'c')) { ?>
                                             <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
-                                            <li class="disabled"><a href="#">Create <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                            <li class="disabled"><a href="#">Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li class="disabled"><a href="#">Create <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li class="disabled"><a href="#">Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                             <?php } else { ?>
-                                            <?php if ($collection == 'baselines' or $collection == 'roles') { $link = $this->config->config['oae_url']; } else { $link = $this->config->config['oa_web_index']; } ?>
-                                            <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'>Create <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                            <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'>Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <?php if ($collection == 'baselines' or $collection == 'roles') {
+                                                    $link = $this->config->config['oae_url'];
+                                                } else {
+                                                    $link = $this->config->config['oa_web_index'];
+                                                } ?>
+                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'>Create <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'>Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                             <?php } ?>
                                         <?php } ?>
 
@@ -183,16 +210,20 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Modules')?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php
-                            $modules = json_decode($this->config->config['modules']);
-                            foreach ($modules as $modules) {
-                                if (!empty($modules->installed)) {
-                                    $url = $modules->link;
-                                } else {
-                                    $url = $modules->url;
+                            if (!empty($this->config->config['modules'])) {
+                                $modules = json_decode($this->config->config['modules']);
+                                foreach ($modules as $modules) {
+                                    if (!empty($modules->installed)) {
+                                        $url = $modules->link;
+                                    } else {
+                                        $url = $modules->url;
+                                    }
+                                ?>
+                                <li><a href='<?php echo $url; ?>'><?php echo $modules->name; ?></a></li>
+                                <?php
                                 }
-                            ?>
-                            <li><a href='<?php echo $url; ?>'><?php echo $modules->name; ?></a></li>
-                            <?php
+                            } else {
+                                echo "<li><a href=\"#\">No modules installed<br />(log out and back in to refresh)</a></li>\n";
                             }
                             ?>
                         </ul>
@@ -202,11 +233,11 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Licenses')?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                <li><a target='_blank' href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
+                                <li><a href='/omk/oae/license_free'><?php echo __('Activate Free License')?></a></li>
                             <?php } ?>
-                            <li><a target='_blank' href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
+                            <li><a href='/omk/opLicense'><?php echo __('Manage Licenses')?></a></li>
                             <li><a href='#' id='buy_more_licenses'><?php echo __('Buy More Licenses')?></a></li>
-                            <li><a target='_blank' href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
+                            <li><a href='/omk/opLicense'><?php echo __('Restore Licenses')?></a></li>
                         </ul>
                     </li>
 
@@ -275,9 +306,11 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help'><?php echo __('About')?></a></li>
-                            <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
                             <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/enterprise'><?php echo __('Open-AudIT Enterprise')?></a></li>
+                            <li><a href='https://community.opmantek.com/display/OA/Getting+Started'><?php echo __('Getting Started')?></a></li>
+                            <li><a href='https://community.opmantek.com/display/OA/Open-AudIT+FAQ'><?php echo __('FAQ')?></a></li>
+                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/features'><?php echo __('Open-AudIT Features')?></a></li>
+
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/support'><?php echo __('Support')?></a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/queries'><?php echo __('Default Query List')?></a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/groups'><?php echo __('Default Group List')?></a></li>
@@ -286,7 +319,7 @@
                     </li>
 
                     <li>
-                        <a target='_blank' title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="/open-audit/images/logo-opmaps.png" alt=""/></a>
+                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="/open-audit/images/logo-opmaps.png" alt=""/></a>
                     </li>
 
                     <?php
@@ -297,11 +330,11 @@
                     }
                     ?>
                     <li>
-                        <a target='_blank' title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="/open-audit/images/logo-nmis.png" alt=""/></a>
+                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="/open-audit/images/logo-nmis.png" alt=""/></a>
                     </li>
 
                     <li>
-                        <a target='_blank' title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="/open-audit/images/oae_sml.png" alt=""/></a>
+                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="/open-audit/images/oae_sml.png" alt=""/></a>
                     </li>
 
                     <li class="dropdown">
