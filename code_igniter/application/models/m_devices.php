@@ -786,9 +786,9 @@ class M_devices extends MY_Model
         $sql = $group->sql;
         $sql = str_replace('WHERE @filter', $device_sql, $sql);
 
-        if ($CI->response->meta->format == 'screen') {
+        #if ($CI->response->meta->format == 'screen') {
             $sql = str_ireplace("SELECT DISTINCT(system.id)", "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.manufacturer AS `system.manufacturer`, system.os_family AS `system.os_family`, system.status AS `system.status`", $sql);
-        }
+        #}
         $sql = "/* m_devices::group */ " . $sql;
         $result = $this->run_sql($sql, array());
 
