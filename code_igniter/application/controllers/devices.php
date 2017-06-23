@@ -100,10 +100,6 @@ class devices extends MY_Controller
             }
         }
         $this->response->meta->filtered = count($this->response->data);
-        if ($this->response->meta->format == 'screen') {
-            $this->load->model('m_queries');
-            $this->response->included = $this->m_queries->collection();
-        }
         output($this->response);
         $log = new stdClass();
         $log->detail = json_encode($this->response->meta);
