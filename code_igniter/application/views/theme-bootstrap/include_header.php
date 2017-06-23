@@ -9,7 +9,7 @@
                     <img alt="Brand" src="/open-audit/images/oac.png">
                 </a>
                 <a class="navbar-brand" href="/open-audit/">
-                    Open-AudIT Community <?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>
+                    <?php echo $this->config->config['oae_product']; ?> <?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>
                 </a>
             </div>
 

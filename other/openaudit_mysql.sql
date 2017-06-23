@@ -406,6 +406,7 @@ INSERT INTO `configuration` VALUES (47,'rss_enable','y','y','system','2000-01-01
 INSERT INTO `configuration` VALUES (48,'rss_url','https://community.opmantek.com/rss/OA.xml','y','system','2000-01-01 00:00:00','The RSS feed URL.');
 INSERT INTO `configuration` VALUES (49,'uuid',UUID(),'n','system',NOW(),'The unique identfier of this Open-AudIT server.');
 INSERT INTO `configuration` VALUES (50,'modules','','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
+INSERT INTO `configuration` VALUES (51,'oae_product','Open-AudIT Community','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

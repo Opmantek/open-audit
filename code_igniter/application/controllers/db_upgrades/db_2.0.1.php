@@ -37,6 +37,11 @@ $sql = "INSERT INTO `configuration` VALUES (NULL, 'modules', '', 'n', 'system','
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# A config item for other the commercial application name
+$sql = "INSERT INTO `configuration` VALUES (NULL, 'oae_product', 'Open-AudIT Community', 'n', 'system','2000-01-01 00:00:00', 'The name of the installed commercial application.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # Update our URL if it's the default
 $sql = "UPDATE `configuration` SET `value` = '/omk/open-audit' WHERE `name` = 'oae_url' and value = '/omk/oae'";
 $this->db->query($sql);
