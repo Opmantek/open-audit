@@ -401,12 +401,14 @@ if (! function_exists('output')) {
         $CI->response->included[] = $enterprise_report;
         unset($enterprise_report);
 
-        $CI->load->model('m_queries');
-        $CI->load->model('m_summaries');
-        $result = $CI->m_queries->collection();
-        $CI->response->included = array_merge($CI->response->included, $result);
-        $result = $CI->m_summaries->collection();
-        $CI->response->included = array_merge($CI->response->included, $result);
+        if ($this->config->config['internal_version'] >= 20170620) {
+            $CI->load->model('m_queries');
+            $CI->load->model('m_summaries');
+            $result = $CI->m_queries->collection();
+            $CI->response->included = array_merge($CI->response->included, $result);
+            $result = $CI->m_summaries->collection();
+            $CI->response->included = array_merge($CI->response->included, $result);
+        }
 
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
