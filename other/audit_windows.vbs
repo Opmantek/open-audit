@@ -1892,7 +1892,7 @@ on error resume next
 on error goto 0
 
 ' audit pre-Vista monitor info using registry
-if windows_build_number < "6000" then
+if (cint(windows_build_number) < 6000) then
 	if debugging > "0" then wscript.echo "registry monitor info" end if
 	' note we exclude "monitors" that are plug'n'play types and have no real info
 	item = ""
@@ -2208,7 +2208,7 @@ if windows_build_number < "6000" then
 end if
 
 ' audit Vista and newer monitor info using WMI
-if windows_build_number >= "6000" then
+if (cint(windows_build_number) >= 6000) then
 	if debugging > "0" then wscript.echo "wmi monitor info" end if
 	item = ""
 	On Error Resume Next
