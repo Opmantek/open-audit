@@ -1891,317 +1891,502 @@ on error resume next
 	end if
 on error goto 0
 
+' audit pre-Vista monitor info using registry
+if windows_build_number < "6000" then
+	if debugging > "0" then wscript.echo "registry monitor info" end if
+	' note we exclude "monitors" that are plug'n'play types and have no real info
+	item = ""
+	dim strarrRawEDID(10)
+	dim temp_model(10)
+	dim temp_manuf(10)
+	intMonitorCount=0
+	sBaseKey = "SYSTEM\CurrentControlSet\Enum\DISPLAY\"
+	iRC = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey, arSubKeys)
+	item = ""
+	all_device_serial = ""
 
-if debugging > "0" then wscript.echo "monitor info" end if
-' note we exclude "monitors" that are plug'n'play types and have no real info
-item = ""
-dim strarrRawEDID(10)
-dim temp_model(10)
-dim temp_manuf(10)
-intMonitorCount=0
-sBaseKey = "SYSTEM\CurrentControlSet\Enum\DISPLAY\"
-iRC = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey, arSubKeys)
-item = ""
-all_device_serial = ""
+	if isnull(arSubKeys) then
+		' do nothing
+		if debugging > "1" then  wscript.echo "Nothing in arSubKeys" end if
+	else
+		for each sKey In arSubKeys
+			if sKey > "" then
+				' note - using the above because the key SYSTEM\CurrentControlSet\Enum\DISPLAY\Default_Monitor is not returning nay value for some reason?
+				sBaseKey2 = sBaseKey & sKey & "\"
+				iRC2 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey2, arSubKeys2)
+				for each sKey2 In arSubKeys2
+					oReg.GetMultiStringValue HKEY_LOCAL_MACHINE, sBaseKey2 & sKey2 & "\", "HardwareID", sValue
+					for tmpctr=0 to ubound(svalue)
+						if lcase (left(svalue(tmpctr),8))="monitor\" then
+							sBaseKey3 = sBaseKey2 & sKey2 & "\"
+							iRC3 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey3, arSubKeys3)
+							for each sKey3 In arSubKeys3
+								strRawEDID = ""
+								if skey3="Control" then
+									oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "DeviceDesc", temp_model(intMonitorCount)
+									oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "Mfg", temp_manuf(intMonitorCount)
+									oReg.GetBinaryValue HKEY_LOCAL_MACHINE, sbasekey3 & "Device Parameters\", "EDID", arrintEDID
+									if VarType(arrintedid) <> 8204 then
+										strRawEDID="EDID Not Available"
+									else
+										for each bytevalue in arrintedid
+											strRawEDID=strRawEDID & chr(bytevalue)
+										next
+									end if
+									'redim Preserve strarrRawEDID(intMonitorCount)
+									strarrRawEDID(intMonitorCount)=strRawEDID
+									intMonitorCount=intMonitorCount+1
+								end if
+							next
+						end if
+					next
+				next
+			end if
+		next
 
-if isnull(arSubKeys) then
-    ' do nothing
-    if debugging > "1" then  wscript.echo "Nothing in arSubKeys" end if
-else
-    for each sKey In arSubKeys
-        if sKey > "" then
-            ' note - using the above because the key SYSTEM\CurrentControlSet\Enum\DISPLAY\Default_Monitor is not returning nay value for some reason?
-            sBaseKey2 = sBaseKey & sKey & "\"
-            iRC2 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey2, arSubKeys2)
-            for each sKey2 In arSubKeys2
-                oReg.GetMultiStringValue HKEY_LOCAL_MACHINE, sBaseKey2 & sKey2 & "\", "HardwareID", sValue
-                for tmpctr=0 to ubound(svalue)
-                    if lcase (left(svalue(tmpctr),8))="monitor\" then
-                        sBaseKey3 = sBaseKey2 & sKey2 & "\"
-                        iRC3 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey3, arSubKeys3)
-                        for each sKey3 In arSubKeys3
-                            strRawEDID = ""
-                            if skey3="Control" then
-                                oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "DeviceDesc", temp_model(intMonitorCount)
-                                oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "Mfg", temp_manuf(intMonitorCount)
-                                oReg.GetBinaryValue HKEY_LOCAL_MACHINE, sbasekey3 & "Device Parameters\", "EDID", arrintEDID
-                                if VarType(arrintedid) <> 8204 then
-                                    strRawEDID="EDID Not Available"
-                                else
-                                    for each bytevalue in arrintedid
-                                        strRawEDID=strRawEDID & chr(bytevalue)
-                                    next
-                                end if
-                                'redim Preserve strarrRawEDID(intMonitorCount)
-                                strarrRawEDID(intMonitorCount)=strRawEDID
-                                intMonitorCount=intMonitorCount+1
-                            end if
-                        next
-                    end if
-                next
-            next
-        end if
-    next
-
-    dim arrMonitorInfo()
-    redim arrMonitorInfo(intMonitorCount-1,5)
-    dim location(3)
-    tmpctr = 0
-    all_device_id = ""
-    for tmpctr = 0 to intMonitorCount-1
-        manufacturer = ""
-        device_id = ""
-        manufacture_date = ""
-        serial = ""
-        model = ""
-        edid_version = ""
-        if strarrRawEDID(tmpctr) <> "EDID Not Available" then
-            location(0) = mid(strarrRawEDID(tmpctr),&H36+1,18)
-            location(1) = mid(strarrRawEDID(tmpctr),&H48+1,18)
-            location(2) = mid(strarrRawEDID(tmpctr),&H5a+1,18)
-            location(3) = mid(strarrRawEDID(tmpctr),&H6c+1,18)
-            strSerFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hff)
-            strMdlFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hfc)
-            intSerFoundAt = -1
-            intMdlFoundAt = -1
-            for findit = 0 to 3
-                if instr(location(findit),strSerFind) > 0 then
-                    intSerFoundAt = findit
-                end if
-                if instr(location(findit),strMdlFind) > 0 then
-                    intMdlFoundAt = findit
-                end if
-            next
-
-
-            ' serial
-            serial = ""
-            tmp = ""
-            if intSerFoundAt <> -1 then tmp = right(location(intSerFoundAt),14)
-            if instr(tmp,chr(&H0a)) > 0 then
-                serial = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
-            else
-                serial = trim(tmp)
-            end if
-            if left(serial,1) = chr(0) then
-                serial = right(serial,len(serial)-1)
-            else
-                serial = "Serial Number Not Found in EDID data"
-            end if
-            if serial = "" then serial = "Serial Number Not Found in EDID data"
+		dim arrMonitorInfo()
+		redim arrMonitorInfo(intMonitorCount-1,5)
+		dim location(3)
+		tmpctr = 0
+		all_device_id = ""
+		for tmpctr = 0 to intMonitorCount-1
+			manufacturer = ""
+			device_id = ""
+			manufacture_date = ""
+			serial = ""
+			model = ""
+			edid_version = ""
+			if strarrRawEDID(tmpctr) <> "EDID Not Available" then
+				location(0) = mid(strarrRawEDID(tmpctr),&H36+1,18)
+				location(1) = mid(strarrRawEDID(tmpctr),&H48+1,18)
+				location(2) = mid(strarrRawEDID(tmpctr),&H5a+1,18)
+				location(3) = mid(strarrRawEDID(tmpctr),&H6c+1,18)
+				strSerFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hff)
+				strMdlFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hfc)
+				intSerFoundAt = -1
+				intMdlFoundAt = -1
+				for findit = 0 to 3
+					if instr(location(findit),strSerFind) > 0 then
+						intSerFoundAt = findit
+					end if
+					if instr(location(findit),strMdlFind) > 0 then
+						intMdlFoundAt = findit
+					end if
+				next
 
 
-
-            ' model
-            model = ""
-            tmp = ""
-            if intMdlFoundAt <> -1 then tmp = right(location(intMdlFoundAt),14)
-            if instr(tmp,chr(&H0a)) > 0 then
-                model = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
-            else
-                model = trim(tmp)
-            end if
-            if left(model,1) = chr(0) then
-                model = right(model,len(model)-1)
-            else
-                model = "Model Descriptor Not Found in EDID data"
-            end if
-            if (model = "Model Descriptor Not Found in EDID data" AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
-            if (model = ""  AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
-            if (model = ""  AND temp_model(tmpctr) =  "") then model = "Model Descriptor Not Found in EDID data"
-            model = escape(model)
-            model = replace(model, "%00", "")
-            model = unescape(model)
-            if (instr(model, "Generic PnP Monitor")) then
-                model = "Generic PNP Monitor"
-            end if
-
-
-            ' manufacture date
-            tmpmfgweek = asc(mid(strarrRawEDID(tmpctr),&H10+1,1))
-            tmpmfgyear = (asc(mid(strarrRawEDID(tmpctr),&H11+1,1))) + 1990
-            manufacture_date = month(dateadd("ww",tmpmfgweek,datevalue("1/1/" & tmpmfgyear))) & "/" & tmpmfgyear
-            ' Inserts a 0 if month < 10
-            temp_date = Split(manufacture_date, "/", -1, 1)
-            temp_date(0) = right("0" & temp_date(0),2)
-            manufacture_date = temp_date(0) & "/" & temp_date(1)
-
-
-            'edid version
-            tmpEDIDMajorVer = asc(mid(strarrRawEDID(tmpctr),&H12+1,1))
-            tmpEDIDRev = asc(mid(strarrRawEDID(tmpctr),&H13+1,1))
-            edid_version = chr(48+tmpEDIDMajorVer) & "." & chr(48+tmpEDIDRev)
-
-
-            'device id
-            tmpEDIDDev1 = hex(asc(mid(strarrRawEDID(tmpctr),&H0a+1,1)))
-            tmpEDIDDev2 = hex(asc(mid(strarrRawEDID(tmpctr),&H0b+1,1)))
-            if len(tmpEDIDDev1) = 1 then tmpEDIDDev1 = "0" & tmpEDIDDev1 end if
-            if len(tmpEDIDDev2) = 1 then tmpEDIDDev2 = "0" & tmpEDIDDev2 end if
-            device_id = tmpEDIDDev2 & tmpEDIDDev1
+				' serial
+				serial = ""
+				tmp = ""
+				if intSerFoundAt <> -1 then tmp = right(location(intSerFoundAt),14)
+				if instr(tmp,chr(&H0a)) > 0 then
+					serial = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
+				else
+					serial = trim(tmp)
+				end if
+				if left(serial,1) = chr(0) then
+					serial = right(serial,len(serial)-1)
+				else
+					serial = "Serial Number Not Found in EDID data"
+				end if
+				if serial = "" then serial = "Serial Number Not Found in EDID data"
 
 
 
-            ' manufacturer
-            manufacturer = ""
-            tmpEDIDMfg = mid(strarrRawEDID(tmpctr),&H08+1,2)
-            Char1=0 : Char2=0 : Char3=0
-            Byte1 = asc(left(tmpEDIDMfg,1))
-            Byte2 = asc(right(tmpEDIDMfg,1))
-            if (Byte1 and 64)  > 0 then Char1 = Char1 + 16
-            if (Byte1 and 32)  > 0 then Char1 = Char1 + 8
-            if (Byte1 and 16)  > 0 then Char1 = Char1 + 4
-            if (Byte1 and 8)   > 0 then Char1 = Char1 + 2
-            if (Byte1 and 4)   > 0 then Char1 = Char1 + 1
-            if (Byte1 and 2)   > 0 then Char2 = Char2 + 16
-            if (Byte1 and 1)   > 0 then Char2 = Char2 + 8
-            if (Byte2 and 128) > 0 then Char2 = Char2 + 4
-            if (Byte2 and 64)  > 0 then Char2 = Char2 + 2
-            if (Byte2 and 32)  > 0 then Char2 = Char2 + 1
-            Char3 = Char3 + (Byte2 and 16)
-            Char3 = Char3 + (Byte2 and 8)
-            Char3 = Char3 + (Byte2 and 4)
-            Char3 = Char3 + (Byte2 and 2)
-            Char3 = Char3 + (Byte2 and 1)
-            man_id = chr(Char1+64) & chr(Char2+64) & chr(Char3+64)
-            std_mon = instr(temp_manuf(tmpctr), "(Standard monitor types)")
-            if ( std_mon = 0 AND temp_manuf(tmpctr) <> "" ) then man_id = temp_manuf(tmpctr)
-            manufacturer = man_id
-            if (man_id = "ACR") then manufacturer = "Acer" end if
-            if (man_id = "ACT") then manufacturer = "Targa" end if
-            if (man_id = "ADI") then manufacturer = "ADI" end if
-            if (man_id = "AOC") then manufacturer = "AOC International" end if
-            if (man_id = "API") then manufacturer = "Acer" end if
-            if (man_id = "APP") then manufacturer = "Apple" end if
-            if (man_id = "ART") then manufacturer = "ArtMedia" end if
-            if (man_id = "AST") then manufacturer = "AST Research" end if
-            if (man_id = "CPL") then manufacturer = "Compal" end if
-            if (man_id = "CPQ") then manufacturer = "Compaq" end if
-            if (man_id = "CTX") then manufacturer = "Chuntex" end if
-            if (man_id = "DEC") then manufacturer = "Digital Equipment Corporation" end if
-            if (man_id = "DEL") then manufacturer = "Dell" end if
-            if (man_id = "Dell Inc.") then manufacturer = "Dell" end if
-            if (instr(man_id, "Dell Inc.")) then manufacturer = "Dell" end if
-            if (man_id = "DPC") then manufacturer = "Delta" end if
-            if (man_id = "DWE") then manufacturer = "Daewoo" end if
-            if (man_id = "ECS") then manufacturer = "Elitegroup Computer Systems" end if
-            if (man_id = "EIZ") then manufacturer = "EIZO" end if
-            if (man_id = "EPI") then manufacturer = "Envision" end if
-            if (man_id = "FCM") then manufacturer = "Funai" end if
-            if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
-            if (man_id = "GSM") then manufacturer = "LG Electronics" end if
-            if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
-            if (man_id = "HEI") then manufacturer = "Hyundai" end if
-            if (man_id = "HIT") then manufacturer = "Hitachi" end if
-            if (man_id = "HSD") then manufacturer = "Hanns.G" end if
-            if (man_id = "HSL") then manufacturer = "Hansol Electronics" end if
-            if (man_id = "HTC") then manufacturer = "Hitachi" end if
-            if (man_id = "HWP") then manufacturer = "Hewlett Packard" end if
-            if (man_id = "IBM") then manufacturer = "IBM" end if
-            if (man_id = "ICL") then manufacturer = "Fujitsu" end if
-            if (man_id = "IVM") then manufacturer = "Idek Iiyama" end if
-            if (man_id = "KFC") then manufacturer = "KFC Computek" end if
-            if (man_id = "LEN") then manufacturer = "Lenovo" end if
-            if (man_id = "LGD") then manufacturer = "LG Display" end if
-            if (man_id = "LKM") then manufacturer = "ADLAS / AZALEA" end if
-            if (man_id = "LNK") then manufacturer = "LINK Technologies" end if
-            if (man_id = "LTN") then manufacturer = "Lite-On" end if
-            if (man_id = "MAG") then manufacturer = "MAG InnoVision" end if
-            if (man_id = "MAX") then manufacturer = "Maxdata Computer" end if
-            if (man_id = "MEI") then manufacturer = "Panasonic" end if
-            if (man_id = "MEL") then manufacturer = "Mitsubishi Electronics" end if
-            if (man_id = "MIR") then manufacturer = "Miro" end if
-            if (man_id = "MTC") then manufacturer = "MITAC" end if
-            if (man_id = "NAN") then manufacturer = "NANAO" end if
-            if (man_id = "NEC") then manufacturer = "NEC" end if
-            if (man_id = "NOK") then manufacturer = "Nokia" end if
-            if (man_id = "OQI") then manufacturer = "Optiquest" end if
-            if (man_id = "PBN") then manufacturer = "Packard Bell" end if
-            if (man_id = "PGS") then manufacturer = "Princeton Graphic Systems" end if
-            if (man_id = "PHL") then manufacturer = "Philips" end if
-            if (man_id = "PNP") then manufacturer = "Plug n Play (Microsoft)" end if
-            if (man_id = "REL") then manufacturer = "Relisys" end if
-            if (man_id = "SAM") then manufacturer = "Samsung" end if
-            if (man_id = "SEC") then manufacturer = "Samsung" end if
-            if (man_id = "SMI") then manufacturer = "Smile" end if
-            if (man_id = "SMC") then manufacturer = "Samtron" end if
-            if (man_id = "SNI") then manufacturer = "Siemens Nixdorf" end if
-            if (man_id = "SNY") then manufacturer = "Sony Corporation" end if
-            if (man_id = "SPT") then manufacturer = "Sceptre" end if
-            if (man_id = "SRC") then manufacturer = "Shamrock Technology" end if
-            if (man_id = "STN") then manufacturer = "Samtron" end if
-            if (man_id = "STP") then manufacturer = "Sceptre" end if
-            if (man_id = "TAT") then manufacturer = "Tatung" end if
-            if (man_id = "TRL") then manufacturer = "Royal Information Company" end if
-            if (man_id = "TOS") then manufacturer = "Toshiba" end if
-            if (man_id = "TSB") then manufacturer = "Toshiba" end if
-            if (man_id = "UNM") then manufacturer = "Unisys" end if
-            if (man_id = "VSC") then manufacturer = "ViewSonic" end if
-            if (man_id = "WTC") then manufacturer = "Wen Technology" end if
-            if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
-            if (man_id = "___") then manufacturer = "Targa"
+				' model
+				model = ""
+				tmp = ""
+				if intMdlFoundAt <> -1 then tmp = right(location(intMdlFoundAt),14)
+				if instr(tmp,chr(&H0a)) > 0 then
+					model = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
+				else
+					model = trim(tmp)
+				end if
+				if left(model,1) = chr(0) then
+					model = right(model,len(model)-1)
+				else
+					model = "Model Descriptor Not Found in EDID data"
+				end if
+				if (model = "Model Descriptor Not Found in EDID data" AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
+				if (model = ""  AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
+				if (model = ""  AND temp_model(tmpctr) =  "") then model = "Model Descriptor Not Found in EDID data"
+				model = escape(model)
+				model = replace(model, "%00", "")
+				model = unescape(model)
+				if (instr(model, "Generic PnP Monitor")) then
+					model = "Generic PNP Monitor"
+				end if
 
-            manufacturer = replace(manufacturer, "@", "")
-            manufacturer = replace(manufacturer, "%", "")
-            manufacturer = replace(manufacturer, ";", "")
+
+				' manufacture date
+				tmpmfgweek = asc(mid(strarrRawEDID(tmpctr),&H10+1,1))
+				tmpmfgyear = (asc(mid(strarrRawEDID(tmpctr),&H11+1,1))) + 1990
+				manufacture_date = month(dateadd("ww",tmpmfgweek,datevalue("1/1/" & tmpmfgyear))) & "/" & tmpmfgyear
+				' Inserts a 0 if month < 10
+				temp_date = Split(manufacture_date, "/", -1, 1)
+				temp_date(0) = right("0" & temp_date(0),2)
+				manufacture_date = temp_date(0) & "/" & temp_date(1)
+
+
+				'edid version
+				tmpEDIDMajorVer = asc(mid(strarrRawEDID(tmpctr),&H12+1,1))
+				tmpEDIDRev = asc(mid(strarrRawEDID(tmpctr),&H13+1,1))
+				edid_version = chr(48+tmpEDIDMajorVer) & "." & chr(48+tmpEDIDRev)
+
+
+				'device id
+				tmpEDIDDev1 = hex(asc(mid(strarrRawEDID(tmpctr),&H0a+1,1)))
+				tmpEDIDDev2 = hex(asc(mid(strarrRawEDID(tmpctr),&H0b+1,1)))
+				if len(tmpEDIDDev1) = 1 then tmpEDIDDev1 = "0" & tmpEDIDDev1 end if
+				if len(tmpEDIDDev2) = 1 then tmpEDIDDev2 = "0" & tmpEDIDDev2 end if
+				device_id = tmpEDIDDev2 & tmpEDIDDev1
 
 
 
+				' manufacturer
+				manufacturer = ""
+				tmpEDIDMfg = mid(strarrRawEDID(tmpctr),&H08+1,2)
+				Char1=0 : Char2=0 : Char3=0
+				Byte1 = asc(left(tmpEDIDMfg,1))
+				Byte2 = asc(right(tmpEDIDMfg,1))
+				if (Byte1 and 64)  > 0 then Char1 = Char1 + 16
+				if (Byte1 and 32)  > 0 then Char1 = Char1 + 8
+				if (Byte1 and 16)  > 0 then Char1 = Char1 + 4
+				if (Byte1 and 8)   > 0 then Char1 = Char1 + 2
+				if (Byte1 and 4)   > 0 then Char1 = Char1 + 1
+				if (Byte1 and 2)   > 0 then Char2 = Char2 + 16
+				if (Byte1 and 1)   > 0 then Char2 = Char2 + 8
+				if (Byte2 and 128) > 0 then Char2 = Char2 + 4
+				if (Byte2 and 64)  > 0 then Char2 = Char2 + 2
+				if (Byte2 and 32)  > 0 then Char2 = Char2 + 1
+				Char3 = Char3 + (Byte2 and 16)
+				Char3 = Char3 + (Byte2 and 8)
+				Char3 = Char3 + (Byte2 and 4)
+				Char3 = Char3 + (Byte2 and 2)
+				Char3 = Char3 + (Byte2 and 1)
+				man_id = chr(Char1+64) & chr(Char2+64) & chr(Char3+64)
+				std_mon = instr(temp_manuf(tmpctr), "(Standard monitor types)")
+				if ( std_mon = 0 AND temp_manuf(tmpctr) <> "" ) then man_id = temp_manuf(tmpctr)
+				manufacturer = man_id
+				if (man_id = "ACR") then manufacturer = "Acer" end if
+				if (man_id = "ACT") then manufacturer = "Targa" end if
+				if (man_id = "ADI") then manufacturer = "ADI" end if
+				if (man_id = "AOC") then manufacturer = "AOC International" end if
+				if (man_id = "API") then manufacturer = "Acer" end if
+				if (man_id = "APP") then manufacturer = "Apple" end if
+				if (man_id = "ART") then manufacturer = "ArtMedia" end if
+				if (man_id = "AST") then manufacturer = "AST Research" end if
+				if (man_id = "CPL") then manufacturer = "Compal" end if
+				if (man_id = "CPQ") then manufacturer = "Compaq" end if
+				if (man_id = "CTX") then manufacturer = "Chuntex" end if
+				if (man_id = "DEC") then manufacturer = "Digital Equipment Corporation" end if
+				if (man_id = "DEL") then manufacturer = "Dell" end if
+				if (man_id = "Dell Inc.") then manufacturer = "Dell" end if
+				if (instr(man_id, "Dell Inc.")) then manufacturer = "Dell" end if
+				if (man_id = "DPC") then manufacturer = "Delta" end if
+				if (man_id = "DWE") then manufacturer = "Daewoo" end if
+				if (man_id = "ECS") then manufacturer = "Elitegroup Computer Systems" end if
+				if (man_id = "EIZ") then manufacturer = "EIZO" end if
+				if (man_id = "EPI") then manufacturer = "Envision" end if
+				if (man_id = "FCM") then manufacturer = "Funai" end if
+				if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
+				if (man_id = "GSM") then manufacturer = "LG Electronics" end if
+				if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
+				if (man_id = "HEI") then manufacturer = "Hyundai" end if
+				if (man_id = "HIT") then manufacturer = "Hitachi" end if
+				if (man_id = "HSD") then manufacturer = "Hanns.G" end if
+				if (man_id = "HSL") then manufacturer = "Hansol Electronics" end if
+				if (man_id = "HTC") then manufacturer = "Hitachi" end if
+				if (man_id = "HWP") then manufacturer = "Hewlett Packard" end if
+				if (man_id = "IBM") then manufacturer = "IBM" end if
+				if (man_id = "ICL") then manufacturer = "Fujitsu" end if
+				if (man_id = "IVM") then manufacturer = "Idek Iiyama" end if
+				if (man_id = "KFC") then manufacturer = "KFC Computek" end if
+				if (man_id = "LEN") then manufacturer = "Lenovo" end if
+				if (man_id = "LGD") then manufacturer = "LG Display" end if
+				if (man_id = "LKM") then manufacturer = "ADLAS / AZALEA" end if
+				if (man_id = "LNK") then manufacturer = "LINK Technologies" end if
+				if (man_id = "LTN") then manufacturer = "Lite-On" end if
+				if (man_id = "MAG") then manufacturer = "MAG InnoVision" end if
+				if (man_id = "MAX") then manufacturer = "Maxdata Computer" end if
+				if (man_id = "MEI") then manufacturer = "Panasonic" end if
+				if (man_id = "MEL") then manufacturer = "Mitsubishi Electronics" end if
+				if (man_id = "MIR") then manufacturer = "Miro" end if
+				if (man_id = "MTC") then manufacturer = "MITAC" end if
+				if (man_id = "NAN") then manufacturer = "NANAO" end if
+				if (man_id = "NEC") then manufacturer = "NEC" end if
+				if (man_id = "NOK") then manufacturer = "Nokia" end if
+				if (man_id = "OQI") then manufacturer = "Optiquest" end if
+				if (man_id = "PBN") then manufacturer = "Packard Bell" end if
+				if (man_id = "PGS") then manufacturer = "Princeton Graphic Systems" end if
+				if (man_id = "PHL") then manufacturer = "Philips" end if
+				if (man_id = "PNP") then manufacturer = "Plug n Play (Microsoft)" end if
+				if (man_id = "REL") then manufacturer = "Relisys" end if
+				if (man_id = "SAM") then manufacturer = "Samsung" end if
+				if (man_id = "SEC") then manufacturer = "Samsung" end if
+				if (man_id = "SHP") then manufacturer = "Sharp" end if
+				if (man_id = "SMI") then manufacturer = "Smile" end if
+				if (man_id = "SMC") then manufacturer = "Samtron" end if
+				if (man_id = "SNI") then manufacturer = "Siemens Nixdorf" end if
+				if (man_id = "SNY") then manufacturer = "Sony Corporation" end if
+				if (man_id = "SPT") then manufacturer = "Sceptre" end if
+				if (man_id = "SRC") then manufacturer = "Shamrock Technology" end if
+				if (man_id = "STN") then manufacturer = "Samtron" end if
+				if (man_id = "STP") then manufacturer = "Sceptre" end if
+				if (man_id = "TAT") then manufacturer = "Tatung" end if
+				if (man_id = "TRL") then manufacturer = "Royal Information Company" end if
+				if (man_id = "TOS") then manufacturer = "Toshiba" end if
+				if (man_id = "TSB") then manufacturer = "Toshiba" end if
+				if (man_id = "UNM") then manufacturer = "Unisys" end if
+				if (man_id = "VSC") then manufacturer = "ViewSonic" end if
+				if (man_id = "WTC") then manufacturer = "Wen Technology" end if
+				if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
+				if (man_id = "___") then manufacturer = "Targa"
 
-            screen_size = round((sqr((asc(mid(strarrRawEDID(tmpctr),22,1)) * asc(mid(strarrRawEDID(tmpctr),22,1))) + (asc(mid(strarrRawEDID(tmpctr),23,1)) * asc(mid(strarrRawEDID(tmpctr),23,1)))) * 10 / 25.4), 1)
-            'for i = 35 to 37
-            '   wscript.echo "Ratio " & i & ": " & asc(mid(strarrRawEDID(tmpctr),i,1))
-            'next
+				manufacturer = replace(manufacturer, "@", "")
+				manufacturer = replace(manufacturer, "%", "")
+				manufacturer = replace(manufacturer, ";", "")
 
 
-            ratio = ""
-            if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 128) then ratio = "1:" else ratio = "0:"
-            if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 64) then ratio = ratio & "1" else ratio = ratio & "0"
-
-            if ratio = "0:0" then ratio = "16:10"
-            if ratio = "0:1" then ratio = "4:3"
-            if ratio = "1:0" then ratio = "5:4"
-            if ratio = "1:1" then ratio = "16:9"
 
 
-            'if (instr(all_device_id, device_id) = 0) then
-            if (instr(all_device_serial, serial) = 0) then
-                ' we don't have this device_id already, so output this entry
-                ' note we exclude "monitors" that are plug'n'play types and have no real info
-                if (manufacturer <> "" and _
-                    manufacture_date <> "01/1990" and _
-                    model <> "Model Descriptor Not Found in EDID data") then
-                    item = item & "     <item>" & vbcrlf
-                    item = item & "         <manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
-                    item = item & "         <device>" & escape_xml(device_id) & "</device>" & vbcrlf
-                    item = item & "         <manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
-                    item = item & "         <model>" & escape_xml(model) & "</model>" & vbcrlf
-                    item = item & "         <serial>" & escape_xml(serial) & "</serial>" & vbcrlf
-                    item = item & "         <edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
-                    item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
-                    item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
-                    item = item & "     </item>" & vbcrlf
-                end if
-                all_device_id = all_device_id & device_id & " "
-                all_device_serial = all_device_serial & serial & " "
-            end if
+				screen_size = round((sqr((asc(mid(strarrRawEDID(tmpctr),22,1)) * asc(mid(strarrRawEDID(tmpctr),22,1))) + (asc(mid(strarrRawEDID(tmpctr),23,1)) * asc(mid(strarrRawEDID(tmpctr),23,1)))) * 10 / 25.4), 1)
+				'for i = 35 to 37
+				'   wscript.echo "Ratio " & i & ": " & asc(mid(strarrRawEDID(tmpctr),i,1))
+				'next
 
-            manufacturer = ""
-            device_id = ""
-            manufacture_date = ""
-            serial = ""
-            model = ""
-            edid_version = ""
 
-        end if
-    next
+				ratio = ""
+				if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 128) then ratio = "1:" else ratio = "0:"
+				if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 64) then ratio = ratio & "1" else ratio = ratio & "0"
 
-end if ' ending if we got anything from HKLM\SYSTEM\CurrentControlSet\Enum\DISPLAY\
+				if ratio = "0:0" then ratio = "16:10"
+				if ratio = "0:1" then ratio = "4:3"
+				if ratio = "1:0" then ratio = "5:4"
+				if ratio = "1:1" then ratio = "16:9"
 
-if item > "" then
-    result.WriteText "  <monitor>" & vbcrlf
-    result.WriteText item
-    result.WriteText "  </monitor>" & vbcrlf
+
+				'if (instr(all_device_id, device_id) = 0) then
+				if (instr(all_device_serial, serial) = 0) then
+					' we don't have this device_id already, so output this entry
+					' note we exclude "monitors" that are plug'n'play types and have no real info
+					if (manufacturer <> "" and _
+						manufacture_date <> "01/1990" and _
+						model <> "Model Descriptor Not Found in EDID data") then
+						item = item & "     <item>" & vbcrlf
+						item = item & "         <manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
+						item = item & "         <device>" & escape_xml(device_id) & "</device>" & vbcrlf
+						item = item & "         <manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
+						item = item & "         <model>" & escape_xml(model) & "</model>" & vbcrlf
+						item = item & "         <serial>" & escape_xml(serial) & "</serial>" & vbcrlf
+						item = item & "         <edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
+						item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
+						item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
+						item = item & "     </item>" & vbcrlf
+					end if
+					all_device_id = all_device_id & device_id & " "
+					all_device_serial = all_device_serial & serial & " "
+				end if
+
+				manufacturer = ""
+				device_id = ""
+				manufacture_date = ""
+				serial = ""
+				model = ""
+				edid_version = ""
+
+			end if
+		next
+
+	end if ' ending if we got anything from HKLM\SYSTEM\CurrentControlSet\Enum\DISPLAY\
+
+	if item > "" then
+		result.WriteText "  <monitor>" & vbcrlf
+		result.WriteText item
+		result.WriteText "  </monitor>" & vbcrlf
+	end if
+end if
+
+' audit Vista and newer monitor info using WMI
+if windows_build_number >= "6000" then
+	if debugging > "0" then wscript.echo "wmi monitor info" end if
+	item = ""
+	On Error Resume Next
+	set Monitors = objWMIService2.InstancesOf("WmiMonitorID")
+	count = Monitors.Count
+	error_returned = err.number
+	on error goto 0
+	if error_returned = 0 then
+		For Each Monitor In Monitors
+		  
+			device_id = Monitor.InstanceName
+			wscript.echo "Serial"
+			serial = BytesToString(Monitor.SerialNumberID)
+			wscript.echo "Model"
+			model = BytesToString(Monitor.UserFriendlyName)
+			if debugging > "1" then wscript.echo "  Model: " & model
+			edid_version = ""	
+			device_id = BytesToString(Monitor.ProductCodeID)
+
+			
+			strQuery = "SELECT PreferredMonitorSourceModeIndex, MonitorSourceModes " & _
+				   "FROM WmiMonitorListedSupportedSourceModes WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
+
+			Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
+
+			horizontalPixels = 0
+			verticalPixels = 0
+			screenResolution = ""
+			For Each MonitorMode In colItems
+			
+				intIndex = MonitorMode.PreferredMonitorSourceModeIndex
+				horizontalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).HorizontalActivePixels)
+				verticalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).VerticalActivePixels)
+				if debugging > "2" then
+					wscript.echo "    Horizontal Pixels: " & horizontalPixels
+					wscript.echo "    Vertical Pixels: " & verticalPixels
+				end if
+			Next
+			ratio=""
+			if not(horizontalPixels=0 or verticalPixels=0) then
+				screenResolution = horizontalPixels & " x " & verticalPixels
+				common = gcd(horizontalPixels, verticalPixels)
+				ratio = CStr(horizontalPixels / common)  & ":" & CStr(verticalPixels / common)
+				if ratio="8:5" then ratio="16:10"
+				if debugging > "2" then wscript.echo "    Ratio: " & ratio
+			end if
+			
+			set colItems = Nothing
+			
+			strQuery = "SELECT MaxHorizontalImageSize, MaxVerticalImageSize " & _
+				   "FROM WmiMonitorBasicDisplayParams WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
+			Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
+
+			For Each MonitorParam In colItems
+				' screen sizes. Convert cm to in.
+				Width = MonitorParam.MaxHorizontalImageSize / 2.54
+				Height = MonitorParam.MaxVerticalImageSize / 2.54
+				screen_size = Round(Sqr((Height ^ 2) + (Width ^ 2)),1)
+				if debugging > "2" then wscript.echo "    Size: " & screen_size
+			Next
+
+			' manufacture date
+			manufacture_date = ""
+			tmpmfgweek = CStr(Monitor.WeekOfManufacture)
+			tmpmfgyear = CStr(Monitor.YearOfManufacture)
+			manufacture_date = month(dateadd("ww",tmpmfgweek,datevalue("1/1/" & tmpmfgyear))) & "/" & tmpmfgyear
+			' Inserts a 0 if month < 10
+			temp_date = Split(manufacture_date, "/", -1, 1)
+			temp_date(0) = right("0" & temp_date(0),2)
+			manufacture_date = temp_date(0) & "/" & temp_date(1)
+						
+			' manufacturer
+			manufacturer = ""
+			man_id = BytesToString(Monitor.ManufacturerName)
+			manufacturer = man_id
+			if (man_id = "ACR") then manufacturer = "Acer" end if
+			if (man_id = "ACT") then manufacturer = "Targa" end if
+			if (man_id = "ADI") then manufacturer = "ADI" end if
+			if (man_id = "AOC") then manufacturer = "AOC International" end if
+			if (man_id = "API") then manufacturer = "Acer" end if
+			if (man_id = "APP") then manufacturer = "Apple" end if
+			if (man_id = "ART") then manufacturer = "ArtMedia" end if
+			if (man_id = "AST") then manufacturer = "AST Research" end if
+			if (man_id = "CPL") then manufacturer = "Compal" end if
+			if (man_id = "CPQ") then manufacturer = "Compaq" end if
+			if (man_id = "CTX") then manufacturer = "Chuntex" end if
+			if (man_id = "DEC") then manufacturer = "Digital Equipment Corporation" end if
+			if (man_id = "DEL") then manufacturer = "Dell" end if
+			if (man_id = "Dell Inc.") then manufacturer = "Dell" end if
+			if (instr(man_id, "Dell Inc.")) then manufacturer = "Dell" end if
+			if (man_id = "DPC") then manufacturer = "Delta" end if
+			if (man_id = "DWE") then manufacturer = "Daewoo" end if
+			if (man_id = "ECS") then manufacturer = "Elitegroup Computer Systems" end if
+			if (man_id = "EIZ") then manufacturer = "EIZO" end if
+			if (man_id = "EPI") then manufacturer = "Envision" end if
+			if (man_id = "FCM") then manufacturer = "Funai" end if
+			if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
+			if (man_id = "GSM") then manufacturer = "LG Electronics" end if
+			if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
+			if (man_id = "HEI") then manufacturer = "Hyundai" end if
+			if (man_id = "HIT") then manufacturer = "Hitachi" end if
+			if (man_id = "HSD") then manufacturer = "Hanns.G" end if
+			if (man_id = "HSL") then manufacturer = "Hansol Electronics" end if
+			if (man_id = "HTC") then manufacturer = "Hitachi" end if
+			if (man_id = "HWP") then manufacturer = "Hewlett Packard" end if
+			if (man_id = "IBM") then manufacturer = "IBM" end if
+			if (man_id = "ICL") then manufacturer = "Fujitsu" end if
+			if (man_id = "IVM") then manufacturer = "Idek Iiyama" end if
+			if (man_id = "KFC") then manufacturer = "KFC Computek" end if
+			if (man_id = "LEN") then manufacturer = "Lenovo" end if
+			if (man_id = "LGD") then manufacturer = "LG Display" end if
+			if (man_id = "LKM") then manufacturer = "ADLAS / AZALEA" end if
+			if (man_id = "LNK") then manufacturer = "LINK Technologies" end if
+			if (man_id = "LTN") then manufacturer = "Lite-On" end if
+			if (man_id = "MAG") then manufacturer = "MAG InnoVision" end if
+			if (man_id = "MAX") then manufacturer = "Maxdata Computer" end if
+			if (man_id = "MEI") then manufacturer = "Panasonic" end if
+			if (man_id = "MEL") then manufacturer = "Mitsubishi Electronics" end if
+			if (man_id = "MIR") then manufacturer = "Miro" end if
+			if (man_id = "MTC") then manufacturer = "MITAC" end if
+			if (man_id = "NAN") then manufacturer = "NANAO" end if
+			if (man_id = "NEC") then manufacturer = "NEC" end if
+			if (man_id = "NOK") then manufacturer = "Nokia" end if
+			if (man_id = "OQI") then manufacturer = "Optiquest" end if
+			if (man_id = "PBN") then manufacturer = "Packard Bell" end if
+			if (man_id = "PGS") then manufacturer = "Princeton Graphic Systems" end if
+			if (man_id = "PHL") then manufacturer = "Philips" end if
+			if (man_id = "PNP") then manufacturer = "Plug n Play (Microsoft)" end if
+			if (man_id = "REL") then manufacturer = "Relisys" end if
+			if (man_id = "SAM") then manufacturer = "Samsung" end if
+			if (man_id = "SEC") then manufacturer = "Samsung" end if
+			if (man_id = "SHP") then manufacturer = "Sharp" end if
+			if (man_id = "SMI") then manufacturer = "Smile" end if
+			if (man_id = "SMC") then manufacturer = "Samtron" end if
+			if (man_id = "SNI") then manufacturer = "Siemens Nixdorf" end if
+			if (man_id = "SNY") then manufacturer = "Sony Corporation" end if
+			if (man_id = "SPT") then manufacturer = "Sceptre" end if
+			if (man_id = "SRC") then manufacturer = "Shamrock Technology" end if
+			if (man_id = "STN") then manufacturer = "Samtron" end if
+			if (man_id = "STP") then manufacturer = "Sceptre" end if
+			if (man_id = "TAT") then manufacturer = "Tatung" end if
+			if (man_id = "TRL") then manufacturer = "Royal Information Company" end if
+			if (man_id = "TOS") then manufacturer = "Toshiba" end if
+			if (man_id = "TSB") then manufacturer = "Toshiba" end if
+			if (man_id = "UNM") then manufacturer = "Unisys" end if
+			if (man_id = "VSC") then manufacturer = "ViewSonic" end if
+			if (man_id = "WTC") then manufacturer = "Wen Technology" end if
+			if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
+			if (man_id = "___") then manufacturer = "Targa"
+
+			manufacturer = replace(manufacturer, "@", "")
+			manufacturer = replace(manufacturer, "%", "")
+			manufacturer = replace(manufacturer, ";", "")
+			
+			if debugging > "2" then wscript.echo "    Manufacturer: " & manufacturer
+			if (manufacturer <> "" and _
+				manufacture_date <> "01/1990" and _
+				model <> "Model Descriptor Not Found in EDID data") then
+				item = item & "     <item>" & vbcrlf
+				item = item & "         <manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
+				item = item & "         <device>" & escape_xml(device_id) & "</device>" & vbcrlf
+				item = item & "         <manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
+				item = item & "         <model>" & escape_xml(model) & "</model>" & vbcrlf
+				item = item & "         <serial>" & escape_xml(serial) & "</serial>" & vbcrlf
+				item = item & "         <description>" & screenResolution & "</description>" & vbcrlf
+				item = item & "         <edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
+				item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
+				item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
+				item = item & "     </item>" & vbcrlf
+			end if
+			
+		Next
+	end if
+	if item > "" then
+		result.WriteText "  <monitor>" & vbcrlf
+		result.WriteText item
+		result.WriteText "  </monitor>" & vbcrlf
+	end if
 end if
 
 
@@ -3546,6 +3731,7 @@ if (audit_software = "y") then
 	result.WriteText "			<version>" & escape_xml(package_version) & "</version>" & vbcrlf
 	result.WriteText "			<location>" & escape_xml(package_location) & "</location>" & vbcrlf
 	result.WriteText "			<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+	result.WriteText "			<uninstall>" & escape_xml(package_uninstall) & "</uninstall>" & vbcrlf
 	result.WriteText "			<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
 	result.WriteText "			<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
 	result.WriteText "			<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
@@ -4503,7 +4689,7 @@ if debugging > "1" then wscript.echo "Win 2000 Key" end if
 path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 subKey = "DigitalProductId"
 oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-key_text = getkey(key, 1)
+key_text = decodeKey(key)
 if (IsNull(key_text) or key_text = "") then
 	' do nothing
 else
@@ -4602,7 +4788,7 @@ if (not isnull(arrSubKeys)) then
 	oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
 	if IsNull(key) then
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4632,7 +4818,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4663,7 +4849,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4693,7 +4879,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4724,7 +4910,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4754,7 +4940,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4785,7 +4971,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4815,7 +5001,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4846,7 +5032,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4876,7 +5062,68 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
+	result.WriteText "	<item>" & vbcrlf
+	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "	</item>" & vbcrlf
+	key_name = ""
+	key_text = ""
+	key_release = ""
+	key_edition = ""
+	end if
+	Next
+end if
+
+''''''''''''''''''''''''''''''''
+'   MS CD Keys for Office 2016 '
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Microsoft\Office\16.0\Registration"
+oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
+if (not isnull(arrSubKeys)) then
+	For Each subkey In arrSubKeys
+	key_name = get_sku_2016(subkey)
+	key_release = get_release_type(subkey)
+	key_edition = get_edition_type(subkey)
+	path = strKeyPath & "\" & subkey
+	subKey = "DigitalProductId"
+	oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+	if IsNull(key) then
+	' do nothing
+	else
+	key_text = decodekey(key)
+	result.WriteText "	<item>" & vbcrlf
+	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "	</item>" & vbcrlf
+	key_text = ""
+	key_release = ""
+	key_edition = ""
+	end if
+	Next
+end if
+
+'''''''''''''''''''''''''''''''''''''
+'   MS CD Keys for Office 2016 64bit'
+'''''''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Registration"
+oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
+if (not isnull(arrSubKeys)) then
+	For Each subkey In arrSubKeys
+	key_name = get_sku_2016(subkey)
+	key_release = get_release_type(subkey)
+	key_edition = get_edition_type(subkey)
+	path = strKeyPath & "\" & subkey
+	subKey = "DigitalProductId"
+	oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+	if IsNull(key) then
+	' do nothing - no key retrieved
+	else
+	key_text = decodekey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4975,7 +5222,7 @@ oReg.GetBinaryValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key
 if IsNull(key) then
 	' do nothing
 else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -6576,7 +6823,8 @@ function escape_wmi(ByVal data)
 	if IsNull(data) then
 	escape_wmi = ""
 	else
-	escape_wmi = replace(data, "'", "\'")
+	escape_wmi = replace(data, "\", "\\")
+	escape_wmi = replace(escape_wmi, "'", "\'")
 	end if
 end function
 
@@ -6623,6 +6871,7 @@ function os_family(os)
 	if InStr(os, "Windows 8")  then os_family="Windows 8"
 	if InStr(os, "2012")       then os_family="Windows 2012"
 	if InStr(os, "Windows 10") then os_family="Windows 10"
+	if InStr(os, "2016")       then os_family="Windows 2016"
 end function
 
 
@@ -7142,6 +7391,29 @@ function get_sku_2013(subkey)
 get_sku_2013 = vers_name
 end function
 
+' https://support.microsoft.com/en-us/kb/3120274
+function get_sku_2016(subkey)
+	vers = mid(subkey,11,4)
+	if vers = "0011" then vers_name = "Microsoft Office Professional Plus 2016" end if
+	if vers = "0012" then vers_name = "Microsoft Office Standard 2016" end if
+	if vers = "0015" then vers_name = "Microsoft Access 2016" end if
+	if vers = "0016" then vers_name = "Microsoft Excel 2016" end if
+	if vers = "0018" then vers_name = "Microsoft PowerPoint 2016" end if
+	if vers = "0019" then vers_name = "Microsoft Publisher 2016" end if
+	if vers = "001A" then vers_name = "Microsoft Outlook 2016" end if
+	if vers = "001B" then vers_name = "Microsoft Word 2016" end if
+	if vers = "001F" then vers_name = "Microsoft Office Proofing Tools Kit Compilation 2016" end if
+	if vers = "003A" then vers_name = "Microsoft Project Standard 2016" end if
+	if vers = "003B" then vers_name = "Microsoft Project Professional 2016" end if
+	if vers = "0051" then vers_name = "Microsoft Visio Professional 2016" end if
+	if vers = "0053" then vers_name = "Microsoft Visio Standard 2016" end if
+	if vers = "00A1" then vers_name = "Microsoft OneNote 2016" end if
+	if vers = "00BA" then vers_name = "Microsoft Office OneDrive for Business 2016" end if
+	if vers = "110D" then vers_name = "Microsoft Office SharePoint Server 2016" end if
+	if vers = "012B" then vers_name = "Microsoft Skype for Business 2016" end if
+get_sku_2016 = vers_name
+end function
+
 
 function get_release_type(value)
 	vers = mid(value,2,1)
@@ -7167,6 +7439,7 @@ function get_edition_type(value)
 	if vers = "0" then release_type = "Enterprise" end if
 	if vers = "1" then release_type = "Retail/OEM" end if
 	if vers = "2" then release_type = "Trial" end if
+	if vers = "5" then release_type = "Download" end if
 	get_edition_type = release_type
 end function
 
@@ -7214,6 +7487,60 @@ Function getkey(Key, ver)
 	else
 	getkey = ""
 	end if
+End Function
+
+'' decodeKey from:
+'' Plugin for OCS Inventory NG 2.x
+'' Creative Commons BY-NC-SA 3.0
+'' Nicolas DEROUET (nicolas.derouet[gmail]com)
+'' http://wiki.ocsinventory-ng.org/index.php?title=Plugins:MSofficeKey
+Function decodeKey(iValues)
+  Dim arrDPID, foundKeys
+  arrDPID = Array()
+  foundKeys = Array()
+
+  Select Case (UBound(iValues))
+    Case 255:  ' 2000
+      range = Array(52,66)
+    Case 163:  ' XP, 2003, 2007
+      range = Array(52,66)
+    Case 1271: ' 2010, 2013, 2016
+      range = Array(808,822)
+    Case Else
+      Exit Function
+  End Select
+
+  charset = "BCDFGHJKMPQRTVWXY2346789"
+
+  For i = range(0) to range(1)
+    ReDim Preserve arrDPID( UBound(arrDPID) + 1 )
+    arrDPID( UBound(arrDPID) ) = iValues(i)
+  Next
+
+  withN = (arrDPID(UBound(arrDPID)) \ 6) And 1
+  arrDPID(UBound(arrDPID)) = (arrDPID(UBound(arrDPID)) And &HF7) Or ((withN And 2) * 4)
+
+  For i = 24 To 0 Step -1
+    k = 0
+    For j = 14 To 0 Step -1
+      k = k * 256 Xor arrDPID(j)
+      arrDPID(j) = k \ 24
+      k = k Mod 24
+    Next
+    strProductKey = Mid(charset, k+1, 1) & strProductKey
+  Next
+
+  If (withN = 1) Then
+    keypart = Mid(strProductKey,2,k)
+    strProductKey = Replace(strProductKey, keypart, keypart & "N", 2, 1, 0)
+    If k = 0 Then strProductKey = "N" & strProductKey
+  End If
+
+  decodeKey = ""
+  For i = 1 To 25
+    decodeKey = decodeKey & Mid(strProductKey,i,1)
+    If i Mod 5 = 0 And i <> 25 Then decodeKey = decodeKey & "-"
+  Next
 End Function
 
 Function GetSN(sComputer,sRoot,sKeyPath,sValueName)
@@ -7448,6 +7775,52 @@ function safeArraySubscript (array, subscript, defaultValue)
 		value = array(subscript)
 	end if
 	safeArraySubscript  = value
+end function
+' http://stackoverflow.com/questions/2108040/zero-length-arrays-in-vbscript
+Function IsDimmedArray(arrParam)
+
+	Dim lintUBound : lintUBound = 0
+	Dim llngError  : llngError = 0
+
+    IsDimmedArray = False
+    If Not IsArray(arrParam) Then : Exit Function
+
+	'' Test the bounds
+    On Error Resume Next
+
+        lintUBound = UBound(arrParam)
+        llngError = Err.Number
+        If (llngError <> 0) Then : Err.Clear
+
+    On Error Goto 0
+    If (llngError = 0) And (lintUBound >= 0) Then : IsDimmedArray = True
+
+End Function 
+
+Function BytesToString(ByVal Bytes)
+  Dim Result, N, len
+  Result = ""
+  if IsDimmedArray(Bytes) then
+	  For N = 0 To UBound(Bytes)
+		If CInt(Bytes(N)) <> 0 Then
+		  Result = Result & Chr(Bytes(N))
+		Else
+		  Exit For
+		End If
+	  Next
+  end if
+  BytesToString = Result
+End Function
+
+function gcd(ByVal a, ByVal b)
+	while (a <> b) 
+		if (a > b) then
+			a = a - b
+		else
+			b = b - a
+		end if
+	wend
+	gcd = a
 end function
 
 Sub forceCScriptExecution
