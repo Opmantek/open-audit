@@ -253,7 +253,7 @@ class M_database extends MY_Model
                         unset($temp);
                     }
                     #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' ' . $CI->db->database . ' ' . $table;
-                    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' -h' . $CI->db->hostname . ' ' . $CI->db->database . ' ' . $table;
+                    $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' -h' . $CI->db->hostname . ' ' . $CI->db->database . ' ' . $table;
                     
                     if ($count < 1001) {
                         // echo "<pre>\n";

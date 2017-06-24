@@ -341,7 +341,7 @@ if (php_uname('s') == 'Linux') {
 $table = 'oa_group';
 if ($this->db->table_exists($table)) {
     #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
-    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' -h' . $this->db->hostname . ' ' . $this->db->database . ' ' . $table;
+    $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' -h' . $this->db->hostname . ' ' . $this->db->database . ' ' . $table;
     $this->log_db(str_replace($this->db->password, '******', $command));
     exec($command, $backup);
     $backup = implode("\n", $backup);
@@ -393,7 +393,7 @@ if ($this->db->table_exists($table)) {
     $this->log_db($this->db->last_query());
 
     #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' ' . $this->db->database . ' ' . $table;
-    $command = $mysqldump . ' --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' -h' . $this->db->hostname . ' ' . $this->db->database . ' ' . $table;
+    $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $this->db->username . ' -p' . $this->db->password . ' -h' . $this->db->hostname . ' ' . $this->db->database . ' ' . $table;
     $this->log_db(str_replace($this->db->password, '******', $command));
     exec($command, $backup);
     $backup = implode("\n", $backup);
