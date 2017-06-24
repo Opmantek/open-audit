@@ -293,11 +293,11 @@ class logon extends CI_Controller
         }
 
         $this->m_configuration->update('oae_license', (string)$license->license, 'system');
-        if ($license->license == 'commercial' or $license->license == 'free') {
-            $this->m_configuration->update('logo', 'logo-banner-oae', 'system');
-        } else {
-            $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
-        }
+        // if ($license->license == 'commercial' or $license->license == 'free') {
+        //     $this->m_configuration->update('logo', 'logo-banner-oae', 'system');
+        // } else {
+        //     $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
+        // }
 
         if (!empty($license->product)) {
             $product = $license->product;
@@ -307,7 +307,11 @@ class logon extends CI_Controller
         if ($license->license == 'none') {
             $product = 'Open-AudIT Community';
         }
-        $this->m_configuration->update('oae_product', (string)$product, 'system');
+        if ($this->config->config['internal_version'] >= 20170620) {
+            $this->m_configuration->update('oae_product', (string)$product, 'system');
+        } else {
+            $this->config->config['oae_product'] = 'Open-AudIT Community';
+        }
 
         // Delete any old sessions stored in the DB
         $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
