@@ -9,7 +9,14 @@
                     <img alt="Brand" src="/open-audit/images/oac.png">
                 </a>
                 <a class="navbar-brand" href="/open-audit/">
-                    <?php echo $this->config->config['oae_product']; ?> <?php echo htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET); ?>
+                <?php
+                if (!empty($this->config->config['oae_product'])) {
+                    $product = $this->config->config['oae_product'];
+                } else {
+                    $product = 'Open-AudIT Community';
+                }
+                echo $product . ' ' . htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET);
+                ?>
                 </a>
             </div>
 
