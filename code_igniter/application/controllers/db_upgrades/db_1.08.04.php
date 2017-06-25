@@ -2364,7 +2364,8 @@ if (($db_internal_version < '20150227') and ($this->db->platform() == 'mysql')) 
     stdlog($log_details);
 
     $this->load->library('encrypt');
-    $this->load->model('m_oa_group');
+    #$this->load->model('m_oa_group');
+    $this->load->model('m_groups');
 
     $sql = "INSERT INTO oa_config (config_name, config_value, config_editable, config_description) VALUES ('page_refresh', '300', 'y', 'Interval in seconds between auto-refreshing the page. Set to 0 to canel auto-refresh.')";
     $this->data['output'] .= $sql."<br /><br />\n";
@@ -2670,54 +2671,54 @@ if (($db_internal_version < '20150620') and ($this->db->platform() == 'mysql')) 
     $query = $this->db->query($sql);
 
     # Activate a couple of reports
-    $this->load->model('m_oa_report');
-    $this->load->model('m_oa_report_column');
+    // $this->load->model('m_oa_report');
+    // $this->load->model('m_oa_report_column');
 
-    $sql = "SELECT report_name from oa_report";
-    $query = $this->db->query($sql);
-    $result = $query->result();
-    $activate_disk = 'y';
-    $activate_interfaces = 'y';
-    foreach ($result as $key => $value) {
-        if ($value == 'Disk Partition Use') {
-            $activate_disk = 'n';
-        }
-        if ($value == 'Interfaces Used - Available') {
-            $activate_interfaces = 'n';
-        }
-    }
+    // $sql = "SELECT report_name from oa_report";
+    // $query = $this->db->query($sql);
+    // $result = $query->result();
+    // $activate_disk = 'y';
+    // $activate_interfaces = 'y';
+    // foreach ($result as $key => $value) {
+    //     if ($value == 'Disk Partition Use') {
+    //         $activate_disk = 'n';
+    //     }
+    //     if ($value == 'Interfaces Used - Available') {
+    //         $activate_interfaces = 'n';
+    //     }
+    // }
 
-    # The Disk Partition Use report
-    if ($activate_disk == 'y') {
-        $file_report = BASEPATH.'../application/controllers/reports/DiskPartitionUse.xml';
-        $file_handle = fopen($file_report, "rb");
-        $contents = fread($file_handle, filesize($file_report));
-        $xml = new SimpleXMLElement(utf8_encode($contents));
-        foreach ($xml->children() as $child) {
-            if ($child->getName() == 'details') {
-                $report_id = $this->m_oa_report->import_report($child);
-            }
-            if ($child->getName() == 'columns') {
-                $this->m_oa_report_column->import_report($child, $report_id);
-            }
-        }
-    }
+    // # The Disk Partition Use report
+    // if ($activate_disk == 'y') {
+    //     $file_report = BASEPATH.'../application/controllers/reports/DiskPartitionUse.xml';
+    //     $file_handle = fopen($file_report, "rb");
+    //     $contents = fread($file_handle, filesize($file_report));
+    //     $xml = new SimpleXMLElement(utf8_encode($contents));
+    //     foreach ($xml->children() as $child) {
+    //         if ($child->getName() == 'details') {
+    //             $report_id = $this->m_oa_report->import_report($child);
+    //         }
+    //         if ($child->getName() == 'columns') {
+    //             $this->m_oa_report_column->import_report($child, $report_id);
+    //         }
+    //     }
+    // }
 
-    # The Interfaces Used / Available report
-    if ($activate_interfaces == 'y') {
-        $file_report = BASEPATH.'../application/controllers/reports/InterfacesUsed-Available.xml';
-        $file_handle = fopen($file_report, "rb");
-        $contents = fread($file_handle, filesize($file_report));
-        $xml = new SimpleXMLElement(utf8_encode($contents));
-        foreach ($xml->children() as $child) {
-            if ($child->getName() == 'details') {
-                $report_id = $this->m_oa_report->import_report($child);
-            }
-            if ($child->getName() == 'columns') {
-                $this->m_oa_report_column->import_report($child, $report_id);
-            }
-        }
-    }
+    // # The Interfaces Used / Available report
+    // if ($activate_interfaces == 'y') {
+    //     $file_report = BASEPATH.'../application/controllers/reports/InterfacesUsed-Available.xml';
+    //     $file_handle = fopen($file_report, "rb");
+    //     $contents = fread($file_handle, filesize($file_report));
+    //     $xml = new SimpleXMLElement(utf8_encode($contents));
+    //     foreach ($xml->children() as $child) {
+    //         if ($child->getName() == 'details') {
+    //             $report_id = $this->m_oa_report->import_report($child);
+    //         }
+    //         if ($child->getName() == 'columns') {
+    //             $this->m_oa_report_column->import_report($child, $report_id);
+    //         }
+    //     }
+    // }
 
     $sql = "UPDATE oa_report SET report_sql = 'SELECT system.system_id, system.hostname, system.man_type, system.man_manufacturer, system.man_model, system.man_os_name, system.man_ip_address, date(system.first_timestamp) as first_timestamp, date(system.timestamp) as timestamp, man_status AS status FROM system INNER JOIN (SELECT oa_group_sys.system_id FROM oa_group_sys LEFT JOIN system on oa_group_sys.system_id = system.system_id WHERE group_id = @group ORDER BY system.system_id LIMIT @limit) AS grp ON system.system_id = grp.system_id WHERE man_type = ?' WHERE report_name = 'Enterprise - Device Type'";
     $this->data['output'] .= $sql."<br /><br />\n";
