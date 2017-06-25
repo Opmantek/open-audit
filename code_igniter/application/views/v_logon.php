@@ -57,7 +57,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-sm-12 text-center">
-                        <img src='<?php echo $this->config->config['oa_web_folder'] . '/images/'.$this->config->config['logo']; ?>.png' alt='logo' border='0' /><br /><br />
+                        <img src='<?php echo $this->config->config['oa_web_folder'] ?>/images/logo.png' alt='logo' border='0' /><br /><br />
                     </div>
 
                     <div class="form-group text-center">
