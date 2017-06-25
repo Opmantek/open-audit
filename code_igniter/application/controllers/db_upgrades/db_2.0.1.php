@@ -32,7 +32,7 @@ $this->log_db('Upgrade database to 2.0.1 commenced');
 # summaries
 $this->alter_table('summaries', 'expose', "`menu_display` enum('y','n') NOT NULL DEFAULT 'y' AFTER `menu_category`");
 
-$sql = = "DELETE FROM `summaries`";
+$sql = "DELETE FROM `summaries`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
