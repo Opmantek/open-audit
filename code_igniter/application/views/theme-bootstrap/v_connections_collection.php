@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -35,42 +36,47 @@
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">
-            <span class="text-left">Connections</span>
-            <span class="pull-right"><?php echo $this->response->meta->filtered . ' of ' . $this->response->meta->total . ' results'; ?></span>
-        </h3>
+        <?php include('include_collection_panel_header.php'); ?>
     </div>
     <div class="panel-body">
-        <?php include('include_collection_panel_header.php'); ?>
+        <?php include('include_collection_panel_body_links.php'); ?>
         <?php if (!empty($this->response->data)) { ?>
-        <table class="table">
+        <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                    <th style='text-align:center;'><?php echo __('ID')?></th>
+                    <th class="text-center"><?php echo __('View')?></th>
                     <th><?php echo __('Name')?></th>
-                    <th><?php echo __('Orgsinsation')?></th>
+                    <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Location A')?></th>
                     <th><?php echo __('Location B')?></th>
                     <th><?php echo __('Provider')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Speed')?></th>
-                    <th style='text-align:center;'><?php echo __('Edit')?></th>
-                    <th style='text-align:center;'><?php echo __('Delete')?></th>
+                    <!-- <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
+                    <th class="text-center"><?php echo __('Edit')?></th>
+                    <?php } ?> -->
+                    <?php if ($this->m_users->get_user_permission('', 'connections', 'd')) { ?>
+                    <th class="text-center"><?php echo __('Delete')?></th>
+                    <?php } ?>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td style='text-align:center;'><a class="btn btn-sm btn-success" href="connections/<?php echo htmlentities($item->id); ?>"><?php echo htmlentities($item->id); ?></a></td>
-                    <td><?php echo htmlentities($item->attributes->name)?></td>
-                    <td><?php echo htmlentities($item->attributes->org_name)?></td>
-                    <td><?php echo htmlentities($item->attributes->location_name_a)?></td>
-                    <td><?php echo htmlentities($item->attributes->location_name_b)?></td>
-                    <td><?php echo htmlentities($item->attributes->provider)?></td>
-                    <td><?php echo htmlentities($item->attributes->service_type)?></td>
-                    <td><?php echo htmlentities($item->attributes->speed)?></td>
-                    <td style='text-align:center;'><a class="btn btn-sm btn-info" href="connections/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <td style='text-align:center;'><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlentities($item->attributes->name); ?>" aria-hidden="true"></span></button></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="connections/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <?php refine('connections.name', $item->attributes->name); ?>
+                    <?php refine('connections.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('connections.location_name_a', $item->attributes->location_name_a); ?>
+                    <?php refine('connections.location_name_b', $item->attributes->location_name_b); ?>
+                    <?php refine('connections.provider', $item->attributes->provider); ?>
+                    <?php refine('connections.service_type', $item->attributes->service_type); ?>
+                    <?php refine('connections.speed', $item->attributes->speed); ?>
+                    <!-- <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
+                    <td class="text-center"><a class="btn btn-sm btn-info" href="connections/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
+                    <?php } ?> -->
+                    <?php if ($this->m_users->get_user_permission('', 'connections', 'd')) { ?>
+                    <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
+                    <?php } ?>
                 </tr>
                 <?php endforeach; ?>
             </tbody>

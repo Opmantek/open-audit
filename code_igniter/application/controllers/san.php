@@ -29,7 +29,8 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -46,28 +47,22 @@ class San extends CI_Controller
      * @author    Mark Unwin <marku@opmantek.com>
      * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
      * @link      http://www.open-audit.org
-     * @return    Admin
      */
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('m_system');
+        // log the attempt
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
         // No need for user to be logged in
         // Have to be able to submit systems via the audit script
         $this->data['title'] = 'Open-AudIT';
         $this->load->library('session');
-
-        // log the attempt
-        $this->load->helper('log');
-        $log_details = new stdClass();
-        $log_details->severity = 6;
-        stdlog($log_details);
-        unset($log_details);
-
-        $this->load->helper('report_helper');
-        check_default_reports();
-        $this->load->helper('group_helper');
-        check_default_groups();
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
     }
 
     /**
@@ -79,7 +74,7 @@ class San extends CI_Controller
      * @author    Mark Unwin <marku@opmantek.com>
      * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
      * @link      http://www.open-audit.org
-     * @return    NULL
+ 
      */
     public function index()
     {
@@ -98,8 +93,7 @@ class San extends CI_Controller
             stdlog($log_details);
 
             $this->load->model('m_devices_components');
-            $this->load->model('m_system');
-            $this->load->model('m_oa_group');
+            $this->load->model('m_device');
             $this->load->model('m_audit_log');
             $this->load->helper('url');
 
@@ -599,11 +593,9 @@ class San extends CI_Controller
                         if (stripos(trim($input[$i]), 'IP address:') === 0 and (!isset($item_ip->ip) or $item_ip->ip == '')) {
                             $item_ip->ip = trim(str_ireplace('IP address:', '', $input[$i]));
                             if (!filter_var($item_ip->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-                                $item_ip->ip = $item_ip->ip;
                                 $item_ip->version = 4;
                             }
                             if (!filter_var($item_ip->ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-                                $item_ip->ip = $item_ip->ip;
                                 $item_ip->version = 6;
                             }
                         }
@@ -708,8 +700,8 @@ class San extends CI_Controller
             $log_details->message = 'Processing audit result for san at ' . $details->ip;
             stdlog($log_details);
 
-            $details->last_seen = date('Y-m-d H:i:s');
-            $details->id = intval($this->m_system->find_system($details, 'y'));
+            $details->last_seen = $this->config->config['timestamp'];
+            $details->id = intval($this->m_device->match($details));
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
@@ -721,7 +713,7 @@ class San extends CI_Controller
             if ($details->id == '') {
                 // insert a new system
                 $details->first_seen = $details->last_seen;
-                $details->id = $this->m_system->insert_system($details);
+                $details->id = $this->m_device->insert($details);
                 $log_details = new stdClass();
                 $log_details->severity = 7;
                 $log_details->file = 'system';
@@ -740,7 +732,7 @@ class San extends CI_Controller
                 unset($log_details);
                 $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
                 $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
-                $this->m_system->update_system($details);
+                $this->m_device->update($details);
                 echo "SystemID (updated): <a href='" . base_url() . "index.php/main/system_display/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
             }
             $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
@@ -763,14 +755,6 @@ class San extends CI_Controller
             $this->m_audit_log->update('debug', 'ip address', $details->id, $details->last_seen);
             $this->m_devices_components->process_component('ip', $details, $ip);
 
-            // Finally, update any groups for this system if config item is set
-            $discovery_update_groups = @$this->m_oa_config->get_config_item('discovery_update_groups');
-            if (!isset($discovery_update_groups) or $discovery_update_groups == 'n') {
-                # don't run the update group routine
-            } else {
-                $this->m_audit_log->update('debug', 'system groups', $details->id, $details->last_seen);
-                $this->m_oa_group->update_system_groups($details);
-            }
             $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
 
             $this->benchmark->mark('code_end');

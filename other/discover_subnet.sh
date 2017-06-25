@@ -28,7 +28,8 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version 1.12.8
+# @version   2.0.1
+
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -44,9 +45,9 @@ log_no_response="n"
 org_id=""
 submit_online="y"
 subnet_range=""
-subnet_timestamp=""
+discovery_id=""
 syslog="y"
-url="http://localhost/open-audit/index.php/discovery/process_subnet"
+url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
@@ -99,6 +100,9 @@ if [ "$help" == "y" ]; then
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
 	echo ""
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+	echo ""
 	echo "  force_ping"
 	echo "    *n - When discovering devices, do not check for ping response."
 	echo "     y - Check for a ping response and only discover those devices that do respond."
@@ -124,9 +128,6 @@ if [ "$help" == "y" ]; then
 	echo ""
 	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
-	echo ""
-	echo "  subnet_timestamp"
-	echo "       - Set by the web GUI. Not used on the command line."
 	echo ""
 	echo "  sequential"
 	echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
@@ -185,7 +186,7 @@ else
 	exit 1
 fi
 
-log_entry="Discovery for $subnet_range submitted at $subnet_timestamp starting"
+log_entry="Discovery for $subnet_range submitted for discovery $discovery_id starting"
 write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
@@ -294,6 +295,10 @@ if [[ "$hosts" != "" ]]; then
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					host_is_up="true"
 				fi
+				NEEDLE="closed "
+				if [[ "$line" == *"$NEEDLE"* ]]; then
+					host_is_up="true"
+				fi
 			fi
 
 			NEEDLE="MAC Address:"
@@ -368,7 +373,12 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
 			result="$result		<ssh_status>$ssh_status</ssh_status>"$'\n'
 			result="$result		<wmi_status>$wmi_status</wmi_status>"$'\n'
-			result="$result		<subnet_timestamp>$subnet_timestamp</subnet_timestamp>"$'\n'
+			result="$result		<discovery_id>$discovery_id</discovery_id>"$'\n'
+			if [ "$debugging" -gt 0 ]; then
+				result="$result		<debug>true</debug>"$'\n'
+			else
+				result="$result		<debug>false</debug>"$'\n'
+			fi
 			result="$result     <nmap_ports><![CDATA[$nmap_ports]]></nmap_ports>"$'\n'
 			#result="$result     <nmap_result><![CDATA[$nmap_result]]></nmap_result>"$'\n'
 			result="$result	</device>"
@@ -387,10 +397,10 @@ if [[ "$hosts" != "" ]]; then
 					# -b   = background the wget command
 					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 					# -q   = quiet (no output)
-					wget $sequential -O - -q --no-check-certificate "$url" --post-data=form_details="$result" 1>/dev/null
+					wget $sequential -O - -q --no-check-certificate "$url" --post-data=data="$result" 1>/dev/null
 				fi
 				if [[ $(uname) == "Darwin" ]]; then
-					curl --data "form_details=$result" "$url" -o curl_output.txt
+					curl --data "data=$result" "$url" -o curl_output.txt
 				fi
 			else
 				log_entry="IP $host responding."
@@ -406,23 +416,27 @@ if [[ "$hosts" != "" ]]; then
 	done
 fi
 
-resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
+resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
 
 if [[ "$submit_online" == "y" ]]; then
 	if [[ $(uname) == "Linux" ]]; then
 		# -b   = background the wget command
 		# -O - = output to STDOUT (combine with 1>/dev/null for no output).
 		# -q   = quiet (no output)
-		wget -b -O - -q --no-check-certificate "$url" --post-data=form_details="$resultcomplete" 1>/dev/null
+		if [[ "$echo_output" == "y" ]]; then
+			wget -b -O - --no-check-certificate "$url" --post-data=data="$resultcomplete"
+		else
+			wget -b -O - -q --no-check-certificate "$url" --post-data=data="$resultcomplete" 1>/dev/null
+		fi
 	fi
 
 	if [[ $(uname) == "Darwin" ]]; then
-		curl --data "form_details=$resultcomplete" "$url"
+		curl --data "data=$resultcomplete" "$url"
 	fi
 fi
 
 if [[ "$echo_output" == "y" ]]; then
-	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><subnet_timestamp>$subnet_timestamp</subnet_timestamp><complete>y</complete></device></devices>"
+	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
 fi
 
 
@@ -431,5 +445,5 @@ if [[ "$create_file" == "y" ]]; then
 	echo "$result_file" > discovery_subnet.xml
 fi
 
-log_entry="Discovery for $subnet_range submitted at $subnet_timestamp completed"
+log_entry="Discovery for $subnet_range submitted for discovery $discovery_id completed"
 write_log "$log_entry"

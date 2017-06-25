@@ -2,9 +2,9 @@
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-$config['web_internal_version'] = '20160620';
-$config['web_display_version'] = '1.12.8';
-# $config['debug'] = FALSE;
+$config['web_internal_version'] = '20170620';
+$config['web_display_version'] = '2.0.1';
+# $config['debug'] = false;
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -103,7 +103,7 @@ $config['charset'] = "UTF-8";
 |--------------------------------------------------------------------------
 |
 | If you would like to use the "hooks" feature you must enable it by
-| setting this variable to TRUE (boolean).  See the user guide for details.
+| setting this variable to true (boolean).  See the user guide for details.
 |
 */
 $config['enable_hooks'] = false;
@@ -153,7 +153,7 @@ $config['permitted_uri_chars'] = '';
 | You can optionally enable standard query string based URLs:
 | example.com?who=me&what=something&where=here
 |
-| Options are: TRUE or FALSE (boolean)
+| Options are: true or false (boolean)
 |
 | The other items let you set the query string "words" that will
 | invoke your controllers and its functions:
@@ -241,16 +241,16 @@ $config['encryption_key'] = "openaudit";
 |--------------------------------------------------------------------------
 |
 | 'session_cookie_name' = the name you want for the cookie
-| 'encrypt_sess_cookie' = TRUE/FALSE (boolean).  Whether to encrypt the cookie
+| 'encrypt_sess_cookie' = true/false (boolean).  Whether to encrypt the cookie
 | 'session_expiration'  = the number of SECONDS you want the session to last.
 |  by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
 | 'time_to_update'		= how many seconds between CI refreshing Session Information
 |
 */
-$config['sess_cookie_name']        = 'ci_session';
+#$config['sess_cookie_name']        = 'ci_session';
 $config['sess_cookie_name']        = 'openaudit';
 $config['sess_expiration']        = 7200;
-$config['sess_expiration']        = 0;
+#$config['sess_expiration']        = 0;
 $config['sess_encrypt_cookie']    = true;
 $config['sess_use_database']    = true;
 $config['sess_table_name']        = 'oa_user_sessions';
@@ -328,7 +328,7 @@ $config['time_reference'] = 'local';
 |
 | If your PHP installation does not have short tag support enabled CI
 | can rewrite the tags on-the-fly, enabling you to utilize that syntax
-| in your view files.  Options are TRUE or FALSE (boolean)
+| in your view files.  Options are true or false (boolean)
 |
 */
 $config['rewrite_short_tags'] = false;
@@ -345,6 +345,12 @@ $config['rewrite_short_tags'] = false;
 |
 */
 $config['proxy_ips'] = '';
+
+function __autoload($class) {
+    if(strpos($class, 'CI_') !== 0) {
+        @include_once( APPPATH . 'core/'. $class . EXT );
+    }
+}
 
 /* End of file config.php */
 /* Location: ./system/application/config/config.php */

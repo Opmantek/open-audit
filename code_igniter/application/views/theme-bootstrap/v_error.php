@@ -27,21 +27,18 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-echo "<h2>Error</h2>\n";
-echo "<div style=\"float:left; width:100%;\">\n";
-if (!empty($this->response->errors)) {
-    echo "<pre>\n";
-    print_r($this->response->errors);
-    echo "</pre>\n";
-}
+// echo "<h2>Error</h2>\n";
+// echo "<div style=\"float:left; width:100%;\">\n";
+// if (!empty($this->response->errors)) {
+//     echo "<pre>\n";
+//     print_r($this->response->errors);
+//     echo "</pre>\n";
+// }
+// echo "</div>";
 
-?>
-</div>
-<?php
-exit();
-?>

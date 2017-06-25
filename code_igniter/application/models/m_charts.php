@@ -28,7 +28,8 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,6 +39,9 @@ class M_charts extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     private function build_filter() {
@@ -80,7 +84,13 @@ class M_charts extends MY_Model
             $filter = new stdClass();
             $filter->name = 'start';
             $filter->operator = '>=';
-            $filter->value = date('Y-m-d', strtotime('-29 days'));
+            $temp = $this->config->item('graph_days');
+            if (empty($temp)) {
+                $days = 30;
+            } else {
+                $days = intval($temp);
+            }
+            $filter->value = date('Y-m-d', strtotime('-' . $days . ' days'));
             $CI->response->meta->filter[] = $filter;
             $CI->response->meta->internal->start = $filter->value;
         }
@@ -112,18 +122,21 @@ class M_charts extends MY_Model
 
     public function read_charts()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $filter = $this->build_filter();
         $CI->response->meta->internal->filter = $filter;
 
         $sql = "SELECT DISTINCT `what`, DATE(MAX(`when`)) AS start, DATE(MIN(`when`)) AS `end` FROM chart GROUP BY `what`";
         $result = $this->run_sql($sql, array());
-        $this->count_data($result);
         return $result;
     }
 
     public function read_chart()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $filter = $this->build_filter();
         $CI->response->meta->internal->filter = $filter;
@@ -134,8 +147,11 @@ class M_charts extends MY_Model
         $CI->response->meta->total = intval($result[0]->count);
 
         if ($CI->response->meta->internal->what == 'device_missing') {
-            $sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, first_seen, last_seen FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND ip <> '' AND ip <> '0.0.0.0' AND ip <> '000.000.000.000' and status = 'production') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
-            $data = array(1, $CI->response->meta->internal->end, $CI->response->meta->internal->end);
+            #$sql = "SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, first_seen, last_seen FROM system LEFT JOIN oa_group_sys ON (system.id = oa_group_sys.system_id) WHERE oa_group_sys.group_id = ? AND ip <> '' AND ip <> '0.0.0.0' AND ip <> '000.000.000.000' and status = 'production') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
+
+            $sql = "/* device_missing */ SELECT DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR)) AS 'date', UNIX_TIMESTAMP(DATE(DATE_ADD(dynamic_calendar.calendar_day, INTERVAL 1 HOUR))) AS 'timestamp', COUNT(ftd.id) AS count FROM (SELECT @start_date := DATE_SUB( @start_date, INTERVAL 1 day ) calendar_day FROM (SELECT @start_date := DATE_ADD(CURDATE(), INTERVAL 1 DAY) ) sqlvars, system LIMIT 30) dynamic_calendar LEFT JOIN (SELECT system.id, system.first_seen, system.last_seen FROM system WHERE system.org_id in (" . $CI->user->org_list . ") AND system.ip <> '' AND system.ip <> '0.0.0.0' AND system.ip <> '000.000.000.000' and system.status = 'production' and system.oae_manage = 'y') ftd ON (DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day) AND DATE(ftd.last_seen) < DATE_SUB(dynamic_calendar.calendar_day, INTERVAL 30 day)) GROUP BY DATE(dynamic_calendar.calendar_day) ORDER BY 'date' asc";
+            $data = array($CI->response->meta->internal->end, $CI->response->meta->internal->end);
+
         } else {
             // $sql = "SELECT DATE(a.Date) AS `date`, UNIX_TIMESTAMP(a.Date) AS `timestamp`, SUM(IF(`count` IS NULL, 0, `count`)) as `count` FROM ( SELECT a.Date FROM ( 
             // SELECT CURDATE() - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY AS Date
@@ -149,7 +165,7 @@ class M_charts extends MY_Model
             // GROUP BY a.Date
             // ORDER BY a.Date asc";
 
-            $sql = "SELECT DATE(a.Date) AS `date`, UNIX_TIMESTAMP(a.Date) AS `timestamp`, SUM(z.count) as `count`
+            $sql = "/* " . $CI->response->meta->internal->what . " */ " . "SELECT DATE(a.Date) AS `date`, UNIX_TIMESTAMP(a.Date) AS `timestamp`, SUM(z.count) as `count`
                     FROM 
                     ( SELECT a.Date FROM 
                         ( SELECT CURDATE() - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY AS `Date` 
@@ -162,7 +178,7 @@ class M_charts extends MY_Model
                         ) a
                     ) AS a 
                     LEFT JOIN 
-                        (SELECT SUM(`count`) AS 'count', DATE(`when`) AS 'date', `what` FROM `chart` WHERE DATE(`when`) BETWEEN ? AND ? AND `what` = ? and `org_id` in (" . $CI->user->org_list . ") group by date(`when`)) AS z 
+                        (SELECT SUM(`count`) AS 'count', DATE(`when`) AS 'date', `what` FROM `chart` WHERE DATE(`when`) BETWEEN ? AND ? AND `what` = ? AND `org_id` in (" . $CI->user->org_list . ") GROUP BY DATE(`when`)) AS z 
                         ON (DATE(z.date) = DATE(a.Date))
                     GROUP BY a.Date 
                     ORDER BY a.Date asc";
@@ -171,26 +187,23 @@ class M_charts extends MY_Model
             $data = array($CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->start, $CI->response->meta->internal->end, $CI->response->meta->internal->what);
         }
         $result = $this->run_sql($sql, $data);
-        foreach ($result as $item) {
-            if (!empty($item->timestamp)) {
-                $item->timestamp = intval($item->timestamp);
+        if (!empty($result)) {
+            foreach ($result as $item) {
+                if (!empty($item->timestamp)) {
+                    $item->timestamp = intval($item->timestamp);
+                }
+                if (empty($item->count)) {
+                    $item->count = 0;
+                }
             }
-            if (empty($item->count)) {
-                $item->count = 0;
-            }
+        } else {
+            $result = array();
+            $item = new stdClass();
+            $item->date = $CI->response->meta->internal->end;
+            $item->timestamp = strtotime($CI->response->meta->internal->end);
+            $item->count = 0;
+            $result[] = $item;
         }
         return($result);
     }
-
-    private function count_data($result)
-    {
-        // do we have any retrieved rows?
-        $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-        }
-    }
-
 }

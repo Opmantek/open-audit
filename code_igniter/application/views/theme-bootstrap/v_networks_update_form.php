@@ -27,11 +27,11 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 $edit = true;
 include('v_networks_read.php');
-?>

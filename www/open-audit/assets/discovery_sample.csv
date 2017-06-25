@@ -1,1 +1,2 @@
-type,name,hour,minute,day,network_address,subnet_range
+type,id,name,hour,minute,day,period_type
+Discovery,

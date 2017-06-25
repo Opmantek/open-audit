@@ -28,29 +28,24 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_help_about' and $include != 'v_upgrade') {
-    $include = "v_help_about";
-    $heading = "You must upgrade";
-}
-if (!isset($this->user->theme) or $this->user->theme == '') {
-    $this->user->theme = 'tango';
+
+if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_database_update' and $include != 'v_database_update_form') {
+    redirect('database?action=update');
 }
 
-if (file_exists(str_replace('v_template.php', 'theme-bootstrap/'.$include.'.php', __FILE__))) {
-    $this->user->theme = 'bootstrap';
+# Define our constans for use in htmlspecialchars
+if (!defined('CHARSET')) {
+    define('CHARSET', 'UTF-8');
+    if (phpversion() >= 5.4) {
+        define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+    } else {
+        define('REPLACE_FLAGS', ENT_COMPAT);
+    }
 }
 
-
-$oa_web_index    = htmlentities($this->config->item('oa_web_index'));
-$oa_web_folder   = htmlentities($this->config->item('oa_web_folder'));
-$oa_theme_images = htmlentities($oa_web_folder.'/theme-'.$this->user->theme.'/'.$this->user->theme.'-images');
-$oa_theme_files  = htmlentities($oa_web_folder.'/theme-'.$this->user->theme.'/'.$this->user->theme.'-files');
-$GLOBALS['oa_theme_images'] = $oa_theme_images;
-$GLOBALS['oa_theme_files'] = $oa_theme_files;
-
-include "theme-".$this->user->theme."/v_template.php";
+include "theme-bootstrap/v_template.php";

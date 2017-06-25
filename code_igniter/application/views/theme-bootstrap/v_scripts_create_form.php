@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,157 +40,158 @@ foreach ($this->response->included as $item) {
         $data['script_option'][$item->id] = $item->attributes;
     }
 }
-// echo "<pre>\n";
-// print_r($data);
-// echo "</pre>\n";
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-        <div class="form-group">
-            <label for="data[id]" class="col-sm-2 control-label">ID</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[id]" name="data[id]" placeholder="" value="" disabled>
+    <div class="panel panel-default">
+        <?php include('include_read_panel_header.php'); ?>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo str_replace("'", "", $item->attributes->name); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" value="">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][based_on]" class="col-sm-3 control-label">Based On</label>
+                        <div class="col-sm-8 input-group">
+                            <select id="data[attributes][based_on]" name="data[attributes][based_on]" onChange="based_on();" class="form-control">
+                                <option value='' label=' '></option>
+                                <option value='audit_aix.sh'>Audit AIX</option>
+                                <option value='audit_esx.sh'>Audit ESX</option>
+                                <option value='audit_linux.sh'>Audit Linux</option>
+                                <option value='audit_osx.sh'>Audit OSX</option>
+                                <option value='audit_windows.vbs'>Audit Windows</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[edited_date]" class="col-sm-3 control-label">Edited Date</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="submit" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-8 input-group">
+                        <input type="hidden" value="scripts" id="data[type]" name="data[type]" />
+                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="data[name]" class="col-sm-2 control-label">Name</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[name]" name="data[name]" placeholder="" value="">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="text-left">Options</span>
+                            <span class="pull-right"></span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="options"></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="data[description]" class="col-sm-2 control-label">Description</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[description]" name="data[description]" placeholder="" value="">
+            <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <span class="text-left">Files</span>
+                            <span class="pull-right"></span>
+                        </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div id="files">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Use</th>
+                                    <th>Name</th>
+                                    <th>Path</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php if (!empty($data['files'])) { ?>
+                            <?php foreach ($data['files'] as $file): ?>
+                            <?php # TODO - enable per script file retrieval ?>
+                            <?php # TODO - Maybe only display files per based_on ?>
+                                <tr>
+                                    <td class="text-center"><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked></td>
+                                    <td><?php echo htmlspecialchars($file->name, REPLACE_FLAGS, CHARSET); ?></td>
+                                    <td><?php echo htmlspecialchars($file->description, REPLACE_FLAGS, CHARSET); ?></td>
+                                    <td><?php echo htmlspecialchars($file->path, REPLACE_FLAGS, CHARSET); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="data[based_on]" class="col-sm-2 control-label">Based On</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <select id="data[based_on]" name="data[based_on]" onChange="based_on();" class="form-control">
-                        <option value='' label=' '></option>
-                        <option value='audit_aix.sh'>Audit AIX</option>
-                        <option value='audit_esx.sh'>Audit ESX</option>
-                        <option value='audit_linux.sh'>Audit Linux</option>
-                        <option value='audit_osx.sh'>Audit OSX</option>
-                        <option value='audit_windows.vbs'>Audit Windows</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="data[edited_by]" class="col-sm-2 control-label">Edited By</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[edited_by]" name="data[edited_by]" placeholder="" value="" disabled>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="data[edited_date]" class="col-sm-2 control-label">Edited Date</label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="data[edited_date]" name="data[edited_date]" placeholder="" value="" disabled>
-                </div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="submit" class="col-sm-2 control-label"></label>
-            <div class="col-sm-4">
-                <div class="col-sm-8 input-group">
-                    <input type="hidden" value="scripts" id="data[type]" name="data[type]" />
-                    <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
-                </div>
-            </div>
-        </div>
-  </div>
-</div>
-
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="text-left">Options</span>
-                    <span class="pull-right"></span>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <div id="options"></div>
             </div>
         </div>
     </div>
-
-    <div class="col-md-6">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <span class="text-left">Files</span>
-                    <span class="pull-right"></span>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <div id="files">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <td>Select</td>
-                            <td>Description</td>
-                            <td>Path</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($data['files'] as $file): ?>
-                    <?php # TODO - enable per script file retrieval ?>
-                    <?php # TODO - Maybe only display files per based_on ?>
-                        <tr>
-                            <td><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked disabled></td>
-                            <td><?php echo htmlentities($file->description); ?></td>
-                            <td><?php echo htmlentities($file->path); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 </form>
 
 
 <?php
-foreach ($data['script_option'] as $key => $value) {
-    $script_options[$key] = generate_options($value, $data['option'], '', $data['orgs']);
+if (!empty($data['script_option'])) {
+    foreach ($data['script_option'] as $key => $value) {
+        $script_options[$key] = generate_options($value, $data['option'], '', $data['orgs']);
+    }
 }
 ?>
 
 <script>
 function based_on(){
-    switch(document.getElementById("data[based_on]").value)
+    switch(document.getElementById("data[attributes][based_on]").value)
     {
         <?php foreach ($script_options as $key => $value) { ?>
         case "<?php echo $key; ?>":
@@ -198,8 +200,7 @@ function based_on(){
         <?php } ?>
     }
     document.getElementById("options").innerHTML = based_on_text;
-    return;
-};
+}
 </script>
 
 
@@ -220,13 +221,13 @@ function generate_options($option_list, $options, $files, $orgs) {
                     case 'url';
                     case 'date':
                         if ($option->name != 'org_id') {
-                            $return .= '<input type="' . $option->type . '" class="form-control" id="data[options][' . $option->name . ']" name="data[options][' . $option->name . ']" placeholder="" value="' . $option->default . '" aria-describedby="option_' . $option->name . '"><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
+                            $return .= '<input type="' . $option->type . '" class="form-control" id="data[options][' . $option->name . ']" name="data[options][' . $option->name . ']" value="' . $option->default . '" aria-describedby="option_' . $option->name . '"><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
 
                         } else {
                             $return .= '<select name="data[options][org_id]" id="data[options][org_id]" class="form-control" aria-describedby="option_org_id">';
                             $return .= '<option value="" label=" "></option>';
                             foreach ($orgs as $org) {
-                                $return .= '<option value="' . $org->id . '">' . $org->name . '</option>';
+                                $return .= '<option value="' . $org->id . '">' . htmlentities($org->name, ENT_QUOTES) . '</option>';
                             }
                             $return .= '</select><span id="option_org_id" class="help-block">' . $option->help . '</span>';
                         }
@@ -240,7 +241,7 @@ function generate_options($option_list, $options, $files, $orgs) {
                             } else {
                                 $selected = '';
                             }
-                            $return .= '<option value="' . $value . '" ' . $selected . '>' . $value . '</option>';
+                            $return .= '<option value="' . $value . '" ' . $selected . '>' . htmlentities($value, ENT_QUOTES) . '</option>';
                         }
                         $return .= '</select><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
                         break;
@@ -249,10 +250,6 @@ function generate_options($option_list, $options, $files, $orgs) {
             }
         }
     }
-    // if ($files != '') {
-    //     $return .= '<tr><td colspan="3"><b>Custom Fields</b></td></tr>' . $files;
-    // }
-    // $return .= '</table>';
     return($return);
 }
 ?>

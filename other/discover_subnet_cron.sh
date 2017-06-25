@@ -28,14 +28,15 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version 1.12.8
+# @version   2.0.1
+
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
 # these are REQUIRED and can be overwritten on the command line
 OPENAUDIT_USER="admin"
 OPENAUDIT_PASS="password"
-OPENAUDIT_URL="http://localhost/open-audit/index.php/discovery/discover_subnet"
+OPENAUDIT_URL="http://localhost/open-audit/index.php/input/discoveries"
 FORM_SUBNET=""
 FORM_LOCAL_ADDRESS=""
 DEBUGGING=1

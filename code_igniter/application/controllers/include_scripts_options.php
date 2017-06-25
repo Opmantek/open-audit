@@ -28,8 +28,9 @@
     /**
      * @author Mark Unwin <marku@opmantek.com>
      *
-     * 
-     * @version 1.12.8
+     *
+     * @version   2.0.1
+
      * @copyright Copyright (c) 2014, Opmantek
      * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
      */
@@ -46,7 +47,6 @@
      *
      * @link     http://www.open-audit.org
      *
-     * @return Admin
      */
         $options = array();
 
@@ -206,7 +206,7 @@
 
         $options['url'] = new stdClass();
         $options['url']->name = 'url';
-        $options['url']->default = 'http://' . $this->config->item('default_network_address') . '/open-audit/index.php/system/add_system';
+        $options['url']->default = 'http://' . $this->config->item('default_network_address') . '/open-audit/index.php/input/devices';
         $options['url']->help = 'The address of the Open-AudIT server "submit" page.';
         $options['url']->type = 'url';
         $options['url']->values = '';

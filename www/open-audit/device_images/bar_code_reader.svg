@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="48px"
+   height="48px"
+   id="svg4055"
+   sodipodi:version="0.32"
+   inkscape:version="0.45"
+   sodipodi:docbase="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices"
+   sodipodi:docname="serial-port.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true">
+  <defs
+     id="defs4057">
+    <linearGradient
+       id="linearGradient3727">
+      <stop
+         style="stop-color:#d3d7cf;stop-opacity:1;"
+         offset="0"
+         id="stop3729" />
+      <stop
+         style="stop-color:#b3baac;stop-opacity:1;"
+         offset="1"
+         id="stop3731" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient3709">
+      <stop
+         style="stop-color:#729fcf;stop-opacity:1;"
+         offset="0"
+         id="stop3711" />
+      <stop
+         style="stop-color:#3c74b1;stop-opacity:1;"
+         offset="1"
+         id="stop3713" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3727"
+       id="linearGradient3766"
+       gradientUnits="userSpaceOnUse"
+       x1="23.201941"
+       y1="9.3742924"
+       x2="23.201941"
+       y2="14.014891" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3709"
+       id="linearGradient3768"
+       gradientUnits="userSpaceOnUse"
+       x1="19.5"
+       y1="18.5625"
+       x2="26.25"
+       y2="36.125" />
+    <filter
+       inkscape:collect="always"
+       x="-0.086810932"
+       width="1.1736219"
+       y="-0.10932092"
+       height="1.2186418"
+       id="filter3267">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="1.4757857"
+         id="feGaussianBlur3269" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="-6.7672444"
+     inkscape:cy="73.165525"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="1590"
+     inkscape:window-height="1121"
+     inkscape:window-x="1600"
+     inkscape:window-y="25"
+     showguides="true"
+     inkscape:guide-bbox="true" />
+  <metadata
+     id="metadata4060">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Serial Port</dc:title>
+        <dc:date>2007-03-07</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Christian Hammond</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>VMware, Inc.</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>serial port</rdf:li>
+            <rdf:li>serial</rdf:li>
+            <rdf:li>device</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/2.5/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/2.5/">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/Notice" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/Attribution" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       style="opacity:0.63978493;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3267)"
+       d="M 8.7000037,15.140164 L 39.3,15.140164 C 39.9648,15.140164 40.5,15.675363 40.5,16.340163 L 40.5,31.940166 C 40.5,32.604965 39.9648,33.140164 39.3,33.140164 L 35.475,33.140164 C 35.441243,33.106407 32.533884,32.771724 32.533884,41.139309 L 15.510314,41.139309 C 15.510314,32.771794 12.55876,33.106407 12.525003,33.140164 L 8.7000037,33.140164 C 8.1008253,33.140164 7.6069243,32.705408 7.5152577,32.132852 C 7.5052185,32.070146 7.5000038,32.005787 7.5000038,31.940166 L 7.5000038,16.340163 C 7.5000038,15.675363 8.0352038,15.140164 8.7000037,15.140164 z "
+       id="path2251"
+       sodipodi:nodetypes="ccccccccccsccc" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#d3d7cf;fill-opacity:1;stroke:#555753;stroke-width:1.18227363;stroke-miterlimit:4;stroke-dasharray:none"
+       id="path3748"
+       sodipodi:cx="13.457126"
+       sodipodi:cy="34.852234"
+       sodipodi:rx="2.1434174"
+       sodipodi:ry="2.1434174"
+       d="M 15.600543 34.852234 A 2.1434174 2.1434174 0 1 1  11.313708,34.852234 A 2.1434174 2.1434174 0 1 1  15.600543 34.852234 z"
+       transform="matrix(0.933089,0,0,0.766727,24.9433,6.13443)"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       transform="matrix(0.933089,0,0,0.766727,-2.056697,6.13443)"
+       d="M 15.600543 34.852234 A 2.1434174 2.1434174 0 1 1  11.313708,34.852234 A 2.1434174 2.1434174 0 1 1  15.600543 34.852234 z"
+       sodipodi:ry="2.1434174"
+       sodipodi:rx="2.1434174"
+       sodipodi:cy="34.852234"
+       sodipodi:cx="13.457126"
+       id="path3750"
+       style="opacity:1;fill:#d3d7cf;fill-opacity:1;stroke:#555753;stroke-width:1.18227363;stroke-miterlimit:4;stroke-dasharray:none"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="opacity:1;fill:url(#linearGradient3766);fill-opacity:1;stroke:#555753;stroke-width:0.99999964;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect3752"
+       width="24.000006"
+       height="8.0000086"
+       x="11.5"
+       y="7.5"
+       rx="1.2000003"
+       ry="1.1999981"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       ry="0.2"
+       rx="0.2"
+       y="8.4999924"
+       x="12.500005"
+       height="8.0000086"
+       width="21.999996"
+       id="rect3754"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#eeeeec;stroke-width:0.99999994;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.56284156"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       sodipodi:nodetypes="ccccccccccsccc"
+       id="path3756"
+       d="M 8.7000037,14.5 L 39.3,14.5 C 39.9648,14.5 40.5,15.035199 40.5,15.699999 L 40.5,31.300002 C 40.5,31.964801 39.9648,32.5 39.3,32.5 L 35.475,32.5 C 35.441243,32.466243 32.533884,32.13156 32.533884,40.499145 L 15.510314,40.499145 C 15.510314,32.13163 12.55876,32.466243 12.525003,32.5 L 8.7000037,32.5 C 8.1008253,32.5 7.6069243,32.065244 7.5152577,31.492688 C 7.5052185,31.429982 7.5000038,31.365623 7.5000038,31.300002 L 7.5000038,15.699999 C 7.5000038,15.035199 8.0352038,14.5 8.7000037,14.5 z "
+       style="fill:url(#linearGradient3768);fill-opacity:1;stroke:#204a87;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       style="opacity:0.32258067;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.00000095;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3758"
+       width="3.9999971"
+       height="5.9999995"
+       x="15"
+       y="21"
+       rx="1.1999989"
+       ry="1.2000012"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       style="fill:none;fill-opacity:1;stroke:#eeeeec;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.25136611"
+       d="M 9.6272773,15.499995 L 38.37273,15.499995 C 39.684739,15.499995 39.500003,15.492289 39.500003,16.607723 L 39.500003,30.383195 C 39.500003,31.434376 39.686227,31.490921 38.37273,31.490921 L 34.779548,31.490921 C 34.810524,31.459945 31.579181,32.338039 31.579181,39.499988 L 16.524842,39.499988 C 16.524842,32.213377 13.125455,31.465465 13.220459,31.490921 L 9.6272773,31.490921 C 8.3068621,31.490921 8.5000046,31.559376 8.5000046,30.383195 L 8.5000046,16.607723 C 8.5000046,15.429882 8.3715313,15.499995 9.6272773,15.499995 z "
+       id="path3760"
+       sodipodi:nodetypes="ccccccccccccc"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path3762"
+       d="M 22,20 L 22,22 L 23,22 L 23,28 L 25,28 L 25,20 L 23,20 L 22,20 z "
+       style="opacity:0.32258067;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.56284156"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <rect
+       ry="1.2000012"
+       rx="1.1999989"
+       y="21"
+       x="28"
+       height="5.9999995"
+       width="3.9999971"
+       id="rect3764"
+       style="opacity:0.32258067;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:2.00000095;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:export-filename="/home/christian/hosted07/install/desktop/linux/icons/hicolor/scalable/devices/serial.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+  </g>
+</svg>

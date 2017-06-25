@@ -26,7 +26,8 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-' @version 1.12.8
+' @version   2.0.1
+
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -46,8 +47,10 @@ submit_online = "y"
 ' create an XML text file of the result in the current directory
 create_file = "n"
 
+discovery_id = ""
+
 ' the address of the Open-AudIT server "submit" page
-url = "http://localhost/open-audit/index.php/system/add_system"
+url = "http://localhost/open-audit/index.php/input/devices"
 
 ' submit via a proxy (using the settings of the user running the script)
 use_proxy = "n"
@@ -96,6 +99,9 @@ self_delete = "n"
 ' 3 = very verbose debug
 debugging = "1"
 
+' Version
+version = "2.0.1"
+
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
 ' Only set this value if your audit host is on a different domain than audit targets and you are not using audit_domain.vbs - IE, you are running "cscript audit_windows.vbs COMPUTER" where COMPUTER is on a seperate domain than the PC you are running the command on. This would then apply to ALL systems audited like this. This would be the exception rather than the rule. Do not do this unless you know what you are doing :-)
@@ -112,6 +118,7 @@ ping_target = "n"
 
 ' set by the Discovery function - do not normally set this manually
 system_id = ""
+last_seen_by = "audit"
 
 details_to_lower = "y"
 
@@ -143,6 +150,9 @@ For Each strArg in objArgs
 
 	case "debugging"
 	debugging = argValue
+
+	case "discovery_id"
+	discovery_id = argValue
 
 	case "help"
 	help = argValue
@@ -213,6 +223,9 @@ For Each strArg in objArgs
 	case "san_discover"
 	san_discover = argvalue
 
+	case "last_seen_by"
+	last_seen_by = argvalue
+
 	end select
 	else
 	if (strArg = "/help") or (strArg = "/?") then
@@ -225,8 +238,8 @@ next
 
 if (help = "y") then
 	wscript.echo "------------------------------"
-	wscript.echo "Open-AudIT Domain Audit Script"
-	wscript.echo "(c) Opmantek, 2014."
+	wscript.echo "Open-AudIT Windows audit script"
+	wscript.echo "Version: " & version
 	wscript.echo "------------------------------"
 	wscript.echo "This script should be run against a Windows based computer. It audits the target Windows computer and creates a result which can be submitted to the Open-AudIT server or saved as an XML file."
 	wscript.echo ""
@@ -242,6 +255,9 @@ if (help = "y") then
 	wscript.echo "     2 - Verbose output."
 	wscript.echo "     3 - Very Verbose output."
 	wscript.echo ""
+    wscript.echo "  discovery_id"
+    wscript.echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+    wscript.echo ""
 	wscript.echo "  /? or /help or help=y"
 	wscript.echo "      y - Display this help output."
 	wscript.echo "     *n - Do not display this output."
@@ -337,30 +353,33 @@ end if'
 ' start the script
 if debugging > "0" then wscript.echo "starting audit - " & strcomputer end if
 
-if debugging > "2" then
-	wscript.echo "Argurments"
-	wscript.echo "-------------------"
+if debugging > "0" then
+    wscript.echo "----------------------------"
+    wscript.echo "Open-AudIT Windows audit script"
+    wscript.echo "Version: " & version
+    wscript.echo "----------------------------"
+	wscript.echo "audit_dns: " & audit_dns
+	wscript.echo "audit_mount_point: " & audit_mount_point
+	wscript.echo "audit_netstat: " & audit_netstat
+	wscript.echo "audit_software: " & audit_software
 	wscript.echo "create_file: " & create_file
 	wscript.echo "debugging: " & debugging
+	wscript.echo "details_to_lower: " & details_to_lower
+	wscript.echo "discovery_id: " & discovery_id
+	wscript.echo "hide_audit_window: " & hide_audit_window
 	wscript.echo "ldap: " & ldap
 	wscript.echo "org_id: " & org_id
 	wscript.echo "ping_target: " & ping_target
-	wscript.echo "audit_netstat: " & audit_netstat
 	wscript.echo "self_delete: " & self_delete
-	wscript.echo "audit_software: " & audit_software
-	wscript.echo "audit_dns: " & audit_dns
-	wscript.echo "audit_mount_point: " & audit_mount_point
 	wscript.echo "strcomputer: " & strcomputer
-	wscript.echo "struser: " & struser
 	wscript.echo "strpass: " & strpass
+	wscript.echo "struser: " & struser
 	wscript.echo "submit_online: " & submit_online
 	wscript.echo "system_id: " & system_id
 	wscript.echo "url: " & url
 	wscript.echo "use_proxy: " & use_proxy
 	wscript.echo "windows_user_work_1: " & windows_user_work_1
 	wscript.echo "windows_user_work_2: " & windows_user_work_2
-	wscript.echo "details_to_lower: " & details_to_lower
-	wscript.echo "hide_audit_window: " & hide_audit_window
 	wscript.echo "-------------------"
 end if
 
@@ -502,141 +521,141 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
 
 	if ((pc_alive = 1) or (ping_target = "n")) then
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem creating WBEM object (0) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set wmiLocator = CreateObject("WbemScripting.SWbemLocator")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem creating WBEM object (0) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set wmiNameSpace = wmiLocator.ConnectServer(strcomputer, "\root\default", struser, strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (1) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	wmiNameSpace.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			wmiNameSpace.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (2) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set oReg = wmiNameSpace.Get("StdRegProv")
-	Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set oReg = wmiNameSpace.Get("StdRegProv")
+			Set objWMIService = wmiLocator.ConnectServer(strcomputer, "\root\cimv2",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (3) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	objWMIService.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			objWMIService.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (4) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			Set objWMIService2 = wmiLocator.ConnectServer(strcomputer, "\root\WMI",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (5) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	objWMIService2.Security_.ImpersonationLevel = 3
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			objWMIService2.Security_.ImpersonationLevel = 3
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (6) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 	end if ' pc_alive or ping_target = n
 else
 	' localhost or no credentials passed, therefore auditing as the user running this script
 	if ((pc_alive = 1) or (ping_target = "n")) then
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2")
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			set objWMIService = GetObject("winmgmts:\\" & strcomputer & "\root\cimv2")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (7) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			set objWMIService2 = GetObject("winmgmts:\\" & strcomputer & "\root\WMI")
+			error_returned = Err.Number
+			error_description = Err.Description
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "0" then wscript.echo "Problem authenticating (8) to " &  strcomputer end if
+				if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 
-	if (error_returned = 0) then
-	On Error Resume Next
-	set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
-	error_returned = Err.Number
-	error_description = Err.Description
-	if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "1" then wscript.echo "Problem authenticating (9) to " &  strcomputer end if
-	if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "1" then wscript.echo "Error Description:" & error_description end if
-	end if
-	end if
+		if (error_returned = 0) then
+			On Error Resume Next
+			set oReg = GetObject("winmgmts:{impersonationLevel=impersonate}!\\" & strcomputer & "\root\default:StdRegProv")
+			error_returned = Err.Number
+			error_description = Err.Description
+			if error_description = "" then error_description = "Access Denied. Check Firewall and user security permissions."
+			on error goto 0
+			if (error_returned <> 0) then
+				if debugging > "1" then wscript.echo "Problem authenticating (9) to " &  strcomputer end if
+				if debugging > "1" then wscript.echo "Error Number:" & error_returned end if
+				if debugging > "1" then wscript.echo "Error Description:" & error_description end if
+			end if
+		end if
 	end if ' pc_alive or ping_target = n
 end if
 
@@ -644,223 +663,232 @@ end if
 if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 
 	if ((pc_alive = 0) and (ping_target = "y")) then
-	if debugging > "1" then wscript.echo "Computer " &  strcomputer & " is not responding to ping." end if
+		if debugging > "1" then wscript.echo "Computer " &  strcomputer & " is not responding to ping." end if
 	end if
 
 	if (error_returned <> 0) then
-	if debugging > "1" then wscript.echo "Cannot connect to " & strcomputer end if
+		if debugging > "1" then wscript.echo "Cannot connect to " & strcomputer end if
 	end if
 
 	if debugging > "1" then wscript.echo "Attempting Active Directory data retrieval." end if
 
 	if ldap = "" then
-	if debugging > "1" then wscript.echo "No default LDAP provided, using local settings." end if
-	set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
-	set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
-	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
-	for each objItem in colItems
-	ldap = "LDAP://" & LCase(objItem.Domain)
-	next
+		if debugging > "1" then wscript.echo "No default LDAP provided, using local settings." end if
+		set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+		set colItems = objWMIService.ExecQuery("Select * from Win32_ComputerSystem",,32)
+		error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_ComputerSystem)" : audit_wmi_fails = audit_wmi_fails & "Win32_ComputerSystem " : end if
+		for each objItem in colItems
+			ldap = "LDAP://" & LCase(objItem.Domain)
+		next
 	end if
 
 	if ldap > "" then
-	if debugging > "1" then wscript.echo "LDAP domain: " & ldap end if
-	' retrieve what details we can from AD
-	Set objConnection = CreateObject("ADODB.Connection")
-	Set objCommand =   CreateObject("ADODB.Command")
-	objConnection.Provider = "ADsDSOObject"
-	objConnection.Open "Active Directory Provider"
-	Set objCOmmand.ActiveConnection = objConnection
-	objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, dnshostname, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'"
-	objCommand.Properties("Page Size") = 10000
-	objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
-	Set objRecordSet = objCommand.Execute
-	if objRecordSet.RecordCount > 0 then
-	if debugging > "1" then wscript.echo "LDAP details retrieved." end if
-	objRecordSet.MoveFirst
-	Do Until objRecordSet.EOF
-	system_hostname = ""
-	ip_address = ""
-	computer_dns = ""
-	family = ""
-	os_group = ""
-	os_name = ""
-	computer_ou = ""
-	last_seen = ""
-	icon = ""
-	last_logon = ""
-	dns_hostname = ""
-	on error resume next
-	set objLastLogon = objRecordSet.Fields("lastlogon").Value
-	intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
-	intLastLogonTime = intLastLogonTime / (60 * 10000000)
-	intLastLogonTime = intLastLogonTime / 1440
-	thistime = intLastLogonTime + #1/1/1601#
-	last_logon = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
-	on error goto 0
-	last_pass = ""
-	on error resume next
-	set objLastLogon = objRecordSet.Fields("pwdLastSet").Value
-	intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
-	intLastLogonTime = intLastLogonTime / (60 * 10000000)
-	intLastLogonTime = intLastLogonTime / 1440
-	thistime = intLastLogonTime + #1/1/1601#
-	last_pass = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
-	on error goto 0
+		if debugging > "1" then wscript.echo "LDAP domain: " & ldap end if
+		' retrieve what details we can from AD
+		Set objConnection = CreateObject("ADODB.Connection")
+		Set objCommand =   CreateObject("ADODB.Command")
+		objConnection.Provider = "ADsDSOObject"
+		objConnection.Open "Active Directory Provider"
+		Set objCOmmand.ActiveConnection = objConnection
+		objCommand.CommandText = "Select Name, pwdLastSet, lastlogon, dnshostname, distinguishedName, operatingsystem from '" & ldap & "' Where objectClass='computer' and name = '" & strcomputer & "'"
+		objCommand.Properties("Page Size") = 10000
+		objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE
+		Set objRecordSet = objCommand.Execute
+		if objRecordSet.RecordCount > 0 then
+			if debugging > "1" then wscript.echo "LDAP details retrieved." end if
+			objRecordSet.MoveFirst
+			Do Until objRecordSet.EOF
+				system_hostname = ""
+				ip_address = ""
+				computer_dns = ""
+				family = ""
+				os_group = ""
+				os_name = ""
+				computer_ou = ""
+				last_seen = ""
+				icon = ""
+				last_logon = ""
+				dns_hostname = ""
+				on error resume next
+					set objLastLogon = objRecordSet.Fields("lastlogon").Value
+					intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
+					intLastLogonTime = intLastLogonTime / (60 * 10000000)
+					intLastLogonTime = intLastLogonTime / 1440
+					thistime = intLastLogonTime + #1/1/1601#
+					last_logon = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
+				on error goto 0
+				last_pass = ""
+				on error resume next
+					set objLastLogon = objRecordSet.Fields("pwdLastSet").Value
+					intLastLogonTime = objLastLogon.HighPart * (2^32) + objLastLogon.LowPart
+					intLastLogonTime = intLastLogonTime / (60 * 10000000)
+					intLastLogonTime = intLastLogonTime / 1440
+					thistime = intLastLogonTime + #1/1/1601#
+					last_pass = datepart("yyyy", thistime) & "-" & right("00" & datepart("m", thistime), 2) & "-" & right("00" & datepart("d", thistime), 2)
+				on error goto 0
 
-	if (last_logon > last_pass) then
-	last_seen = last_logon
-	else
-	last_seen = last_pass
-	end if
+				if (last_logon > last_pass) then
+					last_seen = last_logon
+				else
+					last_seen = last_pass
+				end if
 
-	if instr(lcase(objRecordSet.Fields("operatingsystem").Value), "windows") then
-	os_group = "Windows"
-	else
-	os_group = ""
-	end if
+				if instr(lcase(objRecordSet.Fields("operatingsystem").Value), "windows") then
+					os_group = "Windows"
+				else
+					os_group = ""
+				end if
 
-	system_hostname = objRecordSet.Fields("Name").Value
-	dns_hostname = objRecordSet.Fields("dnshostname").Value
+				system_hostname = objRecordSet.Fields("Name").Value
+				dns_hostname = objRecordSet.Fields("dnshostname").Value
 
-	if details_to_lower = "y" then
-	system_hostname = lcase(system_hostname)
-	dns_hostname = lcase(dns_hostname)
-	end if
+				if details_to_lower = "y" then
+					system_hostname = lcase(system_hostname)
+					dns_hostname = lcase(dns_hostname)
+				end if
 
-	strParams = "%comspec% /c NSlookup " & dns_hostname
-	if debugging > "1" then wscript.echo "Looking up DNS entry for " & dns_hostname end if
-	Set objExecObj = objShell.exec(strParams)
-	Do While Not objExecObj.StdOut.AtEndOfStream
-		strText = objExecObj.StdOut.Readline()
-		If instr(strText, "Server") then
-			strServer = trim(replace(strText,"Server:",""))
-		Elseif instr (strText, "Name") Then
-			strhost = trim(replace(strText,"Name:",""))
-		Elseif instr (strText, "Address") Then
-			man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
-		End if
-	Loop
-	if stradd = 1 then man_ip_address = "0.0.0.0" end if
+				strParams = "%comspec% /c NSlookup " & dns_hostname
+				if debugging > "1" then wscript.echo "Looking up DNS entry for " & dns_hostname end if
+				Set objExecObj = objShell.exec(strParams)
+				Do While Not objExecObj.StdOut.AtEndOfStream
+					strText = objExecObj.StdOut.Readline()
+					If instr(strText, "Server") then
+						strServer = trim(replace(strText,"Server:",""))
+					Elseif instr (strText, "Name") Then
+						strhost = trim(replace(strText,"Name:",""))
+					Elseif instr (strText, "Address") Then
+						man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
+					End if
+				Loop
+				if stradd = 1 then man_ip_address = "0.0.0.0" end if
 
-	computer_ou = lcase(ou(objRecordSet.Fields("distinguishedName").Value))
-	i = split(computer_ou, ",")
-	for j = 1 to ubound(i)
-	if instr(i(j), "dc=") then
-	computer_dns = computer_dns & "." & i(j)
-	end if
-	next
-	computer_dns = replace(computer_dns, ".dc=", ".")
-	computer_dns = mid(computer_dns, 2)
+				computer_ou = lcase(ou(objRecordSet.Fields("distinguishedName").Value))
+				i = split(computer_ou, ",")
+				for j = 1 to ubound(i)
+					if instr(i(j), "dc=") then
+						computer_dns = computer_dns & "." & i(j)
+					end if
+				next
+				computer_dns = replace(computer_dns, ".dc=", ".")
+				computer_dns = mid(computer_dns, 2)
 
-	' i = split(dns_hostname, ".")
-	' for j = 1 to ubound(i)
-	' 	computer_dns = computer_dns & "." & i(j)
-	' next
+				' i = split(dns_hostname, ".")
+				' for j = 1 to ubound(i)
+				' 	computer_dns = computer_dns & "." & i(j)
+				' next
 
-	if details_to_lower = "y" then
-	computer_dns = lcase(computer_dns)
-	end if
+				if details_to_lower = "y" then
+					computer_dns = lcase(computer_dns)
+				end if
 
-	os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
-	family = os_family(objRecordSet.Fields("operatingsystem").Value)
-	icon = lcase(replace(family, " ", "_"))
-	if os_group = "Windows" then
-	result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
-	result.WriteText "<system>" & vbcrlf
-	result.WriteText "	<sys>" & vbcrlf
-	result.WriteText "		<id>" & system_id & "</id>" & vbcrlf
-	result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
-	result.WriteText "		<ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
-	result.WriteText "		<domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
-	result.WriteText "		<type>computer</type>" & vbcrlf
-	result.WriteText "		<icon>" & escape_xml(icon) & "</icon>" & vbcrlf
-	result.WriteText "		<os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
-	result.WriteText "		<os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
-	result.WriteText "		<os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
-	result.WriteText "		<active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
-	result.WriteText "		<last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
-	result.WriteText "		<last_seen_by>active directory</last_seen_by>" & vbcrlf
-	result.WriteText "	</sys>" & vbcrlf
-	end if
-	objRecordSet.MoveNext
-	Loop
-	result.WriteText "</system>" & vbcrlf
-	if debugging > "1" then
-	result.position = 0
-	result_text = result.readtext
-	wscript.echo result_text
-	end if
-	if debugging > "1" then wscript.echo "LDAP Seen Days: " & ldap_seen_days end if
-	if debugging > "1" then wscript.echo "LDAP Actual Days: " & datediff("d", last_seen, Now) end if
-	if debugging > "1" then wscript.echo "LDAP Seen Date: " & ldap_seen_date end if
-	if debugging > "1" then wscript.echo "LDAP Actual Date: " & last_seen end if
-	hit = 0
-	if cint(ldap_seen_days) > cint(datediff("d", last_seen, Now)) then
-	' hit
-	if debugging > "0" then wscript.echo "PC not able to be audited but seen by Active Directory " & datediff("d", last_seen, Now)  & " days ago." & vbcrlf & "As this is less than " & ldap_seen_days & ", using AD details for audit." end if
-	hit = 1
-	elseif cdate(ldap_seen_date) < cdate(last_seen) then
-	' hit
-	if debugging > "0" then wscript.echo "PC not able to be audited but seen in Active Directory on " & last_seen & "." & vbcrlf & "As this is after " & ldap_seen_date & ", using AD details for audit." end if
-	hit = 1
-	else
-	if debugging > "0" then wscript.echo "PC not able to be audited and last seen by Active Directory on " & last_seen & "." & vbcrlf & "As this is before " & ldap_seen_date & ", no audit recorded." end if
-	hit = 0
-	end if
+				os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
+				family = os_family(objRecordSet.Fields("operatingsystem").Value)
+				icon = lcase(replace(family, " ", "_"))
+				if os_group = "Windows" then
+					result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
+					result.WriteText "<system>" & vbcrlf
+					result.WriteText "    <sys>" & vbcrlf
+					result.WriteText "        <script_version>" & version & "</script_version>" & vbcrlf
+					result.WriteText "		  <id>" & system_id & "</id>" & vbcrlf
+					result.WriteText "		  <hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
+					result.WriteText "		  <ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
+					result.WriteText "		  <domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
+					result.WriteText "		  <type>computer</type>" & vbcrlf
+					result.WriteText "		  <icon>" & escape_xml(icon) & "</icon>" & vbcrlf
+					result.WriteText "		  <os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
+					result.WriteText "		  <os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
+					result.WriteText "		  <os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
+					result.WriteText "		  <active_directory_ou>" & escape_xml(computer_ou) & "</active_directory_ou>" & vbcrlf
+					result.WriteText "		  <last_seen>" & escape_xml(last_seen) & "</last_seen>" & vbcrlf
+					result.WriteText "		  <last_seen_by>active directory</last_seen_by>" & vbcrlf
+					result.WriteText "		  <discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
+					result.WriteText "    </sys>" & vbcrlf
+				end if
+				objRecordSet.MoveNext
+			Loop
 
-	if (submit_online = "y" and hit = 1) then
-	if debugging > "0" then wscript.echo "Submitting audit online" end if
-	Err.clear
-	XmlObj = "ServerXMLHTTP"
-	Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-	objHTTP.setTimeouts 5000, 5000, 5000, 120000
-	objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-	objHTTP.Open "POST", url, False
-	objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-	result.position = 0
-	objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
-	if (objHTTP.ResponseText > "" and debugging > "2") then
-	wscript.echo
-	wscript.echo
-	wscript.echo "Response"
-	wscript.echo "--------"
-	wscript.echo objHTTP.ResponseText
-	if (inStr(objHTTP.ResponseText, "error")) then
-	wscript.sleep 50000
-	end if
-	end if
-	if debugging > "0" then wscript.echo "Audit Submitted" end if
-	end if
+			result.WriteText "</system>" & vbcrlf
+			if debugging > "1" then
+				result.position = 0
+				result_text = result.readtext
+				wscript.echo result_text
+			end if
+			if debugging > "1" then wscript.echo "LDAP Seen Days: " & ldap_seen_days end if
+			if debugging > "1" then wscript.echo "LDAP Actual Days: " & datediff("d", last_seen, Now) end if
+			if debugging > "1" then wscript.echo "LDAP Seen Date: " & ldap_seen_date end if
+			if debugging > "1" then wscript.echo "LDAP Actual Date: " & last_seen end if
+			hit = 0
+			if cint(ldap_seen_days) > cint(datediff("d", last_seen, Now)) then
+				' hit
+				if debugging > "0" then
+					wscript.echo "PC not able to be audited but seen by Active Directory " & datediff("d", last_seen, Now)  & " days ago." & vbcrlf & "As this is less than " & ldap_seen_days & ", using AD details for audit."
+				end if
+				hit = 1
+			elseif cdate(ldap_seen_date) < cdate(last_seen) then
+				' hit
+				if debugging > "0" then
+					wscript.echo "PC not able to be audited but seen in Active Directory on " & last_seen & "." & vbcrlf & "As this is after " & ldap_seen_date & ", using AD details for audit."
+				end if
+				hit = 1
+			else
+				if debugging > "0" then
+					wscript.echo "PC not able to be audited and last seen by Active Directory on " & last_seen & "." & vbcrlf & "As this is before " & ldap_seen_date & ", no audit recorded."
+				end if
+				hit = 0
+			end if
 
-	if (create_file = "y" and hit = 1) then
-	if debugging > "0" then wscript.echo "Creating output File" end if
-	' Write the results to a file
-	file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
-	OutputFile = system_hostname & "-" & file_timestamp & ".xml"
-	if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
-	Err.clear
-	on error resume next
-	result.position = 0
-	result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
-	error_returned = Err.Number
-	error_description = Err.Description
-	on error goto 0
-	if (error_returned <> 0) then
-	if debugging > "0" then wscript.echo "Problem writing to file." end if
-	if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-	if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-	else
-	if debugging > "0" then wscript.echo "Output file created." end if
-	end if
-	end if
-	else ' count > 0
-	if debugging > "0" then
-	wscript.echo "PC not able to be audited and not found in Active Directory."
-	wscript.echo "Active Directory used for search was: " & ldap
-	wscript.echo "No audit recorded."
-	end if
-	end if ' count > 0
+			if (submit_online = "y" and hit = 1) then
+				if debugging > "0" then wscript.echo "Submitting audit online" end if
+				Err.clear
+				XmlObj = "ServerXMLHTTP"
+				Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+				objHTTP.setTimeouts 5000, 5000, 5000, 120000
+				objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+				objHTTP.Open "POST", url, False
+				objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+				result.position = 0
+				objHTTP.Send "data=" + urlEncode(result.ReadText()) + vbcrlf
+				if (objHTTP.ResponseText > "" and debugging > "2") then
+					wscript.echo
+					wscript.echo
+					wscript.echo "Response"
+					wscript.echo "--------"
+					wscript.echo objHTTP.ResponseText
+					if (inStr(objHTTP.ResponseText, "error")) then
+					wscript.sleep 50000
+					end if
+				end if
+				if debugging > "0" then wscript.echo "Audit Submitted" end if
+			end if
+
+			if (create_file = "y" and hit = 1) then
+				if debugging > "0" then wscript.echo "Creating output File" end if
+				' Write the results to a file
+				file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
+				OutputFile = system_hostname & "-" & file_timestamp & ".xml"
+				if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
+				Err.clear
+				on error resume next
+				result.position = 0
+				result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
+				error_returned = Err.Number
+				error_description = Err.Description
+				on error goto 0
+				if (error_returned <> 0) then
+					if debugging > "0" then wscript.echo "Problem writing to file." end if
+					if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+					if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+				else
+					if debugging > "0" then wscript.echo "Output file created." end if
+				end if
+			end if
+		else ' count > 0
+			if debugging > "0" then
+				wscript.echo "PC not able to be audited and not found in Active Directory."
+				wscript.echo "Active Directory used for search was: " & ldap
+				wscript.echo "No audit recorded."
+			end if
+		end if ' count > 0
 	end if ' ldap > ""
 	if debugging > "2" then wscript.sleep 10000 end if
 	wscript.quit
@@ -942,7 +970,7 @@ processor_count = 0
 processor_logical = 0
 
 ' Only get this value if later OS than XP/2003
-if windows_build_number > 3790 then
+if (cint(windows_build_number) > 3790) then
 	set colItems = objWMIService.ExecQuery("Select * from Win32_Processor",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_Processor)" : audit_wmi_fails = audit_wmi_fails & "Win32_Processor " : end if
 	for each objItem in colItems
@@ -963,7 +991,7 @@ for each objItem in colItems
 	system_domain = objItem.Domain
 	if details_to_lower = "y" then system_domain = lcase(system_domain) end if
 
-	if (windows_build_number =< 3790) or (system_pc_num_processor = 0) then
+	if (cint(windows_build_number) =< 3790) or (system_pc_num_processor = 0) then
 	system_pc_num_processor = objItem.NumberOfProcessors
 	end if
 
@@ -971,7 +999,7 @@ for each objItem in colItems
 	windows_domain_role = objItem.DomainRole
 	' below only checks when OS is XP or later (not 2000 or NT)
 	windows_part_of_domain = False
-	if (windows_build_number >= 2600) then
+	if (cint(windows_build_number) >= 2600) then
 	windows_part_of_domain = objItem.PartOfDomain
 	end if
 
@@ -996,7 +1024,7 @@ end if
 if details_to_lower = "y" then system_hostname = lcase(system_hostname) end if
 
 
-if (cint(windows_build_number)) > 5000 then
+if (cint(windows_build_number) > 5000) then
 	' Win7 or Win2008 last logged on info
 	oreg.getstringvalue hkey_local_machine, "software\microsoft\windows\currentversion\authentication\logonui", "lastloggedonuser", windows_user_name
 	if isnull(windows_user_name) then
@@ -1056,6 +1084,10 @@ for each objItem in colItems
 	windows_id_number = objItem.IdentifyingNumber
 next
 
+if system_manufacturer = "VMware, Inc." then
+	system_manufacturer = "VMware"
+end if
+
 set colItems = objWMIService.ExecQuery("Select * from Win32_SystemEnclosure",,32)
 error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_SystemEnclosure)" : audit_wmi_fails = audit_wmi_fails & "Win32_SystemEnclosure " : end if
 for each objItem in colItems
@@ -1063,11 +1095,15 @@ for each objItem in colItems
    bios_asset_tag = objItem.SMBIOSAssetTag
 next
 
+if system_manufacturer = "VMware" then
+	system_form_factor = "Virtual"
+end if
+
 ' using "on error" because am getting some errors - breaking the script.
 ' occuring on Windows XP machines.
 ' below only checks when OS is XP or later (not 2000 or NT)
 system_uptime = ""
-if (windows_build_number > 2195) then
+if (cint(windows_build_number) > 2195) then
 	on error resume next
 	Set colItems = objWMIService.ExecQuery("Select * From Win32_PerfFormattedData_PerfOS_System",,32)
 	error_returned = Err.Number : if (error_returned <> 0 and debugging > "0") then wscript.echo check_wbem_error(error_returned) & " (Win32_PerfFormattedData_PerfOS_System)" : audit_wmi_fails = audit_wmi_fails & "Win32_PerfFormattedDataPerfOS_System " : end if
@@ -1170,7 +1206,7 @@ if san_audit = "y" and audit_location = "local" then
 				' send the output result to the server
 				if submit_online = "y" then
 				   if debugging > "0" then wscript.echo "Submitting SAN audit online" end if
-				   san_url = replace(url, "system/add_system", "san/add_san")
+				   san_url = replace(url, "input/devices", "san/add_san")
 				   Err.clear
 				   Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
 				   objHTTP.setTimeouts 5000, 5000, 5000, 480000
@@ -1242,6 +1278,7 @@ end if
 result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
 result.WriteText "<system>" & vbcrlf
 result.WriteText "	<sys>" & vbcrlf
+result.WriteText "      <script_version>" & version & "</script_version>" & vbcrlf
 result.WriteText "		<id>" & escape_xml(system_id) & "</id>" & vbcrlf
 result.WriteText "		<uuid>" & escape_xml(system_uuid) & "</uuid>" & vbcrlf
 result.WriteText "		<hostname>" & escape_xml(system_hostname) & "</hostname>" & vbcrlf
@@ -1265,6 +1302,8 @@ result.WriteText "		<processor_count>" & escape_xml(system_pc_num_processor) & "
 result.WriteText "		<os_installation_date>" & escape_xml(system_pc_date_os_installation) & "</os_installation_date>" & vbcrlf
 result.WriteText "		<org_id>" & escape_xml(org_id) & "</org_id>" & vbcrlf
 result.WriteText "		<cluster_name>" & escape_xml(man_cluster_name) & "</cluster_name>" & vbcrlf
+result.WriteText "		<last_seen_by>" & escape_xml(last_seen_by) & "</last_seen_by>" & vbcrlf
+result.WriteText "		<discovery_id>" & escape_xml(discovery_id) & "</discovery_id>" & vbcrlf
 result.WriteText "	</sys>" & vbcrlf
 
 
@@ -1852,317 +1891,502 @@ on error resume next
 	end if
 on error goto 0
 
+' audit pre-Vista monitor info using registry
+if (cint(windows_build_number) < 6000) then
+	if debugging > "0" then wscript.echo "registry monitor info" end if
+	' note we exclude "monitors" that are plug'n'play types and have no real info
+	item = ""
+	dim strarrRawEDID(10)
+	dim temp_model(10)
+	dim temp_manuf(10)
+	intMonitorCount=0
+	sBaseKey = "SYSTEM\CurrentControlSet\Enum\DISPLAY\"
+	iRC = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey, arSubKeys)
+	item = ""
+	all_device_serial = ""
 
-if debugging > "0" then wscript.echo "monitor info" end if
-' note we exclude "monitors" that are plug'n'play types and have no real info
-item = ""
-dim strarrRawEDID(10)
-dim temp_model(10)
-dim temp_manuf(10)
-intMonitorCount=0
-sBaseKey = "SYSTEM\CurrentControlSet\Enum\DISPLAY\"
-iRC = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey, arSubKeys)
-item = ""
-all_device_serial = ""
+	if isnull(arSubKeys) then
+		' do nothing
+		if debugging > "1" then  wscript.echo "Nothing in arSubKeys" end if
+	else
+		for each sKey In arSubKeys
+			if sKey > "" then
+				' note - using the above because the key SYSTEM\CurrentControlSet\Enum\DISPLAY\Default_Monitor is not returning nay value for some reason?
+				sBaseKey2 = sBaseKey & sKey & "\"
+				iRC2 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey2, arSubKeys2)
+				for each sKey2 In arSubKeys2
+					oReg.GetMultiStringValue HKEY_LOCAL_MACHINE, sBaseKey2 & sKey2 & "\", "HardwareID", sValue
+					for tmpctr=0 to ubound(svalue)
+						if lcase (left(svalue(tmpctr),8))="monitor\" then
+							sBaseKey3 = sBaseKey2 & sKey2 & "\"
+							iRC3 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey3, arSubKeys3)
+							for each sKey3 In arSubKeys3
+								strRawEDID = ""
+								if skey3="Control" then
+									oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "DeviceDesc", temp_model(intMonitorCount)
+									oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "Mfg", temp_manuf(intMonitorCount)
+									oReg.GetBinaryValue HKEY_LOCAL_MACHINE, sbasekey3 & "Device Parameters\", "EDID", arrintEDID
+									if VarType(arrintedid) <> 8204 then
+										strRawEDID="EDID Not Available"
+									else
+										for each bytevalue in arrintedid
+											strRawEDID=strRawEDID & chr(bytevalue)
+										next
+									end if
+									'redim Preserve strarrRawEDID(intMonitorCount)
+									strarrRawEDID(intMonitorCount)=strRawEDID
+									intMonitorCount=intMonitorCount+1
+								end if
+							next
+						end if
+					next
+				next
+			end if
+		next
 
-if isnull(arSubKeys) then
-    ' do nothing
-    if debugging > "1" then  wscript.echo "Nothing in arSubKeys" end if
-else
-    for each sKey In arSubKeys
-        if sKey > "" then
-            ' note - using the above because the key SYSTEM\CurrentControlSet\Enum\DISPLAY\Default_Monitor is not returning nay value for some reason?
-            sBaseKey2 = sBaseKey & sKey & "\"
-            iRC2 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey2, arSubKeys2)
-            for each sKey2 In arSubKeys2
-                oReg.GetMultiStringValue HKEY_LOCAL_MACHINE, sBaseKey2 & sKey2 & "\", "HardwareID", sValue
-                for tmpctr=0 to ubound(svalue)
-                    if lcase (left(svalue(tmpctr),8))="monitor\" then
-                        sBaseKey3 = sBaseKey2 & sKey2 & "\"
-                        iRC3 = oReg.EnumKey(HKEY_LOCAL_MACHINE, sBaseKey3, arSubKeys3)
-                        for each sKey3 In arSubKeys3
-                            strRawEDID = ""
-                            if skey3="Control" then
-                                oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "DeviceDesc", temp_model(intMonitorCount)
-                                oReg.GetStringValue HKEY_LOCAL_MACHINE, sbasekey3, "Mfg", temp_manuf(intMonitorCount)
-                                oReg.GetBinaryValue HKEY_LOCAL_MACHINE, sbasekey3 & "Device Parameters\", "EDID", arrintEDID
-                                if VarType(arrintedid) <> 8204 then
-                                    strRawEDID="EDID Not Available"
-                                else
-                                    for each bytevalue in arrintedid
-                                        strRawEDID=strRawEDID & chr(bytevalue)
-                                    next
-                                end if
-                                'redim Preserve strarrRawEDID(intMonitorCount)
-                                strarrRawEDID(intMonitorCount)=strRawEDID
-                                intMonitorCount=intMonitorCount+1
-                            end if
-                        next
-                    end if
-                next
-            next
-        end if
-    next
-
-    dim arrMonitorInfo()
-    redim arrMonitorInfo(intMonitorCount-1,5)
-    dim location(3)
-    tmpctr = 0
-    all_device_id = ""
-    for tmpctr = 0 to intMonitorCount-1
-        manufacturer = ""
-        device_id = ""
-        manufacture_date = ""
-        serial = ""
-        model = ""
-        edid_version = ""
-        if strarrRawEDID(tmpctr) <> "EDID Not Available" then
-            location(0) = mid(strarrRawEDID(tmpctr),&H36+1,18)
-            location(1) = mid(strarrRawEDID(tmpctr),&H48+1,18)
-            location(2) = mid(strarrRawEDID(tmpctr),&H5a+1,18)
-            location(3) = mid(strarrRawEDID(tmpctr),&H6c+1,18)
-            strSerFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hff)
-            strMdlFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hfc)
-            intSerFoundAt = -1
-            intMdlFoundAt = -1
-            for findit = 0 to 3
-                if instr(location(findit),strSerFind) > 0 then
-                    intSerFoundAt = findit
-                end if
-                if instr(location(findit),strMdlFind) > 0 then
-                    intMdlFoundAt = findit
-                end if
-            next
-
-
-            ' serial
-            serial = ""
-            tmp = ""
-            if intSerFoundAt <> -1 then tmp = right(location(intSerFoundAt),14)
-            if instr(tmp,chr(&H0a)) > 0 then
-                serial = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
-            else
-                serial = trim(tmp)
-            end if
-            if left(serial,1) = chr(0) then
-                serial = right(serial,len(serial)-1)
-            else
-                serial = "Serial Number Not Found in EDID data"
-            end if
-            if serial = "" then serial = "Serial Number Not Found in EDID data"
+		dim arrMonitorInfo()
+		redim arrMonitorInfo(intMonitorCount-1,5)
+		dim location(3)
+		tmpctr = 0
+		all_device_id = ""
+		for tmpctr = 0 to intMonitorCount-1
+			manufacturer = ""
+			device_id = ""
+			manufacture_date = ""
+			serial = ""
+			model = ""
+			edid_version = ""
+			if strarrRawEDID(tmpctr) <> "EDID Not Available" then
+				location(0) = mid(strarrRawEDID(tmpctr),&H36+1,18)
+				location(1) = mid(strarrRawEDID(tmpctr),&H48+1,18)
+				location(2) = mid(strarrRawEDID(tmpctr),&H5a+1,18)
+				location(3) = mid(strarrRawEDID(tmpctr),&H6c+1,18)
+				strSerFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hff)
+				strMdlFind = chr(&H00) & chr(&H00) & chr(&H00) & chr(&Hfc)
+				intSerFoundAt = -1
+				intMdlFoundAt = -1
+				for findit = 0 to 3
+					if instr(location(findit),strSerFind) > 0 then
+						intSerFoundAt = findit
+					end if
+					if instr(location(findit),strMdlFind) > 0 then
+						intMdlFoundAt = findit
+					end if
+				next
 
 
-
-            ' model
-            model = ""
-            tmp = ""
-            if intMdlFoundAt <> -1 then tmp = right(location(intMdlFoundAt),14)
-            if instr(tmp,chr(&H0a)) > 0 then
-                model = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
-            else
-                model = trim(tmp)
-            end if
-            if left(model,1) = chr(0) then
-                model = right(model,len(model)-1)
-            else
-                model = "Model Descriptor Not Found in EDID data"
-            end if
-            if (model = "Model Descriptor Not Found in EDID data" AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
-            if (model = ""  AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
-            if (model = ""  AND temp_model(tmpctr) =  "") then model = "Model Descriptor Not Found in EDID data"
-            model = escape(model)
-            model = replace(model, "%00", "")
-            model = unescape(model)
-            if (instr(model, "Generic PnP Monitor")) then
-                model = "Generic PNP Monitor"
-            end if
-
-
-            ' manufacture date
-            tmpmfgweek = asc(mid(strarrRawEDID(tmpctr),&H10+1,1))
-            tmpmfgyear = (asc(mid(strarrRawEDID(tmpctr),&H11+1,1))) + 1990
-            manufacture_date = month(dateadd("ww",tmpmfgweek,datevalue("1/1/" & tmpmfgyear))) & "/" & tmpmfgyear
-            ' Inserts a 0 if month < 10
-            temp_date = Split(manufacture_date, "/", -1, 1)
-            temp_date(0) = right("0" & temp_date(0),2)
-            manufacture_date = temp_date(0) & "/" & temp_date(1)
-
-
-            'edid version
-            tmpEDIDMajorVer = asc(mid(strarrRawEDID(tmpctr),&H12+1,1))
-            tmpEDIDRev = asc(mid(strarrRawEDID(tmpctr),&H13+1,1))
-            edid_version = chr(48+tmpEDIDMajorVer) & "." & chr(48+tmpEDIDRev)
-
-
-            'device id
-            tmpEDIDDev1 = hex(asc(mid(strarrRawEDID(tmpctr),&H0a+1,1)))
-            tmpEDIDDev2 = hex(asc(mid(strarrRawEDID(tmpctr),&H0b+1,1)))
-            if len(tmpEDIDDev1) = 1 then tmpEDIDDev1 = "0" & tmpEDIDDev1 end if
-            if len(tmpEDIDDev2) = 1 then tmpEDIDDev2 = "0" & tmpEDIDDev2 end if
-            device_id = tmpEDIDDev2 & tmpEDIDDev1
+				' serial
+				serial = ""
+				tmp = ""
+				if intSerFoundAt <> -1 then tmp = right(location(intSerFoundAt),14)
+				if instr(tmp,chr(&H0a)) > 0 then
+					serial = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
+				else
+					serial = trim(tmp)
+				end if
+				if left(serial,1) = chr(0) then
+					serial = right(serial,len(serial)-1)
+				else
+					serial = "Serial Number Not Found in EDID data"
+				end if
+				if serial = "" then serial = "Serial Number Not Found in EDID data"
 
 
 
-            ' manufacturer
-            manufacturer = ""
-            tmpEDIDMfg = mid(strarrRawEDID(tmpctr),&H08+1,2)
-            Char1=0 : Char2=0 : Char3=0
-            Byte1 = asc(left(tmpEDIDMfg,1))
-            Byte2 = asc(right(tmpEDIDMfg,1))
-            if (Byte1 and 64)  > 0 then Char1 = Char1 + 16
-            if (Byte1 and 32)  > 0 then Char1 = Char1 + 8
-            if (Byte1 and 16)  > 0 then Char1 = Char1 + 4
-            if (Byte1 and 8)   > 0 then Char1 = Char1 + 2
-            if (Byte1 and 4)   > 0 then Char1 = Char1 + 1
-            if (Byte1 and 2)   > 0 then Char2 = Char2 + 16
-            if (Byte1 and 1)   > 0 then Char2 = Char2 + 8
-            if (Byte2 and 128) > 0 then Char2 = Char2 + 4
-            if (Byte2 and 64)  > 0 then Char2 = Char2 + 2
-            if (Byte2 and 32)  > 0 then Char2 = Char2 + 1
-            Char3 = Char3 + (Byte2 and 16)
-            Char3 = Char3 + (Byte2 and 8)
-            Char3 = Char3 + (Byte2 and 4)
-            Char3 = Char3 + (Byte2 and 2)
-            Char3 = Char3 + (Byte2 and 1)
-            man_id = chr(Char1+64) & chr(Char2+64) & chr(Char3+64)
-            std_mon = instr(temp_manuf(tmpctr), "(Standard monitor types)")
-            if ( std_mon = 0 AND temp_manuf(tmpctr) <> "" ) then man_id = temp_manuf(tmpctr)
-            manufacturer = man_id
-            if (man_id = "ACR") then manufacturer = "Acer" end if
-            if (man_id = "ACT") then manufacturer = "Targa" end if
-            if (man_id = "ADI") then manufacturer = "ADI" end if
-            if (man_id = "AOC") then manufacturer = "AOC International" end if
-            if (man_id = "API") then manufacturer = "Acer" end if
-            if (man_id = "APP") then manufacturer = "Apple" end if
-            if (man_id = "ART") then manufacturer = "ArtMedia" end if
-            if (man_id = "AST") then manufacturer = "AST Research" end if
-            if (man_id = "CPL") then manufacturer = "Compal" end if
-            if (man_id = "CPQ") then manufacturer = "Compaq" end if
-            if (man_id = "CTX") then manufacturer = "Chuntex" end if
-            if (man_id = "DEC") then manufacturer = "Digital Equipment Corporation" end if
-            if (man_id = "DEL") then manufacturer = "Dell" end if
-            if (man_id = "Dell Inc.") then manufacturer = "Dell" end if
-            if (instr(man_id, "Dell Inc.")) then manufacturer = "Dell" end if
-            if (man_id = "DPC") then manufacturer = "Delta" end if
-            if (man_id = "DWE") then manufacturer = "Daewoo" end if
-            if (man_id = "ECS") then manufacturer = "Elitegroup Computer Systems" end if
-            if (man_id = "EIZ") then manufacturer = "EIZO" end if
-            if (man_id = "EPI") then manufacturer = "Envision" end if
-            if (man_id = "FCM") then manufacturer = "Funai" end if
-            if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
-            if (man_id = "GSM") then manufacturer = "LG Electronics" end if
-            if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
-            if (man_id = "HEI") then manufacturer = "Hyundai" end if
-            if (man_id = "HIT") then manufacturer = "Hitachi" end if
-            if (man_id = "HSD") then manufacturer = "Hanns.G" end if
-            if (man_id = "HSL") then manufacturer = "Hansol Electronics" end if
-            if (man_id = "HTC") then manufacturer = "Hitachi" end if
-            if (man_id = "HWP") then manufacturer = "Hewlett Packard" end if
-            if (man_id = "IBM") then manufacturer = "IBM" end if
-            if (man_id = "ICL") then manufacturer = "Fujitsu" end if
-            if (man_id = "IVM") then manufacturer = "Idek Iiyama" end if
-            if (man_id = "KFC") then manufacturer = "KFC Computek" end if
-            if (man_id = "LEN") then manufacturer = "Lenovo" end if
-            if (man_id = "LGD") then manufacturer = "LG Display" end if
-            if (man_id = "LKM") then manufacturer = "ADLAS / AZALEA" end if
-            if (man_id = "LNK") then manufacturer = "LINK Technologies" end if
-            if (man_id = "LTN") then manufacturer = "Lite-On" end if
-            if (man_id = "MAG") then manufacturer = "MAG InnoVision" end if
-            if (man_id = "MAX") then manufacturer = "Maxdata Computer" end if
-            if (man_id = "MEI") then manufacturer = "Panasonic" end if
-            if (man_id = "MEL") then manufacturer = "Mitsubishi Electronics" end if
-            if (man_id = "MIR") then manufacturer = "Miro" end if
-            if (man_id = "MTC") then manufacturer = "MITAC" end if
-            if (man_id = "NAN") then manufacturer = "NANAO" end if
-            if (man_id = "NEC") then manufacturer = "NEC" end if
-            if (man_id = "NOK") then manufacturer = "Nokia" end if
-            if (man_id = "OQI") then manufacturer = "Optiquest" end if
-            if (man_id = "PBN") then manufacturer = "Packard Bell" end if
-            if (man_id = "PGS") then manufacturer = "Princeton Graphic Systems" end if
-            if (man_id = "PHL") then manufacturer = "Philips" end if
-            if (man_id = "PNP") then manufacturer = "Plug n Play (Microsoft)" end if
-            if (man_id = "REL") then manufacturer = "Relisys" end if
-            if (man_id = "SAM") then manufacturer = "Samsung" end if
-            if (man_id = "SEC") then manufacturer = "Samsung" end if
-            if (man_id = "SMI") then manufacturer = "Smile" end if
-            if (man_id = "SMC") then manufacturer = "Samtron" end if
-            if (man_id = "SNI") then manufacturer = "Siemens Nixdorf" end if
-            if (man_id = "SNY") then manufacturer = "Sony Corporation" end if
-            if (man_id = "SPT") then manufacturer = "Sceptre" end if
-            if (man_id = "SRC") then manufacturer = "Shamrock Technology" end if
-            if (man_id = "STN") then manufacturer = "Samtron" end if
-            if (man_id = "STP") then manufacturer = "Sceptre" end if
-            if (man_id = "TAT") then manufacturer = "Tatung" end if
-            if (man_id = "TRL") then manufacturer = "Royal Information Company" end if
-            if (man_id = "TOS") then manufacturer = "Toshiba" end if
-            if (man_id = "TSB") then manufacturer = "Toshiba" end if
-            if (man_id = "UNM") then manufacturer = "Unisys" end if
-            if (man_id = "VSC") then manufacturer = "ViewSonic" end if
-            if (man_id = "WTC") then manufacturer = "Wen Technology" end if
-            if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
-            if (man_id = "___") then manufacturer = "Targa"
+				' model
+				model = ""
+				tmp = ""
+				if intMdlFoundAt <> -1 then tmp = right(location(intMdlFoundAt),14)
+				if instr(tmp,chr(&H0a)) > 0 then
+					model = trim(left(tmp,InStr(tmp,chr(&H0a))-1))
+				else
+					model = trim(tmp)
+				end if
+				if left(model,1) = chr(0) then
+					model = right(model,len(model)-1)
+				else
+					model = "Model Descriptor Not Found in EDID data"
+				end if
+				if (model = "Model Descriptor Not Found in EDID data" AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
+				if (model = ""  AND temp_model(tmpctr) <> "") then model = temp_model(tmpctr) end if
+				if (model = ""  AND temp_model(tmpctr) =  "") then model = "Model Descriptor Not Found in EDID data"
+				model = escape(model)
+				model = replace(model, "%00", "")
+				model = unescape(model)
+				if (instr(model, "Generic PnP Monitor")) then
+					model = "Generic PNP Monitor"
+				end if
 
-            manufacturer = replace(manufacturer, "@", "")
-            manufacturer = replace(manufacturer, "%", "")
-            manufacturer = replace(manufacturer, ";", "")
+
+				' manufacture date
+				tmpmfgweek = asc(mid(strarrRawEDID(tmpctr),&H10+1,1))
+				tmpmfgyear = (asc(mid(strarrRawEDID(tmpctr),&H11+1,1))) + 1990
+				manufacture_date = month(dateadd("ww",tmpmfgweek,datevalue("1/1/" & tmpmfgyear))) & "/" & tmpmfgyear
+				' Inserts a 0 if month < 10
+				temp_date = Split(manufacture_date, "/", -1, 1)
+				temp_date(0) = right("0" & temp_date(0),2)
+				manufacture_date = temp_date(0) & "/" & temp_date(1)
+
+
+				'edid version
+				tmpEDIDMajorVer = asc(mid(strarrRawEDID(tmpctr),&H12+1,1))
+				tmpEDIDRev = asc(mid(strarrRawEDID(tmpctr),&H13+1,1))
+				edid_version = chr(48+tmpEDIDMajorVer) & "." & chr(48+tmpEDIDRev)
+
+
+				'device id
+				tmpEDIDDev1 = hex(asc(mid(strarrRawEDID(tmpctr),&H0a+1,1)))
+				tmpEDIDDev2 = hex(asc(mid(strarrRawEDID(tmpctr),&H0b+1,1)))
+				if len(tmpEDIDDev1) = 1 then tmpEDIDDev1 = "0" & tmpEDIDDev1 end if
+				if len(tmpEDIDDev2) = 1 then tmpEDIDDev2 = "0" & tmpEDIDDev2 end if
+				device_id = tmpEDIDDev2 & tmpEDIDDev1
 
 
 
+				' manufacturer
+				manufacturer = ""
+				tmpEDIDMfg = mid(strarrRawEDID(tmpctr),&H08+1,2)
+				Char1=0 : Char2=0 : Char3=0
+				Byte1 = asc(left(tmpEDIDMfg,1))
+				Byte2 = asc(right(tmpEDIDMfg,1))
+				if (Byte1 and 64)  > 0 then Char1 = Char1 + 16
+				if (Byte1 and 32)  > 0 then Char1 = Char1 + 8
+				if (Byte1 and 16)  > 0 then Char1 = Char1 + 4
+				if (Byte1 and 8)   > 0 then Char1 = Char1 + 2
+				if (Byte1 and 4)   > 0 then Char1 = Char1 + 1
+				if (Byte1 and 2)   > 0 then Char2 = Char2 + 16
+				if (Byte1 and 1)   > 0 then Char2 = Char2 + 8
+				if (Byte2 and 128) > 0 then Char2 = Char2 + 4
+				if (Byte2 and 64)  > 0 then Char2 = Char2 + 2
+				if (Byte2 and 32)  > 0 then Char2 = Char2 + 1
+				Char3 = Char3 + (Byte2 and 16)
+				Char3 = Char3 + (Byte2 and 8)
+				Char3 = Char3 + (Byte2 and 4)
+				Char3 = Char3 + (Byte2 and 2)
+				Char3 = Char3 + (Byte2 and 1)
+				man_id = chr(Char1+64) & chr(Char2+64) & chr(Char3+64)
+				std_mon = instr(temp_manuf(tmpctr), "(Standard monitor types)")
+				if ( std_mon = 0 AND temp_manuf(tmpctr) <> "" ) then man_id = temp_manuf(tmpctr)
+				manufacturer = man_id
+				if (man_id = "ACR") then manufacturer = "Acer" end if
+				if (man_id = "ACT") then manufacturer = "Targa" end if
+				if (man_id = "ADI") then manufacturer = "ADI" end if
+				if (man_id = "AOC") then manufacturer = "AOC International" end if
+				if (man_id = "API") then manufacturer = "Acer" end if
+				if (man_id = "APP") then manufacturer = "Apple" end if
+				if (man_id = "ART") then manufacturer = "ArtMedia" end if
+				if (man_id = "AST") then manufacturer = "AST Research" end if
+				if (man_id = "CPL") then manufacturer = "Compal" end if
+				if (man_id = "CPQ") then manufacturer = "Compaq" end if
+				if (man_id = "CTX") then manufacturer = "Chuntex" end if
+				if (man_id = "DEC") then manufacturer = "Digital Equipment Corporation" end if
+				if (man_id = "DEL") then manufacturer = "Dell" end if
+				if (man_id = "Dell Inc.") then manufacturer = "Dell" end if
+				if (instr(man_id, "Dell Inc.")) then manufacturer = "Dell" end if
+				if (man_id = "DPC") then manufacturer = "Delta" end if
+				if (man_id = "DWE") then manufacturer = "Daewoo" end if
+				if (man_id = "ECS") then manufacturer = "Elitegroup Computer Systems" end if
+				if (man_id = "EIZ") then manufacturer = "EIZO" end if
+				if (man_id = "EPI") then manufacturer = "Envision" end if
+				if (man_id = "FCM") then manufacturer = "Funai" end if
+				if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
+				if (man_id = "GSM") then manufacturer = "LG Electronics" end if
+				if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
+				if (man_id = "HEI") then manufacturer = "Hyundai" end if
+				if (man_id = "HIT") then manufacturer = "Hitachi" end if
+				if (man_id = "HSD") then manufacturer = "Hanns.G" end if
+				if (man_id = "HSL") then manufacturer = "Hansol Electronics" end if
+				if (man_id = "HTC") then manufacturer = "Hitachi" end if
+				if (man_id = "HWP") then manufacturer = "Hewlett Packard" end if
+				if (man_id = "IBM") then manufacturer = "IBM" end if
+				if (man_id = "ICL") then manufacturer = "Fujitsu" end if
+				if (man_id = "IVM") then manufacturer = "Idek Iiyama" end if
+				if (man_id = "KFC") then manufacturer = "KFC Computek" end if
+				if (man_id = "LEN") then manufacturer = "Lenovo" end if
+				if (man_id = "LGD") then manufacturer = "LG Display" end if
+				if (man_id = "LKM") then manufacturer = "ADLAS / AZALEA" end if
+				if (man_id = "LNK") then manufacturer = "LINK Technologies" end if
+				if (man_id = "LTN") then manufacturer = "Lite-On" end if
+				if (man_id = "MAG") then manufacturer = "MAG InnoVision" end if
+				if (man_id = "MAX") then manufacturer = "Maxdata Computer" end if
+				if (man_id = "MEI") then manufacturer = "Panasonic" end if
+				if (man_id = "MEL") then manufacturer = "Mitsubishi Electronics" end if
+				if (man_id = "MIR") then manufacturer = "Miro" end if
+				if (man_id = "MTC") then manufacturer = "MITAC" end if
+				if (man_id = "NAN") then manufacturer = "NANAO" end if
+				if (man_id = "NEC") then manufacturer = "NEC" end if
+				if (man_id = "NOK") then manufacturer = "Nokia" end if
+				if (man_id = "OQI") then manufacturer = "Optiquest" end if
+				if (man_id = "PBN") then manufacturer = "Packard Bell" end if
+				if (man_id = "PGS") then manufacturer = "Princeton Graphic Systems" end if
+				if (man_id = "PHL") then manufacturer = "Philips" end if
+				if (man_id = "PNP") then manufacturer = "Plug n Play (Microsoft)" end if
+				if (man_id = "REL") then manufacturer = "Relisys" end if
+				if (man_id = "SAM") then manufacturer = "Samsung" end if
+				if (man_id = "SEC") then manufacturer = "Samsung" end if
+				if (man_id = "SHP") then manufacturer = "Sharp" end if
+				if (man_id = "SMI") then manufacturer = "Smile" end if
+				if (man_id = "SMC") then manufacturer = "Samtron" end if
+				if (man_id = "SNI") then manufacturer = "Siemens Nixdorf" end if
+				if (man_id = "SNY") then manufacturer = "Sony Corporation" end if
+				if (man_id = "SPT") then manufacturer = "Sceptre" end if
+				if (man_id = "SRC") then manufacturer = "Shamrock Technology" end if
+				if (man_id = "STN") then manufacturer = "Samtron" end if
+				if (man_id = "STP") then manufacturer = "Sceptre" end if
+				if (man_id = "TAT") then manufacturer = "Tatung" end if
+				if (man_id = "TRL") then manufacturer = "Royal Information Company" end if
+				if (man_id = "TOS") then manufacturer = "Toshiba" end if
+				if (man_id = "TSB") then manufacturer = "Toshiba" end if
+				if (man_id = "UNM") then manufacturer = "Unisys" end if
+				if (man_id = "VSC") then manufacturer = "ViewSonic" end if
+				if (man_id = "WTC") then manufacturer = "Wen Technology" end if
+				if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
+				if (man_id = "___") then manufacturer = "Targa"
 
-            screen_size = round((sqr((asc(mid(strarrRawEDID(tmpctr),22,1)) * asc(mid(strarrRawEDID(tmpctr),22,1))) + (asc(mid(strarrRawEDID(tmpctr),23,1)) * asc(mid(strarrRawEDID(tmpctr),23,1)))) * 10 / 25.4), 1)
-            'for i = 35 to 37
-            '   wscript.echo "Ratio " & i & ": " & asc(mid(strarrRawEDID(tmpctr),i,1))
-            'next
+				manufacturer = replace(manufacturer, "@", "")
+				manufacturer = replace(manufacturer, "%", "")
+				manufacturer = replace(manufacturer, ";", "")
 
 
-            ratio = ""
-            if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 128) then ratio = "1:" else ratio = "0:"
-            if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 64) then ratio = ratio & "1" else ratio = ratio & "0"
-
-            if ratio = "0:0" then ratio = "16:10"
-            if ratio = "0:1" then ratio = "4:3"
-            if ratio = "1:0" then ratio = "5:4"
-            if ratio = "1:1" then ratio = "16:9"
 
 
-            'if (instr(all_device_id, device_id) = 0) then
-            if (instr(all_device_serial, serial) = 0) then
-                ' we don't have this device_id already, so output this entry
-                ' note we exclude "monitors" that are plug'n'play types and have no real info
-                if (manufacturer <> "" and _
-                    manufacture_date <> "01/1990" and _
-                    model <> "Model Descriptor Not Found in EDID data") then
-                    item = item & "     <item>" & vbcrlf
-                    item = item & "         <manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
-                    item = item & "         <device>" & escape_xml(device_id) & "</device>" & vbcrlf
-                    item = item & "         <manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
-                    item = item & "         <model>" & escape_xml(model) & "</model>" & vbcrlf
-                    item = item & "         <serial>" & escape_xml(serial) & "</serial>" & vbcrlf
-                    item = item & "         <edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
-                    item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
-                    item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
-                    item = item & "     </item>" & vbcrlf
-                end if
-                all_device_id = all_device_id & device_id & " "
-                all_device_serial = all_device_serial & serial & " "
-            end if
+				screen_size = round((sqr((asc(mid(strarrRawEDID(tmpctr),22,1)) * asc(mid(strarrRawEDID(tmpctr),22,1))) + (asc(mid(strarrRawEDID(tmpctr),23,1)) * asc(mid(strarrRawEDID(tmpctr),23,1)))) * 10 / 25.4), 1)
+				'for i = 35 to 37
+				'   wscript.echo "Ratio " & i & ": " & asc(mid(strarrRawEDID(tmpctr),i,1))
+				'next
 
-            manufacturer = ""
-            device_id = ""
-            manufacture_date = ""
-            serial = ""
-            model = ""
-            edid_version = ""
 
-        end if
-    next
+				ratio = ""
+				if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 128) then ratio = "1:" else ratio = "0:"
+				if (asc(mid(strarrRawEDID(tmpctr),38,1)) and 64) then ratio = ratio & "1" else ratio = ratio & "0"
 
-end if ' ending if we got anything from HKLM\SYSTEM\CurrentControlSet\Enum\DISPLAY\
+				if ratio = "0:0" then ratio = "16:10"
+				if ratio = "0:1" then ratio = "4:3"
+				if ratio = "1:0" then ratio = "5:4"
+				if ratio = "1:1" then ratio = "16:9"
 
-if item > "" then
-    result.WriteText "  <monitor>" & vbcrlf
-    result.WriteText item
-    result.WriteText "  </monitor>" & vbcrlf
+
+				'if (instr(all_device_id, device_id) = 0) then
+				if (instr(all_device_serial, serial) = 0) then
+					' we don't have this device_id already, so output this entry
+					' note we exclude "monitors" that are plug'n'play types and have no real info
+					if (manufacturer <> "" and _
+						manufacture_date <> "01/1990" and _
+						model <> "Model Descriptor Not Found in EDID data") then
+						item = item & "     <item>" & vbcrlf
+						item = item & "         <manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
+						item = item & "         <device>" & escape_xml(device_id) & "</device>" & vbcrlf
+						item = item & "         <manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
+						item = item & "         <model>" & escape_xml(model) & "</model>" & vbcrlf
+						item = item & "         <serial>" & escape_xml(serial) & "</serial>" & vbcrlf
+						item = item & "         <edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
+						item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
+						item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
+						item = item & "     </item>" & vbcrlf
+					end if
+					all_device_id = all_device_id & device_id & " "
+					all_device_serial = all_device_serial & serial & " "
+				end if
+
+				manufacturer = ""
+				device_id = ""
+				manufacture_date = ""
+				serial = ""
+				model = ""
+				edid_version = ""
+
+			end if
+		next
+
+	end if ' ending if we got anything from HKLM\SYSTEM\CurrentControlSet\Enum\DISPLAY\
+
+	if item > "" then
+		result.WriteText "  <monitor>" & vbcrlf
+		result.WriteText item
+		result.WriteText "  </monitor>" & vbcrlf
+	end if
+end if
+
+' audit Vista and newer monitor info using WMI
+if (cint(windows_build_number) >= 6000) then
+	if debugging > "0" then wscript.echo "wmi monitor info" end if
+	item = ""
+	On Error Resume Next
+	set Monitors = objWMIService2.InstancesOf("WmiMonitorID")
+	count = Monitors.Count
+	error_returned = err.number
+	on error goto 0
+	if error_returned = 0 then
+		For Each Monitor In Monitors
+		  
+			device_id = Monitor.InstanceName
+			wscript.echo "Serial"
+			serial = BytesToString(Monitor.SerialNumberID)
+			wscript.echo "Model"
+			model = BytesToString(Monitor.UserFriendlyName)
+			if debugging > "1" then wscript.echo "  Model: " & model
+			edid_version = ""	
+			device_id = BytesToString(Monitor.ProductCodeID)
+
+			
+			strQuery = "SELECT PreferredMonitorSourceModeIndex, MonitorSourceModes " & _
+				   "FROM WmiMonitorListedSupportedSourceModes WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
+
+			Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
+
+			horizontalPixels = 0
+			verticalPixels = 0
+			screenResolution = ""
+			For Each MonitorMode In colItems
+			
+				intIndex = MonitorMode.PreferredMonitorSourceModeIndex
+				horizontalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).HorizontalActivePixels)
+				verticalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).VerticalActivePixels)
+				if debugging > "2" then
+					wscript.echo "    Horizontal Pixels: " & horizontalPixels
+					wscript.echo "    Vertical Pixels: " & verticalPixels
+				end if
+			Next
+			ratio=""
+			if not(horizontalPixels=0 or verticalPixels=0) then
+				screenResolution = horizontalPixels & " x " & verticalPixels
+				common = gcd(horizontalPixels, verticalPixels)
+				ratio = CStr(horizontalPixels / common)  & ":" & CStr(verticalPixels / common)
+				if ratio="8:5" then ratio="16:10"
+				if debugging > "2" then wscript.echo "    Ratio: " & ratio
+			end if
+			
+			set colItems = Nothing
+			
+			strQuery = "SELECT MaxHorizontalImageSize, MaxVerticalImageSize " & _
+				   "FROM WmiMonitorBasicDisplayParams WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
+			Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
+
+			For Each MonitorParam In colItems
+				' screen sizes. Convert cm to in.
+				Width = MonitorParam.MaxHorizontalImageSize / 2.54
+				Height = MonitorParam.MaxVerticalImageSize / 2.54
+				screen_size = Round(Sqr((Height ^ 2) + (Width ^ 2)),1)
+				if debugging > "2" then wscript.echo "    Size: " & screen_size
+			Next
+
+			' manufacture date
+			manufacture_date = ""
+			tmpmfgweek = CStr(Monitor.WeekOfManufacture)
+			tmpmfgyear = CStr(Monitor.YearOfManufacture)
+			manufacture_date = month(dateadd("ww",tmpmfgweek,datevalue("1/1/" & tmpmfgyear))) & "/" & tmpmfgyear
+			' Inserts a 0 if month < 10
+			temp_date = Split(manufacture_date, "/", -1, 1)
+			temp_date(0) = right("0" & temp_date(0),2)
+			manufacture_date = temp_date(0) & "/" & temp_date(1)
+						
+			' manufacturer
+			manufacturer = ""
+			man_id = BytesToString(Monitor.ManufacturerName)
+			manufacturer = man_id
+			if (man_id = "ACR") then manufacturer = "Acer" end if
+			if (man_id = "ACT") then manufacturer = "Targa" end if
+			if (man_id = "ADI") then manufacturer = "ADI" end if
+			if (man_id = "AOC") then manufacturer = "AOC International" end if
+			if (man_id = "API") then manufacturer = "Acer" end if
+			if (man_id = "APP") then manufacturer = "Apple" end if
+			if (man_id = "ART") then manufacturer = "ArtMedia" end if
+			if (man_id = "AST") then manufacturer = "AST Research" end if
+			if (man_id = "CPL") then manufacturer = "Compal" end if
+			if (man_id = "CPQ") then manufacturer = "Compaq" end if
+			if (man_id = "CTX") then manufacturer = "Chuntex" end if
+			if (man_id = "DEC") then manufacturer = "Digital Equipment Corporation" end if
+			if (man_id = "DEL") then manufacturer = "Dell" end if
+			if (man_id = "Dell Inc.") then manufacturer = "Dell" end if
+			if (instr(man_id, "Dell Inc.")) then manufacturer = "Dell" end if
+			if (man_id = "DPC") then manufacturer = "Delta" end if
+			if (man_id = "DWE") then manufacturer = "Daewoo" end if
+			if (man_id = "ECS") then manufacturer = "Elitegroup Computer Systems" end if
+			if (man_id = "EIZ") then manufacturer = "EIZO" end if
+			if (man_id = "EPI") then manufacturer = "Envision" end if
+			if (man_id = "FCM") then manufacturer = "Funai" end if
+			if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
+			if (man_id = "GSM") then manufacturer = "LG Electronics" end if
+			if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
+			if (man_id = "HEI") then manufacturer = "Hyundai" end if
+			if (man_id = "HIT") then manufacturer = "Hitachi" end if
+			if (man_id = "HSD") then manufacturer = "Hanns.G" end if
+			if (man_id = "HSL") then manufacturer = "Hansol Electronics" end if
+			if (man_id = "HTC") then manufacturer = "Hitachi" end if
+			if (man_id = "HWP") then manufacturer = "Hewlett Packard" end if
+			if (man_id = "IBM") then manufacturer = "IBM" end if
+			if (man_id = "ICL") then manufacturer = "Fujitsu" end if
+			if (man_id = "IVM") then manufacturer = "Idek Iiyama" end if
+			if (man_id = "KFC") then manufacturer = "KFC Computek" end if
+			if (man_id = "LEN") then manufacturer = "Lenovo" end if
+			if (man_id = "LGD") then manufacturer = "LG Display" end if
+			if (man_id = "LKM") then manufacturer = "ADLAS / AZALEA" end if
+			if (man_id = "LNK") then manufacturer = "LINK Technologies" end if
+			if (man_id = "LTN") then manufacturer = "Lite-On" end if
+			if (man_id = "MAG") then manufacturer = "MAG InnoVision" end if
+			if (man_id = "MAX") then manufacturer = "Maxdata Computer" end if
+			if (man_id = "MEI") then manufacturer = "Panasonic" end if
+			if (man_id = "MEL") then manufacturer = "Mitsubishi Electronics" end if
+			if (man_id = "MIR") then manufacturer = "Miro" end if
+			if (man_id = "MTC") then manufacturer = "MITAC" end if
+			if (man_id = "NAN") then manufacturer = "NANAO" end if
+			if (man_id = "NEC") then manufacturer = "NEC" end if
+			if (man_id = "NOK") then manufacturer = "Nokia" end if
+			if (man_id = "OQI") then manufacturer = "Optiquest" end if
+			if (man_id = "PBN") then manufacturer = "Packard Bell" end if
+			if (man_id = "PGS") then manufacturer = "Princeton Graphic Systems" end if
+			if (man_id = "PHL") then manufacturer = "Philips" end if
+			if (man_id = "PNP") then manufacturer = "Plug n Play (Microsoft)" end if
+			if (man_id = "REL") then manufacturer = "Relisys" end if
+			if (man_id = "SAM") then manufacturer = "Samsung" end if
+			if (man_id = "SEC") then manufacturer = "Samsung" end if
+			if (man_id = "SHP") then manufacturer = "Sharp" end if
+			if (man_id = "SMI") then manufacturer = "Smile" end if
+			if (man_id = "SMC") then manufacturer = "Samtron" end if
+			if (man_id = "SNI") then manufacturer = "Siemens Nixdorf" end if
+			if (man_id = "SNY") then manufacturer = "Sony Corporation" end if
+			if (man_id = "SPT") then manufacturer = "Sceptre" end if
+			if (man_id = "SRC") then manufacturer = "Shamrock Technology" end if
+			if (man_id = "STN") then manufacturer = "Samtron" end if
+			if (man_id = "STP") then manufacturer = "Sceptre" end if
+			if (man_id = "TAT") then manufacturer = "Tatung" end if
+			if (man_id = "TRL") then manufacturer = "Royal Information Company" end if
+			if (man_id = "TOS") then manufacturer = "Toshiba" end if
+			if (man_id = "TSB") then manufacturer = "Toshiba" end if
+			if (man_id = "UNM") then manufacturer = "Unisys" end if
+			if (man_id = "VSC") then manufacturer = "ViewSonic" end if
+			if (man_id = "WTC") then manufacturer = "Wen Technology" end if
+			if (man_id = "ZCM") then manufacturer = "Zenith Data Systems" end if
+			if (man_id = "___") then manufacturer = "Targa"
+
+			manufacturer = replace(manufacturer, "@", "")
+			manufacturer = replace(manufacturer, "%", "")
+			manufacturer = replace(manufacturer, ";", "")
+			
+			if debugging > "2" then wscript.echo "    Manufacturer: " & manufacturer
+			if (manufacturer <> "" and _
+				manufacture_date <> "01/1990" and _
+				model <> "Model Descriptor Not Found in EDID data") then
+				item = item & "     <item>" & vbcrlf
+				item = item & "         <manufacturer>" & escape_xml(manufacturer) & "</manufacturer>" & vbcrlf
+				item = item & "         <device>" & escape_xml(device_id) & "</device>" & vbcrlf
+				item = item & "         <manufacture_date>" & escape_xml(manufacture_date) & "</manufacture_date>" & vbcrlf
+				item = item & "         <model>" & escape_xml(model) & "</model>" & vbcrlf
+				item = item & "         <serial>" & escape_xml(serial) & "</serial>" & vbcrlf
+				item = item & "         <description>" & screenResolution & "</description>" & vbcrlf
+				item = item & "         <edid_version>" & escape_xml(edid_version) & "</edid_version>" & vbcrlf
+				item = item & "         <aspect_ratio>" & escape_xml(ratio) & "</aspect_ratio>" & vbcrlf
+				item = item & "         <size>" & escape_xml(screen_size) & "</size>" & vbcrlf
+				item = item & "     </item>" & vbcrlf
+			end if
+			
+		Next
+	end if
+	if item > "" then
+		result.WriteText "  <monitor>" & vbcrlf
+		result.WriteText item
+		result.WriteText "  </monitor>" & vbcrlf
+	end if
 end if
 
 
@@ -2589,7 +2813,7 @@ for each objItem in colItems
 	net_manufacturer = objItem2.Manufacturer
 	net_model = objItem2.ProductName
 	' below only checks when OS is XP or later (not 2000 or NT)
-	if (windows_build_number > 2195) then
+	if (cint(windows_build_number) > 2195) then
 	net_connection_id = objItem2.NetConnectionID
 	net_connection_status = WMINetConnectorStatus(objItem2.NetConnectionStatus)
 	if (objItem2.NetConnectionStatus = "2" or objItem2.NetConnectionStatus = "9") then
@@ -2679,7 +2903,7 @@ if item > "" then
 	result.WriteText "	</ip>" & vbcrlf
 end if
 
-if audit_dns = "n" then
+if audit_dns = "y" then
     if debugging > "0" then wscript.echo "DNS info" end if
     item = ""
     on error resume next
@@ -2973,7 +3197,7 @@ end if
 '        this will need extending to avoid creating false positive alerts
 '        because some built in Windows tasks have LONG names
 '        Fix the truncated name below and expand the database attribute to 250 characters
-if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number) > 7599) then
+if (strcomputer = "." and audit_location = "local" and cint(windows_build_number) > 7599) then
 	if debugging > "0" and strcomputer = "." then wscript.echo "scheduled tasks" end if
 	item = ""
 	strCommand = "schtasks.exe /query /v /fo csv"
@@ -2987,20 +3211,36 @@ if (strcomputer = "." and audit_location = "local" and CInt(windows_build_number
 		MyArray = Split(strResults, vbcrlf)
 		for each line in MyArray
 			sTask = CSVParser(line)
-			if UCase(sTask(0)) = UCase(system_hostname) then
+			' if UCase(sTask(0)) = UCase(system_hostname) then
+			' 	item = item & "      <item>" & vbcrlf
+			' 	item = item & "         <name><![CDATA[" & mid(sTask(1), 1, 100) & "]]></name>" & vbcrlf
+			' 	item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
+			' 	item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
+			' 	item = item & "         <last_run><![CDATA[" & sTask(5) & "]]></last_run>" & vbcrlf
+			' 	item = item & "         <last_result><![CDATA[" & sTask(6) & "]]></last_result>" & vbcrlf
+			' 	item = item & "         <creator><![CDATA[" & sTask(7) & "]]></creator>" & vbcrlf
+			' 	item = item & "         <schedule></schedule>" & vbcrlf
+			' 	item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
+			' 	item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
+			' 	item = item & "         <runas><![CDATA[" & sTask(14) & "]]></runas>" & vbcrlf
+			' 	item = item & "      </item>" & vbcrlf
+			' end if
+
+			if UCase(safeArraySubscript(sTask, 0, "")) = UCase(system_hostname) then
 				item = item & "      <item>" & vbcrlf
-				item = item & "         <name><![CDATA[" & mid(sTask(1), 1, 100) & "]]></name>" & vbcrlf
-				item = item & "         <next_run><![CDATA[" & sTask(2) & "]]></next_run>" & vbcrlf
-				item = item & "         <status><![CDATA[" & sTask(3) & "]]></status>" & vbcrlf
-				item = item & "         <last_run><![CDATA[" & sTask(5) & "]]></last_run>" & vbcrlf
-				item = item & "         <last_result><![CDATA[" & sTask(6) & "]]></last_result>" & vbcrlf
-				item = item & "         <creator><![CDATA[" & sTask(7) & "]]></creator>" & vbcrlf
+				item = item & "         <name><![CDATA[" & mid(safeArraySubscript(sTask, 1, ""), 1, 100) & "]]></name>" & vbcrlf
+				item = item & "         <next_run><![CDATA[" & safeArraySubscript(sTask, 2, "") & "]]></next_run>" & vbcrlf
+				item = item & "         <status><![CDATA[" & safeArraySubscript(sTask, 3, "") & "]]></status>" & vbcrlf
+				item = item & "         <last_run><![CDATA[" & safeArraySubscript(sTask, 5, "") & "]]></last_run>" & vbcrlf
+				item = item & "         <last_result><![CDATA[" & safeArraySubscript(sTask, 6, "") & "]]></last_result>" & vbcrlf
+				item = item & "         <creator><![CDATA[" & safeArraySubscript(sTask, 7, "") & "]]></creator>" & vbcrlf
 				item = item & "         <schedule></schedule>" & vbcrlf
-				item = item & "         <task><![CDATA[" & sTask(8) & "]]></task>" & vbcrlf
-				item = item & "         <state><![CDATA[" & sTask(11) & "]]></state>" & vbcrlf
-				item = item & "         <user><![CDATA[" & sTask(14) & "]]></user>" & vbcrlf
+				item = item & "         <task><![CDATA[" & safeArraySubscript(sTask, 8, "") & "]]></task>" & vbcrlf
+				item = item & "         <state><![CDATA[" & safeArraySubscript(sTask, 11, "") & "]]></state>" & vbcrlf
+				item = item & "         <runas><![CDATA[" & safeArraySubscript(sTask, 14, "") & "]]></runas>" & vbcrlf
 				item = item & "      </item>" & vbcrlf
 			end if
+
 		next
 	end if
 	if item > "" then
@@ -3113,7 +3353,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 
 	' The LocalService account
 	result.WriteText "		<item>" & vbcrlf
-	result.WriteText "			<name>NT AUTHORITY\LocalService</name>" & vbcrlf
+	result.WriteText "			<name>LocalService</name>" & vbcrlf
 	result.WriteText "			<caption>NT AUTHORITY\LocalService</caption>" & vbcrlf
 	result.WriteText "			<sid></sid>" & vbcrlf
 	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
@@ -3128,7 +3368,7 @@ if ((windows_domain_role <> "Backup Domain Controller") and (windows_domain_role
 
 	' The NetworkService account
 	result.WriteText "		<item>" & vbcrlf
-	result.WriteText "			<name>NT AUTHORITY\NetworkService</name>" & vbcrlf
+	result.WriteText "			<name>NetworkService</name>" & vbcrlf
 	result.WriteText "			<caption>NT AUTHORITY\NetworkService</caption>" & vbcrlf
 	result.WriteText "			<sid></sid>" & vbcrlf
 	result.WriteText "			<domain>" & ucase (escape_xml(system_hostname)) & "</domain>" & vbcrlf
@@ -3491,6 +3731,7 @@ if (audit_software = "y") then
 	result.WriteText "			<version>" & escape_xml(package_version) & "</version>" & vbcrlf
 	result.WriteText "			<location>" & escape_xml(package_location) & "</location>" & vbcrlf
 	result.WriteText "			<install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+	result.WriteText "			<uninstall>" & escape_xml(package_uninstall) & "</uninstall>" & vbcrlf
 	result.WriteText "			<publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
 	result.WriteText "			<install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
 	result.WriteText "			<system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
@@ -3542,7 +3783,7 @@ if (audit_software = "y") then
 	package_installed_by = ""
 	package_installed_on = ""
 
-	if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
+	if (cint(windows_build_number) > 5000) then
 	software_url = objItem2.URLUpdateInfo
 	software_install_source = objItem2.InstallSource
 	else
@@ -3858,11 +4099,8 @@ if address_width = "64" then
 end if
 
 
-
-
-
-	' hotfixes
-	if (system_os_family = "Windows 2008" or system_os_family = "Windows 7" or system_os_family = "Windows Vista" or system_os_family = "Windows 8" or system_os_family = "Windows 2012") then
+' hotfixes
+if (cint(windows_build_number) > 5000) then
 	if debugging > "0" then wscript.echo "Hotfix info" end if
 	set colItems2 = objWMIService.ExecQuery("Select * from Win32_QuickFixEngineering",,32)
 	if (not isnull(colItems2)) then
@@ -4451,7 +4689,7 @@ if debugging > "1" then wscript.echo "Win 2000 Key" end if
 path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 subKey = "DigitalProductId"
 oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-key_text = getkey(key, 1)
+key_text = decodeKey(key)
 if (IsNull(key_text) or key_text = "") then
 	' do nothing
 else
@@ -4550,7 +4788,7 @@ if (not isnull(arrSubKeys)) then
 	oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
 	if IsNull(key) then
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4580,7 +4818,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4611,7 +4849,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "			<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4641,7 +4879,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4672,7 +4910,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4702,7 +4940,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4733,7 +4971,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4763,7 +5001,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4794,7 +5032,7 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4824,7 +5062,68 @@ if (not isnull(arrSubKeys)) then
 	if IsNull(key) then
 	' do nothing - no key retrieved
 	else
-	key_text = getkey(key, 2)
+	key_text = decodeKey(key)
+	result.WriteText "	<item>" & vbcrlf
+	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "	</item>" & vbcrlf
+	key_name = ""
+	key_text = ""
+	key_release = ""
+	key_edition = ""
+	end if
+	Next
+end if
+
+''''''''''''''''''''''''''''''''
+'   MS CD Keys for Office 2016 '
+''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Microsoft\Office\16.0\Registration"
+oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
+if (not isnull(arrSubKeys)) then
+	For Each subkey In arrSubKeys
+	key_name = get_sku_2016(subkey)
+	key_release = get_release_type(subkey)
+	key_edition = get_edition_type(subkey)
+	path = strKeyPath & "\" & subkey
+	subKey = "DigitalProductId"
+	oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+	if IsNull(key) then
+	' do nothing
+	else
+	key_text = decodekey(key)
+	result.WriteText "	<item>" & vbcrlf
+	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
+	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
+	result.WriteText "	<rel>" & escape_xml(key_release) & "</rel>" & vbcrlf
+	result.WriteText "	<edition>" & escape_xml(key_edition) & "</edition>" & vbcrlf
+	result.WriteText "	</item>" & vbcrlf
+	key_text = ""
+	key_release = ""
+	key_edition = ""
+	end if
+	Next
+end if
+
+'''''''''''''''''''''''''''''''''''''
+'   MS CD Keys for Office 2016 64bit'
+'''''''''''''''''''''''''''''''''''''
+strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Registration"
+oReg.EnumKey HKEY_LOCAL_MACHINE, strKeyPath, arrSubKeys
+if (not isnull(arrSubKeys)) then
+	For Each subkey In arrSubKeys
+	key_name = get_sku_2016(subkey)
+	key_release = get_release_type(subkey)
+	key_edition = get_edition_type(subkey)
+	path = strKeyPath & "\" & subkey
+	subKey = "DigitalProductId"
+	oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
+	if IsNull(key) then
+	' do nothing - no key retrieved
+	else
+	key_text = decodekey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -4923,7 +5222,7 @@ oReg.GetBinaryValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key
 if IsNull(key) then
 	' do nothing
 else
-	key_text = getkey(key, 1)
+	key_text = decodeKey(key)
 	result.WriteText "	<item>" & vbcrlf
 	result.WriteText "	<name>" & escape_xml(key_name) & "</name>" & vbcrlf
 	result.WriteText "	<string>" & escape_xml(key_text) & "</string>" & vbcrlf
@@ -6295,7 +6594,7 @@ end if
 
 'function route()
 ' below only checks when OS is XP or later (not 2000 or NT)
-if (windows_build_number > 2195) then
+if (cint(windows_build_number) > 2195) then
 	if debugging > "0" then wscript.echo "network routing info" end if
 	result.WriteText "	<route>" & vbcrlf
 	set colItems = objWMIService.ExecQuery("Select * from Win32_IP4RouteTable",,32)
@@ -6411,7 +6710,7 @@ if submit_online = "y" then
       result.position = 0
       On Error Resume Next
       objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-      objHTTP.Send "form_systemXML=" + urlEncode(result.ReadText()) + vbcrlf
+      objHTTP.Send "data=" + urlEncode(result.ReadText()) + vbcrlf
       aErr = Array(Err.Number, Err.Description)
       On Error GoTo 0
       Select Case True
@@ -6524,7 +6823,8 @@ function escape_wmi(ByVal data)
 	if IsNull(data) then
 	escape_wmi = ""
 	else
-	escape_wmi = replace(data, "'", "\'")
+	escape_wmi = replace(data, "\", "\\")
+	escape_wmi = replace(escape_wmi, "'", "\'")
 	end if
 end function
 
@@ -6571,6 +6871,7 @@ function os_family(os)
 	if InStr(os, "Windows 8")  then os_family="Windows 8"
 	if InStr(os, "2012")       then os_family="Windows 2012"
 	if InStr(os, "Windows 10") then os_family="Windows 10"
+	if InStr(os, "2016")       then os_family="Windows 2016"
 end function
 
 
@@ -7090,6 +7391,29 @@ function get_sku_2013(subkey)
 get_sku_2013 = vers_name
 end function
 
+' https://support.microsoft.com/en-us/kb/3120274
+function get_sku_2016(subkey)
+	vers = mid(subkey,11,4)
+	if vers = "0011" then vers_name = "Microsoft Office Professional Plus 2016" end if
+	if vers = "0012" then vers_name = "Microsoft Office Standard 2016" end if
+	if vers = "0015" then vers_name = "Microsoft Access 2016" end if
+	if vers = "0016" then vers_name = "Microsoft Excel 2016" end if
+	if vers = "0018" then vers_name = "Microsoft PowerPoint 2016" end if
+	if vers = "0019" then vers_name = "Microsoft Publisher 2016" end if
+	if vers = "001A" then vers_name = "Microsoft Outlook 2016" end if
+	if vers = "001B" then vers_name = "Microsoft Word 2016" end if
+	if vers = "001F" then vers_name = "Microsoft Office Proofing Tools Kit Compilation 2016" end if
+	if vers = "003A" then vers_name = "Microsoft Project Standard 2016" end if
+	if vers = "003B" then vers_name = "Microsoft Project Professional 2016" end if
+	if vers = "0051" then vers_name = "Microsoft Visio Professional 2016" end if
+	if vers = "0053" then vers_name = "Microsoft Visio Standard 2016" end if
+	if vers = "00A1" then vers_name = "Microsoft OneNote 2016" end if
+	if vers = "00BA" then vers_name = "Microsoft Office OneDrive for Business 2016" end if
+	if vers = "110D" then vers_name = "Microsoft Office SharePoint Server 2016" end if
+	if vers = "012B" then vers_name = "Microsoft Skype for Business 2016" end if
+get_sku_2016 = vers_name
+end function
+
 
 function get_release_type(value)
 	vers = mid(value,2,1)
@@ -7115,6 +7439,7 @@ function get_edition_type(value)
 	if vers = "0" then release_type = "Enterprise" end if
 	if vers = "1" then release_type = "Retail/OEM" end if
 	if vers = "2" then release_type = "Trial" end if
+	if vers = "5" then release_type = "Download" end if
 	get_edition_type = release_type
 end function
 
@@ -7162,6 +7487,60 @@ Function getkey(Key, ver)
 	else
 	getkey = ""
 	end if
+End Function
+
+'' decodeKey from:
+'' Plugin for OCS Inventory NG 2.x
+'' Creative Commons BY-NC-SA 3.0
+'' Nicolas DEROUET (nicolas.derouet[gmail]com)
+'' http://wiki.ocsinventory-ng.org/index.php?title=Plugins:MSofficeKey
+Function decodeKey(iValues)
+  Dim arrDPID, foundKeys
+  arrDPID = Array()
+  foundKeys = Array()
+
+  Select Case (UBound(iValues))
+    Case 255:  ' 2000
+      range = Array(52,66)
+    Case 163:  ' XP, 2003, 2007
+      range = Array(52,66)
+    Case 1271: ' 2010, 2013, 2016
+      range = Array(808,822)
+    Case Else
+      Exit Function
+  End Select
+
+  charset = "BCDFGHJKMPQRTVWXY2346789"
+
+  For i = range(0) to range(1)
+    ReDim Preserve arrDPID( UBound(arrDPID) + 1 )
+    arrDPID( UBound(arrDPID) ) = iValues(i)
+  Next
+
+  withN = (arrDPID(UBound(arrDPID)) \ 6) And 1
+  arrDPID(UBound(arrDPID)) = (arrDPID(UBound(arrDPID)) And &HF7) Or ((withN And 2) * 4)
+
+  For i = 24 To 0 Step -1
+    k = 0
+    For j = 14 To 0 Step -1
+      k = k * 256 Xor arrDPID(j)
+      arrDPID(j) = k \ 24
+      k = k Mod 24
+    Next
+    strProductKey = Mid(charset, k+1, 1) & strProductKey
+  Next
+
+  If (withN = 1) Then
+    keypart = Mid(strProductKey,2,k)
+    strProductKey = Replace(strProductKey, keypart, keypart & "N", 2, 1, 0)
+    If k = 0 Then strProductKey = "N" & strProductKey
+  End If
+
+  decodeKey = ""
+  For i = 1 To 25
+    decodeKey = decodeKey & Mid(strProductKey,i,1)
+    If i Mod 5 = 0 And i <> 25 Then decodeKey = decodeKey & "-"
+  Next
 End Function
 
 Function GetSN(sComputer,sRoot,sKeyPath,sValueName)
@@ -7387,6 +7766,63 @@ function ou(dn)
 	ou = mid(ou, 1, len(ou)-1)
 end function
 
+' Intention: Provides safe access to array subscripts, when dealing with arrays that can vary in length
+' If the array subscript does not exist, the default value will be used
+function safeArraySubscript (array, subscript, defaultValue)
+	dim value
+	value = defaultValue
+	if UBound(array) >= subscript then
+		value = array(subscript)
+	end if
+	safeArraySubscript  = value
+end function
+' http://stackoverflow.com/questions/2108040/zero-length-arrays-in-vbscript
+Function IsDimmedArray(arrParam)
+
+	Dim lintUBound : lintUBound = 0
+	Dim llngError  : llngError = 0
+
+    IsDimmedArray = False
+    If Not IsArray(arrParam) Then : Exit Function
+
+	'' Test the bounds
+    On Error Resume Next
+
+        lintUBound = UBound(arrParam)
+        llngError = Err.Number
+        If (llngError <> 0) Then : Err.Clear
+
+    On Error Goto 0
+    If (llngError = 0) And (lintUBound >= 0) Then : IsDimmedArray = True
+
+End Function 
+
+Function BytesToString(ByVal Bytes)
+  Dim Result, N, len
+  Result = ""
+  if IsDimmedArray(Bytes) then
+	  For N = 0 To UBound(Bytes)
+		If CInt(Bytes(N)) <> 0 Then
+		  Result = Result & Chr(Bytes(N))
+		Else
+		  Exit For
+		End If
+	  Next
+  end if
+  BytesToString = Result
+End Function
+
+function gcd(ByVal a, ByVal b)
+	while (a <> b) 
+		if (a > b) then
+			a = a - b
+		else
+			b = b - a
+		end if
+	wend
+	gcd = a
+end function
+
 Sub forceCScriptExecution
 	Dim Arg, Str
 	if not lcase( Right( wscript.FullName, 12 ) ) = "\cscript.exe" then
@@ -7411,8 +7847,6 @@ Sub hiddenExecution
 	CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str, 0
 	WScript.Quit
 End Sub
-
-
 
 ' windows build numbers
 ' 528 - Win NT 3.1

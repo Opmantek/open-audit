@@ -28,7 +28,8 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,44 +39,38 @@ class M_files extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
-    private function build_properties() {
+    public function create()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            if (strpos($temp[$i], '.') === false) {
-                $temp[$i] = 'files.'.trim($temp[$i]);
-            } else {
-                $temp[$i] = trim($temp[$i]);
-            }
+        # check to see if we already have a file with the same name
+        $sql = "SELECT COUNT(id) AS count FROM `files` WHERE `path` = ?";
+        $data = array($CI->response->meta->received_data->attributes->path);
+        $result = $this->run_sql($sql, $data);
+        if (intval($result[0]->count) != 0) {
+            log_error('ERR-0010', 'm_files::create_file');
+            return false;
         }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit sub_resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                if (!empty($item->name)) {
-                    if ($filter != '') {
-                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    } else {
-                        $filter = ' WHERE ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    }
-                }
-            }
+        $sql = "INSERT INTO `files` VALUES (NULL, ?, ?, ?, ?, NOW())";
+        if (empty($CI->response->meta->received_data->attributes->org_id)) {
+            $CI->response->meta->received_data->attributes->org_id = 1;
         }
-        return($filter);
+        $data = array($CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->path, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
+        $id = intval($this->run_sql($sql, $data));
+        return ($id);
     }
-
 
     public function read()
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
         $return_data = array();
         $sql = "SELECT * FROM files WHERE id = ?";
@@ -89,68 +84,11 @@ class M_files extends MY_Model
         }
     }
 
-    public function create()
-    {
-        $CI = & get_instance();
-        # check to see if we already have a file with the same name
-        $sql = "SELECT COUNT(id) AS count FROM `files` WHERE `path` = ?";
-        $data = array($CI->response->meta->received_data->attributes->path);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_files::create_file');
-            return false;
-        }
-        $sql = "INSERT INTO `files` VALUES (NULL, ?, ?, ?, ?, NOW())";
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $CI->response->meta->received_data->attributes->org_id = 0;
-        }
-        $data = array($CI->response->meta->received_data->attributes->org_id, $CI->response->meta->received_data->attributes->path, $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'files') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `files`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . " FROM `files` " . $filter . " " . $sort . " " . $limit;
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'files');
-        return ($result);
-    }
-
     public function update()
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
         $fields = ' path description ';
@@ -170,6 +108,9 @@ class M_files extends MY_Model
 
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -183,15 +124,14 @@ class M_files extends MY_Model
         return true;
     }
 
-    private function count_data($result)
+    public function collection()
     {
-        // do we have any retrieved rows?
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
-        }
+        $sql = $this->collection_sql('files', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'files');
+        return ($result);
     }
-
 }

@@ -1,3 +1,4 @@
+
 <?php
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -27,31 +28,50 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-include(str_replace('views/theme-bootstrap/v_devices_read.php', 'controllers/include_device_types.php', __FILE__));
+
+# Check and set the $edit variable
+if ($this->m_users->get_user_permission('', 'devices', 'u')) {
+    $edit = true;
+} else {
+    $edit = false;
+}
 
 # put our linked and data JSON objects into the $data array
 # ensure each JSON include is in it's own $type key in the $data array
 unset($data);
 $data = array();
 if (!empty($this->response->data[0]->attributes)) {
-  $data['system'] = $this->response->data[0]->attributes;
+    $data['system'] = $this->response->data[0]->attributes;
 } else {
-  echo "No data for this ID.";
-  exit();
+    echo "No data for this ID.";
+    exit();
 }
 foreach ($this->response->included as $item) {
-  $data[$item->type][] = $item->attributes;
-}
-if (empty($data['additional_fields'])) {
-  $data['additional_fields'] = array();
+    $data[$item->type][] = $item->attributes;
 }
 
-#echo "<pre>\n"; print_r($data['additional_fields']); exit();
+if (empty($data['fields'])) {
+    $data['fields'] = array();
+}
+
+$software_odbc_driver = false;
+$software_update = false;
+if (!empty($data['software'])) {
+    foreach ($data['software'] as $software) {
+        if ($software->type == 'odbc driver') {
+            $software_odbc = true;
+        }
+        if ($software->type == 'update') {
+            $software_update = true;
+        }
+    }
+}
 
 if (strtolower($data['system']->os_group) == 'windows') {
     $attributes['software'] = array('name' => 'Name', 'version' => 'Version', 'installed_on' => 'Installed On', 'installed_by' => 'Installed By', 'first_seen' => 'First Seen', 'location' => 'Location', 'type' => 'Type');
@@ -70,7 +90,27 @@ if (strtolower($data['system']->os_group) == 'windows') {
 }
 $attributes['route'] = array('destination' => 'Destination', 'mask' => 'Mask', 'metric' => 'Metric', 'next_hop' => 'Next Hop', 'protocol' => 'Protocol', 'type' => 'type');
 if ($data['system']->type != 'computer') {
-  $attributes['disk'] = array('model' => 'Model', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'size' => 'Size', 'status' => 'Status');
+    $attributes['disk'] = array('model' => 'Model', 'serial' => 'Serial', 'hard_drive_index' => 'Index', 'interface_type' => 'Interface', 'size' => 'Size', 'status' => 'Status');
+}
+
+$data['mount_point'] = array();
+if (!empty($data['partition'])) {
+    $x = count($data['partition']);
+    for ($i=0; $i < $x; $i++) {
+        if ($data['partition'][$i]->mount_type == 'mount point') {
+            unset($data['partition'][$i]->partition_disk_index);
+            unset($data['partition'][$i]->hard_drive_index);
+            unset($data['partition'][$i]->serial);
+            unset($data['partition'][$i]->device);
+            unset($data['partition'][$i]->bootable);
+            $data['mount_point'][] = $data['partition'][$i];
+            unset($data['partition'][$i]);
+        }
+    }
+    $data['partition'] = array_values($data['partition']);
+}
+if (empty($data['mount_point'])) {
+    unset($data['mount_point']);
 }
 ?>
 
@@ -91,21 +131,36 @@ if ($data['system']->type != 'computer') {
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/credentials.svg"/><a href="#" data-menuitem="credentials"><?php echo __('Credentials'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/purchase.svg"/><a href="#" data-menuitem="purchase"><?php echo __('Purchase'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/location.svg"/><a href="#" data-menuitem="location"><?php echo __('Location / Contact'); ?></a></li>
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom"><?php echo __('Custom'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/custom.svg"/><a href="#" data-menuitem="custom_fields"><?php echo __('Custom Fields'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/attachments.svg"/><a href="#" data-menuitem="attachment"><?php echo __('Attachments'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/audit_log.svg"/><a href="#" data-menuitem="audit_log"><?php echo __('Audit Log'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/change_log.svg"/><a href="#" data-menuitem="change_log"><?php echo __('Change Log'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/discovery_log.svg"/><a href="#" data-menuitem="discovery_log"><?php echo __('Discovery Log'); ?></a></li>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/edit_log.svg"/><a href="#" data-menuitem="edit_log"><?php echo __('Edit Log'); ?></a></li>
                 <?php if (isset($data['windows'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/windows.svg"/><a href="#" data-menuitem="windows"><?php echo __('Windows'); ?></a></li>
                 <?php } ?>
+                <?php if ($data['system']->type != 'computer' and ! empty($data['network'])) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/network.svg"/><a href="#" data-menuitem="network"><?php echo __('Network'); ?></a></li>
+                <?php } ?>
+                <?php if ($data['system']->type != 'computer' and ! empty($data['module'])) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/module.svg"/><a href="#" data-menuitem="module"><?php echo __('Module'); ?></a></li>
+                <?php } ?>
+                <?php if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Phone'); ?></a></li>
+                <?php } ?>
+
+                <?php if (isset($data['nmap'])) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
+                <?php } ?>
+
               </ul>
           </div>
         </div>
       </div>
         <?php
         // the hardware categories
-        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'network', 'optical', 'processor', 'san', 'sound', 'video');
+        $hardware = array('bios', 'disk', 'memory', 'module', 'monitor', 'motherboard', 'mount_point', 'network', 'optical', 'processor', 'san', 'sound', 'video');
         $display_hardware = false;
         foreach ($hardware as $item) {
             if (!empty($data[$item])) {
@@ -129,7 +184,7 @@ if ($data['system']->type != 'computer') {
                 foreach ($hardware as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }
@@ -144,12 +199,12 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the software categories
-        $software = array('software', 'service');
         $display_software = false;
-        foreach ($software as $item) {
-            if (isset($data[$item])) {
-                $display_software = true;
-            }
+        if (!empty($data['software']) or
+            !empty($data['service']) or
+            !empty($data['software_key']) or
+            !empty($data['server']) ) {
+            $display_software = true;
         }
         if ($display_software) {
         ?>
@@ -165,12 +220,29 @@ if ($data['system']->type != 'computer') {
               <div class="panel-body">
                 <ul class="list-group">
                 <?php
-                foreach ($software as $item) {
-                    if (isset($data[$item])) {
-                    ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
-                    <?php
-                    }
+                if (!empty($data['software'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software.svg"/><a href="#" data-menuitem="software">Software</a></li>
+                <?php
+                }
+                if (!empty($software_odbc)) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver">Software ODBC Driver</a></li>
+                <?php
+                }
+                if (!empty($software_update)) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update">Software Update</a></li>
+                <?php
+                }
+                if (!empty($data['software_key'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_key.svg"/><a href="#" data-menuitem="software_key">Software Key</a></li>
+                <?php
+                }
+                if (!empty($data['service'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="services">Service</a></li>
+                <?php
+                }
+                if (!empty($data['server'])) { ?>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/server.svg"/><a href="#" data-menuitem="server">Server</a></li>
+                <?php
                 }
                 ?>
                 </ul>
@@ -183,7 +255,7 @@ if ($data['system']->type != 'computer') {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'netstat', 'nmap', 'log', 'share', 'route', 'user');
+        $software = array('dns', 'file', 'log', 'netstat', 'share', 'pagefile', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -207,7 +279,7 @@ if ($data['system']->type != 'computer') {
                 foreach ($software as $item) {
                     if (isset($data[$item])) {
                 ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucfirst($item)); ?></a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/<?php echo $item; ?>.svg"/><a href="#" data-menuitem="<?php echo $item; ?>"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></a></li>
                 <?php
                     }
                 }
@@ -225,7 +297,6 @@ if ($data['system']->type != 'computer') {
 
 <div class="col-md-9">
 
-
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">Device Details</h3>
@@ -237,297 +308,363 @@ if ($data['system']->type != 'computer') {
                     <div class="col-md-5">
                         <div class="form-group">
                             <label for="name" class="col-sm-4 control-label"><?php echo __('Name')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="name" name="name" value="<?php echo $data['system']->name; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="name" name="name" value="<?php echo $data['system']->name; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                <button id="edit_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="name">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                <button id="edit_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="hostname">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
+
                         <div class="form-group">
                             <label for="domain" class="col-sm-4 control-label"><?php echo __('Domain')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="domain" name="domain" value="<?php echo $data['system']->domain; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="domain" name="domain" value="<?php echo $data['system']->domain; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                <button id="edit_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="domain">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_hostname"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                              <input disabled type="text" class="form-control"  id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_dns_hostname" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_hostname">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
+
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('DNS Domain')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="dns_domain" name="dns_domain" value="<?php echo $data['system']->dns_domain; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_domain"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="dns_domain" name="dns_domain" value="<?php echo $data['system']->dns_domain; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_dns_domain" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="dns_domain">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
+
                         <div class="form-group">
                             <label for="dns_domain" class="col-sm-4 control-label"><?php echo __('FQDN')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="fqdn" name="fqdn" value="<?php echo $data['system']->fqdn; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="fqdn"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="fqdn" name="fqdn" value="<?php echo $data['system']->fqdn; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_fqdn" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="fqdn">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="ip" class="col-sm-4 control-label"><?php echo __('IP')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="ip" name="ip" value="<?php echo $data['system']->ip; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ip"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                              <input disabled type="text" class="form-control"  id="ip" name="ip" value="<?php echo $data['system']->ip; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                <button id="edit_ip" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="ip">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="type" class="col-sm-4 control-label"><?php echo __('Type')?></label>
                             <div class="col-sm-8 input-group">
-                                <select id="type" class="form-control" disabled>
-                                <?php
-                                foreach ($device_types as $key => $value) {
-                                    if ($key == $data['system']->type) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
-                                    }
-                                    if ($key != '') {
-                                        echo "<option value='$key'$selected>".__("$value")."</option>";
+                                <select id="type" class="form-control" disabled><?php
+                                echo "\n";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_type') {
+                                        if ($item->value == $data['system']->type) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if ($item->value != '') {
+                                            echo "                                <option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>\n";
+                                        }
                                     }
                                 }
                                 ?>
-                                
                                 </select>
-                                <span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <?php if ($edit) {
+                                    ?><span class="input-group-btn">
+                                    <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span><?php } ?>
+
                             </div>
                         </div>
 
                         <?php
                         if ($data['system']->type == 'computer') {
-                        ?>
-                        <div class="form-group">
+                        ?><div class="form-group">
                             <label for="class" class="col-sm-4 control-label"><?php echo __('Class')?></label>
                             <div class="col-sm-8 input-group">
-                                <select id="class" class="form-control" disabled>
-                                <?php
-                                foreach ($device_class as $key => $value) {
-                                    if ($key == $data['system']->class) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
+                                <select id="class" class="form-control" disabled><?php
+                                echo "\n";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_class') {
+                                        if ($item->value == $data['system']->class) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if (empty($item->name)) {
+                                            $item->name = ' ';
+                                        }
+                                        echo "                                    <option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>\n";
                                     }
-                                    echo "<option value='$key'$selected>".__("$value")."</option>";
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
-                            </div>
+                                <?php if ($edit) {
+                                    ?><span class="input-group-btn">
+                                    <button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
+
                         <?php
                         }
-                        ?>
-
-                        <div class="form-group">
+                        ?><div class="form-group">
                             <label for="function" class="col-sm-4 control-label"><?php echo __('Function')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="function" name="function" value="<?php echo $data['system']->function; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="function"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            <div class="col-sm-8 input-group">
+                              <input disabled type="text" class="form-control"  id="function" name="function" value="<?php echo $data['system']->function; ?>">
+                                <?php if ($edit) {
+                                    ?><span class="input-group-btn">
+                                    <button id="edit_function" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="function">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
                               </span>
-                            </div>
+                            <?php } ?></div>
                         </div>
 
 
                         <div class="form-group">
                             <label for="environment" class="col-sm-4 control-label"><?php echo __('Environment')?></label>
                             <div class="col-sm-8 input-group">
-                                <select id="environment" class="form-control" disabled>
-                                <?php
-                                foreach ($device_environment as $key => $value) {
-                                    if ($key == $data['system']->environment) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
+                                <select id="environment" class="form-control" disabled><?php
+                                echo "\n";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_environment') {
+                                        if ($item->value == $data['system']->environment) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if ($item->value != '') {
+                                            echo "                                    <option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>\n";
+                                        }
                                     }
-                                    echo "<option value='$key'$selected>".__("$value")."</option>";
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
-                            </div>
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="status" class="col-sm-4 control-label"><?php echo __('Status')?></label>
                             <div class="col-sm-8 input-group">
-                                <select id="status" class="form-control" disabled>
-                                <?php
-                                foreach ($device_status as $key => $value) {
-                                    if ($key == $data['system']->status) {
-                                        $selected = " selected";
-                                    } else {
-                                        $selected = "";
-                                    }
-                                    if ($key != '') {
-                                        echo "<option value='$key'$selected>".__("$value")."</option>";
+                                <select id="status" class="form-control" disabled><?php
+                                echo "\n";
+                                foreach ($data['attributes'] as $item) {
+                                    if ($item->type == 'device_status') {
+                                        if ($item->value == $data['system']->status) {
+                                            $selected = " selected";
+                                        } else {
+                                            $selected = "";
+                                        }
+                                        if ($item->value != '') {
+                                            echo "                                    <option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>";
+                                        }
                                     }
                                 }
                                 ?>
                                 </select>
-                                <span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
-                            </div>
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label"><?php echo __('Description')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="description" name="description" value="<?php echo $data['system']->description; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                              <input disabled type="text" class="form-control"  id="description" name="description" value="<?php echo $data['system']->description; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_description" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="description">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span
+                                    ></button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="os_group" class="col-sm-4 control-label"><?php echo __('OS Group')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="os_group" name="os_group" value="<?php echo $data['system']->os_group; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="os_group" name="os_group" value="<?php echo $data['system']->os_group; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_os_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_group">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="os_family" class="col-sm-4 control-label"><?php echo __('OS Family')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="os_family" name="os_family" value="<?php echo $data['system']->os_family; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_family"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="os_family" name="os_family" value="<?php echo $data['system']->os_family; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_os_family" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_family">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
 
                         <div class="form-group">
                             <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Name')?></label>
-                            <div class="input-group">
-                              <input disabled type="text" class="form-control" placeholder="" id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
-                              <span class="input-group-btn">
-                                <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="os_name" name="os_name" value="<?php echo $data['system']->os_name; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_os_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_name">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
-<?php insert_additional_fields('system', $data['additional_fields']); ?>
-
                     </div>
+
                     <div class="col-md-5">
                         <div class="form-group">
                             <label for="manufacturer" class="col-sm-4 control-label"><?php echo __('Manufacturer')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="manufacturer" placeholder="" value="<?php echo $data['system']->manufacturer; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="manufacturer"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                                <input type="text" class="form-control" id="manufacturer" value="<?php echo $data['system']->manufacturer; ?>" disabled>
+                                    <?php if ($edit) { ?><span class="input-group-btn">
+                                        <button id="edit_manufacturer" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="manufacturer">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                        </button>
+                                    </span>
+                                <?php } ?></div>
                         </div>
+
                         <div class="form-group">
                             <label for="model" class="col-sm-4 control-label"><?php echo __('Model')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="model" placeholder="" value="<?php echo $data['system']->model; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="model"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                                <input type="text" class="form-control" id="model" value="<?php echo $data['system']->model; ?>" disabled>
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_model" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="model">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
+
                         <div class="form-group">
                             <label for="serial" class="col-sm-4 control-label"><?php echo __('Serial')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="serial" placeholder="" value="<?php echo $data['system']->serial; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="serial"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                                <input type="text" class="form-control" id="serial" value="<?php echo $data['system']->serial; ?>" disabled>
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_serial" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="serial">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
                         <?php
                         if ($data['system']->type == 'computer') {
                         ?>
+
                         <div class="form-group">
                             <label for="form_factor" class="col-sm-4 control-label"><?php echo __('Form Factor')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="form_factor" placeholder="" value="<?php echo $data['system']->form_factor; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="form_factor"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                                <input type="text" class="form-control" id="form_factor" value="<?php echo $data['system']->form_factor; ?>" disabled>
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_form_factor" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="form_factor">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
                         <?php
                         }
                         ?>
+
                         <div class="form-group">
                             <label for="uptime" class="col-sm-4 control-label"><?php echo __('Uptime')?></label>
                             <div class="col-sm-8 input-group">
-                                <?php
-                                if (!isset($data['system']->uptime) or $data['system']->uptime == '') {
-                                    $uptime = '';
-                                } else {
-                                    $uptime = intval($data['system']->uptime/ 86400) . ' days, ' . gmdate("H:i:s", $data['system']->uptime);
-                                }
-                                ?>
-                                <input type="text" class="form-control" id="uptime" placeholder="" value="<?php echo $uptime; ?>" readonly>
-                                <?php unset($uptime); ?>
+                                <input type="text" class="form-control" id="uptime" value="<?php echo $data['system']->uptime_formatted; ?>" readonly>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="snmp_oid" class="col-sm-4 control-label"><?php echo __('SNMP OID')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="snmp_oid" placeholder="" value="<?php echo $data['system']->snmp_oid; ?>" readonly>
+                                <input type="text" class="form-control" id="snmp_oid" value="<?php echo $data['system']->snmp_oid; ?>" readonly>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="last_seen" class="col-sm-4 control-label"><?php echo __('Last Seen On')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="last_seen" placeholder="" value="<?php echo $data['system']->last_seen; ?>" readonly>
+                                <input type="text" class="form-control" id="last_seen" value="<?php echo $data['system']->last_seen; ?>" readonly>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="last_seen_by" class="col-sm-4 control-label"><?php echo __('Last Seen By')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="last_seen_by" placeholder="" value="<?php echo $data['system']->last_seen_by; ?>" readonly>
+                                <input type="text" class="form-control" id="last_seen_by" value="<?php echo $data['system']->last_seen_by; ?>" readonly>
                             </div>
                         </div>
                         <?php
                         if ($data['system']->type == 'computer') {
                         ?>
+
                         <div class="form-group">
                             <label for="cluster_name" class="col-sm-4 control-label"><?php echo __('Cluster Name')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="cluster_name" placeholder="" value="<?php echo $data['system']->cluster_name; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="cluster_name"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
-                            </div>
+                                <input type="text" class="form-control" id="cluster_name" value="<?php echo $data['system']->cluster_name; ?>" disabled>
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_cluster_name" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="cluster_name">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
                         </div>
                         <?php
                         }
@@ -535,22 +672,28 @@ if ($data['system']->type != 'computer') {
                         <?php
                         if (strtolower($data['system']->form_factor) == 'virtual') {
                         ?>
+
                         <div class="form-group">
                             <label for="vm_host" class="col-sm-4 control-label"><?php echo __('VM Host')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_host" placeholder="" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
+                                <input type="text" class="form-control" id="vm_host" value="<?php #echo $data['system']->vm_server_name; ?>" disabled>
+                                <?php if ($edit) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_vm_host" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_host"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="vm_group" class="col-sm-4 control-label"><?php echo __('VM Group')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="vm_group" placeholder="" value="<?php echo $data['system']->vm_group; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
+                                <input type="text" class="form-control" id="vm_group" value="<?php echo $data['system']->vm_group; ?>" disabled>
+                                <?php if ($edit) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_vm_group" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="vm_group"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                </span>
+                                <?php } ?>
                             </div>
                         </div>
                         <?php
@@ -559,16 +702,18 @@ if ($data['system']->type != 'computer') {
                         <?php
                         if (stripos($data['system']->type, 'printer') !== false) {
                         ?>
+
                         <div class="form-group">
                             <label for="printer_duplex" class="col-sm-4 control-label"><?php echo __('Printer Duplex')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_duplex" placeholder="" value="<?php echo $data['system']->printer_duplex; ?>" disabled>
+                                <input type="text" class="form-control" id="printer_duplex" value="<?php echo $data['system']->printer_duplex; ?>" readonly>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="printer_colour" class="col-sm-4 control-label"><?php echo __('Printer Colour')?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="printer_colour" placeholder="" value="<?php echo $data['system']->printer_color; ?>" disabled>
+                                <input type="text" class="form-control" id="printer_colour" value="<?php echo $data['system']->printer_color; ?>" readonly>
                             </div>
                         </div>
                         <?php
@@ -591,21 +736,38 @@ if ($data['system']->type != 'computer') {
                                 <option value='y' <?php echo $selected_y; ?>>Yes</option>
                                 <option value='n' <?php echo $selected_n; ?>>No</option>
                                 </select>
+                                <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-2 col-centered">
-                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url()?>device_images/<?php echo $data['system']->icon; ?>.svg" />
+                    <?php
+                    if (php_uname('s') != 'Windows NT') {
+                        $icon_path = $this->config->config['base_path'] . '/www/open-audit/device_images/';
+                    } else {
+                        $icon_path = $this->config->config['base_path'] . '..\\htdocs\\open-audit\\device_images\\';
+                    }
+                    if (file_exists($icon_path.$data['system']->icon.'.svg')) { ?>
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/<?php echo $data['system']->icon; ?>.svg" />
+                    <?php
+                    } else { ?>
+                        <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/network_device.svg" />
+                    <?php
+                    } ?>
                         <br /><br />
                         <!--
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Warranty'); ?></a>
                         <a class="btn btn-default btn-block" href="#" role="button"><?php echo __('Downloads'); ?></a>
                         -->
+                        <?php if ($edit) { ?>
                         <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=credential&action=create" role="button"><?php echo __('Add Credentials'); ?></a>
-                        <a class="btn btn-default btn-block" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/discovery/discover_subnet/device/<?php echo $data['system']->id; ?>" role="button"><?php echo __('Discover'); ?></a>
-                        <a class="btn btn-default btn-block" href="#" onclick="window.open('<?php echo $this->config->config['oa_web_folder']; ?>/index.php/admin_system/system_snmp/<?php echo $data['system']->id; ?>', 'SNMP Scan', 'height=300,left=100,location=no,menubar=no,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=100,width=400');"><?php echo __('SNMP Scan'); ?></a>
-
+                        <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=attachment&action=create" role="button"><?php echo __('Add Attachment'); ?></a>
+                        <?php } ?>
+                        <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
+                        <a class="btn btn-default btn-block" href="<?php echo $this->response->links->self; ?>?sub_resource=discovery&action=create" role="button"><?php echo __('Discover'); ?></a>
+                        <?php } ?>
                     </div>
                 </div>
             </fieldset>
@@ -624,40 +786,43 @@ foreach ($list as $item) {
 <div id="<?php echo $item; ?>" class="section">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title pull-left"><?php echo __(ucfirst($item)); ?></h3>
+        <h3 class="panel-title pull-left"><?php echo __(ucwords($item)); ?></h3>
         <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $item; ?>"></span>
         <div class="clearfix"></div>
       </div>
       <div class="panel-body">
         <?php
-        if (isset($data[$item])) {
+        if (!empty($data[$item])) {
             foreach ($data[$item][0] as $key => $value) {
                 if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen') {
-                    $label = ucfirst(str_replace('_', ' ', $key));
+                    $label = ucwords(str_replace('_', ' ', $key));
                     if ($item == 'purchase') { ?>
                         <div class="form-group">
                             <label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
-                              <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="-" value="<?php echo $value; ?>" disabled>
-                              <span class="input-group-btn">
-                                <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                              </span>
+                                <input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="-" value="<?php echo $value; ?>" disabled>
+                                <?php if ($edit) { ?>
+                                    <span class="input-group-btn">
+                                        <button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                    </span>
+                                <?php } ?>
                             </div>
                         </div>
-                    <?php } else { ?>
+                    <?php
+                    } else { ?>
                         <div class="form-group">
                             <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
                             <div class="col-sm-8 input-group">
-                                <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
+                                <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" value="<?php echo $value; ?>" readonly>
                             </div>
                         </div>
-                    <?php } ?>
+                    <?php
+                    } ?>
                 <?php
                 }
             }
         }
         ?>
-        <?php insert_additional_fields($item, $data['additional_fields']); ?>
       </div>
     </div>
 </div>
@@ -665,12 +830,57 @@ foreach ($list as $item) {
 }
 ?>
 
-
-
-
 <?php
-// credentials
-if (isset($data['credential']) and count($data['credential']) > 0) { ?>
+if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) {
+    $items = "service_number,service_provider,service_plan,service_network,unlock_pin,serial_imei,serial_sim"
+?>
+    <div id="phone" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Phone</h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="phone"></span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label for="service_type" class="col-sm-4 control-label">Service Type</label>
+                    <div class="col-sm-8 input-group">
+                        <select class="form-control" id="service_type" name="service_type" disabled>
+                            <option value=""<?php if ($data['system']->{'service_type'} == '') {
+                                echo ' selected'; } ?>> </option>
+                            <option value="voice"<?php if ($data['system']->{'service_type'} == 'voice') {
+                                echo ' selected'; } ?>>Voice Only</option>
+                            <option value="data"<?php if ($data['system']->{'service_type'} == 'data') {
+                                echo ' selected'; } ?>>Data Only</option>
+                            <option value="voice and data"<?php if ($data['system']->{'service_type'} == 'voice and data') {
+                                echo ' selected'; } ?>>Voice and Data</option>
+                        </select>
+                        <?php if ($edit) { ?>
+                            <span class="input-group-btn"><button id="edit_service_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="service_type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                        <?php } ?>
+                    </div>
+                </div>
+
+                <?php foreach (explode(',', $items) as $item) { ?>
+                <div class="form-group">
+                    <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
+                    <div class="col-sm-8 input-group">
+                      <input type="text" class="form-control" id="<?php echo $item; ?>" value="<?php echo $data['system']->{$item}; ?>" disabled>
+                      <span class="input-group-btn">
+                        <button id="edit_<?php echo $item; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>
+                    </div>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+<?php
+}
+?>
+
+
+
     <div id="credentials" class="section">
         <div class="panel panel-default">
       <div class="panel-heading">
@@ -678,7 +888,8 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
         <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="credentials"></span>
         <div class="clearfix"></div>
       </div>
-          <div class="panel-body">
+            <div class="panel-body">
+            <?php if (isset($data['credential']) and count($data['credential']) > 0) { ?>
             <table class="table">
                 <thead>
                     <tr>
@@ -686,22 +897,236 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
                         <th>Type</th>
                         <th>Name</th>
                         <th>Description</th>
-                        <td style="text-align:center;">Edit</td>
+                        <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
                         <td style="text-align:center;">Delete</td>
+                        <?php } ?>
                     </tr>
                 </thead>
                 <tbody>
                 <?php foreach ($data['credential'] as $item) { ?>
                 <tr>
-                  <td><?php echo htmlentities($item->id); ?></td>
-                  <td><?php echo htmlentities($item->type); ?></td>
-                  <td><?php echo htmlentities($item->name); ?></td>
-                  <td><?php echo htmlentities($item->description); ?></td>
-                  <td style="text-align:center;"><?php echo htmlentities($item->id); ?></td>
-                  <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlentities($item->name); ?>" aria-hidden="true"></span></button></td>
+                    <td><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars($item->type, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
+                    <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
+                    <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                    <?php } ?>
                 <?php } ?>
                 </tbody>
             </table>
+            <?php } ?>
+          </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+<div id="location" class="section">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title pull-left">Location / Owner</h3>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="location_id" class="col-sm-4 control-label"><?php echo __('Location')?></label>
+                        <div class="col-sm-8 input-group">
+                            <select id="location_id" class="form-control" disabled>
+                            <?php
+                            foreach ($data['locations'] as $location) {
+                                if ($location->id == $data['system']->location_id) {
+                                    echo '<option value="' . $location->id . '" selected>' . $location->name . '</option>';
+                                } else {
+                                    echo '<option value="' . $location->id . '">' . $location->name . '</option>';
+                                }
+                            }
+                            ?>
+                            </select>
+                            <?php if ($edit) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <?php
+                    foreach ($data['locations'] as $location) {
+                        if ($location->id == $data['system']->location_id) {
+                            $items = array('address','city','state','country');
+                            foreach ($items as $item) { ?>
+                                <div class="form-group">
+                                    <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
+                                    <div class="col-sm-8 input-group">
+                                        <input disabled type="text" class="form-control" placeholder="" id="locations.<?php echo $item; ?>" name="locations.<?php echo $item; ?>" value="<?php echo $location->$item ?>">
+                                    </div>
+                                </div>
+                            <?php
+                            }
+                        }
+                    }
+                    ?>
+                </div>
+
+
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="owner" class="col-sm-4 control-label"><?php echo __('Owner'); ?></label>
+                            <div class="col-sm-7 input-group">
+                                <input disabled type="text" class="form-control" placeholder="" id="owner" name="owner" value="<?php echo $data['system']->owner; ?>">
+                                <?php if ($edit) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                                <?php } ?>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="org_id" class="col-sm-4 control-label"><?php echo __('Organisation') ?></label>
+                            <div class="col-sm-7 input-group">
+                                <select id="org_id" class="form-control" disabled><?php
+                                foreach ($data['orgs'] as $org) {
+                                    if ($org->id == $data['system']->org_id) {
+                                        echo '                                    <option value="' . $org->id . '" selected>' . $org->name . '</option>';
+                                    } else {
+                                        echo '                                    <option value="' . $org->id . '">' . $org->name . '</option>';
+                                    }
+                                }
+                                ?>
+                                </select>
+                                <?php if ($edit) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <br />
+                    <div class="col-md-6">
+                        <?php
+                        $items = array('location_level','location_suite','location_room','location_rack_position','location_latitude','location_longitude');
+                        foreach ($items as $item) {
+                        ?>
+                        <div class="form-group">
+                            <label for="<?php echo $item ?>" class="col-sm-4 control-label">Device Specific <?php echo ucwords(str_replace('_', ' ', str_replace('location_', '', $item))); ?></label>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item} ?>">
+                                <?php if ($edit) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_<?php echo $item ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item ?>">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                                <?php } ?>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?php
+                        $items = array('switch_system_id','switch_port','patch_panel','wall_port');
+                        foreach ($items as $item) {
+                        ?>
+                        <div class="form-group">
+                            <label for="<?php echo $item ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
+                            <div class="col-sm-7 input-group">
+                                <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item}; ?>">
+                                <?php if ($edit) { ?>
+                                <span class="input-group-btn">
+                                    <button id="edit_<?php echo $item ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item ?>">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                                <?php } ?>
+                            </div>
+                        </div>
+                        <?php } ?>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<?php
+// software
+if (isset($data['software']) and count($data['software']) > 0) {
+    $count = 0;
+    foreach ($data['software'] as $row) {
+        if ($row->type == '') {
+            $count++;
+        }
+    }
+    ?>
+    <div id="software" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Software</h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software"></span>
+                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+            <?php
+            if (isset($data['software']) and count($data['software']) > 0) { ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <?php
+                        foreach ($attributes['software'] as $key => $value) {
+                            echo "<th>$value</th>";
+                        }
+                        ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($data['software'] as $row) {
+                        if ($row->type == '') {
+                            echo "                    <tr>\n";
+                            foreach ($attributes['software'] as $key => $value) {
+                                if (is_integer($row->$key)) {
+                                    echo "                        <td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                } else {
+                                    echo "                        <td>" . $row->$key . "</td>\n";
+                                }
+                            }
+                            echo "                    </tr>\n";
+                        }
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <?php
+            } ?>
           </div>
         </div>
     </div>
@@ -709,147 +1134,251 @@ if (isset($data['credential']) and count($data['credential']) > 0) { ?>
 
 
 
+<?php
+// software odbc drivers
+if (!empty($data['software'])) {
+    $count = 0;
+    foreach ($data['software'] as $row) {
+        if ($row->type == 'odbc driver') {
+            $count++;
+        }
+    }
+    ?>
+    <div id="software_odbc_driver" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Software ODBC Drivers</h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_odbc_driver"></span>
+                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+            <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+            <?php
+            if (!empty($data['software'])) { ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <?php
+                        foreach ($attributes['software'] as $key => $value) {
+                            echo "<th>$value</th>";
+                        }
+                        ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                    foreach ($data['software'] as $row) {
+                        if ($row->type == 'odbc driver') {
+                            echo "                    <tr>\n";
+                            foreach ($attributes['software'] as $key => $value) {
+                                if (is_integer($row->$key)) {
+                                    echo "                        <td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                } else {
+                                    echo "                        <td>" . $row->$key . "</td>\n";
+                                }
+                            }
+                            echo "                    </tr>\n";
+                        }
+                    }
+                    ?>
+                    </tbody>
+                </table>
+            <?php
+            } ?>
+            </div>
+        </div>
+    </div>
+<?php } ?>
 
 
-<div id="location" class="section"><!-- 0 -->
-	<div class="row"><!-- 1 -->
-		<div class="col-md-6"><!-- 2 -->
-			<div class="panel panel-default"><!-- 3 -->
-				<div class="panel-heading"><!-- 4 -->
-					<h3 class="panel-title pull-left">Location Specific Details</h3>
-					<span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
-					<div class="clearfix"></div>
-				</div><!-- 4 -->
-				<div class="panel-body"><!-- 4 -->
-					<?php
-						foreach ($data['locations'] as $location) {
-							if ($location->id == $data['system']->location_id) {
-                foreach ($location as $key => $value) {
-    							if ($key == 'name') {
-    								$data['location'][0]->location_name = $value;
-    							}
-    							$label = ucwords($key);
-					?><div class="form-group"><!-- 5 -->
-					<label for="included_location_<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
-					<div class="col-sm-8 input-group">
-						<input type="text" class="form-control" id="included_location_<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
-					</div>
-				</div><!-- 5 -->
-				<?php } } } ?></div><!-- 4 -->
-			</div><!-- 3 -->
-		</div><!-- 2 -->
-		<div class="col-md-6"><!-- 2 -->
-			<div class="panel panel-default"><!-- 3 -->
-				<div class="panel-heading"><!-- 4 -->
-					<h3 class="panel-title pull-left">Device Specific Details</h3>
-					<span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
-					<div class="clearfix"></div>
-				</div><!-- 4 -->
-				<div class="panel-body"><!-- 4 -->
-					<?php
-					if (isset($data['location'])) {
-						foreach ($data['location'][0] as $key => $value) {
-								$label = ucwords(str_replace('location_', '', $key));
-								$label = ucwords(str_replace('Rack_', 'Rack ', $label));
-								if ($key == 'location_id') {
-									$key = 'dummy_location_id';
-								}
-					?><div class="form-group"><!-- 5 -->
-					<?php if ($key != 'location_name') {
-					?><label for="<?php echo $key; ?>" class="col-sm-4 control-label"><?php echo __($label)?></label>
-					<div class="col-sm-8 input-group"><!-- 6 -->
-						<input type="text" class="form-control" id="<?php echo $key; ?>" placeholder="" value="<?php echo $value; ?>" disabled>
-						<?php
-						if ($key != 'dummy_location_id') {
-						?><span class="input-group-btn">
-							<button id="edit_<?php echo $key; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $key; ?>">
-								<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-							</button>
-						</span>
-						<?php }
-						} else {
-						?><label for="location_id" class="col-sm-4 control-label"><?php echo __($label)?></label>
-							<div class="col-sm-8 input-group"><!-- 6 -->
-							<select id="location_id" class="form-control" disabled><?php
-							foreach ($this->response->included as $included) {
-								if ($included->type == 'locations') {
-									if ($data['location'][0]->location_id == $included->id) {
-										$selected = " selected";
-									} else {
-										$selected = "";
-									}
-									echo "								<option value='" . $included->id . "'" . $selected . ">" . __($included->attributes->name) . "</option>\n";
-								}
-							}
-							?>
-						</select>
-						<span class="input-group-btn">
-							<button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id">
-								<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-							</button>
-						</span>
-					<?php } ?>
-					</div><!-- 6 -->
-				</div><!-- 5 -->
-				<?php } }
-				insert_additional_fields($item, $data['additional_fields']);
-				?></div><!-- 4 -->
-			</div><!-- 3 -->
-		</div><!-- 2 -->
 
-    <div class="col-md-6"><!-- 2 -->
-      <div class="panel panel-default"><!-- 3 -->
-        <div class="panel-heading"><!-- 4 -->
-          <h3 class="panel-title pull-left">Owner Details</h3>
-          <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
-          <div class="clearfix"></div>
-        </div><!-- 4 -->
-        <div class="panel-body"><!-- 4 -->
-          <div class="form-group"><!-- 5 -->
-          <label for="owner" class="col-sm-4 control-label">Owner</label>
-          <div class="col-sm-8 input-group"><!-- 6 -->
-            <input type="text" class="form-control" id="owner" placeholder="" value="<?php echo $data['system']->owner; ?>" disabled>
-            <span class="input-group-btn">
-              <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-              </button>
-            </span>
-          </div><!-- 6 -->
-        </div><!-- 5 -->
-          <div class="form-group"><!-- 5 -->
-          <label for="owner" class="col-sm-4 control-label">Comments</label>
-          <div class="col-sm-8 input-group"><!-- 6 -->
-            <input type="text" class="form-control" id="comments" placeholder="" value="<?php echo $data['system']->comments; ?>" disabled>
-            <span class="input-group-btn">
-              <button id="edit_comments" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="comments">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-              </button>
-            </span>
-          </div><!-- 6 -->
-        </div><!-- 5 -->
-        </div><!-- 4 -->
-      </div><!-- 3 -->
-    </div><!-- 2 -->
+<?php
+if (!empty($data['software'])) {
+    // software updates
+    $count = 0;
+    foreach ($data['software'] as $row) {
+        if ($row->type == 'update') {
+            $count++;
+        }
+    }
+    ?>
+    <div id="software_update" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Software Updates</h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_update"></span>
+                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+            <?php
+            if (!empty($data['software'])) { ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <?php
+                        foreach ($attributes['software'] as $key => $value) {
+                            echo "<th>$value</th>";
+                        }
+                        ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                <?php
+                foreach ($data['software'] as $row) {
+                    if ($row->type == 'update') {
+                        echo "                    <tr>\n";
+                        foreach ($attributes['software'] as $key => $value) {
+                            if (is_integer($row->$key)) {
+                                echo "                        <td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                            } else {
+                                echo "                        <td>" . $row->$key . "</td>\n";
+                            }
+                        }
+                        echo "                    </tr>\n";
+                    }
+                } ?>
+                    </tbody>
+                </table>
+            <?php
+            } ?>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+
+    
+        <div id="attachment" class="section">
+            <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title pull-left">Attachments</h3>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="attachment"></span>
+            <div class="clearfix"></div>
+          </div>
+              <div class="panel-body">
+                <?php if (isset($data['attachment']) and count($data['attachment']) > 0) { ?>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Filename</th>
+                            <th>Edited By</th>
+                            <th>Edited Date</th>
+                            <th style="text-align:center;">Download</th>
+                            <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
+                            <th style="text-align:center;">Delete</th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($data['attachment'] as $item) {
+                            if (php_uname('s') == 'Windows NT') {
+                                $i = explode('\\', $item->filename);
+                            } else {
+                                $i = explode('/', $item->filename);
+                            }
+                            $filename = $i[count($i)-1];
+                            $filename = preg_replace('/'.$data['system']->id . '_/', '', $filename, 1);
+                            echo '<tr>';
+                            echo "<td>" . $item->id . "</td>";
+                            echo "<td>" . $item->name . "</td>";
+                            echo "<td>" . $filename . "</td>";
+                            echo "<td>" . $item->edited_by . "</td>";
+                            echo "<td>" . $item->edited_date . "</td>";
+                            ?>
+                            <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $this->response->links->self; ?>?sub_resource=attachment&sub_resource_id=<?php echo intval($item->id); ?>&action=download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
+                            <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
+                            <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="attachment" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                            <?php } ?>
+                            <?php
+                            echo '</tr>';
+                        }
+                        ?>
+                    </tbody>
+                </table>
+                <?php } ?>
+              </div>
+            </div>
+        </div>
 
 
-	</div><!-- 1 -->
-</div><!-- 0 -->
+
+<?php
+$item = 'discovery_log';
+if (isset($data[$item]) and count($data[$item]) > 0) {
+?>
+<div id="<?php echo $item; ?>" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left"><?php echo __('Discovery Log'); ?></h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="discovery_log"></span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo count($data['discovery_log']); ?> items</span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($data[$item][0] as $key => $value) {
+                        if ($key != 'system_id' and $key != 'ip_padded') {
+                            if (is_int($value)) {
+                                echo "                    <th class=\"text-right\">" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                            } else {
+                                echo "                    <th>" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                            }
+                        }
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($data[$item] as $row) {
+                    echo '                <tr>';
+                    foreach ($row as $key => $value) {
+                        if ($key != 'system_id' and $key != 'ip_padded') {
+                            if (is_int($value)) {
+                                echo "                    <td class=\"text-right\">" . number_format($value) . "</td>\n";
+                            } else {
+                                if (strlen($value) > 40) {
+                                    echo "                    <td class=\"wrap\">" . $value . "</td>\n";
+                                } else {
+                                    echo "                    <td>" . $value . "</td>\n";
+                                }
+                            }
+                        }
+                    }
+                    echo '                </tr>';
+                }
+                ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<?php
+}
+?>
 
 <?php
 // table style displays
-#$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video', 'disk', 'partition');
-$list = array ('alert_log', 'attachment', 'audit_log', 'change_log', 'edit_log', 'custom', 'dns', 'file', 'key', 'log', 'memory', 'module', 'monitor', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software', 'sound', 'user', 'video');
+$list = array ('alert_log', 'audit_log', 'change_log', 'edit_log', 'dns', 'file', 'log', 'memory', 'module', 'monitor', 'mount_point', 'netstat', 'nmap', 'optical', 'print_queue', 'route', 'san', 'service', 'share', 'software_key', 'sound', 'user', 'user_group', 'video', 'variable', 'vm');
 if ($data['system']->type != 'computer' and !empty($data['disk'])) {
-  $list[] = 'disk';
+    $list[] = 'disk';
 }
+
 foreach ($list as $item) {
-    if (isset($data[$item]) and count($data[$item]) > 0) {
+    if (!empty($data[$item])) {
         ?>
         <div id="<?php echo $item; ?>" class="section">
             <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title pull-left"><?php echo __(ucfirst($item)); ?></h3>
+            <h3 class="panel-title pull-left"><?php echo __(ucwords(str_replace('_', ' ', $item))); ?></h3>
             <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $item; ?>"></span>
+            <span class="pull-right" style="padding-right:10px;"><?php echo count($data[$item]); ?> items</span>
             <div class="clearfix"></div>
           </div>
               <div class="panel-body">
@@ -857,9 +1386,9 @@ foreach ($list as $item) {
                     <thead>
                         <tr>
                             <?php
-                            if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
+                            if ($item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
                                 foreach ($attributes[$item] as $key => $value) {
-                                    echo "<th>$value</th>";
+                                    echo "                            <th>$value</th>\n";
                                 }
                             } else {
                                 foreach ($data[$item][0] as $key => $value) {
@@ -867,14 +1396,18 @@ foreach ($list as $item) {
                                         # some special cases for cisco modules
                                         if ($item == 'module') {
                                             if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
-                                                echo '<th>' . ucwords(str_replace('_', ' ', $key)) . '</th>';
+                                                echo '                            <th>' . ucwords(str_replace('_', ' ', $key)) . "</th>\n";
+                                            }
+                                        } elseif ($item == 'change_log') {
+                                            if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
+                                                echo '                            <th>' . ucwords(str_replace('_', ' ', $key)) . "</th>\n";
                                             }
                                         } else {
                                             # everything else
                                             if (is_int($value)) {
-                                                echo "<th class=\"text-right\">" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                                                echo "                            <th class=\"text-right\">" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
                                             } else {
-                                                echo "<th>" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                                                echo "                            <th>" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
                                             }
                                         }
                                     }
@@ -885,50 +1418,63 @@ foreach ($list as $item) {
                     </thead>
                     <tbody>
                         <?php
-                        if ($item == 'software' or $item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
+                        if ($item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
                             foreach ($data[$item] as $row) {
-                                echo "<tr>";
+                                echo "                        <tr>\n";
                                 foreach ($attributes[$item] as $key => $value) {
                                     if (is_integer($row->$key)) {
-                                        echo "<td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
+                                        echo "                            <td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
                                     } else {
-                                        echo "<td>" . $row->$key . "</td>\n";
+                                        echo "                            <td>" . $row->$key . "</td>\n";
                                     }
                                 }
-                                echo "</tr>\n";
+                                echo "                        </tr>\n";
                             }
                         } else {
                             foreach ($data[$item] as $row) {
-                                echo '<tr>';
+                                echo "                        <tr>\n";
                                 foreach ($row as $key => $value) {
                                     if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded') {
                                         # some special cases for cisco modules
                                         if ($item == 'module') {
                                             if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
                                                 if (is_int($value)) {
-                                                    echo "<td class=\"text-right\">" . number_format($value) . "</td>\n";
+                                                    echo "                            <td class=\"text-right\">" . number_format($value) . "</td>\n";
                                                 } else {
-                                                    echo "<td>" . $value . "</td>\n";
+                                                    echo "                            <td>" . $value . "</td>\n";
                                                 }
+                                            }
+                                        } elseif ($item == 'change_log') {
+                                            if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
+                                                echo "                            <td>" . $value . "</td>\n";
+                                            }
+                                        } elseif ($item == 'vm'and $key == 'guest_system_id') {
+                                            if (!empty($value)) {
+                                                echo "                            <td class=\"text-center\"><a href=\"#\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
+                                            } else {
+                                                echo "                            <td></td>\n";
                                             }
                                         } else {
                                             # everything else
                                             if (is_int($value)) {
-                                                echo "<td class=\"text-right\">" . number_format($value) . "</td>\n";
+                                                echo "                            <td class=\"text-right\">" . number_format($value) . "</td>\n";
                                             } else {
-                                                echo "<td>" . $value . "</td>\n";
+                                                if (strlen($value) > 40) {
+                                                    echo "                            <td class=\"wrap\">" . $value . "</td>\n";
+                                                } else {
+                                                    echo "                            <td>" . $value . "</td>\n";
+                                                }
                                             }
                                         }
                                     }
                                 }
-                                echo '</tr>';
+                                echo "                        </tr>\n";
                             }
                         }
                         ?>
                     </tbody>
                 </table>
               </div>
-              <?php insert_additional_fields($item, $data['additional_fields']); ?>
             </div>
         </div>
         <?php
@@ -942,14 +1488,14 @@ foreach ($list as $item) {
 <?php
 // combo style displays
 if ($data['system']->type == 'computer') {
-    $list = array ('network' => 'ip', 'disk' => 'partition');
+    $list = array ('disk' => 'partition', 'network' => 'ip', 'server' => 'server_item');
     foreach ($list as $item => $sub_item) {
         if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
             <div id="<?php echo $item; ?>" class="section">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    <h3 class="panel-title pull-left"><?php echo __(ucfirst($item)); ?></h3>
+                    <h3 class="panel-title pull-left"><?php echo __(ucwords($item)); ?></h3>
                     <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $item; ?>"></span>
                     <div class="clearfix"></div>
                   </div>
@@ -971,9 +1517,9 @@ if ($data['system']->type == 'computer') {
                                 }
                                 ?>
                                 <div class="form-group">
-                                    <label for="<?php echo $item . '_' . $key; ?>" class="col-sm-4 control-label"><?php echo __($show_key)?></label>
+                                    <label for="<?php echo $item . '_' . $key . '_' . $item_row->id; ?>" class="col-sm-4 control-label"><?php echo __($show_key)?></label>
                                     <div class="col-sm-8 input-group">
-                                        <input type="text" class="form-control" id="<?php echo $item . '_' . $key; ?>" placeholder="" value="<?php echo $value; ?>" readonly>
+                                        <input type="text" class="form-control" id="<?php echo $item . '_' . $key . '_' . $item_row->id; ?>" value="<?php echo $value; ?>" readonly>
                                     </div>
                                 </div>
                             <?php
@@ -987,10 +1533,13 @@ if ($data['system']->type == 'computer') {
                                 <thead>
                                     <tr>
                                         <?php
+                                        if ($sub_item == 'partition') {
+                                            echo "<th>Graph</th>\n";
+                                        }
                                         foreach ($data[$sub_item][0] as $sub_key => $sub_value) {
                                             if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                 ?>
-                                                <th><?php echo ucfirst(str_replace('_', ' ', $sub_key)); ?></th>
+                                                <th><?php echo ucwords(str_replace('_', ' ', $sub_key)); ?></th>
                                             <?php
                                             }
                                         }
@@ -1000,11 +1549,16 @@ if ($data['system']->type == 'computer') {
                                 <tbody>
                                     <?php
                                     foreach ($data[$sub_item] as $sub_row) {
-                                        if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or ($item == 'disk' and $item_row->hard_drive_index == $sub_row->hard_drive_index)) {
-                                        ?>
+                                        if (($item == 'network' and $item_row->net_index == $sub_row->net_index) or
+                                            ($item == 'disk' and $sub_row->hard_drive_index != '' and $item_row->hard_drive_index == $sub_row->hard_drive_index) or
+                                            ($item == 'server' and $item_row->name == $sub_row->parent_name)) { ?>
                                             <tr>
                                                 <?php
                                                 foreach ($sub_row as $sub_key => $sub_value) {
+                                                    if ($sub_item == 'partition' and $sub_key == 'id') {
+                                                        #echo '<td><a href="' . base_url() . 'index.php/main/disk_graph/' . $data['system']->id . '/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
+                                                        echo '<td><a href="' . base_url() . 'index.php/devices/' . $data['system']->id . '/partition_graph/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
+                                                    }
                                                     if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                         if (is_int($sub_value)) {
                                                             echo "<td>" . number_format($sub_value) . "</td>\n";
@@ -1021,10 +1575,11 @@ if ($data['system']->type == 'computer') {
                                     ?>
                                 </tbody>
                             </table>
-                            <?php }
-                            ?>
+                            <?php
+                        } ?>
                         </div>
                     </div>
+                    <br /><br />
                     <?php
                     }
                     ?>
@@ -1041,7 +1596,11 @@ if ($data['system']->type == 'computer') {
         ?>
         <div id="<?php echo $item; ?>" class="section">
             <div class="panel panel-default">
-              <div class="panel-heading"><h3 class="panel-title"><?php echo __('Network Interfaces'); ?></h3></div>
+              <div class="panel-heading">
+                <h3 class="panel-title pull-left"><?php echo __('Network Interfaces'); ?></h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo $item; ?>"></span>
+                <div class="clearfix"></div>
+              </div>
               <div class="panel-body">
                 <table class="table">
                     <thead>
@@ -1128,49 +1687,57 @@ if ($data['system']->type == 'computer') {
 ?>
 
 <?php
-#if (! function_exists('insert_additional_fields')) {
-  function insert_additional_fields($section = '', $additional_fields)
-  {
-      foreach ($additional_fields as $field) {
-          if ($field->{'additional_field.placement'} == $section) {
-              $name = 'custom_' . str_replace(' ', '_', $field->{'additional_field.name'});
-              if ($field->{'additional_field.type'} == 'varchar') {
-                  echo '                    <div class="form-group">
-                      <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
-                      <div class="input-group">
-                        <input disabled type="text" class="form-control" placeholder="" id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">
-                        <span class="input-group-btn">
-                          <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                        </span>
-                      </div>
-                  </div>' . "\n";
-              }
-              if ($field->{'additional_field.type'} == 'list') {
-                  echo '                    <div class="form-group">
-                      <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'additional_field.name'} . '</label>
-                      <div class="col-sm-8 input-group">
-                          <select id="' . $name . '" class="form-control" disabled>' . "\n";
+function insert_additional_fields($section = '', $additional_fields = array(), $edit)
+{
+    foreach ($additional_fields as $field) {
+        if ($field->{'placement'} == $section or $section == '') {
+            $name = $field->{'name'};
+            if ($field->{'type'} == 'varchar') {
+                echo '                    <div class="form-group">
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                    <div class="col-sm-8 input-group">
+                      <input disabled type="text" class="form-control"  id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">';
+                if ($edit) {
+                    echo '
+                      <span class="input-group-btn">
+                        <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>';
+                }
+                    echo '
+                    </div>
+                </div>' . "\n";
+            }
+            if ($field->{'type'} == 'list') {
+                echo '                    <div class="form-group">
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                    <div class="col-sm-8 input-group">
+                        <select id="' . $name . '" class="form-control" disabled>' . "\n";
+                if ($field->{'value'} == '') {
+                    echo "                          <option value='' > </option>\n";
+                }
+                foreach (explode(',', $field->{'values'}) as $value) {
+                    if ($field->{'value'} == $value) {
+                        $selected = " selected";
+                    } else {
+                        $selected = "";
+                    }
+                    echo "                          <option value=\"" . $value . "\"" . $selected . ">".__("$value")."</option>\n";
+                }
 
-                          foreach (explode(',', $field->{'additional_field.values'}) as $key => $value) {
-                              if ($field->{'value'} == $value) {
-                                  $selected = " selected";
-                              } else {
-                                  $selected = "";
-                              }
-                              echo "                          <option value='$value'$selected>".__("$value")."</option>\n";
-                          }
+                echo '                        </select>';
+                if ($edit) {
+                    echo '
+                <span class="input-group-btn">
+                  <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '">
+                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                  </button>
+                </span>';
+                }
+                        echo '
+                    </div>
+                </div>' . "\n";
+            }
+        }
+    }
+}
 
-                          echo '                        </select>
-                          <span class="input-group-btn">
-                            <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '">
-                              <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                            </button>
-                          </span>
-                      </div>
-                  </div>' . "\n";
-              }
-          }
-      }
-  }
-#}
-?>

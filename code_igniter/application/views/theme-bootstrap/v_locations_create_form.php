@@ -27,47 +27,52 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
-$item = $this->response->data[0];
 ?>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      <span class="text-left"><?php echo ucfirst($this->response->meta->collection); ?></span>
-      <span class="pull-right"></span>
-    </h3>
-  </div>
-  <div class="panel-body">
-    <div class="row">
-        <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="data[attributes][id]" class="col-sm-2 control-label">ID</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" placeholder="" value="" disabled>
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <div class="panel panel-default">
+        <?php include('include_read_panel_header.php'); ?>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="data[attributes][name]" class="col-sm-2 control-label">Name</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                    <div class="form-group">
+                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                         </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="data[attributes][type]" class="col-sm-2 control-label">Type</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                        <select class="form-control" name="data[attributes][type]" id="data[attributes][type]">
+                    <div class="form-group">
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'orgs') { ?>     <option value="<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                            <?php
+                                }
+                            } ?></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
+                        <div class="col-sm-8 input-group">
+                            <select class="form-control" name="data[attributes][type]" id="data[attributes][type]">
                                 <option value='Airforce'><?php echo __('Airforce'); ?></option>
                                 <option value='Airport'><?php echo __('Airport'); ?></option>
                                 <option value='Ambulance Station'><?php echo __('Ambulance Station'); ?></option>
@@ -119,64 +124,73 @@ $item = $this->response->data[0];
                             </select>
                         </div>
                     </div>
-                </div>
-                <?php
-                $attributes = array('room', 'suite', 'level', 'address');
-                foreach ($attributes as $attribute) {
-                ?>
-                <div class="form-group">
-                    <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" placeholder="" value="" >
-                        </div>
-                    </div>
-                </div>
-                <?php } ?>
-                <div class="form-group">
-                    <label for="locations_latlong" class="col-sm-2 control-label">Get Latitude and Longitude</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <button type="button" id="data[attributes][locations_latlong]" name="data[attributes][locations_latlong]" class="locations_latlong_c btn btn-primary">Get</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="locations_geocode" class="col-sm-2 control-label">Create GeoCode</label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <button type="button" id="data[attributes][locations_geocode]" name="data[attributes][locations_geocode]" class="locations_geocode_c btn btn-primary">Create</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <?php
-                $attributes = array('city', 'state', 'postcode', 'country', 'phone', 'geo', 'latitude', 'longitude');
-                foreach ($attributes as $attribute) {
-                ?>
-                <div class="form-group">
-                    <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" placeholder="" value="">
-                        </div>
-                    </div>
-                </div>
-                <?php } ?>
-            </div>
 
-            <div class="form-group">
-                <label for="submit" class="col-sm-2 control-label"></label>
-                <div class="col-sm-4">
-                    <div class="col-sm-8 input-group">
-                        <input type="hidden" value="locations" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                    <?php
+                    $attributes = array('room', 'suite', 'level', 'address', 'city');
+                    foreach ($attributes as $attribute) {
+                    ?>
+                    <div class="form-group">
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucfirst($attribute); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" value="" >
+                        </div>
+                    </div>
+                    <?php } ?>
+
+                </div>
+
+                <div class="col-md-6">
+                    <?php
+                    $attributes = array('state', 'postcode', 'country', 'phone', 'geo', 'latitude', 'longitude');
+                    foreach ($attributes as $attribute) {
+                    ?>
+                    <div class="form-group">
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12 input-group">
+                                <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" value="">
+                            </div>
+                        </div>
+                        <?php if ($attribute == 'geo') { ?>
+                            <button type="button" id="locations_geocode_c" name="locations_geocode_c" class="locations_geocode_c btn btn-primary">Create</button>
+                        <?php } ?>
+                        <?php if ($attribute == 'latitude') { ?>
+                            <button type="button" id="locations_latlong_c" name="locations_latlong_c" class="locations_latlong_c btn btn-primary">Get Lat/Long</button>
+                        <?php } ?>
+                    </div>
+                    <?php } ?>
+
+                    <div class="form-group">
+                        <label for="data[attributes][edited_by]" class="col-sm-2 control-label">Edited By</label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12 input-group">
+                                <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][edited_date]" class="col-sm-2 control-label">Edited Date</label>
+                        <div class="col-sm-6">
+                            <div class="col-sm-12 input-group">
+                                <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="submit" class="col-sm-2 control-label"></label>
+                    <div class="col-sm-4">
+                        <div class="col-sm-8 input-group">
+                            <input type="hidden" value="locations" id="data[type]" name="data[type]" />
+                            <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        </div>
                     </div>
                 </div>
             </div>
-
-        </form>
-    </div> <!-- /row -->
-  </div> <!-- /panel body -->
-</div>
+        </div>
+    </div>
+</form>

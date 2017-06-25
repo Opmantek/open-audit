@@ -28,7 +28,8 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version 1.12.8
+# @version   2.0.1
+
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -37,13 +38,18 @@ IFS=$'\n'
 
 export PATH=$PATH:/usr/sbin
 
-url="http://localhost/open-audit/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/input/devices"
 submit_online="n"
 create_file="y"
+discovery_id=""
 org_id=""
 terminal_print="n"
 debugging="3"
 system_id=""
+last_seen_by="audit"
+
+# Version
+version="2.0.1"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
@@ -58,20 +64,25 @@ for arg in "$@"; do
 done
 
 if [  "$debugging" -gt 0 ]; then
-    echo "OPTIONS"
-    echo "-------"
-    echo "url: $url"
-    echo "submit_online: $submit_online"
-    echo "create_file: $create_file"
-    echo "debugging: $debugging"
-    echo "-------"
+    echo "----------------------------"
+    echo "Open-AudIT OSX audit script"
+    echo "Version: $version"
+    echo "----------------------------"
+    echo "My PID is           $$"
+    echo "Audit Start Time    $system_timestamp"
+    echo "Create File         $create_file"
+    echo "Submit Online       $submit_online"
+    echo "Debugging Level     $debugging"
+    echo "Discovery ID        $discovery_id"
+    echo "Org Id              $org_id"
+    echo "----------------------------"
 fi
 
 if [ "$help" = "y" ]; then
     echo ""
     echo "---------------------------"
-    echo "Open-AudIT OSX Audit script"
-    echo "(c) Opmantek, 2014.        "
+    echo "Open-AudIT OSX audit script"
+    echo "Version: $version"
     echo "---------------------------"
     echo "This script should be run on a Mac OSX based computer using root or sudo access rights."
     echo ""
@@ -86,6 +97,9 @@ if [ "$help" = "y" ]; then
     echo "     1 - Minimal Output."
     echo "     2 - Verbose output."
     echo "    *3 - Very Verbose output."
+    echo ""
+    echo "  discovery_id"
+    echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
     echo ""
     echo "  -h or --help or help=y"
     echo "      y - Display this help output."
@@ -110,33 +124,43 @@ fi
 if [ "$debugging" -gt "0" ]; then
     echo "System Info"
 fi
-system_timestamp=`date +'%F %T'`
-system_uuid=`system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g'`
-system_hostname=`hostname | cut -d. -f1`
-system_domain=`hostname | cut -d. -f2-`
-system_os_version=`sw_vers | grep "ProductVersion:" | cut -f2`
+system_timestamp=$(date +'%F %T')
+system_uuid=$(system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g')
+system_hostname=$(hostname | cut -d. -f1)
+if [[ $system_hostname == *"."* ]]; then
+    system_domain=$(hostname | cut -d. -f2-)
+else
+    system_domain=""
+fi
+system_os_version=$(sw_vers | grep "ProductVersion:" | cut -f2)
+system_os_version_major=$(echo "$system_os_version" | cut -d. -f1)
+system_os_version_minor=$(echo "$system_os_version" | cut -d. -f2)
 system_os_name="OSX $system_os_version"
-system_serial=`system_profiler SPHardwareDataType | grep "Serial Number (system):" | cut -d":" -f2 | sed 's/^ *//g'`
-system_model=`system_profiler SPHardwareDataType | grep "Model Identifier:" | cut -d":" -f2 | sed 's/^ *//g'`
+system_serial=$(system_profiler SPHardwareDataType | grep 'Serial Number (system):' | cut -d':' -f2 | sed 's/^ *//g')
+system_model=$(system_profiler SPHardwareDataType | grep 'Model Identifier:' | cut -d':' -f2 | sed 's/^ *//g')
 # todo - below displays days and stops at hours
 # system_uptime=`system_profiler SPSoftwareDataType | grep "Time since boot:" | cut -d":" -f2 | sed 's/^ *//g'`
 system_uptime=""
 system_form_factor=""
 system_pc_os_bit="64"
-system_pc_memory=`system_profiler SPHardwareDataType | grep "Memory:" | cut -d":" -f2 | sed 's/^ *//g' | cut -d" " -f1`
-system_pc_memory=`expr $system_pc_memory \* 1024 \* 1024`
-processor_count=`system_profiler SPHardwareDataType | grep "Number of Processors" | cut -d: -f2`
-system_pc_date_os_installation=`date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S"`
+system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d':' -f2 | sed 's/^ *//g' | cut -d' ' -f1)
+system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
+processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
+system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
 man_class=""
 if [[ "$system_model" == *"MacBook"* ]]; then
     system_form_factor="laptop"
     man_class="laptop"
 fi
-
+if [[ "$system_model" == *"Macmini"* ]]; then
+    system_form_factor="desktop"
+    man_class="desktop"
+fi
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
 echo  " <sys>" >> $xml_file
+echo "      <script_version>$version</script_version>" >> $xml_file
 echo  "     <timestamp>$system_timestamp</timestamp>" >> $xml_file
 echo  "     <id>$system_id</id>" >> $xml_file
 echo  "     <uuid>$system_uuid</uuid>" >> $xml_file
@@ -159,9 +183,9 @@ echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
 echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
 echo  "     <os_installation_date>$system_pc_date_os_installation</os_installation_date>" >> $xml_file
 echo  "     <org_id>$org_id</org_id>" >> $xml_file
+echo  "     <last_seen_by>$last_seen_by</last_seen_by>" >> $xml_file
+echo  "     <discovery_id>$discovery_id</discovery_id>" >> $xml_file
 echo  " </sys>" >> $xml_file
-
-
 
 if [ "$debugging" -gt "0" ]; then
     echo "Network Cards Info"
@@ -297,15 +321,45 @@ fi
 # model not available on USB connected disks
 # partition count not available
 # scsi logical unit not available
+echo "OS: $system_os_version"
+echo "MAJ: $system_os_version_major"
+echo "MIN: $system_os_version_minor"
 
 echo "  <disk>" >> $xml_file
 partition_each=""
+if [ "$debugging" -gt 3 ]; then
+    echo "COMMAND: diskutil list | grep "^/" | cut -d/ -f3 | cut -d\" \" -f1"
+fi
 for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
     hard_drive_index=$disk
+    if [ "$debugging" -gt 3 ]; then
+        echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Device / Media Name:\" | cut -d\":\" -f2- | sed 's/^ *//g'"
+    fi
     hard_drive_caption=$(diskutil info "$disk" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g')
+    if [ "$debugging" -gt 3 ]; then
+        echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Protocol:\" | cut -d\":\" -f2- | sed 's/^ *//g'"
+    fi
     hard_drive_interface_type=$(diskutil info "$disk" | grep "^ " | grep "Protocol:" | cut -d":" -f2- | sed 's/^ *//g')
-    hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-    hard_drive_size=$(echo "$hard_drive_size / 1000 / 1000 " | bc | cut -d"." -f1)
+    if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Disk Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+        fi
+        hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: echo \"$hard_drive_size / 1000 / 1000 \" | bc | cut -d\".\" -f1"
+        fi
+        hard_drive_size=$(echo "$hard_drive_size / 1000 / 1000 " | bc | cut -d"." -f1)
+    else
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: diskutil info $disk | grep \"^ \" | grep \"Total Size:\" | cut -d\":\" -f2- | sed 's/^ *//g' | cut -d\" \" -f3 | cut -d\"(\" -f2"
+        fi
+        hard_drive_size=$(diskutil info "$disk" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+        if [ "$debugging" -gt 3 ]; then
+            echo "COMMAND: echo \"$hard_drive_size / 1000 / 1000 \" | bc | cut -d\".\" -f1"
+        fi
+        hard_drive_size=$(echo "$hard_drive_size / 1000 / 1000 " | bc | cut -d"." -f1)
+    fi
+    
     hard_drive_device_id=$(diskutil info "$disk" | grep "^ " | grep "Device Node:" | cut -d":" -f2- | sed 's/^ *//g')
     hard_drive_status=$(diskutil info "$disk" | grep "^ " | grep "SMART Status:" | cut -d":" -f2- | sed 's/^ *//g')
     hard_drive_manufacturer=""
@@ -334,12 +388,17 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
         partition_mount_point=$(diskutil info "$disk" | grep "^ " | grep "Mount Point:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_name=$(diskutil info "$disk" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_size="$hard_drive_size"
-        partition_free_space=$(diskutil info "$disk" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-        partition_free_space=$(echo "$partition_free_space / 1000 / 1000 " | bc | cut -d"." -f1)
+        if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
+            partition_free_space=""
+            partition_used_space=""
+        else
+            partition_free_space=$(diskutil info "$disk" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+            partition_free_space=$(echo "$partition_free_space / 1000 / 1000 " | bc | cut -d"." -f1)
+            partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
+        fi
         partition_format=$(diskutil info "$disk" | grep "^ " | grep "File System Personality:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_caption=$(diskutil info "$disk" | grep "^ " | grep "Volume Name:" | cut -d":" -f2- | sed 's/^ *//g')
         partition_disk_index=$(system_profiler SPStorageDataType | grep "Volume UUID: $partition_device_id" -A20 | grep "Physical Volumes:" -A1 | grep -v "Physical" | cut -d":" -f1 | sed 's/^ *//g')
-        partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
         partition_each="$partition_each       <item>"$'\n'
         partition_each="$partition_each           <serial>$partition_serial</serial>"$'\n'
         partition_each="$partition_each           <hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
@@ -376,15 +435,22 @@ for disk in $(diskutil list | grep "^/" | cut -d/ -f3 | cut -d" " -f1); do
             if [ "$partition_name" == "Not applicable (no file system)" ]; then
                 partition_name=$(diskutil info "$partition" | grep "^ " | grep "Device / Media Name:" | cut -d":" -f2- | sed 's/^ *//g' | sed 's/ *$//g')
             fi
-            partition_size=$(diskutil info "$partition" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+            if [ "$system_os_version_major" -ge 10 ] && [ "$system_os_version_minor" -ge 12 ]; then
+                # Sierra has removed 'Volume Free Space' and changed 'Total Size' to 'Disk Size' in diskutil
+                partition_size=$(diskutil info "$partition" | grep "^ " | grep "Disk Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+                partition_free_space=""
+                partition_used_space=""
+            else
+                partition_size=$(diskutil info "$partition" | grep "^ " | grep "Total Size:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+                partition_free_space=$(diskutil info "$partition" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
+                partition_free_space=$(echo "$partition_free_space / 1000 / 1000" | bc | cut -d"." -f1)
+                partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
+            fi
             partition_size=$(echo "$partition_size / 1000 / 1000" | bc | cut -d"." -f1)
-            partition_free_space=$(diskutil info "$partition" | grep "^ " | grep "Volume Free Space:" | cut -d":" -f2- | sed 's/^ *//g' | cut -d" " -f3 | cut -d"(" -f2)
-            partition_free_space=$(echo "$partition_free_space / 1000 / 1000" | bc | cut -d"." -f1)
             partition_format=$(diskutil info "$partition" | grep "^ " | grep "File System Personality:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
             partition_caption=$(diskutil info "$partition" | grep "^ " | grep "Volume Name:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
             partition_device_id=$(diskutil info "$partition" | grep "^ " | grep "Volume UUID:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
             partition_disk_index=$(diskutil info "$partition" | grep "^ " | grep "Device Identifier:" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-            partition_used_space=$(echo "$partition_size - $partition_free_space" | bc | cut -d"." -f1)
             partition_each="$partition_each       <item>"$'\n'
             partition_each="$partition_each           <serial>$partition_serial</serial>"$'\n'
             partition_each="$partition_each           <hard_drive_index>$hard_drive_index</hard_drive_index>"$'\n'
@@ -456,10 +522,12 @@ for line in $(system_profiler SPApplicationsDataType | grep "Location: " -B 8 -A
         software_publisher="Apple"
     fi
 
-    if [[ "$line" == *"Get Info String: "* && "$software_publisher" == "" ]]; then
-        software_publisher=`echo "$line" | sed 's/^ *//'`
-        software_publisher=`echo "$software_publisher" | sed 's/^Get Info String: //'`
-    fi
+    # the below line appears (sometimes) after the Location: line.
+    # Commenting out for now as it's not easy to retrieve this for 'some' packages only
+    # if [[ "$line" == *"Get Info String: "* && "$software_publisher" == "" ]]; then
+    #     software_publisher=`echo "$line" | sed 's/^ *//'`
+    #     software_publisher=`echo "$software_publisher" | sed 's/^Get Info String: //'`
+    # fi
 
     if [[ "$line" == *"Location:"* ]]; then
         software_location=`echo "$line" | cut -d":" -f2 | sed 's/^ *//'`
@@ -556,8 +624,16 @@ echo "</system>" >> $xml_file
 
 
 if [ "$submit_online" = "y" ]; then
-    echo "Submitting results to server"
-    curl --data-urlencode form_systemXML@"$xml_file" $url
+    if [ "$debugging" -gt 0 ]; then
+        echo "Submitting results to server"
+    fi
+    if [ "$debugging" -gt 3 ]; then
+        curl -o input_devices --data-urlencode data@"$xml_file" $url
+        cat "input_devices"
+        rm -f input_devices
+    else
+        curl --data-urlencode data@"$xml_file" $url
+    fi
 fi
 
 

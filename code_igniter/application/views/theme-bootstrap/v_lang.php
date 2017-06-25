@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,10 +39,7 @@ if (!isset($this->user->lang) or $this->user->lang == "") {
     $GLOBALS["user_lang"] = $this->user->lang;
 }
 
-$language_file = APPPATH."/views/lang/".$GLOBALS["user_lang"].".inc";
-$language_file = APPPATH."views/lang/".$GLOBALS["user_lang"].".inc";
-
-include $language_file;
+include  APPPATH."views/lang/".$GLOBALS["user_lang"].".inc";
 
 if (!function_exists('__')) {
     function __($word)
@@ -52,8 +50,7 @@ if (!function_exists('__')) {
         $language_learning_mode = 0;
 
         if ($language_learning_mode == 1) {
-            $language_file = APPPATH."views/lang/".$GLOBALS["user_lang"].".inc";
-            include $language_file;
+            include APPPATH."views/lang/".$GLOBALS["user_lang"].".inc";
         }
         $word = (string) $word;
         if (isset($GLOBALS["lang"][$word])) {

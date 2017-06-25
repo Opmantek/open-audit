@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,15 +24,26 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   2.0.1
+
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object Scripts.
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class scripts extends MY_Controller
 {
@@ -40,7 +51,10 @@ class scripts extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        stdlog();
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -51,6 +65,7 @@ class scripts extends MY_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
+        $this->load->model('m_orgs');
         $this->load->model('m_scripts');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
@@ -60,52 +75,82 @@ class scripts extends MY_Controller
     {
     }
 
+    /**
+    * Our remap function to override the inbuilt controller->method functionality
+    *
+    * @access public
+    * @return NULL
+    */
     public function _remap()
     {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
-    private function collection()
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create()
     {
-        $this->response->data = $this->m_scripts->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_create.php';
     }
 
-    private function read()
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function read()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = $this->m_scripts->read();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_read.php';
     }
 
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
+    {
+        include 'include_update.php';
+    }
+
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        include 'include_collection.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
     private function create_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = array();
-        $temp = new stdClass();
-        $temp->type = $this->response->meta->collection;
-        $this->response->data[] = $temp;
-        unset($temp);
         # include our scripts options
         include 'include_scripts_options.php';
-        $this->response->included = array();
         foreach ($options as $item) {
             $option = new stdClass();
             $option->id = $item->name;
@@ -122,109 +167,48 @@ class scripts extends MY_Controller
             $this->response->included[] = $option;
             unset($option);
         }
-        # Include a list of Orgs
-        $this->load->model('m_orgs');
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        # Include our list of files
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
-        output($this->response);
+        include 'include_create_form.php';
     }
 
-    private function create()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->id = $this->m_scripts->create();
-        if (!empty($this->response->meta->id)) {
-            if ($this->response->meta->format == 'json') {
-                $this->response->data = $this->m_scripts->read();
-                output($this->response);
-            } else {
-                redirect('scripts');
-            }
-        } else {
-            log_error('ERR-0009');
-            output($this->response);
-            exit();
-        }
-    }
-
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
     private function update_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->data = $this->m_scripts->read();
-        $this->load->model('m_files');
-        $this->response->data['files'] = $this->m_files->collection();
-        output($this->response);
+        include 'include_update_form.php';
     }
 
-    private function update()
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->m_scripts->update();
-        if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_scripts->read();
-            output($this->response);
-        } else {
-            redirect('scripts');
-        }
+        include 'include_import_form.php';
     }
 
-    private function delete()
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        # do not allow deletion of default Scripts
-        $script = $this->m_scripts->read();
-        if ($script[0]->attributes->name == $script[0]->attributes->based_on) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-            log_error('ERR-0014');
-            if ($this->response->meta->format == 'json') {
-                output($this->response);
-            } else {
-                redirect($this->response->meta->collection);
-            }
-            exit();
-        }
-        if ($this->m_scripts->delete()) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-        } else {
-            log_error('ERR-0013');
-        }
-        if ($this->response->meta->format == 'json') {
-            output($this->response);
-        } else {
-            redirect($this->response->meta->collection);
-        }
+        include 'include_import.php';
     }
 
+    /**
+    * Supply a file for download which is the script with the injected configuration
+    *
+    * @access public
+    * @return NULL
+    */
     private function download()
     {
         $this->response->meta->format = 'json';
@@ -243,3 +227,5 @@ class scripts extends MY_Controller
         echo $script;
     }
 }
+// End of file scripts.php
+// Location: ./controllers/scripts.php

@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -31,7 +32,8 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -41,7 +43,7 @@
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     if ($oid == '1.3.6.1.4.1.14179.1.1.4.3') {
-        $details->model = '4402 WLAN Controller ';
+        $details->model = '4402 WLAN Controller';
         $details->os_group = 'Cisco';
         $details->manufacturer = 'Cisco Systems';
         $details->type = 'wap';

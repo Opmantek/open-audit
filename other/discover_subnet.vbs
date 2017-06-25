@@ -26,7 +26,8 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
 ' 
-' @version 1.12.8
+' @version   2.0.1
+
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -49,9 +50,9 @@ dim log_no_response : log_no_response = "n"
 dim org_id : org_id = ""
 dim submit_online : submit_online = "n"
 dim subnet_range : subnet_range = ""
-dim subnet_timestamp : subnet_timestamp = ""
+dim discovery_id : discovery_id = ""
 dim syslog : syslog = "y"
-dim url : url = "http://localhost/open-audit/index.php/discovery/process_subnet"
+dim url : url = "http://localhost/open-audit/index.php/input/discoveries"
 dim objHTTP
 dim sequential : sequential = "y"
 dim os_scan : os_scan = "n"
@@ -110,8 +111,8 @@ for each strArg in objArgs
             case "subnet_range"
                 subnet_range = varArray(1)
 
-            case "subnet_timestamp"
-                subnet_timestamp = varArray(1)
+            case "discovery_id"
+                discovery_id = varArray(1)
 
             case "syslog"
                 syslog = varArray(1)
@@ -156,6 +157,9 @@ if (help = "y") then
     wscript.echo "     1 - Minimal Output."
     wscript.echo "    *2 - Verbose output."
     wscript.echo ""
+    wscript.echo "  discovery_id"
+    wscript.echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+    wscript.echo ""
     wscript.echo "  os_scan"
     wscript.echo "    *n - Do not use the -O Nmap flag when scanning devices."
     wscript.echo "     y - Use -O (will slow down scan and requires SUID be set on the Nmap binary."
@@ -185,9 +189,6 @@ if (help = "y") then
     wscript.echo ""
     wscript.echo "  subnet_range"
     wscript.echo "      - The subnet in to audit."
-    wscript.echo ""
-    wscript.echo "  subnet_timestamp"
-    wscript.echo "       - Set by the web GUI. Not used on the command line."
     wscript.echo ""
     wscript.echo "  syslog"
     wscript.echo "    *y - Log the script details to the Open-AudIT log file."
@@ -272,7 +273,7 @@ end if
 
 
 
-log_entry = "Discovery for " & subnet_range & " submitted at " & subnet_timestamp & " starting"
+log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
 write_log()
 
 if debugging > "0" then wscript.echo "My PID: " & current_pid
@@ -328,8 +329,13 @@ for each host in hosts_in_subnet
             nmap_ports = nmap_ports & "," & port & "/" & program
         end if
 
-        if instr(lcase(line), "host is up") then
-            host_is_up = "true"
+        if instr(lcase(line), "/tcp") then
+            if instr(lcase(line), "open") then
+                host_is_up = "true"
+            end if
+            if instr(lcase(line), "closed ") then
+                host_is_up = "true"
+            end if
         end if
 
         if instr(lcase(line), "mac address:") then
@@ -376,6 +382,7 @@ for each host in hosts_in_subnet
             if instr(lcase(line), "open") then
                 nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
+                host_is_up = "true"
             end if
         end if
     Loop
@@ -397,7 +404,12 @@ for each host in hosts_in_subnet
         result = result & "     <snmp_status><![CDATA[" & snmp_status & "]]></snmp_status>" & vbcrlf
         result = result & "     <ssh_status><![CDATA[" & ssh_status & "]]></ssh_status>" & vbcrlf
         result = result & "     <wmi_status><![CDATA[" & wmi_status & "]]></wmi_status>" & vbcrlf
-        result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
+        result = result & "     <discovery_id><![CDATA[" & discovery_id & "]]></discovery_id>" & vbcrlf
+        if debugging > 0 then
+            result = result & "     <debug>true</debug>" & vbcrlf
+        else
+            result = result & "     <debug>false</debug>" & vbcrlf
+        end if
         result = result & "     <nmap_ports><![CDATA[" & nmap_ports & "]]></nmap_ports>" & vbcrlf
         result = result & " </device>" & vbcrlf
         result_file = result_file & result
@@ -417,7 +429,7 @@ for each host in hosts_in_subnet
                     objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
                 end if
                 objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-                objHTTP.Send "form_details=" + result + vbcrlf
+                objHTTP.Send "data=" + result + vbcrlf
             on error goto 0
             if (error_returned <> 0) then
                 log_entry = "Result send for " & host & " failed"
@@ -443,7 +455,7 @@ for each host in hosts_in_subnet
 next
 result =          " <device>" & vbcrlf
 result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
-result = result & "     <subnet_timestamp><![CDATA[" & subnet_timestamp & "]]></subnet_timestamp>" & vbcrlf
+result = result & "     <discovery_id><![CDATA[" & discovery_id & "]]></discovery_id>" & vbcrlf
 result = result & "     <complete>y</complete>" & vbcrlf
 result = result & " </device>"
 
@@ -482,11 +494,11 @@ if create_file = "y" then
         if debugging > "0" then wscript.echo "Problem writing to file." end if
         if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
         if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-        log_entry = "Failed to create output file named " & OutputFile & " for " & subnet_range & " submitted at " & subnet_timestamp
+        log_entry = "Failed to create output file named " & OutputFile & " for " & subnet_range & " submitted for discovery " & discovery_id
         write_log
     else
         if debugging > "0" then wscript.echo "Output file created." end if
-        log_entry = "Output file named " & OutputFile & " created for " & subnet_range & " submitted at " & subnet_timestamp
+        log_entry = "Output file named " & OutputFile & " created for " & subnet_range & " submitted for discovery " & discovery_id
         write_log
     end if
 end if
@@ -503,19 +515,19 @@ if submit_online = "y" then
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
         ' reverted the below (changed in 1/8/2 and back in 1.8.4) to send the final subnet
         ' finished result instead of the entire result file
-        'objHTTP.Send "form_details=" + result_file + vbcrlf
-        objHTTP.Send "form_details=" + result + vbcrlf
+        'objHTTP.Send "data=" + result_file + vbcrlf
+        objHTTP.Send "data=" + result + vbcrlf
     on error goto 0
     if (error_returned <> 0) then
-        if debugging > "0" then wscript.echo "Result complete send failed for " & subnet_range & " submitted at " & subnet_timestamp end if
-        log_entry = "Result send failed for " & subnet_range & " submitted at " & subnet_timestamp
+        if debugging > "0" then wscript.echo "Result complete send failed for " & subnet_range & " submitted for discovery " & discovery_id end if
+        log_entry = "Result send failed for " & subnet_range & " submitted for discovery " & discovery_id
         write_log
         if (not isempty(objHTTP.ResponseText) and objHTTP.ResponseText > "" and debugging > "1") then
             wscript.echo objHTTP.ResponseText
         end if
     else
-        if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted at " & subnet_timestamp end if
-        log_entry = "Result send successful for " & subnet_range & " submitted at " & subnet_timestamp
+        if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted for discovery " & discovery_id end if
+        log_entry = "Result send successful for " & subnet_range & " submitted for discovery " & discovery_id
         write_log
         if (not isempty(objHTTP.ResponseText) and objHTTP.ResponseText > "" and debugging > "2") then
             wscript.echo objHTTP.ResponseText
@@ -523,7 +535,7 @@ if submit_online = "y" then
     end if
 end if
 
-log_entry = "Discovery for " & subnet_range & " submitted at " & subnet_timestamp & " completed"
+log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " completed"
 write_log()
 
 

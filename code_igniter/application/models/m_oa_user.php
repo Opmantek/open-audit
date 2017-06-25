@@ -28,7 +28,8 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,71 +40,6 @@ class M_oa_user extends MY_Model
     {
         parent::__construct();
     }
-
-    public function get_orgs($user_id)
-    {
-        $end = array();
-
-        # only run if post 1.12.6
-        if ($this->db->table_exists('oa_user_org')) {
-            $sql = "SELECT * FROM oa_user_org WHERE user_id = ? ORDER BY access_level desc";
-            $sql = $this->clean_sql($sql);
-            $data = array(intval($user_id));
-            $query = $this->db->query($sql, $data);
-            $user_orgs = $query->result();
-        }
-
-        $sql = "SELECT * FROM oa_org";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $this->orgs = $query->result();
-
-        # only run if post 1.12.6
-        if ($this->db->table_exists('oa_user_org')) {
-            foreach ($this->orgs as $org) {
-                # need to allow for pre 1.12.6 DB structure
-                if (!isset($org->id) and isset($org->org_id)) {
-                    $org->id = $org->org_id;
-                }
-                # need to allow for pre 1.12.6 DB structure
-                if (!isset($org->parent_id) and isset($org->org_parent_id)) {
-                    $org->parent_id = $org->org_parent_id;
-                }
-                foreach ($user_orgs as $user_org) {
-                    if ($user_org->org_id == $org->id) {
-                        $end[$org->id] = $user_org->access_level;
-                    }
-                }
-            }
-        }
-        # TODO - get a list of user_org.org_id's with perms like '%r%' and
-        # feed it into the array below
-        $org_id_list = array();
-        foreach ($end as $key => $value) {
-            $org_id_list[$key] = $value;
-            foreach ($this->get_org($key, $value) as $key2 => $value2) {
-                $org_id_list[$key2] = $value2;
-            }
-        }
-        return($org_id_list);
-    }
-
-
-    private function get_org($org_id, $access_level)
-    {
-        $org_id_list = array();
-        foreach ($this->orgs as $org) {
-            if ($org->parent_id == $org_id and $org->id != 0) {
-                $org_id_list[$org->id] = $access_level;
-                #echo "Set OrgId: " . $org->id . " AccessLevel: $access_level\n-----\n";
-                foreach ($this->get_org($org->id, $access_level) as $key2 => $value2) {
-                    $org_id_list[$key2] = $value2;
-                }
-            }
-        }
-        return($org_id_list);
-    }
-
 
     public function select_user($name)
     {
@@ -189,11 +125,15 @@ class M_oa_user extends MY_Model
         $hash = hash("sha256", $salt.$user->password); # prepend the salt, then hash
         # store the salt and hash in the same string, so only 1 DB column is needed
         $encrypted_password = $salt.$hash;
-        $sql = "INSERT INTO oa_user (name, full_name, email, password, theme, lang, admin, sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO oa_user (org_id, name, full_name, email, password, theme, lang, admin, sam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $sql = $this->clean_sql($sql);
-        $data = array("$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", );
+        $data = array("0", "$user->name", "$user->full_name", "$user->email", "$encrypted_password", "$user->theme", "$user->lang", "$user->admin", "$user->sam", );
         $query = $this->db->query($sql, $data);
-        return($this->db->insert_id());
+        $id = $this->db->insert_id();
+        // TODO - fix this for v2
+        $sql = "INSERT INTO oa_user_org VALUES (NULL, $id, 0, 10, '')";
+        $query = $this->db->query($sql);
+        return($id);
     }
 
     public function edit_user($user)
@@ -271,21 +211,14 @@ class M_oa_user extends MY_Model
                 // set the user object
                 $CI->user = $query->row();
 
-                 if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+                if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
                     $CI->user->id = $CI->user->user_id;
                     $CI->user->name = $CI->user->user_name;
                     $CI->user->password = $CI->user->user_password;
-                    $CI->user->theme = $CI->user->user_theme;
-                    $CI->user->admin = $CI->user->user_admin;
                     $CI->user->full_name = $CI->user->user_full_name;
-                    $CI->user->sam = $CI->user->user_sam;
                 }
 
-                if ($CI->user->admin == 'y') {
-                    $CI->user->debug = $temp_debug;
-                } else {
-                    $CI->user->debug = 'n';
-                }
+                $CI->user->admin = 'y';
 
                 if ($admin == 'y') {
                     if ($CI->user->admin == 'y') {
@@ -293,7 +226,7 @@ class M_oa_user extends MY_Model
                         $log_details->message = 'User validated as an admin';
                         stdlog($log_details);
                         unset($log_details);
-                        $userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
+                        $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
                         $this->session->set_userdata($userdata);
 
                         return;
@@ -319,12 +252,13 @@ class M_oa_user extends MY_Model
                             $log_details->severity = 5;
                             $log_details->message = 'Admin credentials required (html request)';
                             stdlog($log_details);
-                            // redirect to the login page
+                            // redirect to the logon page
                             redirect('main/list_groups');
                         }
                     }
                 } else {
-                    $userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
+                    #$userdata = array('user_id' => $CI->user->id, 'user_debug' => $CI->user->debug);
+                    $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
                     $this->session->set_userdata($userdata);
                     return;
                 }
@@ -356,8 +290,8 @@ class M_oa_user extends MY_Model
                     // set the original requested URL
                     $requested_url = array('url'  => current_url());
                     $this->session->set_userdata($requested_url);
-                    // redirect to the login page
-                    redirect('login/index');
+                    // redirect to the logon page
+                    redirect('logon');
                 }
             }
         }
@@ -397,7 +331,7 @@ class M_oa_user extends MY_Model
         if (empty($username) or empty($password)) {
             // incomplete credentials supplied
             $status = 'fail';
-            if (@$username == '') {
+            if (empty($username)) {
                 $username = 'UNKNOWN USER';
             }
             if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
@@ -425,8 +359,8 @@ class M_oa_user extends MY_Model
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);
-                // redirect to the login page
-                redirect('login/index');
+                // redirect to the logon page
+                redirect('logon');
             }
         }
 
@@ -438,12 +372,12 @@ class M_oa_user extends MY_Model
         // }
 
         $user_prefix = 'user_';
-        $sql = "SELECT * FROM oa_user WHERE name = ? LIMIT 1";
+        $sql = "/* m_oa_user::validate_user */" . "SELECT * FROM oa_user WHERE name = ? LIMIT 1";
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) >= 20130512) {
-            $sql = "SELECT * FROM oa_user WHERE user_name = ? AND user_active = 'y' LIMIT 1";
+            $sql = "/* m_oa_user::validate_user */" . "SELECT * FROM oa_user WHERE user_name = ? AND user_active = 'y' LIMIT 1";
         }
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) >= 20160409) {
-            $sql = "SELECT * FROM oa_user WHERE name = ? AND active = 'y' LIMIT 1";
+            $sql = "/* m_oa_user::validate_user */" . "SELECT * FROM oa_user WHERE name = ? AND active = 'y' LIMIT 1";
             $user_prefix = '';
         }
 
@@ -480,8 +414,8 @@ class M_oa_user extends MY_Model
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);
-                // redirect to the login page
-                redirect('login/index');
+                // redirect to the logon page
+                redirect('logon');
             }
         }
 
@@ -541,8 +475,8 @@ class M_oa_user extends MY_Model
                             // set the original requested URL
                             $requested_url = array('url'  => current_url());
                             $this->session->set_userdata($requested_url);
-                            // redirect to the login page
-                            redirect('login/index');
+                            // redirect to the logon page
+                            redirect('logon');
                         }
                     }
                 } else {
@@ -559,7 +493,7 @@ class M_oa_user extends MY_Model
             }
         }
 
-         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
+        if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
             $CI->user->id = $CI->user->user_id;
             $CI->user->name = $CI->user->user_name;
             $CI->user->password = $CI->user->user_password;
@@ -630,8 +564,8 @@ class M_oa_user extends MY_Model
                 // set the original requested URL
                 $requested_url = array('url'  => current_url());
                 $this->session->set_userdata($requested_url);
-                // redirect to the login page
-                redirect('login/index/main/list_groups');
+                // redirect to the logon page
+                redirect('logon');
             }
         } else {
             // correct credentials supplied
@@ -663,8 +597,8 @@ class M_oa_user extends MY_Model
                         $log_details->severity = 5;
                         $log_details->message = 'Admin credentials required (html request)';
                         stdlog($log_details);
-                        // redirect to the login page
-                        redirect('main/list_groups');
+                        // redirect to the logon page
+                        redirect('logon');
                     }
                 }
             } else {

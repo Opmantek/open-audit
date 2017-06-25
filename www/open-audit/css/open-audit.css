@@ -1,17 +1,93 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
-body {margin: 8px;}
+/*  body {margin: 8px;} */
 
-/* *_collection */
+/* dashboard icons */
+a i {
+    color: dimgrey;
+}
+.btn-app {
+    border-radius: 3px;
+    position: relative;
+    padding: 10px 5px;
+    /* margin: 0 0 10px 10px; */
+    min-width: 80px;
+    height: 60px;
+    text-align: center;
+    color: #666;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    font-size: 12px;
+}
+/*
+.btn {
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border: 1px solid transparent;
+}
+*/
+.btn-app>.badge {
+    position: absolute;
+    top: 75%;
+    right: -2px;
+    font-size: 1em;
+    font-weight: 400;
+}
+.btn-app:hover {
+    border-color: #aaa;
+}
+
+
+/* collection */
 .glyphicon:hover { 
     color: green;
+}
+th, td {
+    white-space: nowrap;
+}
+.wrap {
+    white-space: pre-wrap;
+}
+
+th.tablesorter-headerUnSorted {
+    background-image: url(/open-audit/images/sort.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 70%;
+}
+
+th.tablesorter-header {
+    background-image: url(/open-audit/images/sort.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 70%;
+}
+
+th.tablesorter-headerDesc {
+    background-image: url(/open-audit/images/sort-desc.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 70%;
+}
+
+th.tablesorter-headerAsc {
+    background-image: url(/open-audit/images/sort-asc.svg);
+    background-size: 16px 16px;
+    background-repeat: no-repeat;
+    background-position: 0% 70%;
+}
+
+.tablesorter-header-inner {
+    padding-left: 10px;
 }
 
 /* v_devices_read */
@@ -21,4 +97,158 @@ body {margin: 8px;}
 }
 .section {
     display: none;
+}
+
+/* The spinning icon on a button while we wait for a reponse */
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -ms-animation: spin .7s infinite linear;
+    -webkit-animation: spinw .7s infinite linear;
+    -moz-animation: spinm .7s infinite linear;
+}
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+@-webkit-keyframes spinw {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+@-moz-keyframes spinm {
+    from { -moz-transform: rotate(0deg);}
+    to { -moz-transform: rotate(360deg);}
+}
+
+/* Modal items */
+#overlay {
+    position:fixed; 
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#000;
+    opacity:0.5;
+    filter:alpha(opacity=50);
+}
+#modal {
+    position:absolute;
+    background:url(/open-audit/images/tint20.png) 0 0 repeat;
+    background:rgba(0,0,0,0.2);
+    border-radius:14px;
+    padding:8px;
+    width:1000px;
+}
+#content {
+    border-radius:8px;
+    background:#fff;
+    padding:20px;
+}
+#close {
+    position:absolute;
+    background:url(/open-audit/images/close.png) 0 0 no-repeat;
+    width:24px;
+    height:27px;
+    display:block;
+    text-indent:-9999px;
+    top:-7px;
+    right:-7px;
+}
+
+
+/* New Modal */
+.light-grey-block {
+    background-color: #EEEEF2;
+    border: 1px solid rgba(100, 100, 100, 0.16);
+}
+
+.market-cell {
+    padding: 15px;
+}
+
+.op-site-purple {
+    color: #475BDA;
+    font-weight: 300;
+}
+
+.market-cell-text {
+    height: 95px;
+    overflow: hidden;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.market-panel-heading-promote {
+    background-color: #3498DB !important;
+}
+
+.market-panel-heading {
+    background-image: none !important;
+    box-shadow: none !important;
+}
+
+.market-panel-heading-promote > h4 {
+    color: white !important;
+}
+
+
+
+
+
+
+
+.navbar-center {
+    position: absolute;
+    left: 46%;
+    transform: translatex(-50%);
+}
+
+/* New GUI */
+.navbar {
+    background-image: linear-gradient(180deg, #485563 2%, #29323C 97%);
+    border-radius: 0px;
+    border:none;
+    margin-bottom:0px;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #efefef;
+}
+.navbar-brand{
+    font-size: 1em;
+}
+.navbar .navbar-brand {
+  color: #ffffff;
+}
+.navbar .navbar-brand img {
+  height: 19px;
+  width: 19px;
+}
+.navbar .navbar-link {
+  color: #ffffff;
+}
+.navbar .divider-vertical {
+  border-right: 1px solid lightgray;
+  border-left: 1px solid gray;
+}
+.navbar .nav > li > a {
+  color: #eeeeee;
+  text-shadow: 0 1px 0 #555555;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.navbar .nav > li > a:focus,
+.navbar .nav > li > a:hover {
+  color: #999999;
+  text-decoration: none;
+  background-color: transparent;
+}
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
+  color: #777777;
+  text-decoration: none;
+  background-color: transparent;
+}
+.navbar-default .navbar-text {
+  color: #eeeeee;
+  text-shadow: 0 1px 0 #555555;
 }

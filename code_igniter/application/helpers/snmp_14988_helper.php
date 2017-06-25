@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -31,7 +32,8 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -40,8 +42,29 @@
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    $details->model = '';
+    
     $details->type = 'router';
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.7.3.0");
+
+    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    if ($temp == "RouterOS CHR") {
+        $details->model = "Cloud Hosted Router";
+    } else {
+        $temp = explode(' ', $temp);
+        unset($temp[0]);
+        $details->model = implode(' ', $temp);
+        unset($temp);
+    }
+
+    $details->os_group = 'Linux';
+    $details->os_family = 'RouterOS';
+    $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.17.1.1.4.1");
+
+    if (stripos($details->model, 'RB921UAGS-5SHPacT')) {
+        $details->type = 'wireless router';
+    }
+
+
+
     return($details);
 };

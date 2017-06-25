@@ -1,7 +1,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -16,12 +17,27 @@ $(document).ready(function () {
     })
 });
 
+$(document).ready(function(){
+    $(function(){
+        $(".table").tablesorter();
+    });
+});
+
+
+/* select all devices on /devices for bulk edit */
+function select_all_click() {
+    //$(':checkbox').prop('checked', true);
+    $(':checkbox').each(function () { this.checked = !this.checked; });
+}
+
 /* Send to bulk edit form */
 $(document).ready(function () {
     $(document).on('click', '.bulk_edit_button', function (e) {
         var ids = "";
         $("input:checked").each(function () {
-            ids = ids + "," + $(this).attr("value");
+            if ($(this).attr("value")) {
+                ids = ids + "," + $(this).attr("value");
+            }
         });
         ids = ids.substring(1);
         var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;
@@ -33,12 +49,13 @@ $(document).ready(function () {
 /* any Delete links */
 $(document).ready(function () {
     $('.delete_link').click(function () {
-        if (confirm('Are you sure?') !== true) {
+        if (confirm("Are you sure?\nThis will permanently DELETE this entry for " + collection +".") !== true) {
             return;
         }
         var $id = $(this).attr('data-id');
         var $name = $(this).attr('data-name');
         var $url = baseurl + 'index.php/' + collection + '/' + $id;
+        //alert($url);
         $.ajax({
             type: 'DELETE',
             url: $url,
@@ -70,6 +87,7 @@ $(document).ready(function () {
             success: function (data) {
                 // alert($name + " has been deleted.");
                 // window.location = web_folder + "/index.php/" + collection + "/" + id;
+                alert("Deleted\nYou may need to refresh the page to display current items.");
             },
             error: function () {
                 alert("An error occurred when deleting item:" + $name);
@@ -126,7 +144,9 @@ $(document).ready(function () {
             $(this).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(this).attr("data-action", "edit");
             $(this).attr("class", "btn btn-default edit_button");
-            document.getElementById('submit_'+attribute).remove();
+            //document.getElementById('submit_'+attribute).remove();
+            attribute = attribute.replace(".", "\\.");
+            $('#submit_' + attribute).remove();
         }
         if (action === "submit") {
             var item = document.getElementById(attribute);
@@ -149,7 +169,7 @@ $(document).ready(function () {
                 type: "PATCH",
                 url: id,
                 contentType: "application/json",
-                data: {data},
+                data: {data : data},
                 success: function (data) {
                     /* alert( 'success' ); */
                 },
@@ -162,11 +182,15 @@ $(document).ready(function () {
             $(edit_button).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $(edit_button).attr("data-action", "edit");
             $(edit_button).attr("class", "btn btn-default edit_button");
-            document.getElementById('submit_' + attribute).remove();
+            // need this below for other.x or credentials.x items
+            document.getElementById('submit_'+attribute).remove();
+            // need this for regular fields (name, description, etc)
+            $('#submit_' + attribute).remove();
         }
     });
 });
 
+/* Get Lat/Long from Google Maps API on update locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_latlong', function (e) {
         var address = "";
@@ -177,29 +201,32 @@ $(document).ready(function () {
         }
         $('#latitude').val('');
         $('#longitude').val('');
-        $('#latitude').attr("disabled", false);
-        $('#longitude').attr("disabled", false);
         var geocoder = new google.maps.Geocoder();
         if (geocoder) {
             geocoder.geocode({'address': address}, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
-                   $('#latitude').val(results[0].geometry.location.lat());
-                   $('#longitude').val(results[0].geometry.location.lng());
+                    $('#longitude').val(results[0].geometry.location.lng());
+                    $('#edit_longitude').click();
+                    $('#latitude').val(results[0].geometry.location.lat());
+                    $('#edit_latitude').click();
                 }
             });
         }
     });
 });
 
+/* Make Geo on update locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_geocode', function (e) {
         var address = $('#address').val() + ", " + $('#city').val() + ", " + $('#state').val() + ", " + $('#postcode').val() + ", " + $('#country').val();
         $('#geo').val('');
         $('#geo').attr("disabled", false);
         $('#geo').val(address);
+        $('#edit_geo').click();
     });
 });
 
+/* Get Lat/Long from Google Maps API on create locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_latlong_c', function (e) {
         var address = "";
@@ -220,8 +247,94 @@ $(document).ready(function () {
     });
 });
 
+/* Make Geo on create locations page */
 $(document).ready(function () {
     $(document).on('click', '.locations_geocode_c', function (e) {
         document.getElementById("data[attributes][geo]").value = document.getElementById("data[attributes][address]").value + ", " + document.getElementById("data[attributes][city]").value + ", " + document.getElementById("data[attributes][state]").value + ", " + document.getElementById("data[attributes][postcode]").value + ", " + document.getElementById("data[attributes][country]").value;
     });
+});
+
+
+/* Button Edit for JSON list items */
+/* Orgs on the users::update_form a good example */
+$(document).ready(function () {
+    $(document).on('click', '.edit_list', function (e) {
+        var action = $(this).attr("data-action");
+        var attribute = $(this).attr("data-attribute");
+        if (action === "edit") {
+            $(':checkbox[name='+attribute+']').attr("disabled", false);
+            $(this).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
+            $(this).attr("data-action", "submit");
+            $(this).attr("class", "btn btn-success edit_list");
+            $(this).parent().append('<button type="button" class="btn btn-danger edit_list" data-attribute="'+attribute+'" data-action="cancel" id="cancel_'+attribute+'" name="cancel_'+attribute+'"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>');
+        }
+        if (action === "cancel") {
+            var item = document.getElementById('edit_'+attribute);
+            $(item).attr("data-action", "edit");
+            $(item).html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+            $(item).attr("class", "btn btn-default edit_list");
+            $(':checkbox[name='+attribute+']').attr("disabled", true);
+            //document.getElementById('cancel_'+attribute).remove();
+            $('#cancel_' + attribute).remove();
+        }
+        if (action === "submit") {
+            var item = $(this);
+            $(this).html('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
+            var value =  $("input[name='orgs']:checked").map(function(){
+                return parseInt(this.value);
+            }).get()
+            if (attribute == "sql") {
+                if (value.toLowerCase().indexOf("where @filter") == -1) {
+                    if (jQuery.inArray("admin", roles) == -1) {
+                        alert("You are required to have WHERE @filter in your SQL.");
+                        return;
+                    }
+                }
+            }
+            var data = {};
+            data["data"] = {};
+            data["data"]["id"] = id;
+            data["data"]["type"] = collection;
+            data["data"]["attributes"] = {};
+            data["data"]["attributes"][attribute] = value;
+            data = JSON.stringify(data);
+            $.ajax({
+                type: "PATCH",
+                url: id,
+                contentType: "application/json",
+                data: {data : data},
+                success: function (data) {
+                    /* alert( 'success' ); */
+                    item.attr("data-action", "edit");
+                    item.html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+                    item.attr("class", "btn btn-default edit_list");
+                    $(':checkbox[name='+attribute+']').attr("disabled", true);
+                    //document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    $('#cancel_' + item.attr("data-attribute")).remove();
+                },
+                error: function (data) {
+                    //document.getElementById('cancel_'+attribute).remove();
+                    $('#cancel_' + attribute).remove();
+                    item.attr("data-action", "edit");
+                    item.html('<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+                    item.attr("class", "btn btn-default edit_list");
+                    //document.getElementById('cancel_'+item.attr("data-attribute")).remove();
+                    $('#cancel_' + item.attr("data-attribute")).remove();
+                    $(':checkbox[name='+attribute+']').attr("disabled", true);
+                    data = JSON.parse(data.responseText);
+                    alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+                }
+            });
+
+
+        }
+    });
+});
+
+
+/* Debug button */
+$(document).ready(function () {
+    $('.debug').click(function (e) {
+        $('#json_response').css('display', 'block');
+    })
 });

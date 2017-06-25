@@ -27,7 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -46,7 +47,7 @@
             <label for="id" class="col-sm-2 control-label">ID</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="id" name="id" placeholder="" value="" disabled>
+                    <input type="text" class="form-control" id="id" name="id" value="" disabled>
                 </div>
             </div>
         </div>
@@ -55,7 +56,7 @@
             <label for="data[attributes][name]" class="col-sm-2 control-label">Name</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input tabindex="1" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" placeholder="" value="">
+                    <input tabindex="1" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                 </div>
             </div>
         </div>
@@ -64,7 +65,7 @@
             <label for="data[attributes][description]" class="col-sm-2 control-label">Description</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input tabindex="2" type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" placeholder="" value="">
+                    <input tabindex="2" type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" value="">
                 </div>
             </div>
         </div>
@@ -95,7 +96,7 @@
             <label for="edited_by" class="col-sm-2 control-label">Edited By</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="edited_by" name="edited_by" placeholder="" value="" disabled>
+                    <input type="text" class="form-control" id="edited_by" name="edited_by" value="" disabled>
                 </div>
             </div>
         </div>
@@ -104,7 +105,7 @@
             <label for="edited_date" class="col-sm-2 control-label">Edited Date</label>
             <div class="col-sm-4">
                 <div class="col-sm-8 input-group">
-                    <input type="text" class="form-control" id="edited_date" name="edited_date" placeholder="" value="" disabled>
+                    <input type="text" class="form-control" id="edited_date" name="edited_date" value="" disabled>
                 </div>
             </div>
         </div>
@@ -134,7 +135,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][community]" class="col-sm-2 control-label">Community</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="4" type="password" class="form-control" id="data[attributes][credentials][community]" name="data[attributes][credentials][community]" placeholder="" value="">\
+                    <input tabindex="4" type="password" class="form-control" id="data[attributes][credentials][community]" name="data[attributes][credentials][community]" value="">\
                 </div>\
             </div>\
         </div>';
@@ -143,7 +144,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][security_name]" class="col-sm-2 control-label">Security Name</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][security_name]" name="data[attributes][credentials][security_name]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][security_name]" name="data[attributes][credentials][security_name]" value="">\
                 </div>\
             </div>\
         </div>\
@@ -174,7 +175,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][authentication_passphrase]" class="col-sm-2 control-label">Authentication Passphrase</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="7" type="password" class="form-control" id="data[attributes][credentials][authentication_passphrase]" name="data[attributes][credentials][authentication_passphrase]" placeholder="" value="">\
+                    <input tabindex="7" type="password" class="form-control" id="data[attributes][credentials][authentication_passphrase]" name="data[attributes][credentials][authentication_passphrase]" value="">\
                 </div>\
             </div>\
         </div>\
@@ -193,7 +194,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][privacy_passphrase]" class="col-sm-2 control-label">Privacy Passphrase</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="9" type="password" class="form-control" id="data[attributes][credentials][privacy_passphrase]" name="data[attributes][credentials][privacy_passphrase]" placeholder="" value="">\
+                    <input tabindex="9" type="password" class="form-control" id="data[attributes][credentials][privacy_passphrase]" name="data[attributes][credentials][privacy_passphrase]" value="">\
                 </div>\
             </div>\
         </div>\
@@ -203,7 +204,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" value="">\
                 </div>\
             </div>\
         </div>\
@@ -211,7 +212,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][password]" class="col-sm-2 control-label">Password</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" placeholder="" value="">\
+                    <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" value="">\
                 </div>\
             </div>\
         </div>';
@@ -220,7 +221,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" value="">\
                 </div>\
             </div>\
         </div>\
@@ -237,7 +238,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][username]" class="col-sm-2 control-label">Username</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" placeholder="" value="">\
+                    <input tabindex="4" type="text" class="form-control" id="data[attributes][credentials][username]" name="data[attributes][credentials][username]" value="">\
                 </div>\
             </div>\
         </div>\
@@ -245,7 +246,7 @@ $(document).ready(function(){
             <label for="data[attributes][credentials][password]" class="col-sm-2 control-label">Password</label>\
             <div class="col-sm-4">\
                 <div class="col-sm-8 input-group">\
-                    <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" placeholder="" value="">\
+                    <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" value="">\
                 </div>\
             </div>\
         </div>';

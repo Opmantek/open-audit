@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,15 +24,26 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   2.0.1
+
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * 
- * @version 1.12.8
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object Orgs.
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class orgs extends MY_Controller
 {
@@ -40,7 +51,10 @@ class orgs extends MY_Controller
     {
         parent::__construct();
         // log the attempt
-        stdlog();
+        $log = new stdClass();
+        $log->status = 'start';
+        $log->function = strtolower(__METHOD__);
+        stdlog($log);
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
@@ -61,161 +75,118 @@ class orgs extends MY_Controller
     {
     }
 
+    /**
+    * Our remap function to override the inbuilt controller->method functionality
+    *
+    * @access public
+    * @return NULL
+    */
     public function _remap()
     {
-        if (!empty($this->response->meta->action)) {
-            $this->{$this->response->meta->action}();
-        } else {
-            $this->collection();
-        }
-        exit();
+        $this->{$this->response->meta->action}();
     }
 
-    private function collection()
-    {
-        $this->response->data = $this->m_orgs->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
-
-    private function read()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        if ($this->response->meta->sub_resource != '') {
-            $this->response->data = $this->m_orgs->read_sub_resource();
-            $this->response->meta->format = 'json';
-            output($this->response);
-            exit();
-        } else {
-            $this->response->data = $this->m_orgs->read();
-        }
-        if (!empty($this->response->data)) {
-            $this->response->meta->filtered = count($this->response->data);
-            if ($this->response->meta->format == 'screen') {
-                $this->response->included = array();
-                $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-                if ($this->m_orgs->read_sub_resource()) {
-                    $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
-                }
-            }
-        }
-        output($this->response);
-    }
-
-    private function create_form()
-    {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        # TODO - check this - should likely use included not data.
-        $this->response->data = $this->m_orgs->collection();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
-    }
-
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
     private function create()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->meta->id = $this->m_orgs->create();
-        if (!empty($this->response->meta->id)) {
-            if ($this->response->meta->format == 'json') {
-                $this->response->data = $this->m_orgs->read();
-                output($this->response);
-            } else {
-                redirect('/orgs');
-            }
-        } else {
-            log_error('ERR-0009');
-            output($this->response);
-            exit();
-        }
+        $this->response->meta->received_data->attributes->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $this->response->meta->received_data->attributes->name));
+        include 'include_create.php';
     }
 
+    /**
+    * Read a single object
+    *
+    * @access public
+    * @return NULL
+    */
+    private function read()
+    {
+        include 'include_read.php';
+    }
+
+    /**
+    * Process the supplied data and update an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function update()
+    {
+        include 'include_update.php';
+    }
+
+    /**
+    * Delete an existing object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function delete()
+    {
+        include 'include_delete.php';
+    }
+
+    /**
+    * Collection of objects
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        include 'include_collection.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
+    private function create_form()
+    {
+        include 'include_create_form.php';
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
     private function update_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->response->included = array();
-        $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
-        if ($this->m_orgs->read_sub_resource()) {
-            $this->response->included = array_merge($this->response->included, $this->m_orgs->read_sub_resource());
-        }
-        $this->response->data = $this->m_orgs->read();
-        $this->response->meta->filtered = count($this->response->data);
-        output($this->response);
+        include 'include_update_form.php';
     }
 
-    private function update()
+    /**
+    * Supply a HTML form for the user to upload a collection of objects in CSV
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import_form()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        $this->m_orgs->update();
-        if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_orgs->read();
-            output($this->response);
-        } else {
-            redirect('orgs');
-        }
+        $this->load->model('m_database');
+        $this->response->data = $this->m_database->read('orgs');
+        include 'include_import_form.php';
     }
 
-    private function delete()
+    /**
+    * Process the supplied data and create a new object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function import()
     {
-        # Only admin's
-        if ($this->user->admin != 'y') {
-            log_error('ERR-0008');
-            output($this->response);
-            exit();
-        }
-        # do not allow deletion of default Org
-        if ($this->response->meta->id == 0) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-            log_error('ERR-0014');
-            if ($this->response->meta->format == 'json') {
-                output($this->response);
-            } else {
-                redirect($this->response->meta->collection);
-            }
-            exit();
-        }
-
-        if ($this->m_orgs->delete()) {
-            $this->response->data = array();
-            $temp = new stdClass();
-            $temp->type = $this->response->meta->collection;
-            $this->response->data[] = $temp;
-            unset($temp);
-        } else {
-            log_error('ERR-0013');
-        }
-        if ($this->response->meta->format == 'json') {
-            output($this->response);
-        } else {
-            redirect($this->response->meta->collection);
-        }
+        include 'include_import.php';
     }
 }
+// End of file orgs.php
+// Location: ./controllers/orgs.php

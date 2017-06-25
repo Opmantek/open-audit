@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -31,7 +32,8 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
@@ -45,7 +47,6 @@ if (! function_exists('network_details')) {
 
         if (! preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}(( ([0-9]{1,3}\.){3}[0-9]{1,3})|(\/[0-9]{1,2}))$/', $my_net_info)) {
             $details->error = "Error - invalid input";
-
             return($details);
         }
 
@@ -55,7 +56,6 @@ if (! function_exists('network_details')) {
             $cdr_nmask = strtok("/");
             if (!($cdr_nmask >= 0 && $cdr_nmask <= 32)) {
                 $details->error = "Invalid CIDR value. Try an integer 0 - 32.";
-
                 return($details);
             }
             $bin_nmask = cdrtobin($cdr_nmask);
@@ -72,8 +72,7 @@ if (! function_exists('network_details')) {
                 $bin_nmask = binwmtonm($bin_wmask);
                 if (preg_match('/0/', rtrim($bin_nmask, "0"))) {
                     //If it's not wcard, whussup?
-                $details->error = "Invalid Netmask.";
-
+                    $details->error = "Invalid Netmask.";
                     return($details);
                 }
             }
@@ -478,6 +477,12 @@ if (! function_exists('dns_validate')) {
             $details->hostname = $details->sysName;
             $log_details->message = 'Setting hostname to sysName because no entry for hostname, but valid sysName ' . @$details->sysName;
             stdlog($log_details);
+        }
+        if (empty($details->dns_hostname) and ! empty($details->hostname)) {
+            $details->dns_hostname = $details->hostname;
+        }
+        if (empty($details->dns_domain) and ! empty($details->domain)) {
+            $details->dns_domain = $details->domain;
         }
         $log_details->message = 'Finish DNS checking for ' . @$details->ip;
         stdlog($log_details);

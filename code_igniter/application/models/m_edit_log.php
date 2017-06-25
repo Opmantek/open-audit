@@ -28,7 +28,8 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,10 +39,16 @@ class M_edit_log extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($system_id, $details = '',  $db_table = 'system', $db_column = '', $timestamp = '', $value = '', $previous_value = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id != '' and $system_id != 0) {
             if ($details == '') {
@@ -55,7 +62,7 @@ class M_edit_log extends MY_Model
                 $db_table = 'system';
             }
             if ($timestamp == '') {
-                $timestamp = date('Y-m-d H:i:s');
+                $timestamp = $this->config->config['timestamp'];
             }
             #$sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (?, ?, ?, 'user', 1000, ?, ?, ?, ?, ?)";
             $sql = "INSERT INTO edit_log (user_id, system_id, details, source, weight, db_table, db_column, timestamp, value, previous_value) VALUES (?, ?, ?, 'user', 1000, ?, ?, NOW(), ?, ?)";
@@ -68,7 +75,9 @@ class M_edit_log extends MY_Model
 
     public function read($system_id)
     {
-        $sql = "SELECT edit_log.*, oa_user.full_name FROM edit_log, oa_user WHERE edit_log.system_id = ? AND oa_user.id = edit_log.user_id";
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $sql = "SELECT edit_log.*, users.full_name FROM edit_log, users WHERE edit_log.system_id = ? AND users.id = edit_log.user_id";
         $sql = $this->clean_sql($sql);
         $data = array("$system_id");
         $query = $this->db->query($sql, $data);

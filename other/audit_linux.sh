@@ -28,7 +28,8 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version 1.12.8
+# @version   2.0.1
+
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -56,11 +57,13 @@
 # submit the audit to the Open-AudIT server
 submit_online="n"
 
+discovery_id=""
+
 # create an XML text file of the result in the current directory
 create_file="y"
 
 # the address of the Open-AudIT server "submit" page
-url="http://localhost/open-audit/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/input/devices"
 
 # optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""
@@ -73,6 +76,9 @@ self_delete="n"
 # 1 = basic debug
 # 2 = verbose debug
 debugging=2
+
+# Version
+version="2.0.1"
 
 # Display help
 help="n"
@@ -90,11 +96,14 @@ PATH="$PATH:/sbin:/usr/sbin"
 export PATH
 
 ORIGIFS=$IFS
-NEWLINEIFS=$(echo -n "\n");
+#NEWLINEIFS=$(echo -n "\n");
+NEWLINEIFS=$(echo -en "\n\b");
 IFS="$NEWLINEIFS";
 
 # we set this if we detect we're running on a BB shell
 busybox="n"
+
+last_seen_by="audit"
 
 display=""
 # This should only be set by Discovery when using the debug option
@@ -266,6 +275,8 @@ for arg in "$@"; do
 			self_delete="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"discovery_id" )
+			discovery_id="$parameter_value" ;;
 		"display" )
 			display="$parameter_value" ;;
 		"help" )
@@ -274,6 +285,8 @@ for arg in "$@"; do
 			help="y" ;;
 		"-h" )
 			help="y" ;;
+		"last_seen_by" )
+			last_seen_by="$parameter_value" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
 		"submit_online" )
@@ -292,7 +305,8 @@ done
 if [ "$help" = "y" ]; then
 	echo ""
 	echo "-----------------------------"
-	echo "Open-AudIT Linux Audit script"
+	echo "Open-AudIT Linux audit script"
+	echo "Version: $version"
 	echo "-----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
@@ -316,6 +330,9 @@ if [ "$help" = "y" ]; then
 	echo "     0 - No output."
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
+	echo ""
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
 	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
@@ -372,10 +389,19 @@ system_timestamp=$(date +'%F %T')
 script_name=$(basename $0)
 
 if [ "$debugging" -gt 0 ]; then
-	echo "My PID is : $$"
-	echo "Audit Start Time : $system_timestamp"
-	echo "Audit Location: $audit_location"
-	echo "-------------------"
+	echo "----------------------------"
+	echo "Open-AudIT Linux audit script"
+	echo "Version: $version"
+	echo "----------------------------"
+	echo "My PID is           $$"
+	echo "Audit Start Time    $system_timestamp"
+	echo "Create File         $create_file"
+	echo "Submit Online       $submit_online"
+	echo "Debugging Level     $debugging"
+	echo "Discovery ID        $discovery_id"
+	echo "Org Id              $org_id"
+	echo "Script Name         $script_name"
+	echo "----------------------------"
 fi
 
 IFS="$ORIGIFS";
@@ -396,7 +422,7 @@ fi
 #========================
 if [ "$san_audit" = "y" ]; then
 	if [ -f "/opt/IBM_DS/client/SMcli" ]; then
-		san_url=$(echo "$san_url" | sed 's/system\/add_system/san\/add_san/g')
+		san_url=$(echo "$san_url" | sed 's/input\/devices/san\/add_san/g')
 		if [ "$debugging" -gt 0 ]; then
 			echo "SAN info"
 		fi
@@ -473,13 +499,13 @@ if [ -z "$system_uuid" ]; then
 fi
 
 # Get the hostname & DNS domain
-system_hostname=$(hostname -s)
-system_domain=$(hostname -d)
-system_fqdn=$(hostname -f)
+system_hostname=$(hostname | cut -d. -f1)
+system_domain=$(hostname -d | grep -v \(none\))
+system_fqdn=$(hostname -f | grep -v \(none\))
 
-dns_hostname=$(hostname -A | head -n1 | cut -d. -f1)
-dns_domain=$(hostname -A | head -n1 | cut -d. -f2-)
-dns_fqdn=$(hostname -A | head -n1)
+dns_hostname=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f1)
+dns_domain=$(hostname -A 2>/dev/null | head -n1 | cut -d. -f2-)
+dns_fqdn=$(hostname -A 2>/dev/null | head -n1)
 
 # Get System Family (Distro Name) and the OS Name
 # Debian and Ubuntu will match on the below
@@ -536,11 +562,18 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 		break;
 	fi
 
+	if [ -z "$system_os_family" ]; then
+		if [ -e "/etc/arch-release" ]; then
+			system_os_name="Arch Linux";
+			system_os_family="Arch";
+		fi
+	fi
+
 	# CentOS based - must come before RedHat based
 	if [ "$system_release_file" = "/etc/centos-release" ]; then
 		if [ -z "$system_os_family" ]; then
 			system_os_family="CentOS";
-			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
+			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
 			if [ -z "$system_os_version" ]; then
 				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
 			fi
@@ -560,7 +593,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 			system_os_family="Fedora"
 		fi
 		if [ -z "$system_os_version" ]; then
-			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
+			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
 			if [ -z "$system_os_version" ]; then
 				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
 			fi
@@ -582,14 +615,21 @@ system_os_icon=$(lcase "$system_os_family")
 # Get the System Serial Number
 system_serial=""
 system_serial=$(dmidecode -s system-serial-number 2>/dev/null | grep -v "^#")
-if [ -z "$system_serial" ]; then
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		system_serial=$(lshal | grep "system.hardware.serial" | cut -d\' -f2)
+		system_serial=$(lshal 2>/dev/null | grep "system.hardware.serial" | cut -d\' -f2)
 	fi
 fi
-if [ -z "$system_serial" ]; then
+
+if [ -z "$system_serial" ] || [ "$system_serial" = "0" ]; then
 	system_serial=$(cat /sys/class/dmi/id/product_serial 2>/dev/null)
 fi
+
+# Some old distro's return 0
+#if [ "$system_serial" = "0" ]; then
+#	system_serial=""
+# fi
 
 # Get the System Model
 if [ -z "$system_model" ]; then
@@ -604,6 +644,9 @@ fi
 
 # get the systemd identifier
 dbus_identifier=$(cat /var/lib/dbus/machine-id 2>/dev/null)
+if [ -z "$dbus_identifier" ]; then
+	dbus_identifier=$(cat /etc/machine-id 2>/dev/null)
+fi
 
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
@@ -641,7 +684,12 @@ system_uptime=$(cut -d. -f1 < /proc/uptime)
 
 # Get the System Form factor
 system_form_factor=""
-if [ "$system_model" = "Bochs" -o "$system_model" = "KVM" -o "$system_model" = "Virtual Machine" -o "$system_model" = "VMware Virtual Platform" -o "$system_model" = "OpenVZ" -o "$system_model" = "VirtualBox" ]; then
+if [ "$system_model" = "Bochs" -o \
+	 "$system_model" = "KVM" -o \
+	 "$system_model" = "Virtual Machine" -o \
+	 "$system_model" = "VMware Virtual Platform" -o \
+	 "$system_model" = "OpenVZ" -o \
+	 "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
 else
 	system_form_factor=$(dmidecode -s chassis-type 2>/dev/null | grep -v "^#")
@@ -735,9 +783,10 @@ fi
 xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 
 {
-echo "form_systemXML=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+echo "data=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
 echo "	<sys>"
+echo "		<script_version>$version</script_version>"
 echo "		<uuid>$(escape_xml "$system_uuid")</uuid>"
 echo "		<hostname>$(escape_xml "$system_hostname")</hostname>"
 echo "		<domain>$(escape_xml "$system_domain")</domain>"
@@ -764,7 +813,9 @@ echo "		<processor_count>$(escape_xml "$system_pc_total_threads")</processor_cou
 echo "		<os_installation_date>$(escape_xml "$system_pc_date_os_installation")</os_installation_date>"
 echo "		<org_id>$(escape_xml "$org_id")</org_id>"
 echo "		<dbus_identifier>$(escape_xml "$dbus_identifier")</dbus_identifier>"
+echo "		<last_seen_by>$(escape_xml "$last_seen_by")</last_seen_by>"
 echo "		<id>$(escape_xml "$system_id")</id>"
+echo "		<discovery_id>$(escape_xml "$discovery_id")</discovery_id>"
 echo "	</sys>"
 } > "$xml_file"
 
@@ -1214,7 +1265,7 @@ for net_connection_id in $(ls /sys/class/net/) ; do
 		net_card_model="Virtual Bonded NIC"
 		net_card_description="Virtual Bonded NIC ($net_connection_id)"
 		net_card_enabled=""
-		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate)
+		net_card_status=$(cat /sys/class/net/$net_connection_id/operstate 2>/dev/null)
 		if [ "$net_card_status" = "up" ]; then
 				net_card_status="Connected"
 		else
@@ -1550,146 +1601,239 @@ fi
 if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
-echo "	<disk>" >> "$xml_file"
-partition_result=""
-for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 
-	hard_drive_caption="/dev/$disk"
-	hard_drive_index="$disk"
-	hard_drive_interface_type=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_BUS= | cut -d= -f2)
-	test=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_ATA_SATA= | cut -d= -f2)
-	if [ "$test" = "1" ]; then
-		hard_drive_interface_type="sata"
+old="no"
+if [[ "$system_os_name" == "CentOS release 4"* ]]; then
+	old="yes"
+fi
+if [[ "$system_os_name" == "CentOS release 5"* ]]; then
+	old="yes"
+fi
+if [ "$system_os_family" == "RedHat" -o "$system_os_family" == "Centos" ]; then
+	if (( $(echo "$system_os_version >= 4" | bc -l) )); then
+		if (( $(echo "$system_os_version < 6" | bc -l) )); then
+			old="yes"
+		fi
 	fi
+fi
 
-	hard_drive_model=$(udevadm info -a -n /dev/"$disk" 2>/dev/null | grep "ATTRS{model}==" | head -n 1 | cut -d\" -f2)
-	if [ -z "$hard_drive_model" ]; then
-		hard_drive_model=$(lsblk -lbndo MODEL /dev/"$disk")
+# if [ "$system_os_family" = "RedHat" ] && [ "$system_os_version" = "5" ]; then
+# 	old="yes"
+# fi
+
+if [ "$old" = "yes" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "Running old disk checking for RHEL/CentOS 4/5."
 	fi
-	hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL_SHORT= | cut -d= -f2)
-	hard_drive_size=$(lsblk -lbndo SIZE /dev/"$disk")
-	if [ "$hard_drive_size" -gt 1048576 ]; then
+	echo "	<disk>" >> "$xml_file"
+	for disk in $(fdisk -l /dev/sd? | grep "^Disk " | cut -d" " -f2 | cut -d: -f1); do
+		hard_drive_caption="$disk"
+		hard_drive_index=$(echo "$hard_drive_caption" | cut -d/ -f3)
+		hard_drive_interface_type=""
+		hard_drive_manufacturer=$(smartctl -i "$hard_drive_caption" | grep "Vendor:" | cut -d: -f2)
+		hard_drive_model=$(smartctl -i "$hard_drive_caption" | grep "Product:" | cut -d: -f2)
+		hard_drive_serial=$(smartctl -i "$hard_drive_caption" | grep "Serial Number:" | cut -d: -f2)
+		hard_drive_size=$(smartctl -i "$hard_drive_caption" | grep "User Capacity:" | cut -d: -f2 | cut -db -f1 | sed 's/,//g')
 		hard_drive_size=$((hard_drive_size / 1024 / 1024))
-	else
-		hard_drive_size="0"
-	fi
-	hard_drive_device_id="/dev/$disk"
-	hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | grep -v "^$disk\$" -c)
-	hard_drive_status=""
-	hard_drive_model_family=""
-	hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
+		hard_drive_device_id="$disk"
+		partition_count=$(fdisk -l "$disk" | grep "^$disk" | wc -l)
+		hard_drive_status=""
+		hard_drive_firmware=$(smartctl -i "$hard_drive_caption" | grep "Firmware Version" | cut -d: -f2)
+		hard_drive_model_family=""
+		{
+		echo "		<item>"
+		echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
+		echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
+		echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
+		echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$hard_drive_model")</model>"
+		echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
+		echo "			<size>$(escape_xml "$hard_drive_size")</size>"
+		echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
+		echo "			<partition_count>$(escape_xml "$partition_count")</partition_count>"
+		echo "			<status>$(escape_xml "$hard_drive_status")</status>"
+		echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
+		echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
+		echo "		</item>"
+		} >> "$xml_file"
+		for partition in $(fdisk -l "$disk" 2>&1 | grep "^/dev/" | cut -d" " -f1); do
+			partition_serial=""
+			partition_name=""
+			partition_description=""
+			partition_device_id="$partition"
+			partition_disk_index="$hard_drive_index"
+			partition_mount_point=$(mount | grep "$partition" | cut -d" " -f3)
 
-	mycommand="lshw -class disk 2>/dev/null"
-	mydelimiter="*-disk"
-	mymatch="logical name: /dev/$disk"
-	myvariable="vendor:"
-	myresult=$(between_output "$mycommand" "$mydelimiter" "$mymatch" "$myvariable")
-	myresult=$(echo "$myresult" | cut -d: -f2)
-	hard_drive_manufacturer=$(trim "$myresult")
-	if [ -z "$hard_drive_manufacturer" ]; then
-		hard_drive_manufacturer=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_VENDOR= | cut -d= -f2)
-	fi
+			partition_size=$(df -k "$partition" | tail -n1 | tr -s " " | cut -d" " -f2)
+			partition_used=$(df -k "$partition" | tail -n1 | tr -s " " | cut -d" " -f3)
+			partition_free=$(df -k "$partition" | tail -n1 | tr -s " " | cut -d" " -f4)
 
-	if [ -n "$(which smartctl 2>/dev/null)" ]; then
-		# use smart tools as they are installed
-		hard_drive_status=$(smartctl -H /dev/"$disk" 2>/dev/null | grep "SMART overall" | cut -d: -f2)
-		hard_drive_model_family=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Model Family" | cut -d: -f2)
-	fi
-
-	# some hacks
-	if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Crucial" ; then
-		hard_drive_manufacturer="Crucial"
-	fi
-
-	if echo "$hard_drive_manufacturer" | grep -q "VMware" ; then
-		hard_drive_manufacturer="VMware"
-		hard_drive_model_family="VMware"
-		hard_drive_model="VMware Virtual Disk"
-	fi
-
-	if echo "$hard_drive_model" | grep -q "VMware" || echo "$hard_drive_model" | grep -q "Virtual" ; then
-		hard_drive_model="VMware Virtual Disk"
-	fi
-
-	{
-	echo "		<item>"
-	echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
-	echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
-	echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
-	echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
-	echo "			<model>$(escape_xml "$hard_drive_model")</model>"
-	echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
-	echo "			<size>$(escape_xml "$hard_drive_size")</size>"
-	echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
-	echo "			<partition_count>$(escape_xml "$hard_drive_partitions")</partition_count>"
-	echo "			<status>$(escape_xml "$hard_drive_status")</status>"
-	echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
-	echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
-	echo "		</item>"
-	} >> "$xml_file"
-
-	for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
-		if [ -n "$partition" ] && [ "$partition" != "$disk" ]; then
-
-			# partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
-			partition_mount_type=$(lsblk -lno NAME,TYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_mount_type=$(trim "$partition_mount_type")
-			if [ "$partition_mount_type" = "part" ]; then
-				partition_mount_type="partition"
-				partition_type="local"
-			else
-				partition_mount_type="mount point"
-				partition_type="$partition_mount_type"
-			fi
-
-			#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
-			partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_mount_point=$(trim "$partition_mount_point")
-
-			#partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-			partition_name=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_name=$(trim "$partition_name")
-
-			#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
-			#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
-			partition_size=$((partition_size / 1024 / 1024))
-
-			#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
-			partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_format=$(trim "$partition_format")
-
-			#partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-			partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_caption=$(trim "$partition_caption")
-
-			partition_device_id="/dev/$partition"
-			partition_disk_index="$disk"
-			partition_bootable=""
-			partition_quotas_supported=""
-			partition_quotas_enabled=""
-
-			#partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
-			partition_serial=$(lsblk -lno NAME,UUID /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-			partition_serial=$(trim "$partition_serial")
-
-			#partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
-			partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
-			if [ -z "$partition_free_space" ] && [ -n "$partition_serial" ]; then
-				partition_free_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $4}')
-			fi
-			#partition_used_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $3}')
-			partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
-			if [ -z "$partition_used_space" ] && [ -n "$partition_serial" ]; then
-				partition_used_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $3}')
-			fi
-
-			if [ "$partition_format" = "swap" ]; then
-				partition_used_space=$(free -m | grep -i swap | awk '{print $3}')
-				partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
-			fi
-
+			partition_format=$(mount | grep "$partition" | cut -d" " -f5)
 			partition_result=$partition_result"
+		<item>
+			<serial>$(escape_xml "$partition_serial")</serial>
+			<name>$(escape_xml "$partition_name")</name>
+			<description>$(escape_xml "$partition_description")</description>
+			<device>$(escape_xml "$partition_device_id")</device>
+			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>
+			<partition_disk_index>$(escape_xml "$partition_disk_index")</partition_disk_index>
+			<mount_type>partition</mount_type>
+			<mount_point>$(escape_xml "$partition_mount_point")</mount_point>
+			<size>$(escape_xml "$partition_size")</size>
+			<free>$(escape_xml "$partition_free")</free>
+			<used>$(escape_xml "$partition_used")</used>
+			<format>$(escape_xml "$partition_format")</format>
+			<bootable></bootable>
+			<type>partition</type>
+		</item>"
+		done
+	done
+	echo "	</disk>" >> "$xml_file"
+
+else
+	echo "	<disk>" >> "$xml_file"
+	partition_result=""
+	for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
+
+		hard_drive_caption="/dev/$disk"
+		hard_drive_index="$disk"
+		hard_drive_interface_type=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_BUS= | cut -d= -f2)
+		test=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_ATA_SATA= | cut -d= -f2)
+		if [ "$test" = "1" ]; then
+			hard_drive_interface_type="sata"
+		fi
+
+		hard_drive_model=$(udevadm info -a -n /dev/"$disk" 2>/dev/null | grep "ATTRS{model}==" | head -n 1 | cut -d\" -f2)
+		if [ -z "$hard_drive_model" ]; then
+			hard_drive_model=$(lsblk -lbndo MODEL /dev/"$disk")
+		fi
+		hard_drive_serial=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_SERIAL_SHORT= | cut -d= -f2)
+		hard_drive_size=$(lsblk -lbndo SIZE /dev/"$disk")
+		if [ "$hard_drive_size" -gt 1048576 ]; then
+			hard_drive_size=$((hard_drive_size / 1024 / 1024))
+		else
+			hard_drive_size="0"
+		fi
+		hard_drive_device_id="/dev/$disk"
+		hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | grep -v "^$disk\$" -c)
+		hard_drive_status=""
+		hard_drive_model_family=""
+		hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
+
+		mycommand="lshw -class disk 2>/dev/null"
+		mydelimiter="*-disk"
+		mymatch="logical name: /dev/$disk"
+		myvariable="vendor:"
+		myresult=$(between_output "$mycommand" "$mydelimiter" "$mymatch" "$myvariable")
+		myresult=$(echo "$myresult" | cut -d: -f2)
+		hard_drive_manufacturer=$(trim "$myresult")
+		if [ -z "$hard_drive_manufacturer" ]; then
+			hard_drive_manufacturer=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_VENDOR= | cut -d= -f2)
+		fi
+
+		if [ -n "$(which smartctl 2>/dev/null)" ]; then
+			# use smart tools as they are installed
+			hard_drive_status=$(smartctl -H /dev/"$disk" 2>/dev/null | grep "SMART overall" | cut -d: -f2)
+			hard_drive_model_family=$(smartctl -i /dev/"$disk" 2>/dev/null | grep "Model Family" | cut -d: -f2)
+		fi
+
+		# some hacks
+		if [ -z "$hard_drive_manufacturer" ] &&  echo "$hard_drive_model" | grep -q "Crucial" ; then
+			hard_drive_manufacturer="Crucial"
+		fi
+
+		if echo "$hard_drive_manufacturer" | grep -q "VMware" ; then
+			hard_drive_manufacturer="VMware"
+			hard_drive_model_family="VMware"
+			hard_drive_model="VMware Virtual Disk"
+		fi
+
+		if echo "$hard_drive_model" | grep -q "VMware" || echo "$hard_drive_model" | grep -q "Virtual" ; then
+			hard_drive_model="VMware Virtual Disk"
+		fi
+
+		{
+		echo "		<item>"
+		echo "			<caption>$(escape_xml "$hard_drive_caption")</caption>"
+		echo "			<hard_drive_index>$(escape_xml "$hard_drive_index")</hard_drive_index>"
+		echo "			<interface_type>$(escape_xml "$hard_drive_interface_type")</interface_type>"
+		echo "			<manufacturer>$(escape_xml "$hard_drive_manufacturer")</manufacturer>"
+		echo "			<model>$(escape_xml "$hard_drive_model")</model>"
+		echo "			<serial>$(escape_xml "$hard_drive_serial")</serial>"
+		echo "			<size>$(escape_xml "$hard_drive_size")</size>"
+		echo "			<device>$(escape_xml "$hard_drive_device_id")</device>"
+		echo "			<partition_count>$(escape_xml "$hard_drive_partitions")</partition_count>"
+		echo "			<status>$(escape_xml "$hard_drive_status")</status>"
+		echo "			<firmware>$(escape_xml "$hard_drive_firmware")</firmware>"
+		echo "			<model_family>$(escape_xml "$hard_drive_model_family")</model_family>"
+		echo "		</item>"
+		} >> "$xml_file"
+
+		PREVIFS=$IFS
+		IFS="$NEWLINEIFS";
+		for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ ); do
+		#for partition in $(lsblk -lno NAME /dev/$disk 2>/dev/null | grep -v ^$disk\$ | sed -e "s/ (/_(/g" ); do
+			if [ -n "$partition" ] && [ "$partition" != "$disk" ]; then
+
+				# partition_mount_type=$(lsblk -lndo TYPE /dev/"$partition" 2>/dev/null)
+				partition_mount_type=$(lsblk -lno NAME,TYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_mount_type=$(trim "$partition_mount_type")
+				if [ "$partition_mount_type" = "part" ]; then
+					partition_mount_type="partition"
+					partition_type="local"
+				else
+					partition_mount_type="mount point"
+					partition_type="$partition_mount_type"
+				fi
+
+				#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
+				partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_mount_point=$(trim "$partition_mount_point")
+
+				#partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+				partition_name=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_name=$(trim "$partition_name")
+
+				#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
+				#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
+				partition_size=$((partition_size / 1024 / 1024))
+
+				#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
+				partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_format=$(trim "$partition_format")
+
+				#partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
+				partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_caption=$(trim "$partition_caption")
+
+				partition_device_id="/dev/$partition"
+				partition_disk_index="$disk"
+				partition_bootable=""
+				partition_quotas_supported=""
+				partition_quotas_enabled=""
+
+				#partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
+				partition_serial=$(lsblk -lno NAME,UUID /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_serial=$(trim "$partition_serial")
+
+				#partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
+				partition_free_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $4}')
+				if [ -z "$partition_free_space" ] && [ -n "$partition_serial" ]; then
+					partition_free_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $4}')
+				fi
+				#partition_used_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $3}')
+				partition_used_space=$(df -m --total "$partition_mount_point" 2>/dev/null | grep ^total | awk '{print $3}')
+				if [ -z "$partition_used_space" ] && [ -n "$partition_serial" ]; then
+					partition_used_space=$(df -m /dev/disk/by-uuid/"$partition_serial" 2>/dev/null | grep "$partition_serial" | awk '{print $3}')
+				fi
+
+				if [ "$partition_format" = "swap" ]; then
+					partition_used_space=$(free -m | grep -i swap | awk '{print $3}')
+					partition_free_space=$(free -m | grep -i swap | awk '{print $4}')
+				fi
+
+				partition_result=$partition_result"
 		<item>
 			<serial>$(escape_xml "$partition_serial")</serial>
 			<name>$(escape_xml "$partition_name")</name>
@@ -1706,10 +1850,12 @@ for disk in $(lsblk -ndo NAME -e 11,2,1 2>/dev/null); do
 			<type>$(escape_xml "$partition_type")</type>
 		</item>"
 
-		fi
+			fi
+		done
+		IFS=$PREVIFS
 	done
-done
-echo "	</disk>" >> "$xml_file"
+	echo "	</disk>" >> "$xml_file"
+fi
 
 
 ##################################
@@ -1805,17 +1951,20 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Environment Variable Info"
 fi
 echo "	<variable>" >> "$xml_file"
-for variable in $(env); do
-	name=$( echo "$variable" | cut -d= -f1 )
-	value=${variable#*=}
-	if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
-		echo "		<item>" >> "$xml_file"
-		echo "			<program>environment</program>" >> "$xml_file"
-		echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
-		echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
-		echo "		</item>" >> "$xml_file"
-	fi
-done
+# Arch throws encoded characters in, just ignore Arch for now
+if [ "$system_os_family" != "Arch" ]; then
+	for variable in $(env); do
+		name=$( echo "$variable" | cut -d= -f1 )
+		value=${variable#*=}
+		if [ "$name" != "XDG_SESSION_ID" ] && [ "$name" != "SSH_CLIENT" ] && [ "$name" != "SSH_CONNECTION" ] && [ "$name" != "SSH_TTY" ]; then
+			echo "		<item>" >> "$xml_file"
+			echo "			<program>environment</program>" >> "$xml_file"
+			echo "			<name>$(escape_xml "$name")</name>" >> "$xml_file"
+			echo "			<value>$(escape_xml "$value")</value>" >> "$xml_file"
+			echo "		</item>" >> "$xml_file"
+		fi
+	done
+fi
 
 # Puppet facts
 if [ -n "$(which facter 2>/dev/null)" ]; then
@@ -1913,7 +2062,7 @@ IFS='
 '
 echo "	<software>" >> "$xml_file"
 case $system_os_family in
-		'Ubuntu' | 'Debian' | 'LinuxMint' )
+		'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -1930,6 +2079,32 @@ case $system_os_family in
 				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
 				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
 				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
+			;;
+		'Solus' )
+			for package in $(eopkg list-installed | cut -d" " -f1); do
+				version=$(eopkg blame "$package" | grep "Name: $package" | cut -d" " -f4 | cut -d, -f1)
+				description=$(eopkg info "$package" | grep Summary | cut -d: -f2 | head -n1)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "		</item>" >> "$xml_file"
+			done
+			;;
+		'Arch' )
+			for package in $(pacman -Q 2>/dev/null | cut -d" " -f1); do
+				version=$(pacman -Q -i "$package" 2>/dev/null | grep "^Version" | cut -d: -f2)
+				description=$(pacman -Q -i "$package" 2>/dev/null | grep "^Description" | cut -d: -f2)
+				url=$(pacman -Q -i "$package" 2>/dev/null | grep "^URL" | cut -d: -f2)
+				installed_on=$(pacman -Q -i "$package" 2>/dev/null | grep "^Install Date" | cut -d: -f2)
+				echo "		<item>" >> "$xml_file"
+				echo "			<name>$(escape_xml $package)</name>" >> "$xml_file"
+				echo "			<version>$(escape_xml $version)</version>" >> "$xml_file"
+				echo "			<description>$(escape_xml $description)</description>" >> "$xml_file"
+				echo "			<url>$(escape_xml $url)</url>" >> "$xml_file"
+				echo "			<installed_on>$(escape_xml $installed_on)</installed_on>" >> "$xml_file"
 				echo "		</item>" >> "$xml_file"
 			done
 			;;
@@ -2228,7 +2403,7 @@ if [ "$submit_online" = "y" ]; then
 	fi
 fi
 
-sed -i -e 's/form_systemXML=//g' "$xml_file"
+sed -i -e 's/data=//g' "$xml_file"
 sed -i -e 's/%2B/+/g' "$xml_file"
 sed -i -e 's/%22/"/g' "$xml_file"
 sed -i -e 's/%26/&/g' "$xml_file"

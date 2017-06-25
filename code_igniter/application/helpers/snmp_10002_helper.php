@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php 
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -31,23 +32,35 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Frogfoot Networks
+# Ubiquiti / Airfiber tend to use this OID :-(
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     $details = new stdClass();
+
     # manufacturer
     $details->manufacturer = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.2.5");
     $details->os_name = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.4.5");
+
     # serial
     $details->serial = my_snmp_get($ip, $credentials, "1.2.840.10036.1.1.1.1.5");
+
     # model
     $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.5");
+    if (empty($details->model)) {
+        $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.10");
+    }
+    if (empty($details->model)) {
+        $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.7");
+    }
+
     # maybe we have a Ubiquiti device
     if (stripos($details->manufacturer, 'ubiquiti') !== false) {
         $details->type = 'wap';

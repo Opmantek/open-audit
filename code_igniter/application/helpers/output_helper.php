@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -31,7 +32,8 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('output')) {
@@ -53,19 +55,22 @@ if (! function_exists('output')) {
         error_reporting(E_ALL);
         $CI = & get_instance();
         if ($CI->response->meta->id == 888888888888) {
-            $CI->response->meta->id = NULL;
+            $CI->response->meta->id = null;
             unset($CI->response->data);
             $CI->response->data = array();
         }
         if (!empty($CI->response->data) and count($CI->response->data) > 0) {
             $CI->response->data = output_convert($CI->response->data);
         }
+        if (empty($CI->response->data)) {
+            $CI->response->data = false;
+        }
         if (!empty($CI->response->included) and $CI->response->meta->collection != 'scripts') {
             $CI->response->included = output_convert($CI->response->included);
         }
         create_links();
         // if we have errors set, make sure we remove the data object / array
-        if (count($CI->response->errors) > 0) {
+        if (!empty($CI->response->errors) and count($CI->response->errors) > 0) {
             unset($CI->response->data);
         } else {
             unset($CI->response->errors);
@@ -84,11 +89,15 @@ if (! function_exists('output')) {
                 break;
 
             case 'excel':
-                output_excel($CI->response);
+                output_csv($CI->response);
                 break;
 
             case 'csv':
                 output_csv($CI->response);
+                break;
+
+            case 'sql':
+                output_sql($CI->response);
                 break;
 
             case 'html':
@@ -96,7 +105,8 @@ if (! function_exists('output')) {
                 break;
 
             case 'table':
-                output_report($CI->response);
+                #output_report($CI->response);
+                output_table($CI->response);
                 break;
 
             case 'html_formatted':
@@ -135,10 +145,64 @@ if (! function_exists('output')) {
         }
     }
 
+    function output_csv()
+    {
+        $CI = & get_instance();
+
+        if (!empty($CI->response->meta->heading)) {
+            $filename = $CI->response->meta->heading;
+        } else if (!empty($CI->response->meta->collection)) {
+            $filename = $CI->response->meta->collection;
+        } else {
+            $filename = 'openaudit';
+        }
+
+        $output_csv = '';
+        foreach ($CI->response->data[0]->attributes as $attribute => $value) {
+            $output_csv .= '"'.trim($attribute).'",';
+        }
+        $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
+        $output_csv .= "\n";
+        foreach ($CI->response->data as $item) {
+            foreach ($item->attributes as $key => $value) {
+                $output_csv .= '"'.str_replace('"', '\"', $value).'",';
+            }
+            $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
+            $output_csv .= "\n";
+        }
+        echo $output_csv;
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
+            header('Cache-Control: max-age=0');
+        }
+    }
+
+    function sql()
+    {
+        $CI = & get_instance();
+        print_r(json_encode($CI->response));
+        exit();
+    }
+
     function output_json()
     {
         $CI = & get_instance();
+        $CI->output->enable_profiler(false);
+
+        if (!empty($CI->response->meta->heading)) {
+            $filename = $CI->response->meta->heading;
+        } else if (!empty($CI->response->meta->collection)) {
+            $filename = $CI->response->meta->collection;
+        } else {
+            $filename = 'openaudit';
+        }
+
         header('Content-Type: application/json');
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Disposition: attachment;filename="'.$filename.'.json"');
+            header('Cache-Control: max-age=0');
+        }
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
         header("Expires: 0");
@@ -147,6 +211,13 @@ if (! function_exists('output')) {
             $CI->response->meta->user = $CI->user;
         } else {
             unset($CI->response->meta->internal);
+            unset($CI->response->meta->sql);
+        }
+        if (!empty($CI->response->data[0]->attributes)) {
+            $CI->response->meta->data_order = array();
+            foreach ($CI->response->data[0]->attributes as $key => $value) {
+                $CI->response->meta->data_order[] = $key;
+            }
         }
         echo json_encode($CI->response);
     }
@@ -154,6 +225,7 @@ if (! function_exists('output')) {
     function output_json_data()
     {
         $CI = & get_instance();
+        $CI->output->enable_profiler(false);
         header('Content-Type: application/json');
         header("Cache-Control: no-cache, no-store, must-revalidate");
         header("Pragma: no-cache");
@@ -171,19 +243,184 @@ if (! function_exists('output')) {
         $CI = & get_instance();
         header($CI->response->meta->header);
         $CI->response->meta->user = $CI->user;
+
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "10000";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/10000";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "10000";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Discovered Today";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "10001";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/10001";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "10001";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Discovered Yesterday";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "10002";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/10002";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "10002";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Discovered in the Last 7 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "10003";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/10003";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "10003";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Discovered in the Last 30 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "20000";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/20000";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "20000";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Software Discovered Today";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "20001";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/20001";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "20001";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Software Discovered Yesterday";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "20002";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/20002";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "20002";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Software Discovered in the Last 7 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "20003";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/20003";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "20003";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Software Discovered in the Last 30 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "30000";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/30000";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "30001";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Not Seen for 7 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "30001";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/30001";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "30002";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Not Seen for 30 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "30002";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/30002";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "30003";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Not Seen for 90 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+        $enterprise_report = new stdClass();
+        $enterprise_report->id =  "30003";
+        $enterprise_report->links = new stdClass();
+        $enterprise_report->links->self = "/omk/oae/reports/30003";
+        $enterprise_report->type = "reports";
+        $enterprise_report->attributes = new stdClass();
+        $enterprise_report->attributes->id = "30004";
+        $enterprise_report->attributes->description = "";
+        $enterprise_report->attributes->menu_category = "Discovery";
+        $enterprise_report->attributes->menu_display = "y";
+        $enterprise_report->attributes->name = "Devices Not Seen for 180 Days";
+        $CI->response->included[] = $enterprise_report;
+        unset($enterprise_report);
+
+        if ($this->config->config['internal_version'] >= 20170620) {
+            $CI->load->model('m_queries');
+            $CI->load->model('m_summaries');
+            $result = $CI->m_queries->collection();
+            $CI->response->included = array_merge($CI->response->included, $result);
+            $result = $CI->m_summaries->collection();
+            $CI->response->included = array_merge($CI->response->included, $result);
+        }
+
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
             $CI->response->include = 'v_error';
             $include = 'v_error';
         } else {
-            $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
-            $CI->response->include = $CI->response->meta->include;
+            if (empty($CI->response->meta->include)) {
+                $CI->response->meta->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
+            }
+            $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             $CI->response->heading = $CI->response->meta->heading;
         }
-        // if (!$CI->response->meta->debug) {
-        //     unset($CI->response->meta->internal);
-        // }
-
         $CI->load->view('v_template', $CI->response);
     }
 
@@ -191,38 +428,66 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         $CI->load->helper('xml');
-        $xml_generater = new XMLSerializer;
-        $xml = $xml_generater->generateValidXmlFromObj($CI->response);
-        header('Content-Type: text/xml');
-        header($CI->response->meta->header);
-        print_r($xml);
+        if (!empty($CI->response->meta->heading)) {
+            $filename = $CI->response->meta->heading;
+        } else if (!empty($CI->response->meta->collection)) {
+            $filename = $CI->response->meta->collection;
+        } else {
+            $filename = 'openaudit';
+        }
+        $output = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+        $output .= "<" . $CI->response->meta->collection . ">\n";
+        foreach ($CI->response->data as $details) {
+            $output .= "\t<item>\n";
+            foreach ($details->attributes as $attribute => $value) {
+                if (phpversion() >= 5.4) {
+                    $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                } else {
+                    $value = xml_convert($value);
+                }
+                $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
+            }
+            $output .= "\t</item>\n";
+        }
+        $output .=  "</" . $CI->response->meta->collection . ">\n";
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/xml');
+            header('Content-Disposition: attachment;filename="' . $filename . '.xml"');
+            header('Cache-Control: max-age=0');
+            echo $output;
+        } else {
+            echo "<pre>" . htmlentities($output) . "</pre>";
+        }
     }
 
-    function output_convert($data) {
+    function output_convert($data)
+    {
+        $CI = & get_instance();
+        $CI->load->helper('network_helper');
         foreach ($data as $row) {
             if (is_array($row)) {
                 $row = output_convert($row);
             } elseif (is_object($row)) {
                 if (!empty($row->attributes)) {
-                    foreach ($row->attributes as $key => $value) {
-                        if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
-                            $row->attributes->$key = intval($value);
-                        
-                        } elseif ((strrpos($key, 'id') === strlen($key)-2) or
-                                  (strrpos($key, 'count') === strlen($key)-5) or
-                                  (strrpos($key, 'percent') === strlen($key)-7) or
-                                  (strrpos($key, 'size') === strlen($key)-4)) {
-                            $row->attributes->$key = intval($value);
-                        
-                        } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
-                                (strrpos($key, 'next_hop') === strlen($key)-8) or
-                                (strrpos($key, 'destination') === strlen($key)-11)) {
-                            $temp_name = $key . '_padded';
-                            $row->attributes->$temp_name = ip_address_from_db($value);
-                            $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
-                            $row->attributes->$key = ip_address_from_db($value);
-                            if ($row->attributes->$temp_name == $row->attributes->$key) {
-                                unset($row->attributes->$temp_name);
+                    if (!empty($row->attributes)) {
+                        foreach ($row->attributes as $key => $value) {
+                            if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
+                                $row->attributes->$key = intval($value);
+                            } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                      (strrpos($key, '_count') === strlen($key)-6) or
+                                      (strrpos($key, '_percent') === strlen($key)-8) or
+                                      (strrpos($key, '_size') === strlen($key)-5)) {
+                                $row->attributes->$key = intval($value);
+                            } elseif ((strrpos($key, 'ip') === strlen($key)-2) or
+                                    (strrpos($key, 'next_hop') === strlen($key)-8) or
+                                    (strrpos($key, 'destination') === strlen($key)-11)) {
+                                $temp_name = $key . '_padded';
+                                $row->attributes->$temp_name = ip_address_from_db($value);
+                                $row->attributes->$temp_name = ip_address_to_db($row->attributes->$temp_name);
+                                $row->attributes->$key = ip_address_from_db($value);
+                                if ($row->attributes->$temp_name == $row->attributes->$key) {
+                                    unset($row->attributes->$temp_name);
+                                }
                             }
                         }
                     }
@@ -276,15 +541,19 @@ if (! function_exists('output')) {
             }
 
             # last link
-            $offset = intval($CI->response->meta->total) - intval($CI->response->meta->limit);
-            if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                $CI->response->links->last = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
-            } else {
-                if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
-                    $CI->response->links->last = $url . $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+            if ($CI->response->meta->total > $CI->response->meta->limit) {
+                $offset = intval($CI->response->meta->total) - intval($CI->response->meta->limit);
+                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
+                    $CI->response->links->last = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
                 } else {
-                    $CI->response->links->last = $url . $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
+                        $CI->response->links->last = $url . $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
+                    } else {
+                        $CI->response->links->last = $url . $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                    }
                 }
+            } else {
+                $CI->response->links->last = $url . $_SERVER["REQUEST_URI"];
             }
         }
     }
@@ -292,6 +561,46 @@ if (! function_exists('output')) {
     function output_table()
     {
         $CI = & get_instance();
+        $table = "<table><thead><tr>";
+        // Our Headers
+        foreach ($CI->response->data[0]->attributes as $key => $value) {
+            if (stripos($key, '_padded') === false) {
+                $table .= "<th>" . $key . "</th>";
+            }
+        }
+        $table .= "</tr></thead><tbody>";
+        foreach ($CI->response->data as $item) {
+            $table .= "<tr>";
+            foreach ($item->attributes as $key => $value) {
+                if (stripos($key, '_padded') === false) {
+                    $table .= "<td>" . $value . "</td>";
+                }
+            }
+            $table .= "</tr>";
+        }
+        $table .= "</tbody></table>";
+        echo $table;
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/html');
+            header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
+            header('Cache-Control: max-age=0');
+        }
+
+
+    }
+
+    function output_table2()
+    {
+        $CI = & get_instance();
+        # Define our constans for use in htmlspecialchars
+        if (!defined('CHARSET')) {
+            define('CHARSET', 'UTF-8');
+            if (phpversion() >= 5.4) {
+                define('REPLACE_FLAGS', ENT_COMPAT | ENT_XHTML);
+            } else {
+                define('REPLACE_FLAGS', ENT_COMPAT);
+            }
+        }
         $CI->response->table = '';
         $table = '';
         if (isset($CI->response->columns)) {
@@ -346,23 +655,23 @@ if (! function_exists('output')) {
                                 if (strrpos($column->link, '/')+1 != strlen($column->link)) {
                                     $column->link = $column->link . '/';
                                 }
-                                $table .= '<td style="text-align: '.$column->align.';"><a href="'.$column->link. $row->{$column->secondary} .'">'.htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8')."</a></td>\n";
+                                $table .= '<td style="text-align: '.$column->align.';"><a href="'.$column->link. $row->{$column->secondary} .'">'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET)."</a></td>\n";
                                 break;
 
                             case 'ip_address':
-                                $table .= '<td style="text-align: '.htmlentities($column->align).';">';
+                                $table .= '<td style="text-align: '.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).';">';
                                 $table .= '<span style="display:none;">' . $row->ip_padded . '</span>';
-                                $table .= htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8');
+                                $table .= htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET);
                                 echo "</td>\n";
                                 break;
 
                             case 'timestamp':
                             case 'text':
-                                $table .= '<td style="text-align: '.htmlentities($column->align).';">';
+                                $table .= '<td style="text-align: '.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).';">';
                                 if (is_int($row->{$column->variable})) {
                                     $table .= number_format($row->{$column->variable});
                                 } else {
-                                    $table .= htmlentities($row->{$column->variable}, ENT_QUOTES, 'UTF-8');
+                                    $table .= htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET);
                                 }
                                 echo "</td>\n";
                                 break;
@@ -372,17 +681,17 @@ if (! function_exists('output')) {
                                     $row->{$column->variable} = 'unknown';
                                 }
                                 if ((string) $column->name === 'Icon') {
-                                   $table .= '<td style="text-align:center;"><img width="20" src="' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlentities(str_replace(' ', '_', $row->{$column->variable})).'.svg" style="border-width:0px;" title="'.htmlentities($row->{$column->secondary}).'" alt="'.htmlentities($row->{$column->secondary})."\" /></td>\n";
+                                   $table .= '<td style="text-align:center;"><img width="20" src="' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlspecialchars(str_replace(' ', '_', $row->{$column->variable}), REPLACE_FLAGS, CHARSET).'.svg" style="border-width:0px;" title="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                                 }
                                 if ((string) $column->name === 'Picture') {
-                                    $table .= '<td style="text-align:center;"><img src=".' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlentities($row->{$column->variable}).'.jpg" style="border-width:0px; height:100px" title="'.htmlentities($row->{$column->secondary}).'" alt="'.htmlentities($row->{$column->secondary})."\" /></td>\n";
+                                    $table .= '<td style="text-align:center;"><img src=".' . $CI->config->config['oa_web_folder'] . '/device_images/'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET).'.jpg" style="border-width:0px; height:100px" title="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET).'" alt="'.htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET)."\" /></td>\n";
                                 }
                                 break;
 
                             case 'url':
                                 $href = '';
                                 if ((string) $column->ternary !== '') {
-                                    $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_'.htmlentities($column->ternary).'.png';
+                                    $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_'.htmlspecialchars($column->ternary, REPLACE_FLAGS, CHARSET).'.png';
                                 } else {
                                     $image = $CI->config->config['oa_web_folder'] . '/theme-tango/tango-images/16_browser.png';
                                 }
@@ -391,10 +700,10 @@ if (! function_exists('output')) {
                                     $href = str_replace('&', '&amp;', str_replace('&amp;', '&', $row->{$column->variable}));
                                 }
                                 if (((string) $column->variable === '') and ($column->link > '')) {
-                                    $href = htmlentities($column->link, ENT_QUOTES, 'UTF-8');
+                                    $href = htmlspecialchars($column->link, REPLACE_FLAGS, CHARSET);
                                 }
                                 if ((string) $column->secondary !== '') {
-                                    $href .= htmlentities($row->{$column->secondary}, ENT_QUOTES, 'UTF-8');
+                                    $href .= htmlspecialchars($row->{$column->secondary}, REPLACE_FLAGS, CHARSET);
                                 }
                                 $href = str_replace(' ', '%20', $href);
                                 if ($href > '') {
@@ -405,7 +714,7 @@ if (! function_exists('output')) {
                                 break;
 
                             default:
-                                echo '<td align="'.htmlentities($column->align).'">'.htmlentities($row->{$column->variable}).'</td>';
+                                echo '<td align="'.htmlspecialchars($column->align, REPLACE_FLAGS, CHARSET).'">'.htmlspecialchars($row->{$column->variable}, REPLACE_FLAGS, CHARSET).'</td>';
                                 break;
                         }
                     }

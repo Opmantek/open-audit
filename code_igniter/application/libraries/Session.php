@@ -11,8 +11,8 @@ class CI_Session
 {
     var $sess_table_name            = '';
     var $sess_expiration            = 7200;
-    var $sess_match_ip                = FALSE;
-    var $sess_match_useragent        = TRUE;
+    var $sess_match_ip                = false;
+    var $sess_match_useragent        = true;
     var $sess_time_to_update        = 300;
     var $encryption_key                = '';
     var $flashdata_key                 = 'flash';
@@ -110,7 +110,7 @@ class CI_Session
         {
             if( !isset($_SESSION[$key]) ) {
                 $this->sess_destroy();
-                return FALSE;
+                return false;
             }
             
             $session[$key] = $_SESSION[$key];
@@ -120,31 +120,31 @@ class CI_Session
         if (($session['last_activity'] + $this->sess_expiration) < $this->now)
         {
             $this->sess_destroy();
-            return FALSE;
+            return false;
         }
 
         // Does the IP Match?
-        if ($this->sess_match_ip == TRUE AND $session['ip_address'] != $this->CI->input->ip_address())
+        if ($this->sess_match_ip == true AND $session['ip_address'] != $this->CI->input->ip_address())
         {
             $this->sess_destroy();
-            return FALSE;
+            return false;
         }
 
         // Does the User Agent Match?
-        if ($this->sess_match_useragent == TRUE AND trim($session['user_agent']) != trim(mb_substr($this->CI->input->user_agent(), 0, 50)))
+        if ($this->sess_match_useragent == true AND trim($session['user_agent']) != trim(mb_substr($this->CI->input->user_agent(), 0, 50)))
         {
             $this->sess_destroy();
-            return FALSE;
+            return false;
         }
 
         $this->CI->db->where('session_id', $session['session_id']);
 
-        if ($this->sess_match_ip == TRUE)
+        if ($this->sess_match_ip == true)
         {
             $this->CI->db->where('ip_address', $session['ip_address']);
         }
 
-        if ($this->sess_match_useragent == TRUE)
+        if ($this->sess_match_useragent == true)
         {
             $this->CI->db->where('user_agent', $session['user_agent']);
         }
@@ -155,7 +155,7 @@ class CI_Session
         if ($query->num_rows() == 0)
         {
             $this->sess_destroy();
-            return FALSE;
+            return false;
         }
 
         // Is there custom data?  If so, add it to the main session array
@@ -176,7 +176,7 @@ class CI_Session
         // Session is valid!
         $this->userdata = $session;
 
-        return TRUE;
+        return true;
     }
 
     // --------------------------------------------------------------------
@@ -237,7 +237,7 @@ class CI_Session
         $sessid .= $this->CI->input->ip_address();
 
         $this->userdata = array(
-            'session_id'     => md5(uniqid($sessid, TRUE)),
+            'session_id'     => md5(uniqid($sessid, true)),
             'ip_address'     => $this->CI->input->ip_address(),
             'user_agent'     => mb_substr($this->CI->input->user_agent(), 0, 50),
             'last_activity'    => $this->now
@@ -280,7 +280,7 @@ class CI_Session
         $new_sessid .= $this->CI->input->ip_address();
 
         // Turn it into a hash
-        $new_sessid = md5(uniqid($new_sessid, TRUE));
+        $new_sessid = md5(uniqid($new_sessid, true));
 
         // Update the session data in the session data array
         $_SESSION['session_id'] = $this->userdata['session_id'] = $new_sessid;
@@ -318,7 +318,7 @@ class CI_Session
      */
     function userdata($item)
     {
-        return ( isset($this->userdata[$item]) ? $this->userdata[$item] : FALSE );
+        return ( isset($this->userdata[$item]) ? $this->userdata[$item] : false );
     }
 
     // --------------------------------------------------------------------
@@ -331,7 +331,7 @@ class CI_Session
      */
     function all_userdata()
     {
-        return ( isset($this->userdata) ? $this->userdata : FALSE );
+        return ( isset($this->userdata) ? $this->userdata : false );
     }
 
     // --------------------------------------------------------------------
@@ -429,7 +429,7 @@ class CI_Session
     {
         // 'old' flashdata gets removed.  Here we mark all
         // flashdata as 'new' to preserve it from _flashdata_sweep()
-        // Note the function will return FALSE if the $key
+        // Note the function will return false if the $key
         // provided cannot be found
         $old_flashdata_key = $this->flashdata_key.':old:'.$key;
         $value = $this->userdata($old_flashdata_key);

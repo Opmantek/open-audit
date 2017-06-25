@@ -28,7 +28,8 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version 1.12.8
+# @version   2.0.1
+
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 
@@ -63,7 +64,7 @@ submit_online="n"
 create_file="y"
 
 # the address of the Open-AudIT server "submit" page
-url="http://localhost/open-audit/index.php/system/add_system"
+url="http://localhost/open-audit/index.php/input/devices"
 
 # optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=''
@@ -77,11 +78,17 @@ self_delete='n'
 # 2 = verbose debug
 debugging=2
 
+# Version
+version="2.0.1"
+
+discovery_id=""
+
 # Display help
 help="n"
 
 # set by the Discovery function - do not normally set this manually
 system_id=""
+last_seen_by="audit"
 
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
@@ -221,6 +228,8 @@ for arg in "$@"; do
 			create_file="$parameter_value" ;;
 		"debugging" )
 			debugging="$parameter_value" ;;
+		"discovery_id" )
+			discovery_id="$parameter_value" ;;
 		"echo_output" )
 			echo_output="$parameter_value" ;;
 		"help" )
@@ -231,6 +240,8 @@ for arg in "$@"; do
 			help="y" ;;
 		"ldap" )
 			ldap="$parameter_value" ;;
+		"last_seen_by" )
+			last_seen_by="$parameter_value" ;;
 		"org_id" )
 			org_id="$parameter_value" ;;
 		"self_delete" )
@@ -248,7 +259,8 @@ done
 if [ "$help" = "y" ]; then
 	echo ""
 	echo "----------------------------"
-	echo "Open-AudIT ESXi Audit script"
+	echo "Open-AudIT ESXi audit script"
+	echo "Version: $version"
 	echo "----------------------------"
 	echo "This script should be run on a Linux based computer using root or sudo access rights."
 	echo ""
@@ -264,6 +276,9 @@ if [ "$help" = "y" ]; then
 	echo "     0 - No output."
 	echo "     1 - Minimal Output."
 	echo "    *2 - Verbose output."
+	echo ""
+	echo "  discovery_id"
+	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
 	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
@@ -288,9 +303,17 @@ fi
 start_time=$(timer)
 system_timestamp=`date +'%F %T'`
 if [ $debugging -gt 0 ]; then 
-	echo "Starting audit"
-	echo "Audit Start Time : $system_timestamp"
-	echo "-------------------" 
+	echo "----------------------------"
+	echo "Open-AudIT ESXi audit script"
+	echo "Version: $version"
+	echo "----------------------------"
+	echo "Audit Start Time    $system_timestamp"
+	echo "Create File         $create_file"
+	echo "Submit Online       $submit_online"
+	echo "Debugging Level     $debugging"
+	echo "Discovery ID        $discovery_id"
+	echo "Org Id              $org_id"
+	echo "----------------------------"
 fi
 
 # SYSTEM
@@ -353,6 +376,7 @@ xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file
+echo "		<script_version>$version</script_version>" >> $xml_file
 echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
 echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
 echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
@@ -375,8 +399,8 @@ echo "		<processor_count>"$(escape_xml "$system_pc_processors")"</processor_coun
 echo "		<os_installation_date>"$(escape_xml "$system_pc_date_os_installation")"</os_installation_date>" >> $xml_file
 echo "		<org_id>"$(escape_xml "$org_id")"</org_id>" >> $xml_file
 echo "		<id>"$(escape_xml "$system_id")"</id>" >> $xml_file
-echo "		<last_seen_by>audit</last_seen_by>" >> $xml_file
-echo "		<class>hypervisor</class>" >> $xml_file
+echo "		<last_seen_by>"$(escape_xml "$last_seen_by")"</last_seen_by>" >> $xml_file
+echo "		<discovery_id>$(escape_xml "$discovery_id")</discovery_id>" >> $xml_file
 echo "	</sys>" >> $xml_file
 
 
@@ -778,7 +802,7 @@ fi
 # 	wget --delete-after --post-file="$xml_file" $url 2>/dev/null
 # fi
 
-sed -i -e 's/form_systemXML=//g' $xml_file
+sed -i -e 's/data=//g' $xml_file
 sed -i -e 's/%2B/+/g' $xml_file
 if [ "$create_file" != "y" ]; then
 	`rm $PWD/$xml_file`

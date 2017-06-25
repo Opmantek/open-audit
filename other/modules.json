@@ -1,0 +1,73 @@
+{
+	"NMIS8": {
+		"name": "NMIS8",
+		"file": "/cgi-bin/nmiscgi.pl",
+		"link": "/cgi-nmis8/nmiscgi.pl",
+		"url": "https://opmantek.com/network-management-system-nmis/"
+	},
+	"opAddress": {
+		"name": "opAddress",
+		"file": "/bin/opaddress-cli.pl",
+		"link": "/omk/opAddress/",
+		"url": "https://community.opmantek.com/display/opAddress/Home"
+	},
+	"opCharts": {
+		"name": "opCharts",
+		"file": "/public/omk/js/opCharts_a_external_packed.js",
+		"link": "/omk/opCharts",
+		"url": "https://opmantek.com/opcharts-dashboards-charts-management/"
+	},
+	"opConfig": {
+		"name": "opConfig",
+		"file": "/install/opconfigd.init.d",
+		"link": "/omk/opConfig",
+		"url": "https://opmantek.com/network-configuration-management-opconfig/"
+	},
+	"Open-AudIT": {
+		"name": "Open-AudIT",
+		"file": "/bin/oae-tasks.sh",
+		"link": "/omk/open-audit/",
+		"url": "https://opmantek.com/network-audit-software/"
+	},
+	"opEvents": {
+		"name": "opEvents",
+		"file": "/install/opeventsd.init.d",
+		"link": "/omk/opEvents/",
+		"url": "https://opmantek.com/opevents-traps-network-event-management/"
+	},
+	"opFlow": {
+		"name": "opFlow",
+		"file": "/bin/opflow-cli.pl",
+		"link": "/omk/opFlow",
+		"url": "https://opmantek.com/netflow-analyzer-collector-opflow/"
+	},
+	"opHA": {
+		"name": "opHA",
+		"file": "",
+		"link": "/omk/opHA",
+		"url": "https://opmantek.com/distributed-network-management-system/"
+	},
+	"opLicensing": {
+		"name": "opLicensing",
+		"file": "/lib/opLicense.pm.exe",
+		"link": "/omk/opLicense",
+		"url": "#"
+	},
+	"opReports": {
+		"name": "opReports",
+		"file": "/bin/opreports-cli.pl",
+		"link": "/omk/opReports/",
+		"url": "https://opmantek.com/network-configuration-management-opconfig/"
+	},
+	"opSLA": {
+		"name": "opSLA",
+		"file": "",
+		"link": "/omk/opSLA",
+		"url": "https://opmantek.com/ip-sla-monitor-cisco-ipsla/"
+	},
+	"Other Modules": {
+		"name": "Other Modules",
+		"link": "https://opmantek.com/network-management-system-tools/",
+		"url": "https://opmantek.com/network-management-system-tools/"
+	}
+}

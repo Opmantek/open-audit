@@ -28,7 +28,8 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,10 +39,16 @@ class M_audit_log extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
 
     public function create($system_id, $username = '', $type = '', $ip = '', $debug = '', $wmi_fails = '', $timestamp = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'creating data';
+        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id == '' or $system_id == 0) {
             return;
@@ -50,41 +57,38 @@ class M_audit_log extends MY_Model
             $type = 'audit';
         }
         if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
+            $timestamp = $this->config->config['timestamp'];
         }
-
-        if ($timestamp == '') {
-            $timestamp = date('Y-m-d H:i:s');
-        }
-        $sql = "INSERT INTO audit_log (system_id, username, type, ip, debug, wmi_fails, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $sql = $this->clean_sql($sql);
+        $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $data = array($system_id, "$username", "$type", "$ip", "$debug", "$wmi_fails", "$timestamp");
-        $query = $this->db->query($sql, $data);
-    }
-
-    public function update($column, $value, $system_id, $timestamp)
-    {
-        $system_id = intval($system_id);
-        if ($system_id == '' or $system_id == 0) {
-            return;
-        }
-        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
-        $sql = $this->clean_sql($sql);
-        $data = array("$value", "$system_id", "$timestamp");
-        $query = $this->db->query($sql, $data);
+        $this->run_sql($sql, $data);
     }
 
     public function read($system_id)
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $system_id = intval($system_id);
         if ($system_id == '' or $system_id == 0) {
             return;
         }
         $sql = "SELECT * FROM audit_log WHERE audit_log.system_id = ?";
-        $sql = $this->clean_sql($sql);
         $data = array("$system_id");
-        $query = $this->db->query($sql, $data);
-        $result = $query->result();
+        $result = $this->run_sql($sql, $data);
         return ($result);
+    }
+
+    public function update($column, $value, $system_id, $timestamp)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
+        $system_id = intval($system_id);
+        if ($system_id == '' or $system_id == 0) {
+            return;
+        }
+        $sql = "UPDATE audit_log SET $column = ? WHERE system_id = ? AND timestamp = ?";
+        $data = array("$value", "$system_id", "$timestamp");
+        $this->run_sql($sql, $data);
     }
 }

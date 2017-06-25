@@ -27,8 +27,9 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
- * @version 1.12.8
+ *
+ * @version   2.0.1
+
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -38,168 +39,34 @@ class M_networks extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->log = new stdClass();
+        $this->log->severity = 7;
+        $this->log->status = 'reading data';
+        $this->log->type = 'system';
     }
-
-    private function build_properties() {
-        $CI = & get_instance();
-        $properties = '';
-        $temp = explode(',', $CI->response->meta->properties);
-        for ($i=0; $i<count($temp); $i++) {
-            $temp[$i] = trim($temp[$i]);
-        }
-        $properties = implode(',', $temp);
-        return($properties);
-    }
-
-    private function build_filter() {
-        $CI = & get_instance();
-        $reserved = ' properties limit sub_resource action sort current offset format ';
-        $filter = '';
-        foreach ($CI->response->meta->filter as $item) {
-            if (strpos(' '.$item->name.' ', $reserved) === false) {
-                if (!empty($item->name)) {
-                    if ($filter != '') {
-                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    } else {
-                        $filter = ' WHERE ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
-                    }
-                }
-            }
-        }
-        return($filter);
-    }
-
 
     public function read($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
         }
-        $return_data = array();
-        $sql = "SELECT networks.* FROM networks WHERE id = ?";
+        $sql = "SELECT networks.*, COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM networks LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) WHERE networks.id = ? AND networks.org_id IN (" . $CI->user->org_list . ")";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'networks');
         return $result;
     }
 
-    public function sub_resource($id = '')
-    {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
-        $sql = "SELECT `name` FROM `networks` WHERE `id` = ?";
-        $data = array($id);
-        $result = $this->run_sql($sql, $data);
-        if (count($result) > 0) {
-            $name = $result[0]->name;
-            if ($name != '') {
-                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
-                $data = array((string)$name);
-                $result = $this->run_sql($sql, $data);
-                $result = $this->format_data($result, 'devices');
-                return $result;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    public function create()
-    {
-        $CI = & get_instance();
-        # ensure we have a valid subnet
-        $this->load->helper('network');
-        if (!empty($CI->response->meta->received_data->attributes->name)) {
-            $test = network_details($CI->response->meta->received_data->attributes->name);
-        } else {
-            log_error('ERR-0009', 'm_networks::create_network');
-            return false;
-        }
-        # check to see if we already have a network with the same name
-        $name = str_replace(' ', '', $CI->response->meta->received_data->attributes->name);
-        $sql = "SELECT COUNT(id) AS count FROM `networks` WHERE `name` = ?";
-        $data = array($name);
-        $result = $this->run_sql($sql, $data);
-        if (intval($result[0]->count) != 0) {
-            log_error('ERR-0010', 'm_networks::create_network');
-            return false;
-        }
-        $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, NOW())";
-        $data = array("$name", $CI->response->meta->received_data->attributes->description, $CI->user->full_name);
-        $this->run_sql($sql, $data);
-        return $this->db->insert_id();
-    }
-
-    public function collection()
-    {
-        $CI = & get_instance();
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'networks') {
-            $filter = $this->build_filter();
-            $properties = $this->build_properties();
-            if ($CI->response->meta->sort == '') {
-                $sort = 'ORDER BY id';
-            } else {
-                $sort = 'ORDER BY ' . $CI->response->meta->sort;
-            }
-            if ($CI->response->meta->limit == '') {
-                $limit = '';
-            } else {
-                $limit = 'LIMIT ' . intval($CI->response->meta->limit);
-                if ($CI->response->meta->offset != '') {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
-                }
-            }
-        } else {
-            $properties = '*';
-            $filter = '';
-            $sort = '';
-            $limit = '';
-        }
-        # get the total count
-        $sql = "SELECT COUNT(*) as `count` FROM `networks`";
-        $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($CI->response->meta->total)) {
-            $CI->response->meta->total = intval($result[0]->count);
-        }
-        # get the response data
-        $sql = "SELECT " . $properties . " FROM `networks` " . $filter . " " . $sort . " " . $limit;
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'networks');
-        return ($result);
-    }
-
-    public function update()
-    {
-        $CI = & get_instance();
-        $sql = '';
-        $fields = ' name description ';
-        foreach ($CI->response->meta->received_data->attributes as $key => $value) {
-            if (strpos($fields, ' '.$key.' ') !== false) {
-                if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . $value . "'";
-                } else {
-                    $sql .= ", `" . $key . "` = '" . $value . "'";
-                }
-            }
-        }
-        $sql = "UPDATE `networks` " . $sql . ", `edited_by` = '" . $CI->user->full_name . "', `edited_date` = NOW() WHERE id = " . intval($CI->response->meta->id);
-        $this->run_sql($sql, array());
-        return;
-    }
-
     public function delete($id = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
@@ -213,15 +80,157 @@ class M_networks extends MY_Model
         return true;
     }
 
-    private function count_data($result)
+    public function collection()
     {
-        // do we have any retrieved rows?
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
         $CI = & get_instance();
-        $trace = debug_backtrace();
-        $caller = $trace[1];
-        if (count($result) == 0) {
-            log_error('ERR-0005', strtolower(@$caller['class'] . '::' . @$caller['function']));
+        $sql = $this->collection_sql('networks', 'sql');
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'networks');
+        return ($result);
+    }
+
+    public function sub_resource($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "SELECT `network` FROM `networks` WHERE `id` = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        if (count($result) > 0) {
+            $network = $result[0]->network;
+            if ($network != '') {
+                $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, ip.ip AS `ip.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.network = ?";
+                $data = array((string)$network);
+                $result = $this->run_sql($sql, $data);
+                $result = $this->format_data($result, 'devices');
+                return $result;
+            } else {
+                return array();
+            }
+        } else {
+            return array();
         }
     }
 
+    public function upsert($network = null)
+    {
+        $router = & load_class('Router', 'core');
+        $model = $router->fetch_class();
+        $function = $router->fetch_method();
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'upserting data';
+        stdlog($this->log);
+        if (is_null($network)) {
+            return false;
+        }
+        if (empty($network->network) and !empty($network->name)) {
+            $network->network = $network->name;
+        }
+        if (empty($network->network)) {
+            return false;
+        }
+        if (empty($network->name)) {
+            $network->name = $network->network;
+        }
+        if (empty($network->org_id)) {
+            $network->org_id = 1;
+        }
+        if ($this->config->config['internal_version'] < 20160904) {
+            return;
+        }
+        $sql = "SELECT * FROM networks WHERE networks.org_id = ? AND networks.network = ?";
+        $data = array(intval($network->org_id), (string)$network->network);
+        $result = $this->run_sql($sql, $data);
+        # Note we receive false back from run_sql if it's a select and no rows are returned.
+        if ($result == false) {
+            # the network does not exist. Log it and insert it
+            if (!empty($network->description)) {
+                $description = $network->description;
+                $this->log->summary = "Inserting " . $network->name . ' (' . $network->network . ') into blessed subnet list.';
+            } else {
+                $description = '';
+                $this->log->summary = "Inserting " . $network->name . ' (' . $network->network . ') into blessed subnet list.';
+            }
+            $sql = "INSERT INTO `networks` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+            $data = array((string)$network->name, (string)$network->network, intval($network->org_id), (string)$description, 'auto-generated by '.@$model.'::'.@$function);
+            $result = $this->run_sql($sql, $data);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    # supply a standard ip address - 192.168.1.1
+    # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
+    # returns true if ip is contained in a subnet, false otherwise
+    public function check_ip($ip = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if (empty($this->config)) {
+            $this->load->model('m_configuration');
+            $this->m_configuration->load();
+        }
+        if (empty($this->config->config['blessed_subnets_use']) or trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
+            return true;
+        }
+        if (empty($ip)) {
+            return false;
+        }
+        if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
+            return true;
+        }
+        if ($ip == '::1') {
+            return true;
+        }
+        if (stripos($ip, ':') !== false) {
+            // We have an IPv6 address. Try to convert it to a v4.
+            // Known prefix
+            $v4mapped_prefix_hex = '00000000000000000000ffff';
+            $v4mapped_prefix_bin = pack("H*", $v4mapped_prefix_hex);
+            // Or more readable when using PHP >= 5.4
+            # $v4mapped_prefix_bin = hex2bin($v4mapped_prefix_hex);
+            // Parse
+            $addr = $ip;
+            $addr_bin = inet_pton($addr);
+            if ($addr_bin === false) {
+              // Unparsable? How did they connect?!?
+            } else {
+                // Check prefix
+                if (substr($addr_bin, 0, strlen($v4mapped_prefix_bin)) == $v4mapped_prefix_bin) {
+                    // Strip prefix
+                    $addr_bin = substr($addr_bin, strlen($v4mapped_prefix_bin));
+                }
+                // Convert back to printable address in canonical form
+                $ip = inet_ntop($addr_bin);
+            }
+        }
+        if (stripos($ip, ':') !== false) {
+            return true;
+        }
+        $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql, array((string)$ip));
+        $result = $query->result();
+        if (intval($result[0]->count) > 0) {
+            return true;
+        } else {
+            $this->load->helper('log_helper');
+            $log_details = new stdClass();
+            $log_details->severity = 5;
+            $log_details->file = 'system';
+            $log_details->message = 'Audit submission from an IP not in the list of blessed subnets (' . $_SERVER['REMOTE_ADDR'] . ')';
+            stdlog($log_details);
+            unset($log_details);
+            return false;
+        }
+    }
 }

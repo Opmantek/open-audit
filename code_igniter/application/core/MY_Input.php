@@ -31,7 +31,8 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  * 
- * @version 1.12.8
+ * @version   2.0.1
+
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -43,7 +44,7 @@ class MY_Input extends CI_Input {
         parent::__construct();
     }
 
-    public function post($index = null, $xss_clean = TRUE) {
+    public function post($index = null, $xss_clean = true) {
         if (!$xss_clean) {
             // if asked for raw post data (eg. post('key', false) ) return the raw data.
             // this is required for raw password strings that we need to output to the command line
