@@ -397,7 +397,7 @@ INSERT INTO `configuration` VALUES (38,'match_serial_type','y','y','system','200
 INSERT INTO `configuration` VALUES (39,'match_uuid','y','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
 INSERT INTO `configuration` VALUES (40,'nmis','n','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
 INSERT INTO `configuration` VALUES (41,'nmis_url','','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
-INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','','n','system','2000-01-01 00:00:00','Should we keep track of Windows netsta ports used by DNS above port 1000.');
+INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','','n','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
 INSERT INTO `configuration` VALUES (43,'oae_license','','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (44,'oae_prompt','2015-06-01','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (45,'oae_url','/omk/open-audit','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');

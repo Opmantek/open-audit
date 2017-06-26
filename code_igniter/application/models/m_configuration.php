@@ -321,7 +321,7 @@ class M_configuration extends MY_Model
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 foreach ($output as $line) {
-                    $ip_address_array[] = trim($line);
+                    $ip_address_array[] = trim($line) . '/24';
                 }
             }
         }

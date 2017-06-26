@@ -193,7 +193,7 @@ $sql[] = "DELETE FROM `configuration` WHERE name = 'distinct_groups'";
 $sql[] = "DELETE FROM `configuration` WHERE name = 'discovery_update_groups'";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL,'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.')";
 $sql[] = "INSERT INTO `configuration` VALUES (NULL,'uuid',UUID(),'n','system',NOW(),'The unique identfier of this Open-AudIT server.')";
-$sql[] = "INSERT INTO `configuration` VALUES (NULL,'process_netstat_windows_dns','','n','system','2000-01-01 00:00:00','Should we keep track of Windows netsta ports used by DNS above port 1000.')";
+$sql[] = "INSERT INTO `configuration` VALUES (NULL,'process_netstat_windows_dns','','n','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.')";
 
 foreach ($sql as $query) {
       $this->db->query($query);

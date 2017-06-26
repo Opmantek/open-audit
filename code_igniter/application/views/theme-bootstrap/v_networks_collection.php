@@ -45,13 +45,13 @@
             <thead>
                 <tr>
                     <th class="text-center"><?php echo __('View')?></th>
+                    <th class="text-center"><?php echo __('Details')?></th>
                     <th><?php echo __('Name')?></th>
                     <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Network')?></th>
                     <th><?php echo __('Description')?></th>
                     <th><?php echo __('Edited By')?></th>
                     <th><?php echo __('Edited Date')?></th>
-                    <th style="text-align:center;"><?php echo __('Devices')?></th>
                     <?php if ($this->m_users->get_user_permission('', 'networks', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -60,6 +60,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
+                    <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?ip.network=<?php echo $item->attributes->network; ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('networks.name', $item->attributes->name); ?>
                     <?php refine('networks.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
@@ -67,7 +68,6 @@
                     <?php refine('networks.description', $item->attributes->description); ?>
                     <?php refine('networks.edited_by', $item->attributes->edited_by); ?>
                     <?php refine('networks.edited_date', $item->attributes->edited_date); ?>
-                    <td class="text-center"><a role="button" class="btn btn-sm btn-info" href="devices?ip.network=<?php echo $item->attributes->name; ?>"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
                     <?php if ($this->m_users->get_user_permission('', 'networks', 'd')) { ?>
                     <td class="text-center"><a role="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
                     <?php } ?>

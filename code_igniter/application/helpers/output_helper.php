@@ -401,7 +401,7 @@ if (! function_exists('output')) {
         $CI->response->included[] = $enterprise_report;
         unset($enterprise_report);
 
-        if ($this->config->config['internal_version'] >= 20170620) {
+        if ($CI->config->config['internal_version'] >= 20170620) {
             $CI->load->model('m_queries');
             $CI->load->model('m_summaries');
             $result = $CI->m_queries->collection();

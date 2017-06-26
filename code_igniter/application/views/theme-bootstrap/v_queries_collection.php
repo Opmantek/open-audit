@@ -44,8 +44,8 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
-                <th style="text-align:center;"><?php echo __('Execute')?></th>
                 <th style="text-align:center;"><?php echo __('View')?></th>
+                <th style="text-align:center;"><?php echo __('Details')?></th>
                 <th><?php echo __('Name')?></th>
                 <th><?php echo __('Organisation')?></th>
                 <th><?php echo __('Description')?></th>
