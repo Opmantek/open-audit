@@ -37,7 +37,7 @@ if (count($this->response->meta->filter) > 0) {
     echo '</div>';
 }
 
-function refine($property, $value, $display = '')
+function refine($property, $value, $display = '', $align = 'left')
 {
     if ($display == '') {
         $display = $value;
@@ -48,6 +48,6 @@ function refine($property, $value, $display = '')
     } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1) {
         $refine_link .= '&';
     }
-    echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($value) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($value) . "'>Include</a><br />\"></span>&nbsp;" . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</td>\n";
+    echo "            <td class=\"text-" . $align . "\"><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($value) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($value) . "'>Include</a><br />\"></span>&nbsp;" . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</td>\n";
 }
 ?>
