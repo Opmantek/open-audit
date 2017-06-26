@@ -221,8 +221,8 @@ class main extends MY_Controller
                 $document["system"] = new stdclass();
                 $document["system"] = array();
                 $result[0]->ip = $this->ip_address_from_db($result[0]->ip);
-                $document["system"] = $result[0];
-                //$document["system"][] = $result[0];
+                //$document["system"] = $result[0];
+                $document["system"][] = $result[0];
             }
             $tables = array('bios', 'disk', 'dns', 'ip', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'optical', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'service', 'share', 'software', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
             foreach ($tables as $table) {
