@@ -97,9 +97,9 @@ if ($table == 'baselines') {
         For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Track your devices and see if they deviate from your required standard.<br /><br />
-    Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br />
-    For example - you might create a baseline from a device running Centos 6 which acts as one of your apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enables you to determine this.<br /><br />
-    You can create a baseline, run it against a group of devices and view the results. You can implement your baselines to be executed on a schedule. All results are kept and can be viewed and exported.<br /><br />
+Baselines enable you to combine audit data with a set of attributes you have previously defined (your baseline) to determine compliance of devices.<br /><br />
+For example - you might create a baseline from a device running Centos 6 which acts as one of your Apache servers in a cluster. You know this particular server is configured just the way you want it but you\'re unsure if other servers in the cluster are configured exactly the same. Baselines enable you to determine this.<br /><br />
+You can create a baseline, run it against a group of devices and view the results. You can implement your baselines to be executed on a schedule. All results are kept and can be viewed and exported.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p><strong>Baseline</strong> - The overarching document that contains the baseline definition and the individual policy tests.<br /><br />
         <strong>Policies</strong> - The individual tests contained within a Baseline. Each test is for a specific item. An example would be testing for SSH version 1.2.3.<br /><br />
@@ -161,8 +161,8 @@ if ($table == 'credentials') {
 }
 
 if ($table == 'dashboards') {
-    $dictionary->sentence = 'Open-AudIT provides a dashboard that provides important visibility for changes occurring on your network as well as providing quick links to device types, manufacturers and operating systems.';
-    $dictionary->marketing = '<p>Quickly view the status of devices appearing your network. Easily see which type of devices, device manufacturers and operating systems are on your network. Links from the charts provide extensive data and data over time reporting.<br /><br />
+    $dictionary->sentence = 'Open-AudIT Profssional and Enterprises\' interactive Dashboard provides a single point of access to audit status and results.';
+    $dictionary->marketing = '<p>Simple, intuitive, dynamic - just some of the words used to describe Open-AudIT Enterprises\' interactive dashboard. The dashboard provides a single point of access to audit status, new software installs, device breakdowns, and fast access to missing devices.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -219,8 +219,8 @@ if ($table == 'discoveries') {
 }
 
 if ($table == 'export') {
-    $dictionary->sentence = 'Open-AudIT enables you to easily export your information to csv, xml or json.';
-    $dictionary->marketing = '<p>With the click of a button export some or all of your data into a CSV for Excel, a JSON or XML document for processing or importing into another program. You can filter your data before export, or just export everything. Select specific sections of one or more devices. Any way you want it, Open-AudIT can export it.<br /><br />
+    $dictionary->sentence = 'Open-AudIT Professional and Enterprise include fast and easy exporting of detailed device-level information in multiple formats.';
+    $dictionary->marketing = '<p>Quickly and easily select which device details you want to view and export. Select your format; screen or csv file, and the level of data you want.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>With the click of a button export some or all of your data into a CSV for Excel, a JSON or XML document for processing or importing into another program. You can filter your data before export, or just export everything. Select specific sections of one or more devices. Any way you want it, Open-AudIT can export it.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -349,8 +349,8 @@ if ($table == 'locations') {
 }
 
 if ($table == 'maps') {
-    $dictionary->sentence = 'Open-AudIT Enterprise leverages Google Maps to provide live, interactive geographic mapping of device location.';
-    $dictionary->marketing = '<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br /><br />
+    $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
+    $dictionary->marketing = '<p>Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location. Automated conversion of street addresses to geocodes and long/lat along with assignment of devices to locations during discovery make mapping easy and intuitive.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Simple, intuitive, accurate geographic mapping provided by Google Maps. Open-AudIT leverages Google Maps to provide live, interactive geographic mapping of device locations. Automated conversion of street addresses to geocodes and longitude / latitude.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -404,10 +404,11 @@ An example query SQL showing attributes on devices that have an <code>os_group</
 }
 
 if ($table == 'reports') {
-    $dictionary->sentence = 'Open-AudIT Professional and Enterprise come with all the usual Open-AudIT queries and summaries plus additional \'over time\' reporting which can also be customized to your any period you like.';
+    $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.';
     $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen \'over time\'. All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>\'over time\'</i>.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->marketing = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen \'over time\'. All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>\'over time\'</i>.<br /><br />
+    $dictionary->marketing = '<p>Open-AudIT Professional and Enterprise make report creation effortless through Enhanced Reporting features like time-based reports, historical reports, and multi-query based reporting. Reports can be created dynamically and interacted with on screen, or exported to CVS for further analysis.<br /><br />
+Simply Select which types of devices you want to be exported, which queries to run, and the format you want. Export to CSV and analyze offline, or import into your favorite third part data visualizer. The power is in your hands with Open-AudIT Enterprise Enhanced Reporting.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
 }
@@ -416,7 +417,7 @@ if ($table == 'roles') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes User Roles, full role-based access control (RBAC) allowing fine-grained control over each user\'s experience.';
     $dictionary->about = 'Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Creating role allows fine grained control over what your users can do within Open-AudIT.<br /><br />
+    $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br /><br />
     The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br /><br />
     Roles can also be used with LDAP (Active Directory and OpenLDAP) authorisation. Enterprise licensed installations have the ability to customise the LDAP group for each defined role.<br /><br />
     ' . $link . '<br /><br />
@@ -491,8 +492,9 @@ if ($table == 'support') {
 }
 
 if ($table == 'tasks') {
-    $dictionary->sentence = 'Schedule Open-AudIT to send you a report, run a discovery or test a baseline.';
-    $dictionary->about = '<p>Open-AudIT can send you a report, run a discovery or test  a baseline on a schedule of your choosing. Have Open-AudIT email you a report of any new devices found for the week, every Friday. Simple, quick and easy.<br /><br />
+    $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Task Scheduling. Schedule device discovery, report generation, or run a baseline check on any schedule you need, as often as you need, or run them on-demand from one interface.';
+    $dictionary->about = '<p>With Open-AudIT Professional and Enterprise you can automate and schedule discoveries, report generation, or baseline checks to run when you want, and as often as you need. Schedule your discoveries to run nightly and reports to be generated and emailed to key personnel each morning. Complex or simple schedules, device discovery and report generation is just a click away.<br /><br />
+Create individual discovery schedules for each subnet or AD controller, add in reports to be created for targeted audiences. Develop simple or complex schedules to support company needs, avoid backups or impact to operations, or simply to spread the load and speed-up audit completion.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Open-AudIT can send you a report, run a discovery or test  a baseline on a schedule of your choosing. Have Open-AudIT email you a report of any new devices found for the week, every Friday. Simple, quick and easy.<br /><br />
     ' . $link . '<br /><br /></p>';
