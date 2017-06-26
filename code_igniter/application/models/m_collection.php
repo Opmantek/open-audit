@@ -296,8 +296,18 @@ class M_collection extends MY_Model
             $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
             return ($id);
         } else {
+            # TODO - log a better error
+            $CI->session->set_flashdata('failure', 'Failed to create resource (please see detailed logs).');
+            log_error('ERR-0023', 'Database error in resource create routine.');
             return false;
         }
+        // if ($this->db->_error_message()) {
+        //     $this->log_db('ERROR - ' . $this->db->_error_message(), 3);
+        //     log_error('ERR-0023', $this->db->_error_message());
+        //     return false;
+        // } else {
+        //     $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
+        // }
     }
 
 
