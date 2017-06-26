@@ -247,14 +247,16 @@ class M_summaries extends MY_Model
                     $count = count($this->db->list_tables());
                 } else if ($collection == 'logs') {
                     $count = 2;
+                } else if ($collection == 'devices') {
+                    $sql = "SELECT COUNT(*) AS `count` FROM `system`";
+                    $count = $this->run_sql($sql);
+                    $count = intval($count[0]->count);
+                } else if ($this->db->table_exists($collection)) {
+                    $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "`";
+                    $count = $this->run_sql($sql);
+                    $count = intval($count[0]->count);
                 } else {
-                    if ($this->db->table_exists($collection)) {
-                        $sql = "SELECT COUNT(*) AS `count` FROM `" . $collection . "`";
-                        $count = $this->run_sql($sql);
-                        $count = $count[0]->count;
-                    } else {
-                        $count = '';
-                    }
+                    $count = '';
                 }
                 $item = new stdClass();
                 $item->type = 'collection';
