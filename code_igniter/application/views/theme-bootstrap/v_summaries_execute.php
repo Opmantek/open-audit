@@ -45,7 +45,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th class="text-center"><?php echo __('View')?></th>
+                        <th class="text-center"><?php echo __('Details')?></th>
                         <th><?php echo __('Name')?></th>
                         <td class="text-center"><?php echo __('Count'); ?></td>
                     </tr>
