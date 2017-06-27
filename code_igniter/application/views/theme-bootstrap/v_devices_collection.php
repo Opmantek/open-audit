@@ -256,7 +256,7 @@ if (!empty($this->response->data)) { ?>
 
             if (!empty($item->attributes->$property)) {
                 if ($property == 'id' or $property == 'system.id') {
-                    echo '            <td class="text-center"><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>';
+                    echo '            <td class="text-center"><a style="min-width:38px;" href="' . site_url() . '/devices/' . $item->attributes->$property . '" role="button" class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>';
 
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
                     if (!empty($item->attributes->{$property . '_padded'})) {
