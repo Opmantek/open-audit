@@ -93,14 +93,14 @@ class M_logon extends MY_Model
 
         // Roles
         if ($this->db->table_exists('roles')) {
-            $roles_sql = "/* m_logon::logon */" . "SELECT * FROM roles";
+            $roles_sql = "/* m_logon::logon */ " . "SELECT * FROM roles";
             $roles_query = $this->db->query($roles_sql);
             $roles = $roles_query->result();
         }
 
         // Orgs
         if ($this->db->table_exists('orgs')) {
-            $orgs_sql = "/* m_logon::logon */" . "SELECT * FROM orgs";
+            $orgs_sql = "/* m_logon::logon */ " . "SELECT * FROM orgs";
             $orgs_query = $this->db->query($orgs_sql);
             $orgs = $orgs_query->result();
         }
@@ -108,11 +108,11 @@ class M_logon extends MY_Model
         // Auth against any configured LDAP servers
         if ($this->db->table_exists('ldap_servers')) {
             if (!empty($user['domain'])) {
-                $sql = "/* m_logon::logon */" . "SELECT * FROM ldap_servers WHERE domain LIKE ?";
+                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE domain LIKE ?";
                 $data = array($user['domain']);
                 $query = $this->db->query($sql, $data);
             } else {
-                $sql = "/* m_logon::logon */" . "SELECT * FROM ldap_servers";
+                $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers";
                 $query = $this->db->query($sql);
             }
             $ldap_servers = $query->result();
@@ -292,7 +292,6 @@ class M_logon extends MY_Model
                                     }
                                 }
                             }
-
                             foreach ($orgs as $org) {
                                 if (!empty($org->ad_group)) {
                                     $ldap->filter = "(&(cn=" . $org->ad_group . ")(" . $ldap->user_membership_attribute . "=" . $user->uid . "))";
@@ -322,7 +321,7 @@ class M_logon extends MY_Model
                         $log->detail = json_encode($user);
                         stdlog($log);
                         $log->summary = '';
-                        $og->detail = '';
+                        $log->detail = '';
                         if (!empty($user->roles) and !empty($user->orgs)) {
                             if ($this->db->table_exists('users')) {
                                 $user_sql = "/* m_logon::logon */" . "SELECT * FROM users WHERE name = ? and ldap = ? and active = 'y' LIMIT 1";
