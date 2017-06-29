@@ -1450,9 +1450,15 @@ foreach ($list as $item) {
                                             }
                                         } elseif ($item == 'vm'and $key == 'guest_system_id') {
                                             if (!empty($value)) {
-                                                echo "                            <td class=\"text-center\"><a href=\"#\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
+                                                echo "                            <td class=\"text-center\"><a href=\"" . base_url() . "index.php/devices/" . $value . "\" class=\"btn btn-sm btn-success\">" . $value . "</a></td>\n";
                                             } else {
                                                 echo "                            <td></td>\n";
+                                            }
+                                        } elseif ($item == 'vm'and $key == 'icon') {
+                                            if (!empty($value)) {
+                                                echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . base_url() . "device_images/" . $value . ".svg\" /></td>\n";
+                                            } else {
+                                                echo "                            <td class=\"text-center\"></td>\n";
                                             }
                                         } else {
                                             # everything else
