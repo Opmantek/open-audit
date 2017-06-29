@@ -226,6 +226,7 @@ class MY_Model extends CI_Model
         // do we have an error?
         if ($this->db->_error_message()) {
             # need to log down here for the above so we can use $this->db to get the last insert id
+            $sqllog->severity = 3;
             $sqllog->status = 'failure';
             $sqllog->detail .= ' - FAILURE - ' . $this->db->_error_message();
             stdlog($sqllog);
@@ -244,6 +245,7 @@ class MY_Model extends CI_Model
         } else {
             // no error, so return the result
             # need to log down here for the above so we can use $this->db to get the last insert id
+            $sqllog->severity = 7;
             stdlog($sqllog);
             return ($result);
         }
