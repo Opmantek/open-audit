@@ -770,6 +770,11 @@ if (empty($data['mount_point'])) {
                         <?php } ?>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-5">
+                    <?php insert_additional_fields('system', $data['fields'], $edit); ?>
+                    </div>
+                </div>
             </fieldset>
         </form>
     </div>
@@ -777,6 +782,26 @@ if (empty($data['mount_point'])) {
 
 </div>
 </div>
+
+
+<div id="custom_fields" class="section">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title pull-left"><?php echo __('Custom Fields'); ?></h3>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="custom_fields"></span>
+            <div class="clearfix"></div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-10">
+                    <?php insert_additional_fields('custom', $data['fields'], $edit); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <?php
 // form style displays
