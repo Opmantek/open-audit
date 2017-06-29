@@ -4,8 +4,9 @@
     // Wait until the DOM has loaded before querying the document
     $(document).ready(function(){
         // get from opmantek.com
-        $.get('https://opmantek.com/product_data/open-audit.1json', function(data){
+        $.get('https://opmantek.com/product_data/open-audit.json', function(data){
             modal.open({content: data, source: "online"});
+            alert("got online");
         })
         .fail(function() {
             // get from OAE
@@ -150,9 +151,9 @@ output += "<div class=\"row market-row\">\
                     output += "<ul class=\"list-group\">";
                         for (var x = 1; x < data.compare.editions[j].packages.length; x++) {
                             if (data.compare.editions[j].packages[x].url) {
-                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.editions[j].packages[x].url + "\">" + data.compare.editions[j].packages[x].text + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
+                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.editions[j].packages[x].url + "\"> " + data.compare.editions[j].packages[x].text + " " + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
                             } else {
-                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[x].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\"> " + data.compare.editions[j].packages[x].text + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
+                                output += "<li class=\"list-group-item\"><a href=\"" + data.compare.storeURL + "&cart_id=" + data.compare.editions[j].packages[x].productCode + "&return_to_app_name=Open-AudIT&redirect_url=" + location.protocol + "//" + location.host + "/omk/open-audit/purchase_complete&cancel_redirect_url=" + window.location.href + "\"> " + data.compare.editions[j].packages[x].text + " " + data.compare.editions[j].packages[x].prices[0].USD + "</a></li>";
                             }
                         }
                     output += "</ul>";
