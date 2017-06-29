@@ -175,7 +175,7 @@
                         <ul class="dropdown-menu">
 
                         <?php
-                        $collections = array('attributes','baselines','connections','devices','database','fields','groups','ldap_servers','licenses','locations','maps','networks','queries','orgs','roles','summaries','users');
+                        $collections = array('attributes','baselines','connections','devices','fields','groups','licenses','locations','maps','networks','queries','orgs','roles','summaries','users');
                         foreach ($collections as $collection) {
                             if ($collection == 'maps') { ?>
                                 <li class="dropdown-submenu">
