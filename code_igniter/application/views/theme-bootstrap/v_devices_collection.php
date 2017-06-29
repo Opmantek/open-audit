@@ -58,8 +58,8 @@ if (!empty($this->response->meta->sub_resource_name)) {
     $title = '';
 }
 
-$export_link = $this->response->links->self;
-if (strpos($this->response->links->self, '?') !== false) {
+$export_link = $this->response->links->first;
+if (strpos($this->response->links->first, '?') !== false) {
     $export_link .= '&';
 } else {
     $export_link .= '?';
