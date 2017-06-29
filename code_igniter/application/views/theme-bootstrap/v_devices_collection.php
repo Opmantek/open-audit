@@ -108,6 +108,21 @@ if ($this->response->meta->sub_resource !== 'group') {
     <div class="panel-heading clearfix">
         <div class="panel-title">
             <div class="pull-left">Devices <?php echo $title ?></div>
+
+            <div class="nav navbar-nav navbar-center">
+                <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
+                    <div class="form-group">
+                        <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or IP">
+                        <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
+                        <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip"]' />
+                    </div>
+                    <button type="submit" class="btn btn-default btn-sm">Submit</button>
+                    <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" data-container="body" data-toggle="popover" data-placement="left" title="Device Search" data-content="Search the following fields: name, hostname, dns_hostname, sysName, domain, dns_domain, ip.">
+                        <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                    </button>
+                </form>
+            </div>
+
             <div class="pull-right" style="padding-left:10px;">
                 <div class="btn-group" role="group" aria-label="...">
                     <div class="btn-group" role="group">
