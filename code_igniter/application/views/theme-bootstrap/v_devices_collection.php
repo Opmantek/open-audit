@@ -112,7 +112,7 @@ if ($this->response->meta->sub_resource !== 'group') {
             <div class="nav navbar-nav navbar-center">
                 <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
                     <div class="form-group">
-                        <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or IP">
+                        <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or full IP">
                         <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
                         <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip"]' />
                     </div>
