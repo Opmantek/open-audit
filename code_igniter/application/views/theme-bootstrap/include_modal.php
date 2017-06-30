@@ -6,7 +6,6 @@
         // get from opmantek.com
         $.get('https://opmantek.com/product_data/open-audit.json', function(data){
             modal.open({content: data, source: "online"});
-            alert("got online");
         })
         .fail(function() {
             // get from OAE
