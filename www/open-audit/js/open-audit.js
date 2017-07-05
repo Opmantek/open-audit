@@ -175,7 +175,8 @@ $(document).ready(function () {
                 },
                 error: function (data) {
                     data = JSON.parse(data.responseText);
-                    alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+                    // alert(data.errors[0].code + "\n" + data.errors[0].title + "\n" + data.errors[0].detail);
+                    alert(data.errors[0].code + "\n\n" + data.errors[0].title + "\n\n" + data.errors[0].detail + "\n\n" + data.errors[0].message);
                 }
             });
             $(item).attr("disabled", true);
