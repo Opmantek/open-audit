@@ -92,6 +92,9 @@ san_audit="y"
 # If we detect the san management software, should we run an auto-discover before the query
 san_discover="n"
 
+# If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway.
+ignore_invalid_ssl="y"
+
 PATH="$PATH:/sbin:/usr/sbin"
 export PATH
 
@@ -279,6 +282,8 @@ for arg in "$@"; do
 			discovery_id="$parameter_value" ;;
 		"display" )
 			display="$parameter_value" ;;
+		"ignore_invalid_ssl"
+			ignore_invalid_ssl="$parameter_value" ;;
 		"help" )
 			help="$parameter_value" ;;
 		"--help" )
@@ -333,6 +338,10 @@ if [ "$help" = "y" ]; then
 	echo ""
 	echo "  discovery_id"
 	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
+	echo ""
+	echo "  ignore_invalid_ssl"
+	echo "    *y - If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway."
+	echo "     n - Do not submit if certificate is invalid (or self signed)."
 	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
@@ -2390,20 +2399,36 @@ if [ "$submit_online" = "y" ]; then
 
 	if [ -n "$(which wget 2>/dev/null)" ]; then
 		if [ "$debugging" -gt 3 ]; then
-			wget -O add_system --post-file="$xml_file" "$url"
+			if [ "$ignore_invalid_ssl" = "y" ]; then
+				wget --no-check-certificate -O add_system --post-file="$xml_file" "$url"
+			else
+				wget -O add_system --post-file="$xml_file" "$url"
+			fi
 			cat add_system
 			rm add_system
 		else
-			wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+			if [ "$ignore_invalid_ssl" = "y" ]; then
+				wget --no-check-certificate --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+			else
+				wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+			fi
 		fi
 	else
 		if [ -n "$(which curl 2>/dev/null)" ]; then
 			if [ "$debugging" -gt 3 ]; then
-				curl -o add_system --data "@$xml_file" "$url"
+				if [ "$ignore_invalid_ssl" = "y" ]; then
+					curl -k -o add_system --data "@$xml_file" "$url"
+				else
+					curl -o add_system --data "@$xml_file" "$url"
+				fi
 				cat add_system
 				rm add_system
 			else
-				curl --data "@$xml_file" "$url"
+				if [ "$ignore_invalid_ssl" = "y" ]; then
+					curl -k --data "@$xml_file" "$url"
+				else
+					curl --data "@$xml_file" "$url"
+				fi
 			fi
 		fi
 	fi

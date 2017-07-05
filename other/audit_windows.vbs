@@ -61,6 +61,9 @@ struser = ""
 ' the password (if not using the user running the script)
 strpass = ""
 
+' If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway.
+ignore_invalid_ssl = "y"
+
 ' optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
 org_id = ""
 
@@ -159,6 +162,9 @@ For Each strArg in objArgs
 
 	case "ldap"
 	ldap = argvalue
+
+	case "ignore_invalid_ssl"
+	ignore_invalid_ssl = argValue
 
 	case "org_id"
 	org_id = argValue
@@ -267,6 +273,10 @@ if (help = "y") then
 	wscript.echo ""
 	wscript.echo "  local_domain"
 	wscript.echo "        - The domain you wish to audit. Should be in the format LDAP://your.domain.name"
+	wscript.echo ""
+	wscript.echo "  ignore_invalid_ssl"
+	wscript.echo "    *y - If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway."
+	wscript.echo "     n - Do not submit if certificate is invalid (or self signed)."
 	wscript.echo ""
 	wscript.echo "  org_id"
 	wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
@@ -6708,7 +6718,9 @@ if submit_online = "y" then
    Err.clear
    Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
    objHTTP.setTimeouts 5000, 5000, 5000, 480000
-   objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+   if ignore_invalid_ssl = "y" then
+       objHTTP.SetOption 2, 13056  ' Ignore any SSL errors
+   end if
    On Error Resume Next
    objHTTP.Open "POST", url, False
    aErr = Array(Err.Number, Err.Description)
