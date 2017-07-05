@@ -386,12 +386,14 @@ class M_collection extends MY_Model
                 $data->other = (string)json_encode($new_other);
                 if (!empty($received_other->subnet)) {
                     $data->description = 'Subnet - ' . $received_other->subnet;
-                    $this->load->helper('network');
-                    $temp = network_details($received_other->subnet);
-                    if (!empty($temp->error) and filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
-                        $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid subnet attribute supplied.');
-                        log_error('ERR-0010', 'm_collections::create (invalid subnet supplied)');
-                        return;
+                    if (stripos($received_other->subnet, '-') === false) {
+                        $this->load->helper('network');
+                        $temp = network_details($received_other->subnet);
+                        if (!empty($temp->error) and filter_var($received_other->subnet, FILTER_VALIDATE_IP) === false) {
+                            $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be updated - invalid subnet attribute supplied.');
+                            log_error('ERR-0010', 'm_collections::create (invalid subnet supplied)');
+                            return;
+                        }
                     }
                 }
                 if (!empty($received_other->ad_domain)) {
