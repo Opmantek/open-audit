@@ -537,7 +537,7 @@ CREATE TABLE `discoveries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  `complete` enum('y','n') NOT NULL DEFAULT 'n',
+  `complete` enum('y','n') NOT NULL DEFAULT 'y',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
