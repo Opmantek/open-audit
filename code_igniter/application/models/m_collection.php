@@ -547,6 +547,10 @@ class M_collection extends MY_Model
                 return(' name org_id table column menu_category ');
                 break;
 
+            case "tasks":
+                return(' name org_id description enabled type minute hour day_of_month month day_of_week delay_minutes expire_minutes options ');
+                break;
+
             case "users":
                 return(' name org_id permissions password full_name email lang active roles orgs ');
                 break;
@@ -625,6 +629,10 @@ class M_collection extends MY_Model
 
             case "summaries":
                 return(array('name','org_id','table','column','menu_category'));
+                break;
+
+            case "tasks":
+                return(array('name','org_id','type','enabled','minute','hour','day_of_month','month','day_of_week'));
                 break;
 
             case "users":
