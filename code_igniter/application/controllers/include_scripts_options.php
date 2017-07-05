@@ -113,6 +113,13 @@
         $options['hide_audit_window']->type = 'select';
         $options['hide_audit_window']->values = 'y,n';
 
+        $options['ignore_invalid_ssl'] = new stdClass();
+        $options['ignore_invalid_ssl']->name = 'ignore_invalid_ssl';
+        $options['ignore_invalid_ssl']->default = 'y';
+        $options['ignore_invalid_ssl']->help = 'Should we ignore an invalid or self signed SSL certificate and submit the result anyway.';
+        $options['ignore_invalid_ssl']->type = 'select';
+        $options['ignore_invalid_ssl']->values = 'y,n';
+
         $options['ldap'] = new stdClass();
         $options['ldap']->name = 'ldap';
         $options['ldap']->default = '';
@@ -235,6 +242,6 @@
         $options_scripts = array();
         $options_scripts['audit_aix.sh'] = array('submit_online', 'create_file', 'url', 'debugging', 'org_id', 'system_id');
         $options_scripts['audit_esx.sh'] = array('submit_online', 'create_file', 'url', 'debugging', 'org_id', 'system_id');
-        $options_scripts['audit_linux.sh'] = array('create_file', 'debugging', 'org_id', 'self_delete', 'submit_online', 'system_id', 'url');
+        $options_scripts['audit_linux.sh'] = array('create_file', 'debugging', 'ignore_invalid_ssl', 'org_id', 'self_delete', 'submit_online', 'system_id', 'url');
         $options_scripts['audit_osx.sh'] = array('submit_online', 'create_file', 'url', 'debugging', 'org_id', 'system_id');
-        $options_scripts['audit_windows.vbs'] = array('audit_dns', 'audit_mount_point', 'audit_netstat', 'audit_software', 'audit_win32_product', 'create_file', 'debugging', 'details_to_lower', 'hide_audit_window', 'ldap', 'ldap_seen_date', 'ldap_seen_days', 'org_id', 'ping_target', 'san_audit', 'san_discover', 'self_delete', 'strcomputer', 'strpass', 'struser', 'submit_online', 'system_id', 'url', 'use_proxy', 'windows_user_work_1', 'windows_user_work_2');
+        $options_scripts['audit_windows.vbs'] = array('audit_dns', 'audit_mount_point', 'audit_netstat', 'audit_software', 'audit_win32_product', 'create_file', 'debugging', 'details_to_lower', 'hide_audit_window', 'ignore_invalid_ssl', 'ldap', 'ldap_seen_date', 'ldap_seen_days', 'org_id', 'ping_target', 'san_audit', 'san_discover', 'self_delete', 'strcomputer', 'strpass', 'struser', 'submit_online', 'system_id', 'url', 'use_proxy', 'windows_user_work_1', 'windows_user_work_2');
