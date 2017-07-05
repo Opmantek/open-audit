@@ -668,6 +668,11 @@ class Database extends MY_Controller
             include "db_upgrades/db_2.0.1.php";
         }
 
+        if (($db_internal_version < '20170701') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 2.0.1
+            include "db_upgrades/db_2.0.2.php";
+        }
+
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
         $this->data['success'] = "Database upgraded successfully. New database version is ".$this->config->config['display_version']." (".$this->config->config['internal_version'].")";

@@ -2556,6 +2556,47 @@ LOCK TABLES `system` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `tasks`
+--
+
+DROP TABLE IF EXISTS `tasks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tasks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `uuid` varchar(100) NOT NULL DEFAULT '',
+  `enabled` enum('y','n') NOT NULL DEFAULT 'y',
+  `type` varchar(100) NOT NULL DEFAULT 'command',
+  `minute` varchar(100) NOT NULL DEFAULT '*',
+  `hour` varchar(100) NOT NULL DEFAULT '*',
+  `day_of_month` varchar(100) NOT NULL DEFAULT '*',
+  `month` varchar(100) NOT NULL DEFAULT '*',
+  `day_of_week` varchar(100) NOT NULL DEFAULT '*',
+  `delay_minutes` int unsigned NOT NULL DEFAULT '0',
+  `expire_minutes` int unsigned NOT NULL DEFAULT '0',
+  `first_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `options` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tasks`
+--
+
+LOCK TABLES `tasks` WRITE;
+/*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `task`
 --
 

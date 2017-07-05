@@ -488,7 +488,7 @@ class M_collection extends MY_Model
                 break;
 
             case "connections":
-                return(' name org_id provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ');
+                return(' name org_id description provider service_type product_name service_identifier speed location_id_a location_id_b system_id_a system_id_b line_number_a line_number_b ip_address_external_a ip_address_external_b ip_address_internal_a ip_address_internal_b ');
                 break;
 
             case "credentials":
