@@ -2061,6 +2061,12 @@ fi
 IFS='
 '
 echo "	<software>" >> "$xml_file"
+# include OS in software
+echo "		<item>" >> "$xml_file"
+echo "			<name>$(escape_xml $system_os_name)</name>" >> "$xml_file"
+echo "			<version>$(escape_xml $system_os_version)</version>" >> "$xml_file"
+echo "			<description>Operating System</description>" >> "$xml_file"
+echo "		</item>" >> "$xml_file"
 case $system_os_family in
 		'Ubuntu' | 'Debian' | 'LinuxMint' | 'Raspbian' )
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\

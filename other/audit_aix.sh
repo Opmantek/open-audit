@@ -561,6 +561,15 @@ if [[ "$debugging" -gt 1 ]]; then echo " took $FINISH seconds"; else echo " "; f
 START="$SECONDS"
 if [[ "$debugging" -gt 0 ]]; then print -n "Software Details    "; fi
 echo "	<software>" >> "$xml_file"
+# include OS in software
+cat >>"$xml_file" <<EndOfFile
+		<item>
+			<name>$(escape_xml "$system_os_name")</name>
+			<version>$(escape_xml "$system_os_version")</version>
+			<description>Operating System</description>
+			<publisher>IBM</publisher>
+		</item>
+EndOfFile
 for software in $(lslpp -lc -q); do
 	if [[ -n "$software" ]]; then
 		software=$(echo "$software" | sed 's/"//g')

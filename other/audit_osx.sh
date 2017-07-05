@@ -480,6 +480,12 @@ if [ "$debugging" -gt "0" ]; then
     echo "Software Info"
 fi
 echo "  <software>" >> $xml_file
+# include OS in software
+echo "      <item>" >> $xml_file
+echo "          <name><![CDATA[$system_os_name]]></name>" >> $xml_file
+echo "          <version><![CDATA[$system_os_version]]></version>" >> $xml_file
+echo "          <publisher>Apple</publisher>" >> $xml_file
+echo "      </item>" >> $xml_file
 software_name=""
 software_version=""
 software_install_source=""

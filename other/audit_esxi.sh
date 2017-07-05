@@ -744,6 +744,14 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 echo "	<software>" >> $xml_file
+# include OS in software
+echo "		<item>" >> $xml_file
+echo "			<name>"$(escape_xml "$system_os_name")"</name>" >> $xml_file
+echo "			<version>"$(escape_xml "$system_os_version")"</version>" >> $xml_file
+echo "			<description>Operating System</description>" >> $xml_file
+echo "			<publisher>VMware</publisher>" >> $xml_file
+echo "		</item>" >> $xml_file
+
 for package in `esxcli software vib list | grep -v -e ^--------- -e ^Name` ; do
 	package=`echo "$package" | sed 's/ \+/\ /g'`
 	software_name=`echo "$package" | cut -d" " -f1`

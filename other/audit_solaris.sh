@@ -1006,7 +1006,8 @@ fi
 packages=`pkginfo | awk '{print $2}'`
 
 echo "      <software>" >> $xml_file
-
+# include OS in software
+echo "\t\t<item>\n\t\t\t<name>$system_os_name</name>\n\t\t\t<version>$system_os_version</version>\n\t\t\t<description>Operating System</description>\n\t\t\t<publisher>Oracle</publisher>\n\t\t</item>\n" >> $xml_file
 for info in $packages; do
     softwarename=$info
     version=`pkgparam $info VERSION`

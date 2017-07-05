@@ -3442,6 +3442,13 @@ end if
 
 if (audit_software = "y") then
 	result.WriteText "	<software>" & vbcrlf
+	# include OS in software
+	result.WriteText "		<item>" & vbcrlf
+	result.WriteText "			<name>" & escape_xml(system_os_name) & " - " & objItem.Filename & "</name>" & vbcrlf
+	result.WriteText "			<version>" & escape_xml(system_os_version) & "</version>" & vbcrlf
+	result.WriteText "			<publisher>Microsoft</publisher>" & vbcrlf
+	result.WriteText "			<description>Operating System</description>" & vbcrlf
+	result.WriteText "		</item>" & vbcrlf
 
 	if debugging > "0" then wscript.echo "Codec info" end if
 	set colItems = objWMIService.ExecQuery("Select * FROM Win32_CodecFile", , 48)
