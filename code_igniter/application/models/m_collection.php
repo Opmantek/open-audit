@@ -189,7 +189,7 @@ class M_collection extends MY_Model
             } else {
                 $data->description = '';
             }
-            if ($data->type == 'subnet') {
+            if ($data->type == 'subnet' and stripos($data->other->subnet, '-') === false) {
                 $this->load->model('m_networks');
                 $this->load->helper('network');
                 $temp = network_details($data->other->subnet);
@@ -213,6 +213,12 @@ class M_collection extends MY_Model
                     $network->description = $data->name;
                     $this->m_networks->upsert($network);
                 }
+            } else {
+                $warning = 'IP range, instead of subnet supplied. No network entry created.';
+                if ($this->config->config['blessed_subnets_use'] != 'n') {
+                    $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
+                }
+                $this->session->set_flashdata('warning', $warning);
             }
             $data->other = json_encode($data->other);
         }
