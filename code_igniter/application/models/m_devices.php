@@ -112,36 +112,6 @@ class M_devices extends MY_Model
         return($join);
     }
 
-    public function get_user_device_group_access()
-    {
-        $CI = & get_instance();
-        $sql = "SELECT group_user_access_level as access_level FROM oa_group_user LEFT JOIN oa_group_sys ON (oa_group_user.group_id = oa_group_sys.group_id) WHERE oa_group_sys.system_id = ? AND oa_group_user.user_id = ? ORDER BY group_user_access_level DESC LIMIT 1";
-        $data = array(intval($CI->response->meta->id), intval($CI->user->id));
-        $result = $this->run_sql($sql, $data);
-        if (!isset($result[0]->access_level) or $result[0]->access_level == '0') {
-            return(0);
-        }
-        return(intval($result[0]->access_level));
-    }
-
-    public function get_user_device_org_access()
-    {
-        $CI = & get_instance();
-        $sql = "SELECT `org_id` FROM `system` WHERE system.id = ?";
-        $data = array(intval($CI->response->meta->id));
-        $result = $this->run_sql($sql, $data);
-        if (!isset($result[0]->org_id)) {
-            $org_id = 1;
-        } else {
-            $org_id = intval($result[0]->org_id);
-        }
-        if (empty($CI->user->orgs[$org_id])) {
-            return 0;
-        } else {
-            return(intval($CI->user->orgs[$org_id]));
-        }
-    }
-
     public function get_related_tables($id = '')
     {
         if ($id == '') {
@@ -172,20 +142,15 @@ class M_devices extends MY_Model
 
     public function read($id = '')
     {
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
         if (empty($id)) {
+            $log->message = 'No device ID for read, returning false';
+            stdlog($log);
             return false;
         }
-        $CI = & get_instance();
-        $this->load->model('m_devices_components');
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
         $result = $this->run_sql($sql, array($id));
         $result = $this->format_data($result, 'devices');
+        # format our uptime from unixtime to humane readable
         if (!empty($result[0]->attributes->uptime)) {
             $seconds = intval($result[0]->attributes->uptime);
             $dtF = new \DateTime('@0');
@@ -207,11 +172,6 @@ class M_devices extends MY_Model
         $log->file = 'system';
         $log->level = 7;
 
-        if ($device_id == '') {
-            $device_id = intval($CI->response->meta->id);
-        } else {
-            $device_id = intval($device_id);
-        }
         if (empty($device_id)) {
             $log->message = 'No device ID for fields, returning false';
             stdlog($log);
@@ -225,9 +185,7 @@ class M_devices extends MY_Model
         $device_org_id = intval($result[0]->org_id);
 
         // get the fields
-        #$sql = "SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name` FROM fields LEFT JOIN groups ON fields.group_id = groups.id";
         $sql = "SELECT fields.*, groups.sql AS `group_sql`, groups.name as `group_name`, field.value FROM fields LEFT JOIN groups ON fields.group_id = groups.id LEFT JOIN field ON (fields.id = field.fields_id AND field.system_id = $device_id) ORDER BY fields.name";
-
         $fields = $this->run_sql($sql, array());
         // this is our array of field.id's that are acceptable on this device
         $field_list = array();

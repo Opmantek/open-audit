@@ -131,7 +131,7 @@ class devices extends MY_Controller
                 $this->response->meta->format = 'json';
             }
         } else {
-            $this->response->data = $this->m_devices->read();
+            $this->response->data = $this->m_devices->read($this->response->meta->id);
             # create the related links
             if (!empty($this->response->data)) {
                 $related = $this->m_devices->get_related_tables();
@@ -246,11 +246,8 @@ class devices extends MY_Controller
     {
         $this->m_devices->update();
         # TODO - replace this old function
-        $details = new stdClass();
-        $details->id = $this->response->meta->id;
-
         if ($this->response->meta->format == 'json') {
-            $this->response->data = $this->m_devices->read();
+            $this->response->data = $this->m_devices->read($this->response->meta->id);
             output($this->response);
         }
         $log = new stdClass();
@@ -376,7 +373,7 @@ class devices extends MY_Controller
             unset($temp);
             output($this->response);
         } elseif ($this->response->meta->sub_resource == 'discovery') {
-            $this->response->data = $this->m_devices->read();
+            $this->response->data = $this->m_devices->read($this->response->meta->id);
             $data = new stdClass();
             $data->name = $this->response->data[0]->attributes->name;
             $data->system_id = $this->response->data[0]->attributes->id;

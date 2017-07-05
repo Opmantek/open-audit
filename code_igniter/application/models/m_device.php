@@ -79,10 +79,10 @@ class M_device extends MY_Model
                     $details->fqdn = $details->hostname;
                     $log_message[] = "No FQDN provided, storing hostname as FQDN (" . $details->fqdn . ").";
                 }
-                $i = explode(".", $details->hostname);
-                $hostname = $i[0];
+                $temp = explode(".", $details->hostname);
+                $hostname = $temp[0];
                 $log_message[] = "Using first split '.' from hostname as hostname (" . $hostname . ").";
-                unset($i);
+                unset($temp);
             }
         } else {
             # we have an ip address in the hostname field - remove it
@@ -349,8 +349,8 @@ class M_device extends MY_Model
                 if (isset($details->hostname_length) and $details->hostname_length == 'short') {
                     # we grabbed the hostname from SNMP.
                     # SNMP hostnames on Windows are truncated to 15 characters
-                    $i = explode(".", $details->hostname);
-                    $hostname = $i[0];
+                    $temp = explode(".", $details->hostname);
+                    $hostname = $temp[0];
                     if (strlen($hostname) == 15) {
                         # We do have a 15 character hostname - check if this exists in the DB
                         $sql = "SELECT system.id FROM system WHERE system.hostname LIKE '".$hostname."%' AND system.status != 'deleted'";
@@ -368,6 +368,7 @@ class M_device extends MY_Model
                             return $details->id;
                         }
                     }
+                    unset($temp);
                 }
             }
         }
@@ -526,11 +527,11 @@ class M_device extends MY_Model
             # make sure we use the hostname and not a fqdn if returned
             if (strpos($details->hostname, ".") != false and !filter_var($details->hostname, FILTER_VALIDATE_IP)) {
                 $details->fqdn = strtolower($details->hostname);
-                $i = explode(".", $details->hostname);
-                $details->hostname = $i[0];
-                unset($i[0]);
-                $details->domain = implode(".", $i);
-                unset($i);
+                $temp = explode(".", $details->hostname);
+                $details->hostname = $temp[0];
+                unset($temp[0]);
+                $details->domain = implode(".", $temp);
+                unset($temp);
             }
         }
         if (filter_var($details->hostname, FILTER_VALIDATE_IP) and isset($details->sysName) and $details->sysName != '') {
@@ -740,11 +741,11 @@ class M_device extends MY_Model
                 if (!filter_var($details->hostname, FILTER_VALIDATE_IP)) {
                     # we got a FQDN back from DNS - split it up
                     $details->fqdn = strtolower($details->hostname);
-                    $i = explode(".", $details->hostname);
-                    $details->hostname = $i[0];
-                    unset($i[0]);
-                    $details->domain = implode(".", $i);
-                    unset($i);
+                    $temp = explode(".", $details->hostname);
+                    $details->hostname = $temp[0];
+                    unset($temp[0]);
+                    $details->domain = implode(".", $temp);
+                    unset($temp);
                 } else {
                     # we got an ip address back from DNS which is now the hostname
                 }
@@ -872,8 +873,8 @@ class M_device extends MY_Model
                             $data = array((string)$value, intval($details->id));
                             $query = $this->db->query($sql, $data);
                             // insert an entry into the edit table
-                            $columns_that_dont_get_edit_log = ' id sysUpTime uptime ';
-                            if (stripos($columns_that_dont_get_edit_log, $key) === false) {
+                            $no_edit_log = ' id sysUpTime uptime ';
+                            if (stripos($no_edit_log, $key) === false) {
                                 $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, NOW(), ?, ?)";
                                 $data = array(0, intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$value, (string)$previous_value);
                                 $query = $this->db->query($sql, $data);
