@@ -226,11 +226,12 @@ class MY_Model extends CI_Model
         // do we have an error?
         if ($this->db->_error_message()) {
             # need to log down here for the above so we can use $this->db to get the last insert id
+            $db_error = $this->db->_error_message();
             $sqllog->severity = 3;
             $sqllog->status = 'failure';
-            $sqllog->detail .= ' - FAILURE - ' . $this->db->_error_message();
+            $sqllog->detail .= ' - FAILURE - ' . $db_error;
             stdlog($sqllog);
-            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function']));
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
             if (!empty($CI->response)) {
                 if (!empty($CI->response->errors)) {
                     $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();

@@ -448,13 +448,17 @@ class M_collection extends MY_Model
 
         $update_fields = $this->update_fields($collection);
         $sql = '';
-
+        $items = array();
         foreach ($data as $key => $value) {
             if (strpos($update_fields, ' '.$key.' ') !== false) {
                 if ($sql == '') {
-                    $sql = "SET `" . $key . "` = '" . str_replace("'", "\'", $value) . "'";
+                    #$sql = "SET `" . $key . "` = '" . str_replace("'", "\'", $value) . "'";
+                    $sql = "SET `" . $key . "` = ?";
+                    $items[] = $value;
                 } else {
-                    $sql .= ", `" . $key . "` = '" . str_replace("'", "\'", $value) . "'";
+                    #$sql .= ", `" . $key . "` = '" . str_replace("'", "\'", $value) . "'";
+                    $sql .= ", `" . $key . "` = ?";
+                    $items[] = $value;
                 }
             }
         }
@@ -465,7 +469,7 @@ class M_collection extends MY_Model
             $sql .= ", `edited_date` = NOW()";
         }
         $sql = "UPDATE `" . $db_table . "` " . $sql . " WHERE id = " . intval($data->id);
-        $test = $this->run_sql($sql);
+        $test = $this->run_sql($sql, $items);
         return $test;
     }
 
