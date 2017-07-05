@@ -33,7 +33,7 @@ $this->log_db('Upgrade database to 2.0.2 commenced');
 $this->alter_table('connections', 'description', "ADD `description` TEXT NOT NULL AFTER `name`", 'add');
 
 # discoveries
-$this->alter_table('discoveries', 'complete', "enum('y','n') NOT NULL DEFAULT 'y'");
+$this->alter_table('discoveries', 'complete', "`complete` enum('y','n') NOT NULL DEFAULT 'y'");
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170701' WHERE `name` = 'internal_version'";
