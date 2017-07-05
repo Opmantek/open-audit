@@ -55,6 +55,9 @@ if ($table == 'attachments') {
 }
 
 if ($table == 'attributes') {
+    $dictionary->sentence = 'Open-AudIT enables you to create and use your own values for certain stored fields. For example, if you have another status than those provided, just add it and use it. Simple.';
+    $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />Currently, the attributes you can edit are associated with the following columns: Class, Environment, Status &amp; Type.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />
     At present all fields are based on the devices (system) table.<br /><br />
     The attributes you can edit are associated with the following columns: Class, Environment, Status &amp; Type.<br /><br />
@@ -130,6 +133,9 @@ Define a query and have your external program call the API and retrieve the data
 }
 
 if ($table == 'connections') {
+    $dictionary->sentence = 'Track your connections to branch offices, the internet, where-ever else you need to. Simple, easy, intuitive.';
+    $dictionary->marketing = '<p>Attributes such as the locations, the speed, provider, connected devices, type of connection and more are available.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>This endpoint enables you to add the connections that are part of your network infrastructure, it allows you to customize a variety of attributes, specify where this connection is located and the organization that it belongs.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
@@ -142,6 +148,8 @@ if ($table == 'connections') {
 }
 
 if ($table == 'credentials') {
+    $dictionary->sentence = 'Open-AudIT uses credentials to access your devices. These are encrypted and stored, just as you would expect.';
+    $dictionary->marketing = '<p>Credentials are used to access devices.<br /><br />The only supplied credential is that of SNMP public.<br /><br />Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br /></p>';
     $dictionary->about = '<p>Credentials are used to access devices.<br /><br />
     The only supplied credential is that of SNMP public.<br /><br />
     Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br />
@@ -270,6 +278,9 @@ Supported clients are Windows and Linux.<br /><br />
 }
 
 if ($table == 'groups') {
+    $dictionary->sentence = 'Easily group together devices for simple reporting. Open-AudIT provides more than a dozen groups out of the box and makes it simple to create more.';
+    $dictionary->marketing = '<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id\'s only. If requested using the web interface, they return the standard column attribute list.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id\'s only. If requested using the web interface, they return the standard column attribute list.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Group Creation Rules<br /><br />
@@ -320,6 +331,10 @@ if ($table == 'ldap_servers') {
 }
 
 if ($table == 'licenses') {
+    $dictionary->sentence = 'Track your installed software, quickly and easily.';
+    $dictionary->marketing = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />
+To create an entry to track your licenses provide a name, an organization, the number of licenses acquired and the name of the software. Those simple pieces of information are all Open-AudIT needs to track and report on your installed software licenses.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />
 To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -337,6 +352,10 @@ To create an entry to track your licenses you <em>must</em> to provide a name, a
 }
 
 if ($table == 'locations') {
+    $dictionary->sentence = 'Open-AudIT Professional and Enterprise leverage Google Maps to provide live, interactive geographic mapping of device location.';
+    $dictionary->marketing = '<p>A location is a physical address that can have devices associated with it.<br /><br />
+    You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>A location is a physical address that can have devices associated with it.<br /><br />
     You can assign it coordinates (lat/long) and if there are devices assigned, the location will appear on the Open-AudIT Enterprise map.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -357,6 +376,10 @@ if ($table == 'maps') {
 }
 
 if ($table == 'networks') {
+    $dictionary->sentence = 'Open-AudIT stores your networks and in addition, provides a secure mechanism for accepting input data.';
+    $dictionary->marketing = '<p>A network is derived from discovery entries and device attribtes.<br /><br />
+    Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>A network is derived from discovery entries and device attribtes.<br /><br />
     Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -371,8 +394,13 @@ if ($table == 'networks') {
 }
 
 if ($table == 'orgs') {
+    $dictionary->sentence = 'Open-AudIT provides multi-tenancy out of the box!';
+    $dictionary->marketing = 'Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br /><br />
+    Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.<br /><br />
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = 'Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
-    Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc, etc.<br /><br />
+    Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br /><br />
     Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
@@ -386,6 +414,9 @@ if ($table == 'orgs') {
 }
 
 if ($table == 'queries') {
+    $dictionary->sentence = 'Open-AudIT provides many built-in queries and makes it simple to create your own.';
+    $dictionary->marketing = 'Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = 'Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Query Creation Rules<br /><br />
@@ -467,6 +498,9 @@ if ($table == 'scripts') {
 }
 
 if ($table == 'summaries') {
+    $dictionary->sentence = 'Summaries provide drilldown reporting capabilities. Simple, intuitive, powerful.';
+    $dictionary->marketing = 'Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
+    ' . $link . '<br /><br /></p>';
     $dictionary->about = 'Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br /><br />
@@ -502,8 +536,10 @@ Create individual discovery schedules for each subnet or AD controller, add in r
 }
 
 if ($table == 'users') {
-    $dictionary->about = '<p>A user account within Open-AudIT.<br /><br />
-     A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    $dictionary->sentence = 'Open-AudIT Enterprise includes Users &amp; Roles, full role-based access control (RBAC) allowing fine-grained control over each user\'s experience.';
+    $dictionary->marketing = 'Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->about = 'Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>If the following conditions are met:<br />
     <ul><li>a Role has an assigned ad_group</li>
