@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -91,7 +90,7 @@ class M_credentials extends MY_Model
         $sql = 'UPDATE `credentials` SET ';
         $data = array();
 
-        if ( !empty($CI->response->meta->received_data->attributes->credentials)) {
+        if (!empty($CI->response->meta->received_data->attributes->credentials)) {
             $received_credentials = new stdClass();
             foreach ($CI->response->meta->received_data->attributes->credentials as $key => $value) {
                     $received_credentials->$key = $value;
@@ -153,11 +152,10 @@ class M_credentials extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('credentials', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'credentials');
-        for ($i=0; $i < count($result); $i++) { 
+        for ($i=0; $i < count($result); $i++) {
             if (!empty($result[$i]->attributes->credentials)) {
                 $result[$i]->attributes->credentials = json_decode($this->encrypt->decode($result[$i]->attributes->credentials));
             }

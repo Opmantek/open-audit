@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -93,8 +92,6 @@ class M_search extends MY_Model
             $tables = array("bios","disk","dns","file","ip","log","memory","module","monitor","motherboard","netstat","network","nmap","optical","partition","pagefile","print_queue","processor","route","san","scsi","service","server","server_item","share","software","software_key","sound","task","user","user_group","variable","video","vm","windows");
             foreach ($tables as $table) {
                 unset($result);
-                $sql_select = '';
-                $sql_where = '';
                 $columns = $this->db->field_data($table);
                 $sql = "SELECT `$table`.*, system.id AS `system.id`, system.name AS `system.name`, system.type AS `system.type`, system.icon AS `system.icon` FROM `$table` LEFT JOIN `system` ON (`$table`.system_id = system.id AND `$table`.current = 'y') WHERE system.org_id IN (" . $CI->user->org_list . ") AND ( ";
                 foreach ($columns as $column) {
@@ -239,7 +236,6 @@ class M_search extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('files', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'files');

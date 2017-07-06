@@ -84,7 +84,6 @@ class M_networks extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('networks', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'networks');
@@ -171,7 +170,7 @@ class M_networks extends MY_Model
     # supply a standard ip address - 192.168.1.1
     # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
     # returns true if ip is contained in a subnet, false otherwise
-    public function check_ip($ip = '')
+    public function check_ip($ip_address = '')
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
@@ -182,16 +181,16 @@ class M_networks extends MY_Model
         if (empty($this->config->config['blessed_subnets_use']) or trim(strtolower($this->config->config['blessed_subnets_use'])) != 'y') {
             return true;
         }
-        if (empty($ip)) {
+        if (empty($ip_address)) {
             return false;
         }
-        if ($ip == '127.0.0.1' or $ip == '127.0.1.1') {
+        if ($ip_address == '127.0.0.1' or $ip_address == '127.0.1.1') {
             return true;
         }
-        if ($ip == '::1') {
+        if ($ip_address == '::1') {
             return true;
         }
-        if (stripos($ip, ':') !== false) {
+        if (stripos($ip_address, ':') !== false) {
             // We have an IPv6 address. Try to convert it to a v4.
             // Known prefix
             $v4mapped_prefix_hex = '00000000000000000000ffff';
@@ -199,7 +198,7 @@ class M_networks extends MY_Model
             // Or more readable when using PHP >= 5.4
             # $v4mapped_prefix_bin = hex2bin($v4mapped_prefix_hex);
             // Parse
-            $addr = $ip;
+            $addr = $ip_address;
             $addr_bin = inet_pton($addr);
             if ($addr_bin === false) {
               // Unparsable? How did they connect?!?
@@ -210,15 +209,15 @@ class M_networks extends MY_Model
                     $addr_bin = substr($addr_bin, strlen($v4mapped_prefix_bin));
                 }
                 // Convert back to printable address in canonical form
-                $ip = inet_ntop($addr_bin);
+                $ip_address = inet_ntop($addr_bin);
             }
         }
-        if (stripos($ip, ':') !== false) {
+        if (stripos($ip_address, ':') !== false) {
             return true;
         }
         $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
         $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql, array((string)$ip));
+        $query = $this->db->query($sql, array((string)$ip_address));
         $result = $query->result();
         if (intval($result[0]->count) > 0) {
             return true;

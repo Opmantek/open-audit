@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -65,7 +64,7 @@ class M_licenses extends MY_Model
             if (!empty($data_result[0]->count)) {
                 $result[0]->used_count = $data_result[0]->count;
             }
-            unset ($sql, $data, $data_result);
+            unset($sql, $data, $data_result);
         } else {
             $children = $CI->m_orgs->get_children($result[0]->org_id);
             $children[] = $result[0]->org_id;
@@ -76,7 +75,7 @@ class M_licenses extends MY_Model
             if (!empty($data_result[0]->count)) {
                 $result[0]->used_count = $data_result[0]->count;
             }
-            unset ($sql, $data, $data_result);
+            unset($sql, $data, $data_result);
         }
 
         $result = $this->format_data($result, 'licenses');
@@ -117,7 +116,7 @@ class M_licenses extends MY_Model
                     if (!empty($data_result[0]->count)) {
                         $item->used_count = $data_result[0]->count;
                     }
-                    unset ($sql, $data, $data_result);
+                    unset($sql, $data, $data_result);
                 } else {
                     $children = $CI->m_orgs->get_children($item->org_id);
                     $children[] = $item->org_id;
@@ -128,7 +127,7 @@ class M_licenses extends MY_Model
                     if (!empty($data_result[0]->count)) {
                         $item->used_count = $data_result[0]->count;
                     }
-                    unset ($sql, $data, $data_result);
+                    unset($sql, $data, $data_result);
                 }
             }
         }

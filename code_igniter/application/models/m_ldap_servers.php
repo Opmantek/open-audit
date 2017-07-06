@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -152,7 +151,6 @@ class M_ldap_servers extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('ldap_servers', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'ldap_servers');
@@ -161,6 +159,7 @@ class M_ldap_servers extends MY_Model
 
     public function sub_resource($id = '')
     {
+        $id = intval($id);
         return array();
     }
 }

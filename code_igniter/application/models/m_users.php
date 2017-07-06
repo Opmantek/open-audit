@@ -244,8 +244,6 @@ class M_users extends MY_Model
         }
 
         $CI = & get_instance();
-        $user_id = intval($CI->user->id);
-        $user_orgs = $CI->user->org_list;
 
         $org_id_name = 'org_id';
         $table = $collection;
@@ -257,7 +255,6 @@ class M_users extends MY_Model
         if ($collection == 'orgs') {
             $org_id_name = 'id';
         }
-
         if ($table == '') {
             return false;
         }

@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,7 +43,7 @@ class M_audit_log extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($system_id, $username = '', $type = '', $ip = '', $debug = '', $wmi_fails = '', $timestamp = '')
+    public function create($system_id, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';
@@ -60,7 +59,7 @@ class M_audit_log extends MY_Model
             $timestamp = $this->config->config['timestamp'];
         }
         $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $data = array($system_id, "$username", "$type", "$ip", "$debug", "$wmi_fails", "$timestamp");
+        $data = array($system_id, "$username", "$type", "$ip_address", "$debug", "$wmi_fails", "$timestamp");
         $this->run_sql($sql, $data);
     }
 

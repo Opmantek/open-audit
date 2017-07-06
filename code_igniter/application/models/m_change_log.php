@@ -27,16 +27,15 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 /**
- * @access	 public
+ * @access   public
  *
  * @category Object
  *
@@ -77,7 +76,7 @@ class M_change_log extends MY_Model
     /**
      * Delete all alerts in the DB.
      *
-     * @access	public
+     * @access  public
      *
      * @return int
      */
@@ -88,7 +87,7 @@ class M_change_log extends MY_Model
         stdlog($this->log);
         $sql = "DELETE FROM change_log";
         $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
+        $this->db->query($sql);
         $count = $this->db->affected_rows();
         return ($count);
     }
@@ -96,7 +95,7 @@ class M_change_log extends MY_Model
     /**
      * Delete all alerts older than $days in the DB.
      *
-     * @access	public
+     * @access  public
      *
      * @return int
      */
@@ -107,7 +106,7 @@ class M_change_log extends MY_Model
         stdlog($this->log);
         $sql = "DELETE FROM change_log WHERE DATE(timestamp) < DATE_SUB(curdate(), INTERVAL $days day)";
         $sql = $this->clean_sql($sql);
-        $query = $this->db->query($sql);
+        $this->db->query($sql);
         $count = $this->db->affected_rows();
         return ($count);
     }
@@ -115,7 +114,7 @@ class M_change_log extends MY_Model
     /**
      * Count all alerts in the DB.
      *
-     * @access	public
+     * @access  public
      *
      * @return int
      */
@@ -133,7 +132,7 @@ class M_change_log extends MY_Model
     /**
      * All alerts in the DB older than XX days.
      *
-     * @access	public
+     * @access  public
      *
      * @return int
      */
@@ -151,9 +150,9 @@ class M_change_log extends MY_Model
     /**
      * Get the alert's for a given system.
      *
-     * @access	public
+     * @access  public
      *
-     * @param	system_id
+     * @param   system_id
      *
      * @return array
      */
@@ -168,17 +167,16 @@ class M_change_log extends MY_Model
             $data = array($id);
             $result = $this->run_sql($sql, $data);
             return ($result);
-        } else {
-            return;
         }
+        return;
     }
 
     /**
      * Get the details fo a given alert.
      *
-     * @access	public
+     * @access  public
      *
-     * @param	alert_id
+     * @param   alert_id
      *
      * @return array
      */
@@ -196,9 +194,9 @@ class M_change_log extends MY_Model
     /**
      * Update an alert with details of a Change record.
      *
-     * @access	public
+     * @access  public
      *
-     * @param	array(alert id, change type, change id, external change id, external change link, alert note, user id, alert acknowledge timestamp)
+     * @param   array(alert id, change type, change id, external change id, external change link, alert note, user id, alert acknowledge timestamp)
      *
      * @return nothing
      */

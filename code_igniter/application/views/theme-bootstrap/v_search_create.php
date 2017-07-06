@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -117,23 +116,18 @@ if (!empty($this->response->data)) { ?>
             $property = trim($property);
 
             if (!empty($item->attributes->{$property})) {
-
                 if ($property == 'system.id') {
                     echo '<td><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
-
                 } elseif (strrpos($property, 'ip_padded') === strlen($property)-9 or $property == 'ip.ip_padded') {
                     continue;
-
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
                     if (!empty($item->attributes->{$property . '_padded'})) {
                         echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
                     } else {
                         echo "            <td>" . $item->attributes->$property . "</td>\n";
                     }
-
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {
                     echo "            <td style=\"text-align: center;\"><img src=\"".str_replace("index.php", "", site_url())."device_images/".strtolower(str_replace(" ", "_", htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET))).".svg\" style='border-width:0; width:24px; height:24px' title=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\" alt=\"".htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET)."\"/></td>\n";
-
                 } else {
                     if (strlen($item->attributes->$property) > 30) {
                         echo "            <td class=\"wrap\">" . substr($item->attributes->$property, 0, 30) . "...</span></td>\n";

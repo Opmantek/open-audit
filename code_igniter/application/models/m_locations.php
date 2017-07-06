@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -88,7 +87,6 @@ class M_locations extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('locations', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'locations');
@@ -99,11 +97,10 @@ class M_locations extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        $id = intval($id);
+        if ($id === 0) {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
         }
         $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system WHERE system.location_id = ?";
         $data = array((string)$id);

@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -92,6 +91,7 @@ class M_devices_components extends MY_Model
         }
 
         if (!empty($group)) {
+            $CI = & get_instance();
             $sql = "/* m_devices_components::read */" . "SELECT `sql` FROM `groups` WHERE `id` = " . intval($group);
             $query = $this->db->query($sql);
             $result = $query->result();
@@ -1391,6 +1391,7 @@ class M_devices_components extends MY_Model
 
     public function partition_use_report($group_id, $user_id, $days = '120')
     {
+        $user_id = intval($user_id);
         $resultset = array();
         $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`, 
                 `partition`.`id` as partition_id, `partition`.`mount_point`, `partition`.`name` as partition_name
@@ -1410,7 +1411,6 @@ class M_devices_components extends MY_Model
         $sql = $this->clean_sql($sql);
         $data = array($group_id);
         $query = $this->db->query($sql, $data);
-        $returned_data = array();
         foreach ($query->result() as $system) {
             $partition_sql = "SELECT id, round(AVG(used),0) AS used, size as total, used_percent as percent_used, free_percent as percent_free, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND linked_table = 'partition' GROUP BY DATE(`timestamp`) ORDER BY `timestamp`";
             $partition_sql = $this->clean_sql($partition_sql);

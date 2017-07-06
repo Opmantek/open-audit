@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -88,7 +87,6 @@ class M_fields extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('fields', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'fields');

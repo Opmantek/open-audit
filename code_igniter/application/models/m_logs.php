@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -45,7 +44,8 @@ class M_logs extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function read($id = '') {
+    public function read($id = '')
+    {
         $this->log->function = strtolower(__METHOD__);
         $this->log->detail = "SELECT * FROM logs WHERE id = ?";
         stdlog($this->log);

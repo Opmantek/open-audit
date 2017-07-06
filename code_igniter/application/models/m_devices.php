@@ -393,13 +393,13 @@ class M_devices extends MY_Model
                 // good
             } else {
                 // TODO - log an error here
-                echo "Could not delete $filename.";
-                exit();
+                echo "Could not delete " . $attachment[0]->filename . ".";
+                return false;
             }
         }
         $sql = "/* m_devices::sub_resource_delete */ " . "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
         $data = array(intval($id), intval($sub_resource_id));
-        $result = $this->run_sql($sql, $data);
+        $this->run_sql($sql, $data);
         if ($this->db->affected_rows() > 0) {
             return true;
         } else {

@@ -152,9 +152,8 @@ class M_collection extends MY_Model
         if ($collection === '') {
             log_error('ERR-0010', 'm_collection::create (no collection)');
             return false;
-        } else {
-            $db_table = $collection;
         }
+        $db_table = $collection;
 
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data (' . $collection . ')';
@@ -175,10 +174,9 @@ class M_collection extends MY_Model
                 }
             } elseif ($data->type == 'active directory') {
                 if (empty($data->other->ad_server) or empty($data->other->ad_domain)) {
+                    $temp = "Active Directory Domain";
                     if (empty($data->other->ad_server)) {
                         $temp = "Active Directory Server";
-                    } else {
-                        $temp = "Active Directory Domain";
                     }
                     log_error('ERR-0024', 'm_collection::create (ad discoveries)');
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no ' . $temp . ' supplied.');

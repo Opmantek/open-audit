@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -44,7 +43,7 @@ class M_edit_log extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($system_id, $details = '',  $db_table = 'system', $db_column = '', $timestamp = '', $value = '', $previous_value = '')
+    public function create($system_id, $details = '', $db_table = 'system', $db_column = '', $timestamp = '', $value = '', $previous_value = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';
@@ -69,7 +68,7 @@ class M_edit_log extends MY_Model
             $sql = $this->clean_sql($sql);
             #$data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$timestamp", "$value", "$previous_value");
             $data = array($this->session->userdata['user_id'], $system_id, "$details", "$db_table", "$db_column", "$value", "$previous_value");
-            $query = $this->db->query($sql, $data);
+            $this->db->query($sql, $data);
         }
     }
 

@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -87,7 +86,6 @@ class M_orgs extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('orgs', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'orgs');
@@ -121,7 +119,7 @@ class M_orgs extends MY_Model
         stdlog($this->log);
         $CI = & get_instance();
         $sql = "SELECT o1.*, o2.name as parent_name, count(system.id) as device_count FROM orgs o1 LEFT JOIN orgs o2 ON o1.parent_id = o2.id LEFT JOIN system ON (o1.id = system.org_id) WHERE o1.id IN (" . $CI->user->org_list . ") GROUP BY o1.id ";
-        $result = $this->run_sql($sql, $data);
+        $result = $this->run_sql($sql);
         return($result);
     }
 

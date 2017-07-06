@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -48,11 +47,10 @@ class M_attributes extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        if ($id == '') {
+        $id = intval($id);
+        if ($id === 0) {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
         }
         $sql = "SELECT * FROM `attributes` WHERE id = ?";
         $data = array($id);
@@ -66,11 +64,10 @@ class M_attributes extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
+        $id = intval($id);
+        if ($id === 0) {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
         }
         if ($id != 0) {
             $CI = & get_instance();
@@ -78,17 +75,14 @@ class M_attributes extends MY_Model
             $data = array(intval($id));
             $this->run_sql($sql, $data);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public function collection()
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
-
         // get a list of Orgs and Locations so we can populate the names
         $sql = "SELECT id, name FROM orgs";
         $result = $this->run_sql($sql, array());

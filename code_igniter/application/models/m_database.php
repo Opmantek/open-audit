@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -222,8 +221,8 @@ class M_database extends MY_Model
                         $backup = $this->dbutil->csv_from_result($query, $delimiter, $newline);
                         $this->load->helper('download');
                         force_download('open-audit_' . $table . '.csv', $backup);
+                        return;
                     }
-                    exit();
                 }
                 if ($format == 'xml') {
                     $this->load->dbutil();
@@ -237,8 +236,8 @@ class M_database extends MY_Model
                         $backup = $this->dbutil->xml_from_result($query, $config);
                         $this->load->helper('download');
                         force_download('open-audit_' . $table . '.xml', $backup);
+                        return;
                     }
-                    exit();
                 }
                 if ($format == 'sql') {
                     if (php_uname('s') == 'Windows NT') {
@@ -265,8 +264,8 @@ class M_database extends MY_Model
                         $backup = implode("\n", $backup);
                         $this->load->helper('download');
                         force_download('open-audit_' . $table . '.sql', $backup);
+                        return;
                     }
-                    exit();
                 }
                 break;
             

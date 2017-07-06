@@ -70,7 +70,7 @@ class M_logon extends MY_Model
             log_error('ERR-0015', $CI->response->meta->collection . ':' . $CI->response->meta->action . ' Incomplete credentials');
             if ($CI->response->meta->format == 'json') {
                 echo json_encode($CI->response);
-                exit();
+                return false;
             } else {
                 redirect('logon');
             }
@@ -128,7 +128,7 @@ class M_logon extends MY_Model
                         stdlog($log);
                         continue;
                     }
-                    ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5); 
+                    ldap_set_option(null, LDAP_OPT_NETWORK_TIMEOUT, 5);
                     ldap_set_option(null, LDAP_OPT_DEBUG_LEVEL, 7);
                     ldap_set_option(null, LDAP_OPT_PROTOCOL_VERSION, $ldap->version);
                     $ldap->dn_password = (string)$this->encrypt->decode($ldap->dn_password);

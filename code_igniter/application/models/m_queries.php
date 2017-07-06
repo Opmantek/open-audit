@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -198,7 +197,6 @@ class M_queries extends MY_Model
         if ($id == '') {
             $CI = & get_instance();
             $id = intval($CI->response->meta->id);
-            unset($limit);
         } else {
             $id = intval($id);
         }

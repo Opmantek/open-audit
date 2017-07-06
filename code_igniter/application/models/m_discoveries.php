@@ -27,9 +27,8 @@
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
- * 
+ *
  * @version   2.0.2
-
  *
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -91,14 +90,14 @@ class M_discoveries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $CI = & get_instance();
         $sql = $this->collection_sql('discoveries', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
 
-    public function read_sub_resource($id = '') {
+    public function read_sub_resource($id = '')
+    {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         // Read our associated logs (if any)
@@ -302,9 +301,8 @@ class M_discoveries extends MY_Model
                             $ad_discovery->complete = 'y';
                             $ad_discovery->other = new stdClass();
                             $ad_discovery->other->subnet = $subnet['name'][0];
-                            $other = json_encode($ad_discovery->other);
-                            $sql = 'SELECT * FROM discoveries WHERE other = " . $other . " AND org_id = ' . $ad_discovery->org_id;
-                            $result = $this->run_sql($sql, array());
+                            $sql = 'SELECT * FROM discoveries WHERE other = ? AND org_id = ' . intval($ad_discovery->org_id);
+                            $result = $this->run_sql($sql, array(json_encode($ad_discovery->other)));
                             if (count($result) == 0) {
                                 $this_id = $this->create($ad_discovery);
                                 $this->execute($this_id);
