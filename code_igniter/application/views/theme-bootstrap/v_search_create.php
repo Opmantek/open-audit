@@ -142,7 +142,9 @@ if (!empty($this->response->data)) { ?>
                     }
                 }
             } else {
-                echo "            <td></td>\n";
+                if ($property != 'ip.ip_padded') {
+                    echo "            <td></td>\n";
+                }
             }
         }
         if ($this->m_users->get_user_permission('', 'devices', 'u')) {
