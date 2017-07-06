@@ -71,7 +71,7 @@ if (!empty($this->response->data)) { ?>
                 if (strpos($key, '.') !== false) {
                     $key = substr($key, strpos($key, '.')+1);
                 }
-                if (strrpos($key, 'ip_padded') === strlen($key)-9) {
+                if (strrpos($key, 'ip_padded') === strlen($key)-9 or $key == 'ip.ip_padded') {
                     continue;
                 }
                 if ($key == 'system.id' or $key == 'id') {
@@ -121,7 +121,7 @@ if (!empty($this->response->data)) { ?>
                 if ($property == 'system.id') {
                     echo '<td><a style="min-width:38px;" href="' . htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET) . '" role="button" class="btn btn-sm btn-success">' . intval($item->id) . '</a></td>';
 
-                } elseif (strrpos($property, 'ip_padded') === strlen($property)-9) {
+                } elseif (strrpos($property, 'ip_padded') === strlen($property)-9 or $property == 'ip.ip_padded') {
                     continue;
 
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
