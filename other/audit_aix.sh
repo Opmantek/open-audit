@@ -50,7 +50,7 @@ create_file="y"
 # submit the audit to the Open-AudIT server
 submit_online="y"
 
-# the address of the OAv2 server "submit" page
+# the address of the Open-AudIT server "submit" page
 # url="http://localhost/index.php/system/add_system"
 url="http://localhost/open-audit/index.php/input/devices"
 

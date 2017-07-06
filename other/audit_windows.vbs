@@ -41,7 +41,7 @@ start_time = Timer
 ' default to localhost
 strcomputer = "."
 
-' submit the audit to the OAv2 server
+' submit the audit to the Open-AudIT server
 submit_online = "y"
 
 ' create an XML text file of the result in the current directory
@@ -64,7 +64,7 @@ strpass = ""
 ' If our URL uses https, but the certificate is invalid or unrecognised (self signed), we should submit anyway.
 ignore_invalid_ssl = "y"
 
-' optional - assign any PCs audited to this Org - take the OrgId from OAv2 interface
+' optional - assign any PCs audited to this Org - take the OrgId from Open-AudIT web interface
 org_id = ""
 
 ' optional - query this Active Directory attribute to determine the users work unit
