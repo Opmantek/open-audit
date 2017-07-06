@@ -417,21 +417,20 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM scripts WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
-                $test = @$this->encrypt->decode($result[0]->options);
-                if (!empty($test)) {
-                    $existing = json_decode($this->encrypt->decode($result[0]->options));
+                if (!empty($result[0]->options)) {
+                    $existing = json_decode($result[0]->options);
                 } else {
                     $existing = new stdClass();
                 }
                 $new = new stdClass();
                 foreach ($existing as $existing_key => $existing_value) {
-                    if (!empty($received->$existing_key)) {
+                    if (isset($received->$existing_key)) {
                         $new->$existing_key = $received->$existing_key;
                     } else {
                         $new->$existing_key = $existing->$existing_key;
                     }
                 }
-                $data->options = (string)$this->encrypt->encode(json_encode($new));
+                $data->options = (string)json_encode($new);
             }
         }
 
