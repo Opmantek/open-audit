@@ -86,6 +86,15 @@ $sql = "CREATE TABLE `tasks` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# system
+$this->alter_table('system', 'location_latitude', "`location_latitude` float(10,6) NOT NULL AFTER `location_rack_size`");
+$this->alter_table('system', 'location_longitude', "`location_longitude` float(10,6) NOT NULL AFTER `location_latitude`");
+$this->alter_table('system', 'purchase_service_contract_number', "`purchase_service_contract_number` varchar(255) NOT NULL DEFAULT '' AFTER `purchase_date`");
+$this->alter_table('system', 'lease_expiry_date', "`lease_expiry_date` date NOT NULL DEFAULT '2000-01-01' AFTER `purchase_service_contract_number`");
+$this->alter_table('system', 'nmis_export', "`nmis_export` enum('y','n') NOT NULL DEFAULT 'n' AFTER `nmis_role`");
+$this->alter_table('system', 'oae_manage', "`oae_manage` enum('y','n') NOT NULL DEFAULT 'y' AFTER `nmis_export`");
+$this->alter_table('system', 'snmp_oid', "`snmp_oid` text NOT NULL AFTER `oae_manage`");
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170701' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
