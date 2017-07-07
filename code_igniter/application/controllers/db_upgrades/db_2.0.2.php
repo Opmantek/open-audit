@@ -29,6 +29,17 @@
 
 $this->log_db('Upgrade database to 2.0.2 commenced');
 
+# configuration
+$sql = "DELETE FROM `configuration` WHERE name = 'page_refresh'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `configuration` WHERE name = 'logo'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
+
 # connections
 $this->alter_table('connections', 'description', "ADD `description` TEXT NOT NULL AFTER `name`", 'add');
 
