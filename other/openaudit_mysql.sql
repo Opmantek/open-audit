@@ -419,7 +419,8 @@ DROP TABLE IF EXISTS `connections`;
 CREATE TABLE `connections` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `description` text NOT NULL,
   `provider` varchar(100) NOT NULL,
   `service_type` varchar(100) NOT NULL,
   `product_name` varchar(100) NOT NULL,
@@ -1049,7 +1050,7 @@ CREATE TABLE `ldap_servers` (
   `secure` enum('y','n') NOT NULL DEFAULT 'n',
   `domain` varchar(200) NOT NULL DEFAULT '',
   `type` enum('active directory','openldap') NOT NULL DEFAULT 'active directory',
-  `version` int(1) unsigned NOT NULL default '3',
+  `version` int(1) unsigned NOT NULL DEFAULT '3',
   `base_dn` varchar(200) NOT NULL DEFAULT '',
   `user_dn` varchar(200) NOT NULL DEFAULT '',
   `user_membership_attribute` varchar(200) NOT NULL DEFAULT 'memberUid',
@@ -2574,8 +2575,8 @@ CREATE TABLE `tasks` (
   `day_of_month` varchar(100) NOT NULL DEFAULT '*',
   `month` varchar(100) NOT NULL DEFAULT '*',
   `day_of_week` varchar(100) NOT NULL DEFAULT '*',
-  `delay_minutes` int unsigned NOT NULL DEFAULT '0',
-  `expire_minutes` int unsigned NOT NULL DEFAULT '0',
+  `delay_minutes` int(10) unsigned NOT NULL DEFAULT '0',
+  `expire_minutes` int(10) unsigned NOT NULL DEFAULT '0',
   `first_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -2583,7 +2584,6 @@ CREATE TABLE `tasks` (
   `options` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2681,7 +2681,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
