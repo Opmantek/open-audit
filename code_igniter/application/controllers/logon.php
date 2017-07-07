@@ -293,11 +293,6 @@ class logon extends CI_Controller
         }
 
         $this->m_configuration->update('oae_license', (string)$license->license, 'system');
-        // if ($license->license == 'commercial' or $license->license == 'free') {
-        //     $this->m_configuration->update('logo', 'logo-banner-oae', 'system');
-        // } else {
-        //     $this->m_configuration->update('logo', 'logo-banner-oac-oae', 'system');
-        // }
 
         if (!empty($license->product)) {
             $product = $license->product;
