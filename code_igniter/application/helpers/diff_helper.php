@@ -5,6 +5,7 @@
 class.Diff.php
 
 A class containing a diff implementation
+http://code.stephenmorley.org/php/diff-implementation/
 
 Created by Stephen Morley - http://stephenmorley.org/ - and released under the
 terms of the CC0 1.0 Universal legal code:
