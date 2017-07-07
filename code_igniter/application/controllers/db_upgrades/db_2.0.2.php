@@ -38,7 +38,19 @@ $sql = "DELETE FROM `configuration` WHERE name = 'logo'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$this->alter_table('configuration', 'type', "ADD `type` varchar(10) NOT NULL DEFAULT 'text' AFTER `value`", 'add');
 
+$sql = "UPDATE `configuration` SET `type` = 'bool' WHERE `name` IN ('blessed_subnets_use','delete_noncurrent','discovery_create_alerts','discovery_nmap_os','discovery_use_dns','discovery_use_ipmi','match_dbus','match_fqdn','match_hostname','match_hostname_dbus','match_hostname_serial','match_hostname_uuid','match_ip','match_mac','match_mac_vmware','match_serial','match_serial_type','match_uuid','nmis','process_netstat_windows_dns','rss_enable')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `configuration` SET `type` = 'date' WHERE `name` IN ('oae_prompt')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `configuration` SET `type` = 'number' WHERE `name` IN ('graph_days','internal_version','log_level','log_retain_level_0','log_retain_level_1','log_retain_level_2','log_retain_level_3','log_retain_level_4','log_retain_level_5','log_retain_level_6','log_retain_level_7')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # connections
 $this->alter_table('connections', 'description', "ADD `description` TEXT NOT NULL AFTER `name`", 'add');

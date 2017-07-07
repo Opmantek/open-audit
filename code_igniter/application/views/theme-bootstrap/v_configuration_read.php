@@ -60,7 +60,18 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="value" class="col-sm-3 control-label">Value</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <?php
+                        if (empty($item->attributes->type)) {
+                            $item->attributes->type = 'text';
+                        }
+                        if ($item->attributes->type != 'bool') { ?>
+                            <input type="<?php echo $item->attributes->type ?>" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <?php } else { ?>
+                            <select class="form-control" id="value" name="value" disabled>
+                                <option value="y" <?php if ($item->attributes->value == 'y') { echo "selected"; } ?>>y</option>
+                                <option value="n" <?php if ($item->attributes->value == 'n') { echo "selected"; } ?>>n</option>
+                            </select>
+                        <?php } ?>
                             <?php if (!empty($edit) and $item->attributes->editable == 'y') { ?>
                             <span class="input-group-btn">
                                 <button id="edit_value" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="value"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

@@ -342,6 +342,7 @@ CREATE TABLE `configuration` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `value` longtext NOT NULL,
+  `type` varchar(10) NOT NULL DEFAULT 'text',
   `editable` varchar(1) NOT NULL DEFAULT 'n',
   `edited_by` varchar(100) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -356,55 +357,55 @@ CREATE TABLE `configuration` (
 
 LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
-INSERT INTO `configuration` VALUES (1,'blessed_subnets_use','y','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
-INSERT INTO `configuration` VALUES (2,'default_network_address','','y','system','2000-01-01 00:00:00','The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
-INSERT INTO `configuration` VALUES (3,'delete_noncurrent','n','y','system','2000-01-01 00:00:00','Should we delete any attributes that are not present when we audit a device.');
-INSERT INTO `configuration` VALUES (4,'discovery_create_alerts','y','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the alert table if a change is detected.');
-INSERT INTO `configuration` VALUES (5,'discovery_ip_exclude','','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
-INSERT INTO `configuration` VALUES (6,'discovery_linux_script_directory','/tmp/','y','system','2000-01-01 00:00:00','The directory the script is copied into on the target device.');
-INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
-INSERT INTO `configuration` VALUES (8,'discovery_nmap_os','n','y','system','2000-01-01 00:00:00','When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
-INSERT INTO `configuration` VALUES (9,'discovery_use_dns','y','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
-INSERT INTO `configuration` VALUES (10,'discovery_use_ipmi','y','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (11,'display_version','2.0.2','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
-INSERT INTO `configuration` VALUES (12,'download_reports','download','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
-INSERT INTO `configuration` VALUES (13,'graph_days','30','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
-INSERT INTO `configuration` VALUES (14,'homepage','groups','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (15,'internal_version','20170701','n','system','2000-01-01 00:00:00','The internal numerical version.');
-INSERT INTO `configuration` VALUES (17,'log_level','5','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
-INSERT INTO `configuration` VALUES (18,'log_retain_level_0','180','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
-INSERT INTO `configuration` VALUES (19,'log_retain_level_1','180','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
-INSERT INTO `configuration` VALUES (20,'log_retain_level_2','180','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 2.');
-INSERT INTO `configuration` VALUES (21,'log_retain_level_3','180','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 3.');
-INSERT INTO `configuration` VALUES (22,'log_retain_level_4','180','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 4.');
-INSERT INTO `configuration` VALUES (23,'log_retain_level_5','90','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 5.');
-INSERT INTO `configuration` VALUES (24,'log_retain_level_6','30','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 6.');
-INSERT INTO `configuration` VALUES (25,'log_retain_level_7','7','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 7.');
-INSERT INTO `configuration` VALUES (26,'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','y','system','2000-01-01 00:00:00','The API key for Google Maps.');
-INSERT INTO `configuration` VALUES (27,'maps_url','/omk/oae/map','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
-INSERT INTO `configuration` VALUES (28,'match_dbus','n','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
-INSERT INTO `configuration` VALUES (29,'match_fqdn','y','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
-INSERT INTO `configuration` VALUES (30,'match_hostname','y','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
-INSERT INTO `configuration` VALUES (31,'match_hostname_dbus','y','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and dbus id.');
-INSERT INTO `configuration` VALUES (32,'match_hostname_serial','y','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
-INSERT INTO `configuration` VALUES (33,'match_hostname_uuid','y','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and UUID.');
-INSERT INTO `configuration` VALUES (34,'match_ip','n','y','system','2000-01-01 00:00:00','Should we match a device based on its ip.');
-INSERT INTO `configuration` VALUES (35,'match_mac','n','y','system','2000-01-01 00:00:00','Should we match a device based on its mac address.');
-INSERT INTO `configuration` VALUES (36,'match_mac_vmware','n','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if it\'s a known likely duplicate from VMware.');
-INSERT INTO `configuration` VALUES (37,'match_serial','y','y','system','2000-01-01 00:00:00','Should we match a device based on its serial number.');
-INSERT INTO `configuration` VALUES (38,'match_serial_type','y','y','system','2000-01-01 00:00:00','Should we match a device based on its serial and type.');
-INSERT INTO `configuration` VALUES (39,'match_uuid','y','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
-INSERT INTO `configuration` VALUES (40,'nmis','n','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
-INSERT INTO `configuration` VALUES (41,'nmis_url','','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
-INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','','n','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
-INSERT INTO `configuration` VALUES (43,'oae_license','','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (44,'oae_prompt','2015-06-01','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (45,'oae_url','/omk/open-audit','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
-INSERT INTO `configuration` VALUES (47,'rss_enable','y','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
-INSERT INTO `configuration` VALUES (48,'rss_url','https://community.opmantek.com/rss/OA.xml','y','system','2000-01-01 00:00:00','The RSS feed URL.');
-INSERT INTO `configuration` VALUES (49,'uuid',UUID(),'n','system',NOW(),'The unique identfier of this Open-AudIT server.');
-INSERT INTO `configuration` VALUES (50,'modules','','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
-INSERT INTO `configuration` VALUES (51,'oae_product','Open-AudIT Community','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
+INSERT INTO `configuration` VALUES (1,'blessed_subnets_use','y','bool','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
+INSERT INTO `configuration` VALUES (2,'default_network_address','','text','y','system','2000-01-01 00:00:00','The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
+INSERT INTO `configuration` VALUES (3,'delete_noncurrent','n','bool','y','system','2000-01-01 00:00:00','Should we delete any attributes that are not present when we audit a device.');
+INSERT INTO `configuration` VALUES (4,'discovery_create_alerts','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the alert table if a change is detected.');
+INSERT INTO `configuration` VALUES (5,'discovery_ip_exclude','','text','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');
+INSERT INTO `configuration` VALUES (6,'discovery_linux_script_directory','/tmp/','text','y','system','2000-01-01 00:00:00','The directory the script is copied into on the target device.');
+INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
+INSERT INTO `configuration` VALUES (8,'discovery_nmap_os','n','bool','y','system','2000-01-01 00:00:00','When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
+INSERT INTO `configuration` VALUES (9,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
+INSERT INTO `configuration` VALUES (10,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
+INSERT INTO `configuration` VALUES (11,'display_version','2.0.2','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (12,'download_reports','download','y','text','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
+INSERT INTO `configuration` VALUES (13,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
+INSERT INTO `configuration` VALUES (14,'homepage','groups','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
+INSERT INTO `configuration` VALUES (15,'internal_version','20170701','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (17,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
+INSERT INTO `configuration` VALUES (18,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
+INSERT INTO `configuration` VALUES (19,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
+INSERT INTO `configuration` VALUES (20,'log_retain_level_2','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 2.');
+INSERT INTO `configuration` VALUES (21,'log_retain_level_3','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 3.');
+INSERT INTO `configuration` VALUES (22,'log_retain_level_4','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 4.');
+INSERT INTO `configuration` VALUES (23,'log_retain_level_5','90','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 5.');
+INSERT INTO `configuration` VALUES (24,'log_retain_level_6','30','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 6.');
+INSERT INTO `configuration` VALUES (25,'log_retain_level_7','7','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 7.');
+INSERT INTO `configuration` VALUES (26,'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','text','y','system','2000-01-01 00:00:00','The API key for Google Maps.');
+INSERT INTO `configuration` VALUES (27,'maps_url','/omk/oae/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
+INSERT INTO `configuration` VALUES (28,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
+INSERT INTO `configuration` VALUES (29,'match_fqdn','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
+INSERT INTO `configuration` VALUES (30,'match_hostname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
+INSERT INTO `configuration` VALUES (31,'match_hostname_dbus','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and dbus id.');
+INSERT INTO `configuration` VALUES (32,'match_hostname_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and serial.');
+INSERT INTO `configuration` VALUES (33,'match_hostname_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and UUID.');
+INSERT INTO `configuration` VALUES (34,'match_ip','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip.');
+INSERT INTO `configuration` VALUES (35,'match_mac','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its mac address.');
+INSERT INTO `configuration` VALUES (36,'match_mac_vmware','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if it\'s a known likely duplicate from VMware.');
+INSERT INTO `configuration` VALUES (37,'match_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial number.');
+INSERT INTO `configuration` VALUES (38,'match_serial_type','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial and type.');
+INSERT INTO `configuration` VALUES (39,'match_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
+INSERT INTO `configuration` VALUES (40,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
+INSERT INTO `configuration` VALUES (41,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
+INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','','bool','n','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
+INSERT INTO `configuration` VALUES (43,'oae_license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (44,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (45,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
+INSERT INTO `configuration` VALUES (47,'rss_enable','y','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
+INSERT INTO `configuration` VALUES (48,'rss_url','https://community.opmantek.com/rss/OA.xml','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
+INSERT INTO `configuration` VALUES (49,'uuid',UUID(),'text','n','system',NOW(),'The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (50,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
+INSERT INTO `configuration` VALUES (51,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
