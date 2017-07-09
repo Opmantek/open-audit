@@ -626,7 +626,7 @@ if (!function_exists('snmp_audit')) {
             $details->os_family = 'Apple OSX';
         }
         if (!empty($details->manufacturer) and (stripos($details->manufacturer, 'tplink') !== false or stripos($details->manufacturer, 'tp-link') !== false)) {
-            $details->manufacturer = 'TP-Link Technology Co.,Ltd';
+            $details->manufacturer = 'TP-Link Technology';
         }
         if (!empty($details->sysDescr) and stripos($details->sysDescr, 'buffalo terastation') !== false) {
             $details->manufacturer = 'Buffalo';
@@ -2495,7 +2495,7 @@ function snmp_credentials_old($ip = '', $credentials = array(), $display = 'n')
 //         $details->os_family = 'Apple OSX';
 //     }
 //     if (!empty($details->manufacturer) and (stripos($details->manufacturer, 'tplink') !== false or stripos($details->manufacturer, 'tp-link') !== false)) {
-//         $details->manufacturer = 'TP-Link Technology Co.,Ltd';
+//         $details->manufacturer = 'TP-Link Technology';
 //     }
 //     if (!empty($details->sysDescr) and stripos($details->sysDescr, 'buffalo terastation') !== false) {
 //         $details->manufacturer = 'Buffalo';

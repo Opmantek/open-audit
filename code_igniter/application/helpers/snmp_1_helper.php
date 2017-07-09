@@ -45,7 +45,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     # TP-LINK adsl modem
     if ($details->sysDescr == 'TD-W8951ND') {
         $details->model = 'TD-W8951ND';
-        $details->manufacturer = 'TP-Link Technology Co.,Ltd';
+        $details->manufacturer = 'TP-Link Technology';
         $details->type = 'adsl modem';
     }
     return($details);

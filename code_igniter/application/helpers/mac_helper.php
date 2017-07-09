@@ -2823,7 +2823,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:0a:e8') === 0) { return('Cathay Roxus Information Technology Co. LTD'); }
         if (stripos($mac, '00:0a:e9') === 0) { return('AirVast Technology Inc.'); }
         if (stripos($mac, '00:0a:ea') === 0) { return('ADAM ELEKTRONIK LTD. ŞTI'); }
-        if (stripos($mac, '00:0a:eb') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:0a:eb') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:0a:ec') === 0) { return('Koatsu Gas Kogyo Co., Ltd.'); }
         if (stripos($mac, '00:0a:ed') === 0) { return('HARTING Electronics GmbH'); }
         if (stripos($mac, '00:0a:ee') === 0) { return('GCD Hard- & Software GmbH'); }
@@ -5268,7 +5268,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:14:75') === 0) { return('Wiline Networks, Inc.'); }
         if (stripos($mac, '00:14:76') === 0) { return('MultiCom Industries Limited'); }
         if (stripos($mac, '00:14:77') === 0) { return('Nertec  Inc.'); }
-        if (stripos($mac, '00:14:78') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:14:78') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:14:79') === 0) { return('NEC Magnus Communications,Ltd.'); }
         if (stripos($mac, '00:14:7a') === 0) { return('Eubus GmbH'); }
         if (stripos($mac, '00:14:7b') === 0) { return('Iteris, Inc.'); }
@@ -6652,7 +6652,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:19:dd') === 0) { return('FEI-Zyfer, Inc.'); }
         if (stripos($mac, '00:19:de') === 0) { return('MOBITEK'); }
         if (stripos($mac, '00:19:df') === 0) { return('Thomson Inc.'); }
-        if (stripos($mac, '00:19:e0') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:19:e0') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:19:e1') === 0) { return('Nortel Networks'); }
         if (stripos($mac, '00:19:e2') === 0) { return('Juniper Networks'); }
         if (stripos($mac, '00:19:e3') === 0) { return('Apple, Inc.'); }
@@ -7467,7 +7467,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:1d:0c') === 0) { return('MobileCompia'); }
         if (stripos($mac, '00:1d:0d') === 0) { return('Sony Interactive Entertainment Inc.'); }
         if (stripos($mac, '00:1d:0e') === 0) { return('Agapha Technology co., Ltd.'); }
-        if (stripos($mac, '00:1d:0f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:1d:0f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:1d:10') === 0) { return('LightHaus Logic, Inc.'); }
         if (stripos($mac, '00:1d:11') === 0) { return('Analogue & Micro Ltd'); }
         if (stripos($mac, '00:1d:12') === 0) { return('ROHM CO., LTD.'); }
@@ -8515,7 +8515,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:21:24') === 0) { return('Optos Plc'); }
         if (stripos($mac, '00:21:25') === 0) { return('KUK JE TONG SHIN Co.,LTD'); }
         if (stripos($mac, '00:21:26') === 0) { return('Shenzhen Torch Equipment Co., Ltd.'); }
-        if (stripos($mac, '00:21:27') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:21:27') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:21:28') === 0) { return('Oracle Corporation'); }
         if (stripos($mac, '00:21:29') === 0) { return('Cisco-Linksys, LLC'); }
         if (stripos($mac, '00:21:2a') === 0) { return('Audiovox Corporation'); }
@@ -9193,7 +9193,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:23:ca') === 0) { return('Behind The Set, LLC'); }
         if (stripos($mac, '00:23:cb') === 0) { return('Shenzhen Full-join Technology Co.,Ltd'); }
         if (stripos($mac, '00:23:cc') === 0) { return('Nintendo Co., Ltd.'); }
-        if (stripos($mac, '00:23:cd') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:23:cd') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:23:ce') === 0) { return('KITA DENSHI CORPORATION'); }
         if (stripos($mac, '00:23:cf') === 0) { return('CUMMINS-ALLISON CORP.'); }
         if (stripos($mac, '00:23:d0') === 0) { return('Uniloc USA Inc.'); }
@@ -9629,7 +9629,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:25:83') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, '00:25:84') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, '00:25:85') === 0) { return('KOKUYO S&T Co., Ltd.'); }
-        if (stripos($mac, '00:25:86') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:25:86') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:25:87') === 0) { return('Vitality, Inc.'); }
         if (stripos($mac, '00:25:88') === 0) { return('Genie Industries, Inc.'); }
         if (stripos($mac, '00:25:89') === 0) { return('Hills Industries Limited'); }
@@ -10029,7 +10029,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '00:27:16') === 0) { return('Adachi-Syokai Co., Ltd.'); }
         if (stripos($mac, '00:27:17') === 0) { return('CE Digital(Zhenjiang)Co.,Ltd'); }
         if (stripos($mac, '00:27:18') === 0) { return('Suzhou NEW SEAUNION Video Technology Co.,Ltd'); }
-        if (stripos($mac, '00:27:19') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '00:27:19') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '00:27:1a') === 0) { return('Geenovo Technology Ltd.'); }
         if (stripos($mac, '00:27:1b') === 0) { return('Alec Sicherheitssysteme GmbH'); }
         if (stripos($mac, '00:27:1c') === 0) { return('MERCURY CORPORATION'); }
@@ -13196,7 +13196,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '08:19:a6') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '08:1d:fb') === 0) { return('Shanghai Mexon Communication Technology Co.,Ltd'); }
         if (stripos($mac, '08:1f:3f') === 0) { return('WondaLink Inc.'); }
-        if (stripos($mac, '08:1f:71') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '08:1f:71') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '08:1f:eb') === 0) { return('BinCube'); }
         if (stripos($mac, '08:1f:f3') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, '08:21:ef') === 0) { return('Samsung Electronics Co.,Ltd'); }
@@ -13228,7 +13228,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '08:4e:bf') === 0) { return('Broad Net Mux Corporation'); }
         if (stripos($mac, '08:51:2e') === 0) { return('Orion Diagnostica Oy'); }
         if (stripos($mac, '08:52:40') === 0) { return('EbV Elektronikbau- und Vertriebs GmbH'); }
-        if (stripos($mac, '08:57:00') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '08:57:00') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '08:5a:e0') === 0) { return('Recovision Technology Co., Ltd.'); }
         if (stripos($mac, '08:5b:0e') === 0) { return('Fortinet, Inc.'); }
         if (stripos($mac, '08:5b:da') === 0) { return('CliniCare LTD'); }
@@ -13382,7 +13382,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '0c:6e:4f') === 0) { return('PrimeVOLT Co., Ltd.'); }
         if (stripos($mac, '0c:6f:9c') === 0) { return('Shaw Communications Inc.'); }
         if (stripos($mac, '0c:71:5d') === 0) { return('Samsung Electronics Co.,Ltd'); }
-        if (stripos($mac, '0c:72:2c') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '0c:72:2c') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '0c:73:be') === 0) { return('Dongguan Haimai Electronie Technology Co.,Ltd'); }
         if (stripos($mac, '0c:74:c2') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '0c:75:23') === 0) { return('BEIJING GEHUA CATV NETWORK CO.,LTD'); }
@@ -13392,7 +13392,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '0c:7d:7c') === 0) { return('Kexiang Information Technology Co, Ltd.'); }
         if (stripos($mac, '0c:81:12') === 0) { return('Private'); }
         if (stripos($mac, '0c:82:30') === 0) { return('SHENZHEN MAGNUS TECHNOLOGIES CO.,LTD'); }
-        if (stripos($mac, '0c:82:68') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '0c:82:68') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '0c:82:6a') === 0) { return('Wuhan Huagong Genuine Optics Technology Co., Ltd'); }
         if (stripos($mac, '0c:84:11') === 0) { return('A.O. Smith Water Products'); }
         if (stripos($mac, '0c:84:84') === 0) { return('Zenovia Electronics Inc.'); }
@@ -13642,7 +13642,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '10:fa:ce') === 0) { return('Reacheng Communication Technology Co.,Ltd'); }
         if (stripos($mac, '10:fb:f0') === 0) { return('KangSheng LTD.'); }
         if (stripos($mac, '10:fc:54') === 0) { return('Shany Electronic Co., Ltd. '); }
-        if (stripos($mac, '10:fe:ed') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '10:fe:ed') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '11:00:aa') === 0) { return('Private'); }
         if (stripos($mac, '11:11:11') === 0) { return('Private'); }
         if (stripos($mac, '14:02:ec') === 0) { return('Hewlett Packard Enterprise'); }
@@ -13718,12 +13718,12 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '14:6e:0a') === 0) { return('Private'); }
         if (stripos($mac, '14:73:73') === 0) { return('TUBITAK UEKAE'); }
         if (stripos($mac, '14:74:11') === 0) { return('RIM'); }
-        if (stripos($mac, '14:75:90') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '14:75:90') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '14:78:0b') === 0) { return('PerkinElmer Technologies GmbH & Co. KG'); }
         if (stripos($mac, '14:7d:b3') === 0) { return('JOA TELECOM.CO.,LTD'); }
         if (stripos($mac, '14:7d:c5') === 0) { return('Murata Manufacturing Co., Ltd.'); }
         if (stripos($mac, '14:82:5b') === 0) { return('Hefei Radio Communication Technology Co., Ltd '); }
-        if (stripos($mac, '14:86:92') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '14:86:92') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '14:89:3e') === 0) { return('VIXTEL TECHNOLOGIES LIMTED'); }
         if (stripos($mac, '14:89:51') === 0) { return('LCFC(HeFei) Electronics Technology co., ltd'); }
         if (stripos($mac, '14:89:fd') === 0) { return('Samsung Electronics Co.,Ltd'); }
@@ -13766,9 +13766,9 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '14:c2:1d') === 0) { return('Sabtech Industries'); }
         if (stripos($mac, '14:c3:c2') === 0) { return('K.A. Schmersal GmbH & Co. KG'); }
         if (stripos($mac, '14:c9:13') === 0) { return('LG Electronics'); }
-        if (stripos($mac, '14:cc:20') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '14:cc:20') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '14:cf:8d') === 0) { return('OHSUNG ELECTRONICS CO., LTD.'); }
-        if (stripos($mac, '14:cf:92') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '14:cf:92') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '14:cf:e2') === 0) { return('ARRIS Group, Inc.'); }
         if (stripos($mac, '14:d1:1f') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '14:d4:fe') === 0) { return('ARRIS Group, Inc.'); }
@@ -13779,7 +13779,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '14:dd:a9') === 0) { return('ASUSTek COMPUTER INC.'); }
         if (stripos($mac, '14:dd:e5') === 0) { return('MPMKVVCL'); }
         if (stripos($mac, '14:e4:ec') === 0) { return('mLogic LLC'); }
-        if (stripos($mac, '14:e6:e4') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '14:e6:e4') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '14:e7:c8') === 0) { return('Integrated Device Technology (Malaysia) Sdn. Bhd.'); }
         if (stripos($mac, '14:eb:33') === 0) { return('BSMediasoft Co., Ltd.'); }
         if (stripos($mac, '14:ed:a5') === 0) { return('Wächter GmbH Sicherheitssysteme'); }
@@ -13903,7 +13903,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '18:9c:5d') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, '18:9e:fc') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '18:a3:e8') === 0) { return('Fiberhome Telecommunication Technologies Co.,LTD'); }
-        if (stripos($mac, '18:a6:f7') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '18:a6:f7') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '18:a9:05') === 0) { return('Hewlett Packard'); }
         if (stripos($mac, '18:a9:58') === 0) { return('PROVISION THAI CO., LTD.'); }
         if (stripos($mac, '18:a9:9b') === 0) { return('Dell Inc.'); }
@@ -13932,7 +13932,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '18:d2:76') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '18:d5:b6') === 0) { return('SMG Holdings LLC'); }
         if (stripos($mac, '18:d6:6a') === 0) { return('Inmarsat'); }
-        if (stripos($mac, '18:d6:c7') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '18:d6:c7') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '18:d6:cf') === 0) { return('Kurth Electronic GmbH'); }
         if (stripos($mac, '18:d9:49') === 0) { return('Qvis Labs, LLC'); }
         if (stripos($mac, '18:db:f2') === 0) { return('Dell Inc.'); }
@@ -13999,7 +13999,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '1c:40:e8') === 0) { return('SHENZHEN PROGRESS&WIN TECHNOLOGY CO.,LTD'); }
         if (stripos($mac, '1c:41:58') === 0) { return('Gemalto M2M GmbH'); }
         if (stripos($mac, '1c:43:ec') === 0) { return('JAPAN CIRCUIT CO.,LTD'); }
-        if (stripos($mac, '1c:44:19') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '1c:44:19') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '1c:45:93') === 0) { return('Texas Instruments'); }
         if (stripos($mac, '1c:48:40') === 0) { return('IMS Messsysteme GmbH'); }
         if (stripos($mac, '1c:48:ce') === 0) { return('GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD'); }
@@ -14122,7 +14122,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '1c:f0:61') === 0) { return('SCAPS GmbH'); }
         if (stripos($mac, '1c:f4:ca') === 0) { return('Private'); }
         if (stripos($mac, '1c:f5:e7') === 0) { return('Turtle Industry Co., Ltd.'); }
-        if (stripos($mac, '1c:fa:68') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '1c:fa:68') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '1c:fc:bb') === 0) { return('Realfiction ApS'); }
         if (stripos($mac, '1c:fe:a7') === 0) { return('IDentytech Solutins Ltd.'); }
         if (stripos($mac, '20:01:4f') === 0) { return('Linea Research Ltd'); }
@@ -14192,7 +14192,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '20:68:9d') === 0) { return('Liteon Technology Corporation'); }
         if (stripos($mac, '20:6a:8a') === 0) { return('Wistron Infocomm (Zhongshan) Corporation'); }
         if (stripos($mac, '20:6a:ff') === 0) { return('Atlas Elektronik UK Limited'); }
-        if (stripos($mac, '20:6b:e7') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '20:6b:e7') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '20:6c:8a') === 0) { return('Aerohive Networks Inc.'); }
         if (stripos($mac, '20:6e:9c') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '20:6f:ec') === 0) { return('Braemac CA LLC'); }
@@ -14264,7 +14264,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '20:d9:06') === 0) { return('Iota, Inc.'); }
         if (stripos($mac, '20:db:ab') === 0) { return('Samsung Electronics Co., Ltd.'); }
         if (stripos($mac, '20:dc:93') === 0) { return('Cheetah Hi-Tech, Inc.'); }
-        if (stripos($mac, '20:dc:e6') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '20:dc:e6') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '20:df:3f') === 0) { return('Nanjing SAC Power Grid Automation Co., Ltd.'); }
         if (stripos($mac, '20:e4:07') === 0) { return('Spark srl'); }
         if (stripos($mac, '20:e5:2a') === 0) { return('NETGEAR'); }
@@ -14344,7 +14344,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '24:65:11') === 0) { return('AVM GmbH'); }
         if (stripos($mac, '24:69:3e') === 0) { return('innodisk Corporation'); }
         if (stripos($mac, '24:69:4a') === 0) { return('Jasmine Systems Inc.'); }
-        if (stripos($mac, '24:69:68') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '24:69:68') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '24:69:a5') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '24:6a:ab') === 0) { return('IT-IS International'); }
         if (stripos($mac, '24:6c:8a') === 0) { return('YUKAI Engineering'); }
@@ -14461,7 +14461,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '28:28:5d') === 0) { return('ZyXEL Communications Corporation'); }
         if (stripos($mac, '28:29:cc') === 0) { return('Corsa Technology Incorporated'); }
         if (stripos($mac, '28:29:d9') === 0) { return('GlobalBeiMing technology (Beijing)Co. Ltd'); }
-        if (stripos($mac, '28:2c:b2') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '28:2c:b2') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '28:31:52') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '28:32:c5') === 0) { return('HUMAX Co., Ltd.'); }
         if (stripos($mac, '28:34:10') === 0) { return('Enigma Diagnostics Limited'); }
@@ -14591,7 +14591,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '28:ed:58') === 0) { return('JAG Jakob AG'); }
         if (stripos($mac, '28:ed:6a') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '28:ee:2c') === 0) { return('Frontline Test Equipment'); }
-        if (stripos($mac, '28:ee:52') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '28:ee:52') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '28:ee:d3') === 0) { return('Shenzhen Super D Technology Co., Ltd'); }
         if (stripos($mac, '28:ef:01') === 0) { return('Private'); }
         if (stripos($mac, '28:f0:76') === 0) { return('Apple, Inc.'); }
@@ -14879,8 +14879,8 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '30:ae:f6') === 0) { return('Radio Mobile Access'); }
         if (stripos($mac, '30:b2:16') === 0) { return('Hytec Geraetebau GmbH'); }
         if (stripos($mac, '30:b3:a2') === 0) { return('Shenzhen Heguang Measurement & Control Technology Co.,Ltd'); }
-        if (stripos($mac, '30:b4:9e') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
-        if (stripos($mac, '30:b5:c2') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '30:b4:9e') === 0) { return('TP-Link Technology'); }
+        if (stripos($mac, '30:b5:c2') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '30:b5:f1') === 0) { return('Aitexin Technology Co., Ltd'); }
         if (stripos($mac, '30:b6:2d') === 0) { return(' Mojo Networks, Inc.'); }
         if (stripos($mac, '30:b6:4f') === 0) { return('Juniper Networks'); }
@@ -14916,7 +14916,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '30:f7:d7') === 0) { return('Thread Technology Co., Ltd'); }
         if (stripos($mac, '30:f9:ed') === 0) { return('Sony Corporation'); }
         if (stripos($mac, '30:fa:b7') === 0) { return('Tunai Creative'); }
-        if (stripos($mac, '30:fc:68') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '30:fc:68') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '30:fd:11') === 0) { return('MACROTECH (USA) INC.'); }
         if (stripos($mac, '30:fe:31') === 0) { return('Nokia'); }
         if (stripos($mac, '30:ff:f6') === 0) { return('HangZhou KuoHeng Technology Co.,ltd'); }
@@ -15011,7 +15011,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '34:8a:ae') === 0) { return('Sagemcom Broadband SAS'); }
         if (stripos($mac, '34:8f:27') === 0) { return('Ruckus Wireless'); }
         if (stripos($mac, '34:95:db') === 0) { return('Logitec Corporation'); }
-        if (stripos($mac, '34:96:72') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '34:96:72') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '34:97:f6') === 0) { return('ASUSTek COMPUTER INC.'); }
         if (stripos($mac, '34:97:fb') === 0) { return('ADVANCED RF TECHNOLOGIES INC'); }
         if (stripos($mac, '34:99:6f') === 0) { return('VPI Engineering'); }
@@ -15173,7 +15173,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '38:76:ca') === 0) { return('Shenzhen Smart Intelligent Technology Co.Ltd'); }
         if (stripos($mac, '38:76:d1') === 0) { return('Euronda SpA'); }
         if (stripos($mac, '38:7b:47') === 0) { return('AKELA, Inc.'); }
-        if (stripos($mac, '38:83:45') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '38:83:45') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '38:86:02') === 0) { return('Flexoptix GmbH'); }
         if (stripos($mac, '38:89:dc') === 0) { return('Opticon Sensors Europe B.V.'); }
         if (stripos($mac, '38:8a:b7') === 0) { return('ITC Networks'); }
@@ -15298,7 +15298,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '3c:3f:51') === 0) { return('2CRSI'); }
         if (stripos($mac, '3c:40:4f') === 0) { return('GUANGDONG PISEN ELECTRONICS CO.,LTD'); }
         if (stripos($mac, '3c:43:8e') === 0) { return('ARRIS Group, Inc.'); }
-        if (stripos($mac, '3c:46:d8') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '3c:46:d8') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '3c:47:11') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '3c:49:37') === 0) { return('ASSMANN Electronic GmbH'); }
         if (stripos($mac, '3c:4a:92') === 0) { return('Hewlett Packard'); }
@@ -15439,7 +15439,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '40:15:97') === 0) { return('Protect America, Inc.'); }
         if (stripos($mac, '40:16:3b') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '40:16:7e') === 0) { return('ASUSTek COMPUTER INC.'); }
-        if (stripos($mac, '40:16:9f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '40:16:9f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '40:16:fa') === 0) { return('EKM Metering'); }
         if (stripos($mac, '40:18:b1') === 0) { return('Aerohive Networks Inc.'); }
         if (stripos($mac, '40:18:d7') === 0) { return('Smartronix, Inc.'); }
@@ -15459,7 +15459,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '40:37:ad') === 0) { return('Macro Image Technology, Inc.'); }
         if (stripos($mac, '40:3c:fc') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '40:3d:ec') === 0) { return('HUMAX Co., Ltd.'); }
-        if (stripos($mac, '40:3f:8c') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '40:3f:8c') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '40:40:22') === 0) { return('ZIV'); }
         if (stripos($mac, '40:40:6b') === 0) { return('Icomera'); }
         if (stripos($mac, '40:40:a7') === 0) { return('Sony Mobile Communications AB'); }
@@ -15704,7 +15704,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '44:aa:e8') === 0) { return('Nanotec Electronic GmbH & Co. KG'); }
         if (stripos($mac, '44:aa:f5') === 0) { return('ARRIS Group, Inc.'); }
         if (stripos($mac, '44:ad:d9') === 0) { return('Cisco Systems, Inc'); }
-        if (stripos($mac, '44:b3:2d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '44:b3:2d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '44:b3:82') === 0) { return('Kuang-chi Institute of Advanced Technology'); }
         if (stripos($mac, '44:b4:12') === 0) { return('SIUS AG'); }
         if (stripos($mac, '44:ba:46') === 0) { return('SICHUAN TIANYI COMHEART TELECOMCO.,LTD'); }
@@ -15813,7 +15813,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '48:7a:55') === 0) { return('ALE International'); }
         if (stripos($mac, '48:7a:da') === 0) { return('Hangzhou H3C Technologies Co., Limited'); }
         if (stripos($mac, '48:7b:6b') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
-        if (stripos($mac, '48:7d:2e') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '48:7d:2e') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '48:82:44') === 0) { return('Life Fitness / Div. of Brunswick'); }
         if (stripos($mac, '48:82:f2') === 0) { return('Appel Elektronik GmbH'); }
         if (stripos($mac, '48:83:c7') === 0) { return('Sagemcom Broadband SAS'); }
@@ -16170,11 +16170,11 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '50:b7:c3') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '50:b8:88') === 0) { return('wi2be Tecnologia S/A'); }
         if (stripos($mac, '50:b8:a2') === 0) { return('ImTech Technologies LLC,'); }
-        if (stripos($mac, '50:bd:5f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '50:bd:5f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '50:c0:06') === 0) { return('Carmanah Signs'); }
         if (stripos($mac, '50:c2:71') === 0) { return('SECURETECH INC'); }
         if (stripos($mac, '50:c5:8d') === 0) { return('Juniper Networks'); }
-        if (stripos($mac, '50:c7:bf') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '50:c7:bf') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '50:c8:e5') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '50:c9:71') === 0) { return('GN Netcom A/S'); }
         if (stripos($mac, '50:c9:a0') === 0) { return('SKIPPER Electronics AS'); }
@@ -16206,7 +16206,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '50:f5:20') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '50:f5:da') === 0) { return('Amazon Technologies Inc.'); }
         if (stripos($mac, '50:f6:1a') === 0) { return('Kunshan JADE Technologies co., Ltd.'); }
-        if (stripos($mac, '50:fa:84') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '50:fa:84') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '50:fa:ab') === 0) { return('L-tek d.o.o.'); }
         if (stripos($mac, '50:fc:30') === 0) { return('Treehouse Labs'); }
         if (stripos($mac, '50:fc:9f') === 0) { return('Samsung Electronics Co.,Ltd'); }
@@ -16325,7 +16325,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '54:be:53') === 0) { return('zte corporation'); }
         if (stripos($mac, '54:be:f7') === 0) { return('PEGATRON CORPORATION'); }
         if (stripos($mac, '54:c4:15') === 0) { return('Hangzhou Hikvision Digital Technology Co.,Ltd.'); }
-        if (stripos($mac, '54:c8:0f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '54:c8:0f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '54:c9:df') === 0) { return('FN-LINK TECHNOLOGY LIMITED'); }
         if (stripos($mac, '54:cd:10') === 0) { return('Panasonic Mobile Communications Co.,Ltd.'); }
         if (stripos($mac, '54:cd:a7') === 0) { return('Fujian Shenzhou Electronic Co.,Ltd'); }
@@ -16352,7 +16352,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '54:e4:3a') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '54:e4:bd') === 0) { return('FN-LINK TECHNOLOGY LIMITED'); }
         if (stripos($mac, '54:e6:3f') === 0) { return('ShenZhen LingKeWeiEr Technology Co., Ltd.'); }
-        if (stripos($mac, '54:e6:fc') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '54:e6:fc') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '54:ea:a8') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '54:ed:a3') === 0) { return('Navdy, Inc.'); }
         if (stripos($mac, '54:ee:75') === 0) { return('Wistron InfoComm(Kunshan)Co.,Ltd.'); }
@@ -16565,7 +16565,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '5c:5b:35') === 0) { return('Mist Systems, Inc.'); }
         if (stripos($mac, '5c:5b:c2') === 0) { return('YIK Corporation'); }
         if (stripos($mac, '5c:5e:ab') === 0) { return('Juniper Networks'); }
-        if (stripos($mac, '5c:63:bf') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '5c:63:bf') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '5c:69:84') === 0) { return('NUVICO'); }
         if (stripos($mac, '5c:6a:7d') === 0) { return('KENTKART EGE ELEKTRONIK SAN. VE TIC. LTD. STI. '); }
         if (stripos($mac, '5c:6a:80') === 0) { return('ZyXEL Communications Corporation'); }
@@ -16581,7 +16581,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '5c:86:13') === 0) { return('Beijing Zhoenet Technology Co., Ltd'); }
         if (stripos($mac, '5c:86:4a') === 0) { return('Secret Labs LLC'); }
         if (stripos($mac, '5c:87:78') === 0) { return('Cybertelbridge co.,ltd'); }
-        if (stripos($mac, '5c:89:9a') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '5c:89:9a') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '5c:89:d4') === 0) { return('Beijing Banner Electric Co.,Ltd'); }
         if (stripos($mac, '5c:8a:38') === 0) { return('Hewlett Packard'); }
         if (stripos($mac, '5c:8d:4e') === 0) { return('Apple, Inc.'); }
@@ -16816,7 +16816,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '60:db:2a') === 0) { return('HNS'); }
         if (stripos($mac, '60:de:44') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '60:e0:0e') === 0) { return('SHINSEI ELECTRONICS CO LTD'); }
-        if (stripos($mac, '60:e3:27') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '60:e3:27') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '60:e3:ac') === 0) { return('LG Electronics (Mobile Communications)'); }
         if (stripos($mac, '60:e6:bc') === 0) { return('Sino-Telecom Technology Co.,Ltd.'); }
         if (stripos($mac, '60:e7:01') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
@@ -16893,7 +16893,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '64:55:63') === 0) { return('Intelight Inc.'); }
         if (stripos($mac, '64:55:7f') === 0) { return('NSFOCUS Information Technology Co., Ltd.'); }
         if (stripos($mac, '64:55:b1') === 0) { return('ARRIS Group, Inc.'); }
-        if (stripos($mac, '64:56:01') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '64:56:01') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '64:59:f8') === 0) { return('Vodafone Omnitel B.V.'); }
         if (stripos($mac, '64:5a:04') === 0) { return('Chicony Electronics Co., Ltd.'); }
         if (stripos($mac, '64:5d:92') === 0) { return('SICHUAN TIANYI COMHEART TELECOMCO.,LTD'); }
@@ -16904,7 +16904,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '64:62:23') === 0) { return('Cellient Co., Ltd.'); }
         if (stripos($mac, '64:64:9b') === 0) { return('Juniper Networks'); }
         if (stripos($mac, '64:65:c0') === 0) { return('Nuvon, Inc'); }
-        if (stripos($mac, '64:66:b3') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '64:66:b3') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '64:67:07') === 0) { return('Beijing Omnific Technology, Ltd.'); }
         if (stripos($mac, '64:68:0c') === 0) { return('Comtrend Corporation'); }
         if (stripos($mac, '64:69:bc') === 0) { return('Hytera Communications Co .,ltd'); }
@@ -16913,7 +16913,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '64:6c:b2') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '64:6e:6c') === 0) { return('Radio Datacom LLC'); }
         if (stripos($mac, '64:6e:ea') === 0) { return('Iskratel d.o.o.'); }
-        if (stripos($mac, '64:70:02') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '64:70:02') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '64:72:d8') === 0) { return('GooWi Technology Co.,Limited'); }
         if (stripos($mac, '64:73:e2') === 0) { return('Arbiter Systems, Inc.'); }
         if (stripos($mac, '64:74:f6') === 0) { return('Shooter Detection Systems'); }
@@ -17290,7 +17290,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '6c:e0:b0') === 0) { return('SOUND4'); }
         if (stripos($mac, '6c:e3:b6') === 0) { return('Nera Telecommunications Ltd.'); }
         if (stripos($mac, '6c:e4:ce') === 0) { return('Villiger Security Solutions AG'); }
-        if (stripos($mac, '6c:e8:73') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '6c:e8:73') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '6c:e9:07') === 0) { return('Nokia Corporation'); }
         if (stripos($mac, '6c:e9:83') === 0) { return('Gastron Co., LTD.'); }
         if (stripos($mac, '6c:eb:b2') === 0) { return('Dongguan Sen DongLv Electronics Co.,Ltd'); }
@@ -17365,7 +17365,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '70:4d:7b') === 0) { return('ASUSTek COMPUTER INC.'); }
         if (stripos($mac, '70:4e:01') === 0) { return('KWANGWON TECH CO., LTD.'); }
         if (stripos($mac, '70:4e:66') === 0) { return('SHENZHEN FAST TECHNOLOGIES CO.,LTD'); }
-        if (stripos($mac, '70:4f:57') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '70:4f:57') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '70:50:af') === 0) { return('BSkyB Ltd'); }
         if (stripos($mac, '70:52:c5') === 0) { return('Avaya Inc'); }
         if (stripos($mac, '70:53:3f') === 0) { return('Alfa Instrumentos Eletronicos Ltda.'); }
@@ -17637,7 +17637,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '74:e5:43') === 0) { return('Liteon Technology Corporation'); }
         if (stripos($mac, '74:e6:e2') === 0) { return('Dell Inc.'); }
         if (stripos($mac, '74:e7:c6') === 0) { return('ARRIS Group, Inc.'); }
-        if (stripos($mac, '74:ea:3a') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '74:ea:3a') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '74:ea:e8') === 0) { return('ARRIS Group, Inc.'); }
         if (stripos($mac, '74:ec:f1') === 0) { return('Acumen'); }
         if (stripos($mac, '74:f0:6d') === 0) { return('AzureWave Technology Inc.'); }
@@ -17752,7 +17752,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '78:9f:70') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '78:9f:87') === 0) { return('Siemens AG I IA PP PRM'); }
         if (stripos($mac, '78:a0:51') === 0) { return('iiNet Labs Pty Ltd '); }
-        if (stripos($mac, '78:a1:06') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '78:a1:06') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '78:a1:83') === 0) { return('Advidia'); }
         if (stripos($mac, '78:a2:a0') === 0) { return('Nintendo Co., Ltd.'); }
         if (stripos($mac, '78:a3:51') === 0) { return('SHENZHEN ZHIBOTONG ELECTRONICS CO.,LTD'); }
@@ -17935,7 +17935,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '7c:82:2d') === 0) { return('Nortec'); }
         if (stripos($mac, '7c:82:74') === 0) { return('Shenzhen Hikeen Technology CO.,LTD'); }
         if (stripos($mac, '7c:83:06') === 0) { return('Glen Dimplex Nordic as'); }
-        if (stripos($mac, '7c:8b:ca') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '7c:8b:ca') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '7c:8d:91') === 0) { return('Shanghai Hongzhuo Information Technology co.,LTD'); }
         if (stripos($mac, '7c:8e:e4') === 0) { return('Texas Instruments'); }
         if (stripos($mac, '7c:91:22') === 0) { return('Samsung Electronics Co.,Ltd'); }
@@ -18109,7 +18109,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '80:82:87') === 0) { return('ATCOM Technology Co.Ltd.'); }
         if (stripos($mac, '80:86:98') === 0) { return('Netronics Technologies Inc.'); }
         if (stripos($mac, '80:86:f2') === 0) { return('Intel Corporate'); }
-        if (stripos($mac, '80:89:17') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '80:89:17') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '80:8b:5c') === 0) { return('Shenzhen Runhuicheng Technology Co., Ltd'); }
         if (stripos($mac, '80:8c:97') === 0) { return('Kaonmedia CO., LTD.'); }
         if (stripos($mac, '80:91:2a') === 0) { return('Lih Rong electronic Enterprise Co., Ltd.'); }
@@ -18185,7 +18185,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '84:0f:45') === 0) { return('Shanghai GMT Digital Technologies Co., Ltd'); }
         if (stripos($mac, '84:10:0d') === 0) { return('Motorola Mobility LLC, a Lenovo Company'); }
         if (stripos($mac, '84:11:9e') === 0) { return('Samsung Electronics Co.,Ltd'); }
-        if (stripos($mac, '84:16:f9') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '84:16:f9') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '84:17:15') === 0) { return('GP Electronics (HK) Ltd.'); }
         if (stripos($mac, '84:17:66') === 0) { return('Weifang GoerTek Electronics Co., Ltd'); }
         if (stripos($mac, '84:18:26') === 0) { return('Osram GmbH'); }
@@ -18370,7 +18370,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '88:23:64') === 0) { return('Watchnet DVR Inc'); }
         if (stripos($mac, '88:23:fe') === 0) { return('TTTech Computertechnik AG'); }
         if (stripos($mac, '88:25:2c') === 0) { return('Arcadyan Technology Corporation'); }
-        if (stripos($mac, '88:25:93') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '88:25:93') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '88:28:b3') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, '88:29:50') === 0) { return('Dalian Netmoon Tech Develop Co.,Ltd'); }
         if (stripos($mac, '88:2b:d7') === 0) { return('ADDÉNERGIE  TECHNOLOGIES'); }
@@ -18529,7 +18529,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '8c:19:2d') === 0) { return('IEEE Registration Authority'); }
         if (stripos($mac, '8c:1a:bf') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, '8c:1f:94') === 0) { return('RF Surgical System Inc. '); }
-        if (stripos($mac, '8c:21:0a') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '8c:21:0a') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '8c:27:1d') === 0) { return('QuantHouse'); }
         if (stripos($mac, '8c:27:8a') === 0) { return('Vocollect Inc'); }
         if (stripos($mac, '8c:29:37') === 0) { return('Apple, Inc.'); }
@@ -18606,7 +18606,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '8c:a0:48') === 0) { return('Beijing NeTopChip Technology Co.,LTD'); }
         if (stripos($mac, '8c:a2:fd') === 0) { return('Starry, Inc.'); }
         if (stripos($mac, '8c:a5:a1') === 0) { return('Oregano Systems - Design & Consulting GmbH'); }
-        if (stripos($mac, '8c:a6:df') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '8c:a6:df') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '8c:a9:82') === 0) { return('Intel Corporate'); }
         if (stripos($mac, '8c:ab:8e') === 0) { return('Shanghai Feixun Communication Co.,Ltd.'); }
         if (stripos($mac, '8c:ae:4c') === 0) { return('Plugable Technologies'); }
@@ -18782,7 +18782,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '90:a7:83') === 0) { return('JSW PACIFIC CORPORATION '); }
         if (stripos($mac, '90:a7:c1') === 0) { return('Pakedge Device and Software Inc.'); }
         if (stripos($mac, '90:ac:3f') === 0) { return('BrightSign LLC'); }
-        if (stripos($mac, '90:ae:1b') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '90:ae:1b') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '90:b0:ed') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '90:b1:1c') === 0) { return('Dell Inc.'); }
         if (stripos($mac, '90:b1:34') === 0) { return('ARRIS Group, Inc.'); }
@@ -18830,7 +18830,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '90:f3:05') === 0) { return('HUMAX Co., Ltd.'); }
         if (stripos($mac, '90:f3:b7') === 0) { return('Kirisun Communications Co., Ltd.'); }
         if (stripos($mac, '90:f4:c1') === 0) { return('Rand McNally'); }
-        if (stripos($mac, '90:f6:52') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '90:f6:52') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '90:f7:2f') === 0) { return('Phillips Machine & Welding Co., Inc. '); }
         if (stripos($mac, '90:fb:5b') === 0) { return('Avaya Inc'); }
         if (stripos($mac, '90:fb:a6') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
@@ -18844,7 +18844,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '94:09:37') === 0) { return('HUMAX Co., Ltd.'); }
         if (stripos($mac, '94:0b:2d') === 0) { return('NetView Technologies(Shenzhen) Co., Ltd'); }
         if (stripos($mac, '94:0b:d5') === 0) { return('Himax Technologies, Inc'); }
-        if (stripos($mac, '94:0c:6d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '94:0c:6d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '94:10:3e') === 0) { return('Belkin International Inc.'); }
         if (stripos($mac, '94:11:da') === 0) { return('ITF Fröschl GmbH'); }
         if (stripos($mac, '94:16:73') === 0) { return('Point Core SARL'); }
@@ -19115,7 +19115,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '98:da:92') === 0) { return('Vuzix Corporation'); }
         if (stripos($mac, '98:dc:d9') === 0) { return('UNITEC Co., Ltd.'); }
         if (stripos($mac, '98:dd:ea') === 0) { return('Infinix mobility limited'); }
-        if (stripos($mac, '98:de:d0') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '98:de:d0') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '98:e0:d9') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, '98:e1:65') === 0) { return('Accutome'); }
         if (stripos($mac, '98:e4:76') === 0) { return('Zentan'); }
@@ -19162,7 +19162,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, '9c:1e:95') === 0) { return('Actiontec Electronics, Inc'); }
         if (stripos($mac, '9c:1f:dd') === 0) { return('Accupix Inc.'); }
         if (stripos($mac, '9c:20:7b') === 0) { return('Apple, Inc.'); }
-        if (stripos($mac, '9c:21:6a') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, '9c:21:6a') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, '9c:22:0e') === 0) { return('TASCAN Systems GmbH'); }
         if (stripos($mac, '9c:28:40') === 0) { return('Discovery Technology,LTD..'); }
         if (stripos($mac, '9c:28:bf') === 0) { return('Continental Automotive Czech Republic s.r.o.'); }
@@ -19491,7 +19491,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'a0:ed:cd') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'a0:ef:84') === 0) { return('Seine Image Int\'l Co., Ltd'); }
         if (stripos($mac, 'a0:f2:17') === 0) { return('GE Medical System(China) Co., Ltd. '); }
-        if (stripos($mac, 'a0:f3:c1') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'a0:f3:c1') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'a0:f3:e4') === 0) { return('Alcatel-Lucent IPD'); }
         if (stripos($mac, 'a0:f4:19') === 0) { return('Nokia Corporation'); }
         if (stripos($mac, 'a0:f4:50') === 0) { return('HTC Corporation'); }
@@ -19532,7 +19532,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'a4:29:83') === 0) { return('Boeing Defence Australia'); }
         if (stripos($mac, 'a4:29:b7') === 0) { return('bluesky'); }
         if (stripos($mac, 'a4:2b:8c') === 0) { return('NETGEAR'); }
-        if (stripos($mac, 'a4:2b:b0') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'a4:2b:b0') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'a4:2c:08') === 0) { return('Masterwork Automodules'); }
         if (stripos($mac, 'a4:31:11') === 0) { return('ZIV'); }
         if (stripos($mac, 'a4:31:35') === 0) { return('Apple, Inc.'); }
@@ -19683,7 +19683,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'a8:0c:ca') === 0) { return('Shenzhen Sundray Technologies Company Limited'); }
         if (stripos($mac, 'a8:11:fc') === 0) { return('ARRIS Group, Inc.'); }
         if (stripos($mac, 'a8:13:74') === 0) { return('Panasonic Corporation AVC Networks Company'); }
-        if (stripos($mac, 'a8:15:4d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'a8:15:4d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'a8:15:59') === 0) { return('Breathometer, Inc.'); }
         if (stripos($mac, 'a8:15:d6') === 0) { return('Shenzhen Meione Technology CO., LTD'); }
         if (stripos($mac, 'a8:16:b2') === 0) { return('LG Electronics (Mobile Communications)'); }
@@ -19712,7 +19712,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'a8:4e:3f') === 0) { return('Hitron Technologies. Inc'); }
         if (stripos($mac, 'a8:54:b2') === 0) { return('Wistron Neweb Corporation'); }
         if (stripos($mac, 'a8:55:6a') === 0) { return('Pocketnet Technology Inc.'); }
-        if (stripos($mac, 'a8:57:4e') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'a8:57:4e') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'a8:58:40') === 0) { return('Cambridge Industries(Group) Co.,Ltd.'); }
         if (stripos($mac, 'a8:5b:78') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'a8:5b:b0') === 0) { return('Shenzhen Dehoo Technology Co.,Ltd'); }
@@ -20028,11 +20028,11 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'b0:46:fc') === 0) { return('MitraStar Technology Corp.'); }
         if (stripos($mac, 'b0:47:bf') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'b0:48:1a') === 0) { return('Apple, Inc.'); }
-        if (stripos($mac, 'b0:48:7a') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'b0:48:7a') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'b0:49:5f') === 0) { return('OMRON HEALTHCARE Co., Ltd.'); }
         if (stripos($mac, 'b0:4b:bf') === 0) { return('PT HAN SUNG ELECTORONICS INDONESIA'); }
         if (stripos($mac, 'b0:4c:05') === 0) { return('Fresenius Medical Care Deutschland GmbH'); }
-        if (stripos($mac, 'b0:4e:26') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'b0:4e:26') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'b0:50:bc') === 0) { return('SHENZHEN BASICOM ELECTRONIC CO.,LTD.'); }
         if (stripos($mac, 'b0:51:8e') === 0) { return('Holl technology CO.Ltd.'); }
         if (stripos($mac, 'b0:52:16') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
@@ -20077,7 +20077,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'b0:91:22') === 0) { return('Texas Instruments'); }
         if (stripos($mac, 'b0:91:34') === 0) { return('Taleo'); }
         if (stripos($mac, 'b0:91:37') === 0) { return('ISis ImageStream Internet Solutions, Inc'); }
-        if (stripos($mac, 'b0:95:8e') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'b0:95:8e') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'b0:96:6c') === 0) { return('Lanbowan Technology Ltd.'); }
         if (stripos($mac, 'b0:97:3a') === 0) { return('E-Fuel Corporation'); }
         if (stripos($mac, 'b0:98:9f') === 0) { return('LG CNS'); }
@@ -20461,7 +20461,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'b8:f6:b1') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'b8:f7:32') === 0) { return('Aryaka Networks Inc'); }
         if (stripos($mac, 'b8:f8:28') === 0) { return('Changshu Gaoshida Optoelectronic Technology Co. Ltd.'); }
-        if (stripos($mac, 'b8:f8:83') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'b8:f8:83') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'b8:f8:be') === 0) { return('BLUECOM'); }
         if (stripos($mac, 'b8:f9:34') === 0) { return('Sony Mobile Communications AB'); }
         if (stripos($mac, 'b8:fc:9a') === 0) { return('Le Shi Zhi Xin Electronic Technology (Tianjin) Limited'); }
@@ -20517,7 +20517,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'bc:44:86') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'bc:44:b0') === 0) { return('Elastifile'); }
         if (stripos($mac, 'bc:45:2e') === 0) { return('Knowledge Development for POF S.L.'); }
-        if (stripos($mac, 'bc:46:99') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'bc:46:99') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'bc:47:60') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'bc:4b:79') === 0) { return('SensingTek'); }
         if (stripos($mac, 'bc:4c:c4') === 0) { return('Apple, Inc.'); }
@@ -20609,7 +20609,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'bc:cf:cc') === 0) { return('HTC Corporation'); }
         if (stripos($mac, 'bc:d1:1f') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'bc:d1:65') === 0) { return('Cisco SPVTG'); }
-        if (stripos($mac, 'bc:d1:77') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'bc:d1:77') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'bc:d1:d3') === 0) { return('Shenzhen TINNO Mobile Technology Corp.'); }
         if (stripos($mac, 'bc:d5:b6') === 0) { return('d2d technologies'); }
         if (stripos($mac, 'bc:d7:13') === 0) { return('Owl Labs'); }
@@ -20648,7 +20648,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'c0:25:5c') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, 'c0:25:67') === 0) { return('Nexxt Solutions'); }
         if (stripos($mac, 'c0:25:a2') === 0) { return('NEC Platforms, Ltd.'); }
-        if (stripos($mac, 'c0:25:e9') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'c0:25:e9') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'c0:27:b9') === 0) { return('Beijing National Railway Research & Design Institute  of Signal & Communication Co., Ltd.'); }
         if (stripos($mac, 'c0:28:8d') === 0) { return('Logitech, Inc'); }
         if (stripos($mac, 'c0:29:73') === 0) { return('Audyssey Laboratories Inc.'); }
@@ -20674,7 +20674,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'c0:43:01') === 0) { return('Epec Oy'); }
         if (stripos($mac, 'c0:44:e3') === 0) { return('Shenzhen Sinkna Electronics Co., LTD'); }
         if (stripos($mac, 'c0:49:3d') === 0) { return('MAITRISE TECHNOLOGIQUE'); }
-        if (stripos($mac, 'c0:4a:00') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'c0:4a:00') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'c0:4a:09') === 0) { return('Zhejiang Everbright Communication Equip. Co,. Ltd'); }
         if (stripos($mac, 'c0:4d:f7') === 0) { return('SERELEC'); }
         if (stripos($mac, 'c0:56:27') === 0) { return('Belkin International Inc.'); }
@@ -20683,7 +20683,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'c0:58:a7') === 0) { return('Pico Systems Co., Ltd.'); }
         if (stripos($mac, 'c0:5e:6f') === 0) { return('V. Stonkaus firma Kodinis Raktas'); }
         if (stripos($mac, 'c0:5e:79') === 0) { return('SHENZHEN HUAXUN ARK TECHNOLOGIES CO.,LTD'); }
-        if (stripos($mac, 'c0:61:18') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'c0:61:18') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'c0:62:6b') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, 'c0:63:94') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'c0:64:c6') === 0) { return('Nokia Corporation'); }
@@ -20758,7 +20758,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'c0:dc:6a') === 0) { return('Qingdao Eastsoft Communication Technology Co.,LTD'); }
         if (stripos($mac, 'c0:df:77') === 0) { return('Conrad Electronic SE'); }
         if (stripos($mac, 'c0:e4:22') === 0) { return('Texas Instruments'); }
-        if (stripos($mac, 'c0:e4:2d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'c0:e4:2d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'c0:e5:4e') === 0) { return('ARIES Embedded GmbH'); }
         if (stripos($mac, 'c0:ea:e4') === 0) { return('Sonicwall'); }
         if (stripos($mac, 'c0:ee:40') === 0) { return('Laird Technologies'); }
@@ -20855,7 +20855,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'c4:6a:b7') === 0) { return('Xiaomi Communications Co Ltd'); }
         if (stripos($mac, 'c4:6b:b4') === 0) { return('myIDkey'); }
         if (stripos($mac, 'c4:6d:f1') === 0) { return('DataGravity'); }
-        if (stripos($mac, 'c4:6e:1f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'c4:6e:1f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'c4:70:0b') === 0) { return('GUANGZHOU CHIP TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, 'c4:71:30') === 0) { return('Fon Technology S.L.'); }
         if (stripos($mac, 'c4:71:fe') === 0) { return('Cisco Systems, Inc'); }
@@ -20924,7 +20924,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'c4:e5:10') === 0) { return('Mechatro, Inc.'); }
         if (stripos($mac, 'c4:e7:be') === 0) { return('SCSpro Co.,Ltd'); }
         if (stripos($mac, 'c4:e9:2f') === 0) { return('AB Sciex'); }
-        if (stripos($mac, 'c4:e9:84') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'c4:e9:84') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'c4:ea:1d') === 0) { return('Technicolor'); }
         if (stripos($mac, 'c4:eb:e3') === 0) { return('RRCN SAS'); }
         if (stripos($mac, 'c4:ed:ba') === 0) { return('Texas Instruments'); }
@@ -21143,7 +21143,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'cc:2d:8c') === 0) { return('LG ELECTRONICS INC'); }
         if (stripos($mac, 'cc:30:80') === 0) { return('VAIO Corporation'); }
         if (stripos($mac, 'cc:33:bb') === 0) { return('Sagemcom Broadband SAS'); }
-        if (stripos($mac, 'cc:34:29') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'cc:34:29') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'cc:34:d7') === 0) { return('GEWISS S.P.A.'); }
         if (stripos($mac, 'cc:35:40') === 0) { return('Technicolor CH USA Inc.'); }
         if (stripos($mac, 'cc:37:ab') === 0) { return('Edgecore Networks Corportation'); }
@@ -21406,7 +21406,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'd0:c4:2f') === 0) { return('Tamagawa Seiki Co.,Ltd.'); }
         if (stripos($mac, 'd0:c5:f3') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'd0:c7:89') === 0) { return('Cisco Systems, Inc'); }
-        if (stripos($mac, 'd0:c7:c0') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'd0:c7:c0') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'd0:cd:e1') === 0) { return('Scientech Electronics'); }
         if (stripos($mac, 'd0:cf:5e') === 0) { return('Energy Micro AS'); }
         if (stripos($mac, 'd0:d0:4b') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
@@ -21441,7 +21441,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'd4:00:0d') === 0) { return('Phoenix Broadband Technologies, LLC.'); }
         if (stripos($mac, 'd4:00:57') === 0) { return('MC Technologies GmbH'); }
         if (stripos($mac, 'd4:01:29') === 0) { return('Broadcom'); }
-        if (stripos($mac, 'd4:01:6d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'd4:01:6d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'd4:02:4a') === 0) { return('Delphian Systems LLC'); }
         if (stripos($mac, 'd4:04:cd') === 0) { return('ARRIS Group, Inc.'); }
         if (stripos($mac, 'd4:04:ff') === 0) { return('Juniper Networks'); }
@@ -21521,7 +21521,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'd4:6c:bf') === 0) { return('Goodrich ISR'); }
         if (stripos($mac, 'd4:6c:da') === 0) { return('CSM GmbH'); }
         if (stripos($mac, 'd4:6d:50') === 0) { return('Cisco Systems, Inc'); }
-        if (stripos($mac, 'd4:6e:0e') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'd4:6e:0e') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'd4:6e:5c') === 0) { return('HUAWEI TECHNOLOGIES CO.,LTD'); }
         if (stripos($mac, 'd4:6f:42') === 0) { return('WAXESS USA Inc'); }
         if (stripos($mac, 'd4:72:08') === 0) { return('Bragi GmbH'); }
@@ -21625,7 +21625,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'd8:0d:e3') === 0) { return('FXI TECHNOLOGIES AS'); }
         if (stripos($mac, 'd8:0f:99') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
         if (stripos($mac, 'd8:14:d6') === 0) { return('SURE SYSTEM Co Ltd'); }
-        if (stripos($mac, 'd8:15:0d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'd8:15:0d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'd8:16:0a') === 0) { return('Nippon Electro-Sensory Devices'); }
         if (stripos($mac, 'd8:16:c1') === 0) { return('DEWAV (HK) ELECTRONICS LIMITED'); }
         if (stripos($mac, 'd8:18:2b') === 0) { return('Conti Temic Microelectronic GmbH'); }
@@ -21677,7 +21677,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'd8:57:ef') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'd8:58:d7') === 0) { return('CZ.NIC, z.s.p.o.'); }
         if (stripos($mac, 'd8:5b:2a') === 0) { return('Samsung Electronics Co.,Ltd'); }
-        if (stripos($mac, 'd8:5d:4c') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'd8:5d:4c') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'd8:5d:84') === 0) { return('CAx soft GmbH'); }
         if (stripos($mac, 'd8:5d:e2') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
         if (stripos($mac, 'd8:5d:ef') === 0) { return('Busch-Jaeger Elektro GmbH'); }
@@ -21791,7 +21791,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'd8:fc:93') === 0) { return('Intel Corporate'); }
         if (stripos($mac, 'd8:fe:8f') === 0) { return('IDFone Co., Ltd.'); }
         if (stripos($mac, 'd8:fe:e3') === 0) { return('D-Link International'); }
-        if (stripos($mac, 'dc:00:77') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'dc:00:77') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'dc:02:65') === 0) { return('Meditech Kft'); }
         if (stripos($mac, 'dc:02:8e') === 0) { return('zte corporation'); }
         if (stripos($mac, 'dc:05:2f') === 0) { return('National Products Inc.'); }
@@ -21940,9 +21940,9 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'dc:fa:d5') === 0) { return('STRONG Ges.m.b.H.'); }
         if (stripos($mac, 'dc:fb:02') === 0) { return('BUFFALO.INC'); }
         if (stripos($mac, 'dc:fe:07') === 0) { return('PEGATRON CORPORATION'); }
-        if (stripos($mac, 'dc:fe:18') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'dc:fe:18') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'e0:03:70') === 0) { return('ShenZhen Continental Wireless Technology Co., Ltd.'); }
-        if (stripos($mac, 'e0:05:c5') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'e0:05:c5') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'e0:06:e6') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
         if (stripos($mac, 'e0:07:1b') === 0) { return('Hewlett Packard Enterprise'); }
         if (stripos($mac, 'e0:0b:28') === 0) { return('Inovonics'); }
@@ -22235,7 +22235,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'e4:ce:02') === 0) { return('WyreStorm Technologies Ltd'); }
         if (stripos($mac, 'e4:ce:70') === 0) { return('Health & Life co., Ltd.'); }
         if (stripos($mac, 'e4:ce:8f') === 0) { return('Apple, Inc.'); }
-        if (stripos($mac, 'e4:d3:32') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'e4:d3:32') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'e4:d3:f1') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, 'e4:d5:3d') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
         if (stripos($mac, 'e4:d7:1d') === 0) { return('Oraya Therapeutics'); }
@@ -22349,7 +22349,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'e8:92:a4') === 0) { return('LG Electronics (Mobile Communications)'); }
         if (stripos($mac, 'e8:93:09') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'e8:94:4c') === 0) { return('Cogent Healthcare Systems Ltd'); }
-        if (stripos($mac, 'e8:94:f6') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'e8:94:f6') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'e8:96:06') === 0) { return('testo Instruments (Shenzhen) Co., Ltd.'); }
         if (stripos($mac, 'e8:99:5a') === 0) { return('PiiGAB, Processinformation i Goteborg AB'); }
         if (stripos($mac, 'e8:99:c4') === 0) { return('HTC Corporation'); }
@@ -22389,7 +22389,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'e8:d4:e0') === 0) { return('Beijing BenyWave Technology Co., Ltd.'); }
         if (stripos($mac, 'e8:da:96') === 0) { return('Zhuhai Tianrui Electrical Power Tech. Co., Ltd.'); }
         if (stripos($mac, 'e8:da:aa') === 0) { return('VideoHome Technology Corp.'); }
-        if (stripos($mac, 'e8:de:27') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'e8:de:27') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'e8:de:8e') === 0) { return('Integrated Device Technology (Malaysia) Sdn. Bhd.'); }
         if (stripos($mac, 'e8:de:d6') === 0) { return('Intrising Networks, Inc.'); }
         if (stripos($mac, 'e8:df:f2') === 0) { return('PRF Co., Ltd.'); }
@@ -22422,7 +22422,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'ec:01:33') === 0) { return('TRINUS SYSTEMS INC.'); }
         if (stripos($mac, 'ec:01:e2') === 0) { return('FOXCONN INTERCONNECT TECHNOLOGY'); }
         if (stripos($mac, 'ec:01:ee') === 0) { return('GUANGDONG OPPO MOBILE TELECOMMUNICATIONS CORP.,LTD'); }
-        if (stripos($mac, 'ec:08:6b') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'ec:08:6b') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'ec:0d:9a') === 0) { return('Mellanox Technologies, Inc.'); }
         if (stripos($mac, 'ec:0e:c4') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
         if (stripos($mac, 'ec:0e:d6') === 0) { return('ITECH INSTRUMENTS SAS'); }
@@ -22432,7 +22432,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'ec:13:b2') === 0) { return('Netonix'); }
         if (stripos($mac, 'ec:13:db') === 0) { return('Juniper Networks'); }
         if (stripos($mac, 'ec:14:f6') === 0) { return('BioControl AS'); }
-        if (stripos($mac, 'ec:17:2f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'ec:17:2f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'ec:17:66') === 0) { return('Research Centre Module'); }
         if (stripos($mac, 'ec:1a:59') === 0) { return('Belkin International Inc.'); }
         if (stripos($mac, 'ec:1d:7f') === 0) { return('zte corporation'); }
@@ -22445,7 +22445,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'ec:23:68') === 0) { return('IntelliVoice Co.,Ltd.'); }
         if (stripos($mac, 'ec:23:7b') === 0) { return('zte corporation'); }
         if (stripos($mac, 'ec:24:b8') === 0) { return('Texas Instruments'); }
-        if (stripos($mac, 'ec:26:ca') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'ec:26:ca') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'ec:26:fb') === 0) { return('TECC CO.,LTD.'); }
         if (stripos($mac, 'ec:2a:f0') === 0) { return('Ypsomed AG'); }
         if (stripos($mac, 'ec:2c:49') === 0) { return('University of Tokyo'); }
@@ -22494,7 +22494,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'ec:80:09') === 0) { return('NovaSparks'); }
         if (stripos($mac, 'ec:83:6c') === 0) { return('RM Tech Co., Ltd.'); }
         if (stripos($mac, 'ec:85:2f') === 0) { return('Apple, Inc.'); }
-        if (stripos($mac, 'ec:88:8f') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'ec:88:8f') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'ec:88:92') === 0) { return('Motorola Mobility LLC, a Lenovo Company'); }
         if (stripos($mac, 'ec:89:f5') === 0) { return('Lenovo Mobile Communication Technology Ltd.'); }
         if (stripos($mac, 'ec:8a:4c') === 0) { return('zte corporation'); }
@@ -22715,7 +22715,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'f0:f0:02') === 0) { return('Hon Hai Precision Ind. Co.,Ltd.'); }
         if (stripos($mac, 'f0:f2:49') === 0) { return('Hitron Technologies. Inc'); }
         if (stripos($mac, 'f0:f2:60') === 0) { return('Mobitec AB'); }
-        if (stripos($mac, 'f0:f3:36') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'f0:f3:36') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'f0:f5:ae') === 0) { return('Adaptrum Inc.'); }
         if (stripos($mac, 'f0:f6:1c') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'f0:f6:44') === 0) { return('Whitesky Science & Technology Co.,Ltd.'); }
@@ -22812,7 +22812,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'f4:7b:5e') === 0) { return('Samsung Electronics Co.,Ltd'); }
         if (stripos($mac, 'f4:7f:35') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, 'f4:81:39') === 0) { return('CANON INC.'); }
-        if (stripos($mac, 'f4:83:cd') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'f4:83:cd') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'f4:83:e1') === 0) { return('Shanghai Clouder Semiconductor Co.,Ltd'); }
         if (stripos($mac, 'f4:85:c6') === 0) { return('FDT Technologies'); }
         if (stripos($mac, 'f4:87:71') === 0) { return('Infoblox'); }
@@ -22878,13 +22878,13 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'f4:e9:d4') === 0) { return('QLogic Corporation'); }
         if (stripos($mac, 'f4:ea:67') === 0) { return('Cisco Systems, Inc'); }
         if (stripos($mac, 'f4:eb:38') === 0) { return('Sagemcom Broadband SAS'); }
-        if (stripos($mac, 'f4:ec:38') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'f4:ec:38') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'f4:ed:5f') === 0) { return('SHENZHEN KTC TECHNOLOGY GROUP '); }
         if (stripos($mac, 'f4:ee:14') === 0) { return('SHENZHEN MERCURY COMMUNICATION TECHNOLOGIES CO.,LTD.'); }
         if (stripos($mac, 'f4:ef:9e') === 0) { return('SGSG SCIENCE & TECHNOLOGY CO. LTD'); }
         if (stripos($mac, 'f4:f1:5a') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'f4:f1:e1') === 0) { return('Motorola Mobility LLC, a Lenovo Company'); }
-        if (stripos($mac, 'f4:f2:6d') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'f4:f2:6d') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'f4:f5:24') === 0) { return('Motorola Mobility LLC, a Lenovo Company'); }
         if (stripos($mac, 'f4:f5:a5') === 0) { return('Nokia Corporation'); }
         if (stripos($mac, 'f4:f5:d8') === 0) { return('Google, Inc.'); }
@@ -22913,7 +22913,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'f8:15:47') === 0) { return('Avaya Inc'); }
         if (stripos($mac, 'f8:16:54') === 0) { return('Intel Corporate'); }
         if (stripos($mac, 'f8:18:97') === 0) { return('2Wire Inc'); }
-        if (stripos($mac, 'f8:1a:67') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'f8:1a:67') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'f8:1c:e5') === 0) { return('Telefonbau Behnke GmbH'); }
         if (stripos($mac, 'f8:1d:78') === 0) { return('IEEE Registration Authority'); }
         if (stripos($mac, 'f8:1d:90') === 0) { return('Solidwintech'); }
@@ -23031,7 +23031,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'f8:d0:27') === 0) { return('Seiko Epson Corporation'); }
         if (stripos($mac, 'f8:d0:ac') === 0) { return('Sony Interactive Entertainment Inc.'); }
         if (stripos($mac, 'f8:d0:bd') === 0) { return('Samsung Electronics Co.,Ltd'); }
-        if (stripos($mac, 'f8:d1:11') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'f8:d1:11') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'f8:d3:a9') === 0) { return('AXAN Networks'); }
         if (stripos($mac, 'f8:d4:62') === 0) { return('Pumatronix Equipamentos Eletronicos Ltda.'); }
         if (stripos($mac, 'f8:d7:56') === 0) { return('Simm Tronic Limited '); }
@@ -23196,7 +23196,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos($mac, 'fc:d4:f6') === 0) { return('Messana Air.Ray Conditioning s.r.l.'); }
         if (stripos($mac, 'fc:d5:d9') === 0) { return('Shenzhen SDMC Technology Co., Ltd.'); }
         if (stripos($mac, 'fc:d6:bd') === 0) { return('Robert Bosch GmbH'); }
-        if (stripos($mac, 'fc:d7:33') === 0) { return('TP-LINK TECHNOLOGIES CO.,LTD.'); }
+        if (stripos($mac, 'fc:d7:33') === 0) { return('TP-Link Technology'); }
         if (stripos($mac, 'fc:d8:17') === 0) { return('Beijing Hesun Technologies Co.Ltd.'); }
         if (stripos($mac, 'fc:d8:48') === 0) { return('Apple, Inc.'); }
         if (stripos($mac, 'fc:db:96') === 0) { return('ENERVALLEY CO., LTD'); }
