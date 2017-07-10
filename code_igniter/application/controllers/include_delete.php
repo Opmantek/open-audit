@@ -46,13 +46,10 @@ if ($this->response->meta->format === 'json') {
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
 $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
-if ($this->config->config['log_level'] < 6) {
-    $log->severity = 5;
-    $log->status = 'finish';
-    $log->type = 'access';
-} else {
-    $log->severity = 5;
-    $log->status = 'finish';
-    $log->detail = json_encode($this->response->meta); 
+$log->severity = 7;
+$log->status = 'finish';
+$log->type = 'access';
+if ($this->config->config['log_level'] == 7) {
+    $log->detail = json_encode($this->response->meta);
 }
 stdLog($log);
