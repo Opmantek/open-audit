@@ -816,12 +816,17 @@ if (! function_exists('inputRead')) {
         $filter = array();
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         if ($CI->response->meta->query_string != '') {
-            $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids graph report_name ';
+            $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids graph report_name as_at ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
                 $query->operator = '=';
                 $query->value = str_replace($query->name.'=', '', $item);
+
+                if (strtolower($query->name) == 'as_at') {
+                    $CI->response->meta->internal->as_at = $query->value;
+                    $CI->response->meta->current = 'all';
+                }
 
                 if (strtolower(substr($query->value, 0, 8)) == 'not like') {
                     $query->value = '%' . substr($query->value, 8) . '%';
