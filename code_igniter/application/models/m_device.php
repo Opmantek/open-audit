@@ -98,7 +98,7 @@ class M_device extends MY_Model
 
         if (!empty($details->hostname) and !empty($details->domain) and $details->domain != '.' and empty($details->fqdn)) {
             $details->fqdn = $details->hostname.".".$details->domain;
-            $log_message[] = "No FQDN provided, but hostname and comain provided - setting FQDN (" . $details->fqdn . ").";
+            $log_message[] = "No FQDN provided, but hostname and domain provided - setting FQDN (" . $details->fqdn . ").";
         }
 
         if (empty($details->fqdn)) {

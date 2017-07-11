@@ -102,8 +102,9 @@ class devices extends MY_Controller
         $this->response->meta->filtered = count($this->response->data);
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -186,8 +187,9 @@ class devices extends MY_Controller
         }
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -251,8 +253,9 @@ class devices extends MY_Controller
             output($this->response);
         }
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 5;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -269,8 +272,9 @@ class devices extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -283,8 +287,9 @@ class devices extends MY_Controller
         $this->response->meta->debug = true;
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -297,8 +302,9 @@ class devices extends MY_Controller
         $this->response->meta->debug = true;
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -329,8 +335,9 @@ class devices extends MY_Controller
         }
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -354,8 +361,9 @@ class devices extends MY_Controller
             redirect('devices');
         }
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 5;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -404,8 +412,9 @@ class devices extends MY_Controller
             redirect('devices');
         }
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 6;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -429,8 +438,9 @@ class devices extends MY_Controller
             }
         }
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 5;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
@@ -460,8 +470,9 @@ class devices extends MY_Controller
         $this->response->meta->debug = true;
         output($this->response);
         $log = new stdClass();
+        $log->type = 'access';
         $log->detail = json_encode($this->response->meta);
-        $log->severity = 5;
+        $log->severity = 7;
         $log->status = 'finish';
         $log->object = $this->response->meta->collection;
         $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);

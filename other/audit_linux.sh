@@ -282,7 +282,7 @@ for arg in "$@"; do
 			discovery_id="$parameter_value" ;;
 		"display" )
 			display="$parameter_value" ;;
-		"ignore_invalid_ssl"
+		"ignore_invalid_ssl" )
 			ignore_invalid_ssl="$parameter_value" ;;
 		"help" )
 			help="$parameter_value" ;;

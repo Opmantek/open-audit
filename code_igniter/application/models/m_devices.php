@@ -296,16 +296,14 @@ class M_devices extends MY_Model
             if ($this->db->field_exists('first_seen', $sub_resource)) {
                 $first_seen = true;
             }
-            // $fields = $this->db->list_fields($sub_resource);
-            // foreach ($fields as $field) {
-            //     if ($field == 'current') {
-            //         $currency = true;
-            //     }
-            //     if ($field == 'first_seen') {
-            //         $first_seen = true;
-            //     }
-            // }
             if ($currency) {
+
+                if (!empty($CI->response->meta->internal->as_at)) {
+                    if ($this->db->field_exists('first_seen', $sub_resource) and $this->db->field_exists('last_seen', $sub_resource)) {
+                        $filter .= ' AND DATE(' . $sub_resource . '.first_seen) <= "' . $CI->response->meta->internal->as_at . '" AND DATE(' . $sub_resource . '.last_seen) >= "' . $CI->response->meta->internal->as_at . '"';
+                    }
+                }
+
                 $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;
                 if ($current == 'y') {
                     $currency = "AND `" . $sub_resource . "`.`current` = '" . $current . "'" ;

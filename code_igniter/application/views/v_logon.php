@@ -50,6 +50,17 @@
 <br />
 <form class="form-horizontal" id="form" name="form" method="post" action="logon">
 <input type="hidden" name="url" id="url" value="<?php echo @$this->response->meta->url; ?>" />
+<?php
+if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
+?>
+<div class="row">
+    <div class="col-md-8 col-md-offset-2 text-center">
+        <div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>Database upgrade required. Please login to update your database.<br />Open-AudIT Professional and Enterprise cannot run until this is completed.</div>
+    </div>
+</div>
+<?php
+}
+?>
 <div class="row">
 <div class="col-md-8  col-md-offset-2 text-center">
     <div class="panel panel-default">
