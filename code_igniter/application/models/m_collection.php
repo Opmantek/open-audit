@@ -128,6 +128,25 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection == 'tasks') {
+            if ($result !== false) {
+                for ($i=0; $i < count($result); $i++) {
+                    if ($result[$i]->type == 'discoveries') {
+                        $sql = "SELECT name AS `name` FROM `" . $result[$i]->type . "` WHERE id = ?";
+                        $data = array($result[$i]->sub_resource_id);
+                        $data_result = $this->run_sql($sql, $data);
+                        if (!empty($data_result[0]->name)) {
+                            $result[$i]->sub_resource_name = $data_result[0]->name;
+                        } else {
+                            $result[$i]->sub_resource_name = '';
+                        }
+                    } else {
+                        $result[$i]->sub_resource_name = '';
+                    }
+                }
+            }
+        }
+
         $result = $this->format_data($result, $collection);
         return ($result);
     }
@@ -256,6 +275,42 @@ class M_collection extends MY_Model
             $data->options = json_encode($data->options);
         }
 
+        if ($collection === 'tasks') {
+            if (empty($data->options) and !empty($CI->response->meta->received_data->options)) {
+                $data->options = $CI->response->meta->received_data->options;
+            }
+            if (!empty($data->options)) {
+                $data->options = json_encode($data->options);
+            } else {
+                $data->options = '';
+            }
+            if (!empty($data->minute) and is_array($data->minute)) {
+                $data->minute = implode(',', $data->minute);
+            } else {
+                $data->minute = '';
+            }
+            if (!empty($data->hour) and is_array($data->hour)) {
+                $data->hour = implode(',', $data->hour);
+            } else {
+                $data->hour = '';
+            }
+            if (!empty($data->day_of_month) and is_array($data->day_of_month)) {
+                $data->day_of_month = implode(',', $data->day_of_month);
+            } else {
+                $data->day_of_month = '';
+            }
+            if (!empty($data->month) and is_array($data->month)) {
+                $data->month = implode(',', $data->month);
+            } else {
+                $data->month = '';
+            }
+            if (!empty($data->day_of_week) and is_array($data->day_of_week)) {
+                $data->day_of_week = implode(',', $data->day_of_week);
+            } else {
+                $data->day_of_week = '';
+            }
+        }
+
         if ($collection === 'users') {
             if (!empty($data->password)) {
                 // password - get 256 random bits in hex
@@ -339,7 +394,6 @@ class M_collection extends MY_Model
         } else {
             $db_table = $collection;
         }
-
 
         if ($collection === 'credentials') {
             if (!empty($data->credentials)) {
@@ -429,6 +483,52 @@ class M_collection extends MY_Model
                     }
                 }
                 $data->options = (string)json_encode($new);
+            }
+        }
+
+        if ($collection === 'tasks') {
+            if (!empty($data->options)) {
+                $received = new stdClass();
+                foreach ($data->options as $key => $value) {
+                        $received->$key = $value;
+                }
+                $select = "SELECT * FROM tasks WHERE id = ?";
+                $query = $this->db->query($select, array($data->id));
+                $result = $query->result();
+                if (!empty($result[0]->options)) {
+                    $existing = json_decode($result[0]->options);
+                } else {
+                    $existing = new stdClass();
+                }
+                $new = new stdClass();
+                foreach ($existing as $existing_key => $existing_value) {
+                    if (isset($received->$existing_key)) {
+                        $new->$existing_key = $received->$existing_key;
+                    } else {
+                        $new->$existing_key = $existing->$existing_key;
+                    }
+                }
+                $data->options = (string)json_encode($new);
+            }
+            if (!empty($data->{'minute[]'}) and is_array($data->{'minute[]'})) {
+                $data->minute = implode(',', $data->{'minute[]'});
+                unset($data->{'minute[]'});
+            }
+            if (!empty($data->{'hour[]'}) and is_array($data->{'hour[]'})) {
+                $data->hour = implode(',', $data->{'hour[]'});
+                unset($data->{'hour[]'});
+            }
+            if (!empty($data->{'day_of_month[]'}) and is_array($data->{'day_of_month[]'})) {
+                $data->day_of_month = implode(',', $data->{'day_of_month[]'});
+                unset($data->{'day_of_month[]'});
+            }
+            if (!empty($data->{'month[]'}) and is_array($data->{'month[]'})) {
+                $data->month = implode(',', $data->{'month[]'});
+                unset($data->{'month[]'});
+            }
+            if (!empty($data->{'day_of_week[]'}) and is_array($data->{'day_of_week[]'})) {
+                $data->day_of_week = implode(',', $data->{'day_of_week[]'});
+                unset($data->{'day_of_week[]'});
             }
         }
 
@@ -545,7 +645,7 @@ class M_collection extends MY_Model
                 break;
 
             case "tasks":
-                return(' name org_id description enabled type minute hour day_of_month month day_of_week delay_minutes expire_minutes options ');
+                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options ');
                 break;
 
             case "users":
@@ -629,7 +729,7 @@ class M_collection extends MY_Model
                 break;
 
             case "tasks":
-                return(array('name','org_id','type','enabled','minute','hour','day_of_month','month','day_of_week'));
+                return(array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week'));
                 break;
 
             case "users":

@@ -2567,6 +2567,7 @@ CREATE TABLE `tasks` (
   `name` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
+  `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1',
   `uuid` varchar(100) NOT NULL DEFAULT '',
   `enabled` enum('y','n') NOT NULL DEFAULT 'y',
   `type` varchar(100) NOT NULL DEFAULT 'command',

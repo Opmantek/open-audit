@@ -532,7 +532,27 @@ Create individual discovery schedules for each subnet or AD controller, add in r
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Open-AudIT can send you a report, run a discovery or test  a baseline on a schedule of your choosing. Have Open-AudIT email you a report of any new devices found for the week, every Friday. Simple, quick and easy.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
+    $dictionary->notes = '<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br /><br /></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = 'The description of this task.';
+    $dictionary->columns->type = 'The type of task to run.';
+    $dictionary->columns->sub_resource_id = 'The ID of the item of type (discoveries, reports, etc).';
+    $dictionary->columns->uuid = 'The unique identifier of this server.';
+    $dictionary->columns->enabled = 'Is this task enabled (y/n).';
+    $dictionary->columns->minute = 'The minute of the hour when this task should execute (* for every minute).';
+    $dictionary->columns->hour = 'The hour of the day when this task should execute (* for every hour).';
+    $dictionary->columns->day_of_month = 'The day of the month when this task should execute (* for every day).';
+    $dictionary->columns->month = 'The month of the year when this task should execute (* for every month).';
+    $dictionary->columns->day_of_week = 'The day of the week when this task should execute (* for every day).';
+    $dictionary->columns->delay_minutes = 'Delay the start of this task by X minutes (not currently implemented).';
+    $dictionary->columns->expire_minutes = 'Do not run for longer than X minutes (not currently implemented).';
+    $dictionary->columns->first_run = 'The first date and time this task should be executed.';
+    $dictionary->columns->last_run = 'The last date and time this task was executed.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+
 }
 
 if ($table == 'users') {

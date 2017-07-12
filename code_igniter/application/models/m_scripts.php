@@ -228,8 +228,10 @@ class M_scripts extends MY_Model
             $result = $this->run_sql($sql, array());
             $options = new stdClass();
             $options->files = array();
-            foreach ($result as $item) {
-                $options->files[] = ($item->path);
+            if (!empty($result)) {
+                foreach ($result as $item) {
+                    $options->files[] = ($item->path);
+                }
             }
             if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
                 foreach (array_reverse($options->files) as $key => $value) {
