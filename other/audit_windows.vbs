@@ -3452,7 +3452,7 @@ end if
 
 if (audit_software = "y") then
 	result.WriteText "	<software>" & vbcrlf
-	# include OS in software
+	' include OS in software
 	result.WriteText "		<item>" & vbcrlf
 	result.WriteText "			<name>" & escape_xml(system_os_name) & " - " & objItem.Filename & "</name>" & vbcrlf
 	result.WriteText "			<version>" & escape_xml(system_os_version) & "</version>" & vbcrlf

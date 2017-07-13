@@ -194,6 +194,28 @@ class M_logon extends MY_Model
                                 }
                             }
                         }
+
+                        if (strtolower($ldap->use_roles) != 'y') {
+                            $sql = "/* m_logon::logon */" . " SELECT * FROM users WHERE name = ? AND active = 'y' LIMIT 1";
+                            $data = array($username);
+                            $query = $this->db->query($sql, $data);
+                            $users = $query->result();
+                            if (count($users) == 1) {
+                                $userdata = array('user_id' => $users[0]->id, 'user_debug' => '');
+                                $this->session->set_userdata($userdata);
+                                $CI->user = $users[0];
+                                return $users[0];
+                            } else {
+                                $log->severity = 5;
+                                $log->message = "User $username in LDAP " . $ldap->name . " but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.";
+                                stdlog($log);
+                                // Skip the rest of this ldap server.
+                                // There may be other ldap server's we use for roles.
+                                break;
+                            }
+                        }
+
+
                         $log->summary = 'ldap filter';
                         $log->detail = (string)$ldap->filter;
                         stdlog($log);
