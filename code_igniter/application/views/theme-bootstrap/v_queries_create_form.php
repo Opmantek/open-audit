@@ -70,8 +70,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][menu_category]" class="col-sm-4 control-label"><%== l($human_column) %></label>
-                        <div class="col-sm-7 input-group">
+                        <label for="data[attributes][menu_category]" class="col-sm-3 control-label">Menu Category</label>
+                        <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][menu_category]" name="data[attributes][menu_category]">
                                 <option value="" label=" "></option>
                                 <option value="Change">Change</option>
@@ -86,8 +86,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][menu_display]" class="col-sm-4 control-label">Menu Display</label>
-                        <div class="col-sm-7 input-group">
+                        <label for="data[attributes][menu_display]" class="col-sm-3 control-label">Menu Display</label>
+                        <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][menu_display]" name="data[attributes][menu_display]">
                                 <option value="y" selected>Yes</option>
                                 <option value="n">No</option>
