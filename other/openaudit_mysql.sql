@@ -172,6 +172,7 @@ INSERT INTO `attributes` VALUES (99,1,'devices','device_type','Web Cache','web c
 INSERT INTO `attributes` VALUES (100,1,'devices','device_type','Web Camera','webcam','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (101,1,'devices','device_type','Wireless Link','wireless link','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (102,1,'devices','device_type','Wireless Router','wireless router','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (103,1,'devices','device_type','Video Wall','video wall','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2567,6 +2568,7 @@ CREATE TABLE `tasks` (
   `name` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
+  `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1',
   `uuid` varchar(100) NOT NULL DEFAULT '',
   `enabled` enum('y','n') NOT NULL DEFAULT 'y',
   `type` varchar(100) NOT NULL DEFAULT 'command',
