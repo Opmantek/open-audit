@@ -324,7 +324,7 @@ class M_collection extends MY_Model
 
         $mandatory_fields = $this->mandatory_fields($collection);
         foreach ($mandatory_fields as $mandatory_field) {
-            if (empty($data->{$mandatory_field})) {
+            if (!isset($data->{$mandatory_field}) or $data->{$mandatory_field} == '') {
                 $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
                 log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $mandatory_field);
                 return false;
