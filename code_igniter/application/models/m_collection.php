@@ -131,7 +131,7 @@ class M_collection extends MY_Model
         if ($collection == 'tasks') {
             if ($result !== false) {
                 for ($i=0; $i < count($result); $i++) {
-                    if ($result[$i]->type == 'discoveries') {
+                    if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries') {
                         $sql = "SELECT name AS `name` FROM `" . $result[$i]->type . "` WHERE id = ?";
                         $data = array($result[$i]->sub_resource_id);
                         $data_result = $this->run_sql($sql, $data);
@@ -286,28 +286,21 @@ class M_collection extends MY_Model
             }
             if (!empty($data->minute) and is_array($data->minute)) {
                 $data->minute = implode(',', $data->minute);
-            } else {
-                $data->minute = '';
             }
             if (!empty($data->hour) and is_array($data->hour)) {
                 $data->hour = implode(',', $data->hour);
-            } else {
-                $data->hour = '';
             }
             if (!empty($data->day_of_month) and is_array($data->day_of_month)) {
                 $data->day_of_month = implode(',', $data->day_of_month);
-            } else {
-                $data->day_of_month = '';
             }
             if (!empty($data->month) and is_array($data->month)) {
                 $data->month = implode(',', $data->month);
-            } else {
-                $data->month = '';
             }
             if (!empty($data->day_of_week) and is_array($data->day_of_week)) {
                 $data->day_of_week = implode(',', $data->day_of_week);
-            } else {
-                $data->day_of_week = '';
+            }
+            if (empty($data->uuid)) {
+                $data->uuid = $this->config->config['uuid'];
             }
         }
 
