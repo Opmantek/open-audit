@@ -32,6 +32,10 @@ $this->log_db('Upgrade database to 2.0.4 commenced');
 # tasks
 $this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `description`", 'add');
 
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Video Wall','video wall','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170810' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
