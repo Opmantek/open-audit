@@ -63,6 +63,7 @@ if ($this->response->meta->collection === 'devices') {
     $last_seen_by = 'user';
     $last_seen = date('Y-m-d H:i:s');
 }
+
 foreach ($csv as $key => $value) {
     $item = new stdClass();
     for ($i=0; $i < count($value); $i++) {
@@ -79,10 +80,8 @@ foreach ($csv as $key => $value) {
 
         if ($this->response->meta->collection === 'roles') {
             $test = $this->m_users->has_role('admin');
-
         } elseif ($this->response->meta->collection !== 'roles' and $this->response->meta->collection !== 'orgs') {
             $test = $this->m_users->user_org($item->org_id);
-
         } elseif ($this->response->meta->collection === 'orgs') {
             $test = $this->m_users->user_org($item->parent_id);
         }
@@ -108,6 +107,7 @@ foreach ($csv as $key => $value) {
                 }
             } else {
                 # CREATE
+                unset($item->id);
                 if ($this->response->meta->collection !== 'devices') {
                     $test = $this->{'m_collection'}->create($item, $this->response->meta->collection);
                 } else {
@@ -139,7 +139,7 @@ if ($count_bad === 0) {
 } else {
     $flash_status = 'danger';
 }
-$this->session->set_flashdata('success','');
+$this->session->set_flashdata('success', '');
 $this->session->set_flashdata($flash_status, $flash_message);
 
 $this->response->meta->flash->status = $flash_status;
@@ -153,7 +153,7 @@ if ($this->response->meta->format === 'json') {
 
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
 $log->severity = 7;
 $log->status = 'finish';
 $log->type = 'access';
