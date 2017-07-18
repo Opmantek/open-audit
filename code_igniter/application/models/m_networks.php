@@ -215,9 +215,30 @@ class M_networks extends MY_Model
         if (stripos($ip_address, ':') !== false) {
             return true;
         }
-        $sql = "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
+        $sql = "/* m_networks::check_ip */ " . "SELECT COUNT(id) AS count FROM networks WHERE (-1 << (33 - INSTR(BIN(INET_ATON(cidr_to_mask(SUBSTR(network, LOCATE('/', network)+1)))), '0'))) & INET_ATON(?) = INET_ATON(SUBSTR(network, 1, LOCATE('/', network)-1))";
         $sql = $this->clean_sql($sql);
+
+        $temp_debug = $this->db->db_debug;
+        $this->db->db_debug = false;
         $query = $this->db->query($sql, array((string)$ip_address));
+        $this->db->db_debug = $temp_debug;
+
+        if ($this->db->_error_message()) {
+            # need to log down here for the above so we can use $this->db to get the last insert id
+            $db_error = $this->db->_error_message();
+            $sqllog = new stdClass();
+            $sqllog->function =  'm_networks::check_ip';
+            $sqllog->summary = 'check ip failed (allowing submit to continue)';
+            $sqllog->type = 'system';
+            $sqllog->severity = 3;
+            $sqllog->status = 'failure';
+            $sqllog->detail = $this->db->last_query();
+            $sqllog->detail .= ' - FAILURE - ' . $db_error;
+            stdlog($sqllog);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            return true;
+        }
+
         $result = $query->result();
         if (intval($result[0]->count) > 0) {
             return true;
