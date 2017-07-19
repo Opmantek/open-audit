@@ -237,7 +237,7 @@ if (empty($data['mount_point'])) {
                 <?php
                 }
                 if (!empty($data['service'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="services">Service</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="service">Service</a></li>
                 <?php
                 }
                 if (!empty($data['server'])) { ?>
