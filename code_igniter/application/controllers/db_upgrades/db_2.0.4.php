@@ -29,12 +29,70 @@
 
 $this->log_db('Upgrade database to 2.0.4 commenced');
 
-# tasks
-$this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `description`", 'add');
+# agents
+$this->drop_table('agents');
+$sql = "CREATE TABLE `agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
+  `check_minutes` int unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned,
+  `uuid` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
+# attributes update
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Video Wall','video wall','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+# collectors
+$this->drop_table('collectors');
+$sql = "CREATE TABLE `collectors` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
+  `check_minutes` int unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned,
+  `uuid` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# roles (updates to include agents and collectors)
+$sql = "SELECT * FROM roles WHERE name = 'admin'";
+$result = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+$permissions = json_decode($result[0]->permissions);
+$permissions->agents = 'crud';
+$permissions->collectors = 'crud';
+$permission = json_encode($permissions);
+$sql = "UPDATE roles SET permissions = ? WHERE name = 'admin'";
+$this->db->query($sql, array($permissions));
+$this->log_db($this->db->last_query());
+unset($permissions);
+unset($result);
+
+# tasks
+$this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `description`", 'add');
+
+# users add type
+$this->alter_table('users', 'type', "ADD `type` enum('agent','collector','user') NOT NULL DEFAULT 'user' AFTER `ldap`", 'add');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170810' WHERE `name` = 'internal_version'";

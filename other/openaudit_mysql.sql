@@ -16,6 +16,39 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `agents`
+--
+
+DROP TABLE IF EXISTS `agents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
+  `check_minutes` int unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned,
+  `uuid` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `agents`
+--
+
+LOCK TABLES `agents` WRITE;
+/*!40000 ALTER TABLE `agents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `agents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `attachment`
 --
 
@@ -330,6 +363,39 @@ CREATE TABLE `cluster` (
 LOCK TABLES `cluster` WRITE;
 /*!40000 ALTER TABLE `cluster` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cluster` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `collectors`
+--
+
+DROP TABLE IF EXISTS `collectors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `collectors` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
+  `check_minutes` int unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned,
+  `uuid` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `collectors`
+--
+
+LOCK TABLES `collectors` WRITE;
+/*!40000 ALTER TABLE `collectors` DISABLE KEYS */;
+/*!40000 ALTER TABLE `collectors` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2693,6 +2759,7 @@ CREATE TABLE `users` (
   `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
+  `type` enum('agent','collector','user') NOT NULL DEFAULT 'user'
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
