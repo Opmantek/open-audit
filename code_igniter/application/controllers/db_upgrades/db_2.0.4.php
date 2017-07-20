@@ -88,6 +88,9 @@ $this->log_db($this->db->last_query());
 unset($permissions);
 unset($result);
 
+# system
+$this->alter_table('system', 'collector_id', "ADD `collector_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `omk_uuid`", 'add');
+
 # tasks
 $this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `description`", 'add');
 
