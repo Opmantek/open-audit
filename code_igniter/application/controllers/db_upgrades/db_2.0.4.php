@@ -88,6 +88,15 @@ $this->log_db($this->db->last_query());
 unset($permissions);
 unset($result);
 
+$sql = "INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"cdru\"}','open-audit_roles_collector','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
+$sql = "INSERT INTO `roles` VALUES (NULL,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"cdru\"}','open-audit_roles_agent','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # system
 $this->alter_table('system', 'collector_id', "ADD `collector_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `omk_uuid`", 'add');
 
