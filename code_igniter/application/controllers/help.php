@@ -279,6 +279,18 @@ class Help extends MY_Controller
     }
 
     /**
+    * Our roles help
+    *
+    * @access public
+    * @return NULL
+    */
+    function roles()
+    {
+        $this->data['include'] = 'v_help_roles';
+        $this->load->view('v_template', $this->data);
+    }
+
+    /**
     * Our statistics help
     *
     * @access public
