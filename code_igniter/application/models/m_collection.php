@@ -269,7 +269,7 @@ class M_collection extends MY_Model
 
         $mandatory_fields = $this->mandatory_fields($collection);
         foreach ($mandatory_fields as $mandatory_field) {
-            if (empty($data->{$mandatory_field})) {
+            if (!isset($data->{$mandatory_field}) or $data->{$mandatory_field} == '') {
                 $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
                 log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $mandatory_field);
                 return false;
@@ -296,6 +296,10 @@ class M_collection extends MY_Model
 
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
+
+$logsql = "/*    " . json_encode($CI->response->meta) . "   */";
+$this->db->query($logsql);
+
         if (!empty($id)) {
             $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
             return ($id);
@@ -476,8 +480,16 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "agents":
+                return(' name org_id description ip status check_minutes user_id uuid options ');
+                break;
+
             case "attributes":
                 return(' name org_id resource type value ');
+                break;
+
+            case "collectors":
+                return(' name org_id description ip status check_minutes user_id uuid options ');
                 break;
 
             case "configuration":
@@ -560,8 +572,16 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "agents":
+                return(array('name','org_id','status'));
+                break;
+
             case "attributes":
                 return(array('name','org_id','type','resource','value'));
+                break;
+
+            case "collectors":
+                return(array('name','org_id','status'));
                 break;
 
             case "configuration":
