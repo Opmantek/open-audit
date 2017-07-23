@@ -88,12 +88,19 @@ $this->log_db($this->db->last_query());
 unset($permissions);
 unset($result);
 
-$sql = "INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"cdru\"}','open-audit_roles_collector','system','2000-01-01 00:00:00')";
+$sql = "DELETE FROM `roles` WHERE name = 'agent'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "INSERT INTO `roles` VALUES (NULL,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\"}','open-audit_roles_agent','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `roles` VALUES (NULL,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"cdru\"}','open-audit_roles_agent','system','2000-01-01 00:00:00')";
+$sql = "DELETE FROM `roles` WHERE name = 'collector'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `roles` VALUES (NULL,'collector','The collector specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\"}','open-audit_roles_collector','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -105,6 +112,15 @@ $this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) un
 
 # users add type
 $this->alter_table('users', 'type', "ADD `type` enum('agent','collector','user') NOT NULL DEFAULT 'user' AFTER `ldap`", 'add');
+
+
+$sql = "DELETE FROM `configuration` WHERE name = 'servers'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170810' WHERE `name` = 'internal_version'";
