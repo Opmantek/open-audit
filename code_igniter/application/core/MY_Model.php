@@ -316,7 +316,11 @@ class MY_Model extends CI_Model
                 if (strpos(' '.$item->name.' ', $reserved) === false) {
                     // We MUST have a name like 'connections.name', not just 'name'
                     if (strpos($item->name, '.') !== false) {
-                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                        if ($item->operator != 'in') {
+                            $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                        } else {
+                            $filter .= ' AND ' . $item->name . ' in ' . $item->value;
+                        }
                     }
                 }
             }
