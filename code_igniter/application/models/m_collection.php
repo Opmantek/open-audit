@@ -654,7 +654,7 @@ $this->db->query($logsql);
                 break;
 
             case "users":
-                return(' name org_id permissions password full_name email lang active roles orgs ');
+                return(' name org_id permissions password full_name email lang active roles orgs type ');
                 break;
         }
     }
