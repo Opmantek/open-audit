@@ -36,12 +36,12 @@ $link = 'For more detailed information, here is a link to the <em>' . $table . '
 $link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . $table . '">Knowledge Base</a>.';
 $purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" id="buy_more_licenses" data-toggle="modal" data-target="#myModalLicense">HERE</a>.</strong>';
 
-$id = 'The internal identifer column in the database.';
+$id = 'The internal identifer column in the database (read only).';
 $name = 'The name given to this item. Ideally it should be unique.';
 $org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
 $description = 'Your description of this item.';
-$edited_by = 'The name of the user who last changed or added this item.';
-$edited_date = 'The date this item was changed or added.';
+$edited_by = 'The name of the user who last changed or added this item (read only).';
+$edited_date = 'The date this item was changed or added (read only).';
 $system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
 if ($table == 'attachments') {
@@ -543,7 +543,32 @@ Create individual discovery schedules for each subnet or AD controller, add in r
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Open-AudIT can send you a report, run a discovery or test  a baseline on a schedule of your choosing. Have Open-AudIT email you a report of any new devices found for the week, every Friday. Simple, quick and easy.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
+    $dictionary->notes = '<p>Tasks have a schedule that mirrors the unix cron schedule. The attributes for minute, hour, day_of_month, month, day_of_week all act as per the cron definitions. You can select multiples of these using comma seperated values (no spaces). You can select every value using *.<br /><br />
+        The <code>type</code> of the task can be one of: baselines, discoveries, queries, reports or summaries.<br /><br />
+        If you wish to schedule a Baseline or Discovery, you will need to create these before creating the tasks. You must use the ID of the type of item in <code>sub_resource_id</code>. For example if you wish to schedule a Discovery, use that particular Discovery\'s ID in <code>sub_resource_id</code>.<br /><br />
+        The value for <code>uuid</code> is specific to each Open-AudIT server. Your unique value can be found in the configuration.<br /><br />
+        The <code>options</code> attribute is a JSON document containing any extra attributes required to run the task. The extra attributes for reports, queries and summaries are: <code>email_address</code> and <code>format</code>. The extra attribute for Bselines is <code>group_id</code>.
+        <br /><br /></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = 'The description of this task.';
+    $dictionary->columns->type = 'The type of task to run.';
+    $dictionary->columns->sub_resource_id = 'The ID of the item of type (discoveries, reports, etc).';
+    $dictionary->columns->uuid = 'The unique identifier of this server.';
+    $dictionary->columns->enabled = 'Is this task enabled (y/n).';
+    $dictionary->columns->minute = 'The minute of the hour when this task should execute (* for every minute).';
+    $dictionary->columns->hour = 'The hour of the day when this task should execute (* for every hour).';
+    $dictionary->columns->day_of_month = 'The day of the month when this task should execute (* for every day).';
+    $dictionary->columns->month = 'The month of the year when this task should execute (* for every month).';
+    $dictionary->columns->day_of_week = 'The day of the week when this task should execute (* for every day).';
+    $dictionary->columns->delay_minutes = 'Delay the start of this task by X minutes (not currently implemented).';
+    $dictionary->columns->expire_minutes = 'Do not run for longer than X minutes (not currently implemented).';
+    $dictionary->columns->first_run = 'The timestamp after which, this task should run. IE - Run a task after the 1st June 2017 at 10am, set it to \'2017-06-01 09:59:00\'. This value should be zero padded (ie, 09, not 9). This value defaults to \'2001-01-01 00:00:00\' which means by default, a scheduled task will run at next scheduled execution time.';
+    $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+
 }
 
 if ($table == 'users') {

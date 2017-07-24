@@ -66,7 +66,7 @@ class tasks extends MY_Controller
         $this->load->helper('output');
         $this->load->helper('error');
         $this->load->model('m_orgs');
-        $this->load->model('m_summaries');
+        $this->load->model('m_tasks');
         inputRead();
     }
 

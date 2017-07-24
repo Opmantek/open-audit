@@ -94,7 +94,7 @@ if (!empty($this->response->data)) { ?>
                 foreach ($properties as $key => $value) {
                     if ($key == 'system.id') {
                         echo "            <th class=\"text-center\">\n";
-                        echo "              <button type=\"button\" class=\"btn btn-primary bulk_edit_button\">" . __('Edit') . "</button>&nbsp;\n";
+                        echo "              <button type=\"button\" class=\"btn btn-primary btn-xs bulk_edit_button\">" . __('Bulk Edit') . "</button>&nbsp;\n";
                         echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
                         echo "            </th>\n";
                     }
