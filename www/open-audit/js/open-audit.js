@@ -40,7 +40,8 @@ $(document).ready(function () {
             }
         });
         ids = ids.substring(1);
-        var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;
+        // var url = baseurl + 'index.php/' + collection + '?action=update&ids=' + ids;
+        var url = baseurl + 'index.php/devices?action=update&ids=' + ids;
         window.location = url;
     });
 });
