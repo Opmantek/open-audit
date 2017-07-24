@@ -144,7 +144,7 @@
                         <div class="col-sm-8 input-group">
                             <select multiple size="6" class="data_type form-control" id="data[attributes][roles][]" name="data[attributes][roles][]">
                                 <?php foreach ($this->response->included as $role) {
-                                if ($role->type == 'roles') { ?>
+                                if ($role->type == 'roles' and ($role->attributes->name != 'collector' and $role->attributes->name != 'agent')) { ?>
                                     <option value="<?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($role->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php } } ?>
                             </select>
