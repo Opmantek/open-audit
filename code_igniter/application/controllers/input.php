@@ -114,6 +114,7 @@ class input extends CI_Controller
         if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
             $this->load->model('m_users');
             $this->m_users->validate();
+            $this->user->org_list = $this->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
             $this->response = new stdClass();
             $this->response->meta = new stdClass();
             $this->response->meta->collection = '';
