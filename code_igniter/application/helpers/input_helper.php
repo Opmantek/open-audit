@@ -688,8 +688,9 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set format to ' . $CI->response->meta->format . ', because default.';
             stdlog($log);
         }
-        $reserved_words = ' json json_data screen xml csv sql table ';
+        $reserved_words = ' json json_data html screen xml csv sql table ';
         if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
+            $log->summary = 'Set format to json, because unknown format provided.';
             $CI->response->meta->format = 'json';
         }
 
@@ -847,7 +848,9 @@ if (! function_exists('inputRead')) {
                 $operator = substr($query->value, 0, 2);
                 $test = substr($query->value, 0, 4);
                 if ($operator == 'in' and $test != 'info') {
-                    $query->value = "(" . substr($query->value, 2) . ")";
+                    $temp_value = substr($query->value, 2);
+                    $temp_value = str_replace(",", "','", $temp_value);
+                    $query->value = "('" . $temp_value . "')";
                     $query->operator = $operator;
                 }
 
