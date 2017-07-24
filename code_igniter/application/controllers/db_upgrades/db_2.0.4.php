@@ -50,6 +50,10 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # attributes update
+$sql = "DELETE FROM `attributes` WHERE `name` = 'Video Wall'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Video Wall','video wall','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -76,14 +80,15 @@ $this->log_db($this->db->last_query());
 
 # roles (updates to include agents and collectors)
 $sql = "SELECT * FROM roles WHERE name = 'admin'";
-$result = $this->db->query($sql);
+$query = $this->db->query($sql);
+$result = @$query->result();
 $this->log_db($this->db->last_query());
 $permissions = json_decode($result[0]->permissions);
 $permissions->agents = 'crud';
 $permissions->collectors = 'crud';
-$permission = json_encode($permissions);
+$permissions_json = (string)json_encode($permissions);
 $sql = "UPDATE roles SET permissions = ? WHERE name = 'admin'";
-$this->db->query($sql, array($permissions));
+$this->db->query($sql, array($permissions_json));
 $this->log_db($this->db->last_query());
 unset($permissions);
 unset($result);
