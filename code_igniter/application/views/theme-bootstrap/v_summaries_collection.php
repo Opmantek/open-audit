@@ -50,6 +50,9 @@
                 if (!empty($endpoint->type) and $endpoint->type == 'collection') {
                     $i++;
                     $endpoint->attributes->name = str_replace('Ldap Servers', 'LDAP', $endpoint->attributes->name);
+                    if ($endpoint->attributes->name == 'Logs') {
+                        $endpoint->attributes->collection = $endpoint->attributes->collection . "?logs.type=system";
+                    }
                     echo '<div class="col-sm-1 text-center">' . __($endpoint->attributes->name) . '<br /><a class="btn btn-app" href="' . $endpoint->attributes->collection . '"><span class="badge">' . $endpoint->attributes->count . '</span><i class="fa fa-' . $endpoint->attributes->icon  . ' fa-3x fa-fw" style="font-size: 2vw;"></i></a></div>';
                     if ($i == 12) {
                         echo "</div><br /><br /><div class=\"row\">";
