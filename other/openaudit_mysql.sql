@@ -474,6 +474,7 @@ INSERT INTO `configuration` VALUES (49,'uuid',UUID(),'text','n','system',NOW(),'
 INSERT INTO `configuration` VALUES (50,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
 INSERT INTO `configuration` VALUES (51,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (50,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
+INSERT INTO `configuration` VALUES (51,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

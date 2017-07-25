@@ -78,6 +78,12 @@ $sql = "CREATE TABLE `collectors` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# configuration
+$sql = "DELETE from `configuration` WHERE name = 'database_show_row_limit'";
+$this->db->query($sql);
+$sql = "INSERT INTO `configuration` VALUES (NULL,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.')";
+$this->db->query($sql);
+
 # roles (updates to include agents and collectors)
 $sql = "SELECT * FROM roles WHERE name = 'admin'";
 $query = $this->db->query($sql);
