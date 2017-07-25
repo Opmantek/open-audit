@@ -695,13 +695,13 @@ if (! function_exists('inputRead')) {
         }
 
         # get the limit
-        if ($CI->response->meta->format == 'json') {
+        if ($CI->response->meta->format != 'screen') {
             $CI->response->meta->limit = '';
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because json.';
+            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because not screen.';
             stdlog($log);
         } else {
             $CI->response->meta->limit = 1000;
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for non-json.';
+            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for screen.';
             stdlog($log);
         }
         if (isset($_GET['limit'])) {
