@@ -463,6 +463,17 @@ if ($table == 'roles') {
     $dictionary->columns->edited_date = $edited_date;
 }
 
+if ($table == 'servers') {
+    $dictionary->sentence = 'Open-AudIT Enterprise includes Servers and Collectors.';
+    $dictionary->marketing = ' ' . $link . '<br /><br /></p>';
+    $dictionary->about = '';
+    $dictionary->notes = '<p>The server that controls <i>this</i> Open-AudIT will be stored in the configuration under the \'servers\' attribute as a JSON document.<br /><br /></p>';
+    $dictionary->columns->host = 'The IP address or resolvable hostname of the server.';
+    $dictionary->columns->user = 'The account name on the server that is used to log on.';
+    $dictionary->columns->password = 'A hashed password that enables logon.';
+    $dictionary->columns->uuid = 'The local UUID to identify <i>this</i> server.';
+}
+
 if ($table == 'scalability') {
     $dictionary->sentence = 'Open-AudIT is incredibly resource efficient. Some customers audit over 30,000 devices on a single instance!';
     $dictionary->about = '<p><br /><br />

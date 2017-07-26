@@ -214,7 +214,7 @@ class M_database extends MY_Model
                     $delimiter = ",";
                     $newline = "\r\n";
                     $query = $this->db->query($sql);
-                    if ($count < 1001) {
+                    if ($count < intval($this->config->config['database_show_row_limit'])) {
                         $return = $this->dbutil->csv_from_result($query, $delimiter, $newline);
                         return $return;
                     } else {
@@ -229,7 +229,7 @@ class M_database extends MY_Model
                     $sql = "SELECT * FROM `" . $table . "`";
                     $query = $this->db->query($sql);
                     $config = array ('root' => 'root', 'element' => 'item', 'newline' => "\n", 'tab' => "\t");
-                    if ($count < 1001) {
+                    if ($count < intval($this->config->config['database_show_row_limit'])) {
                         $return = $this->dbutil->xml_from_result($query, $config);
                         return $return;
                     } else {
@@ -254,7 +254,7 @@ class M_database extends MY_Model
                     #$command = $mysqldump . ' --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' ' . $CI->db->database . ' ' . $table;
                     $command = '"' . $mysqldump . '" --extended-insert=FALSE -u ' . $CI->db->username . ' -p' . $CI->db->password . ' -h' . $CI->db->hostname . ' ' . $CI->db->database . ' ' . $table;
                     
-                    if ($count < 1001) {
+                    if ($count < intval($this->config->config['database_show_row_limit'])) {
                         // echo "<pre>\n";
                         // passthru($command);
                         exec($command, $return);

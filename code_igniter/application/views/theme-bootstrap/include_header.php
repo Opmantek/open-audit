@@ -345,8 +345,9 @@
                             <li><a href='<?php echo $this->config->config['oae_url']; ?>/features'><?php echo __('Open-AudIT Features')?></a></li>
 
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/support'><?php echo __('Support')?></a></li>
-                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/queries'><?php echo __('Default Query List')?></a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/groups'><?php echo __('Default Group List')?></a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/queries'><?php echo __('Default Query List')?></a></li>
+                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/roles'><?php echo __('Default Role List')?></a></li>
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help/summaries'><?php echo __('Default Summary List')?></a></li>
                         </ul>
                     </li>

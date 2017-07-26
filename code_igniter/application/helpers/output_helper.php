@@ -557,6 +557,35 @@ if (! function_exists('output')) {
         }
     }
 
+    function output_html()
+    {
+        $CI = & get_instance();
+        $table = "<table><thead><tr>";
+        // Our Headers
+        foreach ($CI->response->data[0]->attributes as $key => $value) {
+            if (stripos($key, '_padded') === false) {
+                $table .= "<th>" . $key . "</th>";
+            }
+        }
+        $table .= "</tr></thead><tbody>";
+        foreach ($CI->response->data as $item) {
+            $table .= "<tr>";
+            foreach ($item->attributes as $key => $value) {
+                if (stripos($key, '_padded') === false) {
+                    $table .= "<td>" . $value . "</td>";
+                }
+            }
+            $table .= "</tr>";
+        }
+        $table .= "</tbody></table>";
+        echo $table;
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            header('Content-Type: text/html');
+            header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
+            header('Cache-Control: max-age=0');
+        }
+    }
+
     function output_table()
     {
         $CI = & get_instance();
@@ -584,8 +613,6 @@ if (! function_exists('output')) {
             header('Content-Disposition: attachment;filename="'.$CI->response->meta->heading.'.html"');
             header('Cache-Control: max-age=0');
         }
-
-
     }
 
     function output_table2()

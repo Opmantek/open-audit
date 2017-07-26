@@ -210,6 +210,36 @@ class logon extends CI_Controller
             exit();
         }
 
+        if ($this->user->type == 'collector') {
+            $sql = "/* logon */ " . "SELECT * FROM `collectors` WHERE user_id = ?";
+            $query = $this->db->query($sql, array($this->user->id));
+            $this->response->meta->sql[] = $this->db->last_query();
+            $result = $query->result();
+            if (!empty($result)) {
+                if ($result[0]->status == 'created') {
+                    $sql = "/* m_logon */ " . "UPDATE `collectors` SET `status` = 'pending' WHERE id = " . $result[0]->id;
+                    $query = $this->db->query($sql);
+                    $this->response->meta->sql[] = $this->db->last_query();
+                    $result[0]->status = 'pending';
+                    $this->response->collection = 'collectors';
+                    unset($result[0]->password);
+                    $return = array();
+                    foreach ($result as $entry) {
+                        $item = new stdClass();
+                        $item->id = intval($entry->id);
+                        $item->type = 'collectors';
+                        $item->attributes = $entry;
+                        $item->links = new stdClass();
+                        $item->links->self = $this->config->config['base_url'] . 'index.php/collectors/' . $item->id;
+                        $return[] = $item;
+                        unset($item);
+                    }
+                    $this->response->data = $return;
+                    print_r(json_encode($this->response));
+                    exit();
+                }
+            }
+        }
 
         if ($this->response->meta->format != 'json') {
             $url = @$this->input->post('url');

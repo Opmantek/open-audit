@@ -162,7 +162,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
 
-        $collections = ' attributes charts configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries tasks users ';
+        $collections = ' agents attributes charts collectors configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries tasks users ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -688,19 +688,20 @@ if (! function_exists('inputRead')) {
             $log->summary = 'Set format to ' . $CI->response->meta->format . ', because default.';
             stdlog($log);
         }
-        $reserved_words = ' json json_data screen xml csv sql table ';
+        $reserved_words = ' json json_data html screen xml csv sql table ';
         if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
+            $log->summary = 'Set format to json, because unknown format provided.';
             $CI->response->meta->format = 'json';
         }
 
         # get the limit
-        if ($CI->response->meta->format == 'json') {
+        if ($CI->response->meta->format != 'screen') {
             $CI->response->meta->limit = '';
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because json.';
+            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because not screen.';
             stdlog($log);
         } else {
             $CI->response->meta->limit = 1000;
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for non-json.';
+            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for screen.';
             stdlog($log);
         }
         if (isset($_GET['limit'])) {

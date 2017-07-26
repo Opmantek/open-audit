@@ -344,6 +344,10 @@ class M_collection extends MY_Model
 
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
+
+$logsql = "/*    " . json_encode($CI->response->meta) . "   */";
+$this->db->query($logsql);
+
         if (!empty($id)) {
             $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
             return ($id);
@@ -569,8 +573,16 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "agents":
+                return(' name org_id description ip status check_minutes user_id uuid options ');
+                break;
+
             case "attributes":
                 return(' name org_id resource type value ');
+                break;
+
+            case "collectors":
+                return(' name org_id description ip status check_minutes user_id uuid options ');
                 break;
 
             case "configuration":
@@ -642,7 +654,7 @@ class M_collection extends MY_Model
                 break;
 
             case "users":
-                return(' name org_id permissions password full_name email lang active roles orgs ');
+                return(' name org_id permissions password full_name email lang active roles orgs type ');
                 break;
         }
     }
@@ -653,8 +665,16 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "agents":
+                return(array('name','org_id','status'));
+                break;
+
             case "attributes":
                 return(array('name','org_id','type','resource','value'));
+                break;
+
+            case "collectors":
+                return(array('name','org_id','status'));
                 break;
 
             case "configuration":

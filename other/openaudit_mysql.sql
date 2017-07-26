@@ -16,6 +16,39 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `agents`
+--
+
+DROP TABLE IF EXISTS `agents`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
+  `check_minutes` int unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned,
+  `uuid` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `agents`
+--
+
+LOCK TABLES `agents` WRITE;
+/*!40000 ALTER TABLE `agents` DISABLE KEYS */;
+/*!40000 ALTER TABLE `agents` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `attachment`
 --
 
@@ -333,6 +366,39 @@ LOCK TABLES `cluster` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `collectors`
+--
+
+DROP TABLE IF EXISTS `collectors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `collectors` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ip` varchar(45) NOT NULL DEFAULT '',
+  `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
+  `check_minutes` int unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned,
+  `uuid` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `collectors`
+--
+
+LOCK TABLES `collectors` WRITE;
+/*!40000 ALTER TABLE `collectors` DISABLE KEYS */;
+/*!40000 ALTER TABLE `collectors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `configuration`
 --
 
@@ -407,6 +473,8 @@ INSERT INTO `configuration` VALUES (48,'rss_url','https://community.opmantek.com
 INSERT INTO `configuration` VALUES (49,'uuid',UUID(),'text','n','system',NOW(),'The unique identfier of this Open-AudIT server.');
 INSERT INTO `configuration` VALUES (50,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
 INSERT INTO `configuration` VALUES (51,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
+INSERT INTO `configuration` VALUES (50,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
+INSERT INTO `configuration` VALUES (51,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1982,10 +2050,12 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
-INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"configuration\":\"crud\",\"database\":\"crud\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"database\":\"crud\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"errors\":\"r\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"baselines\":\"crud\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"errors\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"reports\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"baselines\":\"r\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"reports\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (6,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\"}','open-audit_roles_agent','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2541,6 +2611,7 @@ CREATE TABLE `system` (
   `last_seen_by` varchar(150) NOT NULL DEFAULT '',
   `last_user` varchar(150) NOT NULL DEFAULT '',
   `omk_uuid` text NOT NULL,
+  `collector_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
@@ -2693,6 +2764,7 @@ CREATE TABLE `users` (
   `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
+  `type` enum('agent','collector','user') NOT NULL DEFAULT 'user'
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
