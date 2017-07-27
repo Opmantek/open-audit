@@ -296,6 +296,20 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0029']->title = "Could not bind to LDAP using user credentials";
         $error_array['ERR-0029']->detail = 'When attempting to bind to LDAP, failed. Check user credentials.';
 
+        $error_array['ERR-0030'] = new stdClass();
+        $error_array['ERR-0030']->code = 'ERR-0030';
+        $error_array['ERR-0030']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0030']->severity = 3;
+        $error_array['ERR-0030']->title = "Required attributes not supplied (collector UUID)";
+        $error_array['ERR-0030']->detail = 'When attempting logon with a collector account, you must supply a UUID.';
+
+        $error_array['ERR-0031'] = new stdClass();
+        $error_array['ERR-0031']->code = 'ERR-0031';
+        $error_array['ERR-0031']->status = 'HTTP/1.1 403 Forbidden';
+        $error_array['ERR-0031']->severity = 3;
+        $error_array['ERR-0031']->title = "Collector attempting to logon from unassociated ip address.";
+        $error_array['ERR-0031']->detail = 'A collector can only log in from a single IP address. Supplied IP does not match IP on record.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);

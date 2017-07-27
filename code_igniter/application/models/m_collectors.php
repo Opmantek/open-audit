@@ -81,4 +81,74 @@ class M_collectors extends MY_Model
             return false;
         }
     }
+
+    public function upsert()
+    {
+        $CI = & get_instance();
+        $sql = "/* logon */ " . "SELECT * FROM `collectors` WHERE uuid = ?";
+        $query = $this->db->query($sql, array($CI->input->post('uuid')));
+        $CI->response->meta->sql[] = $this->db->last_query();
+        $result = $query->result();
+        if (!empty($result)) {
+            if ($result[0]->ip != $_SERVER['REMOTE_ADDR']) {
+                log_error('ERR-0031', current_url());
+                // header($this->response->meta->header);
+                // header('Content-Type: application/json');
+                // print_r(json_encode($this->response));
+                // $this->session->sess_destroy();
+                // exit();
+                return;
+            }
+            $sql = "/* logon */ " . "UPDATE `collectors` SET `status` = 'pending' WHERE id = " . $result[0]->id;
+            $query = $this->db->query($sql);
+            $CI->response->meta->sql[] = $this->db->last_query();
+            $result[0]->status = 'pending';
+            unset($result[0]->password);
+            $return = array();
+            foreach ($result as $entry) {
+                $item = new stdClass();
+                $item->id = intval($entry->id);
+                $item->type = 'collectors';
+                $item->attributes = $entry;
+                $item->links = new stdClass();
+                $item->links->self = $this->config->config['base_url'] . 'index.php/collectors/' . $item->id;
+                $return[] = $item;
+                unset($item);
+            }
+            $CI->response->data = $return;
+            // header('Content-Type: application/json');
+            // print_r(json_encode($this->response));
+            // exit();
+            return;
+        } else {
+            # create our collector item
+            $sql = "/* logon */ " . "INSERT INTO `collectors` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+            $name = $CI->input->post('username') . ' from ' . $_SERVER['REMOTE_ADDR'];
+            $description = $CI->input->post('username') . ' from ' . $_SERVER['REMOTE_ADDR'] . ' using ' . $CI->input->post('uuid');
+            $data = array($name, intval($CI->user->org_id), $description, (string)$_SERVER['REMOTE_ADDR'], 'created', $this->config->config['collector_check_minutes'], $CI->user->id, $CI->input->post('uuid'), '', 'system');
+            $query = $this->db->query($sql, $data);
+            $CI->response->meta->sql[] = $this->db->last_query();
+            # return this new collector
+            $sql = "/* logon */ " . "SELECT * FROM `collectors` WHERE id = ?";
+            $query = $this->db->query($sql, array($this->db->insert_id()));
+            $CI->response->meta->sql[] = $this->db->last_query();
+            $result = $query->result();
+            $return = array();
+            foreach ($result as $entry) {
+                $item = new stdClass();
+                $item->id = intval($entry->id);
+                $item->type = 'collectors';
+                $item->attributes = $entry;
+                $item->links = new stdClass();
+                $item->links->self = $this->config->config['base_url'] . 'index.php/collectors/' . $item->id;
+                $return[] = $item;
+                unset($item);
+            }
+            $CI->response->data = $return;
+            // header('Content-Type: application/json');
+            // print_r(json_encode($this->response));
+            // exit();
+            return;
+        }
+    }
 }
