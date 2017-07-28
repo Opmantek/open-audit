@@ -443,6 +443,12 @@ class M_device extends MY_Model
         if (!empty($details->hostname)) {
             $details->name = $details->hostname;
         }
+        if (empty($details->name) and !empty($details->dns_hostname)) {
+            $details->name = $details->dns_hostname;
+        }
+        if (empty($details->name) and !empty($details->ip)) {
+            $details->name = $details->ip;
+        }
         if (!isset($details->description)) {
             $details->description = '';
         }
@@ -753,7 +759,7 @@ class M_device extends MY_Model
                 # we should have a real hostname if we get to here
             }
         }
-        if (filter_var($details->hostname, FILTER_VALIDATE_IP) and isset($details->sysName) and $details->sysName != '') {
+        if (filter_var($details->hostname, FILTER_VALIDATE_IP) and !empty($details->sysName)) {
             # use the sysName from SNMP if set
             $details->hostname = $details->sysName;
         }
@@ -763,12 +769,19 @@ class M_device extends MY_Model
         $data = array("$details->id");
         $query = $this->db->query($sql, $data);
         $result = $query->row();
-        $db_name = $result->name;
-        if (empty($db_name)) {
-            if (!empty($details->hostname) != '' and empty($details->name)) {
-                $details->name = $details->hostname;
-            }
+        if (!filter_var($result->name, FILTER_VALIDATE_IP)) {
+            $details->name = $result->name;
         }
+        if (empty($details->name) and !empty($details->hostname)) {
+            $details->name = $details->hostname;
+        }
+        if (empty($details->name) and !empty($details->dns_hostname)) {
+            $details->name = $details->dns_hostname;
+        }
+        if (empty($details->name) and !empty($details->ip)) {
+            $details->name = $details->ip;
+        }
+
         # if submitting an nmap scan, do not update the type or type
         if (isset($details->last_seen_by) and $details->last_seen_by == 'nmap') {
             unset($details->type);
