@@ -384,6 +384,9 @@ class devices extends MY_Controller
             $this->response->data = $this->m_devices->read($this->response->meta->id);
             $data = new stdClass();
             $data->name = $this->response->data[0]->attributes->name;
+            if (empty($data->name)) {
+                $data->name = ip_address_from_db($this->response->data[0]->attributes->ip);
+            }
             $data->system_id = $this->response->data[0]->attributes->id;
             $data->org_id = $this->response->data[0]->attributes->org_id;
             $data->type = 'subnet';
