@@ -123,7 +123,11 @@ class M_collectors extends MY_Model
         } else {
             # create our collector item
             $sql = "/* logon */ " . "INSERT INTO `collectors` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-            $name = $CI->input->post('username') . ' from ' . $_SERVER['REMOTE_ADDR'];
+            if (empty($CI->input->post('collector_name'))) {
+                $name = $CI->input->post('username') . ' from ' . $_SERVER['REMOTE_ADDR'];
+            } else {
+                $name = $CI->input->post('collector_name');
+            }
             $description = $CI->input->post('username') . ' from ' . $_SERVER['REMOTE_ADDR'] . ' using ' . $CI->input->post('uuid');
             $data = array($name, intval($CI->user->org_id), $description, (string)$_SERVER['REMOTE_ADDR'], 'created', $this->config->config['collector_check_minutes'], $CI->user->id, $CI->input->post('uuid'), '', 'system');
             $query = $this->db->query($sql, $data);
