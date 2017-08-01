@@ -92,6 +92,7 @@ class M_collectors extends MY_Model
         if (!empty($result)) {
             if ($result[0]->ip != $_SERVER['REMOTE_ADDR']) {
                 log_error('ERR-0031', current_url());
+                $CI->response->errors[0]->detail = "A collector can only log in from a single IP address. Supplied IP (" . $_SERVER['REMOTE_ADDR'] . ") does not match IP on record (" . $result[0]->ip . ").";
                 // header($this->response->meta->header);
                 // header('Content-Type: application/json');
                 // print_r(json_encode($this->response));
