@@ -60,7 +60,23 @@ class Home extends MY_Controller
         if (empty($this->config->config['homepage'])) {
             $this->config->config['homepage'] = 'groups';
         }
-        redirect($this->config->config['homepage']);
+        if (empty($this->config->config['servers'])) {
+            redirect($this->config->config['homepage']);
+        }
+    }
+
+    /**
+    * Index for when we are a collector
+    *
+    * @access public
+    * @return NULL
+    */
+    public function index()
+    {
+        $this->load->model('m_collection');
+        $this->data['tasks'] = $this->m_collection->collection('tasks');
+        $this->data['include'] = 'v_dashboard_collector';
+        $this->load->view('v_template', $this->data);
     }
 
 }

@@ -1,14 +1,20 @@
-
+<?php
+if (!empty($this->config->config['servers'])) {
+    $collector = true;
+} else {
+    $collector = false;
+}
+?>
 <div class="row">
     <nav class="navbar navbar-default">
         <div class="container-fluid">
 
             <!-- The left side 'header' of the navbar -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="/open-audit/">
+                <a class="navbar-brand" href="/open-audit/index.php">
                     <img alt="Brand" src="/open-audit/images/oac.png">
                 </a>
-                <a class="navbar-brand" href="/open-audit/">
+                <a class="navbar-brand" href="/open-audit/index.php">
                 <?php
                 if (!empty($this->config->config['oae_product'])) {
                     $product = $this->config->config['oae_product'];
@@ -22,7 +28,7 @@
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-
+                <?php if (!$collector) { ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Discover <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -236,7 +242,9 @@
                         } ?>
                         </ul>
                     </li>
+                <?php } ?>
                 </ul>
+
                 <ul class="nav navbar-nav navbar-right">
 
                     <li class="dropdown">
@@ -306,6 +314,7 @@
                         } ?>
 
                         <?php
+                        if (!$collector) {
                         if ($this->m_users->get_user_permission('', 'ldap_servers', 'u')) { ?>
                             <li class="dropdown-submenu">
                                 <a href="#">LDAP Servers</a>
@@ -317,7 +326,7 @@
                                 </ul>
                             </li>
                         <?php
-                        } ?>
+                        } } ?>
 
                         <?php
                         if ($this->m_users->get_user_permission('', 'logs', 'r')) { ?>
