@@ -95,7 +95,7 @@ if (!empty($this->response->data)) { ?>
                     if ($key == 'system.id') {
                         echo "            <th class=\"text-center\">\n";
                         echo "              <button type=\"button\" class=\"btn btn-primary btn-xs bulk_edit_button\">" . __('Bulk Edit') . "</button>&nbsp;\n";
-                        echo "              <input type=\"checkbox\" name=\"select-all\"/>\n";
+                        echo "              <input type=\"checkbox\" name=\"select_all\" id=\"select_all\" onClick=\"select_all_click()\"/>\n";
                         echo "            </th>\n";
                     }
                 }
