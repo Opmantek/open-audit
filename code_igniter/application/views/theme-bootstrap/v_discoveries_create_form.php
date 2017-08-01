@@ -149,10 +149,24 @@ if (empty($this->config->config['default_network_address'])) {
                         </div>
                     </div>
                 </div>
+
                 <div class="col-md-6">
                     <span id="options">
                     </span>
+                    <div class="form-group">
+                        <label for="notes" class="col-sm-3 control-label"></label>
+                        <div class="col-sm-8 input-group" id="notes" name="notes">
+                            <p><br />Some examples of valid Subnet attributes are:
+                                <ul>
+                                    <li>192.168.1.1 (a single IP address)</li>
+                                    <li>192.168.1.0/24 (a subnet)</li>
+                                    <li>192.168.1-3.1-20 (a range of IP addresses)</li>
+                                </ul>
+            <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br /></p>
+                        </div>
+                    </div>
                 </div>
+
             </div>
             <div class="row">
                 <div class="form-group">
