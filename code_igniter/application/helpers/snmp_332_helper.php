@@ -53,5 +53,12 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = '';
         $details->type = 'remote management';
     }
+
+    $temp = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.332.11.6.1.1.0");
+    if (!empty($temp)) {
+        $details->model = $temp;
+    }
+    unset($temp);
+
     return($details);
 };
