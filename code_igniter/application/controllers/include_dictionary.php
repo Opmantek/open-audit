@@ -207,7 +207,8 @@ if ($table == 'discoveries') {
     How else would you know "What is on my network?"<br /><br />
     Discoveries are preprepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
+    $dictionary->notes = 'Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br />
+    <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
