@@ -211,20 +211,22 @@ class logon extends CI_Controller
         }
 
         if ($this->user->type == 'collector') {
-            if (@$this->input->post('uuid') == '') {
-                log_error('ERR-0030', current_url());
+            // if (@$this->input->post('uuid') == '') {
+            //     log_error('ERR-0030', current_url());
+            //     header($this->response->meta->header);
+            //     print_r(json_encode($this->response));
+            //     $this->session->sess_destroy();
+            //     exit();
+            // }
+            if (!empty($this->input->post('uuid'))) {
+                $this->response->collection = 'collectors';
+                $this->load->model('m_collectors');
+                $this->m_collectors->upsert();
                 header($this->response->meta->header);
+                header('Content-Type: application/json');
                 print_r(json_encode($this->response));
-                $this->session->sess_destroy();
                 exit();
             }
-            $this->response->collection = 'collectors';
-            $this->load->model('m_collectors');
-            $this->m_collectors->upsert();
-            header($this->response->meta->header);
-            header('Content-Type: application/json');
-            print_r(json_encode($this->response));
-            exit();
         }
 
         if ($this->response->meta->format != 'json') {
