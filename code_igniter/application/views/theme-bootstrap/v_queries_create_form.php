@@ -34,7 +34,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->meta->collection; ?>">
+<!--<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->meta->collection; ?>">-->
+<form class="form-horizontal" id="form_update" method="post">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
