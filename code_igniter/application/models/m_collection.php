@@ -103,6 +103,14 @@ class M_collection extends MY_Model
             $result[] = $item;
         }
 
+        if ($collection == 'credentials') {
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->credentials)) {
+                    $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
+                }
+            }
+        }
+
         if ($collection == 'licenses' and !empty($result)) {
             foreach ($result as $item) {
                 if ($item->org_descendants == 'n') {
