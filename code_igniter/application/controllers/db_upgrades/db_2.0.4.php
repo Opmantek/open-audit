@@ -1,7 +1,5 @@
-<?php  if (!defined('BASEPATH')) {
-     exit('No direct script access allowed');
-}
-#
+<?php
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -26,23 +24,20 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+**/
 
-/*
- * @package Open-AudIT
- * @author Mark Unwin <marku@opmantek.com>
- *
- * @version   2.0.4
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- */
+$this->log_db('Upgrade database to 2.0.4 commenced');
 
-# Vendor Merlin Gerin
+# set our versions
+$sql = "UPDATE `configuration` SET `value` = '20170810' WHERE `name` = 'internal_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
-$get_oid_details = function ($ip, $credentials, $oid) {
-    $details = new stdClass();
-    if (strpos($oid, '1.3.6.1.4.1.705.1.2') == 0) {
-        $details->model = 'Pulsar UPS';
-        $details->type = 'ups';
-    }
-    return($details);
-};
+$sql = "UPDATE `configuration` SET `value` = '2.0.4' WHERE `name` = 'display_version'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$this->log_db("Upgrade database to 2.0.4 completed");
+$this->config->config['internal_version'] = '20170810';
+$this->config->config['display_version'] = '2.0.4';
