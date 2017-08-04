@@ -69,6 +69,7 @@ class Credentials extends MY_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
+        $this->load->library('encrypt');
         $this->load->model('m_credentials');
         $this->load->model('m_orgs');
         inputRead();
@@ -105,7 +106,6 @@ class Credentials extends MY_Controller
     */
     public function create()
     {
-        $this->load->library('encrypt');
         include 'include_create.php';
     }
 
