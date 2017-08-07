@@ -105,6 +105,23 @@ class scripts extends MY_Controller
     */
     public function read()
     {
+        include 'include_scripts_options.php';
+        foreach ($options as $item) {
+            $option = new stdClass();
+            $option->id = $item->name;
+            $option->type = 'option';
+            $option->attributes = $item;
+            $this->response->included[] = $option;
+            unset($option);
+        }
+        foreach ($options_scripts as $key => $value) {
+            $option = new stdClass();
+            $option->id = $key;
+            $option->type = 'script_option';
+            $option->attributes = $value;
+            $this->response->included[] = $option;
+            unset($option);
+        }
         include 'include_read.php';
     }
 
@@ -178,6 +195,23 @@ class scripts extends MY_Controller
     */
     private function update_form()
     {
+        include 'include_scripts_options.php';
+        foreach ($options as $item) {
+            $option = new stdClass();
+            $option->id = $item->name;
+            $option->type = 'option';
+            $option->attributes = $item;
+            $this->response->included[] = $option;
+            unset($option);
+        }
+        foreach ($options_scripts as $key => $value) {
+            $option = new stdClass();
+            $option->id = $key;
+            $option->type = 'script_option';
+            $option->attributes = $value;
+            $this->response->included[] = $option;
+            unset($option);
+        }
         include 'include_update_form.php';
     }
 

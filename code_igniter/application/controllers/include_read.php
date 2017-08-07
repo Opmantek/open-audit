@@ -62,7 +62,7 @@ if ($this->response->meta->collection == 'credentials') {
 }
 
 # database
-if ($this->response->meta->collection == 'connections') {
+if ($this->response->meta->collection == 'database') {
 }
 
 # discoveries
