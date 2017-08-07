@@ -27,7 +27,7 @@
 *
 **/
 
-$this->log_db('Upgrade database to 2.0.4 commenced');
+$this->log_db('Upgrade database to 2.0.6 commenced');
 
 # agents
 $this->drop_table('agents');
@@ -139,15 +139,15 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # set our versions
-$sql = "UPDATE `configuration` SET `value` = '20170810' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20170820' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `configuration` SET `value` = '2.0.4' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '2.0.6' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 #$this->db->db_debug = $temp_debug;
-$this->log_db("Upgrade database to 2.0.4 completed");
-$this->config->config['internal_version'] = '20170810';
-$this->config->config['display_version'] = '2.0.4';
+$this->log_db("Upgrade database to 2.0.6 completed");
+$this->config->config['internal_version'] = '20170820';
+$this->config->config['display_version'] = '2.0.6';
