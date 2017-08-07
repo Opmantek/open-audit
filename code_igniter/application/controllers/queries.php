@@ -31,7 +31,6 @@
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @version   2.0.6
-
 * @link      http://www.open-audit.org
 */
 
