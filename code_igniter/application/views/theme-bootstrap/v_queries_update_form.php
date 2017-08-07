@@ -25,13 +25,13 @@
 # *****************************************************************************
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * @version   2.0.6
-
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @category  View
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   2.0.6
+* @link      http://www.open-audit.org
  */
 $edit = true;
 include('v_queries_read.php');

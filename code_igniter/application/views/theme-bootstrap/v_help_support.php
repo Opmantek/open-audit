@@ -25,13 +25,13 @@
 # *****************************************************************************
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- * @version   2.0.6
-
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @category  View
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   2.0.6
+* @link      http://www.open-audit.org
  */
 if (php_uname('s') == 'Windows NT') {
     $files = "c:\\xampplite\\open-audit\\other\\log_system.log,\nc:\\omk\\log\\open-audit.log,\nc:\\omk\\log\\opCommon.log,\nc:\\omk\\log\\opDaemon.log,\nc:\\omk\\log\\performance.log,\nc:\\omk\\conf\\opCommon.nmis";
