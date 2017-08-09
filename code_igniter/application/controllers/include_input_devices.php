@@ -119,41 +119,85 @@ if (mb_detect_encoding($input) !== 'UTF-8') {
     $input = utf8_encode($input);
 }
 
-$xml_input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
+$input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
 libxml_use_internal_errors(true);
+$error = false;
+$xml = false;
+$json = false;
 
 try {
-    $xml = new SimpleXMLElement($xml_input, LIBXML_NOCDATA);
+    $xml = new SimpleXMLElement($input, LIBXML_NOCDATA);
 } catch (Exception $error) {
     $errors = libxml_get_errors();
-    if ($this->response->meta->format == 'screen') {
-        echo "Invalid XML.<br />\n<pre>\n";
-        print_r($errors);
-    }
-    log_error('ERR-0012');
-    print_r($this->response);
-    exit;
+    $error = true;
 }
-$log->message = "Valid XML result received.";
-$ids[] = discovery_log($log);
 
-# this inserts all the (or any) retrieved mac addresses into the sys XML section
-# which are then compared against in the m_device->match function to match a device
-foreach ($xml->children() as $child) {
-    if ($child->getName() === 'network') {
-        foreach ($child->children() as $card) {
-            $mac = '';
-            $mac = trim(strtolower((string)$card->mac));
-            if ($mac != '') {
-                $xml->sys->mac_addresses->$mac = $card->net_mac_address;
+if ($error) {
+    try {
+        $json = json_decode($input);
+        $log->message = "Valid JSON result received.";
+    } catch (Exception $error) {
+        log_error('ERR-0012');
+        print_r($this->response);
+        exit;
+    }
+} else {
+    $log->message = "Valid XML result received.";
+}
+
+if ($xml) {
+    $json = json_encode($xml, JSON_PRETTY_PRINT);
+    $json = json_decode($json);
+    $json->system = $json->sys;
+    unset($json->sys);
+    foreach ($json->system as $key => $value) {
+        if (gettype($value) === 'object') {
+            unset($json->system->{$key});
+        }
+    }
+    foreach ($json as $section => $section_item) {
+        if ($section !== 'system') {
+            if (!empty($json->{$section}->item)) {
+                if (is_array($json->{$section}->item) and count($json->{$section}->item) > 0) {
+                    for ($i=0; $i < count($json->{$section}->item); $i++) {
+                        foreach ($json->$section->item[$i] as $key => $value) {
+                            if (gettype($value) === 'object') {
+                                $json->$section->item[$i]->{$key} = (string)'';
+                            }
+                        }
+                    }
+                } else {
+                    $item = $json->{$section}->item;
+                    unset($json->{$section}->item);
+                    $json->{$section}->item = array();
+                    $json->{$section}->item[] = $item;
+                    foreach ($json->{$section}->item[0] as $key => $value) {
+                        if (gettype($value) === 'object') {
+                            $json->$section->item[0]->{$key} = (string)'';
+                        }
+                    }
+                }
+                echo $section . " : " . gettype($json->{$section}->item) . "<br />\n";
+            } else {
+                #unset($json->{$section});
             }
         }
     }
 }
-unset($mac);
-
-$details = (object) $xml->sys;
-$details->last_seen = $this->config->config['timestamp'];
+$details = $json->system;
+$ids[] = discovery_log($log);
+$json->system->mac_addresses = array();
+if (!empty($json->network->item) and count($json->network->item) > 0) {
+    foreach($json->network->item as $card) {
+        if (!empty($card->mac)) {
+            $json->system->mac_addresses[] = $card->mac;
+        }
+    }
+}
+echo "JSON<pre>\n"; print_r(json_encode($json, JSON_PRETTY_PRINT)); echo "</pre>\n";
+if (empty($details->last_seen)) {
+    $details->last_seen = $this->config->config['timestamp'];
+}
 $received_system_id = '';
 if (empty($details->id)) {
     $details->id = '';
@@ -249,7 +293,7 @@ if ((string) $i === '') {
         echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 }
-
+echo "DETAILS\n<pre>\n"; print_r(json_encode($details, JSON_PRETTY_PRINT)); echo "</pre>\n";
 $sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
 $query = $this->db->query($sql, array($details->id, (string)$log->ip));
 
@@ -270,61 +314,29 @@ if (!empty($details->discovery_id)) {
     $query = $this->db->query($sql, $data);
 }
 
-# delete the discovery_logs with pid != current pid and discovery_id = NULL
-// $sql = "DELETE FROM discovery_log WHERE system_id = ? AND discovery_id IS NULL AND pid != ?";
-// $data = array(intval($details->id), intval(getmypid()));
-// $query = $this->db->query($sql, $data);
-
 $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
 
 $this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
 
-$this->m_devices_components->process_component('bios', $details, $xml->bios);
-$this->m_devices_components->process_component('disk', $details, $xml->disk);
-$this->m_devices_components->process_component('file', $details, $xml->file);
-$this->m_devices_components->process_component('ip', $details, $xml->ip);
-$this->m_devices_components->process_component('log', $details, $xml->log);
-$this->m_devices_components->process_component('memory', $details, $xml->memory);
-$this->m_devices_components->process_component('module', $details, $xml->module);
-$this->m_devices_components->process_component('monitor', $details, $xml->monitor);
-$this->m_devices_components->process_component('motherboard', $details, $xml->motherboard);
-$this->m_devices_components->process_component('netstat', $details, $xml->netstat);
-$this->m_devices_components->process_component('network', $details, $xml->network);
-$this->m_devices_components->process_component('optical', $details, $xml->optical);
-$this->m_devices_components->process_component('pagefile', $details, $xml->pagefile);
-$this->m_devices_components->process_component('partition', $details, $xml->partition);
-$this->m_devices_components->process_component('print_queue', $details, $xml->print_queue);
-$this->m_devices_components->process_component('processor', $details, $xml->processor);
-$this->m_devices_components->process_component('route', $details, $xml->route);
-$this->m_devices_components->process_component('scsi', $details, $xml->scsi);
-$this->m_devices_components->process_component('server', $details, $xml->server);
-$this->m_devices_components->process_component('server_item', $details, $xml->server_item);
-$this->m_devices_components->process_component('service', $details, $xml->service);
-$this->m_devices_components->process_component('share', $details, $xml->share);
-$this->m_devices_components->process_component('software', $details, $xml->software);
-$this->m_devices_components->process_component('software_key', $details, $xml->software_key);
-$this->m_devices_components->process_component('sound', $details, $xml->sound);
-$this->m_devices_components->process_component('task', $details, $xml->task);
-$this->m_devices_components->process_component('user', $details, $xml->user);
-$this->m_devices_components->process_component('user_group', $details, $xml->user_group);
-$this->m_devices_components->process_component('variable', $details, $xml->variable);
-$this->m_devices_components->process_component('video', $details, $xml->video);
-$this->m_devices_components->process_component('vm', $details, $xml->vm);
-$this->m_devices_components->process_component('windows', $details, $xml->windows);
-
-foreach ($xml->children() as $child) {
-    if ($child->getName() === 'audit_wmi_fail') {
-        $this->m_audit_log->update('debug', $child->getName(), $details->id, $details->last_seen);
-        $this->m_audit_log->update('wmi_fails', $xml->audit_wmi_fail, $details->id, $details->last_seen);
+foreach ($json as $key => $value) {
+    if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
+        if (!empty($json->{$key}->item)) {
+            $this->m_devices_components->process_component($key, $details, $json->{$key});
+        }
     }
+}
+
+if (!empty($json->audit_wmi_fail)) {
+    $this->m_audit_log->update('debug', 'audit_wmi_fail', $details->id, $details->last_seen);
+    $this->m_audit_log->update('wmi_fails', $json->audit_wmi_fail, $details->id, $details->last_seen);
 }
 
 // Generate any DNS entries required
 $dns = new stdClass();
 $dns->item = array();
 $dns->item = $this->m_devices_components->create_dns_entries((int)$details->id);
-if (count($xml->dns->item) > 0) {
-    foreach ($xml->dns->item as $item) {
+if (!empty($json->dns->item) and count($json->dns->item) > 0) {
+    foreach ($json->dns->item as $item) {
         # likely not required, but turn it into an array and back to a standard object
         # so we have consistency inside the dns->item array of all objects versus some standard objects
         # and some simpleXML objects
@@ -354,7 +366,7 @@ $this->benchmark->mark('code_end');
 if ($this->response->meta->format == 'screen') {
     echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
 }
-$i = (string) $xml->sys[0]->hostname;
+$i = (string) $json->system->hostname;
 
 $log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
 $log->status = 'complete';
