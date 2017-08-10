@@ -513,8 +513,8 @@ class M_device extends MY_Model
         unset($details->man_org_id);
 
         # we now set a default location - 0 the location id
-        if (!isset($details->location_id)) {
-            $details->location_id = '0';
+        if (empty($details->location_id)) {
+            $details->location_id = '1';
         }
 
         if ((strripos($details->manufacturer, "vmware") !== false) or
