@@ -590,7 +590,7 @@ $this->db->query($logsql);
                 break;
 
             case "collectors":
-                return(' name org_id description ip status check_minutes user_id uuid options ');
+                return(' name org_id description ip status check_minutes user_id uuid network_address options ');
                 break;
 
             case "configuration":
