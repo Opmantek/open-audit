@@ -368,6 +368,49 @@ if ($this->response->meta->format == 'screen') {
 }
 $i = (string) $json->system->hostname;
 
+
+
+
+# If we are configured as a collector, forward the information to the server
+if ($this->config->config['servers'] !== '') {
+    $server = json_decode($this->config->config['servers']);
+    $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
+    discovery_log($log);
+
+    $device_json = json_encode($json, JSON_PRETTY_PRINT);
+    $url = $server->host . $server->community . '/index.php/input/devices';
+    $data = array('data' => $device_json);
+    # use key 'http' even if we send the request to https://...
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data)
+        )
+    );
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === false) {
+        # error
+        $log->severity = 4;
+        $log->message = 'Could not send result to ' . $server->host . $server->community . '/index.php/input/devices - please check with your server administrator.';
+        discovery_log($log);
+        $log->severity = 7;
+    } else {
+        # success
+        $log->severity = 7;
+        $log->message = 'Result sent to ' . $server->host . '.';
+        discovery_log($log);
+    }
+}
+
+
+
+
+
+
+
+
 $log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
 $log->status = 'complete';
 stdlog($log);
