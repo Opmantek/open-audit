@@ -167,6 +167,14 @@ if (!empty($_POST['data'])) {
             $log->system_id = intval($input->system_id);
         }
 
+        if (empty($discovery->device_count)) {
+            $discovery->device_count = 0;
+        }
+
+        if (empty($discovery->limit)) {
+            $discovery->limit = 0;
+        }
+
         if ($discovery->device_count >= $discovery->limit and $discovery->limit != 0) {
             $log->message = "License count exceeded. Not processing device " . $input->ip;
             discovery_log($log);
@@ -192,6 +200,7 @@ if (!empty($_POST['data'])) {
         $device->sysDescr = '';
         $device->last_seen = $this->config->config['timestamp'];
         $device->ip = (string)$input->ip;
+        $device->audits_ip = (string)$input->ip;
         $device->last_seen_by = 'nmap';
         $device->discovery_id = $discovery->id;
 
@@ -453,6 +462,10 @@ if (!empty($_POST['data'])) {
 
         $device->id = $this->m_device->match($device);
 
+        if (empty($discovery->org_id)) {
+            $discovery->org_id = 1;
+        }
+
         $device->org_id = $discovery->org_id;
         if (!empty($discovery->devices_assigned_to_org)) {
             $device->org_id = $discovery->devices_assigned_to_org;
@@ -533,6 +546,8 @@ if (!empty($_POST['data'])) {
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             unset($log->id, $command_log_id);
         }
+
+
         // grab some timestamps
         $device->last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
         $device->first_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'first_seen');
@@ -570,7 +585,7 @@ if (!empty($_POST['data'])) {
                     $network->mac = $device->mac;
                 }
                 $network->ip = ip_address_to_db($device->ip);
-                if (strpos($discovery->other->subnet, '/') !== false) {
+                if (!empty($discovery->other->subnet) and strpos($discovery->other->subnet, '/') !== false) {
                     $network_details = network_details($discovery->other->subnet);
                     $network->netmask = $network_details->netmask;
                     $network->cidr = $network_details->network_slash;
