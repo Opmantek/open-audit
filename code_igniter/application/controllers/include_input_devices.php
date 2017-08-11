@@ -369,6 +369,12 @@ if ($this->response->meta->format == 'screen') {
 $i = (string) $json->system->hostname;
 
 
+$log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+$log->status = 'complete';
+stdlog($log);
+if ($this->response->meta->format == 'screen') {
+    echo '</body></html>';
+}
 
 
 # If we are configured as a collector, forward the information to the server
@@ -377,6 +383,7 @@ if ($this->config->config['servers'] !== '') {
     $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
     discovery_log($log);
 
+    unset($json->device_id);
     $device_json = json_encode($json, JSON_PRETTY_PRINT);
     $url = $server->host . $server->community . '/index.php/input/devices';
     $data = array('data' => $device_json);
@@ -402,18 +409,4 @@ if ($this->config->config['servers'] !== '') {
         $log->message = 'Result sent to ' . $server->host . '.';
         discovery_log($log);
     }
-}
-
-
-
-
-
-
-
-
-$log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
-$log->status = 'complete';
-stdlog($log);
-if ($this->response->meta->format == 'screen') {
-    echo '</body></html>';
 }
