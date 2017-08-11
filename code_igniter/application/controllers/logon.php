@@ -217,7 +217,8 @@ class logon extends CI_Controller
             //     $this->session->sess_destroy();
             //     exit();
             // }
-            if (!empty($this->input->post('uuid'))) {
+            $test = @$this->input->post('uuid');
+            if (!empty($test)) {
                 $this->response->collection = 'collectors';
                 $this->load->model('m_collectors');
                 $this->m_collectors->upsert();
