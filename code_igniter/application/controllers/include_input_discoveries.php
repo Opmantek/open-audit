@@ -780,7 +780,7 @@ if (!empty($_POST['data'])) {
                     $device_json->network->item[] = $item;
                 }
             }
-            $device_json = json_encode($device_json, JSON_PRETTY_PRINT);
+            $device_json = json_encode($device_json);
             $url = $server->host . $server->community . '/index.php/input/devices';
             $data = array('data' => $device_json);
             # use key 'http' even if we send the request to https://...

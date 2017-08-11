@@ -146,7 +146,7 @@ if ($error) {
 }
 
 if ($xml) {
-    $json = json_encode($xml, JSON_PRETTY_PRINT);
+    $json = json_encode($xml);
     $json = json_decode($json);
     $json->system = $json->sys;
     unset($json->sys);
@@ -194,7 +194,7 @@ if (!empty($json->network->item) and count($json->network->item) > 0) {
         }
     }
 }
-echo "JSON<pre>\n"; print_r(json_encode($json, JSON_PRETTY_PRINT)); echo "</pre>\n";
+
 if (empty($details->last_seen)) {
     $details->last_seen = $this->config->config['timestamp'];
 }
@@ -293,7 +293,7 @@ if ((string) $i === '') {
         echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
     }
 }
-echo "DETAILS\n<pre>\n"; print_r(json_encode($details, JSON_PRETTY_PRINT)); echo "</pre>\n";
+
 $sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
 $query = $this->db->query($sql, array($details->id, (string)$log->ip));
 
@@ -384,7 +384,7 @@ if ($this->config->config['servers'] !== '') {
     discovery_log($log);
 
     unset($json->device_id);
-    $device_json = json_encode($json, JSON_PRETTY_PRINT);
+    $device_json = json_encode($json);
     $url = $server->host . $server->community . '/index.php/input/devices';
     $data = array('data' => $device_json);
     # use key 'http' even if we send the request to https://...
