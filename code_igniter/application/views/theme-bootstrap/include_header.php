@@ -22,7 +22,7 @@ if (!empty($this->config->config['servers'])) {
                     $product = 'Open-AudIT Community';
                 }
                 echo $product . ' ' . htmlspecialchars($this->config->item('display_version'), REPLACE_FLAGS, CHARSET);
-                ?>
+                ?> (alpha)
                 </a>
             </div>
 
