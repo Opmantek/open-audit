@@ -124,7 +124,8 @@ class M_collectors extends MY_Model
         } else {
             # create our collector item
             $sql = "/* logon */ " . "INSERT INTO `collectors` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
-            if (empty($CI->input->post('collector_name'))) {
+            $temp = @$CI->input->post('collector_name');
+            if (empty($temp)) {
                 $name = $CI->input->post('username') . ' from ' . $_SERVER['REMOTE_ADDR'];
             } else {
                 $name = $CI->input->post('collector_name');
