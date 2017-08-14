@@ -516,6 +516,62 @@ if (! function_exists('ssh_audit')) {
             }
         }
 
+        # Ubiquiti specific test
+        $command = 'cat /etc/motd | grep -i EdgeOS';
+        $ssh_result = ssh_command($ip, $credentials, $command, $log);
+        if ($ssh_result['status'] == 0) {
+            if (stripos($ssh_result['output'][0], 'EdgeOS') !== false) {
+                $details->os_family = 'Ubiquiti';
+                #$details->os_name = trim($ssh_result['output'][0]);
+                $details->type = 'router';
+                $command = 'cat /etc/os-release | grep -i "^PRETTY_NAME" | cut -d\" -f2';
+                $ssh_result = ssh_command($ip, $credentials, $command, $log);
+                if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
+                    $details->os_name = trim($ssh_result['output'][0]);
+                }
+                $command = 'cat /etc/version';
+                $ssh_result = ssh_command($ip, $credentials, $command, $log);
+                if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
+                    $details->description = trim($ssh_result['output'][0]);
+                }
+                $command = 'hostname';
+                $ssh_result = ssh_command($ip, $credentials, $command, $log);
+                if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
+                    $details->hostname = trim($ssh_result['output'][0]);
+                }
+                // NOTE - will not work beacuse needs to be run in an actual session
+                // $command = 'info | grep "^Mac Address" | cut -d: -f2';
+                // $ssh_result = ssh_command($ip, $credentials, $command, $log);
+                // if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
+                //     $details->mac = trim($ssh_result['output'][0]);
+                // }
+                // $command = 'show version';
+                // $ssh_result = ssh_command($ip, $credentials, $command, $log);
+                // if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
+                //     foreach ($ssh_result['output'] as $line) {
+                //         if (strpos($line, 'Version:') === 0) {
+                //             $details->os_version = trim(str_replace('Version:', '', $line));
+                //         }
+                //         if (strpos($line, 'HW model:') === 0) {
+                //             $details->model = trim(str_replace('HW model:', '', $line));
+                //         }
+                //         if (strpos($line, 'HW S/N:') === 0) {
+                //             $details->serial = trim(str_replace('HW S/N:', '', $line));
+                //         }
+                //     }
+                // }
+
+            }
+        }
+        $command = 'cat /etc/board.info | grep "board.name';
+        $ssh_result = ssh_command($ip, $credentials, $command, $log);
+        if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
+            $device->model = $ssh_result['output'][0];
+            $device->type = 'router';
+            $device->manufacturer = 'Ubiquiti Networks Inc.';
+        }
+
+
         # Solaris specific tests
         if ($details->os_group == 'SunOS') {
             $command = 'hostname';

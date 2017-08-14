@@ -382,6 +382,7 @@ CREATE TABLE `collectors` (
   `check_minutes` int unsigned NOT NULL DEFAULT '0',
   `user_id` int(10) unsigned,
   `uuid` text NOT NULL,
+  `network_address` varchar(100) NOT NULL DEFAULT '',
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -2055,7 +2056,7 @@ INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\
 INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"attributes\":\"crud\",\"baselines\":\"crud\",\"charts\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"errors\":\"r\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"baselines\":\"crud\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"errors\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"reports\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"baselines\":\"r\",\"charts\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"reports\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (6,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\"}','open-audit_roles_agent','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;

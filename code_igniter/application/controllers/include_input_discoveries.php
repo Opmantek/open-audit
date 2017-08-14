@@ -167,6 +167,14 @@ if (!empty($_POST['data'])) {
             $log->system_id = intval($input->system_id);
         }
 
+        if (empty($discovery->device_count)) {
+            $discovery->device_count = 0;
+        }
+
+        if (empty($discovery->limit)) {
+            $discovery->limit = 0;
+        }
+
         if ($discovery->device_count >= $discovery->limit and $discovery->limit != 0) {
             $log->message = "License count exceeded. Not processing device " . $input->ip;
             discovery_log($log);
@@ -192,6 +200,7 @@ if (!empty($_POST['data'])) {
         $device->sysDescr = '';
         $device->last_seen = $this->config->config['timestamp'];
         $device->ip = (string)$input->ip;
+        $device->audits_ip = (string)$input->ip;
         $device->last_seen_by = 'nmap';
         $device->discovery_id = $discovery->id;
 
@@ -453,6 +462,10 @@ if (!empty($_POST['data'])) {
 
         $device->id = $this->m_device->match($device);
 
+        if (empty($discovery->org_id)) {
+            $discovery->org_id = 1;
+        }
+
         $device->org_id = $discovery->org_id;
         if (!empty($discovery->devices_assigned_to_org)) {
             $device->org_id = $discovery->devices_assigned_to_org;
@@ -533,6 +546,8 @@ if (!empty($_POST['data'])) {
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
             unset($log->id, $command_log_id);
         }
+
+
         // grab some timestamps
         $device->last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
         $device->first_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'first_seen');
@@ -570,7 +585,7 @@ if (!empty($_POST['data'])) {
                     $network->mac = $device->mac;
                 }
                 $network->ip = ip_address_to_db($device->ip);
-                if (strpos($discovery->other->subnet, '/') !== false) {
+                if (!empty($discovery->other->subnet) and strpos($discovery->other->subnet, '/') !== false) {
                     $network_details = network_details($discovery->other->subnet);
                     $network->netmask = $network_details->netmask;
                     $network->cidr = $network_details->network_slash;
@@ -671,7 +686,6 @@ if (!empty($_POST['data'])) {
         // $device->id is now set
         if ($display == 'y') {
             echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
-            print_r($device);
         }
 
         // process and store the Nmap result
@@ -708,14 +722,91 @@ if (!empty($_POST['data'])) {
 
         // DISPLAY OUTPUT
         if ($display == 'y') {
-            $device->show_output = true;
-            echo "=======DETAILS======\n";
-            print_r($device);
-            echo "====================\n";
-            ob_flush();
-            flush();
+            #$device->show_output = true;
+            // echo "=======DETAILS======\n";
+            // print_r($device);
+            // echo "====================\n";
+            // ob_flush();
+            // flush();
         }
 
+
+        # If we are configured as a collector, forward the information to the server
+        if ($this->config->config['servers'] !== '') {
+            $server = json_decode($this->config->config['servers']);
+            $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
+            discovery_log($log);
+
+            $device_json = new stdClass();
+            $device_json->system = new stdClass();
+            foreach ($device as $key => $value) {
+                if ($key != 'id' and !empty($value)) {
+                    $device_json->system->{$key} = $value;
+                }
+            }
+            $device_json->system->collector_uuid = $this->config->config['uuid'];
+            if (count($nmap_result) > 0) {
+                $device_json->nmap = new stdClass();
+                $device_json->nmap->item = array();
+                foreach ($nmap_result as $item) {
+                    $device_json->nmap->item[] = $item;
+                }
+            }
+            if (isset($guests) and count($guests) > 0) {
+                $device_json->vm = new stdClass();
+                $device_json->vm->item = array();
+                foreach ($guests as $item) {
+                    $device_json->vm->item[] = $item;
+                }
+            }
+            if (isset($modules) and count($modules) > 0) {
+                $device_json->module = new stdClass();
+                $device_json->module->item = array();
+                foreach ($modules as $item) {
+                    $device_json->module->item[] = $item;
+                }
+            }
+            if (isset($ip) and count($ip) > 0) {
+                $device_json->ip = new stdClass();
+                $device_json->ip->item = array();
+                foreach ($ip->item as $item) {
+                    $device_json->ip->item[] = $item;
+                }
+            }
+            if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+                $device_json->network = new stdClass();
+                $device_json->network->item = array();
+                foreach ($network_interfaces as $item) {
+                    $device_json->network->item[] = $item;
+                }
+            }
+            $device_json = json_encode($device_json, JSON_PRETTY_PRINT);
+            $url = $server->host . $server->community . '/index.php/input/devices';
+            $data = array('data' => $device_json);
+            # use key 'http' even if we send the request to https://...
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data)
+                )
+            );
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === false) {
+                # error
+                $log->severity = 4;
+                $log->message = 'Could not send result to ' . $server->host . $server->community . '/index.php/input/devices - please check with your server administrator.';
+                discovery_log($log);
+                $log->severity = 7;
+            } else {
+                # success
+                $log->severity = 7;
+                $log->message = 'Result sent to ' . $server->host . '.';
+                discovery_log($log);
+            }
+        }
+        
 
         # Audit via Windows
         if ($input->wmi_status == "true" and $credentials_windows) {
