@@ -780,6 +780,10 @@ if (!empty($_POST['data'])) {
                     $device_json->network->item[] = $item;
                 }
             }
+            unset($device_json->system->id);
+            unset($device_json->system->discovery_id);
+            unset($device_json->system->org_id);
+            unset($device_json->system->first_seen);
             $device_json = json_encode($device_json);
             $url = $server->host . $server->community . '/index.php/input/devices';
             $data = array('data' => $device_json);
