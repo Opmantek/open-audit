@@ -196,6 +196,17 @@ class Ldap_servers extends MY_Controller
     }
 
     /**
+    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
+    *
+    * @access public
+    * @return NULL
+    */
+    public function reset()
+    {
+        include 'include_reset.php';
+    }
+
+    /**
     * Test a connection and bind to an LDAP server
     *
     * @access public

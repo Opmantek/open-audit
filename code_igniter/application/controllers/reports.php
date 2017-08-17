@@ -113,5 +113,5 @@ class Reports extends MY_Controller
         output($this->response);
     }
 }
-// End of file connections.php
-// Location: ./controllers/connections.php
+// End of file reports.php
+// Location: ./controllers/reports.php

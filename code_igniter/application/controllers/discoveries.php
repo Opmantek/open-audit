@@ -215,6 +215,18 @@ class Discoveries extends MY_Controller
             redirect('discoveries/'.$this->response->meta->id);
         }
     }
+
+    /**
+    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
+    *
+    * @access public
+    * @return NULL
+    */
+    public function reset()
+    {
+        include 'include_reset.php';
+    }
+
 }
 // End of file discoveries.php
 // Location: ./controllers/discoveries.php

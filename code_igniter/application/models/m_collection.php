@@ -44,6 +44,81 @@ class M_collection extends MY_Model
         $this->load->library('encrypt');
     }
 
+    public function reset($collection = '')
+    {
+        if ($collection === '') {
+            log_error('ERR-0010', 'm_collection::collection (no collection)');
+            return false;
+        }
+
+        $temp_debug = $this->db->db_debug;
+        $this->db->db_debug = false;
+
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->function =  strtolower('m_collection::reset');
+        $log->status = 'success';
+        $log->summary = 'Reset ' . $collection . ' table';
+        $log->type = 'system';
+
+        $sql = "SELECT count(*) AS `count` FROM `$collection`";
+        $query = $this->db->query($sql);
+        $result = @$query->result();
+        if ($this->db->_error_message()) {
+            $log->severity = 3;
+            $log->status = 'failure';
+            $log->summary = $this->db->last_query();
+            $log->detail = 'Query fail - ' . @$this->db->_error_message();
+            stdlog($log);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            $this->db->db_debug = $temp_debug;
+            return false;
+        }
+
+        $count = count($result);
+        if ($count === 0) {
+            $log->severity = 3;
+            $log->status = 'failure';
+            $log->summary = 'Table not empty';
+            $log->detail = 'Cannot run reset on ' . $collection . ' as the table still has data.';
+            stdlog($log);
+            $this->db->db_debug = $temp_debug;
+            return false;
+        }
+
+        $sql = "ALTER TABLE `$collection` AUTO_INCREMENT = 1";
+        $query = $this->db->query($sql);
+        if ($this->db->_error_message()) {
+            $log->severity = 3;
+            $log->status = 'failure';
+            $log->summary = $this->db->last_query();
+            $log->detail = 'Query fail - ' . @$this->db->_error_message();
+            stdlog($log);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            $this->db->db_debug = $temp_debug;
+            return false;
+        }
+
+        $sql = "OPTIMIZE TABLE `$collection`";
+        $query = $this->db->query($sql);
+        if ($this->db->_error_message()) {
+            $log->severity = 3;
+            $log->status = 'failure';
+            $log->summary = $this->db->last_query();
+            $log->detail = 'Query fail - ' . @$this->db->_error_message();
+            stdlog($log);
+            log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
+            $this->db->db_debug = $temp_debug;
+            return false;
+        }
+
+        $this->db->db_debug = $temp_debug;
+        $log->severity = 7;
+        $log->detail = $collection . ' table has been reset successfully';
+        stdlog($log);
+        return true;
+    }
+
     public function collection($collection = '')
     {
         $CI = & get_instance();

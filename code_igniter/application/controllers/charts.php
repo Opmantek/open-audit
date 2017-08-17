@@ -130,6 +130,18 @@ class Charts extends MY_Controller
         output($this->response);
         return;
     }
+
+    /**
+    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
+    *
+    * @access public
+    * @return NULL
+    */
+    public function reset()
+    {
+        include 'include_reset.php';
+    }
+
 }
 // End of file charts.php
 // Location: ./controllers/charts.php

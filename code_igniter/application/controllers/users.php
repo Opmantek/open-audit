@@ -227,5 +227,5 @@ class Users extends MY_Controller
     }
 
 }
-// End of file roles.php
+// End of file users.php
 // Location: ./controllers/users.php

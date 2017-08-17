@@ -196,6 +196,18 @@ class Fields extends MY_Controller
     {
         include 'include_import.php';
     }
+
+    /**
+    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
+    *
+    * @access public
+    * @return NULL
+    */
+    public function reset()
+    {
+        include 'include_reset.php';
+    }
+
 }
 // End of file fields.php
 // Location: ./controllers/fields.php

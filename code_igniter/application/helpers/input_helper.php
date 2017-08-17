@@ -161,7 +161,7 @@ if (! function_exists('inputRead')) {
         $CI->response->links = array();
         $CI->response->included = array();
 
-        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
+        $actions = ' bulk_update_form collection create create_form debug delete download execute import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
 
         $collections = ' agents attributes charts collectors configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries tasks users ';
@@ -438,6 +438,11 @@ if (! function_exists('inputRead')) {
             // return a list of items
             $CI->response->meta->action = 'collection';
             $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id, no action.';
+            stdlog($log);
+        }
+        if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'reset') {
+            $CI->response->meta->action = 'reset';
+            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id, action = reset.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'create') {
@@ -943,6 +948,7 @@ if (! function_exists('inputRead')) {
         $permission['import'] = 'c';
         $permission['import_form'] = 'c';
         $permission['read'] = 'r';
+        $permission['reset'] = 'd';
         $permission['sub_resource_create'] = 'c';
         $permission['sub_resource_create_form'] = 'c';
         $permission['sub_resource_delete'] = 'd';

@@ -207,6 +207,18 @@ class Licenses extends MY_Controller
         $this->response->data = $this->m_licenses->execute();
         output($this->response);
     }
+
+    /**
+    * The requested table will have optimize arun upon it and it's autoincrement reset to 1
+    *
+    * @access public
+    * @return NULL
+    */
+    public function reset()
+    {
+        include 'include_reset.php';
+    }
+
 }
 // End of file locations.php
 // Location: ./controllers/locations.php
