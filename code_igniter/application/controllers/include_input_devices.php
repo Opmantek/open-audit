@@ -242,7 +242,7 @@ if (!isset($details->type)) {
 $log->message = "Running devices::match function.";
 $ids[] = discovery_log($log);
 
-$i = $this->m_device->match($details);
+$i = $this->m_device->match($details, 'process audit');
 
 if ($i == '' and $received_system_id > '') {
     $i = $received_system_id;
