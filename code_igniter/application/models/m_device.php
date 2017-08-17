@@ -856,6 +856,7 @@ class M_device extends MY_Model
         }
 
         $fields = implode(' ', $this->db->list_fields('system'));
+        $fields .= " ";
         foreach ($details as $key => $value) {
             if (($key != '') and ($value != '')) {
                 # need to iterate through available columns and only insert where $key == valid column name

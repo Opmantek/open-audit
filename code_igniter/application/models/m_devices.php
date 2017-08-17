@@ -149,6 +149,18 @@ class M_devices extends MY_Model
         }
         $sql = "SELECT * FROM `system` WHERE system.id = ?";
         $result = $this->run_sql($sql, array($id));
+
+        # Populate our collector name if it exists
+        $result[0]->collector_name = '';
+        if (!empty($result[0]->collector_uuid)) {
+            $sql = "/* m_devices::read */ " . "SELECT `name` FROM `collectors` WHERE `uuid` = ?";
+            $data = array((string)$result[0]->collector_uuid);
+            $collector = $this->run_sql($sql, $data);
+            if (!empty($collector[0]->{'name'})) {
+                $result[0]->collector_name = $collector[0]->{'name'};
+            }
+        }
+
         $result = $this->format_data($result, 'devices');
         # format our uptime from unixtime to humane readable
         if (!empty($result[0]->attributes->uptime)) {
@@ -824,6 +836,7 @@ class M_devices extends MY_Model
         $CI->load->model('m_edit_log');
         $CI->load->model('m_orgs');
         $system_fields = implode(' ', $this->db->list_fields('system'));
+        $system_fields .= " ";
         $sql = "SELECT id, name, group_id, org_id FROM fields";
         $fields = $this->run_sql($sql, array());
 

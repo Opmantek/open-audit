@@ -741,6 +741,16 @@ if (empty($data['mount_point'])) {
                                 <?php } ?>
                             </div>
                         </div>
+
+                        <?php if (!empty($data['system']->collector_name)) { ?>
+                        <div class="form-group">
+                            <label for="collector_name" class="col-sm-4 control-label"><?php echo __('Collector Name')?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="collector_name" value="<?php echo $data['system']->collector_name; ?>" readonly>
+                            </div>
+                        </div>
+                        <?php } ?>
+
                     </div>
                     <div class="col-md-2 col-centered">
                     <?php
