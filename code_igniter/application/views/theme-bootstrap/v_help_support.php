@@ -232,6 +232,16 @@ if (php_uname('s') == 'Linux') {
     }
     $data['timezone_os'] = trim($data['timezone_os']);
 
+    # cron perms
+    $command_string = 'ls -l /etc/cron.d/open-audit';
+    exec($command_string, $output, $return_var);
+    $data['os_cron_file'] = '';
+    if (isset($output[0])) {
+        $data['os_cron_file'] = $output[0];
+    }
+    unset($output);
+    unset($command_string);
+
     # winexe version
     $command_string = "/usr/local/open-audit/other/winexe-static --version 2>&1";
     exec($command_string, $output, $return_var);
@@ -243,7 +253,8 @@ if (php_uname('s') == 'Linux') {
 
 }
 
-
+ksort($data);
+ksort($this->config->config);
 
 ?>
 <div class="panel panel-default">
