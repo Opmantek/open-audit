@@ -223,8 +223,8 @@ if (empty($details->discovery_id)) {
     $log->discovery_id = $details->discovery_id;
 }
 
-$log->message = json_encode($details);
-$ids[] = discovery_log($log);
+// $log->message = json_encode($details);
+// $ids[] = discovery_log($log);
 
 if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
     $details->fqdn = $details->hostname . "." . $details->domain;
