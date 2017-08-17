@@ -41,7 +41,7 @@ class M_device extends MY_Model
         parent::__construct();
     }
 
-    public function match($details)
+    public function match($details, $command = '')
     {
         # we are searching for a system.id.
         $details = (object) $details;
@@ -62,6 +62,7 @@ class M_device extends MY_Model
         $log->pid = getmypid();
         $log->file = 'm_device';
         $log->function = 'find_system';
+        $log->command = $command;
         $log->message = '';
         $log_message = array(); // we will store our message until we get a system.id, then wrtie them to the log
 
