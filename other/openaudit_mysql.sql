@@ -2613,7 +2613,7 @@ CREATE TABLE `system` (
   `last_seen_by` varchar(150) NOT NULL DEFAULT '',
   `last_user` varchar(150) NOT NULL DEFAULT '',
   `omk_uuid` text NOT NULL,
-  `collector_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `collector_uuid` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
