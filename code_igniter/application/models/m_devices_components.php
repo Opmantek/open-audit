@@ -795,7 +795,9 @@ class M_devices_components extends MY_Model
                 if (strtolower($create_alerts) == 'y') {
                     $alert_details = '';
                     foreach ($match_columns as $key => $value) {
-                        $alert_details .= $value . ' is ' . $db_item->$value . ', ';
+                        if (!empty($db_item->$value)) {
+                            $alert_details .= $value . ' is ' . $db_item->$value . ', ';
+                        }
                     }
                     $alert_details = substr($alert_details, 0, -2);
                     $alert_details = "Item removed from $table - " . $alert_details;
