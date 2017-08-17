@@ -198,30 +198,33 @@ if (!empty($json->network->item) and count($json->network->item) > 0) {
 if (empty($details->last_seen)) {
     $details->last_seen = $this->config->config['timestamp'];
 }
+
 $received_system_id = '';
+$received_status = "";
 if (empty($details->id)) {
     $details->id = '';
     $log->message = "No system_id provided.";
     $ids[] = discovery_log($log);
-} else if ($details->id != '') {
+} else {
     $received_system_id = (string)$details->id;
     $log->message = "System_id provided - " . $received_system_id . ".";
     $ids[] = discovery_log($log);
+    $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
+    if ($received_status !== 'production') {
+        $received_system_id = '';
+        $log->message = "No device in database with supplied system_id. Remove attribute.";
+        $ids[] = discovery_log($log);
+    }
 }
+
 if (empty($details->discovery_id)) {
     $details->discovery_id = '';
 } else {
     $log->discovery_id = $details->discovery_id;
 }
-$received_status = "";
-if ($received_system_id != '') {
-    $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
-}
-if ($received_status !== 'production') {
-    $received_system_id = '';
-    $log->message = "No device in database with supplied system_id. Remove attribute.";
-    $ids[] = discovery_log($log);
-}
+
+$log->message = json_encode($details);
+$ids[] = discovery_log($log);
 
 if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
     $details->fqdn = $details->hostname . "." . $details->domain;
@@ -384,8 +387,16 @@ if ($this->config->config['servers'] !== '') {
     discovery_log($log);
 
     unset($json->device_id);
+    unset($json->system->id);
+    unset($json->system->discovery_id);
+    unset($json->system->original_last_seen_by);
+    unset($json->system->original_last_seen);
+    unset($json->system->first_seen);
+    unset($json->system->org_id);
+
     $device_json = json_encode($json);
     $url = $server->host . $server->community . '/index.php/input/devices';
+
     $data = array('data' => $device_json);
     # use key 'http' even if we send the request to https://...
     $options = array(
