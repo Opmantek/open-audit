@@ -477,6 +477,7 @@ INSERT INTO `configuration` VALUES (51,'oae_product','Open-AudIT Community','tex
 INSERT INTO `configuration` VALUES (52,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
 INSERT INTO `configuration` VALUES (53,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
 INSERT INTO `configuration` VALUES (54,'collector_check_minutes','15','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
+INSERT INTO `configuration` VALUES (55,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

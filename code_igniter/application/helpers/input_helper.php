@@ -83,7 +83,7 @@ if (! function_exists('inputRead')) {
         // sort = blank
         // current = y
         // groupby = blank
-        // limit = 1000
+        // limit = config->{'page_size'}
         // offset = 0
         // format = json
         // properties = *
@@ -143,7 +143,10 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->id = null;
         $CI->response->meta->ids = 0;
         $CI->response->meta->include = '';
-        $CI->response->meta->limit = '';
+        if (empty($CI->config->config['page_size'])) {
+            $CI->config->config['page_size'] = 1000;
+        }
+        $CI->response->meta->limit = intval($CI->config->config['page_size']);
         $CI->response->meta->offset = 0;
         $CI->response->meta->properties = '';
         $CI->response->meta->query_string = '';
@@ -702,15 +705,15 @@ if (! function_exists('inputRead')) {
         }
 
         # get the limit
-        if ($CI->response->meta->format != 'screen') {
-            $CI->response->meta->limit = '';
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because not screen.';
-            stdlog($log);
-        } else {
-            $CI->response->meta->limit = 1000;
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for screen.';
-            stdlog($log);
-        }
+        // if ($CI->response->meta->format != 'screen') {
+        //     $CI->response->meta->limit = '';
+        //     $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because not screen.';
+        //     stdlog($log);
+        // } else {
+        //     $CI->response->meta->limit = 1000;
+        //     $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for screen.';
+        //     stdlog($log);
+        // }
         if (isset($_GET['limit'])) {
             $CI->response->meta->limit = intval($_GET['limit']);
             $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', according to GET.';

@@ -90,6 +90,11 @@ $this->db->query($sql);
 $sql = "INSERT INTO `configuration` VALUES (NULL,'collector_check_minutes','15','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.')";
 $this->db->query($sql);
 
+$sql = "DELETE from `configuration` WHERE `name` = 'page_size'";
+$this->db->query($sql);
+$sql = "INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to retrieve by default.')";
+$this->db->query($sql);
+
 # roles (updates to include agents and collectors)
 $sql = "SELECT * FROM roles WHERE name = 'admin'";
 $query = $this->db->query($sql);
