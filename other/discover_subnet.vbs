@@ -306,7 +306,7 @@ for each host in hosts_in_subnet
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 90 " & host
+    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 20 " & host
     nmap_ports = ""
     execute_command()
 
@@ -371,7 +371,7 @@ for each host in hosts_in_subnet
         end if
     Loop
 
-    command = nmap_path & " -n -sU -p161 --host-timeout 90 " & host
+    command = nmap_path & " -n -sU -p161 --host-timeout 20 " & host
     execute_command()
     Do Until objExecObject.Status = 0
         WScript.Sleep 100

@@ -279,7 +279,7 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 90 $timing "$host" 2>&1)
+		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 20 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
 			test=$(echo $line | grep "tcp.*open")
@@ -346,7 +346,7 @@ if [[ "$hosts" != "" ]]; then
 
 		# test for SNMP (separate scan as it's UDP)
 		snmp_status="false"
-		command=$(nmap -n -sU -p161 "$timing" --host-timeout 90 "$host" 2>/dev/null | grep "161/udp open")
+		command=$(nmap -n -sU -p161 "$timing" --host-timeout 20 "$host" 2>/dev/null | grep "161/udp open")
 		if [[ "$command" == *"161/udp open"* ]]; then
 			snmp_status="true"
 			nmap_ports="$nmap_ports,161/udp/snmp"
