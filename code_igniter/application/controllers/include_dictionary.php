@@ -132,6 +132,31 @@ Define a query and have your external program call the API and retrieve the data
     ' . $link . '<br /><br /></p>';
 }
 
+if ($table == 'collectors') {
+    $dictionary->sentence = 'Open-AudIT Enterprise includes Collectors. Have a single Open-AudIT server control many other servers that perform discovery and collect device information.';
+    $dictionary->about = '<p>The Collectors feature enables you to easily manage many \'collector\' computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
+        It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = '<p>The Collectors feature enables you to easily manage many \'collector\' computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
+        It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '';
+    $dictionary->notes = '';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = 'Your description of this collector.';
+    $dictionary->columns->ip = 'The IP address of this collector used to communicate with the server.';
+    $dictionary->columns->status = 'Unused as yet.';
+    $dictionary->columns->check_minutes = 'How often should the collector ask the server for a task.';
+    $dictionary->columns->user_id = 'The <code>users.id</code> of the user account this collector uses.';
+    $dictionary->columns->uuid = 'This collectors universally unique identifier.';
+    $dictionary->columns->network_address = 'The collectors internal IP used when it runs a discovery.';
+    $dictionary->columns->options = 'Unused as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+}
+
 if ($table == 'connections') {
     $dictionary->sentence = 'Track your connections to branch offices, the internet, where-ever else you need to. Simple, easy, intuitive.';
     $dictionary->marketing = '<p>Attributes such as the locations, the speed, provider, connected devices, type of connection and more are available.<br /><br />
