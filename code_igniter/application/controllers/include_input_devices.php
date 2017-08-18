@@ -24,7 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-$this->response->meta->format = 'screen';
+#$this->response->meta->format = 'screen';
 $this->benchmark->mark('code_start');
 
 // load our required helpers
@@ -100,7 +100,6 @@ $log_message = array();
 # We will use this array to hold a list of ID's in the discovery log
 # that we will later update with our system_id
 $ids = array();
-
 if (!empty($_POST['data'])) {
     $input = html_entity_decode($_POST['data']);
 //     $myfile = fopen("/tmp/audit.txt", "w");
@@ -135,17 +134,20 @@ try {
 if ($error) {
     try {
         $json = json_decode($input);
-        $log->message = "Valid JSON result received.";
     } catch (Exception $error) {
         log_error('ERR-0012');
         print_r($this->response);
         exit;
     }
+    $log->message = "Valid JSON result received.";
+    $ids[] = discovery_log($log);
 } else {
     $log->message = "Valid XML result received.";
+    $ids[] = discovery_log($log);
 }
 
-if ($xml) {
+
+if (!$error and $xml) {
     $json = json_encode($xml);
     $json = json_decode($json);
     $json->system = $json->sys;
@@ -177,13 +179,13 @@ if ($xml) {
                         }
                     }
                 }
-                echo $section . " : " . gettype($json->{$section}->item) . "<br />\n";
             } else {
                 #unset($json->{$section});
             }
         }
     }
 }
+
 $details = $json->system;
 $ids[] = discovery_log($log);
 $json->system->mac_addresses = array();

@@ -90,6 +90,12 @@ class input extends CI_Controller
         $this->response->meta = new stdClass();
         $this->response->meta->collection = 'input';
         $this->response->meta->action = '';
+
+        if (strpos($_SERVER['HTTP_ACCEPT'], 'json') !== false) {
+            $this->response->meta->format = 'json';
+        } else {
+            $this->response->meta->format = 'screen';
+        }
     }
 
     /**
