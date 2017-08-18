@@ -92,8 +92,26 @@ $this->db->query($sql);
 
 $sql = "DELETE from `configuration` WHERE `name` = 'page_size'";
 $this->db->query($sql);
-$sql = "INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to retrieve by default.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.')";
 $this->db->query($sql);
+
+$sql = "DELETE FROM `configuration` WHERE name = 'servers'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# queries
+$sql = "DELETE FROM queries` WHERE name = 'Software' AND `menu_category` = 'Change'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `queries` VALUES (null,1,'Software','Change','y','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','system','2000-01-01 00:00:00');";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 
 # roles (updates to include agents and collectors)
 $sql = "SELECT * FROM roles WHERE name = 'admin'";
@@ -132,17 +150,8 @@ $this->alter_table('system', 'collector_uuid', "ADD `collector_uuid` text NOT NU
 # tasks
 $this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `description`", 'add');
 
-# users add type
+# users
 $this->alter_table('users', 'type', "ADD `type` enum('agent','collector','user') NOT NULL DEFAULT 'user' AFTER `ldap`", 'add');
-
-
-$sql = "DELETE FROM `configuration` WHERE name = 'servers'";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-$sql = "INSERT INTO `configuration` VALUES (NULL,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170820' WHERE `name` = 'internal_version'";
