@@ -104,7 +104,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # queries
-$sql = "DELETE FROM queries` WHERE name = 'Software' AND `menu_category` = 'Change'";
+$sql = "DELETE FROM `queries` WHERE name = 'Software' AND `menu_category` = 'Change'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
