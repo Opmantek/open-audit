@@ -37,7 +37,8 @@
 * @link      http://www.open-audit.org
  */
 if (! function_exists('from_unix_timestamp')) {
-    function from_unix_timestamp($timestamp) {
+    function from_unix_timestamp($timestamp)
+    {
         $wildcard = false;
         if (strpos($timestamp, '%') !== false) {
             $timestamp = str_replace('%', '', $timestamp);
@@ -826,6 +827,7 @@ if (! function_exists('inputRead')) {
         # get the filter
         $filter = array();
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
+        $CI->response->meta->query_string = str_replace('&amp;', '&', $CI->response->meta->query_string);
         if ($CI->response->meta->query_string != '') {
             $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids graph report_name as_at ';
             foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
