@@ -38,6 +38,87 @@ if (!defined('BASEPATH')) {
 * @link      http://www.open-audit.org
  */
 
+if (! function_exists('is_ssl')) {
+    function is_ssl()
+    {
+        if (!empty($_SERVER['HTTPS']) and strtolower($_SERVER['HTTPS']) == 'on') {
+            return true;
+        }
+        if (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == '1') {
+            return true;
+        }
+        if (!empty($_SERVER['SERVER_PORT']) and ($_SERVER['SERVER_PORT'] == '443')) {
+            return true;
+        }
+        if (!empty($_SERVER['X-Forwarded-Proto']) and strtolower($_SERVER['X-Forwarded-Proto']) == 'https') {
+            return true;
+        }
+        if (!empty($_SERVER['Front-End-Https']) and strtolower($_SERVER['Front-End-Https']) == 'on') {
+            return true;
+        }
+        return false;
+    }
+}
+
+if (! function_exists('server_ip')) {
+    # return a comman string of system ip addresses
+    function server_ip()
+    {
+        $ip_address_array = array();
+
+        # osx
+        if (php_uname('s') == 'Darwin') {
+            $command = "ifconfig | grep inet | grep -v inet6 | grep -v '127.0.0.1' | awk '{print $2}'";
+            exec($command, $output, $return_var);
+            if ($return_var == 0) {
+                foreach ($output as $line) {
+                    $ip_address_array[] = trim($line);
+                }
+            }
+        }
+
+        # linux
+        if (php_uname('s') == 'Linux') {
+            $command = "ip addr | grep inet | grep -v inet6 | grep -v '127.0.0.1' | awk '{print $2}' | cut -f1  -d'/'";
+            exec($command, $output, $return_var);
+            if ($return_var == 0) {
+                foreach ($output as $line) {
+                    $ip_address_array[] = trim($line);
+                }
+            }
+        }
+
+        # windows
+        if (php_uname('s') == 'Windows NT') {
+            $command = "wmic nicconfig get ipaddress | findstr /B {";
+            exec($command, $output, $return_var);
+            if ($return_var == 0) {
+                # success
+                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} or thus {"192.168.1.140"}
+                # there are multiple empty lines as well
+                foreach ($output as $line) {
+                    $line = trim($line);
+                    if ($line != '') {
+                        $line = str_replace('{', '', $line);
+                        $line = str_replace('}', '', $line);
+                        $line = str_replace('"', '', $line);
+                        $line = str_replace(',', '', $line);
+                        if (strpos($line, ' ') !== false) {
+                            $line_array = explode(' ', $line);
+                            foreach ($line_array as $ip) {
+                                $ip_address_array[] = $ip;
+                            }
+                        } else {
+                            $ip_address_array[] = $line;
+                        }
+                    }
+                }
+            }
+        }
+        return implode(',', $ip_address_array);
+    }
+}
+
 if (! function_exists('network_details')) {
     # accept $ip as either '192.168.0.12/24' or '192.168.0.12 255.255.255.0'
     function network_details($ip)
@@ -68,7 +149,7 @@ if (! function_exists('network_details')) {
             $bin_wmask = binnmtowm($bin_nmask);
             if (preg_match('/0/', rtrim($bin_nmask, "0"))) {
                 //Wildcard mask then? hmm?
-            $bin_wmask = dqtobin($dqs[1]);
+                $bin_wmask = dqtobin($dqs[1]);
                 $bin_nmask = binwmtonm($bin_wmask);
                 if (preg_match('/0/', rtrim($bin_nmask, "0"))) {
                     //If it's not wcard, whussup?
@@ -97,7 +178,7 @@ if (! function_exists('network_details')) {
         $host_total = (bindec(str_pad("", (32-$cdr_nmask), 1)) - 1);
         if ($host_total <= 0) {
             //Takes care of 31 and 32 bit masks.
-        $bin_first = "N/A";
+            $bin_first = "N/A";
             $bin_last = "N/A";
             $host_total = "N/A";
             if ($bin_net === $bin_bcast) {
@@ -435,7 +516,7 @@ if (! function_exists('dns_validate')) {
                 $log_details->message = 'FQDN does not contain a . so removing ' . @$details->fqdn;
                 stdlog($log_details);
             }
-        } 
+        }
 
         if ($details->hostname == '' and filter_var($details->ip, FILTER_VALIDATE_IP)) {
             # we have nothing for a hostname and a valid ip
