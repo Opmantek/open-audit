@@ -148,34 +148,49 @@ class M_configuration extends MY_Model
         stdlog($this->log);
     }
 
-    public function collection()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        stdlog($this->log);
-        $CI = & get_instance();
+    // public function collection()
+    // {
+    //     $this->log->function = strtolower(__METHOD__);
+    //     stdlog($this->log);
+    //     $CI = & get_instance();
 
-        // total count
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
-            // get the total count
-            $sql = "SELECT COUNT(*) as `count` FROM `configuration`";
-            $result = $this->run_sql($sql);
-            $CI->response->meta->total = intval($result[0]->count);
-        }
+    //     // total count
+    //     if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration') {
+    //         // get the total count
+    //         $sql = "SELECT COUNT(*) as `count` FROM `configuration`";
+    //         $result = $this->run_sql($sql);
+    //         $CI->response->meta->total = intval($result[0]->count);
+    //     }
 
-        $sql = "SELECT * FROM configuration ORDER BY `name`";
-        $result = $this->run_sql($sql, array());
-        $item = new stdClass;
-        $item->id = 888888;
-        $item->name = 'web_internal_version';
-        $item->value = $this->config->config['web_internal_version'];
-        $item->editable = 'n';
-        $item->edited_by = '';
-        $item->edited_date = '';
-        $item->description = 'The internal numerical version of the Open-AudIT files.';
-        $result[] = $item;
-        $result = $this->format_data($result, 'configuration');
-        return ($result);
-    }
+    //     $sql = "SELECT * FROM configuration ORDER BY `name`";
+    //     $result = $this->run_sql($sql, array());
+    //     $item = new stdClass;
+    //     $item->id = 888888;
+    //     $item->name = 'web_internal_version';
+    //     $item->value = $this->config->config['web_internal_version'];
+    //     $item->editable = 'n';
+    //     $item->edited_by = '';
+    //     $item->edited_date = '';
+    //     $item->description = 'The internal numerical version of the Open-AudIT files.';
+    //     $result[] = $item;
+    //     unset($item);
+
+
+    //     $this->load->helper('network');
+    //     $item = new stdClass;
+    //     $item->id = 888889;
+    //     $item->name = 'server_ip';
+    //     $item->value = server_ip();
+    //     $item->editable = 'n';
+    //     $item->edited_by = '';
+    //     $item->edited_date = '';
+    //     $item->description = 'The IP addresses on this server.';
+    //     $result[] = $item;
+    //     unset($item);
+
+    //     $result = $this->format_data($result, 'configuration');
+    //     return ($result);
+    // }
 
     public function load()
     {
@@ -257,55 +272,59 @@ class M_configuration extends MY_Model
             $this->config->config['base_path'] = str_replace('/code_igniter/application/models/m_configuration.php', '', __FILE__);
         }
 
-        $ip_address_array = array();
-        # osx
-        if (php_uname('s') == 'Darwin') {
-            $command = "ifconfig | grep inet | grep -v inet6 | grep broadcast | awk '{print $2}'";
-            exec($command, $output, $return_var);
-            if ($return_var == 0) {
-                foreach ($output as $line) {
-                    $ip_address_array[] = trim($line);
-                }
-            }
-        }
-        # linux
-        if (php_uname('s') == 'Linux') {
-            $command = "ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/'";
-            exec($command, $output, $return_var);
-            if ($return_var == 0) {
-                foreach ($output as $line) {
-                    $ip_address_array[] = trim($line);
-                }
-            }
-        }
-        # windows
-        if (php_uname('s') == 'Windows NT') {
-            $command = "wmic nicconfig get ipaddress | findstr /B {";
-            exec($command, $output, $return_var);
-            if ($return_var == 0) {
-                # success
-                # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} or thus {"192.168.1.140"}
-                # there are multiple empty lines as well
-                foreach ($output as $line) {
-                    $line = trim($line);
-                    if ($line != '') {
-                        $line = str_replace('{', '', $line);
-                        $line = str_replace('}', '', $line);
-                        $line = str_replace('"', '', $line);
-                        $line = str_replace(',', '', $line);
-                        if (strpos($line, ' ') !== false) {
-                            $line_array = explode(' ', $line);
-                            foreach ($line_array as $ip) {
-                                $ip_address_array[] = $ip;
-                            }
-                        } else {
-                            $ip_address_array[] = $line;
-                        }
-                    }
-                }
-            }
-        }
-        $this->config->config['ip'] = implode(',', $ip_address_array);
+        $this->load->helper('network');
+        $this->config->config['ip'] = server_ip();
+        $this->config->config['is_ssl'] = is_ssl();
+
+        // $ip_address_array = array();
+        // # osx
+        // if (php_uname('s') == 'Darwin') {
+        //     $command = "ifconfig | grep inet | grep -v inet6 | grep broadcast | awk '{print $2}'";
+        //     exec($command, $output, $return_var);
+        //     if ($return_var == 0) {
+        //         foreach ($output as $line) {
+        //             $ip_address_array[] = trim($line);
+        //         }
+        //     }
+        // }
+        // # linux
+        // if (php_uname('s') == 'Linux') {
+        //     $command = "ip addr | grep 'state UP' -A2 | grep inet | awk '{print $2}' | cut -f1  -d'/'";
+        //     exec($command, $output, $return_var);
+        //     if ($return_var == 0) {
+        //         foreach ($output as $line) {
+        //             $ip_address_array[] = trim($line);
+        //         }
+        //     }
+        // }
+        // # windows
+        // if (php_uname('s') == 'Windows NT') {
+        //     $command = "wmic nicconfig get ipaddress | findstr /B {";
+        //     exec($command, $output, $return_var);
+        //     if ($return_var == 0) {
+        //         # success
+        //         # each line is returned thus: {"192.168.1.140", "fe80::e837:7bea:99a6:13e"} or thus {"192.168.1.140"}
+        //         # there are multiple empty lines as well
+        //         foreach ($output as $line) {
+        //             $line = trim($line);
+        //             if ($line != '') {
+        //                 $line = str_replace('{', '', $line);
+        //                 $line = str_replace('}', '', $line);
+        //                 $line = str_replace('"', '', $line);
+        //                 $line = str_replace(',', '', $line);
+        //                 if (strpos($line, ' ') !== false) {
+        //                     $line_array = explode(' ', $line);
+        //                     foreach ($line_array as $ip) {
+        //                         $ip_address_array[] = $ip;
+        //                     }
+        //                 } else {
+        //                     $ip_address_array[] = $line;
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // $this->config->config['ip'] = implode(',', $ip_address_array);
     }
 
     public function read_subnet()
