@@ -233,11 +233,10 @@ class Help extends MY_Controller
         $this->response->included[] = $enterprise_report;
         unset($enterprise_report);
 
-        $this->load->model('m_queries');
-        $this->load->model('m_summaries');
-        $result = $this->m_queries->collection();
+        $this->load->model('m_collection');
+        $result = $this->m_collection->collection('queries');
         $this->response->included = array_merge($this->response->included, $result);
-        $result = $this->m_summaries->collection();
+        $result = $this->m_collection->collection('summaries');
         $this->response->included = array_merge($this->response->included, $result);
     }
 
