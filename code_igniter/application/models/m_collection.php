@@ -176,6 +176,30 @@ class M_collection extends MY_Model
             $item->edited_date = '';
             $item->description = 'The internal numerical version of the Open-AudIT files.';
             $result[] = $item;
+
+            $this->load->helper('network');
+            $item = new stdClass;
+            $item->id = 888889;
+            $item->name = 'server_ip';
+            $item->value = server_ip();
+            $item->editable = 'n';
+            $item->edited_by = '';
+            $item->edited_date = '';
+            $item->description = 'The IP addresses on this server.';
+            $result[] = $item;
+            unset($item);
+
+            $item = new stdClass;
+            $item->id = 888890;
+            $item->name = 'is_ssl';
+            $item->value = is_ssl();
+            $item->editable = 'n';
+            $item->edited_by = '';
+            $item->edited_date = '';
+            $item->description = 'Are we using SSL.';
+            $result[] = $item;
+            unset($item);
+
         }
 
         if ($collection == 'credentials') {
