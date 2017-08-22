@@ -973,6 +973,8 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
+                <?php 
+                    if (!empty($data['locations'])) { ?>
                     <div class="form-group">
                         <label for="location_id" class="col-sm-4 control-label"><?php echo __('Location')?></label>
                         <div class="col-sm-8 input-group">
@@ -997,21 +999,28 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                         </div>
                     </div>
                     <?php
-                    foreach ($data['locations'] as $location) {
-                        if ($location->id == $data['system']->location_id) {
-                            $items = array('address','city','state','country');
-                            foreach ($items as $item) { ?>
-                                <div class="form-group">
-                                    <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
-                                    <div class="col-sm-8 input-group">
-                                        <input disabled type="text" class="form-control" placeholder="" id="locations.<?php echo $item; ?>" name="locations.<?php echo $item; ?>" value="<?php echo $location->$item ?>">
+                        foreach ($data['locations'] as $location) {
+                            if ($location->id == $data['system']->location_id) {
+                                $items = array('address','city','state','country');
+                                foreach ($items as $item) { ?>
+                                    <div class="form-group">
+                                        <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
+                                        <div class="col-sm-8 input-group">
+                                            <input disabled type="text" class="form-control" placeholder="" id="locations.<?php echo $item; ?>" name="locations.<?php echo $item; ?>" value="<?php echo $location->$item ?>">
+                                        </div>
                                     </div>
-                                </div>
-                            <?php
+                                <?php
+                                }
                             }
                         }
-                    }
-                    ?>
+                    } else { ?>
+                        <div class="form-group">
+                            <label for="<?php echo $item; ?>" class="col-sm-4 control-label">Location</label>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control" placeholder="" value="No locations present (create a location and assign to an Org).">
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
 
 
