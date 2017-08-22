@@ -253,7 +253,7 @@ class MY_Model extends CI_Model
         return ($result);
     }
 
-    public function collection_sql($endpoint = '', $type = 'sql')
+    public function collection_sql($collection = '', $type = 'sql')
     {
         $return = array();
         $CI = & get_instance();
@@ -262,22 +262,22 @@ class MY_Model extends CI_Model
             $type = 'array';
         }
 
-        if ($endpoint == '' and !empty($CI->response->meta->collection)) {
-            $endpoint = $CI->response->meta->collection;
+        if ($collection == '' and !empty($CI->response->meta->collection)) {
+            $collection = $CI->response->meta->collection;
         }
 
-        if (empty($endpoint)) {
+        if (empty($collection)) {
             return;
         }
 
-        $table = $endpoint;
+        $table = $collection;
 
         // total count
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
             // get the total count
-            if ($endpoint == 'orgs') {
+            if ($collection == 'orgs') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
-            } elseif ($endpoint == 'configuration' or $endpoint == 'logs') {
+            } elseif ($collection == 'configuration' or $collection == 'logs' or $collection == 'attributes') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "`";
             } else {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
@@ -290,7 +290,7 @@ class MY_Model extends CI_Model
 
         // properties
         $properties = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
             $temp = explode(',', $CI->response->meta->properties);
             for ($i=0; $i<count($temp); $i++) {
                 if (strpos($temp[$i], '.') === false) {
@@ -304,13 +304,13 @@ class MY_Model extends CI_Model
             $properties = $table . '.*';
         }
         $return['properties'] = $properties;
-        if ($endpoint == 'locations') {
+        if ($collection == 'locations') {
             $return['properties'] .= ', COUNT(DISTINCT system.id) AS `device_count`';
         }
 
         // filter
         $filter = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
             $reserved = ' properties limit resource action sort current offset format ';
             foreach ($CI->response->meta->filter as $item) {
                 if (strpos(' '.$item->name.' ', $reserved) === false) {
@@ -326,14 +326,21 @@ class MY_Model extends CI_Model
             }
         }
         if ($filter != '') {
-            if ($endpoint != 'configuration' and $endpoint != 'logs') {
+            if ($collection == 'configuration' or $collection == 'logs' ) {
+                $filter = ' WHERE ' . substr($filter, 4);
+            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+                $filter = substr($filter, 5);
+                $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . ')) AND ' . $filter;
+            } else {
                 $filter = substr($filter, 5);
                 $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
-            } else {
-                $filter = ' WHERE ' . substr($filter, 4);
             }
         } else {
-            if ($endpoint != 'configuration') {
+            if ($collection == 'configuration' or $collection == 'logs' ) {
+                $filter = '';
+            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+                $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . '))';
+            } else {
                 $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ')';
             }
         }
@@ -341,7 +348,7 @@ class MY_Model extends CI_Model
 
         // sort
         $sort = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
             if ($CI->response->meta->sort == '') {
                 if ($table == 'orgs') {
                     $sort = 'ORDER BY ' . $table . '.name';
@@ -356,7 +363,7 @@ class MY_Model extends CI_Model
 
         // limit
         $limit = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $endpoint) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
             if (!empty($CI->response->meta->limit)) {
                 $limit = 'LIMIT ' . intval($CI->response->meta->limit);
                 if (!empty($CI->response->meta->offset)) {
@@ -366,31 +373,30 @@ class MY_Model extends CI_Model
         }
         $return['limit'] = $limit;
         if ($type == 'sql') {
-            
-            if ($endpoint == 'locations') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+            if ($collection == 'configuration') {
+                $sql = "SELECT configuration.* FROM configuration " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
-            } else if ($endpoint == 'logs') {
-                $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
-
-            } else if ($endpoint == 'fields') {
+            } else if ($collection == 'fields') {
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
 
-            } else if ($endpoint == 'networks') {
+            } else if ($collection == 'locations') {
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+
+            } else if ($collection == 'logs') {
+                $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
+
+            } else if ($collection == 'networks') {
                 $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
 
-            } else if ($endpoint == 'orgs') {
+            } else if ($collection == 'orgs') {
                 $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) " . $return['filter'] . " GROUP BY orgs.id " . $return['sort'] . " " . $return['limit'];
 
-            } else if ($endpoint == 'queries') {
+            } else if ($collection == 'queries') {
                 $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(orgs.name) AS `org_name` FROM `queries` LEFT JOIN orgs ON (`queries`.org_id = orgs.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
                 $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) GROUP BY queries.name";
 
-            } elseif ($endpoint == 'reports') {
+            } elseif ($collection == 'reports') {
                 $sql = "(SELECT CONCAT('queries/',queries.id) as `link`, queries.type as `type`, queries.id as `id`, queries.name as `name`, queries.org_id as `org_id` FROM queries WHERE queries.org_id IN (" . $CI->user->org_list . ")) UNION ALL (SELECT CONCAT('summaries/',summaries.id) as `link`, summaries.type as `type`, summaries.id as `id`, summaries.name as `name`, summaries.org_id as `org_id` FROM summaries WHERE summaries.org_id IN (" . $CI->user->org_list . ")) ORDER BY `type`, `name`";
-
-            } else if ($endpoint == 'configuration') {
-                $sql = "SELECT configuration.* FROM configuration " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
             } else {
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name` FROM `" . $table . "` LEFT JOIN orgs ON (`" . $table . "`.org_id = orgs.id) " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
