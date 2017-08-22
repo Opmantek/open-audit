@@ -403,9 +403,10 @@ if (! function_exists('output')) {
         unset($enterprise_report);
 
         if ($CI->config->config['internal_version'] >= 20170620) {
-            $CI->load->model('m_collection');
-            $result = $CI->m_collection->collection('queries');
+            $CI->load->model('m_queries');
+            $result = $CI->m_queries->collection();
             $CI->response->included = array_merge($CI->response->included, $result);
+            $CI->load->model('m_collection');
             $result = $CI->m_collection->collection('summaries');
             $CI->response->included = array_merge($CI->response->included, $result);
         }
