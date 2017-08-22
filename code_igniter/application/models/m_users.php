@@ -94,6 +94,35 @@ class M_users extends MY_Model
         return ($result);
     }
 
+    public function get_parent_orgs($org_id = 0)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'pre';
+        $this->log->summary = 'retrieving parent orgs';
+        stdlog($this->log);
+        $CI = & get_instance();
+
+        if (empty($org_id)) {
+            $org_id = $CI->user->org_id;
+        }
+        $parents_array = array();
+
+        do {
+            $sql = "SELECT a.id AS `id` FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";
+            $query = $this->db->query($sql, array($org_id));
+            $result = $query->result();
+            if (!empty($result[0]->id)) {
+                $org_id = intval($result[0]->id);
+                $parents_array[] = $org_id;
+            } else {
+                $org_id = 1;
+            }
+
+        } while ($org_id != 1);
+
+        return $parents_array;
+    }
+
     public function get_orgs($user_id)
     {
         $this->log->function = strtolower(__METHOD__);
