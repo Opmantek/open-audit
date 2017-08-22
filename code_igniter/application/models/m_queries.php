@@ -184,7 +184,7 @@ class M_queries extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
+        $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE (queries.org_id IN (" . $CI->user->org_list . ") or queries.org_id = 1) GROUP BY queries.name";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'queries');
         return ($result);
