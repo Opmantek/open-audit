@@ -641,7 +641,12 @@ if (! function_exists('inputRead')) {
         }
 
         # get current
-        $CI->response->meta->current = $CI->input->get('current');
+        if ($CI->input->get('current')) {
+            $CI->response->meta->current = $CI->input->get('current');
+            $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to GET.';
+            stdlog($log);
+
+        }
         if ($CI->input->post('current')) {
             $CI->response->meta->current = $CI->input->post('current');
             $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to POST.';
@@ -650,6 +655,9 @@ if (! function_exists('inputRead')) {
         $current_words = ' y n all delta full ';
         if (stripos($current_words, ' '.$CI->response->meta->current.' ') === false) {
             $CI->response->meta->current = 'y';
+            $log->summary = 'Set current to ' . $CI->response->meta->current . ', because not in reserved words or blank.';
+            stdlog($log);
+        } else {
             $log->summary = 'Set current to ' . $CI->response->meta->current . ', because in reserved words.';
             stdlog($log);
         }
@@ -839,6 +847,8 @@ if (! function_exists('inputRead')) {
                 if (strtolower($query->name) == 'as_at') {
                     $CI->response->meta->internal->as_at = $query->value;
                     $CI->response->meta->current = 'all';
+                    $log->summary = 'Set current to all because as_at specified.';
+                    stdlog($log);
                 }
 
                 if (strtolower(substr($query->value, 0, 8)) == 'not like') {
