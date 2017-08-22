@@ -170,8 +170,8 @@ class devices extends MY_Controller
             if (isset($this->response->data[0]->attributes->location_id)) {
                 $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             }
-            $this->load->model('m_attributes');
-            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+            $this->load->model('m_collection');
+            $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         } else {
             // return only the details of the linked org and location
             if (isset($this->response->data[0]->attributes->org_id)) {
@@ -267,8 +267,8 @@ class devices extends MY_Controller
         $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
         $this->load->model('m_locations');
         $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-        $this->load->model('m_attributes');
-        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+        $this->load->model('m_collection');
+        $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         output($this->response);
         $log = new stdClass();
         $log->type = 'access';
@@ -324,11 +324,11 @@ class devices extends MY_Controller
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             unset($temp);
             $temp = @$this->m_fields->collection();
-            if (! empty($temp)) {
+            if (!empty($temp)) {
                 $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             }
-            $this->load->model('m_attributes');
-            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+            $this->load->model('m_collection');
+            $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
         }
