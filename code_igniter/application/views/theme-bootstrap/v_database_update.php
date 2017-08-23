@@ -37,10 +37,20 @@
 <div class="alert alert-success" role="alert"><?php echo $success; ?></div>
 <form class="form-horizontal" id="form_update" method="post" action="database">
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><?php echo __('Database Upgrade'); ?>
+        <div class="panel-heading clearfix">
+            <div class="panel-title clearfix">
+                <div class="pull-left">
+                    <?php echo __('Database Upgrade'); ?>
+                </div>
+                <div class="pull-right">
+                    <div class="btn-group" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                        <a class="btn btn-info btn-sm" href="<?php echo $this->config->config['oae_url']; ?>" role="button"><?php echo __('Go to ') . $this->config->config['oae_product'];?></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
         <div class="panel-body">
             <pre style="white-space: pre-wrap;"><?php echo $output; ?></pre>
         </div>
