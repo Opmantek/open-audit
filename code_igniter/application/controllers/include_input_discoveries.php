@@ -90,7 +90,7 @@ if (!empty($_POST['data'])) {
             $syslog->severity = 6;
             $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
             $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
-            stdlog($syslog);
+            discovery_log($syslog);
             $log->discovery_id = intval($input->discovery_id);
             $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
             $data = array($log->discovery_id);
@@ -136,6 +136,7 @@ if (!empty($_POST['data'])) {
             $syslog->summary = 'Set discovery entry status to complete';
             $syslog->message = $this->db->last_query();
             stdlog($syslog);
+            discovery_log($syslog);
             if ($discovery->discard == 'y') {
                 $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
                 $data = array($log->discovery_id);
@@ -678,7 +679,7 @@ if (!empty($_POST['data'])) {
             $log->discovery_id = $device->discovery_id;
             $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
-            $log->message = 'Windows credential update for ' . $device->ip . '(System ID ' . $device->id . ')';
+            $log->message = 'Windows credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_windows);
         }
@@ -866,16 +867,35 @@ if (!empty($_POST['data'])) {
                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
                 if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
+                    # delete our no longer required local copy of the script
+                    $log->message = 'Attempt to copy audit script to ' . $details->ip . ' succeeded';
+                    discovery_log($log);
+                    if ($source_name != 'audit_windows.vbs') {
+                        $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
+                        try {
+                            unlink($this->config->config['base_path'] . '/other/' . $source_name);
+                        } catch (Exception $e) {
+                            $log->severity = 4;
+                            $log->message = 'Could not delete audit script ' . $source_name;
+                        }
+                        discovery_log($log);
+                        $log->severity = 7;
+                    }
                     if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
                         # All complete!
                     } else {
                         # run audit script failed
+                        $log->severity = 4;
+                        $log->message = 'Could not execute audit script on ' . $device->ip;
+                        discovery_log($log);
+                        $log->severity = 7;
                     }
                 } else {
                     # copy audit script to Windows failed
-                }
-                if ($source_name != 'audit_windows.vbs') {
-                    unlink($this->config->config['base_path'] . '/other/' . $source_name);
+                    $log->severity = 4;
+                    $log->message = 'Could not copy audit script to ' . $device->ip;
+                    discovery_log($log);
+                    $log->severity = 7;
                 }
             }
 
@@ -890,7 +910,7 @@ if (!empty($_POST['data'])) {
                     $log->function = 'discoveries';
                     $log->message = 'Windows audit is running as LocalSystem, not ideal for ' . $device->ip . ' (System ID ' . $device->id . ')';
                     $log->severity = 4;
-                    stdlog($log);
+                    discovery_log($log);
                     $log->severity = 7;
                     $username = $credentials_windows->credentials->username;
                     $temp = explode('@', $username);
@@ -912,15 +932,13 @@ if (!empty($_POST['data'])) {
                         echo "DEBUG - Command Output:\n";
                         print_r($output);
 
+                        $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         if ($return_var != '0') {
                             $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             $log->severity = 4;
-                            stdlog($log);
-                            $log->severity = 7;
-                        } else {
-                            $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                            stdlog($log);
                         }
+                        discovery_log($log);
+                        $log->severity = 7;
                         $output = null;
                         $return_var = null;
                     } else {
@@ -930,7 +948,15 @@ if (!empty($_POST['data'])) {
                     }
                     $command_string = null;
                     if ($source_name != 'audit_windows.vbs') {
-                        unlink($this->config->config['base_path'] . '/other/' . $source_name);
+                        $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
+                        try {
+                            unlink($this->config->config['base_path'] . '/other/' . $source_name);
+                        } catch (Exception $e) {
+                            $log->severity = 4;
+                            $log->message = 'Attempt to delete audit script ' . $source_name . ' failed';
+                        }
+                        discovery_log($log);
+                        $log->severity = 7;
                     }
                 } else {
                     # We are running as something other than the LocalSystem account.
@@ -942,27 +968,35 @@ if (!empty($_POST['data'])) {
                     $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi discovery_id=".$discovery->id;
                     if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                             $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                            stdlog($log);
+                            discovery_log($log);
                         if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
                             # All complete!
                             $log->message = 'Run audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                            stdlog($log);
+                            discovery_log($log);
                         } else {
                             # run audit script failed
                             $log->message = 'Run audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             $log->severity = 4;
-                            stdlog($log);
+                            discovery_log($log);
                             $log->severity = 7;
                         }
                     } else {
                         # copy audit script to Windows failed
                         $log->message = 'Copy audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         $log->severity = 4;
-                        stdlog($log);
+                        discovery_log($log);
                         $log->severity = 7;
                     }
                     if ($source_name != 'audit_windows.vbs') {
-                        unlink('c:\\windows\\audit_windows_' . $ts . '.vbs');
+                        $log->message = 'Attempt to delete audit script c:\\windows\\audit_windows_' . $ts . '.vbs succeeded';
+                        try {
+                            unlink('c:\\windows\\audit_windows_' . $ts . '.vbs');
+                        } catch (Exception $e) {
+                            $log->severity = 4;
+                            $log->message = 'Attempt to delete audit script c:\\windows\\audit_windows_' . $ts . '.vbs failed';
+                        }
+                        discovery_log($log);
+                        $log->severity = 7;
                     }
                 }
             }
@@ -1105,7 +1139,15 @@ if (!empty($_POST['data'])) {
                 }
                 $result = ssh_command($device->ip, $credentials_ssh, $command, $log);
                 if ($unlink != '') {
-                    unlink($unlink);
+                    $log->message = 'Attempt to delete audit script ' . $unlink . ' succeeded';
+                    try {
+                        unlink($unlink);
+                    } catch (Exception $e) {
+                        $log->severity = 4;
+                        $log->message = 'Attempt to delete audit script ' . $unlink . ' failed';
+                    }
+                    discovery_log($log);
+                    $log->severity = 7;
                 }
             }
             # audit ESX
@@ -1125,7 +1167,7 @@ if (!empty($_POST['data'])) {
                         } catch (Exception $error) {
                             // not a valid XML string
                             $log->message = 'Invalid XML input for ESX audit script';
-                            stdlog($log);
+                            discovery_log($log);
                             exit;
                         }
                         $count = 0;
@@ -1144,12 +1186,12 @@ if (!empty($_POST['data'])) {
                                     $esx_details->original_last_seen = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen');
                                     $this->m_device->update($esx_details);
                                     $log->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
-                                    stdlog($log);
+                                    discovery_log($log);
                                 } else {
                                     // we have a new system
                                     $esx_details->system_id = $this->m_device->insert($esx_details);
                                     $log->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
-                                    stdlog($log);
+                                    discovery_log($log);
                                 }
                                 if (!isset($esx_details->audits_ip)) {
                                     $esx_details->audits_ip = $device->audits_ip;
