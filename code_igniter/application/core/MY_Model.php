@@ -330,7 +330,11 @@ class MY_Model extends CI_Model
                 $filter = ' WHERE ' . substr($filter, 4);
             } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
                 $filter = substr($filter, 5);
-                $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . ')) AND ' . $filter;
+                if (!empty($CI->user->org_parents)) {
+                    $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . ')) AND ' . $filter;
+                } else {
+                    $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
+                }
             } else {
                 $filter = substr($filter, 5);
                 $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ') AND ' . $filter;
@@ -339,7 +343,11 @@ class MY_Model extends CI_Model
             if ($collection == 'configuration' or $collection == 'logs' ) {
                 $filter = '';
             } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
-                $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . '))';
+                if (!empty($CI->user->org_parents)) {
+                    $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . '))';
+                } else {
+                    $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ')';
+                }
             } else {
                 $filter = ' WHERE orgs.id IN (' . $CI->user->org_list . ')';
             }
