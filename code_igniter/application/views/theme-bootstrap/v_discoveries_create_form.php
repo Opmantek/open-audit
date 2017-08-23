@@ -33,6 +33,24 @@
 * @version   2.0.6
 * @link      http://www.open-audit.org
  */
+
+$proto = 'http://';
+if ($this->config->config['is_ssl'] == 'true') {
+    $proto = 'https://';
+}
+$network_address = '';
+$network_address_array = array();
+if ($this->config->config['default_network_address'] != '') {
+    $network_address = "<option selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>";
+    $network_address_array[] =  $network_address;
+}
+$address_array = explode(",", $this->config->config['ip']);
+foreach ($address_array as $key => $value) {
+    if ($value != $this->config->config['default_network_address']) {
+        $network_address = "<option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
+        $network_address_array[] = $network_address;
+    }
+}
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
@@ -76,20 +94,38 @@
                         </div>
                     </div>
 
-<?php
-if (empty($this->config->config['default_network_address'])) {
-    $address = 'http://YOUR_SERVER/open-audit/';
-} else {
-    $address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
-}
-?>
+
+                    <input type="hidden" value="" id="data[attributes][network_address]" name="data[attributes][network_address]" />
+                    <div class="form-group">
+                        <label for="network_address_select" class="col-sm-3 control-label">Network Address</label>
+                        <div class="col-sm-8 input-group">
+                            <select required class="form-control" id="network_address_select" name="network_address_select">
+                                <option value=''></option>
+                                <option value='other'>Other</option>
+                                <?php
+                                foreach ($network_address_array as $key => $value) {
+                                    if ($network_address != '') {
+                                        echo $network_address;
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" id="network_address_other_div" style="display:none;">
+                        <label for="network_address_other" class="col-sm-3 control-label">Network Address</label>
+                        <div class="col-sm-8 input-group">
+                            <input required type="text" class="form-control" id="network_address_other" name="network_address_other" value="http://YOUR_SERVER/open-audit/">
+                        </div>
+                    </div>
+<!--
                     <div class="form-group">
                         <label for="data[attributes][network_address]" class="col-sm-3 control-label">Network Address</label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="<?php echo $address; ?>">
+                            <input type="text" class="form-control" id="data[attributes][network_address]" name="data[attributes][network_address]" value="http://YOUR_SERVER/open-audit">
                         </div>
                     </div>
-
+-->
                     <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
                         <div class="col-sm-8 input-group">
@@ -214,6 +250,41 @@ $(document).ready(function(){
             $("#options").html($subnet_text);
         }
 
+    });
+});
+</script>
+
+<script>
+$(document).ready(function(){
+    $('#div_system_id').remove();
+    $('#div_device_count').remove();
+    $('#div_discard').remove();
+
+    $('#network_address_select').change(function() {
+        var $value = $(this).val();
+        if ($value == 'other') {
+            $("#network_address_other_div").css('display', 'block');
+        } else {
+            $("#network_address_other_div").css('display', 'none');
+        }
+    });
+
+    $("form").submit(function(e){
+        if ($("#network_address_select").val() == '') {
+            alert("Please provde a network address.");
+            e.preventDefault();
+        } else if ($("#network_address_select").val() == 'other') {
+            var other = $('#network_address_other').val();
+            if (other != "") {
+                $("#data\\[attributes\\]\\[network_address\\]").val(other);
+            } else {
+                alert("Please provde a network address.");
+                e.preventDefault();
+            }
+        } else {
+            var other = $('#network_address_select').val();
+            $("#data\\[attributes\\]\\[network_address\\]").val(other);
+        }
     });
 });
 </script>
