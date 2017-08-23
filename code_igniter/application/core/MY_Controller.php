@@ -84,7 +84,7 @@ class MY_Controller extends CI_Controller
                 $log = new stdClass();
                 $log->severity = 4;
                 $log->file = 'system';
-                $log->message = "Could not determine roles for user.";
+                $log->summary = "Could not determine roles for user.";
                 stdlog($log);
                 $this->session->unset_userdata('user_id');
                 $this->session->set_flashdata('error', 'Could not determine roles for user.');
@@ -100,7 +100,7 @@ class MY_Controller extends CI_Controller
                 $log = new stdClass();
                 $log->severity = 4;
                 $log->file = 'system';
-                $log->message = "Could not determine orgs for user.";
+                $log->summary = "Could not determine orgs for user.";
                 stdlog($log);
             }
         }
