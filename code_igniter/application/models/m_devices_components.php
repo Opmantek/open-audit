@@ -316,8 +316,6 @@ class M_devices_components extends MY_Model
         $log->command = 'process audit';
         $log->message = '';
 
-        #echo "<pre>"; print_r($log); exit();
-
         $log_details = new stdClass();
         $log_details->message = '';
         $log_details->severity = 7;
@@ -373,10 +371,11 @@ class M_devices_components extends MY_Model
             discovery_log($log);
             return;
         } else {
-            $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
-            $log->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log->severity = 7;
-            discovery_log($log);
+            # removed - just way too much log output
+            // $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
+            // $log->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            // $log->severity = 7;
+            // discovery_log($log);
         }
 
         // make sure we have an entry for each match column, even if it's empty
@@ -820,11 +819,11 @@ class M_devices_components extends MY_Model
                 }
             }
         }
-        // update the audit log
-        $this->m_audit_log->update('debug', "$table - end", $details->id, $details->last_seen);
-        $log->message = 'Processing component (' . $table . ') end for '.@ip_address_from_db($details->ip).' ('.$name.')';
-        $log->severity = 7;
-        discovery_log($log);
+        # removed - just way too much log output
+        // $this->m_audit_log->update('debug', "$table - end", $details->id, $details->last_seen);
+        // $log->message = 'Processing component (' . $table . ') end for '.@ip_address_from_db($details->ip).' ('.$name.')';
+        // $log->severity = 7;
+        // discovery_log($log);
         return;
     }
 
