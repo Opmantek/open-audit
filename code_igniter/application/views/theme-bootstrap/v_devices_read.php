@@ -153,7 +153,7 @@ if (empty($data['mount_point'])) {
                 <?php if (isset($data['nmap'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
                 <?php } ?>
-                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/opmantek.svg"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
               </ul>
           </div>
