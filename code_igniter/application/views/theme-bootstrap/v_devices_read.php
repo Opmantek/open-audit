@@ -153,6 +153,7 @@ if (empty($data['mount_point'])) {
                 <?php if (isset($data['nmap'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
                 <?php } ?>
+                <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/opmantek.svg"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
               </ul>
           </div>
@@ -914,7 +915,33 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
 }
 ?>
 
-
+    <?php $fields = array('OMK UUID' => 'omk_uuid', 'NMIS Group' => 'nmis_group', 'NMIS Name' => 'nmis_name', 'NMIS Role' => 'nmis_role', 'Notes' => 'description', 'Business Service' => 'function' ); ?>
+    <div id="opmantek" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Opmantek Details</h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="opmantek"></span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <?php foreach ($fields as $field => $value) { ?>
+                    <div class="form-group">
+                        <label for="<?php echo $value ?>" class="col-sm-4 control-label"><?php echo __($field) . ' (' . $value . ')'; ?></label>
+                        <div class="col-sm-7 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" id="<?php echo $value ?>" name="<?php echo $field ?>" value="<?php echo $data['system']->$value; ?>">
+                            <?php if ($edit) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_<?php echo $value ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $value ?>">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
 
     <div id="credentials" class="section">
         <div class="panel panel-default">
