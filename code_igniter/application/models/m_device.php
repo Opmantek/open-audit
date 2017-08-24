@@ -123,6 +123,25 @@ class M_device extends MY_Model
             $log->ip = $details->ip;
         }
 
+        # Match based on the OMK uuid
+        if (!empty($details->omk_uuid)) {
+            $sql = "SELECT system.id FROM system WHERE system.omk_uuid = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->omk_uuid");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on NMIS uuid: ' . $details->omk_uuid . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+        }
+
         if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and !empty($details->uuid) and !empty($details->hostname)) {
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
