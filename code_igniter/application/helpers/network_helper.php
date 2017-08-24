@@ -549,8 +549,12 @@ if (! function_exists('dns_validate')) {
 
         if (!filter_var($details->ip, FILTER_VALIDATE_IP) and $details->hostname != '') {
             $details->ip = gethostbyname($details->hostname);
-            $log_details->message = 'Using gethostbyname because no valid ip address, but valid hostname ' . @$details->sysName;
-            stdlog($log_details);
+            if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
+                $details->ip = '';
+            } else {
+                $log_details->message = 'Using gethostbyname because no valid ip address, but valid hostname ' . @$details->sysName;
+                stdlog($log_details);
+            }
         }
 
         if (empty($details->hostname) and !empty($details->sysName)) {
