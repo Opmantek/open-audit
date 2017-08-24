@@ -222,15 +222,10 @@ if (!empty($this->config->config['servers'])) {
                                                 <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'>Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
                                                 <?php if ($collection == 'devices') { ?>
                                                 <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'>Import Devices from Audit Script Result</a></li>
-                                                <li><a href='<?php echo $link; ?>/nmis/create'>Import Devices from NMIS Nodes file</a></li>
-                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'>Export Devices</a></li>
+                                                <li><a href='<?php echo $link; ?>/nmis/create'>Import Devices from NMIS</a></li>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'>Export Devices to CSV</a></li>
+                                                <li><a href='<?php echo $link; ?>/nmis'>Export Devices to NMIS</a></li>
                                                 <?php } ?>
-                                            <?php } ?>
-                                        <?php } ?>
-
-                                        <?php if ($collection == 'devices') { ?>
-                                            <?php if ($this->config->config['nmis'] == 'y') { ?>
-                                                <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/nmis/create'><?php echo __('NMIS Import')?></a></li>
                                             <?php } ?>
                                         <?php } ?>
 
