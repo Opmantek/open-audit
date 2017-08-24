@@ -143,6 +143,9 @@ class M_devices extends MY_Model
     public function read($id = '')
     {
         if (empty($id)) {
+            $log = new stdClass();
+            $log->file = 'system';
+            $log->level = 5;
             $log->message = 'No device ID for read, returning false';
             stdlog($log);
             return false;
