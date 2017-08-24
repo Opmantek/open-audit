@@ -103,22 +103,64 @@ class Nmis extends MY_Controller
     */
     public function create()
     {
-        $file = $this->response->meta->received_data->attributes->file;
-        $log = new stdClass();
-        $log->log_level = 7;
-        $log->severity = 6;
-        $log->message = 'NMIS import, importing nodes from ' . $file;
-        stdlog($log);
-        $this->load->model('m_devices');
-        $timestamp = $this->config->config['timestamp'];
-        $node_array = array();
-        $file_handle = fopen($file, 'r');
-        if (!$file_handle) {
-            log_error('ERR-0016', 'nmis:create - Reading ' . $file);
-            output();
-            exit();
+
+        $string = '';
+        $flash_message = '';
+
+        # The uploaded file
+        if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
+            $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+            try {
+                move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
+            } catch (Exception $e) {
+                $log = new stdClass();
+                $log->type = 'system';
+                $log->severity = 5;
+                $log->user = @$this->user->full_name;
+                $log->collection = @$this->response->meta->collection;
+                $log->action = @$this->response->meta->action;
+                $log->status = 'processing Nodes submission';
+                $log->summary = 'Could not move uploaded Nodes file.';
+                $log->detail = $e;
+                stdlog($log);
+                unset($log);
+                $this->data['query'] = $e;
+                $this->data['error'] = "There was an error uploading the file, please try again.";
+                $this->data['include'] = 'v_error';
+                $this->load->view('v_template', $this->data);
+            }
+            $string = file_get_contents($target_path);
+            unlink($target_path);
+            $flash_message = 'Nodes imported from uploaded file.<br />';
         }
-        $string = fread($file_handle, filesize($file));
+
+        # the local file
+        if (empty($string)) {
+            $file = $this->response->meta->received_data->attributes->file;
+            $log = new stdClass();
+            $log->log_level = 7;
+            $log->severity = 6;
+            $log->message = 'NMIS import, importing nodes from ' . $file;
+            stdlog($log);
+            $file_handle = fopen($file, 'r');
+            if (!$file_handle) {
+                log_error('ERR-0016', 'nmis:create - Reading ' . $file);
+                output();
+                return;
+            }
+            $string = fread($file_handle, filesize($file));
+            $flash_message = 'Nodes imported from local file.<br />';
+        }
+
+        if (empty($string)) {
+            log_error('ERR-0011');
+            print_r($this->response->errors);
+        }
+
+        $timestamp = $this->config->config['timestamp'];
+        $this->load->model('m_devices');
+        $this->load->model('m_device');
+
         $string = str_replace(PHP_EOL, ' ', $string);
         $string = str_replace("\r\n", ' ', $string);
         $string = str_replace("\n", ' ', $string);
@@ -165,16 +207,15 @@ class Nmis extends MY_Controller
 
         $nodes_in_file = 0;
         $nodes_collect = 0;
-        $nodes_total = 0;
         $nodes_array = array();
         foreach ($nodes as $node) {
             $nodes_in_file++;
             if (@$node['collect'] == 'true') {
                 $nodes_collect++;
-                #echo "=======================\n";
                 $device = new stdClass();
                 $device->name = strtolower(@$node['name']);
-                if (!filter_var($node['host'], FILTER_VALIDATE_IP) === false) {
+                $device->ip = '';
+                if (filter_var($node['host'], FILTER_VALIDATE_IP) !== false) {
                     $device->ip =  $node['host'];
                 } else {
                     if (strpos($node['host'], '.') !== false) {
@@ -186,10 +227,15 @@ class Nmis extends MY_Controller
                         $device->hostname =  $node['host'];
                     }
                 }
-                $device = dns_validate($device, 'n');
+                dns_validate($device, 'n');
                 $device->omk_uuid = @$node['uuid'];
-                $device->id = $this->m_device->match($device);
                 $device->status = 'production';
+                $device->nmis_group = @$node['group'];
+                $device->nmis_name = @$node['name'];
+                $device->nmis_role = @$node['roleType'];
+                $device->description = @$node['notes'];
+                $device->function = @$node['businessService'];
+                $device->id = $this->m_device->match($device);
                 $device->credentials = new stdClass();
                 $device->credentials->description = 'Imported from NMIS';
                 $device->credentials->name = 'Device Specific Credentials';
@@ -235,14 +281,16 @@ class Nmis extends MY_Controller
                         $device->credentials->credentials->security_level = 'authPriv';
                     }
                 }
-                $nodes_array[$device->ip] = $device;
+                $nodes_array[$device->name] = $device;
             }
         }
         // echo "Nodes in file: " . $nodes_in_file . "\n";
         // echo "Nodes with collect: " . $nodes_collect . "\n";
         // echo "Total nodes: " . count($nodes_array) . "\n";
-        // print_r($nodes_array);
+        // echo "<pre>\n"; print_r($nodes_array); echo "</pre>\n";
         $ids = array();
+        $updated = 0;
+        $inserted = 0;
         foreach ($nodes_array as $details) {
             $details->last_seen_by = 'nmis';
             $details->last_seen = $timestamp;
@@ -250,10 +298,12 @@ class Nmis extends MY_Controller
                 $log->message = "Updating device " . $details->name . " (ID:" . $details->id . ")";
                 stdlog($log);
                 $this->m_devices->update($details);
+                $updated++;
             } else {
                 $log->message = "Creating device " . $details->name;
                 stdlog($log);
                 $details->id = $this->m_devices->create($details);
+                $inserted++;
             }
             $this->m_devices->sub_resource_create($details->id, 'credential', $details->credentials);
             $ids[] = $details->id;
@@ -272,9 +322,56 @@ class Nmis extends MY_Controller
         if ($this->response->meta->format === 'json') {
             output($this->response);
         } else {
-            $this->session->set_flashdata('success', count($nodes_array) . ' devices imported.');
-            redirect('devices?action=update&ids='.$ids);
+            $this->session->set_flashdata('success', $flash_message . count($nodes_array) . ' devices imported (' . $inserted . ' inserted and ' . $updated . ' updated).');
+            #redirect('devices?action=update&ids='.$ids);
+            redirect('devices?system.id=in'.$ids.'&properties=system.id,name,hostname,domain,ip,description,function,nmis_name,nmis_group,nmis_role');
         }
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function collection()
+    {
+        $query = new stdClass();
+        $query->name = 'system.status';
+        $query->operator = '=';
+        $query->value = 'production';
+        $this->response->meta->filter[] = $query;
+        // $this->load->model('m_collection');
+        // $this->response->data = $this->m_collection->collection('system');
+        $this->load->model('m_devices');
+        $this->response->data = $this->m_devices->collection();
+        $this->response->meta->total = intval(count($this->response->data));
+        output($this->response);
+    }
+
+    /**
+    * Supply a HTML form for the user to update an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function export()
+    {
+        #$this->response->meta->format = 'json';
+        $this->load->model('m_devices');
+        $this->response->data = $this->m_devices->collection();
+        foreach ($this->response->data as &$device) {
+            $device->attributes->community = '';
+            $credentials = $this->m_devices->read_sub_resource($device->id, 'credential', '', '', '', 'y');
+            foreach ($credentials as $credential) {
+                if (!empty($credential->attributes->credentials->community)) {
+                    $device->attributes->community = $credential->attributes->credentials->community;
+                }
+            }
+        }
+        #echo "<pre>"; print_r($credentials); exit();
+        output($this->response);
+        return;
     }
 
     /**

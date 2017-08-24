@@ -46,6 +46,20 @@ $(document).ready(function () {
     });
 });
 
+/* Send to nmis export */
+$(document).ready(function () {
+    $(document).on('click', '.nmis_export_button', function (e) {
+        var ids = "";
+        $("input:checked").each(function () {
+            if ($(this).attr("value")) {
+                ids = ids + "," + $(this).attr("value");
+            }
+        });
+        ids = ids.substring(1);
+        var url = baseurl + 'index.php/nmis?action=export&system.id=in' + ids;
+        window.location = url;
+    });
+});
 
 /* any Delete links */
 $(document).ready(function () {

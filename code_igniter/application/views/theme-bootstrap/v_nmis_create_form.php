@@ -34,7 +34,7 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>" accept-charset="utf-8" enctype="multipart/form-data">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
@@ -47,14 +47,21 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][file]" class="col-sm-3 control-label">Nodes.nmis file</label>
-                        <div class="col-sm-8 input-group">
+                        <label for="data[attributes][file]" class="col-sm-3 control-label">Local Nodes.nmis file</label>
+                        <div class="col-sm-7 input-group">
                             <input type="text" class="form-control" id="data[attributes][file]" name="data[attributes][file]" size="30" value="/usr/local/nmis8/conf/Nodes.nmis">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][location_id]" class="col-sm-3 control-label">Location</label>
+                        <label for="upload_file" class="col-sm-3 control-label">File Upload</label>
+                        <div class="col-sm-8">
+                            <input type="file" id="upload_file" name="upload_file">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="data[attributes][location_id]" class="col-sm-3 control-label">Assign to Location</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
                             <?php
@@ -67,7 +74,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Assign to Organisation</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -82,7 +89,7 @@
                     <div class="form-group">
                         <label for="data[attributes][run_discovery]" class="col-sm-3 control-label">Run Discovery on devices</label>
                         <div class="col-sm-8 input-group">
-                            <input type="checkbox" class="form-control" id="data[attributes][run_discovery]" name="data[attributes][run_discovery]">
+                            <input type="checkbox" id="data[attributes][run_discovery]" name="data[attributes][run_discovery]">
                         </div>
                     </div>
                 </div>
@@ -97,6 +104,11 @@
                                 <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p>NOTE - Please choose either a local file (on the Open-AudIT server) <code>OR</code> a file that you can upload.<br /></p>
                 </div>
             </div>
         </div>
