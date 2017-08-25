@@ -342,6 +342,10 @@ class Nmis extends MY_Controller
         $query->operator = '=';
         $query->value = 'production';
         $this->response->meta->filter[] = $query;
+        $query->name = 'system.nmis_manage';
+        $query->operator = '=';
+        $query->value = 'y';
+        $this->response->meta->filter[] = $query;
         // $this->load->model('m_collection');
         // $this->response->data = $this->m_collection->collection('system');
         $this->load->model('m_devices');
