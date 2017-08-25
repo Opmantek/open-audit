@@ -228,6 +228,7 @@ class Nmis extends MY_Controller
                     }
                 }
                 dns_validate($device, 'n');
+                $device->nmis_manage = 'y';
                 $device->omk_uuid = @$node['uuid'];
                 $device->status = 'production';
                 $device->nmis_group = @$node['group'];
