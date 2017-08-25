@@ -146,7 +146,9 @@ $this->log_db($this->db->last_query());
 
 # system
 $this->alter_table('system', 'collector_uuid', "ADD `collector_uuid` text NOT NULL AFTER `omk_uuid`", 'add');
-$this->alter_table('system', 'nmis_manage', "ADD `nmis_manage` enum('y','n') NOT NULL DEFAULT 'n' AFTER `oae_manage`", 'add');
+$this->alter_table('system', 'nmis_export', "`nmis_manage` enum('y','n') NOT NULL DEFAULT 'n'");
+$this->alter_table('system', 'nmis_notes', "ADD `nmis_notes` TEXT NOT NULL AFTER `nmis_manage`", 'add');
+$this->alter_table('system', 'nmis_business_service', "ADD `nmis_business_service` varchar(50) NOT NULL DEFAULT '' AFTER `nmis_notes`", 'add');
 
 # tasks
 $this->alter_table('tasks', 'sub_resource_id', "ADD `sub_resource_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `description`", 'add');
