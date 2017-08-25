@@ -2602,6 +2602,7 @@ CREATE TABLE `system` (
   `nmis_role` varchar(50) NOT NULL DEFAULT '',
   `nmis_export` enum('y','n') NOT NULL DEFAULT 'n',
   `oae_manage` enum('y','n') NOT NULL DEFAULT 'y',
+  `nmis_manage` enum('y','n') NOT NULL DEFAULT 'y',
   `snmp_oid` text NOT NULL,
   `sysDescr` text NOT NULL,
   `sysObjectID` varchar(255) NOT NULL DEFAULT '',
