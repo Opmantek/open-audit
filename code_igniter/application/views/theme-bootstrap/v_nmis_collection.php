@@ -39,7 +39,6 @@ if (strpos($refine_link, '?') === false) {
 } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1) {
     $refine_link .= '&';
 }
-$properties = array('nmis_manage', 'group', 'role', 'notes', 'business_service');
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -71,9 +70,16 @@ $properties = array('nmis_manage', 'group', 'role', 'notes', 'business_service')
                             <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices/<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET)?></a></td>
                             <td><?php echo htmlspecialchars($item->attributes->name); ?></td>
                             <td><?php echo htmlspecialchars($item->attributes->host); ?></td>
-                            <?php foreach ($properties as $property) {
-                                echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $item->attributes->$property . "</td>\n";
-                            } ?>
+                            <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>system.nmis_manage=!=<?php echo urlencode($item->attributes->nmis_manage); ?>'>Exclude</a><br /><a href='<?php echo $refine_link; ?>system.nmis_manage=<?php echo urlencode($item->attributes->nmis_manage); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->nmis_manage; ?></td>
+
+                            <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>system.nmis_group=!=<?php echo urlencode($item->attributes->group); ?>'>Exclude</a><br /><a href='<?php echo $refine_link; ?>system.nmis_group=<?php echo urlencode($item->attributes->group); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->group; ?></td>
+
+                            <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>nmis_role=!=<?php echo urlencode($item->attributes->role); ?>'>Exclude</a><br /><a href='<?php echo $refine_link; ?>system.nmis_role=<?php echo urlencode($item->attributes->role); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->role; ?></td>
+
+                            <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>system.nmis_notes=!=<?php echo urlencode($item->attributes->notes); ?>'>Exclude</a><br /><a href='<?php echo $refine_link; ?>system.nmis_notes=<?php echo urlencode($item->attributes->notes); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->notes; ?></td>
+
+                            <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>system.nmis_business_service=!=<?php echo urlencode($item->attributes->businessService); ?>'>Exclude</a><br /><a href='<?php echo $refine_link; ?>system.nmis_business_service=<?php echo urlencode($item->attributes->businessService); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->businessService; ?></td>
+
                             <td class="text-center"><input type='checkbox' id='ids[<?php echo intval($item->id); ?>]' value='<?php echo intval($item->id); ?>' name='ids[<?php echo intval($item->id); ?>]' /></td>
                         </tr>
                     <?php endforeach; ?>

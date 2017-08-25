@@ -53,17 +53,24 @@ mv /usr/local/nmis8/conf/Nodes.nmis.new /usr/local/nmis8/conf/Nodes.nmis
 </p>
     <p>Contents of CSV are below.</p>
         <pre>
-"name","host","businessService","group","role","community",uuid","notes"
+"name","host","businessService","group","role","community",uuid","notes","version","privprotocol","privpassword","authprotocol","authpassword","wmiusername","wmipassword"
 <?php if (!empty($this->response->data)) {
                 foreach ($this->response->data as $item):
                     $line = "\"" . str_replace('"', '\"', htmlspecialchars($item->attributes->name)) . "\"" .
                     ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->host)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->business_service)) . "\"" .
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->businessService)) . "\"" .
                     ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->group)) . "\"" .
                     ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->role)) . "\"" .
                     ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->community)) . "\"" .
                     ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->uuid)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->notes)) . "\"";
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->notes)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->version)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->privprotocol)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->privpassword)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->authprotocol)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->authpassword)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->wmiusername)) . "\"" .
+                    ",\""  . @htmlspecialchars(str_replace('"', '\"', $item->attributes->wmipassword)) . "\"";
                     echo $line . "\n";
                 endforeach;
             } ?>
