@@ -617,6 +617,14 @@ class M_devices extends MY_Model
         $sql = "/* m_devices::collection_sub_resource */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, $CI->response->meta->sub_resource);
+        if ($CI->response->meta->sub_resource == 'credential' and count($result) > 0) {
+            foreach ($result as &$item) {
+                if (!empty($item->attributes->credentials)) {
+                    $item->attributes->credentials = json_decode($this->encrypt->decode($item->attributes->credentials));
+                }
+            }
+        }
+
         unset($item);
         foreach ($result as &$item) {
             $item->links->self = $CI->config->config['base_url'] . 'index.php/devices?sub_resource=' . $CI->response->meta->sub_resource;
