@@ -417,7 +417,7 @@ if (! function_exists('dns_validate')) {
         unset($display);
         stdlog($log_details);
 
-        if (!isset($details->ip)) {
+        if (empty($details->ip)) {
             $details->ip = '';
             $log_details->message = 'No ip set for ' . @$details->hostname;
             stdlog($log_details);
@@ -435,7 +435,7 @@ if (! function_exists('dns_validate')) {
             }
         }
 
-        if (!isset($details->hostname)) {
+        if (empty($details->hostname)) {
             $details->hostname = '';
             $log_details->message = 'No hostname set for ' . @$details->ip;
             stdlog($log_details);
@@ -547,7 +547,17 @@ if (! function_exists('dns_validate')) {
             }
         }
 
-        if (!filter_var($details->ip, FILTER_VALIDATE_IP) and $details->hostname != '') {
+        if ($details->ip == '' and $details->fqdn != '') {
+            $details->ip = gethostbyname($details->fqdn);
+            if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
+                $details->ip = '';
+            } else {
+                $log_details->message = 'Using gethostbyname because no valid ip address, but valid fqdn ' . @$details->sysName;
+                stdlog($log_details);
+            }
+        }
+
+        if ($details->ip == '' and $details->hostname != '') {
             $details->ip = gethostbyname($details->hostname);
             if (!filter_var($details->ip, FILTER_VALIDATE_IP)) {
                 $details->ip = '';
