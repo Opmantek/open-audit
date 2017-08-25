@@ -915,7 +915,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
 }
 ?>
 
-    <?php $fields = array('OMK UUID' => 'omk_uuid', 'NMIS Group' => 'nmis_group', 'NMIS Name' => 'nmis_name', 'NMIS Role' => 'nmis_role', 'Notes' => 'description', 'Business Service' => 'function' ); ?>
+
     <div id="opmantek" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -924,14 +924,36 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
-                <?php foreach ($fields as $field => $value) { ?>
+                <div class="form-group">
+                    <label for="nmis_manage" class="col-sm-4 control-label"><?php echo __('Manage In NMIS')?></label>
+                    <div class="col-sm-7 input-group">
+                        <select id="nmis_manage" class="form-control" disabled>
+                        <?php
+                        if ($data['system']->nmis_manage == 'y') {
+                            $selected_y = ' selected';
+                            $selected_n = '';
+                        } else {
+                            $selected_y = '';
+                            $selected_n = 'selected';
+                        }
+                        ?>
+                        <option value='y' <?php echo $selected_y; ?>>Yes</option>
+                        <option value='n' <?php echo $selected_n; ?>>No</option>
+                        </select>
+                        <?php if ($edit) { ?>
+                        <span class="input-group-btn"><button id="edit_nmis_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
+                        <?php } ?>
+                    </div>
+                </div>
+                <?php $fields = array('UUID' => 'omk_uuid', 'Group' => 'nmis_group', 'Name' => 'nmis_name', 'Role' => 'nmis_role', 'Notes' => 'nmis_notes', 'Business Service' => 'nmis_business_service' ); ?>
+                <?php foreach ($fields as $human => $db) { ?>
                     <div class="form-group">
-                        <label for="<?php echo $value ?>" class="col-sm-4 control-label"><?php echo __($field) . ' (' . $value . ')'; ?></label>
+                        <label for="<?php echo $db ?>" class="col-sm-4 control-label"><?php echo __($human); ?></label>
                         <div class="col-sm-7 input-group">
-                            <input disabled type="text" class="form-control" placeholder="" id="<?php echo $value ?>" name="<?php echo $field ?>" value="<?php echo $data['system']->$value; ?>">
+                            <input disabled type="text" class="form-control" placeholder="" id="<?php echo $db ?>" name="<?php echo $db ?>" value="<?php echo $data['system']->$db; ?>">
                             <?php if ($edit) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_<?php echo $value ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $value ?>">
+                                <button id="edit_<?php echo $db ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $db ?>">
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </button>
                             </span>

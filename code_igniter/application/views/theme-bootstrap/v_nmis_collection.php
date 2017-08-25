@@ -39,7 +39,7 @@ if (strpos($refine_link, '?') === false) {
 } else if (strrpos($refine_link, '&') !== strlen($refine_link)-1) {
     $refine_link .= '&';
 }
-$properties = array('description', 'function', 'nmis_group', 'nmis_role', 'omk_uuid');
+$properties = array('nmis_manage', 'group', 'role', 'notes', 'business_service');
 ?>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -52,13 +52,13 @@ $properties = array('description', 'function', 'nmis_group', 'nmis_role', 'omk_u
                 <thead>
                     <tr>
                         <th class="text-center"><?php echo __('View')?></th>
-                        <th><?php echo __('Name (nmis_name)')?></th>
-                        <th><?php echo __('Host (ip or fqdn or hostname)')?></th>
-                        <th><?php echo __('Notes (description)')?></th>
-                        <th><?php echo __('Business Service (function)')?></th>
-                        <th><?php echo __('NMIS Group (nmis_group)')?></th>
-                        <th><?php echo __('NMIS Role (nmis_role)')?></th>
-                        <th><?php echo __('UUID (omk_uuid)')?></th>
+                        <th><?php echo __('Name')?></th>
+                        <th><?php echo __('Host')?></th>
+                        <th><?php echo __('Managed in NMIS')?></th>
+                        <th><?php echo __('NMIS Group')?></th>
+                        <th><?php echo __('NMIS Role')?></th>
+                        <th><?php echo __('Notes')?></th>
+                        <th><?php echo __('Business Service')?></th>
                         <th class="text-center">
                             <button type="button" class="btn btn-primary btn-xs nmis_export_button" id="nmis_export_button">Export</button>&nbsp;
                             <input type="checkbox" name="select_all" id="select_all" onclick="select_all_click();"/>
@@ -66,20 +66,11 @@ $properties = array('description', 'function', 'nmis_group', 'nmis_role', 'omk_u
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($this->response->data as $item):
-                        ?>
+                    <?php foreach ($this->response->data as $item): ?>
                         <tr>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices/<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET)?></a></td>
-                            <td><?php echo htmlspecialchars($item->attributes->nmis_name); ?></td>
-                            <?php if (!empty($item->attributes->ip)) { ?>
-                            <td><?php echo htmlspecialchars($item->attributes->ip); ?></td>
-                            <?php } else if (!empty($item->attributes->fqdn)) { ?>
-                            <td><?php echo htmlspecialchars($item->attributes->fqdn); ?></td>
-                            <?php } else if (!empty($item->attributes->hostname)) { ?>
-                            <td><?php echo htmlspecialchars($item->attributes->hostname); ?></td>
-                            <?php } else { ?>
-                            <td></td>
-                            <?php } ?>
+                            <td><?php echo htmlspecialchars($item->attributes->name); ?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->host); ?></td>
                             <?php foreach ($properties as $property) {
                                 echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $item->attributes->$property . "</td>\n";
                             } ?>

@@ -51,26 +51,19 @@ mv /usr/local/nmis8/conf/Nodes.nmis.new /usr/local/nmis8/conf/Nodes.nmis
     <pre>nohup nice /usr/local/nmis8/bin/nmis.pl type=update mthread=true maxthreads=5 &</pre>
     There is more information available on the <a gref="https://community.opmantek.com/display/NMIS/Import+Nodes+into+NMIS8+-+bulk+import+and+integration">NMIS wiki</a>.<br />
 </p>
+    <p>Contents of CSV are below.</p>
         <pre>
 "name","host","businessService","group","role","community",uuid","notes"
 <?php if (!empty($this->response->data)) {
                 foreach ($this->response->data as $item):
-                    $line = "\"" . str_replace('"', '\"', htmlspecialchars($item->attributes->nmis_name)) . "\"";
-                    if (!empty($item->attributes->ip)) {
-                        $line .= ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->ip)) . "\"";
-                    } else if (!empty($item->attributes->fqdn)) {
-                        $line .= ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->fqdn)) . "\"";
-                    } else if (!empty($item->attributes->hostname)) {
-                        $line .= ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->hostname)) . "\"";
-                    } else {
-                        $line .= ",\"\"";
-                    }
-                    $line .= ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->function)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->nmis_group)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->nmis_role)) . "\"" .
+                    $line = "\"" . str_replace('"', '\"', htmlspecialchars($item->attributes->name)) . "\"" .
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->host)) . "\"" .
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->business_service)) . "\"" .
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->group)) . "\"" .
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->role)) . "\"" .
                     ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->community)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->omk_uuid)) . "\"" .
-                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->description)) . "\"";
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->uuid)) . "\"" .
+                    ",\""  . htmlspecialchars(str_replace('"', '\"', $item->attributes->notes)) . "\"";
                     echo $line . "\n";
                 endforeach;
             } ?>

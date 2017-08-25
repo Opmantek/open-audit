@@ -234,8 +234,8 @@ class Nmis extends MY_Controller
                 $device->nmis_group = @$node['group'];
                 $device->nmis_name = @$node['name'];
                 $device->nmis_role = @$node['roleType'];
-                $device->description = @$node['notes'];
-                $device->function = @$node['businessService'];
+                $device->nmis_notes = @$node['notes'];
+                $device->nmis_business_service = @$node['businessService'];
                 $device->id = $this->m_device->match($device);
                 $device->credentials = new stdClass();
                 $device->credentials->description = 'Imported from NMIS';
@@ -325,7 +325,7 @@ class Nmis extends MY_Controller
         } else {
             $this->session->set_flashdata('success', $flash_message . count($nodes_array) . ' devices imported (' . $inserted . ' inserted and ' . $updated . ' updated).');
             #redirect('devices?action=update&ids='.$ids);
-            redirect('devices?system.id=in'.$ids.'&properties=system.id,name,hostname,domain,ip,description,function,nmis_name,nmis_group,nmis_role');
+            redirect('devices?system.id=in'.$ids.'&properties=system.id,name,nmis_name,ip,nmis_business_service,nmis_group,nmis_role,nmis_notes');
         }
     }
 
@@ -337,20 +337,40 @@ class Nmis extends MY_Controller
     */
     public function collection()
     {
-        $query = new stdClass();
-        $query->name = 'system.status';
-        $query->operator = '=';
-        $query->value = 'production';
-        $this->response->meta->filter[] = $query;
-        $query->name = 'system.nmis_manage';
-        $query->operator = '=';
-        $query->value = 'y';
-        $this->response->meta->filter[] = $query;
-        // $this->load->model('m_collection');
-        // $this->response->data = $this->m_collection->collection('system');
         $this->load->model('m_devices');
-        $this->response->data = $this->m_devices->collection();
-        $this->response->meta->total = intval(count($this->response->data));
+        $devices = $this->m_devices->collection();
+        $this->response->meta->total = intval(count($devices));
+        foreach ($devices as &$device) {
+            $this_device = new stdClass();
+            $this_device->id = $device->attributes->id;
+            $this_device->attributes = new stdClass();
+            $this_device->attributes->id = $device->attributes->id;
+            $this_device->attributes->name = $device->attributes->name;
+            $this_device->attributes->host = '';
+            if (!empty($device->attributes->ip)) {
+                $this_device->attributes->host = $device->attributes->ip;
+            } else if (!empty($device->attributes->fqdn)) {
+                $this_device->attributes->host = $device->attributes->fqdn;
+            } else if (!empty($device->attributes->hostname)) {
+                $this_device->attributes->host = $device->attributes->hostname;
+            }
+            $this_device->attributes->nmis_manage = $device->attributes->nmis_manage;
+            $this_device->attributes->notes = $device->attributes->nmis_notes;
+            $this_device->attributes->business_service = $device->attributes->nmis_business_service;
+            $this_device->attributes->group = $device->attributes->nmis_group;
+            $this_device->attributes->role = $device->attributes->nmis_role;
+            $this_device->attributes->community = '';
+            $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
+            if (!empty($credentials)) {
+                foreach ($credentials as $credential) {
+                    if (!empty($credential->attributes->credentials->community)) {
+                        $this_device->attributes->community = $credential->attributes->credentials->community;
+                    }
+                }
+            }
+            $this->response->data[] = $this_device;
+        }
+        unset($this->response->meta->data_order);
         output($this->response);
     }
 
@@ -362,21 +382,42 @@ class Nmis extends MY_Controller
     */
     public function export()
     {
-        #$this->response->meta->format = 'json';
         $this->load->model('m_devices');
-        $this->response->data = $this->m_devices->collection();
-        foreach ($this->response->data as &$device) {
-            $device->attributes->community = '';
-            $credentials = $this->m_devices->read_sub_resource($device->id, 'credential', '', '', '', 'y');
-            foreach ($credentials as $credential) {
-                if (!empty($credential->attributes->credentials->community)) {
-                    $device->attributes->community = $credential->attributes->credentials->community;
+        $devices = $this->m_devices->collection();
+        $this->response->meta->total = intval(count($devices));
+        foreach ($devices as &$device) {
+            $this_device = new stdClass();
+            $this_device->id = $device->attributes->id;
+            $this_device->attributes = new stdClass();
+            $this_device->attributes->id = $device->attributes->id;
+            $this_device->attributes->name = $device->attributes->nmis_name;
+            $this_device->attributes->uuid = $device->attributes->omk_uuid;
+            $this_device->attributes->nmis_manage = $device->attributes->nmis_manage;
+            $this_device->attributes->notes = $device->attributes->nmis_notes;
+            $this_device->attributes->business_service = $device->attributes->nmis_business_service;
+            $this_device->attributes->group = $device->attributes->nmis_group;
+            $this_device->attributes->role = $device->attributes->nmis_role;
+            $this_device->attributes->host = '';
+            if (!empty($device->attributes->ip)) {
+                $this_device->attributes->host = $device->attributes->ip;
+            } else if (!empty($device->attributes->fqdn)) {
+                $this_device->attributes->host = $device->attributes->fqdn;
+            } else if (!empty($device->attributes->hostname)) {
+                $this_device->attributes->host = $device->attributes->hostname;
+            }
+            $this_device->attributes->community = '';
+            $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
+            if (!empty($credentials)) {
+                foreach ($credentials as $credential) {
+                    if (!empty($credential->attributes->credentials->community)) {
+                        $this_device->attributes->community = $credential->attributes->credentials->community;
+                    }
                 }
             }
+            $this->response->data[] = $this_device;
         }
-        #echo "<pre>"; print_r($credentials); exit();
+        unset($this->response->meta->data_order);
         output($this->response);
-        return;
     }
 
     /**
