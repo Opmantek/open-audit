@@ -63,6 +63,7 @@ class Nmis extends MY_Controller
 
         // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
+        $this->load->helper('network');
         if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
             redirect(uri_string());
         }
@@ -92,7 +93,11 @@ class Nmis extends MY_Controller
     */
     public function _remap()
     {
-        $this->{$this->response->meta->action}();
+        if ($this->response->meta->action == 'export') {
+            $this->collection();
+        } else {
+            $this->{$this->response->meta->action}();
+        }
     }
 
     /**
@@ -106,6 +111,7 @@ class Nmis extends MY_Controller
 
         $string = '';
         $flash_message = '';
+        $this->load->helper('network');
 
         # The uploaded file
         if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
@@ -215,19 +221,26 @@ class Nmis extends MY_Controller
                 $device = new stdClass();
                 $device->name = strtolower(@$node['name']);
                 $device->ip = '';
+                $device->hostname = '';
+                $device->fqdn = '';
                 if (filter_var($node['host'], FILTER_VALIDATE_IP) !== false) {
-                    $device->ip =  $node['host'];
+                    $device->ip = $node['host'];
                 } else {
                     if (strpos($node['host'], '.') !== false) {
                         $device->fqdn =  $node['host'];
                         $temp = explode('.', $device->fqdn);
                         $device->hostname = $temp[0];
+                        unset($temp[0]);
+                        $device->domain = implode('.', $temp);
                         unset($temp);
                     } else {
                         $device->hostname =  $node['host'];
                     }
                 }
                 dns_validate($device, 'n');
+                if (!empty($device->ip)) {
+                    $device->ip = ip_address_to_db($device->ip);
+                }
                 $device->nmis_manage = 'y';
                 $device->omk_uuid = @$node['uuid'];
                 $device->status = 'production';
@@ -289,6 +302,7 @@ class Nmis extends MY_Controller
         // echo "Nodes with collect: " . $nodes_collect . "\n";
         // echo "Total nodes: " . count($nodes_array) . "\n";
         // echo "<pre>\n"; print_r($nodes_array); echo "</pre>\n";
+        // exit();
         $ids = array();
         $updated = 0;
         $inserted = 0;
@@ -345,61 +359,19 @@ class Nmis extends MY_Controller
             $this_device->id = $device->attributes->id;
             $this_device->attributes = new stdClass();
             $this_device->attributes->id = $device->attributes->id;
-            $this_device->attributes->name = $device->attributes->name;
-            $this_device->attributes->host = '';
-            if (!empty($device->attributes->ip)) {
-                $this_device->attributes->host = $device->attributes->ip;
-            } else if (!empty($device->attributes->fqdn)) {
-                $this_device->attributes->host = $device->attributes->fqdn;
-            } else if (!empty($device->attributes->hostname)) {
-                $this_device->attributes->host = $device->attributes->hostname;
-            }
-            $this_device->attributes->nmis_manage = $device->attributes->nmis_manage;
-            $this_device->attributes->notes = $device->attributes->nmis_notes;
-            $this_device->attributes->business_service = $device->attributes->nmis_business_service;
-            $this_device->attributes->group = $device->attributes->nmis_group;
-            $this_device->attributes->role = $device->attributes->nmis_role;
-            $this_device->attributes->community = '';
-            $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
-            if (!empty($credentials)) {
-                foreach ($credentials as $credential) {
-                    if (!empty($credential->attributes->credentials->community)) {
-                        $this_device->attributes->community = $credential->attributes->credentials->community;
-                    }
-                }
-            }
-            $this->response->data[] = $this_device;
-        }
-        unset($this->response->meta->data_order);
-        output($this->response);
-    }
-
-    /**
-    * Supply a HTML form for the user to update an object
-    *
-    * @access public
-    * @return NULL
-    */
-    public function export()
-    {
-        $this->load->model('m_devices');
-        $devices = $this->m_devices->collection();
-        $this->response->meta->total = intval(count($devices));
-        foreach ($devices as &$device) {
-            $this_device = new stdClass();
-            $this_device->id = $device->attributes->id;
-            $this_device->attributes = new stdClass();
-            $this_device->attributes->id = $device->attributes->id;
             $this_device->attributes->name = $device->attributes->nmis_name;
             $this_device->attributes->uuid = $device->attributes->omk_uuid;
             $this_device->attributes->nmis_manage = $device->attributes->nmis_manage;
             $this_device->attributes->notes = $device->attributes->nmis_notes;
-            $this_device->attributes->business_service = $device->attributes->nmis_business_service;
-            $this_device->attributes->group = $device->attributes->nmis_group;
+            $this_device->attributes->businessService = $device->attributes->nmis_business_service;
             $this_device->attributes->role = $device->attributes->nmis_role;
+            $this_device->attributes->group = $device->attributes->nmis_group;
+            if ($this_device->attributes->group == '') {
+                $this_device->attributes->group = 'Open-AudIT';
+            }
             $this_device->attributes->host = '';
             if (!empty($device->attributes->ip)) {
-                $this_device->attributes->host = $device->attributes->ip;
+                $this_device->attributes->host = ip_address_from_db($device->attributes->ip);
             } else if (!empty($device->attributes->fqdn)) {
                 $this_device->attributes->host = $device->attributes->fqdn;
             } else if (!empty($device->attributes->hostname)) {
@@ -409,9 +381,32 @@ class Nmis extends MY_Controller
             $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
             if (!empty($credentials)) {
                 foreach ($credentials as $credential) {
-                    if (!empty($credential->attributes->credentials->community)) {
+                    if ($credential->attributes->type == 'snmp') {
                         $this_device->attributes->community = $credential->attributes->credentials->community;
+                        if ($credential->attributes->credentials->version == '2') {
+                            $this_device->attributes->version = 'snmpv2c';
+                        } else {
+                            $this_device->attributes->version = 'snmpv1';
+                        }
                     }
+                    if ($credential->attributes->type == 'snmp_v3') {
+                        $this_device->attributes->privprotocol = $credential->attributes->credentials->privacy_protocol;
+                        $this_device->attributes->privpassword = $credential->attributes->credentials->privacy_passphrase;
+                        $this_device->attributes->authprotocol = $credential->attributes->credentials->authentication_protocol;
+                        $this_device->attributes->authpassword = $credential->attributes->credentials->authentication_passphrase;
+                        $this_device->attributes->username = $credential->attributes->credentials->security_name;
+                        $this_device->attributes->version = 'snmpv3';
+                    }
+                    if ($credential->attributes->type == 'windows') {
+                        if (strpos($credential->attributes->credentials->username, '@') !== false) {
+                            $temp = explode('@', $credential->attributes->credentials->username);
+                            $this_device->attributes->wmiusername = $temp[1] . '/' . $temp[0];
+                        } else {
+                            $this_device->attributes->wmiusername = $credential->attributes->credentials->username;
+                        }
+                        $this_device->attributes->wmipassword = $credential->attributes->credentials->password;
+                    }
+
                 }
             }
             $this->response->data[] = $this_device;
