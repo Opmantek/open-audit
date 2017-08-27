@@ -357,6 +357,7 @@ class Nmis extends MY_Controller
         foreach ($devices as &$device) {
             $this_device = new stdClass();
             $this_device->id = $device->attributes->id;
+            $this_device->type = 'devices';
             $this_device->attributes = new stdClass();
             $this_device->attributes->id = $device->attributes->id;
             $this_device->attributes->name = $device->attributes->nmis_name;
