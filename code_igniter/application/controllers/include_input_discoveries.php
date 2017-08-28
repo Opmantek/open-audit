@@ -146,6 +146,15 @@ if (!empty($_POST['data'])) {
                 $syslog->message = $this->db->last_query();
                 stdlog($syslog);
             }
+            if ($discovery->other->single == 'y') {
+                $sql = "/* input::discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
+                $data = array();
+                $query = $this->db->query($sql, $data);
+                $syslog->severity = 7;
+                $syslog->summary = 'Deleteing credentials entries';
+                $syslog->message = $this->db->last_query();
+                stdlog($syslog);
+            }
             exit();
         }
         // check the IP isn't in the excluded list

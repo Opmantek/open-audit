@@ -106,7 +106,72 @@ class Discoveries extends MY_Controller
     */
     public function create()
     {
-        include 'include_create.php';
+        # special case the single device discovery
+        # We could have used include_create but then we'd need logic
+        # in there to handle this specific case.
+
+        if (!empty($this->response->meta->received_data->attributes->other->single)) {
+            $this->load->model('m_collection');
+            $attributes = $this->response->meta->received_data->attributes;
+            $subnet = $attributes->other->subnet;
+            $this->response->meta->received_data->attributes->name = 'Device Discovery for ' . $subnet;
+            $this->response->meta->received_data->attributes->org_id = $this->user->org_id;
+
+            # create our discovery
+            $this->response->meta->id = @$this->m_collection->create();
+            if (empty($this->response->meta->id)) {
+                # Houston, we have a problem
+                output($this->response);
+            }
+
+            # create our credential sets
+            $data = new stdClass();
+            $data->org_id = $this->user->org_id;
+            $data->description = 'Discovery ' . $subnet;
+            $name = ' credentials for device discovery for ' . $subnet;
+            if (!empty($attributes->credentials->windows_username) and !empty($attributes->credentials->windows_password)) {
+                $data->type = 'windows';
+                $data->name = 'Windows' . $name;
+                $data->credentials = new stdClass();
+                $data->credentials->username = $attributes->credentials->windows_username;
+                $data->credentials->password = $attributes->credentials->windows_password;
+                $this->m_collection->create($data, 'credentials');
+            }
+            if (!empty($attributes->credentials->ssh_username) and !empty($attributes->credentials->ssh_password)) {
+                $data->type = 'ssh';
+                $data->name = 'SSH' . $name;
+                $data->credentials = new stdClass();
+                $data->credentials->username = $attributes->credentials->ssh_username;
+                $data->credentials->password = $attributes->credentials->ssh_password;
+                $this->m_collection->create($data, 'credentials');
+            }
+            if (!empty($attributes->credentials->snmp_v2_community)) {
+                $data->type = 'snmp';
+                $data->name = 'SNMP' . $name;
+                $data->credentials = new stdClass();
+                $data->credentials->community = $attributes->credentials->snmp_v2_community;
+                $data->credentials->version = 2;
+                $this->m_collection->create($data, 'credentials');
+            }
+            if (!empty($attributes->credentials->snmp_v1_community)) {
+                $data->type = 'snmp';
+                $data->name = 'SNMP' . $name;
+                $data->credentials = new stdClass();
+                $data->credentials->community = $attributes->credentials->snmp_v1_community;
+                $data->credentials->version = 1;
+                $this->m_collection->create($data, 'credentials');
+            }
+
+            if ($this->response->meta->format === 'json') {
+                $this->load->model('m_discoveries');
+                $this->response->data = $this->m_discoveries->read($this->response->meta->id);
+                output($this->response);
+            } else {
+                redirect('discoveries/' . $this->response->meta->id . '?action=execute');
+            }
+        } else {
+            include 'include_create.php';
+        }
     }
 
     /**
@@ -161,6 +226,10 @@ class Discoveries extends MY_Controller
     */
     public function create_form()
     {
+        if (!empty($this->input->get('single'))) {
+            # this is the form for a single device discovery
+            $this->response->meta->action = 'create_single';
+        }
         include 'include_create_form.php';
     }
 
@@ -226,7 +295,6 @@ class Discoveries extends MY_Controller
     {
         include 'include_reset.php';
     }
-
 }
 // End of file discoveries.php
 // Location: ./controllers/discoveries.php

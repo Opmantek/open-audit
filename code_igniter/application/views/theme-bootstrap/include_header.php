@@ -57,6 +57,7 @@ if (!empty($this->config->config['servers'])) {
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
+                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'>Discover a single device</a></li>
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                                 <li class="disabled"><a href='#'>Configure Discoveries</a></li>
                                                 <li class="disabled"><a href='#'>Schedule Discoveries</a></li>

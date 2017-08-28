@@ -262,23 +262,22 @@ class M_collection extends MY_Model
     {
         $CI = & get_instance();
 
-        if (is_null($data)) {
-            if (!empty($CI->response->meta->received_data->attributes)) {
-                $data = $CI->response->meta->received_data->attributes;
-                $collection = $CI->response->meta->collection;
-            } else {
-                # TODO - is this error being included in the response?
-                # testing creating a script from OAE was failing (no ->attributes), but didn't seem to
-                # return the error object as part of the response
-                log_error('ERR-0010', 'm_collection::create (' . $collection . ') No attributes received.');
-                return false;
-            }
+        if (empty($collection)) {
+            $collection = @$CI->response->meta->collection;
         }
-
-        if ($collection === '') {
-            log_error('ERR-0010', 'm_collection::create (no collection)');
+        if (empty($collection)) {
+            log_error('ERR-0010', 'm_collection::create No collection received.');
             return false;
         }
+
+        if (empty($data)) {
+            $data = @$CI->response->meta->received_data->attributes;
+        }
+        if (empty($data)) {
+            log_error('ERR-0010', 'm_collection::create (' . @$collection . ') No attributes received.');
+            return false;
+        }
+
         $db_table = $collection;
 
         $this->log->function = strtolower(__METHOD__);
@@ -292,7 +291,7 @@ class M_collection extends MY_Model
         if ($collection === 'discoveries') {
             if ($data->type == 'subnet') {
                 if (empty($data->other->subnet)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)');
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
                     redirect('/discoveries');
                 } else {
@@ -305,15 +304,15 @@ class M_collection extends MY_Model
                         $temp = "Active Directory Server";
                     }
                     log_error('ERR-0024', 'm_collection::create (ad discoveries)');
-                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no ' . $temp . ' supplied.');
-                    redirect('/discoveries');
+                    $this->session->set_flashdata('error', 'Object in discoveries could not be created - no ' . $temp . ' supplied.');
+                    #redirect('/discoveries');
                 } else {
                     $data->description = 'Active Directory - ' . $data->other->ad_domain;
                 }
             } else {
                 $data->description = '';
             }
-            if ($data->type == 'subnet' and stripos($data->other->subnet, '-') === false) {
+            if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false) {
                 $this->load->model('m_networks');
                 $this->load->helper('network');
                 $temp = network_details($data->other->subnet);
