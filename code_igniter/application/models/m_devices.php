@@ -75,22 +75,22 @@ class M_devices extends MY_Model
                 }
             }
         }
-        if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false and $CI->response->meta->action != 'sub_resource_read') {
-            $filter .= ' AND system.status = "production"';
-            $temp = new stdClass();
-            $temp->name = 'system.status';
-            $temp->operator = '=';
-            $temp->value = 'production';
-            $CI->response->meta->filter[] = $temp;
-            unset($temp);
-        }
+        // if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false and $CI->response->meta->action != 'sub_resource_read') {
+        //     $filter .= ' AND system.status = "production"';
+        //     $temp = new stdClass();
+        //     $temp->name = 'system.status';
+        //     $temp->operator = '=';
+        //     $temp->value = 'production';
+        //     $CI->response->meta->filter[] = $temp;
+        //     unset($temp);
+        // }
         return($filter);
     }
 
     private function build_join()
     {
         $CI = & get_instance();
-        $reserved = ' properties limit sub_resource action sort current offset format ';
+        #$reserved = ' properties limit sub_resource action sort current offset format ';
         $join = '';
         $tables = '';
         if (count($CI->response->meta->filter) > 0) {
