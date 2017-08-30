@@ -285,7 +285,7 @@ class MY_Model extends CI_Model
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $result = $query->result();
-            $CI->response->meta->total = intval($result[0]->count);
+            $return['total'] = intval($result[0]->count);
         }
 
         // properties
