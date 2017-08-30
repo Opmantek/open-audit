@@ -60,6 +60,43 @@ class M_discoveries extends MY_Model
         if (!empty($result[0]->other)) {
             $result[0]->other = json_decode($result[0]->other);
         }
+        if (!empty($this->config->config['discovery_nmap_os'])) {
+            $nmap_os = $this->config->config['discovery_nmap_os'];
+        } else {
+            $nmap_os = 'n';
+        }
+        if ($result[0]->type == 'subnet') {
+            $command = '';
+            // Unix based discovery
+            if (php_uname('s') != 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '/other';
+                $command = "$filepath/discover_subnet.sh" .
+                            " subnet_range=" .  $result[0]->other->subnet .
+                            " url=".            $result[0]->network_address . "index.php/input/discoveries" .
+                            " submit_online=y" .
+                            " echo_output=n" .
+                            " create_file=n" .
+                            " debugging=0" .
+                            " discovery_id=" . $result[0]->id .
+                            " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                if (php_uname('s') == 'Linux') {
+                    $command = 'nohup ' . $command;
+                }
+            } else if (php_uname('s') == 'Windows NT') {
+                $filepath = $this->config->config['base_path'] . '\\other';
+                // run the script and continue (do not wait for result)
+                $command = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
+                            " subnet_range=" . $result[0]->other->subnet .
+                            " url=".           $result[0]->network_address . "index.php/input/discoveries" .
+                            " submit_online=y" .
+                            " echo_output=n" .
+                            " create_file=n" .
+                            " debugging=0" .
+                            " discovery_id=" . $result[0]->id .
+                            " os_scan=" . $nmap_os;
+            }
+            $result[0]->command = $command;
+        }
         $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
