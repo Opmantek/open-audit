@@ -872,9 +872,18 @@ if (! function_exists('inputRead')) {
                     $query->operator = $operator;
                 }
 
+                // $operator = substr($query->value, 0, 3);
+                // $test = substr($query->value, 0, 4);
+                // if ($operator == 'in(' and strpos($test, ')') != false) {
+                //     $temp_value = substr($query->value, 3, strlen($query->value)-1);
+                //     $temp_value = str_replace(",", "','", $temp_value);
+                //     $query->value = "('" . $temp_value . "')";
+                //     $query->operator = $operator;
+                // }
+
                 $operator = substr($query->value, 0, 2);
                 $test = substr($query->value, 0, 4);
-                if ($operator == 'in' and $test != 'info') {
+                if ($operator == 'in' and $test != 'info' and stripos($test, 'innotek') !== false) {
                     $temp_value = substr($query->value, 2);
                     $temp_value = str_replace(",", "','", $temp_value);
                     $query->value = "('" . $temp_value . "')";
