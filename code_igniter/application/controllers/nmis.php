@@ -396,6 +396,7 @@ class Nmis extends MY_Controller
                         $this_device->attributes->authprotocol = $credential->attributes->credentials->authentication_protocol;
                         $this_device->attributes->authpassword = $credential->attributes->credentials->authentication_passphrase;
                         $this_device->attributes->username = $credential->attributes->credentials->security_name;
+                        $this_device->attributes->authkey = $credential->attributes->credentials->security_level;
                         $this_device->attributes->version = 'snmpv3';
                     }
                     if ($credential->attributes->type == 'windows') {
