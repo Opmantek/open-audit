@@ -308,9 +308,9 @@ if (!empty($details->discovery_id)) {
     $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
     $data = array(intval($details->id), intval(getmypid()));
     $query = $this->db->query($sql, $data);
-    if ($this->response->meta->format == 'screen') {
-        echo $this->db->last_query();
-    }
+    // if ($this->response->meta->format == 'screen') {
+    //     echo $this->db->last_query();
+    // }
 } else {
     # we were supplied an audit result, but no discovery_id
     # delete all dicovery logs where system_id = our ID and log.pid != our pid

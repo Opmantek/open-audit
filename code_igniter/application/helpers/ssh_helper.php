@@ -36,6 +36,274 @@ if (!defined('BASEPATH')) {
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
+if (! function_exists('scp')) {
+    /**
+     * The SSH credentials test.
+     *
+     * @access    public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param     ip        The target device's ip address
+     *
+     * @param     crdentials  The credentials used to connect
+     *
+     * @param     command   The command to be run using SSH
+     *
+     * @return    false || $return array containing the output and status flag
+     */
+    function scp($ip = '', $credentials = '', $source = '', $destination = '', $log)
+    {
+
+        $log->severity = 7;
+        $log->file = 'ssh_helper';
+        $log->function = 'scp';
+        $log->command = '';
+        $log->command_output = '';
+        $item_start = microtime(true);
+        if (empty($ip)) {
+            $log->message = 'No IP supplied to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'No valid IP supplied to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (!is_object($credentials)) {
+            $log->message = 'No credentials supplied to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        require_once 'Crypt/RSA.php';
+        require_once 'Net/SFTP.php';
+        if (!defined('NET_SSH2_LOGGING')) {
+            define('NET_SSH2_LOGGING', 2);
+        }
+        $ssh = new Net_SFTP($ip);
+        $ssh->setTimeout(10);
+        $key = new Crypt_RSA();
+        if ($credentials->type == 'ssh_key') {
+            if (!empty($credentials->credentials->password)) {
+                $key->setPassword($credentials->credentials->password);
+            }
+            $key->loadKey($credentials->credentials->ssh_key);
+            if ($ssh->login($credentials->credentials->username, $key)) {
+                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
+                #discovery_log($log);
+                $username = $credentials->credentials->username;
+                $password = @$credentials->credentials->password;
+            } else {
+                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                #$log->command =  $ssh->getLog();
+                discovery_log($log);
+            }
+        } else if ($credentials->type == 'ssh') {
+            if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
+                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
+                #discovery_log($log);
+                $username = $credentials->credentials->username;
+                $password = $credentials->credentials->password;
+            } else {
+                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                #$log->command =  $ssh->getLog();
+                discovery_log($log);
+            }
+        } else {
+            $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+
+        $status = true;
+        $log->command = 'sftp ' . $source . ' to ' . $destination;
+        $log->command_status = 'success';
+        $log->command_output = '';
+        $log->message = 'Copy file to ' . $ip;
+        try {
+            $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
+        } catch (Exception $e) {
+            $log->command =  $ssh->getLog();
+            $status = false;
+            $log->command_status = 'fail';
+        }
+
+        $ssh->disconnect();
+        unset($ssh);
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        discovery_log($log);
+        unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
+        return($status);
+    }
+}
+
+if (! function_exists('ssh_command')) {
+    /**
+     * The SSH credentials test.
+     *
+     * @access    public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param     ip        The target device's ip address
+     *
+     * @param     crdentials  The credentials used to connect
+     *
+     * @param     command   The command to be run using SSH
+     *
+     * @return    false || $return array containing the output and status flag
+     */
+    function ssh_command($ip = '', $credentials = '', $command = '', $log, $sudo = '')
+    {
+
+        $log->severity = 7;
+        $log->file = 'ssh_helper';
+        $log->function = 'ssh_command';
+        $item_start = microtime(true);
+        $return = array('output' => '', 'status' => 1);
+
+        if (empty($ip)) {
+            $log->message = 'No IP supplied to ssh_command function.';
+            $log->severity = 5;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'No valid IP supplied to ssh_command function.';
+            $log->severity = 5;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (!is_object($credentials)) {
+            $log->message = 'No credentials supplied to ssh_command function.';
+            $log->severity = 5;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        // include 'Crypt/RSA.php';
+        // include('Net/SSH2.php');
+        require_once 'Crypt/RSA.php';
+        require_once 'Net/SSH2.php';
+        if (!defined('NET_SSH2_LOGGING')) {
+            define('NET_SSH2_LOGGING', 2);
+        }
+        if ($credentials->type == 'ssh_key') {
+            $ssh = new Net_SSH2($ip);
+            $ssh->setTimeout(10);
+            $key = new Crypt_RSA();
+            if (!empty($credentials->credentials->password)) {
+                $key->setPassword($credentials->credentials->password);
+            }
+            $key->loadKey($credentials->credentials->ssh_key);
+            if ($ssh->login($credentials->credentials->username, $key)) {
+                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
+                #discovery_log($log);
+                $username = $credentials->credentials->username;
+                $password = @$credentials->credentials->password;
+            } else {
+                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                #$log->command =  $ssh->getLog();
+                discovery_log($log);
+            }
+        } else if ($credentials->type == 'ssh') {
+            $ssh = new Net_SSH2($ip);
+            $ssh->setTimeout(10);
+            $key = new Crypt_RSA();
+            if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
+                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
+                #discovery_log($log);
+                $username = $credentials->credentials->username;
+                $password = $credentials->credentials->password;
+            } else {
+                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                #$log->command =  $ssh->getLog();
+                discovery_log($log);
+            }
+        } else {
+            $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+
+
+        $log->message = 'Attempting to run SSH command.';
+        $log->command_status = 'not determined (see logs below)';
+        $ssh->setTimeout(600);
+
+        if ($sudo == '' or $credentials->credentials->username == 'root') {
+            $log->command = $command;
+            discovery_log($log);
+            $result = $ssh->exec($command);
+        } else {
+            $which_sudo = $ssh->exec('which sudo');
+            if (!empty($which_sudo)) {
+                $output = '';
+                $command = $which_sudo . ' ' . $command;
+                $log->command = $command;
+                discovery_log($log);
+                $item_start = microtime(true);
+                $ssh->write($command . "\n");
+                $output = $ssh->read('assword');
+                if (stripos($output, 'assword') !== false) {
+                    $ssh->write($password."\n");
+                    $output = $ssh->read('[prompt]');
+                }
+                $lines = explode("\n", $output);
+                $result = trim($lines[count($lines)-2]);
+            } else {
+                $log->message = 'No sudo on target but requested from ssh_command.';
+                $log->severity = 5;
+                discovery_log($log);
+                $log->severity = 7;
+                return false;
+            }
+        }
+        $ssh->disconnect();
+        unset($ssh);
+
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        if (!empty($result)) {
+            $log->command_output = trim($result);
+        }
+        $log->command_status = 'success';
+        $log->message = 'SSH command';
+        discovery_log($log);
+        unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
+        $return['output'][0] = $result;
+        $return['status'] = 0;
+        return($return);
+    }
+}
+
+
+
+
+
+
+
+
+
+
 if (! function_exists('ssh_audit')) {
     function ssh_audit($ip = '', $credentials = '', $log)
     {
@@ -54,7 +322,8 @@ if (! function_exists('ssh_audit')) {
             return false;
         }
 
-        if (!is_object($credentials)) {
+        #if (!is_object($credentials)) {
+        if (!is_array($credentials)) {
             $log->message = 'No credentials supplied to ssh_audit function.';
             $log->severity = 5;
             discovery_log($log);
@@ -66,18 +335,74 @@ if (! function_exists('ssh_audit')) {
         include 'Crypt/RSA.php';
         include('Net/SSH2.php');
         define('NET_SSH2_LOGGING', 2);
-        $ssh = new Net_SSH2($ip);
-        $ssh->setTimeout(10);
 
-        if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
-            $log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
-            discovery_log($log);
-            $username = $credentials->credentials->username;
-            $password = $credentials->credentials->password;
-        } else {
-            $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-            discovery_log($log);
+        foreach ($credentials as $credential) {
+            if ($credential->type == 'ssh_key') {
+                $ssh = new Net_SSH2($ip);
+                $ssh->setTimeout(10);
+                $key = new Crypt_RSA();
+                if (!empty($credential->credentials->password)) {
+                    $key->setPassword($credential->credentials->password);
+                }
+                $key->loadKey($credential->credentials->ssh_key);
+                if ($ssh->login($credential->credentials->username, $key)) {
+                    $log->message = "Success, credentials named " . $credential->name . " used to log in to $ip.";
+                    discovery_log($log);
+                    $username = $credential->credentials->username;
+                    $password = @$credential->credentials->password;
+                    break;
+                } else {
+                    $log->message = "Failure, credentials named " . $credential->name . " not used to log in to $ip.";
+                    #$log->command =  $ssh->getLog();
+                    discovery_log($log);
+                    $ssh->disconnect();
+                    unset($ssh);
+                }
+            } else if ($credential->type == 'ssh') {
+                $ssh = new Net_SSH2($ip);
+                $ssh->setTimeout(10);
+                if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
+                    $log->message = "Success, credentials named " . $credential->name . " used to log in to $ip.";
+                    discovery_log($log);
+                    $username = $credential->credentials->username;
+                    $password = @$credential->credentials->password;
+                    break;
+                } else {
+                    $log->message = "Failure, credentials named " . $credential->name . " not used to log in to $ip.";
+                    #$log->command =  $ssh->getLog();
+                    discovery_log($log);
+                    $ssh->disconnect();
+                    unset($ssh);
+                }
+            }
         }
+
+        if (empty($username)) {
+            $log->command = '';
+            $log->command_output = '';
+            $log->status = 'fail';
+            $log->message = "No credentials valid for $ip.";
+            discovery_log($log);
+            return false;
+        }
+
+        // if ($credentials->type == 'ssh_key') {
+        //     $key = new Crypt_RSA();
+        //     if (!empty($credentials->credentials->password)) {
+        //         $key->setPassword($credentials->credentials->password);
+        //     }
+        //     $key->loadKey($credentials->credentials->ssh_key);
+        // }
+
+        // if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
+        //     $log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
+        //     discovery_log($log);
+        //     $username = $credentials->credentials->username;
+        //     $password = $credentials->credentials->password;
+        // } else {
+        //     $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+        //     discovery_log($log);
+        // }
 
         // $hostname = $ssh->exec('hostname -s 2>/dev/null');
         // $hostname = trim($hostname);
@@ -171,7 +496,7 @@ if (! function_exists('ssh_audit')) {
             if (strpos($device->os_name, "2016") !== false) {
                 $device->os_family = "Windows 2016";
             }
-
+            $device->credentials = $credential;
             return $device;
         }
 
@@ -261,6 +586,9 @@ if (! function_exists('ssh_audit')) {
         unset($device->solaris_domain);
         if (empty($device->fqdn) and !empty($device->hostname) and !empty($device->domain)) {
             $device->fqdn = $device->hostname . '.' . $device->domain;
+        }
+        if (!empty($device->os_group) and $device->os_group == 'Linux') {
+            $device->type = 'computer';
         }
 
         if (!empty($device->ubiquiti_os)) {
@@ -459,6 +787,9 @@ if (! function_exists('ssh_audit')) {
         $log->command_output = '';
         $log->command_status = '';
         $log->message = '';
+        $device->credentials = $credential;
+        $ssh->disconnect();
+        unset($ssh);
         return $device;
     }
 }
@@ -467,17 +798,21 @@ if (! function_exists('ssh_audit')) {
 
 
 if (! function_exists('ssh_create_keyfile')) {
-    function ssh_create_keyfile($key_string, $display = 'n')
+    function ssh_create_keyfile($key_string, $display = 'n', $log = null)
     {
         if (strtolower($display) != 'y') {
             $display = 'n';
         } else {
             $display = 'y';
         }
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->file = 'system';
-        $log->display = $display;
+        if (is_null($log)) {
+            $log = new stdClass();
+        }
+        $log->file = 'ssh_helper';
+        $log->function = 'ssh_create_keyfile';
+        $log->command = '';
+        $log->message = 'SSH create keyfile starting';
+        discovery_log($log);
 
         if (empty($key_string)) {
             $log->message = 'No key_string array passed to ssh_create_keyfile.';
@@ -486,16 +821,60 @@ if (! function_exists('ssh_create_keyfile')) {
         }
 
         $CI = & get_instance();
+        $microtime = str_replace(' ', '_', microtime());
+        $microtime = str_replace('.', '_', $microtime);
         if (php_uname('s') != 'Windows NT') {
-            $ssh_keyfile = $CI->config->config['base_path'] . '/other/scripts/key_' . date('y_m_d_H_i_s');
+            #$ssh_keyfile = $CI->config->config['base_path'] . '/other/scripts/key_' . date('y_m_d_H_i_s');
+            $ssh_keyfile = $CI->config->config['base_path'] . '/other/scripts/key_' . $microtime;
         } else {
-            $ssh_keyfile = $CI->config->config['base_path'] . '\\other\\scripts\\key_' . date('y_m_d_H_i_s');
+            #$ssh_keyfile = $CI->config->config['base_path'] . '\\other\\scripts\\key_' . date('y_m_d_H_i_s');
+            $ssh_keyfile = $CI->config->config['base_path'] . '\\other\\scripts\\key_' . $microtime;
         }
 
-        $fileopen = fopen($ssh_keyfile, 'w') or die("Could not open $ssh_keyfile for writing");
-        chmod($ssh_keyfile, 0600) or die("Could not chmod $ssh_keyfile to 0600");
-        fwrite($fileopen, $key_string) or die("Could not write into $ssh_keyfile");
-        fclose($fileopen) or die("Could not close $ssh_keyfile");
+        try {
+            $fileopen = fopen($ssh_keyfile, 'w');
+        } catch (Exception $e) {
+            $log->command = 'fopen($ssh_keyfile, \'w\');';
+            $log->command_output = $e->getMessage();
+            $log->message = 'Could not create keyfile ' . $ssh_keyfile;
+            $log->severity = 3;
+            $log->status = 'fail';
+            discovery_log($log);
+            return false;
+        }
+        try {
+            chmod($ssh_keyfile, 0600);
+        } catch (Exception $e) {
+            $log->command = 'chmod($ssh_keyfile, 0600);';
+            $log->command_output = $e->getMessage();
+            $log->message = 'Could not chmod 0600 keyfile ' . $ssh_keyfile;
+            $log->severity = 3;
+            $log->status = 'fail';
+            discovery_log($log);
+            return false;
+        }
+        try {
+            fwrite($fileopen, $key_string);
+        } catch (Exception $e) {
+            $log->command = 'fwrite($fileopen, $key_string);';
+            $log->command_output = $e->getMessage();
+            $log->message = 'Could not write to keyfile ' . $ssh_keyfile;
+            $log->severity = 3;
+            $log->status = 'fail';
+            discovery_log($log);
+            return false;
+        }
+        try {
+            fclose($fileopen);
+        } catch (Exception $e) {
+            $log->command = 'fclose($fileopen);';
+            $log->command_output = $e->getMessage();
+            $log->message = 'Could not close keyfile ' . $ssh_keyfile;
+            $log->severity = 3;
+            $log->status = 'fail';
+            discovery_log($log);
+            return false;
+        }
         return($ssh_keyfile);
     }
 }
@@ -519,11 +898,12 @@ if (! function_exists('ssh_credentials')) {
     function ssh_credentials($ip = '', $credentials = array(), $log = null)
     {
         if (is_null($log)) {
-            $log = stdClass();
+            $log = new stdClass();
         }
         $log->file = 'ssh_helper';
         $log->function = 'ssh_credentials';
         $log->command = '';
+        $log->status = '';
         $log->message = 'SSH credentials starting';
         discovery_log($log);
 
@@ -561,6 +941,9 @@ if (! function_exists('ssh_credentials')) {
                         $log->message = "Credential set for SSH Key " . $credential->name . " working on " . $ip;
                         discovery_log($log);
                         return($credential);
+                    } else {
+                        $log->message = "Credential set for SSH Key " . $credential->name . " not working on " . $ip;
+                        discovery_log($log);
                     }
                 }
             }
@@ -646,7 +1029,7 @@ if (! function_exists('ssh_credentials')) {
     }
 }
 
-if (! function_exists('ssh_command')) {
+if (! function_exists('ssh_command_old')) {
     /**
      * The SSH credentials test.
      *
@@ -664,7 +1047,7 @@ if (! function_exists('ssh_command')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-    function ssh_command($ip = '', $credentials = '', $command = '', $log)
+    function ssh_command_old($ip = '', $credentials = '', $command = '', $log)
     {
 
         $log->severity = 7;
@@ -698,8 +1081,18 @@ if (! function_exists('ssh_command')) {
                 $password = $credentials->credentials->password;
             } elseif ($credentials->type == 'ssh_key') {
                 $username = escapeshellarg($credentials->credentials->username);
-                $password = '';
-                $keyfile = ssh_create_keyfile($credentials->credentials->ssh_key);
+                if (!empty($credentials->credentials->password)) {
+                    $password = escapeshellarg($credentials->credentials->password);
+                } else {
+                    $password = '';
+                }
+                $keyfile = @ssh_create_keyfile($credentials->credentials->ssh_key);
+                if (empty($keyfile)) {
+                    return false;
+                } else {
+                    $log->message = 'Created SSH keyfile for ' . $ip . ' named ' . $keyfile;
+                    discovery_log($log);
+                }
             } else {
                 $log->message = 'No username / password combo or keyfile supplied to ssh_command function.';
                 $log->severity = 5;
@@ -744,7 +1137,20 @@ if (! function_exists('ssh_command')) {
                 }
             } elseif ($credentials->type == 'ssh_key') {
                 if ($password != '') {
-                    # NOT SUPPORTED YET
+                    $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
+                    $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
+                    if (is_resource($process)) {
+                        fwrite($pipes[0], $password);
+                        fclose($pipes[0]);
+                        // stdOut
+                        $temp = stream_get_contents($pipes[1]);
+                        $return['output'] = explode("\n", $temp);
+                        if (end($return['output']) == '') {
+                            unset($return['output'][count($return['output'])-1]);
+                        }
+                        fclose($pipes[1]);
+                        $return['status'] = proc_close($process);
+                    }
                 } else {
                     $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
                     exec($command_string, $return['output'], $return['status']);
@@ -819,7 +1225,20 @@ if (! function_exists('ssh_command')) {
                     $return['output'][0] = '';
                     $return['status'] = 5;
                 }
-                unlink($keyfile);
+                try {
+                    unlink($keyfile);
+                    $log->command = 'unlink($keyfile)';
+                    $log->command_output = '';
+                    $log->message = 'SSH Keyfile ' . $keyfile . ' removed.';
+                    discovery_log($log);
+                } catch (Exception $e) {
+                    $log->command = '';
+                    $log->command_output = $e->getMessage();
+                    $log->message = 'SSH Keyfile ' . $keyfile . ' could not be removed.';
+                    $log->status = 'fail';
+                    $log->severity = 3;
+                    discovery_log($log);
+                }
             }
         }
 
@@ -1124,7 +1543,7 @@ if (! function_exists('ssh_audit_old')) {
     }
 }
 
-if (! function_exists('scp')) {
+if (! function_exists('scp_old')) {
     /**
      * The SSH connection attempt using specific, supplied and default credentials
      *
@@ -1144,7 +1563,7 @@ if (! function_exists('scp')) {
      *
      * @return    true || false [depending on if the file could be copied]
      */
-    function scp($ip = '', $credentials = '', $source = '', $destination = '', $log)
+    function scp_old($ip = '', $credentials = '', $source = '', $destination = '', $log)
     {
         $log->severity = 7;
         $log->file = 'ssh_helper';
