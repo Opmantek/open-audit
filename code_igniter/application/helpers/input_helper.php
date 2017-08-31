@@ -883,7 +883,8 @@ if (! function_exists('inputRead')) {
 
                 $operator = substr($query->value, 0, 2);
                 $test = substr($query->value, 0, 4);
-                if ($operator == 'in' and $test != 'info' and stripos($test, 'innotek') !== false) {
+                $test2 = substr($query->value, 0, 4);
+                if ($operator == 'in' and strtolower($test) != 'info' and strtolower($test2) != 'innotek') {
                     $temp_value = substr($query->value, 2);
                     $temp_value = str_replace(",", "','", $temp_value);
                     $query->value = "('" . $temp_value . "')";
