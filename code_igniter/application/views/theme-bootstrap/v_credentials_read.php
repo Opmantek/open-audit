@@ -148,6 +148,17 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'ssh_key') { ?>
                     <div class="form-group">
+                        <label for="credentials.password" class="col-sm-3 control-label">Password (optional)</label>
+                        <div class="col-sm-8 input-group">
+                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo @htmlspecialchars($item->attributes->credentials->password, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_credentials.password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="credentials.community" class="col-sm-3 control-label">SSH Key</label>
                         <div class="col-sm-8 input-group">
                             <textarea tabindex="4" class="form-control" rows="3" id="credentials.ssh_key" name="credentials.ssh_key" placeholder="Key Not Shown" disabled></textarea>

@@ -211,6 +211,12 @@ $(document).ready(function(){
             <div class="col-sm-8 input-group">\
                 <textarea tabindex="4" class="form-control" rows="3" id="data[attributes][credentials][ssh_key]" name="data[attributes][credentials][ssh_key]"></textarea>\
             </div>\
+        </div>\
+        <div class="form-group">\
+            <label for="data[attributes][credentials][password]" class="col-sm-3 control-label">Password (optional)</label>\
+            <div class="col-sm-8 input-group">\
+                <input tabindex="5" type="password" class="form-control" id="data[attributes][credentials][password]" name="data[attributes][credentials][password]" value="">\
+             </div>\
         </div>';
 
     var $windows_text = '        <div class="form-group">\
