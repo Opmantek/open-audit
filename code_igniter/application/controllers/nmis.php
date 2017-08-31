@@ -356,7 +356,7 @@ class Nmis extends MY_Controller
         $this->response->meta->total = intval(count($devices));
         foreach ($devices as &$device) {
             $this_device = new stdClass();
-            $this_device->id = $device->attributes->id;
+            $this_device->id = intval($device->attributes->id);
             $this_device->type = 'devices';
             $this_device->attributes = new stdClass();
             $this_device->attributes->id = $device->attributes->id;
