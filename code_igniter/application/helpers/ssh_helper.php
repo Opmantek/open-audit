@@ -245,22 +245,15 @@ if (! function_exists('ssh_command')) {
             return false;
         }
 
-
-        $log->message = 'Attempting to run SSH command.';
-        $log->command_status = 'not determined (see logs below)';
-        $ssh->setTimeout(600);
+        $ssh->setTimeout(120);
 
         if ($sudo == '' or $credentials->credentials->username == 'root') {
-            $log->command = $command;
-            discovery_log($log);
             $result = $ssh->exec($command);
         } else {
             $which_sudo = $ssh->exec('which sudo');
             if (!empty($which_sudo)) {
                 $output = '';
                 $command = $which_sudo . ' ' . $command;
-                $log->command = $command;
-                discovery_log($log);
                 $item_start = microtime(true);
                 $ssh->write($command . "\n");
                 $output = $ssh->read('assword');
@@ -272,6 +265,7 @@ if (! function_exists('ssh_command')) {
                 $result = trim($lines[count($lines)-2]);
             } else {
                 $log->message = 'No sudo on target but requested from ssh_command.';
+                $log->status = 'fail';
                 $log->severity = 5;
                 discovery_log($log);
                 $log->severity = 7;
@@ -284,7 +278,10 @@ if (! function_exists('ssh_command')) {
         $log->command_time_to_execute = (microtime(true) - $item_start);
         if (!empty($result)) {
             $log->command_output = trim($result);
+        } else {
+            $log->command_output = '';
         }
+        $log->command = $command;
         $log->command_status = 'success';
         $log->message = 'SSH command';
         discovery_log($log);
@@ -635,9 +632,8 @@ if (! function_exists('ssh_audit')) {
             $device->type = 'computer';
         }
         unset($device->vmware_os_version);
-        if ($device->os_group == 'Darwin') {
+        if (strtolower($device->os_group) == 'darwin') {
             $device->type = 'computer';
-            $device->os_group = 'Apple';
             $device->os_family = 'Apple OSX';
             if (!empty($device->osx_os_version)) {
                 $device->os_name = 'Apple OSX ' . $device->osx_os_version;
