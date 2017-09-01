@@ -2409,9 +2409,9 @@ if [ "$submit_online" = "y" ]; then
 			rm add_system
 		else
 			if [ "$ignore_invalid_ssl" = "y" ]; then
-				curl -k --data "@$xml_file" "$url"
+				curl -k --data "@$xml_file" "$url" >/dev/null 2>&1
 			else
-				curl --data "@$xml_file" "$url"
+				curl --data "@$xml_file" "$url" >/dev/null 2>&1
 			fi
 		fi
 	else
