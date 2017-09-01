@@ -45,7 +45,7 @@
                 <div class="pull-right">
                     <div class="btn-group" role="group" aria-label="...">
                         <div class="btn-group" role="group">
-                        <a class="btn btn-info btn-sm" href="<?php echo $this->config->config['oae_url']; ?>" role="button"><?php echo __('Go to ') . $this->config->config['oae_product'];?></a>
+                        <a class="btn btn-info btn-sm" href="<?php echo $this->config->config['oae_url']; ?>" role="button"><?php echo __('Go to Enterprise');?></a>
                         </div>
                     </div>
                 </div>
