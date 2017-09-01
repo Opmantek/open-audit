@@ -74,7 +74,7 @@ class MY_Controller extends CI_Controller
 
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
-        if (!empty(($this->user->org_id))) {
+        if (!empty($this->user->org_id)) {
             $this->user->org_parents = implode(',', $this->m_users->get_parent_orgs($this->user->org_id));
         }
         if (!empty($this->user->roles) and $this->user->roles != 'null') {
@@ -106,7 +106,6 @@ class MY_Controller extends CI_Controller
                 stdlog($log);
             }
         }
-        unset($temp);
     }
 }
 // End of file MY_Controller.php
