@@ -61,7 +61,7 @@ if (!empty($this->config->config['servers'])) {
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                                 <li class="disabled"><a href='#'>Configure Discoveries</a></li>
                                                 <li class="disabled"><a href='#'>Schedule Discoveries</a></li>
-                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/tasks'>Learn About Discoveries</a></li>
+                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/discoveries'>Learn About Discoveries</a></li>
                                             <?php } else { ?>
                                                 <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration/discovery'>Configure Discoveries</a></li>
                                                 <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'>Schedule Discoveries</a></li>
