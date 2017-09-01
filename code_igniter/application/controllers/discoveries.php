@@ -226,7 +226,8 @@ class Discoveries extends MY_Controller
     */
     public function create_form()
     {
-        if (!empty($this->input->get('single'))) {
+        $temp = @$this->input->get('single');
+        if (!empty($temp)) {
             # this is the form for a single device discovery
             $this->response->meta->action = 'create_single';
         }
