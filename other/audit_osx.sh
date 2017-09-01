@@ -314,6 +314,9 @@ done
 echo "  </memory>" >> $xml_file
 
 if [ "$debugging" -gt "0" ]; then
+    echo "OS: $system_os_version"
+    echo "MAJ: $system_os_version_major"
+    echo "MIN: $system_os_version_minor"
     echo "Hard Disks"
 fi
 # NOTES -
@@ -321,9 +324,7 @@ fi
 # model not available on USB connected disks
 # partition count not available
 # scsi logical unit not available
-echo "OS: $system_os_version"
-echo "MAJ: $system_os_version_major"
-echo "MIN: $system_os_version_minor"
+
 
 echo "  <disk>" >> $xml_file
 partition_each=""
@@ -638,7 +639,8 @@ if [ "$submit_online" = "y" ]; then
         cat "input_devices"
         rm -f input_devices
     else
-        curl --data-urlencode data@"$xml_file" $url
+        curl --data-urlencode data@"$xml_file" $url >/dev/null 2>&1
+        #rm -f input_devices
     fi
 fi
 
