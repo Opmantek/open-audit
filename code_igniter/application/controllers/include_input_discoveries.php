@@ -1118,11 +1118,12 @@ if (!empty($_POST['data'])) {
             } else {
                 $unlink = '';
                 $source_name = $audit_script;
-                $log->message = 'Could not create temporary script';
+                $log->message = 'Could not create retrieve script from database for ' . $device->os_group;
                 $log->command = 'Nothing returned from database';
                 $log->status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
+                return;
             }
 
             unset($temp);
@@ -1150,15 +1151,23 @@ if (!empty($_POST['data'])) {
                 }
             }
 
+            $log->file = 'include_input_discoveries';
+            $log->function = 'discoveries';
+            $log->status = 'success';
+            $log->severity = 7;
+
             if ($unlink != '') {
-                $log->message = 'Attempt to delete local temporary audit script ' . $unlink . ' succeeded';
+                $log->command = 'unlink(\'' . $unlink . '\')';
+                $log->message = 'Delete local temporary audit script succeeded';
                 try {
                     unlink($unlink);
                 } catch (Exception $e) {
+                    $log->message = 'Delete local temporary audit script failed';
+                    $log->status = 'fail';
                     $log->severity = 4;
-                    $log->message = 'Attempt to delete local temporary audit script ' . $unlink . ' failed';
                 }
                 discovery_log($log);
+                unset($log->command, $log->message, $log->status);
                 $log->severity = 7;
             }
 
