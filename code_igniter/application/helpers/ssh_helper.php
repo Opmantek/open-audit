@@ -549,9 +549,9 @@ if (! function_exists('ssh_audit')) {
                             $temp2 = explode('=', $string);
                             $temp2[1] = str_replace("'", "", $temp2[1]);
                             $temp2[1] = str_replace('"', '', $temp2[1]);
-                            @$device->$item->{$temp2[0]} = $temp2[1];
+                            @$device->{$item}->{$temp2[0]} = $temp2[1];
                         } else {
-                            $device->$item[] = $string;
+                            $device->{$item}[] = $string;
                         }
                     }
                 } else {
