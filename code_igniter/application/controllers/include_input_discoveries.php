@@ -147,6 +147,7 @@ if (!empty($_POST['data'])) {
                 stdlog($syslog);
             }
             if (!empty($discovery->other->single) and $discovery->other->single == 'y') {
+                sleep(10);
                 $sql = "/* input::discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
                 $data = array();
                 $query = $this->db->query($sql, $data);
