@@ -2397,37 +2397,38 @@ if [ "$submit_online" = "y" ]; then
 		echo "URL: $url"
 	fi
 
-	if [ -n "$(which wget 2>/dev/null)" ]; then
+
+	if [ -n "$(which curl 2>/dev/null)" ]; then
 		if [ "$debugging" -gt 3 ]; then
 			if [ "$ignore_invalid_ssl" = "y" ]; then
-				wget --no-check-certificate -O add_system --post-file="$xml_file" "$url"
+				curl -k -o add_system --data "@$xml_file" "$url"
 			else
-				wget -O add_system --post-file="$xml_file" "$url"
+				curl -o add_system --data "@$xml_file" "$url"
 			fi
 			cat add_system
 			rm add_system
 		else
 			if [ "$ignore_invalid_ssl" = "y" ]; then
-				wget --no-check-certificate --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+				curl -k --data "@$xml_file" "$url"
 			else
-				wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
+				curl --data "@$xml_file" "$url"
 			fi
 		fi
 	else
-		if [ -n "$(which curl 2>/dev/null)" ]; then
+		if [ -n "$(which wget 2>/dev/null)" ]; then
 			if [ "$debugging" -gt 3 ]; then
 				if [ "$ignore_invalid_ssl" = "y" ]; then
-					curl -k -o add_system --data "@$xml_file" "$url"
+					wget --no-check-certificate -O add_system --post-file="$xml_file" "$url"
 				else
-					curl -o add_system --data "@$xml_file" "$url"
+					wget -O add_system --post-file="$xml_file" "$url"
 				fi
 				cat add_system
 				rm add_system
 			else
 				if [ "$ignore_invalid_ssl" = "y" ]; then
-					curl -k --data "@$xml_file" "$url"
+					wget --no-check-certificate --delete-after --post-file="$xml_file" "$url" 2>/dev/null
 				else
-					curl --data "@$xml_file" "$url"
+					wget --delete-after --post-file="$xml_file" "$url" 2>/dev/null
 				fi
 			fi
 		fi
