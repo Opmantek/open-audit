@@ -47,7 +47,7 @@ if ($this->config->config['default_network_address'] != '') {
 $address_array = explode(",", $this->config->config['ip']);
 foreach ($address_array as $key => $value) {
     if ($value != $this->config->config['default_network_address']) {
-        $network_address = "<option selected value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
+        $network_address = "<option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
         $network_address_array[] = $network_address;
     }
 }
@@ -63,7 +63,7 @@ foreach ($address_array as $key => $value) {
                     <div class="form-group">
                         <label for="data[attributes][subnet]" class="col-sm-4 control-label">Device IP Address</label>
                         <div class="col-sm-7 input-group">
-                            <input required type="text" class="form-control" id="data[attributes][other][subnet]" name="data[attributes][other][subnet]" placeholder="192.168.1.1" value="192.168.88.1"/>
+                            <input required type="text" class="form-control" id="data[attributes][other][subnet]" name="data[attributes][other][subnet]" placeholder="192.168.1.1"/>
                         </div>
                     </div>
 
@@ -171,7 +171,7 @@ foreach ($address_array as $key => $value) {
                     <div class="form-group">
                         <label for="data[attributes][credentials][snmp_v2_community]" class="col-sm-4 control-label">SNMP Community (v2)</label>
                         <div class="col-sm-7 input-group">
-                            <input type="text" class="form-control" id="data[attributes][credentials][snmp_v2_community]" name="data[attributes][credentials][snmp_v2_community]" placeholder="public" value="ReliableWeHope"/>
+                            <input type="text" class="form-control" id="data[attributes][credentials][snmp_v2_community]" name="data[attributes][credentials][snmp_v2_community]" placeholder="public"/>
                         </div>
                     </div>
                 </div>
