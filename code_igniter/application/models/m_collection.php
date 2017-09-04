@@ -141,6 +141,7 @@ class M_collection extends MY_Model
         $sql = $this->collection_sql($collection, 'sql');
         $result = $this->run_sql($sql, array());
 
+        # Add the Org name into every row that contains the orgs_id attribute
         for ($i=0; $i < count($result); $i++) {
             foreach ($orgs as $org) {
                 if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
@@ -199,7 +200,6 @@ class M_collection extends MY_Model
             $item->description = 'Are we using SSL.';
             $result[] = $item;
             unset($item);
-
         }
 
         if ($collection == 'credentials') {
@@ -256,6 +256,63 @@ class M_collection extends MY_Model
 
         $result = $this->format_data($result, $collection);
         return ($result);
+    }
+
+    public function collection_total($collection)
+    {
+        $CI = & get_instance();
+
+        if (empty($collection)) {
+            $collection = @$CI->response->meta->collection;
+        }
+        if (empty($collection)) {
+            log_error('ERR-0010', 'm_collection::collection_total No collection received.');
+            return false;
+        }
+
+        if ($collection == 'devices') {
+            $collection == 'system';
+        }
+
+        $total = 0;
+
+        if ($collection != 'database') {
+            if ($collection == 'orgs') {
+                # Orgs don't have an org_id, the have an id
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "` WHERE id IN (" . $CI->user->org_list . ")";
+            } else if ($collection == 'logs') {
+                # logs are special as we have 2x different types
+                $type = 'system';
+                if (!empty($CI->response->meta->filter)) {
+                    foreach ($CI->response->meta->filter as $filter) {
+                        if ($filter->name == 'logs.type') {
+                            $type = $filter->value;
+                        }
+                    }
+                }
+                if ($type != 'system' and $type != 'access') {
+                    $type = 'system';
+                }
+                $sql = "SELECT count(*) AS `count` FROM `logs` WHERE `logs`.`type` = '" . $type . "'";
+            } else if ($this->db->field_exists('org_id', $collection)) {
+                # Anything else with an org_id
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "` WHERE org_id IN (" . $CI->user->org_list . ")";
+            } else {
+                # Anythng left that has no org_id
+                $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "`";
+            }
+            $sql = '/* m_collection::collection_total */ ' . $sql;
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result[0]->count)) {
+                $total = intval($result[0]->count);
+            }
+        } else {
+            $tables = $this->db->list_tables();
+            $total = intval(count($tables));
+        }
+        return $total;
     }
 
     public function create($data = null, $collection = '')
@@ -452,9 +509,6 @@ class M_collection extends MY_Model
 
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
-
-$logsql = "/*    " . json_encode($CI->response->meta) . "   */";
-$this->db->query($logsql);
 
         if (!empty($id)) {
             $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');

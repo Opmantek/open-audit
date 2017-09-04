@@ -25,17 +25,19 @@
 #
 # *****************************************************************************
 unset($this->response->data);
+$this->load->model('m_collection');
 
 if ($this->response->meta->collection === 'database' or
     $this->response->meta->collection === 'roles' or
     $this->response->meta->collection === 'summaries') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else {
-    $this->load->model('m_collection');
     $this->response->data = $this->m_collection->collection($this->response->meta->collection);
 }
 
 $this->response->meta->filtered = count($this->response->data);
+
+$this->response->meta->total = intval($this->m_collection->collection_total($this->response->meta->collection));
 
 if (empty($this->response->meta->total) and !empty($this->response->meta->filtered)) {
     $this->response->meta->total = $this->response->meta->filtered;
