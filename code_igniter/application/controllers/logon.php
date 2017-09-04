@@ -327,7 +327,7 @@ class logon extends CI_Controller
         }
 
         // Delete any old sessions stored in the DB
-        $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
+        $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < (NOW() - INTERVAL 7 DAY)";
         $query = $this->db->query($sql);
 
         // Remove any olds los as per config
