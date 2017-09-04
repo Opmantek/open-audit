@@ -293,7 +293,7 @@ class M_collection extends MY_Model
                 if (empty($data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
                     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
-                    redirect('/discoveries');
+                    #redirect('/discoveries');
                 } else {
                     $data->description = 'Subnet - ' . $data->other->subnet;
                 }
