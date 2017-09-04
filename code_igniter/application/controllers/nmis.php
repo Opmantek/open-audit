@@ -356,7 +356,7 @@ class Nmis extends MY_Controller
         $this->response->meta->total = intval(count($devices));
         foreach ($devices as &$device) {
             $this_device = new stdClass();
-            $this_device->id = $device->attributes->id;
+            $this_device->id = intval($device->attributes->id);
             $this_device->type = 'devices';
             $this_device->attributes = new stdClass();
             $this_device->attributes->id = $device->attributes->id;
@@ -396,6 +396,7 @@ class Nmis extends MY_Controller
                         $this_device->attributes->authprotocol = $credential->attributes->credentials->authentication_protocol;
                         $this_device->attributes->authpassword = $credential->attributes->credentials->authentication_passphrase;
                         $this_device->attributes->username = $credential->attributes->credentials->security_name;
+                        $this_device->attributes->authkey = $credential->attributes->credentials->security_level;
                         $this_device->attributes->version = 'snmpv3';
                     }
                     if ($credential->attributes->type == 'windows') {

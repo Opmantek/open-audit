@@ -67,11 +67,13 @@ if (! function_exists('windows_credentials')) {
 
 
         if (empty($credentials)) {
+            $log->severity = 3;
             $log->message = 'No credentials array passed to windows_credentials.';
             discovery_log($log);
             return false;
         }
         if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->severity = 3;
             $log->message = 'No IP passed or bad IP to windows_credentials ('. $ip . ').';
             discovery_log($log);
             return false;
@@ -85,10 +87,13 @@ if (! function_exists('windows_credentials')) {
                     $log->file = 'wmi_helper';
                     $log->function = 'windows_credentials';
                     $log->message = "Windows credentials complete. Credential set " . $credential->name . " working on " . $ip;
+                    $log->severity = 6;
                     discovery_log($log);
                     unset($log->command);
                     return $credential;
                 } else {
+                    $log->severity = 7;
+                    $log->function = 'windows_credentials';
                     $log->message = "Credential set for Windows named " . $credential->name . " not working on " . $ip;
                     discovery_log($log);
                 }
@@ -97,6 +102,8 @@ if (! function_exists('windows_credentials')) {
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
         $log->message = 'Windows credentials complete. No working Windows credentials for ' . $ip . ' found.';
+        $log->severity = 3;
+        $log->severity_text = 'error';
         discovery_log($log);
         return false;
     }

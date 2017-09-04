@@ -24,7 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-$display = 'y';
+$display = 'n';
 
 $log = new stdClass();
 $log->discovery_id = null;
@@ -146,7 +146,8 @@ if (!empty($_POST['data'])) {
                 $syslog->message = $this->db->last_query();
                 stdlog($syslog);
             }
-            if ($discovery->other->single == 'y') {
+            if (!empty($discovery->other->single) and $discovery->other->single == 'y') {
+                sleep(10);
                 $sql = "/* input::discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
                 $data = array();
                 $query = $this->db->query($sql, $data);
@@ -394,20 +395,25 @@ if (!empty($_POST['data'])) {
             $input->ssh_status = 'false';
         }
         # test for working SSH credentials
-        if ($input->ssh_status == 'true') {
-            $log->message = 'Testing SSH credentials for '.$device->ip;
-            if (!empty($device->id)) {
-                $log->message .= ' (System ID ' . $device->id . ')';
-            }
-            discovery_log($log);
-            $credentials_ssh = ssh_credentials($device->ip, $credentials, $log);
-        } else {
-            $credentials_ssh = false;
-        }
+        // if ($input->ssh_status == 'true') {
+        //     $log->message = 'Testing SSH credentials for '.$device->ip;
+        //     if (!empty($device->id)) {
+        //         $log->message .= ' (System ID ' . $device->id . ')';
+        //     }
+        //     discovery_log($log);
+        //     $credentials_ssh = ssh_credentials($device->ip, $credentials, $log);
+        // } else {
+        //     $credentials_ssh = false;
+        // }
+
         # run SSH audit commands
-        if ($input->ssh_status == 'true' and $credentials_ssh) {
-            $ssh_details = ssh_audit($device->ip, $credentials_ssh, $log);
+        #if ($input->ssh_status == 'true' and $credentials_ssh) {
+        if ($input->ssh_status == 'true') {
+            #$ssh_details = ssh_audit($device->ip, $credentials_ssh, $log);
+            $ssh_details = ssh_audit($device->ip, $credentials, $log);
             if (!empty($ssh_details)) {
+                $credentials_ssh = $ssh_details->credentials;
+                unset($ssh_details->credentials);
                 $device->last_seen_by = 'ssh';
                 $device->audits_ip = '127.0.0.1';
                 foreach ($ssh_details as $key => $value) {
@@ -698,7 +704,7 @@ if (!empty($_POST['data'])) {
             echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
         }
 
-        // process and store the Nmap result
+        // process and store the Nmap data
         $nmap_result = array();
         foreach (explode(',', $input->nmap_ports) as $port) {
             $temp = explode('/', $port);
@@ -740,6 +746,14 @@ if (!empty($_POST['data'])) {
             // flush();
         }
 
+        $log->file = 'include_input_discoveries';
+        $log->function = 'discoveries';
+        if (!empty($device->type)) {
+            $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
+        } else {
+            $log->message = "Discovery found an unknown device at IP address $device->ip.";
+        }
+        discovery_log($log);
 
         # If we are configured as a collector, forward the information to the server
         if ($this->config->config['servers'] !== '') {
@@ -830,7 +844,7 @@ if (!empty($_POST['data'])) {
             discovery_log($log);
             $share = '\\admin$';
             $destination = 'audit_windows.vbs';
-            if ($display = 'y') {
+            if ($display == 'y') {
                 $debugging = 3;
             } else {
                 $debugging = 0;
@@ -1047,11 +1061,12 @@ if (!empty($_POST['data'])) {
             }
 
             $destination = $audit_script;
-            if ($display = 'y') {
+            if ($display == 'y') {
                 $debugging = 3;
             } else {
                 $debugging = 0;
             }
+
             // TODO - org_id?
             $sql = "/* discovery::process_subnet */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
             $query = $this->db->query($sql);
@@ -1104,11 +1119,12 @@ if (!empty($_POST['data'])) {
             } else {
                 $unlink = '';
                 $source_name = $audit_script;
-                $log->message = 'Could not create temporary script';
+                $log->message = 'Could not create retrieve script from database for ' . $device->os_group;
                 $log->command = 'Nothing returned from database';
                 $log->status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
+                return;
             }
 
             unset($temp);
@@ -1129,35 +1145,45 @@ if (!empty($_POST['data'])) {
                     $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
                     $temp = ssh_command($device->ip, $credentials_ssh, $command, $log);
                 }
-                if ($display = 'y') {
+                if ($display == 'y') {
                     $debugging = 3;
                 } else {
                     $debugging = 0;
                 }
             }
 
+            $log->file = 'include_input_discoveries';
+            $log->function = 'discoveries';
+            $log->status = 'success';
+            $log->severity = 7;
+
+            if ($unlink != '') {
+                $log->command = 'unlink(\'' . $unlink . '\')';
+                $log->message = 'Delete local temporary audit script succeeded';
+                try {
+                    unlink($unlink);
+                } catch (Exception $e) {
+                    $log->message = 'Delete local temporary audit script failed';
+                    $log->status = 'fail';
+                    $log->severity = 4;
+                }
+                discovery_log($log);
+                unset($log->command, $log->message, $log->status);
+                $log->severity = 7;
+            }
+
             # audit anything that's not ESX
             if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
                 # successfully copied and chmodded the audit script
-                if (!empty($credentials_ssh->sudo)) {
-                    # run the audit script as a normal user, using sudo
-                    $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-                } else {
-                    # run the script without using sudo
-                    $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-                }
-                $result = ssh_command($device->ip, $credentials_ssh, $command, $log);
-                if ($unlink != '') {
-                    $log->message = 'Attempt to delete audit script ' . $unlink . ' succeeded';
-                    try {
-                        unlink($unlink);
-                    } catch (Exception $e) {
-                        $log->severity = 4;
-                        $log->message = 'Attempt to delete audit script ' . $unlink . ' failed';
-                    }
-                    discovery_log($log);
-                    $log->severity = 7;
-                }
+                // if (!empty($credentials_ssh->sudo)) {
+                //     # run the audit script as a normal user, using sudo
+                //     $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+                // } else {
+                //     # run the script without using sudo
+                //     $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+                // }
+                $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+                $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
             }
             # audit ESX
             if ($audit_script == 'audit_esxi.sh') {
@@ -1228,14 +1254,6 @@ if (!empty($_POST['data'])) {
                 }
             }
         } // close the 'skip'
-        $log->file = 'input';
-        $log->function = 'discoveries';
-        if (!empty($device->type)) {
-            $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
-        } else {
-            $log->message = "Discovery found an unknown device at IP address $device->ip.";
-        }
-        discovery_log($log);
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but audit result may be incoming.";
         discovery_log($log);
     }

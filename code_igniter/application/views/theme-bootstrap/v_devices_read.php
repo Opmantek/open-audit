@@ -1435,6 +1435,8 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
                         if ($key != 'system_id' and $key != 'ip_padded') {
                             if (is_int($value)) {
                                 echo "                    <td class=\"text-right\">" . number_format($value) . "</td>\n";
+                            } else if ($key == 'command' and !empty($value)) {
+                                echo "                    <td><pre>" . $value . "</pre></td>\n";
                             } else {
                                 if (strlen($value) > 40) {
                                     echo "                    <td class=\"wrap\">" . $value . "</td>\n";

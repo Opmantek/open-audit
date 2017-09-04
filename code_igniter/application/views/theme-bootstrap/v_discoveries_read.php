@@ -253,6 +253,22 @@ $item = $this->response->data[0];
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
+            <span class="text-left">Command Line</span>
+        </h3>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <pre>
+                <?php echo htmlspecialchars($item->attributes->command); ?>
+            </pre>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
             <span class="text-left">Log</span>
             <span class="pull-right"></span>
         </h3>

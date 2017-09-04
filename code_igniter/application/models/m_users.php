@@ -101,11 +101,19 @@ class M_users extends MY_Model
         $this->log->summary = 'retrieving parent orgs';
         stdlog($this->log);
         $CI = & get_instance();
+        $parents_array = array();
+
+        if (!$this->db->table_exists('orgs')) {
+            return $parents_array;
+        }
 
         if (empty($org_id)) {
-            $org_id = $CI->user->org_id;
+            if (!empty($CI->user->org_id)) {
+                $org_id = $CI->user->org_id;
+            } else {
+                return $parents_array;
+            }
         }
-        $parents_array = array();
 
         do {
             $sql = "SELECT a.id AS `id` FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";

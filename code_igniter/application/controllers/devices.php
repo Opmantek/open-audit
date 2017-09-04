@@ -460,10 +460,10 @@ class devices extends MY_Controller
         }
         $filename = $i[count($i)-1];
         $filename = preg_replace('/'.$this->response->meta->id.'_/', '', $filename, 1);
-        header('Content-Type: '.get_mime_by_extension($attachment->filename));
+        header('Content-Type: '.get_mime_by_extension($attachment[0]->attributes->filename));
         header('Content-Disposition: attachment;filename="'.$filename.'"');
         header('Cache-Control: max-age=0');
-        readfile($attachment->filename);
+        readfile($attachment[0]->attributes->filename);
     }
 
     private function delete()

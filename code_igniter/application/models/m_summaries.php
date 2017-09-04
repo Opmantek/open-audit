@@ -194,9 +194,9 @@ class M_summaries extends MY_Model
                 break;
         }
         if (!empty($dashboard[0]->extra_columns)) {
-            $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,' . $dashboard[0]->extra_columns;
+            $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,' . $dashboard[0]->extra_columns;
         } else {
-            $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family';
+            $properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status';
         }
         $link = $CI->config->config['base_url'] . 'index.php/' . $collection . '?' . $dashboard[0]->table . '.' . $dashboard[0]->column . '=';
         for ($i=0; $i < count($result); $i++) {

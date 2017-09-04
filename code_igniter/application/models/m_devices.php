@@ -75,22 +75,22 @@ class M_devices extends MY_Model
                 }
             }
         }
-        if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false and $CI->response->meta->action != 'sub_resource_read') {
-            $filter .= ' AND system.status = "production"';
-            $temp = new stdClass();
-            $temp->name = 'system.status';
-            $temp->operator = '=';
-            $temp->value = 'production';
-            $CI->response->meta->filter[] = $temp;
-            unset($temp);
-        }
+        // if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false and $CI->response->meta->action != 'sub_resource_read') {
+        //     $filter .= ' AND system.status = "production"';
+        //     $temp = new stdClass();
+        //     $temp->name = 'system.status';
+        //     $temp->operator = '=';
+        //     $temp->value = 'production';
+        //     $CI->response->meta->filter[] = $temp;
+        //     unset($temp);
+        // }
         return($filter);
     }
 
     private function build_join()
     {
         $CI = & get_instance();
-        $reserved = ' properties limit sub_resource action sort current offset format ';
+        #$reserved = ' properties limit sub_resource action sort current offset format ';
         $join = '';
         $tables = '';
         if (count($CI->response->meta->filter) > 0) {
@@ -294,7 +294,8 @@ class M_devices extends MY_Model
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
         } elseif ($sub_resource == 'discovery_log') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ? " . $limit;
+            #$sql = "/* m_devices::read_sub_resource */ " . "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` AS `time` FROM discovery_log WHERE system_id = ? " . $limit;
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? " . $limit;
             $data = array($id);
         } elseif ($sub_resource == 'network') {
             $sql = "SELECT ip.ip,  network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') LEFT JOIN ip ON (ip.system_id = network.system_id and ip.net_index = network.net_index and ip.current = 'y') WHERE system.id = ? ";
