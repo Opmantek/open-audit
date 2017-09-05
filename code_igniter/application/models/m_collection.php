@@ -812,7 +812,7 @@ class M_collection extends MY_Model
                 break;
 
             case "tasks":
-                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options ');
+                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options last_run ');
                 break;
 
             case "users":
