@@ -213,7 +213,6 @@ if (!empty($data['fields'])) {
 </div>
 
 
-<!--
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -222,27 +221,30 @@ if (!empty($data['fields'])) {
         </h3>
     </div>
     <div class="panel-body">
+    <!--
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Create Credentials</label>
             <div class="col-sm-4 input-group">
                 <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>&action=update">Submit</a>
             </div>
         </div>
+    -->
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Run Discovery</label>
             <div class="col-sm-4 input-group">
-                <a role="button" class="btn btn-sm btn-success" href="discovery/discover_list?ids=<?php echo $this->response->meta->ids; ?>">Submit</a>
+                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=discovery&action=create&ids=<?php echo $this->response->meta->ids; ?>">Submit</a>
             </div>
         </div>
+    <!--
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label">Recalculate IP Address</label>
             <div class="col-sm-4 input-group">
                 <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=ip&ids=<?php echo $this->response->meta->ids; ?>&action=update">Submit</a>
             </div>
         </div>
+    -->
     </div>
 </div>
--->
 
 <div class="panel panel-default">
     <div class="panel-heading">

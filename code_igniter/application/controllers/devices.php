@@ -380,25 +380,48 @@ class devices extends MY_Controller
             unset($temp);
             output($this->response);
         } elseif ($this->response->meta->sub_resource == 'discovery') {
-            $this->response->data = $this->m_devices->read($this->response->meta->id);
-            $data = new stdClass();
-            $data->name = $this->response->data[0]->attributes->name;
-            if (empty($data->name)) {
-                $data->name = ip_address_from_db($this->response->data[0]->attributes->ip);
+            if ($this->config->config['default_network_address'] == '') {
+                $message = 'Network Address must be set in the configuration before calling Bulk Edit -> Discover.';
+                $this->session->set_flashdata('error', $message);
+                redirect('devices');
             }
-            $data->system_id = $this->response->data[0]->attributes->id;
-            $data->org_id = $this->response->data[0]->attributes->org_id;
-            $data->type = 'subnet';
-            $data->discard = 'y';
-            $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
-            $data->other = new stdClass();
-            $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
-            $this->load->model('m_discoveries');
-            $this->load->model('m_collection');
-            $discovery_id = $this->m_collection->create($data, 'discoveries');
-            $this->m_discoveries->execute($discovery_id);
+            $ids = array();
+            if (!empty($this->response->meta->id)) {
+                $ids[] = intval($this->response->meta->id);
+            }
+            if (!empty($this->response->meta->ids)) {
+                $ids = array_merge($ids, explode(',', $this->response->meta->ids));
+            }
+            #print_r($ids); exit();
+            $device_names = array();
+            foreach ($ids as $id) {
+                #$this->response->data = $this->m_devices->read($this->response->meta->id);
+                $this->response->data = $this->m_devices->read($id);
+                $data = new stdClass();
+                $data->name = $this->response->data[0]->attributes->name;
+                $device_names[] = $this->response->data[0]->attributes->name;
+                if (empty($data->name)) {
+                    $data->name = ip_address_from_db($this->response->data[0]->attributes->ip);
+                }
+                $data->system_id = $this->response->data[0]->attributes->id;
+                $data->org_id = $this->response->data[0]->attributes->org_id;
+                $data->type = 'subnet';
+                $data->discard = 'y';
+                $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
+                $data->other = new stdClass();
+                $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
+                $this->load->model('m_discoveries');
+                $this->load->model('m_collection');
+                $discovery_id = $this->m_collection->create($data, 'discoveries');
+                $this->m_discoveries->execute($discovery_id);
+            }
+            $message = 'Discovery started for devices: ' . implode(', ', $device_names);
+            $this->session->set_flashdata('success', $message);
+            unset($this->response->data);
+            $this->response->data = array();
             if ($this->response->meta->format != 'json') {
-                redirect('devices/'.$this->response->data[0]->attributes->id);
+                #redirect('devices/'.$this->response->data[0]->attributes->id);
+                redirect('devices');
             } else {
                 output($this->response);
             }
