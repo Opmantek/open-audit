@@ -124,6 +124,12 @@ if ($this->response->meta->collection == 'scripts') {
 if ($this->response->meta->collection == 'summaries') {
 }
 
+# tasks
+if ($this->response->meta->collection == 'tasks') {
+    $this->load->model('m_collection');
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
+}
+
 # roles
 if ($this->response->meta->collection == 'roles') {
     $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
