@@ -119,7 +119,8 @@ class test extends CI_Controller
             # Output
             echo "<h2>$table (file -> database)</h2>";
             echo "<strong>Del: $count_del Ins: $count_ins</strong>\n";
-            echo Diff::toTable(Diff::compare($file_schema, $db_schema));
+            $table_output = Diff::toTable(Diff::compare($file_schema, $db_schema));
+            echo str_replace('<table class="diff">', '<table class="diff" style="width:100%">', $table_output);
             echo "=======================================\n";
         }
 
