@@ -1254,7 +1254,7 @@ if (!empty($_POST['data'])) {
                 }
             }
         } // close the 'skip'
-        $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but audit result may be incoming.";
+        $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
         discovery_log($log);
     }
 } else {
