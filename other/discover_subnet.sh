@@ -50,7 +50,7 @@ syslog="y"
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
-timing="-T4"
+timing="-T2"
 sequential="n"
 os_scan="n"
 force_ping="n"
@@ -279,7 +279,7 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 20 $timing "$host" 2>&1)
+		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 30 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
 			test=$(echo $line | grep "tcp.*open")
