@@ -510,6 +510,7 @@ if (! function_exists('ssh_audit')) {
             'os_family' => 'cat /etc/os-release 2>/dev/null | grep -i ^NAME | cut -d= -f2 | cut -d\" -f2',
             'os_version' => 'cat /etc/os-release 2>/dev/null | grep -i ^VERSION_ID | cut -d= -f2 | cut -d\" -f2',
             'redhat_os_name' => 'cat /etc/redhat-release 2>/dev/null',
+            'ubuntu_os_codename' => 'cat /etc/os-release 2>/dev/null | grep -i ^UBUNTU_CODENAME | cut -d= -f2 | cut -d\" -f2',
             'vmware_os_version' => 'uname -r 2>/dev/null',
             'osx_os_version' => 'sw_vers 2>/dev/null | grep "ProductVersion:" | cut -f2',
             'ubiquiti_os' => 'cat /etc/motd 2>/dev/null | grep -i EdgeOS',
@@ -610,7 +611,12 @@ if (! function_exists('ssh_audit')) {
         }
         unset($device->ubiquiti_model);
 
-        if (empty($device->os_name) and !empty($device->redhat_os_name)) {
+        if (!empty($ubuntu_os_codename)) {
+            $device->os_name = $device->os_name . ' (' . $ubuntu_os_codename . ')';
+        }
+        unset($ubuntu_os_codename);
+
+        if (!empty($device->redhat_os_name)) {
             $device->os_name = $device->redhat_os_name;
             if (stripos($device->redhat_os_name, 'centos') !== false) {
                 $device->os_family = 'CentOS';
