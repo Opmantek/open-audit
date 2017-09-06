@@ -306,7 +306,7 @@ for each host in hosts_in_subnet
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 20 " & host
+    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 30 " & host
     nmap_ports = ""
     execute_command()
 
