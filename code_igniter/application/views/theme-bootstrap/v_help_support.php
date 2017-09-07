@@ -165,17 +165,6 @@ if (php_uname('s') == 'Linux') {
     unset($output);
     unset($command_string);
 
-    # nmap perms
-    if ($data['prereq_nmap'] != '' and $data['prereq_nmap'] != 'n') {
-        $command_string = 'ls -l '.$data['prereq_nmap'].' | cut -d" " -f1';
-        exec($command_string, $output, $return_var);
-        if (isset($output[0])) {
-            $data['prereq_nmap_perms'] = $output[0];
-        }
-        unset($output);
-        unset($command_string);
-    }
-
     # screen
     $command_string = "which screen 2>/dev/null";
     exec($command_string, $output, $return_var);
@@ -232,16 +221,6 @@ if (php_uname('s') == 'Linux') {
     }
     $data['timezone_os'] = trim($data['timezone_os']);
 
-    # cron perms
-    $command_string = 'ls -l /etc/cron.d/open-audit';
-    exec($command_string, $output, $return_var);
-    $data['os_cron_file'] = '';
-    if (isset($output[0])) {
-        $data['os_cron_file'] = $output[0];
-    }
-    unset($output);
-    unset($command_string);
-
     # winexe version
     $command_string = "/usr/local/open-audit/other/winexe-static --version 2>&1";
     exec($command_string, $output, $return_var);
@@ -250,6 +229,78 @@ if (php_uname('s') == 'Linux') {
     }
     unset($output);
     unset($command_string);
+
+    # Permissions
+    # cron perms - should be -rw-r--r--
+    $command_string = 'ls -l /etc/cron.d/open-audit | cut -d" " -f1';
+    exec($command_string, $output, $return_var);
+    $data['os_cron_file'] = '';
+    if (isset($output[0])) {
+        $data['perm_cron_file'] = $output[0];
+    }
+    unset($output);
+    unset($command_string);
+    # nmap perms - should be -rwsr-xr-x
+    if ($data['prereq_nmap'] != '' and $data['prereq_nmap'] != 'n') {
+        $command_string = 'ls -l '.$data['prereq_nmap'].' | cut -d" " -f1';
+        exec($command_string, $output, $return_var);
+        if (isset($output[0])) {
+            $data['perm_nmap_file'] = $output[0];
+        }
+        unset($output);
+        unset($command_string);
+    }
+    # scripts perms - should be -rwxrwxr-x
+    $command_string = 'ls -l /usr/local/open-audit/other/scripts | cut -d" " -f1';
+    exec($command_string, $output, $return_var);
+    if (!empty($output[1])) {
+        $data['perm_directory_scripts'] = $output[1];
+    } else {
+        $data['perm_file_system_log'] = 'Error - missing directory';
+    }
+    unset($output);
+    unset($command_string);
+    # Attachments - should be -rwxrwxrwx
+    $command_string = 'ls -l /usr/local/open-audit/code_igniter/application/attachments | cut -d" " -f1';
+    exec($command_string, $output, $return_var);
+    if (!empty($output[1])) {
+        $data['perm_directory_attachments'] = $output[1];
+    } else {
+        $data['perm_file_system_log'] = 'Error - missing directory';
+    }
+    unset($output);
+    unset($command_string);
+    # Uploads - should be -rwxrwxrwx
+    $command_string = 'ls -l /usr/local/open-audit/code_igniter/application/uploads | cut -d" " -f1';
+    exec($command_string, $output, $return_var);
+    if (!empty($output[1])) {
+        $data['perm_directory_uploads'] = $output[1];
+    } else {
+        $data['perm_file_system_log'] = 'Error - missing directory';
+    }
+    unset($output);
+    unset($command_string);
+    # Access Log - should be -rw-rw-rw-
+    $command_string = 'ls -l /usr/local/open-audit/other/log_access.log | cut -d" " -f1';
+    exec($command_string, $output, $return_var);
+    if (!empty($output[0])) {
+        $data['perm_file_access_log'] = $output[0];
+    } else {
+        $data['perm_file_system_log'] = 'Error - missing file';
+    }
+    unset($output);
+    unset($command_string);
+    # System Log - should be -rw-rw-rw-
+    $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
+    exec($command_string, $output, $return_var);
+    if (!empty($output[0])) {
+        $data['perm_file_system_log'] = $output[0];
+    } else {
+        $data['perm_file_system_log'] = 'Error - missing file';
+    }
+    unset($output);
+    unset($command_string);
+
 
 }
 
