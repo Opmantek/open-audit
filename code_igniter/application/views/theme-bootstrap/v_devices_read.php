@@ -1610,7 +1610,7 @@ if ($data['system']->type == 'computer') {
                         $count = 0;
                         echo '<div class="col-md-6">';
                         foreach ($item_row as $key => $value) {
-                            if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen') {
+                            if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded') {
                                 $count++;
                                 $show_key = ucwords(str_replace('_', ' ', $key));
                                 if ($count == $row_attribute_count) {
