@@ -40,17 +40,18 @@ if ($this->config->config['is_ssl'] == 'true') {
 }
 $network_address = '';
 $network_address_array = array();
-if ($this->config->config['default_network_address'] != '') {
-    $network_address = "<option selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>";
+if (!empty($this->config->config['default_network_address'])) {
+    $network_address = "<option data-id=\"default\" selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>\n";
     $network_address_array[] =  $network_address;
 }
 $address_array = explode(",", $this->config->config['ip']);
 foreach ($address_array as $key => $value) {
     if ($value != $this->config->config['default_network_address']) {
-        $network_address = "<option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
+        $network_address = "                                <option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>\n";
         $network_address_array[] = $network_address;
     }
 }
+$network_address_array[] = "                                <option value='other'>Other</option>";
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
@@ -101,11 +102,10 @@ foreach ($address_array as $key => $value) {
                         <div class="col-sm-8 input-group">
                             <select required class="form-control" id="network_address_select" name="network_address_select">
                                 <option value=''></option>
-                                <option value='other'>Other</option>
                                 <?php
                                 foreach ($network_address_array as $key => $value) {
-                                    if ($network_address != '') {
-                                        echo $network_address;
+                                    if ($value != '') {
+                                        echo $value;
                                     }
                                 }
                                 ?>
