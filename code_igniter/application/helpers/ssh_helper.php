@@ -84,7 +84,11 @@ if (! function_exists('scp')) {
             $log->severity = 7;
             return false;
         }
-        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        if (php_uname('s') != 'Windows NT') {
+            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        } else {
+            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
+        }
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
         if (!defined('NET_SSH2_LOGGING')) {
@@ -197,7 +201,11 @@ if (! function_exists('ssh_command')) {
             $log->severity = 7;
             return false;
         }
-        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        if (php_uname('s') != 'Windows NT') {
+            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        } else {
+            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
+        }
         // include 'Crypt/RSA.php';
         // include('Net/SSH2.php');
         require_once 'Crypt/RSA.php';
@@ -328,7 +336,11 @@ if (! function_exists('ssh_audit')) {
             return false;
         }
 
-        set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        if (php_uname('s') != 'Windows NT') {
+            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        } else {
+            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
+        }
         include 'Crypt/RSA.php';
         include('Net/SSH2.php');
         define('NET_SSH2_LOGGING', 2);
