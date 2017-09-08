@@ -50,7 +50,7 @@ foreach ($this->response->included as $item) {
         $special['class'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
     }
 }
-$special['class'] .= '</select><span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
+$special['class'] .= '</select><span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
 $special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value="" label=" "> </option>';
