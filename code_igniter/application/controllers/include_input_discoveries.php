@@ -1026,7 +1026,7 @@ if (!empty($_POST['data'])) {
         }
 
         # Audit via SSH
-        if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and $credentials_ssh) {
+        if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh)) {
             $log->message = 'Starting SSH audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             // switch (strtolower($remote_os)) {
@@ -1071,11 +1071,15 @@ if (!empty($_POST['data'])) {
             $sql = "/* discovery::process_subnet */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
             $query = $this->db->query($sql);
             $result = $query->result();
-            $log->command = $sql;
-            $log->message = "Retrieve appropriate script";
-            discovery_log($log);
+            #$log->command = $sql;
+            #$log->message = "Retrieve appropriate script";
+            #discovery_log($log);
             unset($log->command, $log->message);
             if (!empty($result[0])) {
+                $log->message = 'Script details retrieved.';
+                $log->command = $sql;
+                $log->status = 'success';
+                discovery_log($log);
                 $script_details = $result[0];
                 # Just ensure we delete any audit scripts that might exist.
                 # Shouldn't be required because we're creating based on the timestamp
@@ -1088,6 +1092,10 @@ if (!empty($_POST['data'])) {
                     @unlink($unlink);
                     try {
                         $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
+                        $log->message = 'Created temporary script (windows)';
+                        $log->command = '';
+                        $log->status = 'success';
+                        discovery_log($log);
                     } catch (Exception $e) {
                         #print_r($e);
                         $log->message = 'Could not create temporary script (windows)';
@@ -1142,8 +1150,15 @@ if (!empty($_POST['data'])) {
                 $destination .= $audit_script;
                 if ($ssh_result = scp($device->ip, $credentials_ssh, $source, $destination, $log)) {
                     # Successfully copied the audit script
+                    $log->message = 'Copied audit script to target.';
+                    $log->status = 'fail';
+                    discovery_log($log);
                     $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
                     $temp = ssh_command($device->ip, $credentials_ssh, $command, $log);
+                } else {
+                    $log->message = 'Could not copy audit script to target.';
+                    $log->status = 'fail';
+                    discovery_log($log);
                 }
                 if ($display == 'y') {
                     $debugging = 3;
