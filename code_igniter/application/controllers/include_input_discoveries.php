@@ -87,7 +87,7 @@ if (!empty($_POST['data'])) {
         $individual_ip_start = microtime(true);
         $input = (object) $input;
         if (!empty($input->discovery_id)) {
-            $syslog->severity = 6;
+            $syslog->severity = 7;
             $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
             $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
             discovery_log($syslog);
@@ -748,12 +748,14 @@ if (!empty($_POST['data'])) {
 
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
+        $log->severity = 5;
         if (!empty($device->type)) {
             $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
         } else {
             $log->message = "Discovery found an unknown device at IP address $device->ip.";
         }
         discovery_log($log);
+        $log->severity = 7;
 
         # If we are configured as a collector, forward the information to the server
         if ($this->config->config['servers'] !== '') {
