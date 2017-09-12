@@ -210,6 +210,21 @@ class M_collection extends MY_Model
             }
         }
 
+
+        if ($collection == 'discoveries') {
+            for ($i=0; $i < count($result); $i++) {
+                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND `command_status` LIKE '% of %' ORDER BY `timestamp` DESC LIMIT 1";
+                $data = array(intval($result[$i]->id));
+                $data_result = $this->run_sql($sql, $data);
+                if (!empty($data_result)) {
+                    $result[$i]->status = $data_result[0]->command_status;
+                } else {
+                    $result[$i]->status = '';
+                }
+            }
+        }
+
+
         if ($collection == 'licenses' and !empty($result)) {
             foreach ($result as $item) {
                 if ($item->org_descendants == 'n') {
