@@ -623,10 +623,10 @@ if (! function_exists('ssh_audit')) {
         }
         unset($device->ubiquiti_model);
 
-        if (!empty($ubuntu_os_codename)) {
-            $device->os_name = $device->os_name . ' (' . $ubuntu_os_codename . ')';
+        if (!empty($device->ubuntu_os_codename)) {
+            $device->os_name = $device->os_name . ' (' . $device->ubuntu_os_codename . ')';
         }
-        unset($ubuntu_os_codename);
+        unset($device->ubuntu_os_codename);
 
         if (!empty($device->redhat_os_name)) {
             $device->os_name = $device->redhat_os_name;
