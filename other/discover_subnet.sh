@@ -50,7 +50,7 @@ syslog="y"
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
-timing="-T2"
+timing="-T3"
 sequential="n"
 os_scan="n"
 force_ping="n"
@@ -168,6 +168,41 @@ function write_log()
 	fi
 }
 
+function db_log()
+{
+	now=$(date "+%F %T")
+	message=$1
+	duration=$2
+	status=$3
+	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=6&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status" -X POST http://localhost/open-audit/index.php/input/logs
+	if [ "$debugging" -gt 0 ]; then
+		echo "curl -d \"type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=6&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status\" -X POST http://localhost/open-audit/index.php/input/logs"
+	fi
+}
+
+function timer ()
+{
+	# Returns the elapsed time in seconds.
+	#
+	# usage :
+	#
+	#   start=$(timer)
+	#   # commands...
+	#   total_seconds=$(timer "$start")
+	#
+	if [ $# -eq 0 ]; then
+		date +%s
+	else
+		local stime=$1
+		etime=$(date '+%s')
+		if [ -z "$stime" ]; then stime=$etime; fi
+		dt=$((etime - stime))
+		echo "$dt"
+	fi
+}
+
+script_start=$(timer)
+
 if [ "$debugging" -gt 0 ]; then
 	echo "Log Level: $debugging"
 fi
@@ -215,6 +250,9 @@ fi
 i=0
 j=0
 hosts=""
+
+hosts_in_subnet=$(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
+
 # removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
 if [ "$force_ping" == "y" ]; then
 	for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
@@ -240,23 +278,25 @@ else
 	done
 
 	if [ "$debugging" -gt 0 ]; then
-		echo "Total ip addresses: $i"
-		#echo "Total responding ip addresses: $j"
+		echo "Total ip addresses: $hosts_in_subnet"
+		echo "Total responding ip addresses: $i"
 	fi
 fi
 
+db_log "Starting discovery, scanning $hosts_in_subnet IP addresses" "" "start"
 result_file=""
 result=""
+hosts_scanned=0
 
 if [[ "$hosts" != "" ]]; then
 	for host in $hosts; do
 
+		let "hosts_scanned = hosts_scanned + 1"
+		start=$(timer)
+
 		if [ "$debugging" -gt 0 ]; then
 			echo "Scanning Host: $host"
 		fi
-
-		#log_entry="Scanning ip address $host"
-		#write_log "$log_entry"
 
 		mac_address=""
 		manufacturer=""
@@ -278,7 +318,7 @@ if [[ "$hosts" != "" ]]; then
 		# -n Do not resolve IP to DNS name
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
-		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
+		# -T3 set the timing (higher is faster) ($timing) default for the script is -T3
 		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 30 $timing "$host" 2>&1)
 		for line in $nmap_scan; do
 
@@ -391,8 +431,8 @@ if [[ "$hosts" != "" ]]; then
 				if [ "$debugging" -gt 0 ]; then
 					echo "Submitting online."$'\n'
 				fi
-				log_entry="IP $host responding, submitting."
-				write_log "$log_entry"
+				write_log "IP $host responding, submitting."
+				db_log "IP $host responding, submitting." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 				if [[ $(uname) == "Linux" ]]; then
 					# -b   = background the wget command
 					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
@@ -405,10 +445,12 @@ if [[ "$hosts" != "" ]]; then
 			else
 				log_entry="IP $host responding."
 				write_log "$log_entry"
+				# Don't bother to update the db log table because we're not sending the result to it
 			fi
 		else
 			log_entry="IP $host not responding, ignoring."
 			write_log "$log_entry"
+			db_log "IP $host not responding, ignoring." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 		fi
 
 		result=""
@@ -447,3 +489,6 @@ fi
 
 log_entry="Discovery for $subnet_range submitted for discovery $discovery_id completed"
 write_log "$log_entry"
+
+
+db_log "Completed discovery, scanned $hosts_scanned IP addresses" $(timer "$script_start") "finish"
