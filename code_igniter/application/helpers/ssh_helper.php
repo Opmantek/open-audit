@@ -284,11 +284,11 @@ if (! function_exists('ssh_command')) {
         unset($ssh);
 
         $log->command_time_to_execute = (microtime(true) - $item_start);
-        if (!empty($result)) {
+        $log->command_output = '';
+        if (!empty($result) and strpos($command, 'audit_esxi') === false) {
             $log->command_output = trim($result);
-        } else {
-            $log->command_output = '';
         }
+
         $log->command = $command;
         $log->command_status = 'success';
         $log->message = 'SSH command';
