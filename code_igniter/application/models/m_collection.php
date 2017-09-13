@@ -217,10 +217,24 @@ class M_collection extends MY_Model
                 $data = array(intval($result[$i]->id));
                 $data_result = $this->run_sql($sql, $data);
                 if (!empty($data_result)) {
-                    $result[$i]->status = $data_result[0]->command_status;
+                    $result[$i]->discovered = $data_result[0]->command_status;
+                    $temp = explode(' ', $result[$i]->discovered);
+                    $temp[0] = str_replace('(', '', $temp[0]);
+                    $temp[2] = str_replace(')', '', $temp[2]);
+                    if ($temp[0] == $temp[2]) {
+                        if (strtolower($result[$i]->complete) != 'y') {
+                            $result[$i]->status = 'failed';
+                        } else {
+                            $result[$i]->status = 'complete';
+                        }
+                    } else {
+                            $result[$i]->status = 'in progress';
+                    }
                 } else {
-                    $result[$i]->status = '';
+                    $result[$i]->discovered = '';
+                    $result[$i]->status = 'complete';
                 }
+
             }
         }
 
