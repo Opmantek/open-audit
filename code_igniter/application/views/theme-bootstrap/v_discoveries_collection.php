@@ -53,8 +53,8 @@
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Description')?></th>
                     <th><?php echo __('Last Run')?></th>
-                    <th class="text-center"><?php echo __('Complete')?></th>
                     <th class="text-center"><?php echo __('Status')?></th>
+                    <th class="text-center"><?php echo __('Discovered')?></th>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -72,8 +72,8 @@
                     <?php refine('discoveries.type', $item->attributes->type); ?>
                     <?php refine('discoveries.description', $item->attributes->description); ?>
                     <?php refine('discoveries.last_run', $item->attributes->last_run); ?>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET)?></td>
                     <td class="text-center"><?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->discovered, REPLACE_FLAGS, CHARSET)?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
