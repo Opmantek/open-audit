@@ -1038,6 +1038,7 @@ if (!empty($_POST['data'])) {
                     break;
                 
                 case 'vmkernel':
+                case 'vmware' :
                     $audit_script = 'audit_esxi.sh';
                     break;
                 
@@ -1134,7 +1135,7 @@ if (!empty($_POST['data'])) {
                 $log->status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
-                return;
+                break;
             }
 
             unset($temp);
@@ -1173,21 +1174,6 @@ if (!empty($_POST['data'])) {
             $log->function = 'discoveries';
             $log->status = 'success';
             $log->severity = 7;
-
-            if ($unlink != '') {
-                $log->command = 'unlink(\'' . $unlink . '\')';
-                $log->message = 'Delete local temporary audit script succeeded';
-                try {
-                    unlink($unlink);
-                } catch (Exception $e) {
-                    $log->message = 'Delete local temporary audit script failed';
-                    $log->status = 'fail';
-                    $log->severity = 4;
-                }
-                discovery_log($log);
-                unset($log->command, $log->message, $log->status);
-                $log->severity = 7;
-            }
 
             # audit anything that's not ESX
             if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
@@ -1270,6 +1256,22 @@ if (!empty($_POST['data'])) {
                     }
                 }
             }
+
+            if ($unlink != '') {
+                $log->command = 'unlink(\'' . $unlink . '\')';
+                $log->message = 'Delete local temporary audit script succeeded';
+                try {
+                    unlink($unlink);
+                } catch (Exception $e) {
+                    $log->message = 'Delete local temporary audit script failed';
+                    $log->status = 'fail';
+                    $log->severity = 4;
+                }
+                discovery_log($log);
+                unset($log->command, $log->message, $log->status);
+                $log->severity = 7;
+            }
+
         } // close the 'skip'
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
         discovery_log($log);
