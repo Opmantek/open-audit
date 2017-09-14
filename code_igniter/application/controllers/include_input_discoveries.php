@@ -67,6 +67,11 @@ if (php_uname('s') != 'Windows NT') {
     $filepath = $this->config->config['base_path'] . '\\other';
 }
 
+# So we can output back to the discovery script, and continue processing
+ignore_user_abort(true);
+set_time_limit(0);
+ob_start();
+
 if (!empty($_POST['data'])) {
     // process the input
     $xml_input = $_POST['data'];
@@ -82,6 +87,14 @@ if (!empty($_POST['data'])) {
         exit;
     }
     unset($xml_input);
+
+    # So we can output back to the discovery script, and continue processing
+    echo "";
+    header('Connection: close');
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
+    ob_flush();
+    flush();
 
     foreach ($xml->children() as $input) {
         $individual_ip_start = microtime(true);
