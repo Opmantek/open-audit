@@ -174,9 +174,15 @@ function db_log()
 	message=$1
 	duration=$2
 	status=$3
-	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=6&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status" -X POST http://localhost/open-audit/index.php/input/logs
+	severity=$4
+	echo "Severity: $severity"
+	if [ -z "$severity" ]; then
+		severity=6
+		echo "Severity: $severity"
+	fi
+	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status" -X POST http://localhost/open-audit/index.php/input/logs
 	if [ "$debugging" -gt 0 ]; then
-		echo "curl -d \"type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=6&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status\" -X POST http://localhost/open-audit/index.php/input/logs"
+		echo "curl -d \"type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status\" -X POST http://localhost/open-audit/index.php/input/logs"
 	fi
 }
 
@@ -419,7 +425,7 @@ if [[ "$hosts" != "" ]]; then
 			else
 				result="$result		<debug>false</debug>"$'\n'
 			fi
-			result="$result     <nmap_ports><![CDATA[$nmap_ports]]></nmap_ports>"$'\n'
+			result="$result		<nmap_ports><![CDATA[$nmap_ports]]></nmap_ports>"$'\n'
 			#result="$result     <nmap_result><![CDATA[$nmap_result]]></nmap_result>"$'\n'
 			result="$result	</device>"
 			# add the result for this device to the result_file var for display or file output later on
@@ -433,14 +439,14 @@ if [[ "$hosts" != "" ]]; then
 				fi
 				write_log "IP $host responding, submitting."
 				db_log "IP $host responding, submitting." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
-				if [[ $(uname) == "Linux" ]]; then
-					# -b   = background the wget command
-					# -O - = output to STDOUT (combine with 1>/dev/null for no output).
-					# -q   = quiet (no output)
-					wget $sequential -O - -q --no-check-certificate "$url" --post-data=data="$result" 1>/dev/null
-				fi
-				if [[ $(uname) == "Darwin" ]]; then
-					curl --data "data=$result" "$url" -o curl_output.txt
+				# curl options
+				# -k = ignore invalid (self signed) certs
+				# -s = Silent mode. Don’t show progress meter or error messages.
+				# -S = When used with -s it makes curl show error message if it fails.
+				#send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1 1>/dev/null)
+				send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1)
+				if [ -n "$send_result" ]; then
+					db_log "Error when submitting discovery result (device). $send_result" "" "fail" "3"
 				fi
 			else
 				log_entry="IP $host responding."
@@ -452,35 +458,28 @@ if [[ "$hosts" != "" ]]; then
 			write_log "$log_entry"
 			db_log "IP $host not responding, ignoring." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 		fi
-
 		result=""
-
 	done
 fi
 
 resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
 
 if [[ "$submit_online" == "y" ]]; then
-	if [[ $(uname) == "Linux" ]]; then
-		# -b   = background the wget command
-		# -O - = output to STDOUT (combine with 1>/dev/null for no output).
-		# -q   = quiet (no output)
-		if [[ "$echo_output" == "y" ]]; then
-			wget -b -O - --no-check-certificate "$url" --post-data=data="$resultcomplete"
-		else
-			wget -b -O - -q --no-check-certificate "$url" --post-data=data="$resultcomplete" 1>/dev/null
+	if [[ "$echo_output" == "y" ]]; then
+		send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
+		echo "$send_result"
+	else
+		#send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S  2>&1 1>/dev/null)
+		send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
+		if [ -n "$send_result" ]; then
+			db_log "Error when submitting discovery result (complete). $send_result" "" "fail" "3"
 		fi
-	fi
-
-	if [[ $(uname) == "Darwin" ]]; then
-		curl --data "data=$resultcomplete" "$url"
 	fi
 fi
 
 if [[ "$echo_output" == "y" ]]; then
 	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
 fi
-
 
 if [[ "$create_file" == "y" ]]; then
 	result_file="<devices>$result_file"$'\n'"</devices>"$'\n'
