@@ -175,10 +175,8 @@ function db_log()
 	duration=$2
 	status=$3
 	severity=$4
-	echo "Severity: $severity"
 	if [ -z "$severity" ]; then
 		severity=6
-		echo "Severity: $severity"
 	fi
 	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status" -X POST http://localhost/open-audit/index.php/input/logs
 	if [ "$debugging" -gt 0 ]; then
@@ -443,7 +441,7 @@ if [[ "$hosts" != "" ]]; then
 				# -k = ignore invalid (self signed) certs
 				# -s = Silent mode. Don’t show progress meter or error messages.
 				# -S = When used with -s it makes curl show error message if it fails.
-				#send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1 1>/dev/null)
+				#send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1 1> /dev/null)
 				send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1)
 				if [ -n "$send_result" ]; then
 					db_log "Error when submitting discovery result (device). $send_result" "" "fail" "3"
@@ -469,7 +467,7 @@ if [[ "$submit_online" == "y" ]]; then
 		send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
 		echo "$send_result"
 	else
-		#send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S  2>&1 1>/dev/null)
+		#send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S  2>&1 1> /dev/null)
 		send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
 		if [ -n "$send_result" ]; then
 			db_log "Error when submitting discovery result (complete). $send_result" "" "fail" "3"
