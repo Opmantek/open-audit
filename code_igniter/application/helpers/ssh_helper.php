@@ -530,7 +530,7 @@ if (! function_exists('ssh_audit')) {
             'ddwrt_os_name' => 'cat /etc/motd 2>/dev/null | grep -i DD-WRT',
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
-            'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name"',
+            'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
 
             'dbus_machine_id' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk \'{print $2}\'',
