@@ -54,6 +54,8 @@ timing="-T3"
 sequential="n"
 os_scan="n"
 force_ping="n"
+host_timeout=""
+#host_timeout="30"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -70,6 +72,10 @@ for arg in "$@"; do
 	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
+
+if [ -n "$host_tmeout" ]; then
+	host_timeout="--host-timeout $host_timeout"
+fi
 
 if [ "$os_scan" == "y" ]; then
 	os_scan="-O"
@@ -115,10 +121,14 @@ if [ "$help" == "y" ]; then
 	echo "      y - Display this help output."
 	echo "     *n - Do not display this output."
 	echo ""
-	echo "  log_no_response"
-	echo "    *n - Do not submit a result if there is no device attached to the given ip address."
-	echo "     y - Submit a result even if nothing is found."
+	echo "  -host_timeout"
+	echo "     X - Give up on scanning the target after X seconds."
+	echo "    *  - Do not set this value, allow Nmap to take as long as it needs to scan."
 	echo ""
+	#echo "  log_no_response"
+	#echo "    *n - Do not submit a result if there is no device attached to the given ip address."
+	#echo "     y - Submit a result even if nothing is found."
+	#echo ""
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
@@ -129,15 +139,15 @@ if [ "$help" == "y" ]; then
 	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
 	echo ""
-	echo "  sequential"
-	echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
-	echo "      y - Set to y to wait for a result from the server before continuing on to the next ip to scan. Will extend discovery times."
-	echo "  syslog"
-	echo "     *y - Log entries to the Open-AudIT log file."
-	echo "      n - Do not log entries."
-	echo ""
+	#echo "  sequential"
+	#echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
+	#echo "      y - Set to y to wait for a result from the server before continuing on to the next ip to scan. Will extend discovery times."
+	#echo "  syslog"
+	#echo "     *y - Log entries to the Open-AudIT log file."
+	#echo "      n - Do not log entries."
+	#echo ""
 	echo "  timing"
-	echo "   *-T4 - Nmap timing see this page for details"
+	echo "   *-T3 - Nmap timing see this page for details"
 	echo "        - https://nmap.org/book/man-performance.html"
 	echo ""
 	echo "  url"
@@ -298,10 +308,6 @@ if [[ "$hosts" != "" ]]; then
 		let "hosts_scanned = hosts_scanned + 1"
 		start=$(timer)
 
-		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host"
-		fi
-
 		mac_address=""
 		manufacturer=""
 		description=""
@@ -323,7 +329,20 @@ if [[ "$hosts" != "" ]]; then
 		# -O attempt to determine operating system ($os_scan)
 		# --host-timeout so we don't hang indefinitley
 		# -T3 set the timing (higher is faster) ($timing) default for the script is -T3
-		nmap_scan=$(nmap -vv -n $os_scan -Pn --host-timeout 30 $timing "$host" 2>&1)
+		if [ "$debugging" -gt 0 ]; then
+			echo "Scanning Host: $host"
+			echo "nmap -vv -n $os_scan -Pn --host-timeout 30 $timing $host 2>&1"
+		fi
+		nmap_tcp_timer_start=$(timer)
+		nmap_scan=$(nmap -vv -n $os_scan -Pn $host_timeout $timing "$host" 2>&1)
+		if [ "$debugging" -gt 0 ]; then
+			nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
+			echo "Nmap TCP scan time: $nmap_tcp_timer_end"
+			echo ""
+			echo "$nmap_scan"
+			echo ""
+		fi
+
 		for line in $nmap_scan; do
 
 			test=$(echo $line | grep "tcp.*open")
@@ -343,6 +362,11 @@ if [[ "$hosts" != "" ]]; then
 				if [[ "$line" == *"$NEEDLE"* ]]; then
 					host_is_up="true"
 				fi
+			fi
+
+			NEEDLE="Host is up, received arp-response"
+			if [[ "$line" == *"$NEEDLE"* ]]; then
+				host_is_up="true"
 			fi
 
 			NEEDLE="MAC Address:"
@@ -390,7 +414,12 @@ if [[ "$hosts" != "" ]]; then
 
 		# test for SNMP (separate scan as it's UDP)
 		snmp_status="false"
+		nmap_udp_timer_start=$(timer)
 		command=$(nmap -n -sU -p161 "$timing" --host-timeout 20 "$host" 2>/dev/null | grep "161/udp open")
+		if [ "$debugging" -gt 0 ]; then
+			nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
+			echo "Nmap UDP scan time: $nmap_udp_timer_end"
+		fi
 		if [[ "$command" == *"161/udp open"* ]]; then
 			snmp_status="true"
 			nmap_ports="$nmap_ports,161/udp/snmp"
