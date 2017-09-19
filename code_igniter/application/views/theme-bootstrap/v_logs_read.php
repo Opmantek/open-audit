@@ -44,7 +44,7 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
                     <?php foreach (array('id', 'timestamp', 'type', 'severity', 'pid', 'user', 'server') as $attribute) { ?>
                     <div class="form-group">
-                        <label for="values" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
+                        <label for="values" class="col-sm-3 control-label"><?php echo __(ucwords(str_replace('_', ' ', $attribute))); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
@@ -55,7 +55,7 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
                     <?php foreach (array('ip', 'collection', 'action', 'function', 'status', 'summary') as $attribute) { ?>
                     <div class="form-group">
-                        <label for="values" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
+                        <label for="values" class="col-sm-3 control-label"><?php echo __(ucwords(str_replace('_', ' ', $attribute))); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
@@ -76,7 +76,7 @@ $item = $this->response->data[0];
                     // }
                     ?>
                     <div class="form-group">
-                        <label for="values" class="col-sm-3 control-label">Detail</label>
+                        <label for="values" class="col-sm-3 control-label"><?php echo __('Detail'); ?></label>
                         <div class="col-sm-8 input-group">
                             <pre>
                             <?php print_r(json_decode($item->attributes->detail)); ?>

@@ -37,7 +37,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-        <span class="text-left">Search</span>
+        <span class="text-left"><?php echo __('Search'); ?></span>
         <span class="pull-right" style="padding-right:20px;"><?php echo $this->response->meta->total . ' results'; ?></span>
         </h3>
     </div>

@@ -38,7 +38,7 @@
         <div class="panel-heading clearfix">
             <div class="panel-title clearfix">
                 <div class="navbar-left">
-                Resources
+                <?php echo __('Resources'); ?>
                 </div>
             </div>
         </div>

@@ -43,21 +43,21 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
+                        <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" name="data[attributes][type]" id="data[attributes][type]">
                                 <option value='Airforce'><?php echo __('Airforce'); ?></option>
@@ -130,7 +130,7 @@
                     foreach ($attributes as $attribute) {
                     ?>
                     <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucfirst($attribute); ?></label>
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" value="" >
                         </div>
@@ -145,23 +145,23 @@
                     foreach ($attributes as $attribute) {
                     ?>
                     <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo ucfirst($attribute); ?></label>
+                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
                         <div class="col-sm-6">
                             <div class="col-sm-12 input-group">
                                 <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" value="">
                             </div>
                         </div>
                         <?php if ($attribute == 'geo') { ?>
-                            <button type="button" id="locations_geocode_c" name="locations_geocode_c" class="locations_geocode_c btn btn-primary">Create</button>
+                            <button type="button" id="locations_geocode_c" name="locations_geocode_c" class="locations_geocode_c btn btn-primary"><?php echo __('Create'); ?></button>
                         <?php } ?>
                         <?php if ($attribute == 'latitude') { ?>
-                            <button type="button" id="locations_latlong_c" name="locations_latlong_c" class="locations_latlong_c btn btn-primary">Get Lat/Long</button>
+                            <button type="button" id="locations_latlong_c" name="locations_latlong_c" class="locations_latlong_c btn btn-primary"><?php echo __('Get Lat/Long'); ?></button>
                         <?php } ?>
                     </div>
                     <?php } ?>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-2 control-label">Edited By</label>
+                        <label for="data[attributes][edited_by]" class="col-sm-2 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-6">
                             <div class="col-sm-12 input-group">
                                 <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
@@ -170,7 +170,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-2 control-label">Edited Date</label>
+                        <label for="data[attributes][edited_date]" class="col-sm-2 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-6">
                             <div class="col-sm-12 input-group">
                                 <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
@@ -186,7 +186,7 @@
                     <div class="col-sm-4">
                         <div class="col-sm-8 input-group">
                             <input type="hidden" value="locations" id="data[type]" name="data[type]" />
-                            <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
                 </div>

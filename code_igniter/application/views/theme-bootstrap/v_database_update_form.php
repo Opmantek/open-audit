@@ -54,10 +54,10 @@ if (($this->config->item('display_version') != $this->config->item('web_display_
 }
 
 if ($this->config->item('display_version') != $this->config->item('web_display_version') and ($this->m_users->get_user_permission($this->user->id, 'database', 'u') or $this->config->config['internal_version'] < 20160904)) {
-    
+
     $upgrade_message = '<div class="form-group"><label for="display_version" class="col-sm-3 control-label">' . __('Database Upgrade Required') . '</label><div class="col-sm-8 input-group">';
 
-    $upgrade_message .= '<button class="btn btn-warning" type="submit" name="submit" id="submit">Upgrade</button>';
+    $upgrade_message .= '<button class="btn btn-warning" type="submit" name="submit" id="submit">'. __('Upgrade') . '</button>';
 
     $upgrade_message .= '</div></div>';
 
@@ -70,7 +70,7 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left">Database Upgrade</span>
+                <span class="text-left"><?php echo __('Database Upgrade'); ?></span>
                 <span class="pull-right"></span>
             </h3>
         </div>
@@ -79,7 +79,7 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
             <div class="row">
                 <div class="col-md-6">
 
-                    
+
                     <?php echo $upgrade_message; ?>
 
 

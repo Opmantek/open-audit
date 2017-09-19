@@ -37,7 +37,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <div class="panel-title">
-            <span class="text-left">Errors</span>
+            <span class="text-left"><?php echo __('Errors'); ?></span>
         </div>
     </div>
     <div class="panel-body">

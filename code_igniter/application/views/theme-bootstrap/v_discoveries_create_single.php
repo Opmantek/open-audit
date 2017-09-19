@@ -61,7 +61,7 @@ foreach ($address_array as $key => $value) {
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][subnet]" class="col-sm-4 control-label">Device IP Address</label>
+                        <label for="data[attributes][subnet]" class="col-sm-4 control-label"><?php echo __('Device IP Address'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input required type="text" class="form-control" id="data[attributes][other][subnet]" name="data[attributes][other][subnet]" placeholder="192.168.1.1"/>
                         </div>
@@ -70,11 +70,11 @@ foreach ($address_array as $key => $value) {
 
                     <input type="hidden" value="" id="data[attributes][network_address]" name="data[attributes][network_address]" />
                     <div class="form-group">
-                        <label for="network_address_select" class="col-sm-4 control-label">Network Address</label>
+                        <label for="network_address_select" class="col-sm-4 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-7 input-group">
                             <select required class="form-control" id="network_address_select" name="network_address_select">
-                                <option value=''></option>
-                                <option value='other'>Other</option>
+                                <option value='' label=' '></option>
+                                <option value='other'><?php echo __('Other') ;?></option>
                                 <?php
                                 foreach ($network_address_array as $key => $value) {
                                     if ($network_address != '') {
@@ -86,14 +86,14 @@ foreach ($address_array as $key => $value) {
                         </div>
                     </div>
                     <div class="form-group" id="network_address_other_div" style="display:none;">
-                        <label for="network_address_other" class="col-sm-4 control-label">Network Address</label>
+                        <label for="network_address_other" class="col-sm-4 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input required type="text" class="form-control" id="network_address_other" name="network_address_other" value="http://YOUR_SERVER/open-audit/">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][devices_assigned_to_org]" class="col-sm-4 control-label">Assign devices to Org</label>
+                        <label for="data[attributes][devices_assigned_to_org]" class="col-sm-4 control-label"><?php echo __('Assign devices to Org'); ?></label>
                         <div class="col-sm-7 input-group">
                             <select class="form-control" id="data[attributes][devices_assigned_to_org]" name="data[attributes][devices_assigned_to_org]">
                                 <option value="" label=" "></option>
@@ -107,7 +107,7 @@ foreach ($address_array as $key => $value) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][devices_assigned_to_location]" class="col-sm-4 control-label">Assign devices to Location</label>
+                        <label for="data[attributes][devices_assigned_to_location]" class="col-sm-4 control-label"><?php echo __('Assign devices to Location'); ?></label>
                         <div class="col-sm-7 input-group">
                             <select class="form-control" id="data[attributes][devices_assigned_to_location]" name="data[attributes][devices_assigned_to_location]">
                                 <option value="" label=" "></option>
@@ -126,7 +126,7 @@ foreach ($address_array as $key => $value) {
                             <input type="hidden" value="subnet" id="data[attributes][type]" name="data[attributes][type]" />
                             <input type="hidden" value="y" id="data[attributes][other][single]" name="data[attributes][other][single]" />
                             <input type="hidden" value="discoveries" id="data[type]" name="data[type]" />
-                            <button tabindex="10" id="submit" name="submit" type="submit" class="btn btn-default">Execute</button>
+                            <button tabindex="10" id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Execute'); ?></button>
                         </div>
                     </div>
 
@@ -134,13 +134,13 @@ foreach ($address_array as $key => $value) {
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][credentials][windows_username]" class="col-sm-4 control-label">Windows Username</label>
+                        <label for="data[attributes][credentials][windows_username]" class="col-sm-4 control-label"><?php echo __('Windows Username'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input type="text" class="form-control" id="data[attributes][credentials][windows_username]" name="data[attributes][credentials][windows_username]" placeholder="user@domain.org"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][credentials][windows_password]" class="col-sm-4 control-label">Windows Password</label>
+                        <label for="data[attributes][credentials][windows_password]" class="col-sm-4 control-label"><?php echo __('Windows Password'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input type="password" class="form-control" id="data[attributes][credentials][windows_password]" name="data[attributes][credentials][windows_password]"/>
                         </div>
@@ -148,13 +148,13 @@ foreach ($address_array as $key => $value) {
                     <br />
 
                     <div class="form-group">
-                        <label for="data[attributes][credentials][ssh_username]" class="col-sm-4 control-label">SSH Username</label>
+                        <label for="data[attributes][credentials][ssh_username]" class="col-sm-4 control-label"><?php echo __('SSH Username'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input type="text" class="form-control" id="data[attributes][credentials][ssh_username]" name="data[attributes][credentials][ssh_username]" placeholder="username"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][credentials][ssh_password]" class="col-sm-4 control-label">SSH Password</label>
+                        <label for="data[attributes][credentials][ssh_password]" class="col-sm-4 control-label"><?php echo __('SSH Password'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input type="password" class="form-control" id="data[attributes][credentials][ssh_password]" name="data[attributes][credentials][ssh_password]"/>
                         </div>
@@ -162,14 +162,14 @@ foreach ($address_array as $key => $value) {
                     <br />
 
                     <div class="form-group">
-                        <label for="data[attributes][credentials][snmp_v1_community]" class="col-sm-4 control-label">SNMP Community (v1)</label>
+                        <label for="data[attributes][credentials][snmp_v1_community]" class="col-sm-4 control-label"><?php echo __('SNMP Community (v1)'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input type="text" class="form-control" id="data[attributes][credentials][snmp_v1_community]" name="data[attributes][credentials][snmp_v1_community]" placeholder="public"/>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][credentials][snmp_v2_community]" class="col-sm-4 control-label">SNMP Community (v2)</label>
+                        <label for="data[attributes][credentials][snmp_v2_community]" class="col-sm-4 control-label"><?php echo __('SNMP Community (v2'); ?>)</label>
                         <div class="col-sm-7 input-group">
                             <input type="text" class="form-control" id="data[attributes][credentials][snmp_v2_community]" name="data[attributes][credentials][snmp_v2_community]" placeholder="public"/>
                         </div>

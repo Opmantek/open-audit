@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                        <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
                                 <?php
@@ -83,7 +83,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
@@ -97,7 +97,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="network_address" class="col-sm-3 control-label">Network Address</label>
+                        <label for="network_address" class="col-sm-3 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="network_address" name="network_address" value="<?php echo htmlspecialchars($item->attributes->network_address, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -109,7 +109,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="devices_assigned_to_org" class="col-sm-3 control-label">Assign devices to Org</label>
+                        <label for="devices_assigned_to_org" class="col-sm-3 control-label"><?php echo __('Assign devices to Org'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="devices_assigned_to_org" name="devices_assigned_to_org" disabled>
                                 <option value="" label=" "></option>
@@ -130,7 +130,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="devices_assigned_to_location" class="col-sm-3 control-label">Assign devices to Location</label>
+                        <label for="devices_assigned_to_location" class="col-sm-3 control-label"><?php echo __('Assign devices to Location'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="devices_assigned_to_location" name="devices_assigned_to_location" disabled>
                                 <option value="" label=" "></option>
@@ -151,28 +151,28 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="updated_on" class="col-sm-3 control-label">Last Run</label>
+                        <label for="updated_on" class="col-sm-3 control-label"><?php echo __('Last Run'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="updated_on" name="updated_on" value="<?php echo htmlspecialchars($item->attributes->last_run, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="complete" class="col-sm-3 control-label">Complete</label>
+                        <label for="complete" class="col-sm-3 control-label"><?php echo __('Complete'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="complete" name="complete" value="<?php echo htmlspecialchars($item->attributes->complete, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -189,7 +189,7 @@ $item = $this->response->data[0];
                     <?php
                     if ($item->attributes->type == 'subnet') { ?>
                     <div class="form-group">
-                        <label for="other.subnet" class="col-sm-3 control-label">Subnet</label>
+                        <label for="other.subnet" class="col-sm-3 control-label"><?php echo __('Subnet'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="other.subnet" name="other.subnet" value="<?php echo htmlspecialchars($item->attributes->other->subnet, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -203,7 +203,7 @@ $item = $this->response->data[0];
                     }
                     if ($item->attributes->type == 'active directory') { ?>
                     <div class="form-group">
-                        <label for="other.ad_server" class="col-sm-3 control-label">AD Server</label>
+                        <label for="other.ad_server" class="col-sm-3 control-label"><?php echo __('AD Server'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="other.ad_server" name="other.ad_server" value="<?php echo htmlspecialchars($item->attributes->other->ad_server, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -214,7 +214,7 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="other.ad_domain" class="col-sm-3 control-label">AD Domain</label>
+                        <label for="other.ad_domain" class="col-sm-3 control-label"><?php echo __('AD Domain'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="other.ad_domain" name="other.ad_domain" value="<?php echo htmlspecialchars($item->attributes->other->ad_domain, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -229,18 +229,18 @@ $item = $this->response->data[0];
                     <?php
                     if ($item->attributes->complete == 'n') { ?>
                         <div class="form-group">
-                            <label for="refresh" class="col-sm-3 control-label">Not Complete</label>
+                            <label for="refresh" class="col-sm-3 control-label"><?php echo __('Not Complete'); ?></label>
                             <div class="col-sm-8 input-group">
-                                <a class="btn btn-sm btn-warning" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>">Refresh</a>
+                                <a class="btn btn-sm btn-warning" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo __('Refresh'); ?></a>
                             </div>
                         </div>
                     <?php
                     } else {
                     ?>
                     <div class="form-group">
-                        <label for="execute" class="col-sm-3 control-label">Execute</label>
+                        <label for="execute" class="col-sm-3 control-label"><?php echo __('Execute'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute">Execute</a>
+                            <a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute"><?php echo __('Execute'); ?></a>
                         </div>
                     </div>
                     <?php } ?>
@@ -253,7 +253,7 @@ $item = $this->response->data[0];
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Command Line</span>
+            <span class="text-left"><?php echo __('Command Line'); ?></span>
         </h3>
     </div>
 
@@ -269,7 +269,7 @@ $item = $this->response->data[0];
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Log</span>
+            <span class="text-left"><?php echo __('Log'); ?></span>
             <span class="pull-right"></span>
         </h3>
     </div>
@@ -280,14 +280,14 @@ $item = $this->response->data[0];
                 <thead>
                     <tr>
                         <th class="text-center"><?php echo __('ID')?></th>
-                        <th>Timestamp</th>
-                        <th>File</th>
-                        <th>Function</th>
-                        <th>Message</th>
-                        <th>Duration</th>
-                        <th>Status</th>
-                        <th>Output</th>
-                        <th>Command</th>
+                        <th><?php echo __('Timestamp'); ?></th>
+                        <th><?php echo __('File'); ?></th>
+                        <th><?php echo __('Function'); ?></th>
+                        <th><?php echo __('Message'); ?></th>
+                        <th><?php echo __('Duration'); ?></th>
+                        <th><?php echo __('Status'); ?></th>
+                        <th><?php echo __('Output'); ?></th>
+                        <th><?php echo __('Command'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -311,4 +311,3 @@ $item = $this->response->data[0];
         </div>
     </div>
 </div>
-

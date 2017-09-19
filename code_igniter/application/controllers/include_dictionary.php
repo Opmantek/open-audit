@@ -36,7 +36,7 @@ $link = 'For more detailed information, here is a link to the <em>' . $table . '
 $link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . $table . '">Knowledge Base</a>.';
 $purchase_link = '<strong>To upgrade to an Enterprise License, click <a href="#" id="buy_more_licenses" data-toggle="modal" data-target="#myModalLicense">HERE</a>.</strong>';
 
-$id = 'The internal identifer column in the database (read only).';
+$id = 'The internal identifier column in the database (read only).';
 $name = 'The name given to this item. Ideally it should be unique.';
 $org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
 $description = 'Your description of this item.';
@@ -134,10 +134,10 @@ Define a query and have your external program call the API and retrieve the data
 
 if ($table == 'collectors') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Collectors. Have a single Open-AudIT server control many other servers that perform discovery and collect device information.';
-    $dictionary->about = '<p>The Collectors feature enables you to easily manage many \'collector\' computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
+    $dictionary->about = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
         It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->marketing = '<p>The Collectors feature enables you to easily manage many \'collector\' computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
+    $dictionary->marketing = '<p>The Collectors feature enables you to easily manage many "collector" computers that perform network discovery. All Collectors are centrally controlled from the Server. The only required network ports between the Collector and the Server are 80 and/or 443.<br /><br />
         It makes managing disparate networks quick, easy and simple. Open-AudIT Enterprise licensees get a single collector license included and have the option to buy more as required..<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
@@ -180,7 +180,7 @@ if ($table == 'credentials') {
     Configuring credentials should be one of the first things you do after installing Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Credentials are encrypted when stored in the database.<br /><br />
-    When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no \'s\' in the table name).<br /><br />
+    When a Discovery is run, a device has its credentials retrieved and tested for connection first (from the <code>credential</code> table). If these fail, then credentials associated with the given Org <code>credentials.org_id</code> is also tested against the device. Working credentials are stored at an individual device level in the credential table (note - no "s" in the table name).<br /><br />
     SSH keys are tested before SSH username / password. When testing SSH, credentials will also be marked as working with sudo or being root.<br /><br /></p>
         ';
     $dictionary->columns->id = $id;
@@ -421,11 +421,11 @@ if ($table == 'networks') {
 
 if ($table == 'orgs') {
     $dictionary->sentence = 'Open-AudIT provides multi-tenancy out of the box!';
-    $dictionary->marketing = 'Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    $dictionary->marketing = '<p>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br /><br />
     Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = 'Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    $dictionary->about = '<p>Orgs (organisations) in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     Most items in Open-AudIT are assigned to an Org. Devices, Locations, Networks, etc.<br /><br />
     Orgs can have child Orgs. Think of an organisational chart (tree) structure. If a user has access to a specific Org, they also have access to that Orgs descendants.<br /><br />
     ' . $link . '<br /><br /></p>';
@@ -441,20 +441,20 @@ if ($table == 'orgs') {
 
 if ($table == 'queries') {
     $dictionary->sentence = 'Open-AudIT provides many built-in queries and makes it simple to create your own.';
-    $dictionary->marketing = 'Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
+    $dictionary->marketing = '<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = 'Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
+    $dictionary->about = '<p>Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Query Creation Rules<br /><br />
 The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT system.id AS `system.id`, system.name AS `system.name` ...</code>.<br /><br />
 The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />
-An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of \'Linux\' - <br /><code>SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, <br />system.name AS `system.name`, system.os_name AS `system.os_name` FROM<br /> system WHERE @filter AND system.os_group = \'Linux\'</code><br /><br /></p>';
+An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of "Linux" - <br /><code>SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, <br />system.name AS `system.name`, system.os_name AS `system.os_name` FROM<br /> system WHERE @filter AND system.os_group = "Linux"</code><br /><br /></p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = $description;
     $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
-    $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the \'Reports\' menu in the web interface.';
+    $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Reports" menu in the web interface.';
     $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
@@ -462,7 +462,7 @@ An example query SQL showing attributes on devices that have an <code>os_group</
 
 if ($table == 'reports') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.';
-    $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen \'over time\'. All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>\'over time\'</i>.<br /><br />
+    $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen "over time". All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>"over time\</i>.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Open-AudIT Professional and Enterprise make report creation effortless through Enhanced Reporting features like time-based reports, historical reports, and multi-query based reporting. Reports can be created dynamically and interacted with on screen, or exported to CVS for further analysis.<br /><br />
 Simply Select which types of devices you want to be exported, which queries to run, and the format you want. Export to CSV and analyze offline, or import into your favorite third part data visualizer. The power is in your hands with Open-AudIT Enterprise Enhanced Reporting.<br /><br />
@@ -472,7 +472,7 @@ Simply Select which types of devices you want to be exported, which queries to r
 
 if ($table == 'roles') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes User Roles, full role-based access control (RBAC) allowing fine-grained control over each user\'s experience.';
-    $dictionary->about = 'Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    $dictionary->about = '<p>Roles in Open-AudIT are a key item. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Get the complete Open-AudIT Enterprise experience. Creating roles allows fine grained control over what your users can do within Open-AudIT.<br /><br />
     The primary method for authorisation (what a user can do) is based on the users Roles. Default roles are defined as admin, org_admin, reporter and user. Each role has a set of permissions (Create, Read, Update, Delete) for each endpoint. The ability to define additional roles and edit existing roles is enabled in Open-AudIT Enterprise.<br /><br />
@@ -484,16 +484,16 @@ if ($table == 'roles') {
     $dictionary->columns->name = $name;
     $dictionary->columns->description = $description;
     $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Roles which they are assigned. If a user is in this LDAP group, they are assigned this role.';
-    $dictionary->columns->permissions = 'This attribute is stored as a JSON object. It is the result of the table above and contained the endpoint name along with \'c\', \'r\', \'u\' and/or \'d\' which represent create, read, update and delete. These are the actions a user can perform on items from the particular endpoint.';
+    $dictionary->columns->permissions = 'This attribute is stored as a JSON object. It is the result of the table above and contained the endpoint name along with "c", "r", "u" and/or "d" which represent create, read, update and delete. These are the actions a user can perform on items from the particular endpoint.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
 
 if ($table == 'servers') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Servers and Collectors.';
-    $dictionary->marketing = ' ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = '<p> ' . $link . '<br /><br /></p>';
     $dictionary->about = '';
-    $dictionary->notes = '<p>The server that controls <i>this</i> Open-AudIT will be stored in the configuration under the \'servers\' attribute as a JSON document.<br /><br /></p>';
+    $dictionary->notes = '<p>The server that controls <i>this</i> Open-AudIT will be stored in the configuration under the "servers" attribute as a JSON document.<br /><br /></p>';
     $dictionary->columns->host = 'The IP address or resolvable hostname of the server.';
     $dictionary->columns->user = 'The account name on the server that is used to log on.';
     $dictionary->columns->password = 'A hashed password that enables logon.';
@@ -504,7 +504,7 @@ if ($table == 'scalability') {
     $dictionary->sentence = 'Open-AudIT is incredibly resource efficient. Some customers audit over 30,000 devices on a single instance!';
     $dictionary->about = '<p><br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->marketing = '<p>You don\'t need a large amount of computing power to run Open-AudIT. A server of no particular importance can be used. Open-AudIT scales incredibly well. Audit 10,000 PCs on a desktop class computer - sure! Give it some more power and Open-AudIT flys! And because we use Open Source components (Apache and MySQL) there\'s no need to be concerned about licensing expensive and proprietory software \'by the core\'.<br /><br />
+    $dictionary->marketing = '<p>You don\'t need a large amount of computing power to run Open-AudIT. A server of no particular importance can be used. Open-AudIT scales incredibly well. Audit 10,000 PCs on a desktop class computer - sure! Give it some more power and Open-AudIT flys! And because we use Open Source components (Apache and MySQL) there\'s no need to be concerned about licensing expensive and proprietory software "by the core".<br /><br />
     Open-AudIT has three main components. The database, the web server and the audit host. Typically in smaller organisations these are installed on the same server, but this doesn\'t need to be the case if a large number of devices are being audited.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
@@ -536,9 +536,9 @@ if ($table == 'scripts') {
 
 if ($table == 'summaries') {
     $dictionary->sentence = 'Summaries provide drilldown reporting capabilities. Simple, intuitive, powerful.';
-    $dictionary->marketing = 'Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
+    $dictionary->marketing = '<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = 'Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
+    $dictionary->about = '<p>Open-AudIT comes with many summaries inbuilt. If you require a specific summary and none of the pre-packaged summaries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>A summary will display a list of items, grouped by the distinct values of the attribute specified by the <code>table</code> and <code>column</code> attributes.<br /><br />
     When a summary is executed, the result will be a list of distinct values for that <code>table</code> and <code>column</code>. There will be links on the values that allow the user to see the matching devices.<br /><br />
@@ -549,8 +549,8 @@ if ($table == 'summaries') {
     $dictionary->columns->table = 'The specific database table.';
     $dictionary->columns->column = 'The specific database column from the specified database table.';
     $dictionary->columns->extra_columns = 'The fully qualified table.column. Multiple may be provided, separated by a comma.';
-    $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the \'Reports\' menu in the web interface.';
-    $dictionary->columns->menu_category = 'Which sub-menu should we diplay this query in.';
+    $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Reports" menu in the web interface.';
+    $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
@@ -590,7 +590,7 @@ Create individual discovery schedules for each subnet or AD controller, add in r
     $dictionary->columns->day_of_week = 'The day of the week when this task should execute (* for every day).';
     $dictionary->columns->delay_minutes = 'Delay the start of this task by X minutes (not currently implemented).';
     $dictionary->columns->expire_minutes = 'Do not run for longer than X minutes (not currently implemented).';
-    $dictionary->columns->first_run = 'The timestamp after which, this task should run. IE - Run a task after the 1st June 2017 at 10am, set it to \'2017-06-01 09:59:00\'. This value should be zero padded (ie, 09, not 9). This value defaults to \'2001-01-01 00:00:00\' which means by default, a scheduled task will run at next scheduled execution time.';
+    $dictionary->columns->first_run = 'The timestamp after which, this task should run. IE - Run a task after the 1st June 2017 at 10am, set it to "2017-06-01 09:59:00". This value should be zero padded (ie, 09, not 9). This value defaults to "2001-01-01 00:00:00" which means by default, a scheduled task will run at next scheduled execution time.';
     $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
@@ -599,16 +599,16 @@ Create individual discovery schedules for each subnet or AD controller, add in r
 
 if ($table == 'users') {
     $dictionary->sentence = 'Open-AudIT Enterprise includes Users &amp; Roles, full role-based access control (RBAC) allowing fine-grained control over each user\'s experience.';
-    $dictionary->marketing = 'Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    $dictionary->marketing = '<p>Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = 'Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned \'Roles\' that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users \'orgs\' and \'roles\' define what they can and cannot do within Open-AudIT.<br /><br />
+    $dictionary->about = '<p>Users and Roles in Open-AudIT are key items. A user has a primary Org as well as a list of Orgs they can access. A user combines this with a list of assigned "Roles" that define what actions they can take on items assigned to the Orgs they have access to. The combination of a users "orgs" and "roles" define what they can and cannot do within Open-AudIT.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '<p>If the following conditions are met:<br />
+    $dictionary->notes = 'If the following conditions are met:<br />
     <ul><li>a Role has an assigned ad_group</li>
     <li>an Org has an assigned ad_group</li>
-    <li>an LDAP Server has use_roles set to \'y\'</li>
+    <li>an LDAP Server has use_roles set to "y"</li>
     <li>a user exists in LDAP (be it Active Directory or OpenLDAP) and is in the assigned ad_groups</li></ul>
-    That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br /><br /></p>';
+    That user can log on to Open-AudIT without an account in Open-AudIT needing to be created. Open-AudIT will query the LDAP in question and if the user is in the required groups but not in Open-AudIT, their user attributes (name, full name, email,  roles, orgs, etc) within Open-AudIT will be automatically populated and they will be logged on.<br /><br />';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -616,7 +616,7 @@ if ($table == 'users') {
     $dictionary->columns->full_name = '';
     $dictionary->columns->email = '';
     $dictionary->columns->lang = 'The language to translate the web interface into for the user.';
-    $dictionary->columns->active = 'Is this account active? If set to \'n\', the user cannot logon.';
+    $dictionary->columns->active = 'Is this account active? If set to "n", the user cannot logon.';
     $dictionary->columns->roles = 'A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.';
     $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>.';
     $dictionary->columns->edited_by = $edited_by;

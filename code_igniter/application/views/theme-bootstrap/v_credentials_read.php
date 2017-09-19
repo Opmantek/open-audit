@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                        <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
                                 <?php
@@ -83,7 +83,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -95,21 +95,21 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="type" class="col-sm-3 control-label">Type</label>
+                        <label for="type" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="type" name="type" value="<?php echo htmlspecialchars($item->attributes->type, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
@@ -120,7 +120,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'ssh' or $item->attributes->type == 'ssh_key' or $item->attributes->type == 'windows') { ?>
                     <div class="form-group">
-                        <label for="credentials.username" class="col-sm-3 control-label">Username</label>
+                        <label for="credentials.username" class="col-sm-3 control-label"><?php echo __('Username'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="credentials.username" name="credentials.username" value="<?php echo htmlspecialchars($item->attributes->credentials->username, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -134,7 +134,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'ssh' or $item->attributes->type == 'windows') { ?>
                     <div class="form-group">
-                        <label for="credentials.password" class="col-sm-3 control-label">Password</label>
+                        <label for="credentials.password" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo htmlspecialchars($item->attributes->credentials->password, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -148,7 +148,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'ssh_key') { ?>
                     <div class="form-group">
-                        <label for="credentials.password" class="col-sm-3 control-label">Password (optional)</label>
+                        <label for="credentials.password" class="col-sm-3 control-label"><?php echo __('Password (optional)'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo @htmlspecialchars($item->attributes->credentials->password, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -159,7 +159,7 @@ $item = $this->response->data[0];
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="credentials.community" class="col-sm-3 control-label">SSH Key</label>
+                        <label for="credentials.community" class="col-sm-3 control-label"><?php echo __('SSH Key'); ?></label>
                         <div class="col-sm-8 input-group">
                             <textarea tabindex="4" class="form-control" rows="3" id="credentials.ssh_key" name="credentials.ssh_key" placeholder="Key Not Shown" disabled></textarea>
                         </div>
@@ -168,7 +168,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp') { ?>
                     <div class="form-group">
-                        <label for="credentials.community" class="col-sm-3 control-label">Community</label>
+                        <label for="credentials.community" class="col-sm-3 control-label"><?php echo __('Community'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="password" class="form-control" id="credentials.community" name="credentials.community" value="<?php echo htmlspecialchars($item->attributes->credentials->community, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -182,7 +182,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.security_name" class="col-sm-3 control-label">User / Security Name</label>
+                        <label for="credentials.security_name" class="col-sm-3 control-label"><?php echo __('User / Security Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="credentials.security_name" name="credentials.security_name" value="<?php echo htmlspecialchars($item->attributes->credentials->security_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -196,7 +196,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.security_level" class="col-sm-3 control-label">Security Level</label>
+                        <label for="credentials.security_level" class="col-sm-3 control-label"><?php echo __('Security Level'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="credentials.security_level" name="credentials.security_level" disabled>
                                 <option value='noAuthNoPriv' <?php if ($item->attributes->credentials->security_level == 'noAuthNoPriv') { echo 'selected '; } ?>>noAuthNoPriv</option>
@@ -214,7 +214,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.authentication_protocol" class="col-sm-3 control-label">Authentication Protocol</label>
+                        <label for="credentials.authentication_protocol" class="col-sm-3 control-label"><?php echo __('Authentication Protocol'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="credentials.authentication_protocol" name="credentials.authentication_protocol" disabled>
                                 <option value='MD5' <?php if ($item->attributes->credentials->authentication_protocol == 'MD5') { echo 'selected '; } ?>>MD5</option>
@@ -231,7 +231,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.authentication_passphrase" class="col-sm-3 control-label">User / Authentication Passphrase</label>
+                        <label for="credentials.authentication_passphrase" class="col-sm-3 control-label"><?php echo __('User / Authentication Passphrase'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="password" class="form-control" id="credentials.authentication_passphrase" name="credentials.authentication_passphrase" value="<?php echo htmlspecialchars($item->attributes->credentials->authentication_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -245,7 +245,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.privacy_protocol" class="col-sm-3 control-label">Privacy Protocol</label>
+                        <label for="credentials.privacy_protocol" class="col-sm-3 control-label"><?php echo __('Privacy Protocol'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="credentials.privacy_protocol" name="credentials.privacy_protocol" disabled>
                                 <option value='AES' <?php if ($item->attributes->credentials->privacy_protocol == 'AES') { echo 'selected '; } ?>>AES</option>
@@ -262,7 +262,7 @@ $item = $this->response->data[0];
 
                     <?php if ($item->attributes->type == 'snmp_v3') { ?>
                     <div class="form-group">
-                        <label for="credentials.privacy_passphrase" class="col-sm-3 control-label">Privacy Passphrase</label>
+                        <label for="credentials.privacy_passphrase" class="col-sm-3 control-label"><?php echo __('Privacy Passphrase'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="password" class="form-control" id="credentials.privacy_passphrase" name="credentials.privacy_passphrase" value="<?php echo htmlspecialchars($item->attributes->credentials->privacy_passphrase, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>

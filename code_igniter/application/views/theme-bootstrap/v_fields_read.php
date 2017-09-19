@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                        <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
                                 <?php
@@ -83,7 +83,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="type" class="col-sm-3 control-label">Type</label>
+                        <label for="type" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="type" name="type" disabled>
                                 <option value="varchar"<?php if ($item->attributes->type == 'varchar') { echo " selected"; } ?>><?php echo __('VarChar'); ?></option>
@@ -101,7 +101,7 @@ $item = $this->response->data[0];
                     if ($item->attributes->type == 'list') {
                     ?>
                     <div class="form-group">
-                        <label for="values" class="col-sm-3 control-label">Values</label>
+                        <label for="values" class="col-sm-3 control-label"><?php echo __('Values'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="values" name="values" value="<?php echo htmlspecialchars($item->attributes->values, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -114,7 +114,7 @@ $item = $this->response->data[0];
                     <?php } ?>
 
                     <div class="form-group">
-                        <label for="placement" class="col-sm-3 control-label">Placement</label>
+                        <label for="placement" class="col-sm-3 control-label"><?php echo __('Placement'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="placement" name="placement" disabled>
                                 <option value="custom"<?php if ($item->attributes->placement == 'custom') { echo " selected"; } ?>><?php echo __('Custom'); ?></option>
@@ -130,7 +130,7 @@ $item = $this->response->data[0];
 
 
                     <div class="form-group">
-                        <label for="group_id" class="col-sm-3 control-label">Group</label>
+                        <label for="group_id" class="col-sm-3 control-label"><?php echo __('Group'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="group_id" name="group_id" disabled>
                                 <?php

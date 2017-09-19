@@ -98,30 +98,30 @@ $item = $this->response->data[0];
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="export_csv" class="col-sm-3 control-label">Export Data</label>
+                        <label for="export_csv" class="col-sm-3 control-label"><?php echo __('Export Data'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=csv&sub_resource=export table">to CSV</a>
+                            <a id="export_csv" name="export_csv" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=csv&sub_resource=export table"><?php echo __('to CSV'); ?></a>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="export_sql" class="col-sm-3 control-label">Export Data</label>
+                        <label for="export_sql" class="col-sm-3 control-label"><?php echo __('Export Data'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=sql&sub_resource=export table">to SQL</a>
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=sql&sub_resource=export table"><?php echo __('to SQL'); ?></a>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="export_sql" class="col-sm-3 control-label">Export Data</label>
+                        <label for="export_sql" class="col-sm-3 control-label"><?php echo __('Export Data'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=xml&sub_resource=export table">to XML</a>
+                            <a id="export_sql" name="export_sql" class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute&format=xml&sub_resource=export table"><?php echo __('to XML'); ?></a>
                         </div>
                     </div>
                     <?php $tables = ' audit_log change_log chart credentials discoveries discovery_log edit_log graph networks oa_user_sessions '; ?>
                     <?php if (strpos($tables, ' ' . $item->attributes->name . ' ') !== false) { ?>
                         <?php if ($this->m_users->get_user_permission('', 'database', 'd')) { ?>
                         <div class="form-group">
-                            <label for="delete_all" class="col-sm-3 control-label">Delete All Data</label>
+                            <label for="delete_all" class="col-sm-3 control-label"><?php echo __('Delete All Data'); ?></label>
                             <div class="col-sm-8 input-group">
-                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=all">Delete</button>
+                                    <button id="delete_all" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?current=all"><?php echo __('Delete'); ?></button>
                             </div>
                         </div>
                         <?php } ?>

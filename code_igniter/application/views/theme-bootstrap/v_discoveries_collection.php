@@ -49,7 +49,7 @@
                     <?php } ?>
                     <th class="text-center"><?php echo __('Details')?></th>
                     <th><?php echo __('Name')?></th>
-                    <th><?php echo __('Orgsinsation')?></th>
+                    <th><?php echo __('Organisation')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Description')?></th>
                     <th><?php echo __('Last Run')?></th>

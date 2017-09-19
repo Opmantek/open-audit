@@ -62,7 +62,7 @@ $item = $this->response->data[0];
                     <div class="col-md-6">
                         <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                            <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@ $item = $this->response->data[0];
                             </tr>
                         </thead>
                         <tbody>
-                        <?php 
+                        <?php
                         foreach ($item->attributes->columns as $column) {
                             ?>
                             <tr>

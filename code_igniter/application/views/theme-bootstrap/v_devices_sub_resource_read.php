@@ -57,17 +57,17 @@ $export_link = $this->response->links->first . '&';
         $export_link = str_replace('&current=y', '', $export_link);
         $export_link = str_replace('&current=n', '', $export_link);
         $export_link = str_replace('&current=all', '', $export_link);
-        echo '<a href="' . $export_link . 'current=y" role="button" class="btn btn-default">Current</a></button>';
+        echo '<a href="' . $export_link . 'current=y" role="button" class="btn btn-default">'. __('Current') . '</a></button>';
 
         $export_link = str_replace('&current=y', '', $export_link);
         $export_link = str_replace('&current=n', '', $export_link);
         $export_link = str_replace('&current=all', '', $export_link);
-        echo '<a href="' . $export_link . 'current=n" role="button" class="btn btn-default">Non-Current</a></button>';
+        echo '<a href="' . $export_link . 'current=n" role="button" class="btn btn-default">'. __('Non-Current') .'</a></button>';
 
         $export_link = str_replace('&current=all', '', $export_link);
         $export_link = str_replace('&current=y', '', $export_link);
         $export_link = str_replace('&current=n', '', $export_link);
-        echo '<a href="' . $export_link . 'current=all" role="button" class="btn btn-default">All</a></button>';
+        echo '<a href="' . $export_link . 'current=all" role="button" class="btn btn-default">'. __('All') .'</a></button>';
         echo '</div><br /><br />';
     }
     ?>
