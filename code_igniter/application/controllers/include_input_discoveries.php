@@ -67,6 +67,11 @@ if (php_uname('s') != 'Windows NT') {
     $filepath = $this->config->config['base_path'] . '\\other';
 }
 
+# So we can output back to the discovery script, and continue processing
+ignore_user_abort(true);
+set_time_limit(0);
+ob_start();
+
 if (!empty($_POST['data'])) {
     // process the input
     $xml_input = $_POST['data'];
@@ -83,11 +88,19 @@ if (!empty($_POST['data'])) {
     }
     unset($xml_input);
 
+    # So we can output back to the discovery script, and continue processing
+    echo "";
+    header('Connection: close');
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
+    ob_flush();
+    flush();
+
     foreach ($xml->children() as $input) {
         $individual_ip_start = microtime(true);
         $input = (object) $input;
         if (!empty($input->discovery_id)) {
-            $syslog->severity = 6;
+            $syslog->severity = 7;
             $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
             $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
             discovery_log($syslog);
@@ -748,12 +761,14 @@ if (!empty($_POST['data'])) {
 
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
+        $log->severity = 5;
         if (!empty($device->type)) {
             $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
         } else {
             $log->message = "Discovery found an unknown device at IP address $device->ip.";
         }
         discovery_log($log);
+        $log->severity = 7;
 
         # If we are configured as a collector, forward the information to the server
         if ($this->config->config['servers'] !== '') {
@@ -1036,6 +1051,7 @@ if (!empty($_POST['data'])) {
                     break;
                 
                 case 'vmkernel':
+                case 'vmware' :
                     $audit_script = 'audit_esxi.sh';
                     break;
                 
@@ -1132,7 +1148,7 @@ if (!empty($_POST['data'])) {
                 $log->status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
-                return;
+                break;
             }
 
             unset($temp);
@@ -1171,21 +1187,6 @@ if (!empty($_POST['data'])) {
             $log->function = 'discoveries';
             $log->status = 'success';
             $log->severity = 7;
-
-            if ($unlink != '') {
-                $log->command = 'unlink(\'' . $unlink . '\')';
-                $log->message = 'Delete local temporary audit script succeeded';
-                try {
-                    unlink($unlink);
-                } catch (Exception $e) {
-                    $log->message = 'Delete local temporary audit script failed';
-                    $log->status = 'fail';
-                    $log->severity = 4;
-                }
-                discovery_log($log);
-                unset($log->command, $log->message, $log->status);
-                $log->severity = 7;
-            }
 
             # audit anything that's not ESX
             if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
@@ -1268,6 +1269,22 @@ if (!empty($_POST['data'])) {
                     }
                 }
             }
+
+            if ($unlink != '') {
+                $log->command = 'unlink(\'' . $unlink . '\')';
+                $log->message = 'Delete local temporary audit script succeeded';
+                try {
+                    unlink($unlink);
+                } catch (Exception $e) {
+                    $log->message = 'Delete local temporary audit script failed';
+                    $log->status = 'fail';
+                    $log->severity = 4;
+                }
+                discovery_log($log);
+                unset($log->command, $log->message, $log->status);
+                $log->severity = 7;
+            }
+
         } // close the 'skip'
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
         discovery_log($log);

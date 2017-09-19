@@ -284,11 +284,11 @@ if (! function_exists('ssh_command')) {
         unset($ssh);
 
         $log->command_time_to_execute = (microtime(true) - $item_start);
-        if (!empty($result)) {
+        $log->command_output = '';
+        if (!empty($result) and strpos($command, 'audit_esxi') === false) {
             $log->command_output = trim($result);
-        } else {
-            $log->command_output = '';
         }
+
         $log->command = $command;
         $log->command_status = 'success';
         $log->message = 'SSH command';
@@ -530,7 +530,7 @@ if (! function_exists('ssh_audit')) {
             'ddwrt_os_name' => 'cat /etc/motd 2>/dev/null | grep -i DD-WRT',
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
-            'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name"',
+            'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
 
             'dbus_machine_id' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk \'{print $2}\'',
@@ -623,10 +623,10 @@ if (! function_exists('ssh_audit')) {
         }
         unset($device->ubiquiti_model);
 
-        if (!empty($ubuntu_os_codename)) {
-            $device->os_name = $device->os_name . ' (' . $ubuntu_os_codename . ')';
+        if (!empty($device->ubuntu_os_codename)) {
+            $device->os_name = $device->os_name . ' (' . $device->ubuntu_os_codename . ')';
         }
-        unset($ubuntu_os_codename);
+        unset($device->ubuntu_os_codename);
 
         if (!empty($device->redhat_os_name)) {
             $device->os_name = $device->redhat_os_name;

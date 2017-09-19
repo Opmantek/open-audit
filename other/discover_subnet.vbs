@@ -72,6 +72,7 @@ dim nmap_ports
 dim temp
 dim port
 dim program
+dim script_timer : script_timer = Timer
 
 
 ' below we take any command line arguements
@@ -272,6 +273,7 @@ else
 end if
 
 
+command = nmap_path & " -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
 
 log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
 write_log()
@@ -290,12 +292,29 @@ Do Until objExecObject.StdOut.AtEndOfStream
         line_split = split(line)
         hosts = hosts & " " & line_split(4)
     end if
+    if (instr(lcase(line), "nmap done")) then
+        line_split = split(line)
+        hosts_in_subnet = line_split(3)
+    end if
 Loop
 
-hosts = trim(hosts)
-hosts_in_subnet = split(hosts)
-for each host in hosts_in_subnet
+dim hosts_scanned : hosts_scanned = 0
+dim db_log_duration : db_log_duration = 0
+dim db_log_status : db_log_status = ""
+dim db_log_message : db_log_message = ""
+dm host_timer : host_timer = 0
+
+db_log_status = "start"
+db_log_message = "Starting discovery, scanning " & hosts_in_subnet & " IP addresses"
+db_log()
+
+hosts = split(trim(hosts))
+for each host in hosts
+    hosts_scanned = hosts_scanned + 1
+    db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
     if debugging > "0" then wscript.echo "Scanning Host: " & host end if
+    db_log_duration = 0
+    host_timer = Timer
 
     mac_address = ""
     manufacturer = ""
@@ -414,7 +433,10 @@ for each host in hosts_in_subnet
         result = result & " </device>" & vbcrlf
         result_file = result_file & result
 
+        db_log_duration = Timer - host_timer
         if submit_online = "y" then
+            db_log_message = "IP " & host & " responding, submitting."
+            db_log()
             log_entry = "IP " & host & " responding, submitting."
             write_log()
             result = "<devices>" & vbcrlf & result & "</devices>"
@@ -451,6 +473,8 @@ for each host in hosts_in_subnet
     else
         log_entry = "IP " & host & " not responding, ignoring."
         write_log()
+        db_log_message = "IP " & host & " not responding, ignoring."
+        db_log()
     end if ' host_is_up'
 next
 result =          " <device>" & vbcrlf
@@ -538,9 +562,29 @@ end if
 log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " completed"
 write_log()
 
+db_log_message = "Completed discovery, scanned " & hosts_scanned & " IP addresses"
+db_log_duration = Timer - script_timer
+db_log_status = "finish"
+db_log()
+
 
 function get_timestamp()
     get_timestamp = monthname(month(now()), True) & " " & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
+end function
+
+
+
+function db_log()
+    ' set db_log_message (string), db_log_duration (seconds), db_log_status (1 of 256)
+    timestamp = get_timestamp()
+    on error resume next
+        Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+        objHTTP.setTimeouts 5000, 5000, 5000, 120000
+        objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+        objHTTP.Open "POST", "http://localhost/open-audit/index.php/input/logs", FALSE
+        objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=6&pid=" & current_pid & "&ip=127.0.0.1&file=discover_subnet.vbs&message=" & log_entry & "&command_time_to_execute=0&command_status=$status" + vbcrlf
+    on error goto 0
 end function
 
 
@@ -599,4 +643,3 @@ function execute_command()
         end if
     end if
 end function
-

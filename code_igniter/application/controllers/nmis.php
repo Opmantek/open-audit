@@ -148,7 +148,7 @@ class Nmis extends MY_Controller
             $log->severity = 6;
             $log->message = 'NMIS import, importing nodes from ' . $file;
             stdlog($log);
-            $file_handle = fopen($file, 'r');
+            $file_handle = @fopen($file, 'r');
             if (!$file_handle) {
                 log_error('ERR-0016', 'nmis:create - Reading ' . $file);
                 output();
@@ -288,10 +288,10 @@ class Nmis extends MY_Controller
                     $device->credentials->credentials->privacy_passphrase = @$node['privpassword'];
                     $device->credentials->credentials->privacy_protocol = @$node['privprotocol'];
                     $device->credentials->credentials->security_level = 'noAuthNoPriv';
-                    if (!empty($node['authpassword']) and !empty(@$node['authprotocol']) and empty($node['privpassword'])) {
+                    if (!empty($node['authpassword']) and !empty($node['authprotocol']) and empty($node['privpassword'])) {
                         $device->credentials->credentials->security_level = 'authNoPriv';
                     }
-                    if (!empty($node['authpassword']) and !empty(@$node['authprotocol']) and ! empty($node['privpassword']) and ! empty($node['privprotocol'])) {
+                    if (!empty($node['authpassword']) and !empty($node['authprotocol']) and ! empty($node['privpassword']) and ! empty($node['privprotocol'])) {
                         $device->credentials->credentials->security_level = 'authPriv';
                     }
                 }

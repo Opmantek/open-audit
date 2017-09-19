@@ -82,6 +82,10 @@ class input extends CI_Controller
         stdlog($log);
         $log->severity = 7;
 
+        if ($_SERVER['REMOTE_ADDR'] == '::1') {
+            $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        }
+
         if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
             exit;
         }
@@ -166,6 +170,14 @@ class input extends CI_Controller
         stdlog($log);
         $discovery_id = NULL;
         include "include_input_devices.php";
+    }
+
+    public function logs()
+    {
+        if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '::1') {
+            return;
+        }
+        include "include_input_logs.php";
     }
 }
 // End of file input.php

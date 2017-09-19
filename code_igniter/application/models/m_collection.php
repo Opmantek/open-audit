@@ -210,6 +210,35 @@ class M_collection extends MY_Model
             }
         }
 
+
+        if ($collection == 'discoveries') {
+            for ($i=0; $i < count($result); $i++) {
+                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND `command_status` LIKE '% of %' ORDER BY `timestamp` DESC LIMIT 1";
+                $data = array(intval($result[$i]->id));
+                $data_result = $this->run_sql($sql, $data);
+                if (!empty($data_result)) {
+                    $result[$i]->discovered = $data_result[0]->command_status;
+                    $temp = explode(' ', $result[$i]->discovered);
+                    $temp[0] = str_replace('(', '', $temp[0]);
+                    $temp[2] = str_replace(')', '', $temp[2]);
+                    if ($temp[0] == $temp[2]) {
+                        if (strtolower($result[$i]->complete) != 'y') {
+                            $result[$i]->status = 'failed';
+                        } else {
+                            $result[$i]->status = 'complete';
+                        }
+                    } else {
+                            $result[$i]->status = 'in progress';
+                    }
+                } else {
+                    $result[$i]->discovered = '';
+                    $result[$i]->status = 'complete';
+                }
+
+            }
+        }
+
+
         if ($collection == 'licenses' and !empty($result)) {
             foreach ($result as $item) {
                 if ($item->org_descendants == 'n') {

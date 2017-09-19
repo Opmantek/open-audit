@@ -2099,7 +2099,7 @@ if (cint(windows_build_number) < 6000) then
 				if (man_id = "EIZ") then manufacturer = "EIZO" end if
 				if (man_id = "EPI") then manufacturer = "Envision" end if
 				if (man_id = "FCM") then manufacturer = "Funai" end if
-				if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
+				if (man_id = "FUS") then manufacturer = "Fujitsu" end if
 				if (man_id = "GSM") then manufacturer = "LG Electronics" end if
 				if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
 				if (man_id = "HEI") then manufacturer = "Hyundai" end if
@@ -2315,7 +2315,7 @@ if (cint(windows_build_number) >= 6000) then
 			if (man_id = "EIZ") then manufacturer = "EIZO" end if
 			if (man_id = "EPI") then manufacturer = "Envision" end if
 			if (man_id = "FCM") then manufacturer = "Funai" end if
-			if (man_id = "FUS") then manufacturer = "Fujitsu Siemens" end if
+			if (man_id = "FUS") then manufacturer = "Fujitsu" end if
 			if (man_id = "GSM") then manufacturer = "LG Electronics" end if
 			if (man_id = "GWY") then manufacturer = "Gateway 2000" end if
 			if (man_id = "HEI") then manufacturer = "Hyundai" end if
@@ -3073,7 +3073,7 @@ else
 			printer_manufacturer = ""
 			if (instr(1, printer_model, "Aficio", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
 			if (instr(1, printer_model, "AGFA", vbTextCompare) = 1) then printer_manufacturer = "Agfa" end if
-			if (instr(1, printer_model, "Apple Laser", vbTextCompare) = 1) then printer_manufacturer = "Apple" end if
+			if (instr(1, printer_model, "Apple Laser", vbTextCompare) = 1) then printer_manufacturer = "Apple Computer, Inc." end if
 			if (instr(1, printer_model, "Brother", vbTextCompare) = 1) then printer_manufacturer = "Brother" end if
 			if (instr(1, printer_model, "Canon", vbTextCompare) = 1) then printer_manufacturer = "Canon" end if
 			if (instr(1, printer_model, "Color-MFPe", vbTextCompare) = 1) then printer_manufacturer = "Toshiba" end if
@@ -3083,11 +3083,11 @@ else
 			if (instr(1, printer_model, "EasyCoder", vbTextCompare) = 1) then printer_manufacturer = "Intermec" end if
 			if (instr(1, printer_model, "Epson", vbTextCompare) = 1) then printer_manufacturer = "Epson" end if
 			if (instr(1, printer_model, "Fiery", vbTextCompare) = 1) then printer_manufacturer = "Konica Minolta" end if
-			if (instr(1, printer_model, "Fuji", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
-			if (instr(1, printer_model, "FX ApeosPort", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
-			if (instr(1, printer_model, "FX DocuCentre", vbTextCompare) = 1)then printer_manufacturer = "Fuji" end if
-			if (instr(1, printer_model, "FX DocuPrint", vbTextCompare) = 1) then printer_manufacturer = "Fuji" end if
-			if (instr(1, printer_model, "FX DocuWide", vbTextCompare) = 1)  then printer_manufacturer = "Fuji" end if
+			if (instr(1, printer_model, "Fuji", vbTextCompare) = 1) then printer_manufacturer = "Fujitsu" end if
+			if (instr(1, printer_model, "FX ApeosPort", vbTextCompare) = 1) then printer_manufacturer = "Fujitsu" end if
+			if (instr(1, printer_model, "FX DocuCentre", vbTextCompare) = 1)then printer_manufacturer = "Fujitsu" end if
+			if (instr(1, printer_model, "FX DocuPrint", vbTextCompare) = 1) then printer_manufacturer = "Fujitsu" end if
+			if (instr(1, printer_model, "FX DocuWide", vbTextCompare) = 1)  then printer_manufacturer = "Fujitsu" end if
 			if (instr(1, printer_model, "FX Document", vbTextCompare) = 1) then printer_manufacturer = "Xerox" end if
 			if (instr(1, printer_model, "GelSprinter", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
 			if (instr(1, printer_model, "HP ", vbTextCompare) = 1) then printer_manufacturer = "Hewlett Packard" end if
@@ -3095,7 +3095,7 @@ else
 			if (instr(1, printer_model, "Kyocera", vbTextCompare) = 1) then printer_manufacturer = "Kyocera Mita" end if
 			if (instr(1, printer_model, "LAN-Fax", vbTextCompare) = 1) then printer_manufacturer = "Ricoh" end if
 			if (instr(1, printer_model, "Lexmark", vbTextCompare) = 1) then printer_manufacturer = "Lexmark" end if
-			if (instr(1, printer_model, "Mita", vbTextCompare) = 1) then printer_manufacturer = "Kyocera-Mita" end if
+			if (instr(1, printer_model, "Mita", vbTextCompare) = 1) then printer_manufacturer = "Kyocera Mita" end if
 			if (instr(1, printer_model, "Muratec", vbTextCompare) = 1) then printer_manufacturer = "Muratec" end if
 			if (instr(1, printer_model, "Oce", vbTextCompare) = 1) then printer_manufacturer = "Oce" end if
 			if (instr(1, printer_model, "Oki", vbTextCompare) = 1) then printer_manufacturer = "Oki" end if
