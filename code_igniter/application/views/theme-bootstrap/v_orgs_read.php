@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="parent_id" class="col-sm-3 control-label">Parent Org</label>
+                        <label for="parent_id" class="col-sm-3 control-label"><?php echo __('Parent Org'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="data_type form-control" id="parent_id" name="parent_id" disabled>
                                 <option value='' label=' '></option>
@@ -81,14 +81,14 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="ad_group" class="col-sm-3 control-label">AD Group</label>
+                        <label for="ad_group" class="col-sm-3 control-label"><?php echo __('AD Group'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="ad_group" name="ad_group" value="<?php echo $item->attributes->ad_group; ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -100,14 +100,14 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>

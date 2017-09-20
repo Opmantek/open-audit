@@ -136,36 +136,36 @@ unset($this->response->meta->sql);
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left">Debug</span>
+                <span class="text-left"><?php echo __('Debug'); ?></span>
             </h3>
         </div>
         <div class="panel-body">
             <?php
             if (!empty($this->response->errors)) {
                 ?>
-                <h3>Error</h3>
+                <h3><?php echo __('Error'); ?></h3>
                 <pre><?php print_r(json_format(json_encode($this->response->errors))); ?></pre>
             <?php
             } ?>
-            <h3>User</h3>
+            <h3><?php echo __('User'); ?></h3>
             <pre><?php print_r(json_format(json_encode($this->response->meta->user))); ?></pre>
             <?php unset($this->response->meta->user); ?>
             <h3>Meta</h3>
             <pre><?php print_r(json_format(json_encode($this->response->meta))); ?></pre>
-            <h3>SQL Queries</h3>
+            <h3><?php echo __('SQL Queries'); ?></h3>
             <pre><?php
                 $CI =& get_instance();
                 $times = $CI->db->query_times;
                  foreach ($CI->db->queries as $key => $query) {
-                     echo "Query: " . str_replace("\n", " ", $query) . "\n";
-                     echo "Time: " . $times[$key] . "\n\n";
+                     echo __('Query').": " . str_replace("\n", " ", $query) . "\n";
+                     echo __('Time').": " . $times[$key] . "\n\n";
                  }
             ?>
             </pre>
             <?php
             if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
                 ?>
-                <h3>User Session Data</h3>
+                <h3><?php echo __('User Session Data'); ?></h3>
                 <pre><?php print_r($this->session->all_userdata()); ?></pre>
             <?php
             }

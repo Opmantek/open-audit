@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                        <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
                                 <?php
@@ -83,7 +83,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -95,7 +95,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="based_on" class="col-sm-3 control-label">Based On</label>
+                        <label for="based_on" class="col-sm-3 control-label"><?php echo __('Based On'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select id="based_on" name="based_on" onChange="#" class="form-control" disabled>
                                 <option value='audit_aix.sh'<?php if ($item->attributes->based_on === 'audit_aix.sh') { echo ' selected'; } ?>>Audit AIX</option>
@@ -113,14 +113,14 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
@@ -136,7 +136,7 @@ $item = $this->response->data[0];
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <span class="text-left">Configuration Options for <?php echo $item->attributes->name; ?></span>
+                        <span class="text-left"><?php echo __('Configuration Options for').' '; ?> <?php echo $item->attributes->name; ?></span>
                         <span class="pull-right"></span>
                     </h3>
                 </div>
@@ -174,9 +174,9 @@ $item = $this->response->data[0];
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Use</th>
-                                <th>Name</th>
-                                <th>Path</th>
+                                <th><?php echo __('Use'); ?></th>
+                                <th><?php echo __('Name'); ?></th>
+                                <th><?php echo __('Path'); ?></th>
                             </tr>
                         </thead>
                         <tbody>

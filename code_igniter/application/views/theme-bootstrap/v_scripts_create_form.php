@@ -50,21 +50,21 @@ foreach ($this->response->included as $item) {
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -77,14 +77,14 @@ foreach ($this->response->included as $item) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
+                        <label for="data[attributes][description]" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]" value="">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][based_on]" class="col-sm-3 control-label">Based On</label>
+                        <label for="data[attributes][based_on]" class="col-sm-3 control-label"><?php echo __('Based On'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select id="data[attributes][based_on]" name="data[attributes][based_on]" onChange="based_on();" class="form-control">
                                 <option value='' label=' '></option>
@@ -98,14 +98,14 @@ foreach ($this->response->included as $item) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[edited_date]" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="data[edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
                         </div>
@@ -117,7 +117,7 @@ foreach ($this->response->included as $item) {
                     <label for="submit" class="col-sm-3 control-label"></label>
                     <div class="col-sm-8 input-group">
                         <input type="hidden" value="scripts" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                     </div>
                 </div>
             </div>
@@ -129,7 +129,7 @@ foreach ($this->response->included as $item) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="text-left">Options</span>
+                            <span class="text-left"><?php echo __('Options'); ?></span>
                             <span class="pull-right"></span>
                         </h3>
                     </div>
@@ -143,7 +143,7 @@ foreach ($this->response->included as $item) {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <span class="text-left">Files</span>
+                            <span class="text-left"><?php echo __('Files'); ?></span>
                             <span class="pull-right"></span>
                         </h3>
                     </div>
@@ -152,9 +152,9 @@ foreach ($this->response->included as $item) {
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Use</th>
-                                    <th>Name</th>
-                                    <th>Path</th>
+                                    <th><?php echo __('Use'); ?></th>
+                                    <th><?php echo __('Name'); ?></th>
+                                    <th><?php echo __('Path'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -214,7 +214,7 @@ function generate_options($option_list, $options, $files, $orgs) {
                 <label for="data[edited_date]" class="col-md-3 control-label">' . $option->name . '</label>\
                 <div class="col-md-9">\
                 <div class="col-md-12 input-group">';
-                
+
                 switch ($option->type) {
                     case 'text';
                     case 'number';

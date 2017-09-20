@@ -30,16 +30,16 @@ if (!empty($this->config->config['servers'])) {
                 <ul class="nav navbar-nav">
                 <?php if (!$collector) { ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Discover <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Discover'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php
                             if ($this->m_users->get_user_permission('', 'credentials', 'r')) { ?>
                                 <li class="dropdown-submenu">
-                                    <a href="#">Credentials</a>
+                                    <a href="#"><?php echo __('Credentials'); ?></a>
                                     <ul class="dropdown-menu" style="min-width:250px;">
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'>List Credentials</a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'><?php echo __('List Credentials'); ?></a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'credentials', 'c')) { ?>
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'>Create Credentials</a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'><?php echo __('Create Credentials'); ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -49,22 +49,22 @@ if (!empty($this->config->config['servers'])) {
                             if ($this->m_users->get_user_permission('', 'discoveries', 'r')) { ?>
                                 <li class="dropdown-submenu">
                                     <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                        <a href="#">Discoveries <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
+                                        <a href="#"><?php echo __('Discoveries'); ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
                                     <?php } else { ?>
-                                        <a href="#">Discoveries</a>
+                                        <a href="#"><?php echo __('Discoveries'); ?></a>
                                     <?php } ?>
                                     <ul class="dropdown-menu" style="min-width:250px;">
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'>List Discoveries</a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries'><?php echo __('List Discoveries'); ?></a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
-                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'>Create Discovery</a></li>
-                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'>Discover a single device</a></li>
+                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'><?php echo __('Create Discovery'); ?></a></li>
+                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'><?php echo __('Discover a single device'); ?></a></li>
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                                <li class="disabled"><a href='#'>Configure Discoveries</a></li>
-                                                <li class="disabled"><a href='#'>Schedule Discoveries</a></li>
-                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/discoveries'>Learn About Discoveries</a></li>
+                                                <li class="disabled"><a href='#'><?php echo __('Configure Discoveries'); ?></a></li>
+                                                <li class="disabled"><a href='#'><?php echo __('Schedule Discoveries'); ?></a></li>
+                                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/discoveries'><?php echo __('Learn About Discoveries'); ?></a></li>
                                             <?php } else { ?>
-                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration/discovery'>Configure Discoveries</a></li>
-                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'>Schedule Discoveries</a></li>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/configuration?section=discovery'><?php echo __('Configure Discoveries'); ?></a></li>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks'><?php echo __('Schedule Discoveries'); ?></a></li>
                                             <?php } ?>
                                         <?php } ?>
                                     </ul>
@@ -75,27 +75,27 @@ if (!empty($this->config->config['servers'])) {
                             if ($this->m_users->get_user_permission('', 'files', 'r')) { ?>
                                 <li class="dropdown-submenu">
                                     <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
-                                    <a href="#">Files</a>
+                                    <a href="#"><?php echo __('Files'); ?></a>
                                     <?php } else { ?>
                                     <a href="#">Files <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
                                     <?php } ?>
                                     <ul class="dropdown-menu" style="min-width:250px;">
                                         <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
-                                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/files'>List Files</a></li>
+                                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/files'><?php echo __('List Files'); ?></a></li>
                                         <?php } else { ?>
-                                            <li class="disabled"><a href="#">List Files</a></li>
+                                            <li class="disabled"><a href="#"><?php echo __('List Files'); ?></a></li>
                                         <?php } ?>
                                         <?php if ($this->m_users->get_user_permission('', 'files', 'c')) { ?>
                                             <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
-                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/files/create">Create Files</a></li>
-                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/files/import">Import Multiple Files</a></li>
+                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/files/create"><?php echo __('Create Files'); ?></a></li>
+                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/files/import"><?php echo __('Import Multiple Files'); ?></a></li>
                                             <?php } else { ?>
-                                                <li class="disabled"><a href="#">Create Files</a></li>
-                                                <li class="disabled"><a href="#">Import Multiple Files</a></li>
+                                                <li class="disabled"><a href="#"><?php echo __('Create Files'); ?></a></li>
+                                                <li class="disabled"><a href="#"><?php echo __('Import Multiple Files'); ?></a></li>
                                             <?php } ?>
                                         <?php } ?>
                                         <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
-                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/files'>Learn About Files</a></li>
+                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/files'><?php echo __('Learn About Files'); ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -104,11 +104,11 @@ if (!empty($this->config->config['servers'])) {
                             <?php
                             if ($this->m_users->get_user_permission('', 'scripts', 'r')) { ?>
                                 <li class="dropdown-submenu">
-                                    <a href="#">Audit Scripts</a>
+                                    <a href="#"><?php echo __('Audit Scripts'); ?></a>
                                     <ul class="dropdown-menu" style="min-width:250px;">
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'>List Scripts</a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts'><?php echo __('List Scripts'); ?></a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'scripts', 'c')) { ?>
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts/create'>Create Script</a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/scripts/create'><?php echo __('Create Script'); ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -134,7 +134,7 @@ if (!empty($this->config->config['servers'])) {
                     <!-- The Report menu -->
                     <?php $categories = array('Change','Device','Discovery','Hardware','Network','Server','Software','User'); ?>
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Report <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Report'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php foreach ($categories as $category) { ?>
                             <li class="dropdown-submenu">
@@ -161,24 +161,24 @@ if (!empty($this->config->config['servers'])) {
                                     <?php } ?>
                                 <?php } ?>
                                 <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
-                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/reports'>Learn About Reports</a></li>
+                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/reports'><?php echo __('Learn About Reports'); ?></a></li>
                                 <?php } ?>
                                 </ul>
                             </li>
                             <?php } ?>
                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
-                                <li><a href="#">Schedule Reports <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
-                                <li><a href="#">MultiReport <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
+                                <li><a href="#"><?php echo __('Schedule Reports'); ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
+                                <li><a href="#"><?php echo __('MultiReport'); ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
                             <?php } else { ?>
-                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/tasks">Schedule Reports</a></li>
-                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/multi_report">MultiReport</a></li>
+                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/tasks"><?php echo __('Schedule Reports'); ?></a></li>
+                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/multi_report"><?php echo __('MultiReport'); ?></a></li>
                             <?php } ?>
                         </ul>
                     </li>
 
 
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Manage <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Manage'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
 
                         <?php
@@ -189,7 +189,7 @@ if (!empty($this->config->config['servers'])) {
                                     <a href="#"><?php echo ucwords(str_replace('_', ' ', $collection)); ?></a>
                                     <ul class="dropdown-menu" style="min-width:250px;">
                                         <li>
-                                            <a href='<?php echo $this->config->config['oae_url']; ?>/map'>Map</a>
+                                            <a href='<?php echo $this->config->config['oae_url']; ?>/map'><?php echo __('Map'); ?></a>
                                         </li>
                                     </ul>
                                 </li>
@@ -206,32 +206,32 @@ if (!empty($this->config->config['servers'])) {
                                         <?php if ($this->config->config['oae_license'] != 'commercial' and $collection == 'baselines') { ?>
                                         <li class="disabled"><a href="#">List <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } else { ?>
-                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/<?php echo $collection; ?>'>List <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/<?php echo $collection; ?>'><?php echo __('List').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } ?>
 
                                         <?php if ($this->m_users->get_user_permission('', $collection, 'c')) { ?>
                                             <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
-                                                <li class="disabled"><a href="#">Create <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                                <li class="disabled"><a href="#">Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li class="disabled"><a href="#"<?php echo __('Create').' '; ?>> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li class="disabled"><a href="#"><?php echo __('Import').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                             <?php } else { ?>
                                                 <?php if ($collection == 'baselines' or $collection == 'roles') {
                                                     $link = $this->config->config['oae_url'];
                                                 } else {
                                                     $link = $this->config->config['oa_web_index'];
                                                 } ?>
-                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'>Create <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'>Import <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
+                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Create').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'><?php echo __('Import'). ' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
                                                 <?php if ($collection == 'devices') { ?>
-                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'>Import Devices from Audit Script Result</a></li>
-                                                <li><a href='<?php echo $link; ?>/nmis/create'>Import Devices from NMIS</a></li>
-                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'>Export Devices to CSV</a></li>
-                                                <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'>Export Devices to NMIS</a></li>
+                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Import Devices from Audit Script Result'); ?></a></li>
+                                                <li><a href='<?php echo $link; ?>/nmis/create'><?php echo __('Import Devices from NMIS'); ?></a></li>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'><?php echo __('Export Devices to CSV'); ?></a></li>
+                                                <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li>
                                                 <?php } ?>
                                             <?php } ?>
                                         <?php } ?>
 
                                         <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
-                                        <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/<?php echo $collection; ?>'>Learn About <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                        <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/<?php echo $collection; ?>'><?php echo __('Learn About').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } ?>
 
 
@@ -289,15 +289,15 @@ if (!empty($this->config->config['servers'])) {
                         $this->m_users->get_user_permission('', 'ldap_servers', 'u') !== false or
                         $this->m_users->get_user_permission('', 'logs', 'r') !== false) { ?>
                     <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Admin'); ?> <span class="caret"></span></a>
                       <ul class="dropdown-menu">
 
                         <?php
                         if ($this->m_users->get_user_permission('', 'configuration', 'r')) { ?>
                             <li class="dropdown-submenu">
-                                <a href="#">Configuration</a>
+                                <a href="#"><?php echo __('Configuration'); ?></a>
                                 <ul class="dropdown-menu" style="min-width:250px;">
-                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/configuration'>List Configuration</a></li>
+                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/configuration'><?php echo __('List Configuration'); ?></a></li>
                                 </ul>
                             </li>
                         <?php
@@ -306,9 +306,9 @@ if (!empty($this->config->config['servers'])) {
                         <?php
                         if ($this->m_users->get_user_permission('', 'database', 'u')) { ?>
                             <li class="dropdown-submenu">
-                                <a href="#">Database</a>
+                                <a href="#"><?php echo __('Database'); ?></a>
                                 <ul class="dropdown-menu" style="min-width:250px;">
-                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/database'>List Tables</a></li>
+                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/database'><?php echo __('List Tables'); ?></a></li>
                                 </ul>
                             </li>
                         <?php
@@ -318,11 +318,11 @@ if (!empty($this->config->config['servers'])) {
                         if (!$collector) {
                         if ($this->m_users->get_user_permission('', 'ldap_servers', 'u')) { ?>
                             <li class="dropdown-submenu">
-                                <a href="#">LDAP Servers</a>
+                                <a href="#"><?php echo __('LDAP Servers'); ?></a>
                                 <ul class="dropdown-menu" style="min-width:250px;">
-                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers'>List Servers</a></li>
+                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers'><?php echo __('List Servers'); ?></a></li>
                                     <?php if ($this->m_users->get_user_permission('', 'ldap_servers', 'c')) { ?>
-                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers/create'>Create LDAP Server</a></li>
+                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/ldap_servers/create'><?php echo __('Create LDAP Server'); ?></a></li>
                                     <?php } ?>
                                 </ul>
                             </li>
@@ -332,10 +332,10 @@ if (!empty($this->config->config['servers'])) {
                         <?php
                         if ($this->m_users->get_user_permission('', 'logs', 'r')) { ?>
                             <li class="dropdown-submenu">
-                                <a href="#">Logs</a>
+                                <a href="#"><?php echo __('Logs'); ?></a>
                                 <ul class="dropdown-menu" style="min-width:250px;">
-                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs?logs.type=access'>View Access Logs</a></li>
-                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs?logs.type=system'>View System Logs</a></li>
+                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs?logs.type=access'><?php echo __('View Access Logs'); ?></a></li>
+                                    <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/logs?logs.type=system'><?php echo __('View System Logs'); ?></a></li>
                                     <?php if ($this->m_users->get_user_permission('', 'logs', 'd')) { ?>
                                     <?php } ?>
                                 </ul>
@@ -346,7 +346,7 @@ if (!empty($this->config->config['servers'])) {
                     <?php } ?>
 
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Help <span class="caret"></span></a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Help'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/help'><?php echo __('About')?></a></li>
                             <li><a href='https://community.opmantek.com/display/OA/Home'><?php echo __('Documentation')?></a></li>
@@ -384,8 +384,8 @@ if (!empty($this->config->config['servers'])) {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo $this->config->config['oa_web_index']; ?>/logon/logoff" role="button">Logout</a></li>
-                            <li><a href="#" role="button" class="debug">Debug</a></li>
+                            <li><a href="<?php echo $this->config->config['oa_web_index']; ?>/logon/logoff" role="button"><?php echo __('Logout'); ?></a></li>
+                            <li><a href="#" role="button" class="debug"><?php echo __('Debug'); ?></a></li>
                         </ul>
                     </li>
                 </ul>

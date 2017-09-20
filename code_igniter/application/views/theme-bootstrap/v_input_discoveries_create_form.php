@@ -38,7 +38,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left">Discovery Script Input</span>
+                <span class="text-left"><?php echo __('Discovery Script Input'); ?></span>
                 <span class="pull-right"></span>
             </h3>
         </div>
@@ -47,7 +47,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="form_details" class="col-sm-3 control-label">Data</label>
+                        <label for="form_details" class="col-sm-3 control-label"><?php echo __('Data'); ?></label>
                         <div class="col-sm-8 input-group">
                             <textarea class="form-control" rows="10" id="data" name="data" title="data"></textarea>
                         </div>
@@ -59,7 +59,7 @@
                 <div class="form-group">
                     <label for="submit" class="col-sm-3 control-label"></label>
                     <div class="col-sm-8 input-group">
-                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                     </div>
                 </div>
             </div>

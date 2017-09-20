@@ -38,8 +38,8 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Devices</span>
-            <span class="pull-right"><a class="btn btn-xs btn-info" href="../index.php/devices">List Devices</a></span>
+            <span class="text-left"><?php echo __('Devices'); ?></span>
+            <span class="pull-right"><a class="btn btn-xs btn-info" href="../index.php/devices"><?php echo __('List Devices'); ?></a></span>
         </h3>
     </div>
 
@@ -50,13 +50,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="input_type" class="col-sm-3 control-label">Input Type</label>
+                        <label for="input_type" class="col-sm-3 control-label"><?php echo __('Input Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="input_type" name="input_type">
-                                <option value="">Choose</option>
-                                <option value="manual_input">Manual Input</option>
-                                <option value="audit_input">Copy and paste an audit result</option>
-                                <option value="file_input">Upload an audit result file</option>
+                                <option value=""><?php echo __('Choose'); ?></option>
+                                <option value="manual_input"><?php echo __('Manual Input'); ?></option>
+                                <option value="audit_input"><?php echo __('Copy and paste an audit result'); ?></option>
+                                <option value="file_input"><?php echo __('Upload an audit result file'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -69,10 +69,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="data[attributes][type]" class="col-sm-3 control-label">Type</label>
+                        <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select id="data[attributes][type]" name="data[attributes][type]" class="form-control" onChange="choose_type();">
-                                <option value=''>Choose</option>
+                                <option value=''><?php echo __('Choose'); ?></option>
                                 <?php
                                 foreach ($this->response->included as $item) {
                                     if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
@@ -84,25 +84,25 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][hostname]" class="col-sm-3 control-label">Hostname</label>
+                        <label for="data[attributes][hostname]" class="col-sm-3 control-label"><?php echo __('Hostname'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][hostname]" name="data[attributes][hostname]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][ip]" class="col-sm-3 control-label">IP</label>
+                        <label for="data[attributes][ip]" class="col-sm-3 control-label"><?php echo __('IP'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][ip]" name="data[attributes][ip]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][status]" class="col-sm-3 control-label">Status</label>
+                        <label for="data[attributes][status]" class="col-sm-3 control-label"><?php echo __('xStatusxx'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][status]" name="data[attributes][status]">
                             <?php
@@ -120,7 +120,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][environment]" class="col-sm-3 control-label">Environment</label>
+                        <label for="data[attributes][environment]" class="col-sm-3 control-label"><?php echo __('Environment'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][environment]" name="data[attributes][environment]">
                             <?php
@@ -138,25 +138,25 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][manufacturer]" class="col-sm-3 control-label">Manufacturer</label>
+                        <label for="data[attributes][manufacturer]" class="col-sm-3 control-label"><?php echo __('Manufacturer'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][manufacturer]" name="data[attributes][manufacturer]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][model]" class="col-sm-3 control-label">Model</label>
+                        <label for="data[attributes][model]" class="col-sm-3 control-label"><?php echo __('Model'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][model]" name="data[attributes][model]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][serial]" class="col-sm-3 control-label">Serial</label>
+                        <label for="data[attributes][serial]" class="col-sm-3 control-label"><?php echo __('Serial'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][serial]" name="data[attributes][serial]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -168,7 +168,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][location_id]" class="col-sm-3 control-label">Location</label>
+                        <label for="data[attributes][location_id]" class="col-sm-3 control-label"><?php echo __('Location'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
                             <?php
@@ -180,19 +180,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][asset_number]" class="col-sm-3 control-label">Asset Number</label>
+                        <label for="data[attributes][asset_number]" class="col-sm-3 control-label"><?php echo __('Asset Number'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][asset_number]" name="data[attributes][asset_number]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][owner]" class="col-sm-3 control-label">Owner (Assigned To)</label>
+                        <label for="data[attributes][owner]" class="col-sm-3 control-label"><?php echo __('Owner (Assigned To)'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][owner]" name="data[attributes][owner]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][comments]" class="col-sm-3 control-label">Comments</label>
+                        <label for="data[attributes][comments]" class="col-sm-3 control-label"><?php echo __('Comments'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][comments]" name="data[attributes][comments]">
                         </div>
@@ -203,43 +203,43 @@
 
 
                     <div class="form-group">
-                        <label for="data[attributes][purchase_order_number]" class="col-sm-3 control-label">PO Number</label>
+                        <label for="data[attributes][purchase_order_number]" class="col-sm-3 control-label"><?php echo __('PO Number'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][purchase_order_number]" name="data[attributes][purchase_order_number]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][purchase_cost_center]" class="col-sm-3 control-label">Cost Center</label>
+                        <label for="data[attributes][purchase_cost_center]" class="col-sm-3 control-label"><?php echo __('Cost Center'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][purchase_cost_center]" name="data[attributes][purchase_cost_center]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][purchase_vendor]" class="col-sm-3 control-label">Vendor</label>
+                        <label for="data[attributes][purchase_vendor]" class="col-sm-3 control-label"><?php echo __('Vendor'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][purchase_vendor]" name="data[attributes][purchase_vendor]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][purchase_date]" class="col-sm-3 control-label">Purchase Date</label>
+                        <label for="data[attributes][purchase_date]" class="col-sm-3 control-label"><?php echo __('Purchase Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="date" class="form-control" id="data[attributes][purchase_date]" name="data[attributes][purchase_date]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][purchase_amount]" class="col-sm-3 control-label">Purchase Amount</label>
+                        <label for="data[attributes][purchase_amount]" class="col-sm-3 control-label"><?php echo __('Purchase Amount'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][purchase_amount]" name="data[attributes][purchase_amount]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][warranty_duration]" class="col-sm-3 control-label">Warranty Duration</label>
+                        <label for="data[attributes][warranty_duration]" class="col-sm-3 control-label"><?php echo __('Warranty Duration'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][warranty_duration]" name="data[attributes][warranty_duration]">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][warranty_expires]" class="col-sm-3 control-label">Warranty Expires</label>
+                        <label for="data[attributes][warranty_expires]" class="col-sm-3 control-label"><?php echo __('Warranty Expires'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="date" class="form-control" id="data[attributes][warranty_expires]" name="data[attributes][warranty_expires]">
                         </div>
@@ -247,22 +247,22 @@
 
                     <div id="printer" style="display:none;">
                         <div class="form-group">
-                            <label for="data[attributes][printer_color]" class="col-sm-3 control-label">Printer Color</label>
+                            <label for="data[attributes][printer_color]" class="col-sm-3 control-label"><?php echo __('Printer Color'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <select class="form-control" id="data[attributes][printer_color]" name="data[attributes][printer_color]">
-                                    <option value="">Choose</option>
-                                    <option value="y">Yes</option>
-                                    <option value="n">No</option>
+                                    <option value=""><?php echo __('Choose'); ?></option>
+                                    <option value="y"><?php echo __('Yes'); ?></option>
+                                    <option value="n"><?php echo __('No'); ?></option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][printer_duplex]" class="col-sm-3 control-label">Printer Duplex</label>
+                            <label for="data[attributes][printer_duplex]" class="col-sm-3 control-label"><?php echo __('Printer Duplex'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <select class="form-control" id="data[attributes][printer_duplex]" name="data[attributes][printer_duplex]">
-                                    <option value="">Choose</option>
-                                    <option value="y">Yes</option>
-                                    <option value="n">No</option>
+                                    <option value=""><?php echo __('Choose'); ?></option>
+                                    <option value="y"><?php echo __('Yes'); ?></option>
+                                    <option value="n"><?php echo __('No'); ?></option>
                                 </select>
                             </div>
                         </div>
@@ -270,54 +270,54 @@
 
                     <div id="phone" style="display:none;">
                         <div class="form-group">
-                            <label for="data[attributes][service_type]" class="col-sm-3 control-label">Service Type</label>
+                            <label for="data[attributes][service_type]" class="col-sm-3 control-label"><?php echo __('Service Type'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <select class="form-control" id="data[attributes][service_type]" name="data[attributes][service_type]">
-                                    <option value="">Choose</option>
-                                    <option value="voice">Voice Only</option>
-                                    <option value="data">Data Only</option>
-                                    <option value="voice and data">Voice and Data</option>
+                                    <option value=""><?php echo __('Choose'); ?></option>
+                                    <option value="voice"><?php echo __('Voice Only'); ?></option>
+                                    <option value="data"><?php echo __('Data Only'); ?></option>
+                                    <option value="voice and data"><?php echo __('Voice and Data'); ?></option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][service_number]" class="col-sm-3 control-label">Service Number</label>
+                            <label for="data[attributes][service_number]" class="col-sm-3 control-label"><?php echo __('Service Number'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][service_number]" name="data[attributes][service_number]">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][service_provider]" class="col-sm-3 control-label">Service Provider</label>
+                            <label for="data[attributes][service_provider]" class="col-sm-3 control-label"><?php echo __('Service Provider'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][service_provider]" name="data[attributes][service_provider]">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][service_plan]" class="col-sm-3 control-label">Service Plan</label>
+                            <label for="data[attributes][service_plan]" class="col-sm-3 control-label"><?php echo __('Service Plan<'); ?>/label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][service_plan]" name="data[attributes][service_plan]">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][service_network]" class="col-sm-3 control-label">Service Network</label>
+                            <label for="data[attributes][service_network]" class="col-sm-3 control-label"><?php echo __('Service Network'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][service_network]" name="data[attributes][service_network]">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][unlock_pin]" class="col-sm-3 control-label">Unlock PIN</label>
+                            <label for="data[attributes][unlock_pin]" class="col-sm-3 control-label"><?php echo __('Unlock PIN'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][unlock_pin]" name="data[attributes][unlock_pin]">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][serial_imei]" class="col-sm-3 control-label">Serial IMEI</label>
+                            <label for="data[attributes][serial_imei]" class="col-sm-3 control-label"><?php echo __('Serial IMEI'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][serial_imei]" name="data[attributes][serial_imei]">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="data[attributes][serial_sim]" class="col-sm-3 control-label">Serial SIM</label>
+                            <label for="data[attributes][serial_sim]" class="col-sm-3 control-label"><?php echo __('Serial SIM'); ?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="data[attributes][serial_sim]" name="data[attributes][serial_sim]">
                             </div>
@@ -330,7 +330,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="upload_input" class="col-sm-3 control-label">Audit Result Input</label>
+                            <label for="upload_input" class="col-sm-3 control-label"><?php echo __('Audit Result Input'); ?></label>
                             <div class="col-sm-8">
                                     <textarea class="form-control" rows="10" name="upload_input" id="upload_input"></textarea>
                             </div>
@@ -342,7 +342,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="upload_file" class="col-sm-3 control-label">File Input</label>
+                            <label for="upload_file" class="col-sm-3 control-label"><?php echo __('File Input'); ?></label>
                             <div class="col-sm-8">
                                 <input type="file" id="upload_file" name="upload_file">
                             </div>
@@ -358,7 +358,7 @@
                             <label for="submit" class="col-sm-2 control-label"></label>
                             <div class="col-sm-4">
                                 <div class="col-sm-8 input-group">
-                                    <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                                    <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                                 </div>
                             </div>
                         </div>

@@ -38,7 +38,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left">NMIS Import</span>
+                <span class="text-left"><?php echo __('NMIS Import'); ?></span>
             </h3>
         </div>
 
@@ -47,21 +47,21 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][file]" class="col-sm-3 control-label">Local Nodes.nmis file</label>
+                        <label for="data[attributes][file]" class="col-sm-3 control-label"><?php echo __('Local Nodes.nmis file'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input type="text" class="form-control" id="data[attributes][file]" name="data[attributes][file]" size="30" value="/usr/local/nmis8/conf/Nodes.nmis">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="upload_file" class="col-sm-3 control-label">File Upload</label>
+                        <label for="upload_file" class="col-sm-3 control-label"><?php echo __('File Upload'); ?></label>
                         <div class="col-sm-8">
                             <input type="file" id="upload_file" name="upload_file">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][location_id]" class="col-sm-3 control-label">Assign to Location</label>
+                        <label for="data[attributes][location_id]" class="col-sm-3 control-label"><?php echo __('Assign to Location'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][location_id]" name="data[attributes][location_id]">
                             <?php
@@ -74,7 +74,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Assign to Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Assign to Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -87,7 +87,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][run_discovery]" class="col-sm-3 control-label">Run Discovery on devices</label>
+                        <label for="data[attributes][run_discovery]" class="col-sm-3 control-label"><?php echo __('Run Discovery on devices'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="checkbox" id="data[attributes][run_discovery]" name="data[attributes][run_discovery]">
                         </div>
@@ -101,7 +101,7 @@
                         <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
                                 <input type="hidden" value="nmis" id="data[type]" name="data[type]" />
-                                <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                                <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
                 </div>

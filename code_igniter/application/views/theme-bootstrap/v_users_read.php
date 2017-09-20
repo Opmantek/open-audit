@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                 <div class="form-group">
-                    <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                    <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="data_type form-control" id="org_id" name="org_id" disabled>
                             <option value='' label=' '></option>
@@ -81,7 +81,7 @@ $item = $this->response->data[0];
                 </div>
 
                     <div class="form-group">
-                        <label for="full_name" class="col-sm-3 control-label">Full Name</label>
+                        <label for="full_name" class="col-sm-3 control-label"><?php echo __('Full Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo htmlspecialchars($item->attributes->full_name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -93,7 +93,7 @@ $item = $this->response->data[0];
                     </div>
 
                 <div class="form-group">
-                    <label for="password" class="col-sm-3 control-label">Password</label>
+                    <label for="password" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                     <div class="col-sm-8 input-group">
                         <input type="password" class="form-control" id="password" name="password" value="*********" disabled>
                         <?php if (!empty($edit)) { ?>
@@ -105,7 +105,7 @@ $item = $this->response->data[0];
                 </div>
 
                 <div class="form-group">
-                    <label for="email" class="col-sm-3 control-label">Email</label>
+                    <label for="email" class="col-sm-3 control-label"><?php echo __('Email'); ?></label>
                     <div class="col-sm-8 input-group">
                         <input type="text" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         <?php if (!empty($edit)) { ?>
@@ -117,14 +117,14 @@ $item = $this->response->data[0];
                 </div>
 
                 <div class="form-group">
-                    <label for="lang" class="col-sm-3 control-label">Language</label>
+                    <label for="lang" class="col-sm-3 control-label"><?php echo __('Language'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="data_type form-control" id="lang" name="lang" disabled>
-                            <option value='de' <?php if ($item->attributes->lang == 'de') { echo 'selected'; } ?>>German</option>
-                            <option value='en' <?php if ($item->attributes->lang == 'en') { echo 'selected'; } ?>>English</option>
-                            <option value='es' <?php if ($item->attributes->lang == 'es') { echo 'selected'; } ?>>Spanish</option>
-                            <option value='fr' <?php if ($item->attributes->lang == 'fr') { echo 'selected'; } ?>>French</option>
-                            <option value='pt-br' <?php if ($item->attributes->lang == 'pt-br') { echo 'selected'; } ?>>Brazilian Portuguese</option>
+                            <option value='de' <?php if ($item->attributes->lang == 'de') { echo 'selected'; } ?>><?php echo __('German'); ?></option>
+                            <option value='en' <?php if ($item->attributes->lang == 'en') { echo 'selected'; } ?>><?php echo __('English'); ?></option>
+                            <option value='es' <?php if ($item->attributes->lang == 'es') { echo 'selected'; } ?>><?php echo __('Spanish'); ?></option>
+                            <option value='fr' <?php if ($item->attributes->lang == 'fr') { echo 'selected'; } ?>><?php echo __('French'); ?></option>
+                            <option value='pt-br' <?php if ($item->attributes->lang == 'pt-br') { echo 'selected'; } ?>><?php echo __('Brazilian Portuguese'); ?></option>
                         </select>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
@@ -135,11 +135,11 @@ $item = $this->response->data[0];
                 </div>
 
                 <div class="form-group">
-                    <label for="active" class="col-sm-3 control-label">Active</label>
+                    <label for="active" class="col-sm-3 control-label"><?php echo __('Active'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="data_type form-control" id="active" name="active" disabled>
-                            <option value='y' <?php if ($item->attributes->active == 'y') { echo 'selected'; } ?>>Yes</option>
-                            <option value='n' <?php if ($item->attributes->active == 'n') { echo 'selected'; } ?>>No</option>
+                            <option value='y' <?php if ($item->attributes->active == 'y') { echo 'selected'; } ?>><?php echo __('Yes'); ?></option>
+                            <option value='n' <?php if ($item->attributes->active == 'n') { echo 'selected'; } ?>><?php echo __('No'); ?></option>
                         </select>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
@@ -150,14 +150,14 @@ $item = $this->response->data[0];
                 </div>
 
                 <div class="form-group">
-                    <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                    <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                     <div class="col-sm-8 input-group">
                         <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                    <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                     <div class="col-sm-8 input-group">
                         <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                     </div>
@@ -166,7 +166,7 @@ $item = $this->response->data[0];
 
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="roles" class="col-sm-3 control-label">Roles</label>
+                    <label for="roles" class="col-sm-3 control-label"><?php echo __('Roles'); ?></label>
                     <div class="col-sm-8">
                         <div class="col-sm-12 input-group">
                             <select multiple size="6" class="data_type form-control" id="roles" name="roles" disabled>
@@ -194,7 +194,7 @@ $item = $this->response->data[0];
 <div class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">
-      <span class="text-left">Organisations</span>
+      <span class="text-left"><?php echo __('Organisations'); ?></span>
       <span class="pull-right"></span>
     </h3>
   </div>
@@ -209,10 +209,10 @@ $item = $this->response->data[0];
         <table class="table table-striped table-condensed">
             <thead>
                 <tr>
-                    <td>ID</td>
-                    <td>Name</td>
-                    <td>Parent</td>
-                    <td style="text-align:center;">Grant Permission</td>
+                    <td><?php echo __('ID'); ?></td>
+                    <td><?php echo __('Name'); ?></td>
+                    <td><?php echo __('Parent'); ?></td>
+                    <td style="text-align:center;"><?php echo __('Grant Permission'); ?></td>
             </thead>
             <tbody>
         <?php
@@ -222,8 +222,8 @@ $item = $this->response->data[0];
                     $org->attributes->parent_name = '';
                 }
                 $checked = '';
-                if (!empty($item->attributes->orgs) and 
-                    count($item->attributes->orgs) > 0 and 
+                if (!empty($item->attributes->orgs) and
+                    count($item->attributes->orgs) > 0 and
                     $item->attributes->orgs != 'Array') {
                     foreach(json_decode($item->attributes->orgs) as $key => $value) {
                         if ($org->id == $value) {

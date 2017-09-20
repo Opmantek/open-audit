@@ -23,7 +23,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
+#
 /**
  * @author Mark Unwin <marku@opmantek.com>
  *
@@ -70,8 +70,8 @@ if ($this->response->meta->sub_resource !== 'group') {
 <div class="collapse" id="queries">
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title pull-left">Queries</h3>
-        <span class="glyphicon glyphicon-chevron-down pull-right myDownButton" data-menuitem="queries" data-toggle="collapse" data-target="#queries" aria-expanded="false" aria-controls="queries"></span>
+        <h3 class="panel-title pull-left"><?php echo __('Queries'); ?></h3>
+        <span class="glyphicon glyphicon-chevron-down pull-right myDownButton" data-menuitem="queries" data-toggle="collapse" data-target="#queries" aria-expanded="false" role="button" aria-controls="queries"></span>
         <div class="clearfix"></div>
     </div>
     <div class="panel-body">
@@ -79,8 +79,8 @@ if ($this->response->meta->sub_resource !== 'group') {
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th><?php echo __('Name'); ?></th>
+                        <th><?php echo __('Description'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,7 +107,7 @@ if ($this->response->meta->sub_resource !== 'group') {
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
         <div class="panel-title">
-            <div class="pull-left">Devices <?php echo $title ?></div>
+            <div class="pull-left"><?php echo __('Devices'). ' '; ?> <?php echo $title ?></div>
 
             <div class="nav navbar-nav navbar-center">
                 <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
@@ -116,7 +116,7 @@ if ($this->response->meta->sub_resource !== 'group') {
                         <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
                         <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip"]' />
                     </div>
-                    <button type="submit" class="btn btn-default btn-sm">Submit</button>
+                    <button type="submit" class="btn btn-default btn-sm"><?php echo __('Submit'); ?></button>
                     <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" data-container="body" data-toggle="popover" data-placement="left" title="Device Search" data-content="Search the following fields: name, hostname, dns_hostname, sysName, domain, dns_domain, ip.">
                         <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                     </button>

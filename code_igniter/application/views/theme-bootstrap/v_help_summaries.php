@@ -40,100 +40,100 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Table</th>
-                    <th>Column</th>
-                    <th>Extra Columns</th>
+                    <th><?php echo __('Name'); ?></th>
+                    <th><?php echo __('Table'); ?></th>
+                    <th><?php echo __('Column'); ?></th>
+                    <th><?php echo __('Extra Columns'); ?></th>
                 </tr>
             </thead>
             <tbody>
 
                 <tr>
-                    <td>Device Classes</td>
+                    <td><?php echo __('Device Classes'); ?></td>
                     <td>system</td>
                     <td>class</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <td>Device Status</td>
+                    <td><?php echo __('Device Status'); ?></td>
                     <td>system</td>
                     <td>status</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <td>Device Types</td>
+                    <td><?php echo __('Device Types'); ?></td>
                     <td>system</td>
                     <td>type</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <td>DNS Domains</td>
+                    <td><?php echo __('DNS Domains'); ?></td>
                     <td>system</td>
                     <td>dns_domain</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <td>Form Factors</td>
+                    <td><?php echo __('Form Factors'); ?></td>
                     <td>system</td>
                     <td>form_factor</td>
                     <td>system.form_factor,system.class</td>
                 </tr>
 
                 <tr>
-                    <td>Manufacturers</td>
+                    <td><?php echo __('Manufacturers'); ?></td>
                     <td>system</td>
                     <td>manufacturer</td>
                     <td>system.model</td>
                 </tr>
 
                 <tr>
-                    <td>Operating System Families</td>
+                    <td><?php echo __('Operating System Families'); ?></td>
                     <td>system</td>
                     <td>os_family</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <td>Operating System Names</td>
+                    <td><?php echo __('Operating System Names'); ?></td>
                     <td>system</td>
                     <td>os_name</td>
                     <td></td>
                 </tr>
 
                 <tr>
-                    <td>Server Types</td>
+                    <td><?php echo __('Server Types'); ?></td>
                     <td>server</td>
                     <td>type</td>
                     <td>server.name,server.full_name,server.version,server.status</td>
                 </tr>
 
                 <tr>
-                    <td>Services</td>
+                    <td><?php echo __('Services'); ?></td>
                     <td>services</td>
                     <td>name</td>
                     <td>service.name,service.state</td>
                 </tr>
 
                 <tr>
-                    <td>Software</td>
+                    <td><?php echo __('Software'); ?></td>
                     <td>software</td>
                     <td>name</td>
                     <td>software.name,software.version</td>
                 </tr>
 
                 <tr>
-                    <td>Software Keys</td>
+                    <td><?php echo __('Software Keys'); ?></td>
                     <td>software_key</td>
                     <td>name</td>
                     <td>software_key.name,software_key.string,software_key.rel,software_key.edition</td>
                 </tr>
 
                 <tr>
-                    <td>Active Directory OU's</td>
+                    <td><?php echo __('Active Directory OU\'s'); ?></td>
                     <td>windows</td>
                     <td>active_directory_ou</td>
                     <td>windows.active_directory_ou,windows.client_site_name</td>

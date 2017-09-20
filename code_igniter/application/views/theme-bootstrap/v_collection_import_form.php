@@ -175,14 +175,13 @@ $example = '<p>Below is an example of the required csv format.</p>
 <p>If you include the "id" field <strong>and</strong> set it with a number, that item will be updated rather than created.</p>
 <p>' . $extra . '</p>
 <p>You should use a header line containing the names of the columns you wish to populate, then your data lines below that.</p>
-<table class="table table-striped"><tbody>' . $sample . '</tbody></table>
-</samp>';
+<table class="table table-striped"><tbody>' . $sample . '</tbody></table>';
 
 
 
-                
-                
-                
+
+
+
 
 ?>
 <form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
@@ -201,7 +200,7 @@ $example = '<p>Below is an example of the required csv format.</p>
                         <label for="file_import" class="col-sm-3 control-label"><?php echo __('File Import'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="file" class="filestyle" id="file_import" name="file_import" data-icon="false" >
-                            <p class="help-block">Upload your csv file.</p>
+                            <p class="help-block"><?php echo __('Upload your csv file.'); ?></p>
                         </div>
                     </div>
                 </div>
@@ -212,7 +211,7 @@ $example = '<p>Below is an example of the required csv format.</p>
                     <div class="col-md-6">
                         <label for="submit" class="col-sm-3 control-label"></label>
                         <div class="col-sm-8 input-group">
-                            <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                            <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                         </div>
                     </div>
                 </div>
@@ -257,7 +256,7 @@ $example = '<p>Below is an example of the required csv format.</p>
                             </tr>
                         </thead>
                         <tbody>
-                        <?php 
+                        <?php
                         foreach ($item->attributes->columns as $column) {
                             ?>
                             <tr>

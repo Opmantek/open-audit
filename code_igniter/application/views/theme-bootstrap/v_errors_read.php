@@ -44,35 +44,35 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="code" class="col-sm-3 control-label">Code</label>
+                        <label for="code" class="col-sm-3 control-label"><?php echo __('Code'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="code" name="code" value="<?php echo htmlspecialchars($item->attributes->code, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="title" class="col-sm-3 control-label">Title</label>
+                        <label for="title" class="col-sm-3 control-label"><?php echo __('Title'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($item->attributes->title, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="status" class="col-sm-3 control-label">Status</label>
+                        <label for="status" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="status" name="status" value="<?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="severity" class="col-sm-3 control-label">Severity</label>
+                        <label for="severity" class="col-sm-3 control-label"><?php echo __('Severity'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="severity" name="severity" value="<?php echo htmlspecialchars($item->attributes->severity, REPLACE_FLAGS, CHARSET); ?> (<?php echo htmlspecialchars($item->attributes->severity_text, REPLACE_FLAGS, CHARSET); ?>)" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="status_code" class="col-sm-3 control-label">Status Code</label>
+                        <label for="status_code" class="col-sm-3 control-label"><?php echo __('Status Code'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="status_code" name="status_code" value="<?php echo htmlspecialchars($item->attributes->status_code, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>

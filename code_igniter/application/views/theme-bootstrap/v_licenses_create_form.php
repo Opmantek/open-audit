@@ -43,21 +43,21 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input required="true" type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -70,45 +70,45 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_descendants]" class="col-sm-3 control-label">Organisation Descendants</label>
+                        <label for="data[attributes][org_descendants]" class="col-sm-3 control-label"><?php echo __('Organisation Descendants'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_descendants]" name="data[attributes][org_descendants]">
-                            <option value="y">Yes</option>
-                            <option value="n">No</option>
+                            <option value="y"><?php echo __('Yes'); ?></option>
+                            <option value="n"><?php echo __('No'); ?></option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][purchase_count]" class="col-sm-3 control-label">Purchace Count</label>
+                        <label for="data[attributes][purchase_count]" class="col-sm-3 control-label"><?php echo __('Purchace Count'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input required="true" type="text" class="form-control" id="data[attributes][purchase_count]" name="data[attributes][purchase_count]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][description]" class="col-sm-3 control-label">Description</label>
+                        <label for="data[attributes][description]" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][description]" name="data[attributes][description]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][match_string]" class="col-sm-3 control-label">Match String</label>
+                        <label for="data[attributes][match_string]" class="col-sm-3 control-label"><?php echo __('Match String'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input required="true" type="text" class="form-control" id="data[attributes][match_string]" name="data[attributes][match_string]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
                         </div>
@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <p><br /><strong>NOTE</strong> - You can use the percent % sign as a wildcard in the match_string.</p>
+                    <p><br /><strong><?php echo __('NOTE'); ?></strong> - You can use the percent % sign as a wildcard in the match_string.</p>
                 </div>
             </div>
 
@@ -126,7 +126,7 @@
                     <label for="submit" class="col-sm-2 control-label"></label>
                     <div class="col-sm-8 input-group">
                         <input type="hidden" value="licenses" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                     </div>
                 </div>
             </div>

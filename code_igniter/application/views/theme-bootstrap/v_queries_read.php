@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -63,7 +63,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                        <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
                                 <?php
@@ -83,18 +83,18 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="menu_category" class="col-sm-3 control-label">Menu Category</label>
+                        <label for="menu_category" class="col-sm-3 control-label"><?php echo __('Menu Category'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="menu_category" name="menu_category" disabled>
-                                <option value="" label=" "<?php if ($item->attributes->menu_category == '') { echo " selected"; } ?>>Change</option>
-                                <option value="Change"<?php if ($item->attributes->menu_category == 'Change') { echo " selected"; } ?>>Change</option>
-                                <option value="Device"<?php if ($item->attributes->menu_category == 'Device') { echo " selected"; } ?>>Device</option>
-                                <option value="Hardware"<?php if ($item->attributes->menu_category == 'Hardware') { echo " selected"; } ?>>Hardware</option>
-                                <option value="Network"<?php if ($item->attributes->menu_category == 'Network') { echo " selected"; } ?>>Network</option>
-                                <option value="Other"<?php if ($item->attributes->menu_category == 'Other') { echo " selected"; } ?>>Other</option>
-                                <option value="Server"<?php if ($item->attributes->menu_category == 'Server') { echo " selected"; } ?>>Server</option>
-                                <option value="Software"<?php if ($item->attributes->menu_category == 'Software') { echo " selected"; } ?>>Software</option>
-                                <option value="User"<?php if ($item->attributes->menu_category == 'User') { echo " selected"; } ?>>User</option>
+                                <option value="" label=" "<?php if ($item->attributes->menu_category == '') { echo " selected"; } ?>><?php echo __('Change'); ?></option>
+                                <option value="Change"<?php if ($item->attributes->menu_category == 'Change') { echo " selected"; } ?>><?php echo __('Change'); ?></option>
+                                <option value="Device"<?php if ($item->attributes->menu_category == 'Device') { echo " selected"; } ?>><?php echo __('Device'); ?></option>
+                                <option value="Hardware"<?php if ($item->attributes->menu_category == 'Hardware') { echo " selected"; } ?>><?php echo __('Hardware'); ?></option>
+                                <option value="Network"<?php if ($item->attributes->menu_category == 'Network') { echo " selected"; } ?>><?php echo __('Network'); ?></option>
+                                <option value="Other"<?php if ($item->attributes->menu_category == 'Other') { echo " selected"; } ?>><?php echo __('Other'); ?></option>
+                                <option value="Server"<?php if ($item->attributes->menu_category == 'Server') { echo " selected"; } ?>><?php echo __('Server'); ?></option>
+                                <option value="Software"<?php if ($item->attributes->menu_category == 'Software') { echo " selected"; } ?>><?php echo __('Software'); ?></option>
+                                <option value="User"<?php if ($item->attributes->menu_category == 'User') { echo " selected"; } ?>><?php echo __('User'); ?></option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
@@ -108,8 +108,8 @@ $item = $this->response->data[0];
                         <label for="menu_display" class="col-sm-3 control-label">Menu Display</label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="menu_display" name="menu_display" disabled>
-                                <option value="y"<?php if ($item->attributes->menu_display == 'y') { echo " selected"; } ?>>Yes</option>
-                                <option value="n"<?php if ($item->attributes->menu_display == 'n') { echo " selected"; } ?>>No</option>
+                                <option value="y"<?php if ($item->attributes->menu_display == 'y') { echo " selected"; } ?>><?php echo __('Yes'); ?></option>
+                                <option value="n"<?php if ($item->attributes->menu_display == 'n') { echo " selected"; } ?>><?php echo __('No'); ?></option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
@@ -120,7 +120,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-sm-3 control-label">Description</label>
+                        <label for="description" class="col-sm-3 control-label"><?php echo __('Description'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -132,7 +132,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="sql" class="col-sm-3 control-label">SQL</label>
+                        <label for="sql" class="col-sm-3 control-label"><?php echo __('SQL'); ?></label>
                         <div class="col-sm-8 input-group">
                             <textarea class="form-control" rows="5" id="sql" name="sql" disabled><?php echo htmlspecialchars($item->attributes->sql, REPLACE_FLAGS, CHARSET); ?></textarea>
                             <?php if (!empty($edit)) { ?>
@@ -144,14 +144,14 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>

@@ -50,17 +50,17 @@ if (stripos($this_task->{'attributes'}->{'minute'}, '*/') !== false) {
         $every = $minute . ' minutes';
     }
 }
-?><h3>Dashboard</h3>
+?><h3><?php echo __('Dashboard'); ?></h3>
 <div class="container-fluid">
     <form class="form-horizontal" id="form_update" method="post" action="/en/omk/open-audit/configuration/servers/update">
 		<div class="row box_margin">
 		    <div class="panel panel-default">
 		        <div class="panel-heading clearfix">
 		            <div class="panel-title">
-		                Collector
+		                <?php echo __('Collector'); ?>
 		                <?php if ($this->m_users->get_user_permission('', 'configuration', 'u')) { ?>
 		                <div class="pull-right">
-		                    <button class="btn btn-sm btn-default decomission_link" type="button">Decomission</button>
+		                    <button class="btn btn-sm btn-default decomission_link" type="button"><?php echo __('Decomission'); ?></button>
 		                </div>
 		                <?php } ?>
 		            </div>

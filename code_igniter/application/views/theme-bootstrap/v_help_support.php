@@ -316,15 +316,15 @@ ksort($this->config->config);
                 If you are emailing this result to Opmantek, please go into the menu -> Admin -> Database -> List and select the Logs table, export it to SQL and attach it.<br /><br />
                 Please also attach the files below and the data below and add them as attachments to the email.<br /><pre><?php echo $files; ?></pre>
             </div>
-            <div class="col-md-12"><br />SESSION USERDATA
+            <div class="col-md-12"><br /><?php echo __('SESSION USERDATA'); ?>
             <pre><?php print_r($this->session->userdata); ?></pre>
             </div>
 
-            <div class="col-md-12"><br />INTERNAL CONFIG
+            <div class="col-md-12"><br /><?php echo __('INTERNAL CONFIG'); ?>
             <pre><?php print_r($this->config->config); ?></pre>
             </div>
 
-            <div class="col-md-12"><br />DATA ITEMS
+            <div class="col-md-12"><br /><?php echo __('DATA ITEMS'); ?>
             <pre><?php print_r($data); ?></pre>
             </div>
         </div>

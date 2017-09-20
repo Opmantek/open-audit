@@ -35,7 +35,7 @@
  */
 $fields = explode(' ', 'asset_number attached_system_id class cluster_name cluster_type comments contact_name description dns_domain dns_hostname domain environment form_factor fqdn function hostname ip lease_expiry_date locations location_latitude location_level location_longitude location_rack location_rack_position location_rack_size location_room location_suite manufacturer model name nmis_export nmis_group nmis_name nmis_role oae_manage orgs os_bit os_family os_group os_installation_date os_name os_version owner patch_panel patch_panel_port printer_color purchase_amount purchase_cost_center purchase_date purchase_invoice purchase_order_number purchase_service_contract_number purchase_vendor serial serial_imei serial_sim service_network service_number service_plan service_provider service_type status switch_port switch_system_id types unlock_pin uuid vm_group vm_server_name wall_port warranty_duration warranty_expires warranty_type');
 $field_count = intval(count($fields) / 2) + 1;
-# class   nmis_export oae_manage 
+# class   nmis_export oae_manage
 #if ( ! empty($this->response->included)) {
     foreach ($this->response->included as $item) {
       $data[$item->type][] = $item->attributes;
@@ -95,14 +95,14 @@ $special['types'] .= '</select><span class="input-group-btn"><button id="edit_ty
 
 
 $special['nmis_export'] = '<div class="form-group"><label for="nmis_export" class="col-sm-4 control-label">NMIS Export</label><div class="col-sm-8 input-group"><select id="nmis_export" class="form-control" disabled><option value="" label=" "> </option>';
-$special['nmis_export'] .= "<option value='y'>Yes</option>";
-$special['nmis_export'] .= "<option value='n'>No</option>";
+$special['nmis_export'] .= "<option value='y'><?php echo __('Yes'); ?></option>";
+$special['nmis_export'] .= "<option value='n'><?php echo __('No'); ?></option>";
 $special['nmis_export'] .= '</select><span class="input-group-btn"><button id="edit_nmis_export" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_export"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
 $special['oae_manage'] = '<div class="form-group"><label for="oae_manage" class="col-sm-4 control-label">Manage in Open-AudIT Enterprise</label><div class="col-sm-8 input-group"><select id="oae_manage" class="form-control" disabled><option value="" label=" "> </option>';
-$special['oae_manage'] .= "<option value='y'>Yes</option>";
-$special['oae_manage'] .= "<option value='n'>No</option>";
+$special['oae_manage'] .= "<option value='y'><?php echo __('Yes'); ?></option>";
+$special['oae_manage'] .= "<option value='n'><?php echo __('No'); ?></option>";
 $special['oae_manage'] .= '</select><span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 ?>
@@ -112,7 +112,7 @@ var id = 0;
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Attributes</span>
+            <span class="text-left"><?php echo __('Attributes'); ?></span>
             <span class="pull-right"></span>
         </h3>
     </div>
@@ -166,7 +166,7 @@ var id = 0;
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Fields</span>
+            <span class="text-left"><?php echo __('Fields'); ?></span>
             <span class="pull-right"></span>
         </h3>
     </div>
@@ -216,7 +216,7 @@ if (!empty($data['fields'])) {
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Actions</span>
+            <span class="text-left"><?php echo __('Actions'); ?></span>
             <span class="pull-right"></span>
         </h3>
     </div>
@@ -230,9 +230,9 @@ if (!empty($data['fields'])) {
         </div>
     -->
         <div class="form-group">
-            <label for="form_factor" class="col-sm-4 control-label">Run Discovery</label>
+            <label for="form_factor" class="col-sm-4 control-label"><?php echo __('Run Discovery'); ?></label>
             <div class="col-sm-4 input-group">
-                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=discovery&action=create&ids=<?php echo $this->response->meta->ids; ?>">Submit</a>
+                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=discovery&action=create&ids=<?php echo $this->response->meta->ids; ?>"><?php echo __('Submit'); ?></a>
             </div>
         </div>
     <!--
@@ -249,7 +249,7 @@ if (!empty($data['fields'])) {
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
-            <span class="text-left">Devices</span>
+            <span class="text-left"><?php echo __('Devices'); ?></span>
             <span class="pull-right"></span>
         </h3>
     </div>
@@ -257,15 +257,15 @@ if (!empty($data['fields'])) {
         <table class="table">
             <thead>
                 <tr>
-                    <td style="text-align: center;">ID</td>
-                    <td style="text-align: center;">Icon</td>
-                    <td>Type</td>
-                    <td>Name</td>
-                    <td>Domain</td>
-                    <td>IP</td>
-                    <td>Description</td>
-                    <td>OS Family</td>
-                    <td>Status</td>
+                    <td style="text-align: center;"><?php echo __('ID'); ?></td>
+                    <td style="text-align: center;"><?php echo __('Icon'); ?></td>
+                    <td><?php echo __('Type'); ?></td>
+                    <td><?php echo __('Name'); ?></td>
+                    <td><?php echo __('Domain'); ?></td>
+                    <td><?php echo __('IP'); ?></td>
+                    <td><?php echo __('Description'); ?></td>
+                    <td><?php echo __('OS Family'); ?></td>
+                    <td><?php echo __('Status'); ?></td>
                 </tr>
             </thead>
             <tbody>

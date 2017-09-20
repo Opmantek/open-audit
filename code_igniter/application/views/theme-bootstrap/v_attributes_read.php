@@ -44,14 +44,14 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="id" class="col-sm-3 control-label">ID</label>
+                        <label for="id" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="id" name="id" value="<?php echo intval($item->attributes->id); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="org_id" class="col-sm-3 control-label">Organisation</label>
+                        <label for="org_id" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="org_id" name="org_id" disabled>
                                 <?php
@@ -71,20 +71,20 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="resource" class="col-sm-3 control-label">Resource</label>
+                        <label for="resource" class="col-sm-3 control-label"><?php echo __('Resource'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="resource" name="resource" value="<?php echo htmlspecialchars($item->attributes->resource, REPLACE_FLAGS, CHARSET); ?>" readonly>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="type" class="col-sm-3 control-label">Type</label>
+                        <label for="type" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="type" name="type" disabled>
-                                <option value="device_class"<?php if ($item->attributes->type == 'device_class') { echo " selected"; } ?>>Class</option>
-                                <option value="device_environment"<?php if ($item->attributes->type == 'device_environment') { echo " selected"; } ?>>Environment</option>
-                                <option value="device_status"<?php if ($item->attributes->type == 'device_status') { echo " selected"; } ?>>Status</option>
-                                <option value="device_type"<?php if ($item->attributes->type == 'device_type') { echo " selected"; } ?>>Type</option>
+                                <option value="device_class"<?php if ($item->attributes->type == 'device_class') { echo " selected"; } ?>><?php echo __('Class'); ?></option>
+                                <option value="device_environment"<?php if ($item->attributes->type == 'device_environment') { echo " selected"; } ?>><?php echo __('Environment'); ?></option>
+                                <option value="device_status"<?php if ($item->attributes->type == 'device_status') { echo " selected"; } ?>><?php echo __('Status'); ?></option>
+                                <option value="device_type"<?php if ($item->attributes->type == 'device_type') { echo " selected"; } ?>><?php echo __('Type'); ?></option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
@@ -95,7 +95,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label">Name</label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -107,7 +107,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="value" class="col-sm-3 control-label">Value</label>
+                        <label for="value" class="col-sm-3 control-label"><?php echo __('Value'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -119,14 +119,14 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_by" class="col-sm-3 control-label">Edited By</label>
+                        <label for="edited_by" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_by" name="edited_by" value="<?php echo htmlspecialchars($item->attributes->edited_by, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="edited_date" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="edited_date" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="edited_date" name="edited_date" value="<?php echo htmlspecialchars($item->attributes->edited_date, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>

@@ -121,7 +121,7 @@ if (empty($data['mount_point'])) {
         <div class="panel-heading" role="tab" id="headingOne">
           <h4 class="panel-title">
             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Summary
+              <?php echo __('Summary'); ?>
             </a>
           </h4>
         </div>
@@ -174,7 +174,7 @@ if (empty($data['mount_point'])) {
             <div class="panel-heading" role="tab" id="headingTwo">
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                  Hardware
+                  <?php echo __('Hardware'); ?>
                 </a>
               </h4>
             </div>
@@ -213,7 +213,7 @@ if (empty($data['mount_point'])) {
             <div class="panel-heading" role="tab" id="headingThree">
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                  Software
+                  <?php echo __('Software'); ?>
                 </a>
               </h4>
             </div>
@@ -222,27 +222,27 @@ if (empty($data['mount_point'])) {
                 <ul class="list-group">
                 <?php
                 if (!empty($data['software'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software.svg"/><a href="#" data-menuitem="software">Software</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software.svg"/><a href="#" data-menuitem="software"><?php echo __('Software'); ?></a></li>
                 <?php
                 }
                 if (!empty($software_odbc)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver">Software ODBC Driver</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_odbc_driver.svg"/><a href="#" data-menuitem="software_odbc_driver"><?php echo __('Software ODBC Driver'); ?></a></li>
                 <?php
                 }
                 if (!empty($software_update)) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update">Software Update</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_update.svg"/><a href="#" data-menuitem="software_update"><?php echo __('Software Update'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['software_key'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_key.svg"/><a href="#" data-menuitem="software_key">Software Key</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/software_key.svg"/><a href="#" data-menuitem="software_key"><?php echo __('Software Key'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['service'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="service">Service</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/service.svg"/><a href="#" data-menuitem="service"><?php echo __('Service'); ?></a></li>
                 <?php
                 }
                 if (!empty($data['server'])) { ?>
-                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/server.svg"/><a href="#" data-menuitem="server">Server</a></li>
+                  <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/server.svg"/><a href="#" data-menuitem="server"><?php echo __('Server'); ?></a></li>
                 <?php
                 }
                 ?>
@@ -269,7 +269,7 @@ if (empty($data['mount_point'])) {
             <div class="panel-heading" role="tab" id="headingFour">
               <h4 class="panel-title">
                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                  Settings
+                  <?php echo __('Settings'); ?>
                 </a>
               </h4>
             </div>
@@ -300,7 +300,7 @@ if (empty($data['mount_point'])) {
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3 class="panel-title">Device Details</h3>
+        <h3 class="panel-title"><?php echo __('Device Details'); ?></h3>
     </div>
     <div class="panel-body">
         <form class="form-horizontal" name="form_summary" id="form_summary">
@@ -734,8 +734,8 @@ if (empty($data['mount_point'])) {
                                     $selected_n = 'selected';
                                 }
                                 ?>
-                                <option value='y' <?php echo $selected_y; ?>>Yes</option>
-                                <option value='n' <?php echo $selected_n; ?>>No</option>
+                                <option value='y' <?php echo $selected_y; ?>><?php echo __('Yes'); ?></option>
+                                <option value='n' <?php echo $selected_n; ?>><?php echo __('No'); ?></option>
                                 </select>
                                 <?php if ($edit) { ?>
                                 <span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
@@ -873,13 +873,13 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
     <div id="phone" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left">Phone</h3>
+                <h3 class="panel-title pull-left"><?php echo __('Phone'); ?></h3>
                 <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="phone"></span>
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                    <label for="service_type" class="col-sm-4 control-label">Service Type</label>
+                    <label for="service_type" class="col-sm-4 control-label"><?php echo __('Service Type'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="form-control" id="service_type" name="service_type" disabled>
                             <option value=""<?php if ($data['system']->{'service_type'} == '') {
@@ -919,7 +919,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
     <div id="opmantek" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left">Opmantek Details</h3>
+                <h3 class="panel-title pull-left"><?php echo __('Opmantek Details'); ?></h3>
                 <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="opmantek"></span>
                 <div class="clearfix"></div>
             </div>
@@ -937,8 +937,8 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                             $selected_n = 'selected';
                         }
                         ?>
-                        <option value='y' <?php echo $selected_y; ?>>Yes</option>
-                        <option value='n' <?php echo $selected_n; ?>>No</option>
+                        <option value='y' <?php echo $selected_y; ?>><?php echo __('Yes'); ?></option>
+                        <option value='n' <?php echo $selected_n; ?>><?php echo __('No'); ?></option>
                         </select>
                         <?php if ($edit) { ?>
                         <span class="input-group-btn"><button id="edit_nmis_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span>
@@ -968,7 +968,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
     <div id="credentials" class="section">
         <div class="panel panel-default">
       <div class="panel-heading">
-        <h3 class="panel-title pull-left">Credentials</h3>
+        <h3 class="panel-title pull-left"><?php echo __('Credentials'); ?></h3>
         <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="credentials"></span>
         <div class="clearfix"></div>
       </div>
@@ -977,12 +977,12 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
             <table class="table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Type</th>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <th><?php echo __('ID'); ?></th>
+                        <th><?php echo __('Type'); ?></th>
+                        <th><?php echo __('Name'); ?></th>
+                        <th><?php echo __('Description'); ?></th>
                         <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
-                        <td style="text-align:center;">Delete</td>
+                        <td style="text-align:center;"><?php echo __('Delete'); ?></td>
                         <?php } ?>
                     </tr>
                 </thead>
@@ -1015,14 +1015,14 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
 <div id="location" class="section">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title pull-left">Location / Owner</h3>
+            <h3 class="panel-title pull-left"><?php echo __('Location / Owner'); ?></h3>
             <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="location"></span>
             <div class="clearfix"></div>
         </div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-6">
-                <?php 
+                <?php
                     if (!empty($data['locations'])) { ?>
                     <div class="form-group">
                         <label for="location_id" class="col-sm-4 control-label"><?php echo __('Location')?></label>
@@ -1182,9 +1182,9 @@ if (isset($data['software']) and count($data['software']) > 0) {
     <div id="software" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left">Software</h3>
+                <h3 class="panel-title pull-left"><?php echo __('Software'); ?></h3>
                 <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software"></span>
-                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> <?php echo ' ' . __('items'); ?></span>
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
@@ -1298,9 +1298,9 @@ if (!empty($data['software'])) {
     <div id="software_update" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left">Software Updates</h3>
+                <h3 class="panel-title pull-left"><?php echo __('Software Updates'); ?></h3>
                 <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="software_update"></span>
-                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> items</span>
+                <span class="pull-right" style="padding-right:10px;"><?php echo $count; ?> <?php echo ' ' . __('items'); ?></span>
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
@@ -1340,11 +1340,11 @@ if (!empty($data['software'])) {
     </div>
 <?php } ?>
 
-    
+
         <div id="attachment" class="section">
             <div class="panel panel-default">
           <div class="panel-heading">
-            <h3 class="panel-title pull-left">Attachments</h3>
+            <h3 class="panel-title pull-left"><?php echo __('Attachments'); ?></h3>
             <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="attachment"></span>
             <div class="clearfix"></div>
           </div>
@@ -1353,14 +1353,14 @@ if (!empty($data['software'])) {
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Filename</th>
-                            <th>Edited By</th>
-                            <th>Edited Date</th>
-                            <th style="text-align:center;">Download</th>
+                            <th><?php echo __('ID'); ?></th>
+                            <th><?php echo __('Name'); ?></th>
+                            <th><?php echo __('Filename'); ?></th>
+                            <th><?php echo __('Edited By'); ?>Edited By</th>
+                            <th><?php echo __('Edited Date'); ?></th>
+                            <th style="text-align:center;"><?php echo __('Download'); ?></th>
                             <?php if ($this->m_users->get_user_permission('', 'devices', 'u')) { ?>
-                            <th style="text-align:center;">Delete</th>
+                            <th style="text-align:center;"><?php echo __('Delete'); ?></th>
                             <?php } ?>
                         </tr>
                     </thead>
@@ -1407,7 +1407,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
   <div class="panel-heading">
     <h3 class="panel-title pull-left"><?php echo __('Discovery Log'); ?></h3>
     <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="discovery_log"></span>
-    <span class="pull-right" style="padding-right:10px;"><?php echo count($data['discovery_log']); ?> items</span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo count($data['discovery_log']); ?> <?php echo ' ' . __('items'); ?></span>
     <div class="clearfix"></div>
   </div>
       <div class="panel-body">
@@ -1841,4 +1841,3 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
         }
     }
 }
-

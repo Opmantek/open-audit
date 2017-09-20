@@ -43,21 +43,21 @@
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][id]" class="col-sm-3 control-label">ID</label>
+                        <label for="data[attributes][id]" class="col-sm-3 control-label"><?php echo __('ID'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][id]" name="data[attributes][id]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label">Name</label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][org_id]" class="col-sm-3 control-label">Organisation</label>
+                        <label for="data[attributes][org_id]" class="col-sm-3 control-label"><?php echo __('Organisation'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][org_id]" name="data[attributes][org_id]">
                             <?php
@@ -70,23 +70,23 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][menu_category]" class="col-sm-3 control-label">Menu Category</label>
+                        <label for="data[attributes][menu_category]" class="col-sm-3 control-label"><?php echo __('Menu Category'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][menu_category]" name="data[attributes][menu_category]">
                                 <option value="" label=" "></option>
-                                <option value="Change">Change</option>
-                                <option value="Device">Device</option>
-                                <option value="Hardware">Hardware</option>
-                                <option value="Network">Network</option>
-                                <option value="Server">Server</option>
-                                <option value="Software">Software</option>
-                                <option value="User">User</option>
+                                <option value="Change"><?php echo __('Change'); ?></option>
+                                <option value="Device"><?php echo __('Device'); ?></option>
+                                <option value="Hardware"><?php echo __('Hardware'); ?></option>
+                                <option value="Network"><?php echo __('Network'); ?></option>
+                                <option value="Server"><?php echo __('Server'); ?></option>
+                                <option value="Software"><?php echo __('Software'); ?></option>
+                                <option value="User"><?php echo __('User'); ?></option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][table]" class="col-sm-3 control-label">Table</label>
+                        <label for="data[attributes][table]" class="col-sm-3 control-label"><?php echo __('Table'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][table]" name="data[attributes][table]">
                             <?php
@@ -99,28 +99,28 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][column]" class="col-sm-3 control-label">Column</label>
+                        <label for="data[attributes][column]" class="col-sm-3 control-label"><?php echo __('Column'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][column]" name="data[attributes][column]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][extra_columns]" class="col-sm-3 control-label">Extra Columns</label>
+                        <label for="data[attributes][extra_columns]" class="col-sm-3 control-label"><?php echo __('Extra Columns'); ?></label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][extra_columns]" name="data[attributes][extra_columns]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label">Edited By</label>
+                        <label for="data[attributes][edited_by]" class="col-sm-3 control-label"><?php echo __('Edited By'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_by]" name="data[attributes][edited_by]" value="" disabled>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label">Edited Date</label>
+                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
                         </div>
@@ -134,7 +134,7 @@
                     <label for="submit" class="col-sm-2 control-label"></label>
                     <div class="col-sm-8 input-group">
                         <input type="hidden" value="connections" id="data[type]" name="data[type]" />
-                        <button id="submit" name="submit" type="submit" class="btn btn-default">Submit</button>
+                        <button id="submit" name="submit" type="submit" class="btn btn-default"><?php echo __('Submit'); ?></button>
                     </div>
                 </div>
             </div>
