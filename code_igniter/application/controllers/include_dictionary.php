@@ -64,7 +64,11 @@ if ($table == 'attributes') {
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br />
     <em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br />
-    <em>Windows</em>: c:\xampplite\htdocs\open-audit\device_images<br /><br /></p>';
+    <em>Windows</em>: c:\xampplite\htdocs\open-audit\device_images<br /><br />
+    If you add a location type, to display the associated icon you will have to manually copy the 32x32px icon to the directory:<br />
+    <em>Linux</em>: /usr/local/open-audit/www/open-audit/images/map_icons<br />
+    <em>Windows</em>: c:\xampplite\htdocs\open-audit\images\map_icons<br /><br />
+    </p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -309,8 +313,7 @@ if ($table == 'groups') {
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id\'s only. If requested using the web interface, they return the standard column attribute list.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '<p>Group Creation Rules<br /><br />
-The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(system.id)</code>.<br /><br />
+    $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> only contain <code>DISTINCT(system.id)</code>.<br /><br />
 The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />
 An example for SQL to select all devices running the Debian OS - <code>SELECT DISTINCT(system.id) FROM system WHERE @filter AND system.os_family = \'Debian\'</code><br /><br /></p>';
     $dictionary->columns->id = $id;
@@ -364,7 +367,7 @@ To create an entry to track your licenses provide a name, an organization, the n
     $dictionary->about = '<p>The license endpoint allows you to track the number of licenses found on your devices.<br /><br />
 To create an entry to track your licenses you <em>must</em> to provide a name, an organization, the number of licenses acquired and the name of the software. On the field <code>match_string</code> you must provide the name of the software that you want to track, you can use the percent sign (%) as a wildcard in the match_string.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
+    $dictionary->notes = 'You can use the percent % sign as a wildcard in the match_string.';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -445,8 +448,7 @@ if ($table == 'queries') {
     ' . $link . '<br /><br /></p>';
     $dictionary->about = 'Open-AudIT comes with many queries inbuilt. If you require a specific query and none of the pre-packaged queries fit your needs, it\'s quite easy to create a new one and load it into Open-AudIT for running.<br /><br />                
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '<p>Query Creation Rules<br /><br />
-The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT system.id AS `system.id`, system.name AS `system.name` ...</code>.<br /><br />
+    $dictionary->notes = '<p>The SELECT section of your SQL <em>must</em> contain fully qualified columns. IE - <code>SELECT system.id AS `system.id`, system.name AS `system.name` ...</code>.<br /><br />
 The WHERE section of your SQL <em>must</em> contain <code>WHERE @filter</code> so Open-AudIT knows to restrict your query to the appropriate Orgs. SQL not containing this condition will result in the group failing to be created.<br /><br />
 An example query SQL showing attributes on devices that have an <code>os_group</code> attribute of \'Linux\' - <br /><code>SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, <br />system.name AS `system.name`, system.os_name AS `system.os_name` FROM<br /> system WHERE @filter AND system.os_group = \'Linux\'</code><br /><br /></p>';
     $dictionary->columns->id = $id;
