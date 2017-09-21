@@ -190,7 +190,7 @@ $details = $json->system;
 $ids[] = discovery_log($log);
 $json->system->mac_addresses = array();
 if (!empty($json->network->item) and count($json->network->item) > 0) {
-    foreach($json->network->item as $card) {
+    foreach ($json->network->item as $card) {
         if (!empty($card->mac)) {
             $json->system->mac_addresses[] = $card->mac;
         }
