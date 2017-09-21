@@ -249,9 +249,9 @@ if ($table == 'discoveries') {
     $dictionary->columns->last_run = 'A calculated field that is updated each time the discovery has been executed.';
     $dictionary->columns->complete = 'A internal field that indicates if the discovery has completed.';
     $dictionary->columns->other = 'A JSON document containing the required attributes depending on the <code>discoveries.type</code>.';
-    $dictionary->columns->subnet = 'Stored as a JSON document in the <code>other</code> attribute. The network subnet to execute the discovery on.';
-    $dictionary->columns->ad_server = 'Stored as a JSON document in the <code>other</code> attribute. The Active Directory server to retrieve a list of subnets from.';
-    $dictionary->columns->ad_domain = 'Stored as a JSON document in the <code>other</code> attribute. The Active Directory domain to retrieve a list of subnets from.';
+    $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
+    $dictionary->columns->ad_server = 'The Active Directory server to retrieve a list of subnets from.';
+    $dictionary->columns->ad_domain = 'The Active Directory domain to retrieve a list of subnets from.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
