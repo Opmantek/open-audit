@@ -671,7 +671,7 @@ class M_devices_components extends MY_Model
                     // update all values in the table
                     $sql = "UPDATE `$table` SET $sql WHERE `" . $table . "`.`id` = '" . $db_item->id . "'";
                     // make sure no data is in $data
-                    unset ($data);
+                    unset($data);
                     // populate $data with the values from the database, combined with those of the audit
                     // this is stored in $fields
                     $data = array();
@@ -706,7 +706,7 @@ class M_devices_components extends MY_Model
                 $set_fields = '';
                 $set_values = '';
                 foreach ($input_item as $key => $value) {
-                    foreach($fields as $field) {
+                    foreach ($fields as $field) {
                         if ($key == $field) {
                             $set_fields .= " `$key`, ";
                             $set_values .= " ?, ";
@@ -785,7 +785,6 @@ class M_devices_components extends MY_Model
                 $sql = $this->clean_sql($sql);
                 $data = array($db_item->id);
                 $query = $this->db->query($sql, $data);
-
             } else {
                 $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
                 $sql = $this->clean_sql($sql);
@@ -1162,7 +1161,7 @@ class M_devices_components extends MY_Model
         if (mb_strpos($version, "7.00.623") === 0) {
             $version_string = "SQL Server 7 RTM";
         }
-    return ($version_string);
+        return ($version_string);
     }
 
     public function format_netstat_data($input, $details)
@@ -1381,7 +1380,7 @@ class M_devices_components extends MY_Model
             return;
         }
         if (!is_numeric($days)) {
-           return;
+            return;
         }
         $sql = "SELECT id, used_percent, DATE(`timestamp`) AS `timestamp` FROM `graph` WHERE system_id = ? AND linked_row = ? AND type = ? AND timestamp > adddate(current_date(), interval -".$days." day) GROUP BY DAY(timestamp) ORDER BY timestamp";
         $data = array($system_id, $linked_row, "$type");
@@ -1580,7 +1579,7 @@ class M_devices_components extends MY_Model
     * @access  public
     * @return  array an array of objects with the integer columns set as int types
     */
-    public function from_db ($result)
+    public function from_db($result)
     {
         unset($item);
         foreach ($result as &$item) {
