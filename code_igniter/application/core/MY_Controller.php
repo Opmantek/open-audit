@@ -57,6 +57,13 @@ class MY_Controller extends CI_Controller
     public function __construct()
     {
         parent::__construct();
+
+        # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
+        $this->load->helper('url');
+        if (strrpos($_SERVER['REQUEST_URI'], '/') === strlen($_SERVER['REQUEST_URI'])-1) {
+            redirect(uri_string());
+        }
+
         $this->load->helper('log');
         $log = new stdClass();
         $log->status = 'start';
@@ -70,7 +77,10 @@ class MY_Controller extends CI_Controller
         $this->load->model('m_users');
         $this->m_users->validate();
 
-        $this->load->helper('url');
+        $this->load->helper('input');
+        $this->load->helper('output');
+        $this->load->helper('error');
+        $this->load->model('m_orgs');
 
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
