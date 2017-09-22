@@ -61,7 +61,7 @@ foreach ($address_array as $key => $value) {
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="data[attributes][subnet]" class="col-sm-4 control-label"><?php echo __('Device IP Address'); ?></label>
+                        <label for="data[attributes][other][subnet]" class="col-sm-4 control-label"><?php echo __('Device IP Address'); ?></label>
                         <div class="col-sm-7 input-group">
                             <input required type="text" class="form-control" id="data[attributes][other][subnet]" name="data[attributes][other][subnet]" placeholder="192.168.1.1"/>
                         </div>

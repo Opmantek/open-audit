@@ -238,9 +238,9 @@ $item = $this->response->data[0];
                     } else {
                     ?>
                     <div class="form-group">
-                        <label for="execute" class="col-sm-3 control-label"><?php echo __('Execute'); ?></label>
+                        <label class="col-sm-3 control-label"><?php echo __('Execute'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute"><?php echo __('Execute'); ?></a>
+                            <a class="btn btn-sm btn-primary" id="execute" href="<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>?action=execute"><?php echo __('Execute'); ?></a>
                         </div>
                     </div>
                     <?php } ?>

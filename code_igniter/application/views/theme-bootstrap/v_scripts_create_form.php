@@ -105,7 +105,7 @@ foreach ($this->response->included as $item) {
                     </div>
 
                     <div class="form-group">
-                        <label for="data[edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
+                        <label for="data[attributes][edited_date]" class="col-sm-3 control-label"><?php echo __('Edited Date'); ?></label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="data[attributes][edited_date]" name="data[attributes][edited_date]" value="" disabled>
                         </div>

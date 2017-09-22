@@ -97,7 +97,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="based_on" class="col-sm-3 control-label"><?php echo __('Based On'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select id="based_on" name="based_on" onChange="#" class="form-control" disabled>
+                            <select id="based_on" name="based_on" class="form-control" disabled>
                                 <option value='audit_aix.sh'<?php if ($item->attributes->based_on === 'audit_aix.sh') { echo ' selected'; } ?>>Audit AIX</option>
                                 <option value='audit_esx.sh'<?php if ($item->attributes->based_on === 'audit_esx.sh') { echo ' selected'; } ?>>Audit ESX</option>
                                 <option value='audit_linux.sh'<?php if ($item->attributes->based_on === 'audit_linux.sh') { echo ' selected'; } ?>>Audit Linux</option>

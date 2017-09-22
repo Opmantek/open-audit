@@ -100,8 +100,8 @@
                     <div class="form-group">
                         <label for="data[attributes][secure]" class="col-sm-3 control-label"><?php echo __('Use Secure (LDAPS)'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select required class="form-control" id="data[attributes][secure]" name="data[attributes][secure]">
-                                <option value="n"><?php echo __('No'); ?></option>
+                            <select required class="form-control" id="data[attributes][secure]" name="data[attributes][secure]" size="2">
+                                <option value="n" selected><?php echo __('No'); ?></option>
                                 <option value="y"><?php echo __('Yes'); ?></option>
                             </select>
                         </div>
@@ -117,7 +117,7 @@
                     <div class="form-group">
                         <label for="data[attributes][use_roles]" class="col-sm-3 control-label"><?php echo __('Use LDAP for Roles'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select id="data[attributes[[use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]">
+                            <select id="data[attributes][use_roles]" name="data[attributes][use_roles]" class="form-control" title="data[attributes[[use_roles]">
                                 <option value='n' selected><?php echo __('No'); ?></option>
                                 <option value='y'><?php echo __('Yes'); ?></option>
                             </select>
@@ -130,8 +130,8 @@
                     <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select required class="form-control" id="data[attributes][type]" name="data[attributes][type]">
-                                <option value="active directory">Active Directory</option>
+                            <select required class="form-control" id="data[attributes][type]" name="data[attributes][type]" size="2">
+                                <option value="active directory" selected>Active Directory</option>
                                 <option value="openldap">OpenLDAP</option>
                             </select>
                         </div>

@@ -166,7 +166,7 @@ unset($this->response->meta->sql);
             if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
                 ?>
                 <h3><?php echo __('User Session Data'); ?></h3>
-                <pre><?php print_r($this->session->all_userdata()); ?></pre>
+                <pre><?php htmlentities(print_r($this->session->all_userdata())); ?></pre>
             <?php
             }
             ?>

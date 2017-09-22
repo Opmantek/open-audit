@@ -190,8 +190,8 @@ $network_address_array[] = "                                <option value='other
                     <span id="options">
                     </span>
                     <div class="form-group">
-                        <label for="notes" class="col-sm-3 control-label"></label>
-                        <div class="col-sm-8 input-group" id="notes" name="notes">
+                        <label class="col-sm-3 control-label"></label>
+                        <div class="col-sm-8 input-group" id="notes">
                             <p><br />Some examples of valid Subnet attributes are:
                                 <ul>
                                     <li>192.168.1.1 (a single IP address)</li>
