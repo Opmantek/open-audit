@@ -155,6 +155,10 @@ class M_summaries extends MY_Model
         $data = array($id);
         $dashboard = $this->run_sql($sql, $data);
 
+        if (!empty($CI)) {
+            $CI->response->meta->title = 'Summaries - ' . $dashboard[0]->name;
+        }
+
         if ($dashboard[0]->table == 'orgs') {
             $org_id = 'id';
         } else {

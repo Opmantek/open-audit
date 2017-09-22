@@ -8,7 +8,13 @@ if (strpos($this->response->links->first, '?') !== false) {
 ?>
 <div class="panel-title clearfix">
     <div class="pull-left">
-        <?php echo ucwords(str_replace('_', ' ', ($this->response->meta->collection))); ?>
+        <?php
+            if ($this->response->meta->collection == 'summaries') {
+                echo $this->response->meta->title;
+            } else {
+                echo ucwords(str_replace('_', ' ', ($this->response->meta->collection)));
+            }
+        ?>
     </div>
     <?php if ($this->response->meta->collection == 'groups' or $this->response->meta->collection == 'summaries') { ?>
     <div class="nav navbar-nav navbar-center">
