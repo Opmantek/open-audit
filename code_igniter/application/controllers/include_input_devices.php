@@ -336,27 +336,29 @@ if (!empty($json->audit_wmi_fail)) {
     $this->m_audit_log->update('wmi_fails', $json->audit_wmi_fail, $details->id, $details->last_seen);
 }
 
-// Generate any DNS entries required
-$dns = new stdClass();
-$dns->item = array();
-$dns->item = $this->m_devices_components->create_dns_entries((int)$details->id);
-if (!empty($json->dns->item) and count($json->dns->item) > 0) {
-    foreach ($json->dns->item as $item) {
-        # likely not required, but turn it into an array and back to a standard object
-        # so we have consistency inside the dns->item array of all objects versus some standard objects
-        # and some simpleXML objects
-        $item = (array) $item;
-        $item = (object) $item;
-        if (isset($item->ip) and $item->ip != '' and isset($item->name) and $item->name != '' and isset($item->fqdn)) {
-            $dns->item[] = $item;
+// Generate any DNS entries required - only if a collector or the audit is NOT from a collector
+if (!empty($this->config->config['servers']) or empty($details->collector_uuid)) {
+    $dns = new stdClass();
+    $dns->item = array();
+    $dns->item = $this->m_devices_components->create_dns_entries((int)$details->id);
+    if (!empty($json->dns->item) and count($json->dns->item) > 0) {
+        foreach ($json->dns->item as $item) {
+            # likely not required, but turn it into an array and back to a standard object
+            # so we have consistency inside the dns->item array of all objects versus some standard objects
+            # and some simpleXML objects
+            $item = (array) $item;
+            $item = (object) $item;
+            if (isset($item->ip) and $item->ip != '' and isset($item->name) and $item->name != '' and isset($item->fqdn)) {
+                $dns->item[] = $item;
+            }
         }
     }
+    if (count($dns->item) > 0) {
+        $this->m_devices_components->process_component('dns', $details, $dns);
+    }
+    unset($item);
+    unset($dns);
 }
-if (count($dns->item) > 0) {
-    $this->m_devices_components->process_component('dns', $details, $dns);
-}
-unset($item);
-unset($dns);
 
 $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
 $log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
@@ -395,6 +397,7 @@ if ($this->config->config['servers'] !== '') {
     unset($json->system->original_last_seen);
     unset($json->system->first_seen);
     unset($json->system->org_id);
+    $json->system->collector_uuid = $this->config->config['uuid'];
 
     $device_json = json_encode($json);
     $url = $server->host . $server->community . '/index.php/input/devices';
