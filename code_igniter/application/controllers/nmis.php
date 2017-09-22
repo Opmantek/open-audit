@@ -354,64 +354,66 @@ class Nmis extends MY_Controller
         $this->load->model('m_devices');
         $devices = $this->m_devices->collection();
         $this->response->meta->total = intval(count($devices));
-        foreach ($devices as &$device) {
-            $this_device = new stdClass();
-            $this_device->id = intval($device->attributes->id);
-            $this_device->type = 'devices';
-            $this_device->attributes = new stdClass();
-            $this_device->attributes->id = $device->attributes->id;
-            $this_device->attributes->name = $device->attributes->nmis_name;
-            $this_device->attributes->uuid = $device->attributes->omk_uuid;
-            $this_device->attributes->nmis_manage = $device->attributes->nmis_manage;
-            $this_device->attributes->notes = $device->attributes->nmis_notes;
-            $this_device->attributes->businessService = $device->attributes->nmis_business_service;
-            $this_device->attributes->role = $device->attributes->nmis_role;
-            $this_device->attributes->group = $device->attributes->nmis_group;
-            if ($this_device->attributes->group == '') {
-                $this_device->attributes->group = 'Open-AudIT';
-            }
-            $this_device->attributes->host = '';
-            if (!empty($device->attributes->ip)) {
-                $this_device->attributes->host = ip_address_from_db($device->attributes->ip);
-            } else if (!empty($device->attributes->fqdn)) {
-                $this_device->attributes->host = $device->attributes->fqdn;
-            } else if (!empty($device->attributes->hostname)) {
-                $this_device->attributes->host = $device->attributes->hostname;
-            }
-            $this_device->attributes->community = '';
-            $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
-            if (!empty($credentials)) {
-                foreach ($credentials as $credential) {
-                    if ($credential->attributes->type == 'snmp') {
-                        $this_device->attributes->community = $credential->attributes->credentials->community;
-                        if ($credential->attributes->credentials->version == '2') {
-                            $this_device->attributes->version = 'snmpv2c';
-                        } else {
-                            $this_device->attributes->version = 'snmpv1';
-                        }
-                    }
-                    if ($credential->attributes->type == 'snmp_v3') {
-                        $this_device->attributes->privprotocol = $credential->attributes->credentials->privacy_protocol;
-                        $this_device->attributes->privpassword = $credential->attributes->credentials->privacy_passphrase;
-                        $this_device->attributes->authprotocol = $credential->attributes->credentials->authentication_protocol;
-                        $this_device->attributes->authpassword = $credential->attributes->credentials->authentication_passphrase;
-                        $this_device->attributes->username = $credential->attributes->credentials->security_name;
-                        $this_device->attributes->authkey = $credential->attributes->credentials->security_level;
-                        $this_device->attributes->version = 'snmpv3';
-                    }
-                    if ($credential->attributes->type == 'windows') {
-                        if (strpos($credential->attributes->credentials->username, '@') !== false) {
-                            $temp = explode('@', $credential->attributes->credentials->username);
-                            $this_device->attributes->wmiusername = $temp[1] . '/' . $temp[0];
-                        } else {
-                            $this_device->attributes->wmiusername = $credential->attributes->credentials->username;
-                        }
-                        $this_device->attributes->wmipassword = $credential->attributes->credentials->password;
-                    }
-
+        if ($devices) {
+            foreach ($devices as &$device) {
+                $this_device = new stdClass();
+                $this_device->id = intval($device->attributes->id);
+                $this_device->type = 'devices';
+                $this_device->attributes = new stdClass();
+                $this_device->attributes->id = $device->attributes->id;
+                $this_device->attributes->name = $device->attributes->nmis_name;
+                $this_device->attributes->uuid = $device->attributes->omk_uuid;
+                $this_device->attributes->nmis_manage = $device->attributes->nmis_manage;
+                $this_device->attributes->notes = $device->attributes->nmis_notes;
+                $this_device->attributes->businessService = $device->attributes->nmis_business_service;
+                $this_device->attributes->role = $device->attributes->nmis_role;
+                $this_device->attributes->group = $device->attributes->nmis_group;
+                if ($this_device->attributes->group == '') {
+                    $this_device->attributes->group = 'Open-AudIT';
                 }
+                $this_device->attributes->host = '';
+                if (!empty($device->attributes->ip)) {
+                    $this_device->attributes->host = ip_address_from_db($device->attributes->ip);
+                } else if (!empty($device->attributes->fqdn)) {
+                    $this_device->attributes->host = $device->attributes->fqdn;
+                } else if (!empty($device->attributes->hostname)) {
+                    $this_device->attributes->host = $device->attributes->hostname;
+                }
+                $this_device->attributes->community = '';
+                $credentials = $this->m_devices->read_sub_resource($device->attributes->id, 'credential', '', '', '', 'y');
+                if (!empty($credentials)) {
+                    foreach ($credentials as $credential) {
+                        if ($credential->attributes->type == 'snmp') {
+                            $this_device->attributes->community = $credential->attributes->credentials->community;
+                            if ($credential->attributes->credentials->version == '2') {
+                                $this_device->attributes->version = 'snmpv2c';
+                            } else {
+                                $this_device->attributes->version = 'snmpv1';
+                            }
+                        }
+                        if ($credential->attributes->type == 'snmp_v3') {
+                            $this_device->attributes->privprotocol = $credential->attributes->credentials->privacy_protocol;
+                            $this_device->attributes->privpassword = $credential->attributes->credentials->privacy_passphrase;
+                            $this_device->attributes->authprotocol = $credential->attributes->credentials->authentication_protocol;
+                            $this_device->attributes->authpassword = $credential->attributes->credentials->authentication_passphrase;
+                            $this_device->attributes->username = $credential->attributes->credentials->security_name;
+                            $this_device->attributes->authkey = $credential->attributes->credentials->security_level;
+                            $this_device->attributes->version = 'snmpv3';
+                        }
+                        if ($credential->attributes->type == 'windows') {
+                            if (strpos($credential->attributes->credentials->username, '@') !== false) {
+                                $temp = explode('@', $credential->attributes->credentials->username);
+                                $this_device->attributes->wmiusername = $temp[1] . '/' . $temp[0];
+                            } else {
+                                $this_device->attributes->wmiusername = $credential->attributes->credentials->username;
+                            }
+                            $this_device->attributes->wmipassword = $credential->attributes->credentials->password;
+                        }
+
+                    }
+                }
+                $this->response->data[] = $this_device;
             }
-            $this->response->data[] = $this_device;
         }
         unset($this->response->meta->data_order);
         output($this->response);
