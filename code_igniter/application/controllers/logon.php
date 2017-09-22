@@ -55,11 +55,6 @@ class logon extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->status = 'start';
-        $log->function = strtolower(__METHOD__);
-        stdlog($log);
 
         $this->load->helper('url');
         $this->load->helper('error');

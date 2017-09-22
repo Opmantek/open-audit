@@ -39,18 +39,12 @@ class custom extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-
-        $log = new stdClass();
-        $log->status = 'start';
-        $log->function = strtolower(__METHOD__);
-        stdlog($log);
-
         // must be an admin to access this page
         if ($this->user->admin != 'y') {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
-                redirect('main/list_groups');
+                redirect('summaries');
             }
         }
         $this->load->helper(array('form', 'url'));

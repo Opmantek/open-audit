@@ -39,13 +39,6 @@ class main extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        // log the attempt
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->status = 'start';
-        $log->function = strtolower(__METHOD__);
-        stdlog($log);
-
         $this->load->model('m_users');
         $this->load->model('m_roles');
         $this->roles = $this->m_roles->collection();

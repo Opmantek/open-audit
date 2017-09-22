@@ -50,26 +50,11 @@ class Configuration extends MY_Controller
     * Constructor
     *
     * @access    public
-
     */
     public function __construct()
     {
         parent::__construct();
-        // log the attempt
-        $log = new stdClass();
-        $log->function = strtolower(__METHOD__);
-        stdlog($log);
-
-        // ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
-        $this->load->helper('url');
-        if (strrpos($this->input->server('REQUEST_URI'), '/') === strlen($this->input->server('REQUEST_URI'))-1) {
-            redirect(uri_string());
-        }
-        $this->load->helper('input');
-        $this->load->helper('output');
-        $this->load->helper('error');
         $this->load->model('m_configuration');
-        $this->load->model('m_orgs');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
     }

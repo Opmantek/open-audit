@@ -40,13 +40,6 @@ class test extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        // log the attempt
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->status = 'start';
-        $log->function = strtolower(__METHOD__);
-        stdlog($log);
-
         // must be an admin to access this page
         $this->load->model('m_users');
         $this->m_users->validate();
@@ -54,7 +47,7 @@ class test extends CI_Controller
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
                 redirect($_SERVER['HTTP_REFERER']);
             } else {
-                redirect('main/list_groups');
+                redirect('summaries');
             }
         }
     }
@@ -62,6 +55,34 @@ class test extends CI_Controller
     public function index()
     {
         redirect('/');
+    }
+
+    public function manufacturers_oid()
+    {
+        echo "<pre>\n";
+        $manufacturers = array();
+
+        $oid_file = file('/usr/local/open-audit/other/enterprise-numbers.txt');
+        for ($i=0; $i < count($oid_file); $i++) {
+            if (ctype_digit(trim($oid_file[$i]))) {
+                $manufacturers[] = trim($oid_file[$i+1]);
+            }
+        }
+
+        $oid_file = file('/usr/local/open-audit/other/oui.txt');
+        for ($i=0; $i < count($oid_file); $i++) {
+            if (strpos($oid_file[$i], '(hex)') !== false) {
+                $manufacturers[] = trim(substr($oid_file[$i], 18));
+            }
+        }
+
+        $manufacturers = array_unique($manufacturers);
+        sort($manufacturers);
+        echo "Count: " . count($manufacturers) . "\n";
+        foreach($manufacturers as $manufacturer) {
+            echo $manufacturer . "\n";
+        }
+        echo "</pre>\n";        
     }
 
     public function db_compare()

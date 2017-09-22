@@ -55,12 +55,6 @@ class input extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        // log the attempt
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->status = 'start';
-        $log->function = strtolower(__METHOD__);
-        stdlog($log);
 
         $this->data['title'] = 'Open-AudIT';
         $this->load->helper('url');
