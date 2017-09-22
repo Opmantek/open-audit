@@ -681,8 +681,7 @@ if (! function_exists('wmi_audit')) {
         $wmi_result = wmi_command($ip, $credentials, $command, $log);
         if ($wmi_result['status'] == 0) {
             if (!empty($wmi_result['output'][1])) {
-                $details->os_name = $wmi_result['output'][1];
-                $details->os_name = trim(substr($details->os_name, 0, stripos($details->os_name, '|')));
+                $details->os_group = 'Windows';
                 if (stripos($details->os_name, " 95") !== false) {
                     $details->os_family = "Windows 95";
                 }
@@ -719,6 +718,12 @@ if (! function_exists('wmi_audit')) {
                 if (stripos($details->os_name, "Windows 10") !== false) {
                     $details->os_family = "Windows 10";
                 }
+                if (stripos($details->os_name, "2016") !== false) {
+                    $details->os_family = "Windows 2016";
+                }
+                $details->os_name = $wmi_result['output'][1];
+                $details->os_name = str_replace('®', '', $details->os_name);
+                $details->os_name = trim(substr($details->os_name, 0, stripos($details->os_name, '|')));
             }
         }
 

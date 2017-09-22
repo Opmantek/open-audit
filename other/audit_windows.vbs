@@ -7886,4 +7886,8 @@ End Sub
 ' 7601 - Win7 sp1, Win 2008 r2 sp1
 ' 8400 - Windows Home Server 2011
 ' 9200 - Win 8, Server 2012
+' 9600 - Windows Server 2012 R2, Windows 8.1 Update 1
 ' 9900 - Win Phone 8
+' 10211 - Win Phone 8
+' 10240 - Windows 10
+' 14393 - Server 2016, Windows 10 Anniversary Update
