@@ -627,6 +627,7 @@ if (! function_exists('wmi_audit')) {
             if (!empty($wmi_result['output'][1])) {
                 $details->uuid = $wmi_result['output'][1];
             }
+            $details->type = 'computer';
         }
 
         # Serial
