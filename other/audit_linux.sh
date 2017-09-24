@@ -580,13 +580,11 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
 	# CentOS based - must come before RedHat based
 	if [ "$system_release_file" = "/etc/centos-release" ]; then
-		if [ -z "$system_os_family" ]; then
 			system_os_family="CentOS";
-			system_os_version=$(grep -o '[0-9]\.[0-9].' "$system_release_file" 2>/dev/null)
+			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
 			if [ -z "$system_os_version" ]; then
-				system_os_version=$(grep -o '[0-9].' "$system_release_file" 2>/dev/null)
+				system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null)
 			fi
-		fi
 		break;
 	fi
 
