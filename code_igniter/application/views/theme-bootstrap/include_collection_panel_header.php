@@ -9,7 +9,7 @@ if (strpos($this->response->links->first, '?') !== false) {
 <div class="panel-title clearfix">
     <div class="pull-left">
         <?php
-            if ($this->response->meta->collection == 'summaries') {
+            if ($this->response->meta->collection == 'summaries' and !empty($this->response->meta->title)) {
                 echo $this->response->meta->title;
             } else {
                 echo ucwords(str_replace('_', ' ', ($this->response->meta->collection)));
