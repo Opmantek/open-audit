@@ -583,7 +583,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 			system_os_family="CentOS";
 			system_os_version=$(grep -o '[0-9]\.[0-9]' "$system_release_file" 2>/dev/null)
 			if [ -z "$system_os_version" ]; then
-				system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null)
+				system_os_version=$(grep -o '[0-9]' "$system_release_file" 2>/dev/null | head -n1)
 			fi
 		break;
 	fi
@@ -658,15 +658,16 @@ fi
 # Get the System Manufacturer
 if [ -z "$system_manufacturer" ]; then
 	system_manufacturer=$(dmidecode -s system-manufacturer 2>/dev/null | grep -v "^#")
-	if [ -z "$system_manufacturer" ]; then
-		if [ -n "$(which lshal 2>/dev/null)" ]; then
-			system_manufacturer=$(lshal | grep "system.hardware.vendor" | cut -d\' -f2)
-		fi
-	fi
-	if [ -z "$system_manufacturer" ]; then
-		system_manufacturer=$(cat /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null)
+fi
+if [ -z "$system_manufacturer" ]; then
+	if [ -n "$(which lshal 2>/dev/null)" ]; then
+		system_manufacturer=$(lshal 2>/dev/null | grep "system.hardware.vendor" | cut -d\' -f2)
 	fi
 fi
+if [ -z "$system_manufacturer" ]; then
+	system_manufacturer=$(cat /sys/devices/virtual/dmi/id/sys_vendor 2>/dev/null)
+fi
+
 
 # A few specific checks below here
 if [ -z "$system_model" ] && [ -e "/proc/user_beancounters" ] && [ "$(cat /proc/1/status 2>/dev/null | grep "^envID:" | cut -d: -f2 | awk '{print $1}')" != "1" ]; then
@@ -680,10 +681,6 @@ if [ -z "$system_model" ] && [ -n "$(which dmidecode 2>/dev/null)" ]; then
 		system_model="Virtual Machine"
 		system_manufacturer="Microsoft"
 	fi
-fi
-
-if [ "$system_manufacturer" = "VMware, Inc." ]; then
-	system_manufacturer="VMware"
 fi
 
 # Get the System Uptime
