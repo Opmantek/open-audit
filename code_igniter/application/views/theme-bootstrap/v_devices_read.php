@@ -1690,7 +1690,8 @@ if ($data['system']->type == 'computer') {
         <?php
         }
     }
-} else {
+}
+if ($data['system']->type != 'computer') {
     // just do the network interfaces
     $item = 'network';
     if (isset($data[$item]) and count($data[$item]) > 0) {
