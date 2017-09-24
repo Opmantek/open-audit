@@ -404,7 +404,7 @@ class M_devices_components extends MY_Model
                     $input->item[$i]->version = 4;
                 }
                 # Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
-                if ($input->item[$i]->version == 4 and (empty($input->item[$i]->netmask) or $input->item[$i]->netmask != '0.0.0.0')) {
+                if ($input->item[$i]->version == 4 and (empty($input->item[$i]->netmask) or $input->item[$i]->netmask == '0.0.0.0')) {
                     $input->item[$i]->netmask = '255.255.255.0';
                 }
                 # calculate the network this address is on
