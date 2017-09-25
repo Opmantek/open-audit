@@ -392,8 +392,12 @@ if (! function_exists('inputRead')) {
 
         # TODO - fit this somewhere nicer. Need to account for multiple id's being sent
         if (!empty($_GET['ids'])) {
-            $CI->response->meta->ids = $_GET['ids'];
+            $CI->response->meta->ids = urldecode($_GET['ids']);
             unset($_GET['ids']);
+            # Remove a trailing comman if we have one
+            if (substr($CI->response->meta->ids, -1) == ',') {
+                $CI->response->meta->ids = substr($CI->response->meta->ids, 0, -1);
+            }
         }
 
         # put any POST data into the object
