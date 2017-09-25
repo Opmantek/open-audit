@@ -226,6 +226,10 @@ $sql = "INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Workshop','W
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# monitor
+$this->alter_table('monitor', 'cost_code', "DROP cost_code", 'drop');
+$this->alter_table('monitor', 'cost_code', "ADD `cost_code` varchar(50) NOT NULL DEFAULT '' AFTER `edid_version`", 'add');
+
 # system
 $this->alter_table('system', 'credentials', "DROP credentials", 'drop');
 $this->alter_table('system', 'credentials', "ADD `credentials` TEXT NOT NULL AFTER `collector_uuid`", 'add');

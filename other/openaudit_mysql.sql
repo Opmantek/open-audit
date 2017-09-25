@@ -1462,6 +1462,7 @@ CREATE TABLE `monitor` (
   `size` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `aspect_ratio` varchar(5) NOT NULL DEFAULT '',
   `edid_version` varchar(50) NOT NULL DEFAULT '',
+  `cost_code` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `monitor_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
