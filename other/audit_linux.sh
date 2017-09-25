@@ -458,18 +458,18 @@ if [ "$san_audit" = "y" ]; then
 						head /tmp/"$san".txt
 					fi
 				fi
-				if [ -n "$(which wget 2>/dev/null)" ]; then
-					if [ "$debugging" -gt 1 ]; then
-						echo "Sending using wget."
-					fi
-					wget --delete-after --post-file=/tmp/"$san".txt "$san_url" 2>/dev/null
-				else
-					if [ -n "$(which curl 2>/dev/null)" ]; then
+				if [ -n "$(which curl 2>/dev/null)" ]; then
 					if [ "$debugging" -gt 1 ]; then
 						echo "Sending using curl."
 					fi
 						curl --data @/tmp/"$san".txt "$san_url"
 					fi
+				else
+					if [ -n "$(which wget 2>/dev/null)" ]; then
+					if [ "$debugging" -gt 1 ]; then
+						echo "Sending using wget."
+					fi
+					wget --delete-after --post-file=/tmp/"$san".txt "$san_url" 2>/dev/null
 				fi
 			fi
 			if [ "$create_file" != "y" ]; then
@@ -1761,7 +1761,7 @@ else
 			hard_drive_size="0"
 		fi
 		hard_drive_device_id="/dev/$disk"
-		hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | grep -v "^$disk\$" -c)
+		hard_drive_partitions=$(lsblk -lno NAME /dev/$disk | sort|uniq|grep -v "^$disk\$" -c)
 		hard_drive_status=""
 		hard_drive_model_family=""
 		hard_drive_firmware=$(udevadm info -q all -n /dev/"$disk" 2>/dev/null | grep ID_REVISION= | cut -d= -f2)
@@ -1833,24 +1833,24 @@ else
 				fi
 
 				#partition_mount_point=$(lsblk -lndo MOUNTPOINT /dev/"$partition" 2>/dev/null)
-				partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_mount_point=$(lsblk -lno NAME,MOUNTPOINT /dev/$disk |sort|uniq 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
 				partition_mount_point=$(trim "$partition_mount_point")
 
 				#partition_name=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-				partition_name=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_name=$(lsblk -lno NAME,LABEL /dev/$disk |sort|uniq 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
 				partition_name=$(trim "$partition_name")
 
 				#partition_size=$(lsblk -lbndo SIZE /dev/"$partition" 2>/dev/null)
 				#partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
-				partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
+				partition_size=$(lsblk -lbo NAME,SIZE /dev/$disk |sort|uniq 2>/dev/null | grep "^$partition " | rev | cut -d" " -f1 | rev)
 				partition_size=$((partition_size / 1024 / 1024))
 
 				#partition_format=$(lsblk -lndo FSTYPE /dev/"$partition" 2>/dev/null)
-				partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_format=$(lsblk -lno NAME,FSTYPE /dev/$disk |sort|uniq 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
 				partition_format=$(trim "$partition_format")
 
 				#partition_caption=$(lsblk -lndo LABEL /dev/"$partition" 2>/dev/null)
-				partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_caption=$(lsblk -lno NAME,LABEL /dev/$disk |sort|uniq 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
 				partition_caption=$(trim "$partition_caption")
 
 				partition_device_id="/dev/$partition"
@@ -1860,7 +1860,7 @@ else
 				partition_quotas_enabled=""
 
 				#partition_serial=$(lsblk -lndo UUID /dev/"$partition" 2>/dev/null)
-				partition_serial=$(lsblk -lno NAME,UUID /dev/$disk 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
+				partition_serial=$(lsblk -lno NAME,UUID /dev/$disk |sort|uniq 2>/dev/null | grep "^$partition " | sed -e "s/$partition//g")
 				partition_serial=$(trim "$partition_serial")
 
 				#partition_free_space=$(df -m /dev/"$partition" 2>/dev/null | grep /dev/"$partition" | awk '{print $4}')
