@@ -407,22 +407,9 @@ if (!empty($_POST['data'])) {
             discovery_log($log);
             $input->ssh_status = 'false';
         }
-        # test for working SSH credentials
-        // if ($input->ssh_status == 'true') {
-        //     $log->message = 'Testing SSH credentials for '.$device->ip;
-        //     if (!empty($device->id)) {
-        //         $log->message .= ' (System ID ' . $device->id . ')';
-        //     }
-        //     discovery_log($log);
-        //     $credentials_ssh = ssh_credentials($device->ip, $credentials, $log);
-        // } else {
-        //     $credentials_ssh = false;
-        // }
 
         # run SSH audit commands
-        #if ($input->ssh_status == 'true' and $credentials_ssh) {
         if ($input->ssh_status == 'true') {
-            #$ssh_details = ssh_audit($device->ip, $credentials_ssh, $log);
             $ssh_details = ssh_audit($device->ip, $credentials, $log);
             if (!empty($ssh_details)) {
                 $credentials_ssh = $ssh_details->credentials;
@@ -682,35 +669,37 @@ if (!empty($_POST['data'])) {
             unset($found);
         }
 
-        if (!empty($credentials_snmp) and $input->snmp_status == 'true') {
-            $log->ip = $device->ip;
-            $log->discovery_id = $device->discovery_id;
-            $log->file = 'include_input_discoveries';
-            $log->function = 'discoveries';
-            $log->message = 'SNMP credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
-            discovery_log($log);
-            $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_snmp);
-        }
+        // At as 2.0.8 - do NOT store device level credentials
+        
+        // if (!empty($credentials_snmp) and $input->snmp_status == 'true') {
+        //     $log->ip = $device->ip;
+        //     $log->discovery_id = $device->discovery_id;
+        //     $log->file = 'include_input_discoveries';
+        //     $log->function = 'discoveries';
+        //     $log->message = 'SNMP credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        //     discovery_log($log);
+        //     $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_snmp);
+        // }
 
-        if (!empty($credentials_ssh) and $input->ssh_status == 'true') {
-            $log->ip = $device->ip;
-            $log->discovery_id = $device->discovery_id;
-            $log->file = 'include_input_discoveries';
-            $log->function = 'discoveries';
-            $log->message = 'SSH credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
-            discovery_log($log);
-            $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_ssh);
-        }
+        // if (!empty($credentials_ssh) and $input->ssh_status == 'true') {
+        //     $log->ip = $device->ip;
+        //     $log->discovery_id = $device->discovery_id;
+        //     $log->file = 'include_input_discoveries';
+        //     $log->function = 'discoveries';
+        //     $log->message = 'SSH credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        //     discovery_log($log);
+        //     $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_ssh);
+        // }
 
-        if (isset($credentials_windows) and $input->wmi_status == 'true') {
-            $log->ip = $device->ip;
-            $log->discovery_id = $device->discovery_id;
-            $log->file = 'include_input_discoveries';
-            $log->function = 'discoveries';
-            $log->message = 'Windows credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
-            discovery_log($log);
-            $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_windows);
-        }
+        // if (isset($credentials_windows) and $input->wmi_status == 'true') {
+        //     $log->ip = $device->ip;
+        //     $log->discovery_id = $device->discovery_id;
+        //     $log->file = 'include_input_discoveries';
+        //     $log->function = 'discoveries';
+        //     $log->message = 'Windows credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        //     discovery_log($log);
+        //     $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_windows);
+        // }
 
         // $device->id is now set
         if ($display == 'y') {
