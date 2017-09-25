@@ -2665,6 +2665,7 @@ CREATE TABLE `system` (
   `last_user` varchar(150) NOT NULL DEFAULT '',
   `omk_uuid` text NOT NULL,
   `collector_uuid` text NOT NULL,
+  `credentials` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
