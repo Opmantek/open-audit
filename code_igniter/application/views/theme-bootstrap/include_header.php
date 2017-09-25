@@ -11,10 +11,10 @@ if (!empty($this->config->config['servers'])) {
 
             <!-- The left side 'header' of the navbar -->
             <div class="navbar-header">
-                <a class="navbar-brand" href="/open-audit/index.php">
-                    <img alt="Brand" src="/open-audit/images/oac.png">
+                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
+                    <img alt="Brand" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oac.png">
                 </a>
-                <a class="navbar-brand" href="/open-audit/index.php">
+                <a class="navbar-brand" href="<?php echo $this->config->config['oa_web_folder']; ?>/index.php">
                 <?php
                 if (!empty($this->config->config['oae_product'])) {
                     $product = $this->config->config['oae_product'];

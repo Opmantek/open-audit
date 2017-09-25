@@ -227,6 +227,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # system
+$this->alter_table('system', 'credentials', "DROP credentials", 'drop');
 $this->alter_table('system', 'credentials', "ADD `credentials` TEXT NOT NULL AFTER `collector_uuid`", 'add');
 
 # set our versions

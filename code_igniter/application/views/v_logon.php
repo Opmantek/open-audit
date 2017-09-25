@@ -132,15 +132,15 @@ if (!empty($temp)) {
     {
         var testWin = navigator.userAgent.match(/Windows NT/i);
         if (testWin) {
-            location.href = "/open-audit/index.php/util/audit_my_pc/win";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/win";
         }
         var testLin = navigator.userAgent.match(/Linux /i);
         if (testLin) {
-            location.href = "/open-audit/index.php/util/audit_my_pc/lin";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/lin";
         }
         var testOsx = navigator.userAgent.match(/Mac OS X/i);
         if (testOsx) {
-            location.href = "/open-audit/index.php/util/audit_my_pc/osx";
+            location.href = "<?php echo $this->config->config['oa_web_folder']; ?>/index.php/util/audit_my_pc/osx";
         }
     }
 
