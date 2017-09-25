@@ -250,6 +250,7 @@ $item = $this->response->data[0];
     </div>
 </form>
 
+<?php if (!empty($item->attributes->command)) { ?>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h3 class="panel-title">
@@ -265,6 +266,7 @@ $item = $this->response->data[0];
         </div>
     </div>
 </div>
+<?php } ?>
 
 <div class="panel panel-default">
     <div class="panel-heading">
