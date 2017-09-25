@@ -226,6 +226,9 @@ $sql = "INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Workshop','W
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# system
+$this->alter_table('system', 'credentials', "ADD `credentials` TEXT NOT NULL AFTER `collector_uuid`", 'add');
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20170919' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
