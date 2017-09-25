@@ -366,6 +366,7 @@ class devices extends MY_Controller
             if ($this->config->config['default_network_address'] == '') {
                 $message = 'Network Address must be set in the configuration before calling Bulk Edit -> Discover.';
                 $this->session->set_flashdata('error', $message);
+                # toto - add a JSON error here for OAE
                 redirect('devices');
             }
             $ids = array();
