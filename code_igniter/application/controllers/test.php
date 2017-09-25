@@ -42,6 +42,7 @@ class test extends CI_Controller
         parent::__construct();
         // must be an admin to access this page
         $this->load->model('m_users');
+        $this->load->helper('log');
         $this->m_users->validate();
         if (stripos($this->user->roles, '"admin"') === false) {
             if (isset($_SERVER['HTTP_REFERER']) and $_SERVER['HTTP_REFERER'] > "") {
