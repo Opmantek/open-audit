@@ -1261,11 +1261,11 @@ if (!empty($_POST['data'])) {
 
             if ($unlink != '') {
                 $log->command = 'unlink(\'' . $unlink . '\')';
-                $log->message = 'Delete local temporary audit script succeeded';
+                $log->message = 'Delete local temporary audit script';
+                $log->status = 'success';
                 try {
                     unlink($unlink);
                 } catch (Exception $e) {
-                    $log->message = 'Delete local temporary audit script failed';
                     $log->status = 'fail';
                     $log->severity = 4;
                 }
