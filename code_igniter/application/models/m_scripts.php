@@ -198,6 +198,10 @@ class M_scripts extends MY_Model
         $sql = "SELECT * FROM scripts WHERE id = ?";
         $result = $this->run_sql($sql, array(intval($id)));
         $data = $result[0];
+        if (empty($data)) {
+            # TODO - insert an error
+            return;
+        }
         $filename = $CI->config->item('base_path') . '/other/' . $data->based_on;
         if (! file_exists($filename)) {
             # TODO - insert an error
@@ -206,7 +210,10 @@ class M_scripts extends MY_Model
         $file = file_get_contents($filename);
         $options = json_decode($data->options);
 
-        if ($options->url == 'http://open-audit/index.php/system/add_system' or $options->url == 'http://open-audit/index.php/input/devices' $options->url == 'http://localhost/open-audit/index.php/system/add_system' or $options->url == 'http://localhost/open-audit/index.php/input/devices') {
+        if ($options->url == 'http://open-audit/index.php/system/add_system' or 
+            $options->url == 'http://open-audit/index.php/input/devices' or 
+            $options->url == 'http://localhost/open-audit/index.php/system/add_system' or 
+            $options->url == 'http://localhost/open-audit/index.php/input/devices') {
             # inject our default network address
             $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/input/devices';
         }
