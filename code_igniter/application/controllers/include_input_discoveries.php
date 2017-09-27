@@ -1303,11 +1303,11 @@ if (!empty($_POST['data'])) {
             }
 
         } // close the 'skip'
-        if ($audit_script != '') {
-            $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
-        } else {
+        #if ($audit_script != '') {
+        #    $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
+        #} else {
             $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
-        }
+        #}
         discovery_log($log);
     }
 } else {
