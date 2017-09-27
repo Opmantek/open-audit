@@ -272,9 +272,6 @@ else
     end if
 end if
 
-
-command = nmap_path & " -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-
 log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
 write_log()
 
@@ -302,7 +299,7 @@ dim hosts_scanned : hosts_scanned = 0
 dim db_log_duration : db_log_duration = 0
 dim db_log_status : db_log_status = ""
 dim db_log_message : db_log_message = ""
-dm host_timer : host_timer = 0
+dim host_timer : host_timer = 0
 
 db_log_status = "start"
 db_log_message = "Starting discovery, scanning " & hosts_in_subnet & " IP addresses"
