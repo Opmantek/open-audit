@@ -50,12 +50,11 @@ syslog="y"
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
-timing="-T3"
+timing="-T4"
 sequential="n"
 os_scan="n"
 force_ping="n"
-host_timeout=""
-#host_timeout="30"
+host_timeout="60"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -331,7 +330,7 @@ if [[ "$hosts" != "" ]]; then
 		# -T3 set the timing (higher is faster) ($timing) default for the script is -T3
 		if [ "$debugging" -gt 0 ]; then
 			echo "Scanning Host: $host"
-			echo "nmap -vv -n $os_scan -Pn --host-timeout 30 $timing $host 2>&1"
+			echo "nmap -vv -n $os_scan -Pn $host_timeout $timing $host 2>&1"
 		fi
 		nmap_tcp_timer_start=$(timer)
 		nmap_scan=$(nmap -vv -n $os_scan -Pn $host_timeout $timing "$host" 2>&1)
@@ -373,6 +372,7 @@ if [[ "$hosts" != "" ]]; then
 			if [[ "$line" == *"$NEEDLE"* ]]; then
 				mac_address=$(echo "$line" | cut -d" " -f3)
 				manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+				host_is_up="true"
 				if [ "$debugging" -gt 1 ]; then
 					echo "Host $host mac: $mac_address."
 				fi
