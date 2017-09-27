@@ -98,6 +98,8 @@ if (! function_exists('scp')) {
         $ssh->setTimeout(10);
         $key = new Crypt_RSA();
         if ($credentials->type == 'ssh_key') {
+            $log->message = 'Using SSH Key to copy file.';
+            discovery_log($log);
             if (!empty($credentials->credentials->password)) {
                 $key->setPassword($credentials->credentials->password);
             }
@@ -113,16 +115,21 @@ if (! function_exists('scp')) {
                 discovery_log($log);
             }
         } else if ($credentials->type == 'ssh') {
-            if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
-                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
-                #discovery_log($log);
-                $username = $credentials->credentials->username;
-                $password = $credentials->credentials->password;
-            } else {
-                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                #$log->command =  $ssh->getLog();
+            $log->message = 'Using SSH to copy file.';
+            discovery_log($log);
+
+            $username = $credentials->credentials->username;
+            $password = $credentials->credentials->password;
+            $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
+            try {
+                $ssh->login($credentials->credentials->username, $credentials->credentials->password);
+            } catch (Exception $e) {
+                $log->message = "Failure, credentials named " . $username . " not used to log in to $ip.";
+                $log->severity = 3;
                 discovery_log($log);
+                return false;
             }
+            discovery_log($log);
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
             $log->severity = 3;
@@ -133,17 +140,23 @@ if (! function_exists('scp')) {
 
         $status = true;
         $log->command = 'sftp ' . $source . ' to ' . $destination;
-        $log->command_status = 'success';
+        $log->command_status = '';
         $log->command_output = '';
-        $log->message = 'Copy file to ' . $ip;
+        $log->message = 'Attempt to copy file to ' . $ip;
+        discovery_log($log);
         try {
-            $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
+            $output = $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
+            $log->command_output = $output;
         } catch (Exception $e) {
-            $log->command =  $ssh->getLog();
-            $status = false;
+            $log->command = $ssh->getLog();
+            $log->command_output = $output;
             $log->command_status = 'fail';
+            discovery_log($log);
+            $status = false;
+            return false;
         }
-
+        $log->message = 'Copy file to ' . $ip;
+        $log->command_status = 'success';
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
