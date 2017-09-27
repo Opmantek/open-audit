@@ -330,10 +330,10 @@ if [[ "$hosts" != "" ]]; then
 		# -T3 set the timing (higher is faster) ($timing) default for the script is -T3
 		if [ "$debugging" -gt 0 ]; then
 			echo "Scanning Host: $host"
-			echo "nmap -vv -n $os_scan -Pn $host_timeout $timing $host 2>&1"
+			echo "nmap -vv -n $os_scan -Pn --host_timeout 60 $timing $host 2>&1"
 		fi
 		nmap_tcp_timer_start=$(timer)
-		nmap_scan=$(nmap -vv -n $os_scan -Pn $host_timeout $timing "$host" 2>&1)
+		nmap_scan=$(nmap -vv -n $os_scan -Pn --host_timeout 60 $timing $host 2>&1)
 		if [ "$debugging" -gt 0 ]; then
 			nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
 			echo "Nmap TCP scan time: $nmap_tcp_timer_end"
