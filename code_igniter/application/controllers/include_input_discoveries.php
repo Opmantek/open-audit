@@ -751,6 +751,8 @@ if (!empty($_POST['data'])) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->severity = 5;
+        $individual_ip_end = microtime(true);
+        $log->command_time_to_execute = $individual_ip_end - $individual_ip_start;
         if (!empty($device->type)) {
             $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
         } else {
