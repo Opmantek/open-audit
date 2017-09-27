@@ -561,7 +561,7 @@ class M_devices_components extends MY_Model
                 if (!isset($vm->uuid) or $vm->uuid == '') {
                     $vm->uuid = '';
                 } else {
-                    $sql = "SELECT `system`.`id`, `system`.`icon` FROM `system` WHERE LOWER(`uuid`) = LOWER(?) and `system`.`status` = 'production'";
+                    $sql = "SELECT `system`.`id` AS `system_id`, `system`.`icon` FROM `system` WHERE LOWER(`uuid`) = LOWER(?) and `system`.`status` = 'production'";
                     $sql = $this->clean_sql($sql);
                     $data = array("$vm->uuid");
                     $query = $this->db->query($sql, $data);
