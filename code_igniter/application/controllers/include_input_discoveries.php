@@ -1104,7 +1104,6 @@ if (!empty($_POST['data'])) {
                         $log->status = 'success';
                         discovery_log($log);
                     } catch (Exception $e) {
-                        #print_r($e);
                         $log->message = 'Could not create temporary script (windows)';
                         $log->command = $e;
                         $log->status = 'fail';
@@ -1116,17 +1115,18 @@ if (!empty($_POST['data'])) {
                     $source_name = 'scripts/' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
                     $unlink = $this->config->config['base_path'] . '/other/' . $source_name;
                     @unlink($unlink);
+                    $log->message = 'Created temporary script';
+                    $log->command = $this->config->config['base_path'] . '/other/' . $source_name;
+                    $log->status = 'success';
                     try {
                         $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
                     } catch (Exception $e) {
-                        #print_r($e);
                         $log->message = 'Could not create temporary script (unix)';
                         $log->command = $e;
                         $log->status = 'fail';
-                        discovery_log($log);
-                        unset($log->command, $log->message, $log->status);
                     }
-                    $log->command = $this->config->config['base_path'] . '/other/' . $source_name;
+                    discovery_log($log);
+                    unset($log->command, $log->message, $log->status);
                 }
                 $script = $this->m_scripts->download($script_details->id);
                 fwrite($fp, $script);
@@ -1134,7 +1134,7 @@ if (!empty($_POST['data'])) {
             } else {
                 $unlink = '';
                 $source_name = $audit_script;
-                $log->message = 'Could not create retrieve script from database for ' . $device->os_group;
+                $log->message = 'Could not retrieve script from database for ' . $device->os_group;
                 $log->command = 'Nothing returned from database';
                 $log->status = 'fail';
                 discovery_log($log);
@@ -1143,18 +1143,26 @@ if (!empty($_POST['data'])) {
             }
 
             unset($temp);
-            if ($audit_script != '') {
+            #if ($audit_script != '') {
+            # TODO - Cannot copy audit_esxi.sh - more work required to fix
+            if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
                 # copy the audit script to the target ip
+                $log->message = 'Copying audit script to target.';
+                $log->status = '';
+                discovery_log($log);
+
                 if (php_uname('s') == 'Windows NT') {
                     $source = $filepath.'\\'.$source_name;
                 } else {
                     $source = $filepath.'/'.$source_name;
                 }
+
                 $destination = $this->config->item('discovery_linux_script_directory');
                 if (substr($destination, -1) != '/') {
                     $destination .= '/';
                 }
                 $destination .= $audit_script;
+
                 if ($ssh_result = scp($device->ip, $credentials_ssh, $source, $destination, $log)) {
                     # Successfully copied the audit script
                     $log->message = 'Copied audit script to target.';
@@ -1166,11 +1174,6 @@ if (!empty($_POST['data'])) {
                     $log->message = 'Could not copy audit script to target.';
                     $log->status = 'fail';
                     discovery_log($log);
-                }
-                if ($display == 'y') {
-                    $debugging = 3;
-                } else {
-                    $debugging = 0;
                 }
             }
 
@@ -1193,7 +1196,8 @@ if (!empty($_POST['data'])) {
                 $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
             }
             # audit ESX
-            if ($audit_script == 'audit_esxi.sh') {
+            # TODO - Cannot copy audit_esxi.sh - more work required to fix
+            if ($audit_script == 'audit_esxi.sh' and 1 == 2) {
                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y last_seen_by=audit_ssh create_file=n debugging=0 echo_output=y system_id='.$device->id.'  discovery_id='.$discovery->id.' 2>/dev/null';
                 if ($result = ssh_command($device->ip, $credentials_ssh, $command, $log)) {
                     if ($result['status'] == 0) {
@@ -1206,6 +1210,8 @@ if (!empty($_POST['data'])) {
                         $esx_input = trim($script_result);
                         try {
                             $esx_xml = new SimpleXMLElement($esx_input);
+                            $log->message = 'Valid XML input for ESX audit script received';
+                            discovery_log($log);
                         } catch (Exception $error) {
                             // not a valid XML string
                             $log->message = 'Invalid XML input for ESX audit script';
@@ -1246,17 +1252,37 @@ if (!empty($_POST['data'])) {
                                 }
                                 $this->m_audit_log->create($esx_details->system_id, $temp_user, $esx_details->last_seen_by, $esx_details->audits_ip, '', '', $esx_details->last_seen);
                                 unset($temp_user);
+                                $log->message = 'Processed " . $child->getName() . " from XML input for ESX audit script';
+                                discovery_log($log);
                             }
                         }
+                        # The below are part of the ssh_audit
                         $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network, $display);
+                        $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm, $display);
+                        $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip, $display);
+                        # The below only exist in the audit script
                         $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software, $display);
                         $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor, $display);
                         $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios, $display);
                         $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory, $display);
                         $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard, $display);
                         $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video, $display);
-                        $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm, $display);
-                        $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip, $display);
+
+                        if ($unlink != '') {
+                            $log->command = 'unlink(\'' . $unlink . '\')';
+                            $log->message = 'Delete local temporary audit script';
+                            $log->status = 'success';
+                            try {
+                                unlink($unlink);
+                            } catch (Exception $e) {
+                                $log->status = 'fail';
+                                $log->severity = 4;
+                            }
+                            discovery_log($log);
+                            unset($log->command, $log->message, $log->status);
+                            $log->severity = 7;
+                        }
+
                     }
                 }
             }
@@ -1277,7 +1303,11 @@ if (!empty($_POST['data'])) {
             }
 
         } // close the 'skip'
-        $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
+        if ($audit_script != '') {
+            $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
+        } else {
+            $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
+        }
         discovery_log($log);
     }
 } else {
