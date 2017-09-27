@@ -172,6 +172,8 @@ class M_discoveries extends MY_Model
             return false;
         }
 
+        $this->load->model('m_collection');
+
         $sql = "SELECT * FROM discoveries WHERE id = ?";
         $data = array(intval($id));
         $temp = $this->run_sql($sql, $data);
@@ -377,12 +379,18 @@ class M_discoveries extends MY_Model
                             $ad_discovery->complete = 'y';
                             $ad_discovery->other = new stdClass();
                             $ad_discovery->other->subnet = $subnet['name'][0];
-                            $sql = 'SELECT * FROM discoveries WHERE other = ? AND org_id = ' . intval($ad_discovery->org_id);
+                            $sql = "/* m_discoveries::execute */ " . 'SELECT * FROM discoveries WHERE other = ? AND org_id = ' . intval($ad_discovery->org_id);
                             $result = $this->run_sql($sql, array(json_encode($ad_discovery->other)));
-                            if (count($result) == 0) {
-                                $this_id = $this->create($ad_discovery);
-                                $log->message = "Executing discovery on subnet " . $network->name;
+                            if (empty($result)) {
+                                $this_id = $this->m_collection->create($ad_discovery, 'discoveries');
+                                $log->message = "Creating and executing discovery on subnet " . $network->name;
                                 discovery_log($log);
+                            } else {
+                                $this_id = $result[0]->id;
+                                $log->message = "Discovery for " . $network->name . " exists, running.";
+                                discovery_log($log);
+                            }
+                            if (!empty($this_id)) {
                                 $this->execute($this_id);
                             }
                         }
