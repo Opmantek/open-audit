@@ -181,7 +181,7 @@ $item = $this->response->data[0];
                         foreach ($this->response->included as $item) {
                             if ($item->type == 'licenses') {
                                 echo "<tr>\n";
-                                echo '    <td class="text-center"><a class="btn btn-sm btn-success" href="devices/' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '">' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '</a></td>';
+                                echo '    <td class="text-center"><a class="btn btn-sm btn-success" href="../devices/' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '">' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '</a></td>';
                                 echo "    <td>" . $item->{'attributes'}->{'system.name'} . "</td>\n";
                                 echo "    <td>" . $item->{'attributes'}->{'software.name'} . "</td>\n";
                                 echo "    <td>" . $item->{'attributes'}->{'software.version'} . "</td>\n";
