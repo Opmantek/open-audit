@@ -320,7 +320,7 @@ if (empty($data['mount_point'])) {
                         </div>
 
                         <div class="form-group">
-                            <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
+                            <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostname')?></label>
                             <div class="col-sm-8 input-group">
                                 <input disabled type="text" class="form-control"  id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
                                 <?php if ($edit) { ?><span class="input-group-btn">
@@ -344,7 +344,7 @@ if (empty($data['mount_point'])) {
                         </div>
 
                         <div class="form-group">
-                            <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
+                            <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostname')?></label>
                             <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control"  id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
                                 <?php if ($edit) { ?><span class="input-group-btn">
