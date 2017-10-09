@@ -994,7 +994,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                     <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
                     <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
                     <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
-                    <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                    <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" aria-label="Left Align" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
                 <?php } ?>
                 </tbody>
