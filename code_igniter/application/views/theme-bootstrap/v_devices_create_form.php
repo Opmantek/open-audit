@@ -102,7 +102,13 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="data[attributes][status]" class="col-sm-3 control-label"><?php echo __('xStatusxx'); ?></label>
+                        <label for="data[attributes][netmask]" class="col-sm-3 control-label"><?php echo __('Netmask'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][netmask]" name="data[attributes][netmask]" value="255.255.255.0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="data[attributes][status]" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][status]" name="data[attributes][status]">
                             <?php
