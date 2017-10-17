@@ -358,7 +358,7 @@ class M_logon extends MY_Model
                                 $log->message = "New user $username logged on (AD account).";
                                 $log->severity = 5;
                                 if ($this->db->table_exists('users')) {
-                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                                 } else {
                                     $user_sql = "/* m_logon::logon */" . "INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                                 }
