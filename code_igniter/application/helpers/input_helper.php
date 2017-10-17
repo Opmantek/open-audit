@@ -402,12 +402,14 @@ if (! function_exists('inputRead')) {
 
         # put any POST data into the object
         if ($REQUEST_METHOD == 'POST') {
-            if (is_array($CI->input->post('data'))) {
-                $CI->response->meta->received_data = $CI->input->post('data');
+            #if (is_array($CI->input->post('data'))) {
+            if (!empty($_POST['data']) and is_array($_POST{'data'})) {
+                #$CI->response->meta->received_data = $CI->input->post('data');
+                $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
             } else {
-                $CI->response->meta->received_data = json_decode($CI->input->post('data'));
+                $CI->response->meta->received_data = json_decode($_POST{'data'});
             }
         }
         if ($REQUEST_METHOD == 'PATCH') {
@@ -654,7 +656,6 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->current = $CI->input->get('current');
             $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to GET.';
             stdlog($log);
-
         }
         if ($CI->input->post('current')) {
             $CI->response->meta->current = $CI->input->post('current');
