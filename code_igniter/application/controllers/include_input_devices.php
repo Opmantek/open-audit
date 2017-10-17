@@ -203,6 +203,22 @@ if (empty($details->last_seen)) {
 
 $received_system_id = '';
 $received_status = "";
+
+if (empty($details->id) and empty($details->ip) and empty($details->hostname)) {
+    $sql = "DELETE FROM discovery_log WHERE id IN (" . implode(',', $ids) . ")";
+    $query = $this->db->query($sql);
+    $log->summary = "Invalid audit result submitted";
+    $log->detail = "Audit result submitted, but no device id, ip or name received from " . $_SERVER['REMOTE_ADDR'] . " - NOT inserting or updating.";
+    $log->type = 'system';
+    $log->collection = 'input';
+    $log->action = 'create';
+    $log->function = 'devices';
+    $log->function = 'fail';
+    $log->severity = 3;
+    stdlog($log);
+    exit;
+}
+
 if (empty($details->id)) {
     $details->id = '';
     $log->message = "No system_id provided.";
