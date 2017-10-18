@@ -405,31 +405,10 @@ if (! function_exists('ssh_audit')) {
             discovery_log($log);
             return false;
         }
+        $device = new stdClass();
 
-        // if ($credentials->type == 'ssh_key') {
-        //     $key = new Crypt_RSA();
-        //     if (!empty($credentials->credentials->password)) {
-        //         $key->setPassword($credentials->credentials->password);
-        //     }
-        //     $key->loadKey($credentials->credentials->ssh_key);
-        // }
-
-        // if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
-        //     $log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
-        //     discovery_log($log);
-        //     $username = $credentials->credentials->username;
-        //     $password = $credentials->credentials->password;
-        // } else {
-        //     $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-        //     discovery_log($log);
-        // }
-
-        // $hostname = $ssh->exec('hostname -s 2>/dev/null');
-        // $hostname = trim($hostname);
-        // if (!empty($hostname) and stripos($hostname, 'Use the Network Control Panel Applet to set hostname') !== false) {
         $windows_os_name = $ssh->exec('wmic os get name');
         if (stripos($windows_os_name, 'Microsoft Windows') !== false) {
-            $device = new stdClass();
             $device->type = 'computer';
             $device->os_group = 'Windows';
 
@@ -603,7 +582,6 @@ if (! function_exists('ssh_audit')) {
             'which_sudo' => 'which sudo 2>/dev/null'
         );
 
-        $device = new stdClass();
         foreach ($commands as $item => $command) {
             if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
                 $command = $device->bash . " -c '" . $command . "'";
