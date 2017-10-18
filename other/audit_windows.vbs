@@ -4706,7 +4706,10 @@ if debugging > "1" then wscript.echo "Win 2000 Key" end if
 path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 subKey = "DigitalProductId"
 oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-key_text = decodeKey(key)
+key_text = ""
+if not IsNull(key) then 
+	key_text = decodeKey(key)
+end if
 if (IsNull(key_text) or key_text = "") then
 	' do nothing
 else
