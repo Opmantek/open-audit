@@ -409,7 +409,7 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
             } else {
-                $CI->response->meta->received_data = json_decode($_POST{'data'});
+                $CI->response->meta->received_data = @json_decode($_POST{'data'});
             }
         }
         if ($REQUEST_METHOD == 'PATCH') {
