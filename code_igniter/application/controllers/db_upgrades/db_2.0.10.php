@@ -33,7 +33,7 @@ $sql = "DELETE FROM `configuration` WHERE name = 'discovery_linux_use_sudo'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, shoud we use sudo.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

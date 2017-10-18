@@ -526,7 +526,7 @@ INSERT INTO `configuration` VALUES (52,'servers','','text','n','system','2000-01
 INSERT INTO `configuration` VALUES (53,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
 INSERT INTO `configuration` VALUES (54,'collector_check_minutes','15','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
 INSERT INTO `configuration` VALUES (55,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
-INSERT INTO `configuration` VALUES (56,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, shoud we use sudo.');
+INSERT INTO `configuration` VALUES (56,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
