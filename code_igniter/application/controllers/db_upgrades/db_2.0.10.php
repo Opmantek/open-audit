@@ -37,6 +37,22 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_linux_use_sudo','y',
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE name = 'delete_noncurrent_netstat'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current netstat data and generate change logs.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `configuration` WHERE name = 'delete_noncurrent_variable'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current environment variable data and generate change logs.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20171010' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

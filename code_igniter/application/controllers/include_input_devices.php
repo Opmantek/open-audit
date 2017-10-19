@@ -187,7 +187,6 @@ if (!$error and $xml) {
 }
 
 $details = $json->system;
-$ids[] = discovery_log($log);
 $json->system->mac_addresses = array();
 if (!empty($json->network->item) and count($json->network->item) > 0) {
     foreach ($json->network->item as $card) {
@@ -324,9 +323,6 @@ if (!empty($details->discovery_id)) {
     $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
     $data = array(intval($details->id), intval(getmypid()));
     $query = $this->db->query($sql, $data);
-    // if ($this->response->meta->format == 'screen') {
-    //     echo $this->db->last_query();
-    // }
 } else {
     # we were supplied an audit result, but no discovery_id
     # delete all dicovery logs where system_id = our ID and log.pid != our pid
@@ -341,7 +337,7 @@ $this->m_audit_log->create($details->id, @$this->user->full_name, $details->last
 
 foreach ($json as $key => $value) {
     if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
-        if (!empty($json->{$key}->item)) {
+        if (!empty($json->{$key}->item) or $key == 'netstat') {
             $this->m_devices_components->process_component($key, $details, $json->{$key});
         }
     }
