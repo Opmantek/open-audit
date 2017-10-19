@@ -1135,7 +1135,7 @@ if (!empty($_POST['data'])) {
                 $unlink = '';
                 $source_name = $audit_script;
                 $log->message = 'Could not retrieve script from database for ' . $device->os_group;
-                $log->command = 'Nothing returned from database';
+                $log->command = $sql;
                 $log->status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
