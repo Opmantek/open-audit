@@ -559,6 +559,10 @@ class M_devices extends MY_Model
         unset($result);
         $sql = "/* m_devices::collection */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
+
+        # TODO - make a system.seen_by and populate upon audit received or 
+        # discovery recieved.
+
         // if ($CI->response->meta->format == 'json' or $CI->response->meta->format == 'json_data') {
         //     $sql = "/* m_devices::collection */ " . "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
         //     $seen_by = $this->run_sql($sql, array());
