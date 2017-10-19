@@ -527,6 +527,8 @@ INSERT INTO `configuration` VALUES (53,'database_show_row_limit','1000','number'
 INSERT INTO `configuration` VALUES (54,'collector_check_minutes','15','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
 INSERT INTO `configuration` VALUES (55,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
 INSERT INTO `configuration` VALUES (56,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
+INSERT INTO `configuration` VALUES (57,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current netstat data and generate change logs.')
+INSERT INTO `configuration` VALUES (58,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current environment variable data and generate change logs.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1167,7 +1169,7 @@ CREATE TABLE `ldap_servers` (
   `description` text NOT NULL,
   `lang` varchar(200) NOT NULL DEFAULT 'en',
   `host` varchar(200) NOT NULL DEFAULT '',
-  `port` varchar(200) NOT NULL DEFAULT '385',
+  `port` varchar(200) NOT NULL DEFAULT '389',
   `secure` enum('y','n') NOT NULL DEFAULT 'n',
   `domain` varchar(200) NOT NULL DEFAULT '',
   `type` enum('active directory','openldap') NOT NULL DEFAULT 'active directory',
