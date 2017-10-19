@@ -204,7 +204,7 @@ class logon extends CI_Controller
             exit();
         }
 
-        if ($this->user->type == 'collector') {
+        if (!empty($this->user->type) and $this->user->type == 'collector') {
             // if (@$this->input->post('uuid') == '') {
             //     log_error('ERR-0030', current_url());
             //     header($this->response->meta->header);

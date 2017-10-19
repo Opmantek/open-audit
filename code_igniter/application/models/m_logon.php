@@ -242,7 +242,8 @@ class M_logon extends MY_Model
                                 $user->lang = (string)$ldap->lang;
                                 $user->active = 'y';
                                 $user->ldap = '';
-                                //$user->primarygroupid = @$entries[0]['primarygroupid'][0];
+                                $user->type = 'user';
+                                $user->edited_by = 'system';
                                 if ($ldap->type == 'active directory') {
                                     $user->ldap = @(string)$entries[0]['distinguishedname'][0];
                                 }
