@@ -862,7 +862,7 @@ CREATE TABLE `fields` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `group_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('varchar','list') NOT NULL DEFAULT 'varchar',
+  `type` enum('varchar','list','date') NOT NULL DEFAULT 'varchar',
   `values` text NOT NULL,
   `placement` enum('custom','system') NOT NULL DEFAULT 'system',
   `edited_by` varchar(200) NOT NULL DEFAULT '',

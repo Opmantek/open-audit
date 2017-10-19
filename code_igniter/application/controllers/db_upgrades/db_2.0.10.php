@@ -53,6 +53,9 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'delete_noncurrent_variable','y
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# fields
+alter_table('fields', 'type', "`type` enum('varchar','list','date') NOT NULL DEFAULT 'varchar'");
+
 # ldap_servers
 alter_table('ldap_servers', 'port', "`port` varchar(200) NOT NULL DEFAULT '389'");
 
