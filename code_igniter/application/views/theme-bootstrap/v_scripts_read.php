@@ -131,6 +131,14 @@ $item = $this->response->data[0];
     </div>
 
 
+    <?php
+    foreach ($this->response->included as $option) {
+        if (!empty($option->type) and $option->type == 'script_option' and $option->id == $item->attributes->based_on) {
+            $script_options = $option->attributes;
+            break;
+        }
+    }
+    ?>
     <div class="row">
         <div class="col-md-6">
             <div class="panel panel-default">
@@ -141,23 +149,33 @@ $item = $this->response->data[0];
                     </h3>
                 </div>
                 <div class="panel-body">
-                <?php if (!empty($item->attributes->options)) { ?>
-                    <?php foreach ($item->attributes->options as $key => $value) { ?>
-                    <?php if ($key != 'files') { ?>
+                <?php
+                foreach ($script_options as $script_option) {
+                    $option_value = '';
+                    foreach ($this->response->included as $option) {
+                        if ($option->id == $script_option) {
+                            foreach ($item->attributes->options as $key => $value) {
+                                if ($key == $script_option) {
+                                    $option_value = $value;
+                                }
+                            }
+                        }
+                    }
+                ?>
                     <div class="form-group">
-                        <label for="edited_date" class="col-md-4 control-label"><?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?></label>
+                        <label for="<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" class="col-md-4 control-label"><?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?></label>
                         <div class="col-sm-7 input-group">
-                            <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" title="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" title="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" name="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($option_value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlspecialchars($key, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="options.<?php echo htmlspecialchars($script_option, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>
                     </div>
-                    <?php } ?>
-                    <?php } ?>
-                <?php } ?>
+                <?php
+                }
+                ?>
                 </div>
             </div>
         </div>
