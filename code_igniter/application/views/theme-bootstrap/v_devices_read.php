@@ -1825,7 +1825,6 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                     }
                     echo "                          <option value=\"" . $value . "\"" . $selected . ">".__("$value")."</option>\n";
                 }
-
                 echo '                        </select>';
                 if ($edit) {
                     echo '
@@ -1836,6 +1835,22 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                 </span>';
                 }
                         echo '
+                    </div>
+                </div>' . "\n";
+            }
+
+            if ($field->{'type'} == 'date') {
+                echo '                    <div class="form-group">
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                    <div class="col-sm-8 input-group">
+                      <input disabled type="date" class="form-control"  id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">';
+                if ($edit) {
+                    echo '
+                      <span class="input-group-btn">
+                        <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>';
+                }
+                    echo '
                     </div>
                 </div>' . "\n";
             }

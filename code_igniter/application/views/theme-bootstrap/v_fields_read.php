@@ -88,6 +88,7 @@ $item = $this->response->data[0];
                             <select class="data_type form-control" id="type" name="type" disabled>
                                 <option value="varchar"<?php if ($item->attributes->type == 'varchar') { echo " selected"; } ?>><?php echo __('VarChar'); ?></option>
                                 <option value="list"<?php if ($item->attributes->type == 'list') { echo " selected"; } ?>><?php echo __('List'); ?></option>
+                                <option value="date"<?php if ($item->attributes->type == 'date') { echo " selected"; } ?>><?php echo __('Date'); ?></option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
