@@ -412,16 +412,25 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = @json_decode($_POST{'data'});
             }
         }
+
         if ($REQUEST_METHOD == 'PATCH') {
-            $data = urldecode(str_replace('data=', '', file_get_contents('php://input')));
-            $data = json_decode($data);
-            if (empty($data)) {
+            unset($data_json);
+            unset($data_object);
+            $data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
+            $data_object = json_decode($data_json);
+            $options = $data_object->data->attributes->options;
+            if (empty($data_object)) {
                 $log->summary = 'Request method is PATCH but no data supplied.';
                 stdlog($log);
             } else {
-                $CI->response->meta->received_data = $data->data;
+                $CI->response->meta->received_data = new stdClass();
+                $CI->response->meta->received_data = $data_object->data;
+                if (!empty($options)) {
+                    $CI->response->meta->received_data->attributes->options = $options;
+                }
             }
         }
+
         if (!empty($CI->response->meta->received_data->id)) {
             if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'configuration') {
                 $CI->response->meta->id = intval($CI->response->meta->received_data->id);
