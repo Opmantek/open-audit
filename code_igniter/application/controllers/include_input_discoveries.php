@@ -1042,7 +1042,7 @@ if (!empty($_POST['data'])) {
                     break;
                 
                 case 'vmkernel':
-                case 'vmware' :
+                case 'vmware':
                     $audit_script = 'audit_esxi.sh';
                     break;
                 
@@ -1135,7 +1135,7 @@ if (!empty($_POST['data'])) {
                 $unlink = '';
                 $source_name = $audit_script;
                 $log->message = 'Could not retrieve script from database for ' . $device->os_group;
-                $log->command = 'Nothing returned from database';
+                $log->command = $sql;
                 $log->status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
@@ -1184,16 +1184,17 @@ if (!empty($_POST['data'])) {
 
             # audit anything that's not ESX
             if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
-                # successfully copied and chmodded the audit script
-                // if (!empty($credentials_ssh->sudo)) {
-                //     # run the audit script as a normal user, using sudo
-                //     $command = 'echo "'.$credentials_ssh->credentials->password.'" | '.$credentials_ssh->sudo.' -S '.$this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-                // } else {
-                //     # run the script without using sudo
-                //     $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-                // }
                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-                $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
+                if (!empty($this->config->item('discovery_linux_use_sudo')) and
+                    $this->config->item('discovery_linux_use_sudo') !== 'y' and
+                    strtolower($device->os_group) == 'linux') {
+                    # Running linux audit without sudo
+                    $log->message = 'Running Linux audit without sudo, as per config.';
+                    discovery_log($log);
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
+                } else {
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
+                }
             }
             # audit ESX
             # TODO - Cannot copy audit_esxi.sh - more work required to fix
@@ -1282,7 +1283,6 @@ if (!empty($_POST['data'])) {
                             unset($log->command, $log->message, $log->status);
                             $log->severity = 7;
                         }
-
                     }
                 }
             }
@@ -1301,7 +1301,6 @@ if (!empty($_POST['data'])) {
                 unset($log->command, $log->message, $log->status);
                 $log->severity = 7;
             }
-
         } // close the 'skip'
         #if ($audit_script != '') {
         #    $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";

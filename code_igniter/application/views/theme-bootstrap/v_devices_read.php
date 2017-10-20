@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 
@@ -320,7 +320,7 @@ if (empty($data['mount_point'])) {
                         </div>
 
                         <div class="form-group">
-                            <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostame')?></label>
+                            <label for="hostname" class="col-sm-4 control-label"><?php echo __('Hostname')?></label>
                             <div class="col-sm-8 input-group">
                                 <input disabled type="text" class="form-control"  id="hostname" name="hostname" value="<?php echo $data['system']->hostname; ?>">
                                 <?php if ($edit) { ?><span class="input-group-btn">
@@ -344,7 +344,7 @@ if (empty($data['mount_point'])) {
                         </div>
 
                         <div class="form-group">
-                            <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostame')?></label>
+                            <label for="dns_hostname" class="col-sm-4 control-label"><?php echo __('DNS Hostname')?></label>
                             <div class="col-sm-8 input-group">
                               <input disabled type="text" class="form-control"  id="dns_hostname" name="dns_hostname" value="<?php echo $data['system']->dns_hostname; ?>">
                                 <?php if ($edit) { ?><span class="input-group-btn">
@@ -994,7 +994,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                     <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
                     <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
                     <?php if ($this->m_users->get_user_permission('', 'credentials', 'd')) { ?>
-                    <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger" aria-label="Left Align" ><span class="glyphicon glyphicon-trash subresource_delete_link" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>" aria-hidden="true"></span></button></td>
+                    <td style="text-align:center;"><button type="button" class="btn btn-sm btn-danger subresource_delete_link" aria-label="Left Align" data-sub-resource-id="<?php echo intval($item->id); ?>" data-sub-resource="credential" data-name="<?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
                 <?php } ?>
                 </tbody>
@@ -1825,7 +1825,6 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                     }
                     echo "                          <option value=\"" . $value . "\"" . $selected . ">".__("$value")."</option>\n";
                 }
-
                 echo '                        </select>';
                 if ($edit) {
                     echo '
@@ -1836,6 +1835,22 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                 </span>';
                 }
                         echo '
+                    </div>
+                </div>' . "\n";
+            }
+
+            if ($field->{'type'} == 'date') {
+                echo '                    <div class="form-group">
+                    <label for="' . $name . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                    <div class="col-sm-8 input-group">
+                      <input disabled type="date" class="form-control"  id="' . $name . '" name="' . $name . '" value="' . $field->{'value'} . '">';
+                if ($edit) {
+                    echo '
+                      <span class="input-group-btn">
+                        <button id="edit_' . $name . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $name . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      </span>';
+                }
+                    echo '
                     </div>
                 </div>' . "\n";
             }

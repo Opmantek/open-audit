@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 class M_collection extends MY_Model
@@ -649,10 +649,6 @@ class M_collection extends MY_Model
 
         if ($collection === 'scripts') {
             if (!empty($data->options)) {
-                $received = new stdClass();
-                foreach ($data->options as $key => $value) {
-                        $received->$key = $value;
-                }
                 $select = "SELECT * FROM scripts WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
@@ -661,15 +657,10 @@ class M_collection extends MY_Model
                 } else {
                     $existing = new stdClass();
                 }
-                $new = new stdClass();
-                foreach ($existing as $existing_key => $existing_value) {
-                    if (isset($received->$existing_key)) {
-                        $new->$existing_key = $received->$existing_key;
-                    } else {
-                        $new->$existing_key = $existing->$existing_key;
-                    }
+                foreach ($data->options as $key => $value) {
+                    $existing->$key = $value;
                 }
-                $data->options = (string)json_encode($new);
+                $data->options = (string)json_encode($existing);
             }
         }
 

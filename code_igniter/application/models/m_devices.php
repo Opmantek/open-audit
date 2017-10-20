@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.0.8
+ * @version   2.0.10
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -559,28 +559,32 @@ class M_devices extends MY_Model
         unset($result);
         $sql = "/* m_devices::collection */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM system " . $join . " WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
-        if ($CI->response->meta->format == 'json' or $CI->response->meta->format == 'json_data') {
-            $sql = "/* m_devices::collection */ " . "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
-            $seen_by = $this->run_sql($sql, array());
-            $seen_by_temp = array();
-            foreach ($seen_by as $seen) {
-                $seen_by_temp[$seen->id] = $seen->seen_by;
-            }
-            unset($seen_by);
-            for ($i=0; $i < count($result); $i++) {
-                if (!empty($result[$i]->{'system.id'})) {
-                    if (!empty($seen_by_temp[$result[$i]->{'system.id'}])) {
-                        #$result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
-                        $result[$i]->{'seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
-                    } else {
-                        $result[$i]->seen_by = '';
-                    }
-                } else {
-                    $result[$i]->seen_by = '';
-                }
-            }
-            unset($seen_by_temp);
-        }
+
+        # TODO - make a system.seen_by and populate upon audit received or 
+        # discovery recieved.
+
+        // if ($CI->response->meta->format == 'json' or $CI->response->meta->format == 'json_data') {
+        //     $sql = "/* m_devices::collection */ " . "SELECT audit_log.system_id AS `id`, GROUP_CONCAT(DISTINCT(audit_log.type) ORDER BY audit_log.type) AS `seen_by` FROM audit_log LEFT JOIN system ON audit_log.system_id = system.id WHERE system.org_id IN (" . $CI->user->org_list . ") GROUP BY audit_log.system_id";
+        //     $seen_by = $this->run_sql($sql, array());
+        //     $seen_by_temp = array();
+        //     foreach ($seen_by as $seen) {
+        //         $seen_by_temp[$seen->id] = $seen->seen_by;
+        //     }
+        //     unset($seen_by);
+        //     for ($i=0; $i < count($result); $i++) {
+        //         if (!empty($result[$i]->{'system.id'})) {
+        //             if (!empty($seen_by_temp[$result[$i]->{'system.id'}])) {
+        //                 #$result[$i]->{'system.seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
+        //                 $result[$i]->{'seen_by'} = $seen_by_temp[$result[$i]->{'system.id'}];
+        //             } else {
+        //                 $result[$i]->seen_by = '';
+        //             }
+        //         } else {
+        //             $result[$i]->seen_by = '';
+        //         }
+        //     }
+        //     unset($seen_by_temp);
+        // }
         $result = $this->format_data($result, 'devices');
         return $result;
     }

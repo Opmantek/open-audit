@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-' @version   2.0.8
+' @version   2.0.10
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -103,7 +103,7 @@ self_delete = "n"
 debugging = "1"
 
 ' Version
-version = "2.0.8"
+version = "2.0.10"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
@@ -4706,7 +4706,10 @@ if debugging > "1" then wscript.echo "Win 2000 Key" end if
 path = "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
 subKey = "DigitalProductId"
 oReg.GetBinaryValue HKEY_LOCAL_MACHINE,path,subKey,key
-key_text = decodeKey(key)
+key_text = ""
+if not IsNull(key) then 
+	key_text = decodeKey(key)
+end if
 if (IsNull(key_text) or key_text = "") then
 	' do nothing
 else

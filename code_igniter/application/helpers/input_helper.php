@@ -33,7 +33,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 if (! function_exists('from_unix_timestamp')) {
@@ -402,24 +402,35 @@ if (! function_exists('inputRead')) {
 
         # put any POST data into the object
         if ($REQUEST_METHOD == 'POST') {
-            if (is_array($CI->input->post('data'))) {
-                $CI->response->meta->received_data = $CI->input->post('data');
+            #if (is_array($CI->input->post('data'))) {
+            if (!empty($_POST['data']) and is_array($_POST{'data'})) {
+                #$CI->response->meta->received_data = $CI->input->post('data');
+                $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
             } else {
-                $CI->response->meta->received_data = json_decode($CI->input->post('data'));
+                $CI->response->meta->received_data = @json_decode($_POST{'data'});
             }
         }
+
         if ($REQUEST_METHOD == 'PATCH') {
-            $data = urldecode(str_replace('data=', '', file_get_contents('php://input')));
-            $data = json_decode($data);
-            if (empty($data)) {
+            unset($data_json);
+            unset($data_object);
+            $data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
+            $data_object = json_decode($data_json);
+            $options = $data_object->data->attributes->options;
+            if (empty($data_object)) {
                 $log->summary = 'Request method is PATCH but no data supplied.';
                 stdlog($log);
             } else {
-                $CI->response->meta->received_data = $data->data;
+                $CI->response->meta->received_data = new stdClass();
+                $CI->response->meta->received_data = $data_object->data;
+                if (!empty($options)) {
+                    $CI->response->meta->received_data->attributes->options = $options;
+                }
             }
         }
+
         if (!empty($CI->response->meta->received_data->id)) {
             if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'configuration') {
                 $CI->response->meta->id = intval($CI->response->meta->received_data->id);
@@ -654,7 +665,6 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->current = $CI->input->get('current');
             $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to GET.';
             stdlog($log);
-
         }
         if ($CI->input->post('current')) {
             $CI->response->meta->current = $CI->input->post('current');

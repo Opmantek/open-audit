@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 class M_configuration extends MY_Model

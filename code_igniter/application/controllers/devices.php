@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
 */
 
@@ -191,6 +191,28 @@ class devices extends MY_Controller
             $device->last_seen = $this->config->config['timestamp'];
             $this->load->model('m_devices');
             $id = $this->m_devices->create($device);
+            $device->id = $id;
+            if (!empty($device->ip) and !empty($device->netmask)) {
+                $this->load->helper('network');
+                $network = network_details($device->ip . ' ' . $device->netmask);
+                if (empty($network->error)) {
+                    $this->load->model('m_devices_components');
+                    $device_ip = new stdClass();
+                    $device_ip->mac = '';
+                    $device_ip->net_index = '';
+                    $device_ip->ip = $network->address;
+                    $device_ip->netmask = $network->netmask;
+                    $device_ip->cidr = $network->network_slash;
+                    $device_ip->version = 4;
+                    $device_ip->network = $network->network . '/' . $network->network_slash;
+                    $device_ip->set_by = '';
+                    $input = new stdClass();
+                    $input->item = array();
+                    $input->item[] = $device_ip;
+                    $error = $this->m_devices_components->process_component('ip', $device, $input);
+                }
+            }
+
             if ($this->response->meta->format == 'screen') {
                 redirect('devices/' . $id);
             } else {

@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.0.8
+ * @version   2.0.10
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -242,7 +242,8 @@ class M_logon extends MY_Model
                                 $user->lang = (string)$ldap->lang;
                                 $user->active = 'y';
                                 $user->ldap = '';
-                                //$user->primarygroupid = @$entries[0]['primarygroupid'][0];
+                                $user->type = 'user';
+                                $user->edited_by = 'system';
                                 if ($ldap->type == 'active directory') {
                                     $user->ldap = @(string)$entries[0]['distinguishedname'][0];
                                 }
@@ -358,7 +359,7 @@ class M_logon extends MY_Model
                                 $log->message = "New user $username logged on (AD account).";
                                 $log->severity = 5;
                                 if ($this->db->table_exists('users')) {
-                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                                 } else {
                                     $user_sql = "/* m_logon::logon */" . "INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                                 }

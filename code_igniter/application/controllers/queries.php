@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
 */
 
@@ -89,7 +89,12 @@ class Queries extends MY_Controller
     */
     public function create()
     {
-        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or 
+        if (empty($this->response->meta->received_data->attributes->sql)) {
+            log_error('ERR-0010', 'queries::create');
+            echo json_encode($this->response);
+            exit();
+        }
+        if (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or
             stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false) {
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
@@ -129,7 +134,7 @@ class Queries extends MY_Controller
     public function update()
     {
         if (!empty($this->response->meta->received_data->attributes->sql) and
-            (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or 
+            (stripos($this->response->meta->received_data->attributes->sql, 'where @filter') === false or
             stripos($this->response->meta->received_data->attributes->sql, 'where @filter or') !== false)) {
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
@@ -242,7 +247,6 @@ class Queries extends MY_Controller
     {
         include 'include_reset.php';
     }
-
 }
 // End of file queries.php
 // Location: ./controllers/queries.php

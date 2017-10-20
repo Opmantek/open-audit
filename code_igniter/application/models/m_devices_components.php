@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 class M_devices_components extends MY_Model
@@ -299,9 +299,7 @@ class M_devices_components extends MY_Model
 
     public function process_component($table = '', $details, $input, $display = 'n', $match_columns = array())
     {
-
         $create_alerts = $this->config->config['discovery_create_alerts'];
-        $delete_noncurrent = $this->config->config['delete_noncurrent'];
 
         $log = new stdClass();
         $log->discovery_id = (string)@$details->discovery_id;
@@ -360,7 +358,6 @@ class M_devices_components extends MY_Model
                 $log->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No columns to match supplied - failed";
             }
-            # if (!isset($details->id)) { # this will be changed when we convert the system table
             if (!isset($details->id)) {
                 $log->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
                 $message = "$table - No id supplied - failed";
@@ -378,13 +375,18 @@ class M_devices_components extends MY_Model
             // discovery_log($log);
         }
 
+        ### NETSTAT ###
+        # Need to do this first as until we convert the data
+        # there won't be an input->item
+        if ((string)$table == 'netstat') {
+            $input = $this->format_netstat_data($input, $details);
+        }
+
         // make sure we have an entry for each match column, even if it's empty
-        if ($table != 'netstat') {
-            foreach ($match_columns as $match_column) {
-                for ($i=0; $i<count($input->item); $i++) {
-                    if (isset($input->item[$i]) and !isset($input->item[$i]->$match_column)) {
-                        $input->item[$i]->$match_column = '';
-                    }
+        foreach ($match_columns as $match_column) {
+            for ($i=0; $i<count($input->item); $i++) {
+                if (isset($input->item[$i]) and !isset($input->item[$i]->$match_column)) {
+                    $input->item[$i]->$match_column = '';
                 }
             }
         }
@@ -470,11 +472,6 @@ class M_devices_components extends MY_Model
                 # set the below so we don't generate alerts for this
                 $create_alerts = 'n';
             }
-        }
-
-        ### NETSTAT ###
-        if ((string)$table == 'netstat') {
-            $input = $this->format_netstat_data($input, $details);
         }
 
         ### NETWORK ###
@@ -779,43 +776,57 @@ class M_devices_components extends MY_Model
             $log->severity = 7;
             discovery_log($log);
         }
-        foreach ($db_result as $db_item) {
-            if (strtolower($delete_noncurrent) == 'y') {
+
+        if (!empty($this->config->config['delete_noncurrent']) and strtolower($this->config->config['delete_noncurrent']) == 'y') {
+            foreach ($db_result as $db_item) {
                 $sql = "DELETE FROM `$table` WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($db_item->id);
                 $query = $this->db->query($sql, $data);
-            } else {
-                $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
+            }
+            return;
+        }
+
+        if (!empty($this->config->config['delete_noncurrent_' . $table]) and strtolower($this->config->config['delete_noncurrent_' . $table]) == 'y') {
+            foreach ($db_result as $db_item) {
+                $sql = "DELETE FROM `$table` WHERE `id` = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($db_item->id);
                 $query = $this->db->query($sql, $data);
-                if (strtolower($create_alerts) == 'y') {
-                    $alert_details = '';
-                    foreach ($match_columns as $key => $value) {
-                        if (!empty($db_item->$value)) {
-                            $alert_details .= $value . ' is ' . $db_item->$value . ', ';
-                        }
+            }
+            return;
+        }
+
+        foreach ($db_result as $db_item) {
+            $sql = "UPDATE `$table` SET current = 'n' WHERE id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($db_item->id);
+            $query = $this->db->query($sql, $data);
+            if (strtolower($create_alerts) == 'y') {
+                $alert_details = '';
+                foreach ($match_columns as $key => $value) {
+                    if (!empty($db_item->$value)) {
+                        $alert_details .= $value . ' is ' . $db_item->$value . ', ';
                     }
-                    $alert_details = substr($alert_details, 0, -2);
-                    $alert_details = "Item removed from $table - " . $alert_details;
-                    if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
-                        $sql = "SELECT last_seen FROM `system` WHERE id = ?";
-                        $sql = $this->clean_sql($sql);
-                        $data = array($details->id);
-                        $query = $this->db->query($sql, $data);
-                        $result = $query->result();
-                        $details->last_seen = $result[0]->last_seen;
-                    }
-                    $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
-                    $sql = $this->clean_sql($sql);
-                    $data = array("$details->id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
-                    $query = $this->db->query($sql, $data);
-                    # add a count to our chart table
-                    $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
-                    $sql = $this->clean_sql($sql);
-                    $query = $this->db->query($sql);
                 }
+                $alert_details = substr($alert_details, 0, -2);
+                $alert_details = "Item removed from $table - " . $alert_details;
+                if (!isset($details->last_seen) or $details->last_seen == '0000-00-00 00:00:00' or $details->last_seen =='') {
+                    $sql = "SELECT last_seen FROM `system` WHERE id = ?";
+                    $sql = $this->clean_sql($sql);
+                    $data = array($details->id);
+                    $query = $this->db->query($sql, $data);
+                    $result = $query->result();
+                    $details->last_seen = $result[0]->last_seen;
+                }
+                $sql = "INSERT INTO change_log (system_id, db_table, db_row, db_action, details, `timestamp`) VALUES (?, ?, ?, ?, ?, ?)";
+                $sql = $this->clean_sql($sql);
+                $data = array("$details->id", "$table", "$db_item->id", "delete", "$alert_details", "$details->last_seen");
+                $query = $this->db->query($sql, $data);
+                # add a count to our chart table
+                $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $table . "_delete', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql);
             }
         }
         # removed - just way too much log output
@@ -1166,10 +1177,7 @@ class M_devices_components extends MY_Model
 
     public function format_netstat_data($input, $details)
     {
-        $lines = array();
-        foreach ($input->item as $item) {
-            $lines[] = $item->line;
-        }
+        $lines = explode("\n", $input);
         if (count($lines) == 0) {
             define('NL_NIX', "\n");
             define('NL_WIN', "\r\n");
@@ -1253,7 +1261,6 @@ class M_devices_components extends MY_Model
                     }
                     if ($i->protocol != '') {
                         $input_array[] = $i;
-                        print_r($i);
                     }
                 }
             }

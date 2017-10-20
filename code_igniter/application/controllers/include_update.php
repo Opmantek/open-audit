@@ -26,9 +26,9 @@
 # *****************************************************************************
 
 if (empty($this->response->meta->received_data)) {
-	log_error('ERR-0025');
-	output($this->response);
-	exit();
+    log_error('ERR-0025');
+    output($this->response);
+    exit();
 }
 $this->load->model('m_collection');
 $this->{'m_collection'}->update();
@@ -42,7 +42,7 @@ if ($this->response->meta->format === 'json') {
 
 $log = new stdClass();
 $log->object = $this->response->meta->collection;
-$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action); 
+$log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
 $log->severity = 7;
 $log->status = 'finish';
 $log->type = 'access';

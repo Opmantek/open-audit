@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.0.8
+ * @version   2.0.10
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -88,7 +88,7 @@ class M_device extends MY_Model
         } else {
             # we have an ip address in the hostname field - remove it
             # likely because DNS is not fully setup and working correctly
-            $log_message[] = "Provided hostame is actually an IP address (" . $details->hostname . ").";
+            $log_message[] = "Provided hostname is actually an IP address (" . $details->hostname . ").";
             if (empty($details->ip)) {
                 $details->ip = $details->hostname;
                 $log_message[] = "No IP provided, but provided hostname is an IP. Storing in ip (" . $details->ip . ").";

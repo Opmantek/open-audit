@@ -483,11 +483,11 @@ INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700'
 INSERT INTO `configuration` VALUES (8,'discovery_nmap_os','n','bool','y','system','2000-01-01 00:00:00','When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `configuration` VALUES (9,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (10,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (11,'display_version','2.0.8','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (11,'display_version','2.0.10','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (12,'download_reports','download','text','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (13,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (14,'homepage','groups','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (15,'internal_version','20170919','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (15,'internal_version','20171010','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (17,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (18,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
 INSERT INTO `configuration` VALUES (19,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
@@ -526,6 +526,9 @@ INSERT INTO `configuration` VALUES (52,'servers','','text','n','system','2000-01
 INSERT INTO `configuration` VALUES (53,'database_show_row_limit','1000','number','y','system','2000-01-01 00:00:00','The limit of rows to show, rather than download when exporting a database table.');
 INSERT INTO `configuration` VALUES (54,'collector_check_minutes','15','number','y','system','2000-01-01 00:00:00','The default check interval for collectors.');
 INSERT INTO `configuration` VALUES (55,'page_size','1000','number','y','system','2000-01-01 00:00:00','The default limit of rows to retrieve.');
+INSERT INTO `configuration` VALUES (56,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
+INSERT INTO `configuration` VALUES (57,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current netstat data and generate change logs.')
+INSERT INTO `configuration` VALUES (58,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current environment variable data and generate change logs.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -859,7 +862,7 @@ CREATE TABLE `fields` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `group_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('varchar','list') NOT NULL DEFAULT 'varchar',
+  `type` enum('varchar','list','date') NOT NULL DEFAULT 'varchar',
   `values` text NOT NULL,
   `placement` enum('custom','system') NOT NULL DEFAULT 'system',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
@@ -1166,7 +1169,7 @@ CREATE TABLE `ldap_servers` (
   `description` text NOT NULL,
   `lang` varchar(200) NOT NULL DEFAULT 'en',
   `host` varchar(200) NOT NULL DEFAULT '',
-  `port` varchar(200) NOT NULL DEFAULT '385',
+  `port` varchar(200) NOT NULL DEFAULT '389',
   `secure` enum('y','n') NOT NULL DEFAULT 'n',
   `domain` varchar(200) NOT NULL DEFAULT '',
   `type` enum('active directory','openldap') NOT NULL DEFAULT 'active directory',

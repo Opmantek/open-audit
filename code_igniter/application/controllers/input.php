@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
 */
 
@@ -81,6 +81,20 @@ class input extends CI_Controller
         }
 
         if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
+            $log->severity = 3;
+            $log->summary = 'Unauthorized';
+            $log->message = 'Unauthorized XML input for ' . $this->uri->segment(2, 0) . ' from ' . $_SERVER['REMOTE_ADDR'] . '. Not in list of blessed subnets.';
+            if ($this->uri->segment(2, 0) == 'discoveries') {
+                if (!empty($_POST['data'])) {
+                    $xml_input = $_POST['data'];
+                    $xml = new SimpleXMLElement($xml_input);
+                    if (!empty($xml->device->discovery_id)) {
+                        $log->message = 'Unauthorized XML input for discoveries from ' . $_SERVER['REMOTE_ADDR'] . ' for discovery #' . intval($xml->device->discovery_id) . '. Not in list of blessed subnets.';
+                        discovery_log($log);
+                    }
+                }
+            }
+            stdlog($syslog);
             exit;
         }
 
@@ -104,6 +118,7 @@ class input extends CI_Controller
     */
     public function index()
     {
+        # Unused
     }
 
     /**
@@ -126,7 +141,7 @@ class input extends CI_Controller
             $this->roles = $this->m_roles->collection();
             $this->response->meta->collection = 'input';
             $this->response->data = array();
-            $this->response->meta->id = NULL;
+            $this->response->meta->id = null;
             $this->response->meta->action = $this->uri->segment(2, 0) . '_create_form';
             $this->response->meta->total = 0;
             $this->response->meta->format = 'screen';
@@ -162,7 +177,7 @@ class input extends CI_Controller
         $log->function = strtolower($log->collection) . '::' . strtolower($log->action);
         $log->summary = 'processing submitted data';
         stdlog($log);
-        $discovery_id = NULL;
+        $discovery_id = null;
         include "include_input_devices.php";
     }
 

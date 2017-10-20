@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 ?>
@@ -188,7 +188,7 @@
                     <div class="form-group">
                         <label for="data[attributes][dn_password]" class="col-sm-3 control-label"><?php echo __('DN Password'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][dn_password]" name="data[attributes][dn_password]" placeholder="your DN Account password" value="">
+                             <input type="password" class="form-control" id="data[attributes][dn_password]" name="data[attributes][dn_password]" placeholder="your DN Account password" value="">
                         </div>
                     </div>
 

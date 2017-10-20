@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -88,6 +88,7 @@ $item = $this->response->data[0];
                             <select class="data_type form-control" id="type" name="type" disabled>
                                 <option value="varchar"<?php if ($item->attributes->type == 'varchar') { echo " selected"; } ?>><?php echo __('VarChar'); ?></option>
                                 <option value="list"<?php if ($item->attributes->type == 'list') { echo " selected"; } ?>><?php echo __('List'); ?></option>
+                                <option value="date"<?php if ($item->attributes->type == 'date') { echo " selected"; } ?>><?php echo __('Date'); ?></option>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">

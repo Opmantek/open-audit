@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
 */
 
@@ -204,7 +204,7 @@ class logon extends CI_Controller
             exit();
         }
 
-        if ($this->user->type == 'collector') {
+        if (!empty($this->user->type) and $this->user->type == 'collector') {
             // if (@$this->input->post('uuid') == '') {
             //     log_error('ERR-0030', current_url());
             //     header($this->response->meta->header);

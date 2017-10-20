@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.8
+* @version   2.0.10
 * @link      http://www.open-audit.org
  */
 ?>
@@ -75,6 +75,7 @@
                             <select class="data_type form-control" id="data[attributes][type]" name="data[attributes][type]">
                                 <option value="varchar"><?php echo __('VarChar'); ?></option>
                                 <option value="list"><?php echo __('List'); ?></option>
+                                <option value="date"><?php echo __('Date'); ?></option>
                             </select>
                         </div>
                     </div>
@@ -145,7 +146,7 @@
 $(document).ready(function(){
     $('.data_type').change(function() {
         var $type = $(this).val();
-        if ($type == "varchar") {
+        if ($type == "varchar" || $type == "date") {
             $(".data-values").prop('disabled', true);
         } else {
             $(".data-values").prop('disabled', false);
