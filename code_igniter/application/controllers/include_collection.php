@@ -52,6 +52,10 @@ if ($this->response->meta->collection === 'licenses') {
     }
 }
 
+if ($this->response->meta->collection == 'configuration') {
+    $this->response->meta->total = $this->response->meta->filtered;
+}
+
 output($this->response);
 
 $log = new stdClass();
