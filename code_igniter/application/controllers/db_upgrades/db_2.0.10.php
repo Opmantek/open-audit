@@ -54,10 +54,10 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # fields
-alter_table('fields', 'type', "`type` enum('varchar','list','date') NOT NULL DEFAULT 'varchar'");
+$this->alter_table('fields', 'type', "`type` enum('varchar','list','date') NOT NULL DEFAULT 'varchar'");
 
 # ldap_servers
-alter_table('ldap_servers', 'port', "`port` varchar(200) NOT NULL DEFAULT '389'");
+$this->alter_table('ldap_servers', 'port', "`port` varchar(200) NOT NULL DEFAULT '389'");
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20171010' WHERE `name` = 'internal_version'";
