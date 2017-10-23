@@ -1185,7 +1185,8 @@ if (!empty($_POST['data'])) {
             # audit anything that's not ESX
             if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
                 $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-                if (!empty($this->config->item('discovery_linux_use_sudo')) and
+                $test = @$this->config->item('discovery_linux_use_sudo');
+                if (!empty($test) and
                     $this->config->item('discovery_linux_use_sudo') !== 'y' and
                     strtolower($device->os_group) == 'linux') {
                     # Running linux audit without sudo
