@@ -272,9 +272,6 @@ else
     end if
 end if
 
-
-command = nmap_path & " -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-
 log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
 write_log()
 
@@ -294,7 +291,7 @@ Do Until objExecObject.StdOut.AtEndOfStream
     end if
     if (instr(lcase(line), "nmap done")) then
         line_split = split(line)
-        hosts_in_subnet = line_split(3)
+        hosts_in_subnet = line_split(2)
     end if
 Loop
 
@@ -302,7 +299,7 @@ dim hosts_scanned : hosts_scanned = 0
 dim db_log_duration : db_log_duration = 0
 dim db_log_status : db_log_status = ""
 dim db_log_message : db_log_message = ""
-dm host_timer : host_timer = 0
+dim host_timer : host_timer = 0
 
 db_log_status = "start"
 db_log_message = "Starting discovery, scanning " & hosts_in_subnet & " IP addresses"
@@ -583,7 +580,7 @@ function db_log()
         objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
         objHTTP.Open "POST", "http://localhost/open-audit/index.php/input/logs", FALSE
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=6&pid=" & current_pid & "&ip=127.0.0.1&file=discover_subnet.vbs&message=" & log_entry & "&command_time_to_execute=0&command_status=$status" + vbcrlf
+        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=6&pid=" & current_pid & "&ip=127.0.0.1&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=0&command_status=" & db_log_status & vbcrlf
     on error goto 0
 end function
 
