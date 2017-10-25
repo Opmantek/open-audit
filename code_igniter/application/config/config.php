@@ -2,8 +2,8 @@
 if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
-$config['web_internal_version'] = '20171010';
-$config['web_display_version'] = '2.0.10';
+$config['web_internal_version'] = '20171025';
+$config['web_display_version'] = '2.0.12';
 # $config['debug'] = false;
 /*
 |--------------------------------------------------------------------------
@@ -346,9 +346,10 @@ $config['rewrite_short_tags'] = false;
 */
 $config['proxy_ips'] = '';
 
-function __autoload($class) {
-    if(strpos($class, 'CI_') !== 0) {
-        @include_once( APPPATH . 'core/'. $class . EXT );
+function __autoload($class)
+{
+    if (strpos($class, 'CI_') !== 0) {
+        @include_once(APPPATH . 'core/'. $class . EXT);
     }
 }
 
