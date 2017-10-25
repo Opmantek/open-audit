@@ -667,6 +667,16 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_complete);
         }
+        // Ubiquiti specific items to determine manufacturer
+        $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.1.9.1.3");
+        foreach ($i as $line) {
+            if (strpos($line, 'Ubiquiti') !== false) {
+                $details->manufacturer = 'Ubiquiti';
+                $log->message = 'Manufacturer set to Ubiquiti '.$ip . ', because in services list.';
+                $log->command = 'snmpwalk 1.3.6.1.2.1.1.9.1.3';
+                $log->id = discovery_log($log);
+            }
+        }
         // guess at manufacturer using entity mib
         if (empty($details->manufacturer)) {
             $log->message = 'Manufacturer based on Entity MIB retrieval for '.$ip;
@@ -689,6 +699,17 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_complete);
         }
+        // guess at model using entity mib #2
+        if (empty($details->model)) {
+            $log->message = 'Model based on Entity MIB OID retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.2.1';
+            $log->id = discovery_log($log);
+            $item_start = microtime(true);
+            $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.2.1");
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_complete);
+        }
         // guess at model using host resources mib
         if (empty($details->model)) {
             $log->message = 'Model based on Host Resources MIB retrieval for '.$ip;
@@ -699,6 +720,11 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_complete);
+        }
+
+        if (!empty($details->model) and strpos($details->model, 'UBNT ') !== false) {
+            $details->manufacturer = 'Ubiquiti';
+            $details->os_group = 'Linux';
         }
 
         // serial
@@ -714,7 +740,7 @@ if (!function_exists('snmp_audit')) {
         }
         if (empty($details->serial)) {
             $log->message = 'Serial based on Entity MIB retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11';
+            $log->command = 'snmpget 1.3.6.1.2.1.47.1.1.1.1.11.1';
             $log->id = discovery_log($log);
             $item_start = microtime(true);
             $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");
