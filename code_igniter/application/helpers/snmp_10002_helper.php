@@ -1,4 +1,4 @@
-<?php 
+<?php
 if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
 }
@@ -60,14 +60,9 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.2.840.10036.3.1.2.1.3.7");
     }
-
-    # maybe we have a Ubiquiti device
-    if (stripos($details->manufacturer, 'ubiquiti') !== false) {
-        $details->type = 'wap';
-        $details->icon = 'wap';
-        $details->os_group = 'Linux';
-        $details->os_family = 'Ubiquiti AirOS';
-        $details->os_name = 'Ubiquiti AirOS version '.$temp_os_name;
+    if (empty($details->model)) {
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.41112.1.6.3.3");
     }
+
     return($details);
 };
