@@ -33,6 +33,15 @@ $this->log_db('Upgrade database to 2.0.12 commenced');
 $this->alter_table('bios', 'revision', "ADD `revision` varchar(100) NOT NULL DEFAULT '' AFTER `version`", 'add');
 $this->alter_table('bios', 'date', "ADD `date` varchar(100) NOT NULL DEFAULT '' AFTER `revision`", 'add');
 
+# locations
+$sql = "DELETE FROM `attributes` WHERE `resource` = 'locations' AND `type` = 'type' AND `name` = 'Head Office'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Head Office','Head Office','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # motherboard
 $this->alter_table('motherboard', 'version', "ADD `version` varchar(100) NOT NULL DEFAULT '' AFTER `serial`", 'add');
 

@@ -221,7 +221,7 @@ INSERT INTO `attributes` VALUES (115,1,'locations','type','Embassy','Embassy','s
 INSERT INTO `attributes` VALUES (116,1,'locations','type','Factory','Factory','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (117,1,'locations','type','Fire Station','Fire Station','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (118,1,'locations','type','Guard','Guard','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (119,1,'locations','type','Head Office','Head Offic','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (119,1,'locations','type','Head Office','Head Office','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (120,1,'locations','type','High School','High School','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (121,1,'locations','type','Hospital','Hospital','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (122,1,'locations','type','Hotel','Hotel','system','2000-01-01 00:00:00');
