@@ -94,7 +94,7 @@ class input extends CI_Controller
                     }
                 }
             }
-            stdlog($syslog);
+            stdlog($log);
             exit;
         }
 
