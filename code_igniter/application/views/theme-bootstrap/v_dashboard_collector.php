@@ -70,7 +70,7 @@ if (stripos($this_task->{'attributes'}->{'minute'}, '*/') !== false) {
 		                <?php if ($every != '') { ?>
 		                    This collector requests tasks every <?php echo $every ?>.<br /><br />
 		                    <?php if ($this_task->{'attributes'}->{'last_run'} != "2000-01-01 00:00:00") { ?>
-		                        The last time this task was run was <%= $this_task->{'attributes'}->{'last_run'} %>.<br /><br />
+		                        The last time this task was run was <?php echo $this_task->{'attributes'}->{'last_run'}; ?>.<br /><br />
 		                    <?php } else { ?>
 		                        This task has not yet been run.<br /><br />
 		                    <?php } ?>
