@@ -29,6 +29,9 @@
 
 $this->log_db('Upgrade database to 2.0.12 commenced');
 
+# attachment
+$this->alter_table('attachment', 'user_id', "DROP user_id", 'drop');
+
 # bios
 $this->alter_table('bios', 'revision', "ADD `revision` varchar(100) NOT NULL DEFAULT '' AFTER `version`", 'add');
 $this->alter_table('bios', 'date', "ADD `date` varchar(100) NOT NULL DEFAULT '' AFTER `revision`", 'add');
