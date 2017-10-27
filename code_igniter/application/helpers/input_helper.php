@@ -418,7 +418,7 @@ if (! function_exists('inputRead')) {
             unset($data_object);
             $data_json = urldecode(str_replace('data=', '', file_get_contents('php://input')));
             $data_object = json_decode($data_json);
-            $options = $data_object->data->attributes->options;
+            $options = @$data_object->data->attributes->options;
             if (empty($data_object)) {
                 $log->summary = 'Request method is PATCH but no data supplied.';
                 stdlog($log);
