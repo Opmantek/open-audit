@@ -128,6 +128,7 @@ class devices extends MY_Controller
                     if ($table != 'fields') {
                         $result = false;
                         if ($this->response->meta->format == 'screen') {
+                            # TODO - replace this hard limit of 1,000
                             $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current, 1000);
                         } else {
                             $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
