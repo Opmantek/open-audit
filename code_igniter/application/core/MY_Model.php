@@ -394,7 +394,7 @@ class MY_Model extends CI_Model
                 $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'networks') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.network = ip.network) LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " AND ip.current = 'y' GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) as `device_count`, orgs.name AS `org_name` FROM `networks` LEFT JOIN ip ON (networks.network = ip.network AND ip.current = 'y') LEFT JOIN system ON (system.id = ip.system_id) LEFT JOIN orgs ON (networks.org_id = orgs.id) " . $return['filter'] . " GROUP BY networks.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'orgs') {
                 $sql = "SELECT orgs.*, o2.name as `parent_name`, count(DISTINCT system.id) as device_count FROM orgs LEFT JOIN orgs o2 ON orgs.parent_id = o2.id LEFT JOIN system ON (orgs.id = system.org_id) " . $return['filter'] . " GROUP BY orgs.id " . $return['sort'] . " " . $return['limit'];
