@@ -31,7 +31,7 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.0.10
+ * @version   2.0.12
 
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -5646,6 +5646,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($oid == '1.3.6.1.4.1.9.1.1877') {
         $details->model = 'Cisco Prime Virtual Network Analysis Module (ESXi)';
         $details->type = 'computer';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2068') {
+        $details->model = 'Cisco ISR 4300 series';
+        $details->type = 'router';
     }
 
     if ($oid == '1.3.6.1.4.1.9.5.5') {

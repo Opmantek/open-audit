@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   2.0.10
+# @version   2.0.12
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -72,7 +72,7 @@ for arg in "$@"; do
 	eval "$parameter"=\""$value\""
 done
 
-if [ -n "$host_tmeout" ]; then
+if [ -n "$host_tmeout" ] || [ "$host_timeout" != 0 ]; then
 	host_timeout="--host-timeout $host_timeout"
 fi
 
@@ -120,9 +120,9 @@ if [ "$help" == "y" ]; then
 	echo "      y - Display this help output."
 	echo "     *n - Do not display this output."
 	echo ""
-	echo "  -host_timeout"
-	echo "     X - Give up on scanning the target after X seconds."
-	echo "    *  - Do not set this value, allow Nmap to take as long as it needs to scan."
+	echo "  host_timeout"
+	echo "     *60 - Give up on scanning the target after 60 seconds."
+	echo "     *   - Do not set this value, allow Nmap to take as long as it needs to scan."
 	echo ""
 	#echo "  log_no_response"
 	#echo "    *n - Do not submit a result if there is no device attached to the given ip address."
@@ -218,6 +218,15 @@ script_start=$(timer)
 
 if [ "$debugging" -gt 0 ]; then
 	echo "Log Level: $debugging"
+	echo "Create File: $create_file"
+	echo "Discovery ID: $discovery_id"
+	echo "Force Ping: $force_ping"
+	echo "Host Timeout: $host_timeout"
+	echo "OS Scan: $os_scan"
+	echo "Submit Online: $submit_online"
+	echo "Subnet Range: $subnet_range"
+	echo "Timing: $timing"
+	echo "URL: $url"
 fi
 
 i=$(which nmap 2>/dev/null)
@@ -333,7 +342,7 @@ if [[ "$hosts" != "" ]]; then
 			echo "nmap -vv -n $os_scan -Pn --host_timeout 60 $timing $host 2>&1"
 		fi
 		nmap_tcp_timer_start=$(timer)
-		nmap_scan=$(nmap -vv -n $os_scan -Pn --host_timeout 60 $timing $host 2>&1)
+		nmap_scan=$(nmap -vv -n "$os_scan" -Pn "$host_timeout" "$timing" "$host" 2>&1)
 		if [ "$debugging" -gt 0 ]; then
 			nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
 			echo "Nmap TCP scan time: $nmap_tcp_timer_end"

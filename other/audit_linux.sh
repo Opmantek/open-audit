@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   2.0.10
+# @version   2.0.12
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="2.0.10"
+version="2.0.12"
 
 # Display help
 help="n"
@@ -503,8 +503,11 @@ system_uuid=$(dmidecode -s system-uuid 2>/dev/null | grep -v "^#")
 if [ -z "$system_uuid" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
 	system_uuid=$(lshal 2>/dev/null | grep "system.hardware.uuid" | cut -d\' -f2)
 fi
-if [ -z "$system_uuid" ]; then
+if [ -z "$system_uuid" ] && [ -f "/sys/class/dmi/id/product_uuid" ]; then
 	system_uuid=$(cat /sys/class/dmi/id/product_uuid 2>/dev/null)
+fi
+if [ -z "$system_uuid" ] && [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]; then
+	system_uuid=$(cat /sys/devices/virtual/dmi/id/product_uuid 2>/dev/null)
 fi
 
 # Get the hostname & DNS domain
@@ -546,7 +549,7 @@ fi
 if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	if grep -q 'Alpine Linux' /etc/os-release ; then
 		system_os_family="Alpine Linux"
-		system_os_version=$(grep VERSION_ID /etc/os-release | cur -d\" -f2)
+		system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
 		system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
 		busybox="y"
 	fi
@@ -590,7 +593,7 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 
 	# RedHat based
 	if [ "$system_release_file" = "/etc/redhat-release" ]; then
-		if  cat "$system_release_file" | grep -q "Red Hat" ; then
+		if cat "$system_release_file" | grep -q "Red Hat" ; then
 			system_os_family="RedHat"
 		fi
 		if cat "$system_release_file" | grep -q "CentOS" ; then
@@ -833,86 +836,67 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 # Get the BIOS Manufacturer
-bios_manufacturer=""
 bios_manufacturer=$(dmidecode -s bios-vendor 2>/dev/null)
-if [ -z "$bios_manufacturer" ]; then
-	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		bios_manufacturer=$(lshal | grep "smbios.bios.vendor" | cut -d\' -f2)
-		if [ -z "$bios_manufacturer" ]; then
-			bios_manufacturer=$(lshal | grep "system.firmware.vendor" | cut -d\' -f2)
-		fi
-	fi
-	if [ -z "$bios_manufacturer" ]; then
-		bios_manufacturer=$(cat /sys/class/dmi/id/bios_vendor 2>/dev/null)
-	fi
+if [ -z "$bios_manufacturer" ] && [ -f "/sys/class/dmi/id/bios_vendor" ]; then
+	bios_manufacturer=$(cat /sys/class/dmi/id/bios_vendor 2>/dev/null)
 fi
+if [ -z "$bios_manufacturer" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	bios_manufacturer=$(lshal | grep "smbios.bios.vendor" | cut -d\' -f2)
+fi
+if [ -z "$bios_manufacturer" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	bios_manufacturer=$(lshal | grep "system.firmware.vendor" | cut -d\' -f2)
+fi
+bios_manufacturer=$(trim "$bios_manufacturer")
 
-# Get the BIOS Firmware Revision
-bios_firm_rev=""
-bios_firm_rev=$(dmidecode 2>/dev/null | grep "Firmware Revision" | cut -d: -f2)
-bios_firm_rev=$(trim "$bios_firm_rev")
-if [ -z "$bios_firm_rev" ]; then
-	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		bios_firm_rev=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
-		if [ -z "$bios_firm_rev" ]; then
-			bios_firm_rev=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
-		fi
-		if [ -z "$bios_firm_rev" ]; then
-			bios_firm_rev=$(cat /sys/class/dmi/id/bios_version 2>/dev/null)
-		fi
-	fi
+# Get the BIOS Version
+bios_version=$(dmidecode -s bios-version 2>/dev/null)
+if [ -z "$bios_version" ]; then
+	bios_version=$(dmidecode 2>/dev/null | grep "Firmware Revision" | cut -d: -f2)
 fi
+if [ -z "$bios_version" ] && [ -f "/sys/class/dmi/id/bios_version" ]; then
+	bios_version=$(cat /sys/class/dmi/id/bios_version 2>/dev/null)
+fi
+if [ -z "$bios_version" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	bios_version=$(lshal 2>/dev/null | grep "smbios.bios.version" | cut -d\' -f2)
+fi
+if [ -z "$bios_version" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	bios_version=$(lshal 2>/dev/null | grep "system.firmware.version" | cut -d\' -f2)
+fi
+bios_version=$(trim "$bios_version")
+
+# Get the BIOS revision
+bios_revision=$(dmidecode 2>/dev/null | grep "BIOS Revision" | cut -d: -f2)
+bios_revision=$(trim "$bios_revision")
 
 # Make the BIOS Description using the manufacturer - Firmware Rev
-if [ -n "$bios_firm_rev" ]; then
-	bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS - Firmware Rev. $bios_firm_rev"
-else
-	if [ -n "$bios_manufacturer" ]; then
-		bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS"
-	else
-		bios_description=""
-	fi
+bios_description=""
+if [ -n "$bios_version" ] && [ -n "$bios_manufacturer" ]; then
+	bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS - Firmware Rev. $bios_version"
+fi
+if [ -z "$bios_description" ] && [ -n "$bios_manufacturer" ]; then
+	bios_description=$(echo "$bios_manufacturer" | cut -d" " -f1)" BIOS"
 fi
 
 # Get the BIOS Serial = System Serial
 bios_serial="$system_serial"
 
 # Get the SMBIOS Version
-bios_smversion=""
-bios_smversion=$(dmidecode 2>/dev/null | grep -i SMBIOS | cut -d' ' -f2)
-if [ -z "$bios_smversion" ]; then
-	if [ -n "$(which lshal 2>/dev/null)" ]; then
-		bios_smversion=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
-		if [ -z "$bios_smversion" ]; then
-			bios_smversion=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
-		fi
-	fi
+bios_smversion=$(dmidecode 2>/dev/null | grep -i SMBIOS | cut -d' ' -f2 | tail -n1)
+if [ -z "$bios_smversion" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	bios_smversion=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
+fi
+if [ -z "$bios_smversion" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
+	bios_smversion=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
 fi
 
-# Get the BIOS Version
-bios_version_p1=$(dmidecode -s bios-version 2>/dev/null)
-bios_version_p2=$(dmidecode 2>/dev/null | grep "BIOS Revision" | cut -d: -f2)
-bios_version_p2=$(trim "$bios_version_p2")
-bios_version_p3=$(dmidecode -s bios-release-date 2>/dev/null)
-
-if [ -n "$bios_version_p1" ]; then
-	if [ -n "$bios_version_p2" ]; then
-		bios_version="V.$bios_version_p1 Rev.$bios_version_p2 - $bios_version_p3"
-	else
-		bios_version="V.$bios_version_p1 - $bios_version_p3"
-	fi
-fi
-
-if [ -z "$bios_version" ] && [ -n "$(which lshal 2>/dev/null)" ]; then
-	bios_version=$(lshal | grep "smbios.bios.version" | cut -d\' -f2)
-	if [ -z "$bios_version" ]; then
-		bios_version=$(lshal | grep "system.firmware.version" | cut -d\' -f2)
-	fi
+# Get the BIOS date
+bios_date=$(dmidecode -s bios-release-date 2>/dev/null)
+if [ -z "$bios_date" ] && [ -f "/sys/devices/virtual/dmi/id/bios_date" ]; then
+	bios_date=$(cat /sys/devices/virtual/dmi/id/bios_date 2>/dev/null)
 fi
 
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
-
 #'''''''''''''''''''''''''''''''''
 # only output the bios section if we have some details
 if [ -n "$bios_description" ] || [ -n "$bios_manufacturer" ] || [ -n "$bios_serial" ] || [ -n "$bios_smversion" ] || [ -n "$bios_version" ]; then
@@ -924,6 +908,8 @@ if [ -n "$bios_description" ] || [ -n "$bios_manufacturer" ] || [ -n "$bios_seri
 	echo "			<serial>$(escape_xml "$bios_serial")</serial>"
 	echo "			<smversion>$(escape_xml "$bios_smversion")</smversion>"
 	echo "			<version>$(escape_xml "$bios_version")</version>"
+	echo "			<revision>$(escape_xml "$bios_revision")</revision>"
+	echo "			<date>$(escape_xml "$bios_date")</date>"
 	echo "		</item>"
 	echo "	</bios>"
 	} >> "$xml_file"
@@ -989,9 +975,6 @@ memory_slots=$(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}' | wc 
 if [ "$memory_slots" != "0" ]; then
 
 	echo "	<memory>">> "$xml_file"
-#echo "IFS is "
-#echo "$IFS"|hexdump -C
-#dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}' |hexdump -C
 	IFS="$ORIGIFS";
 	for memory_handle in $(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}'); do
 
@@ -1018,7 +1001,7 @@ if [ "$memory_slots" != "0" ]; then
 
 			memory_speed=$(echo "$bank_info" |\
 				awk '/Speed:/{for (u=2; u<=NF; u++){printf("%s ", $u)}printf("\n")}' |\
-				sed 's/[[:space:]]MHz.*//g')
+				sed 's/[[:space:]]MHz.*//g' | head -n1)
 
 			memory_tag=$(echo "$bank_info" |\
 				awk '/Bank L.*:/{for (u=3; u<=NF; u++){printf("%s ", $u)}printf("\n")}')
@@ -1061,18 +1044,24 @@ if [ "$debugging" -gt "0" ]; then
 fi
 
 mobo_manufacturer=$(dmidecode -s baseboard-manufacturer 2> /dev/null)
+if [ -z "$mobo_manufacturer" ] && [ -f "/sys/devices/virtual/dmi/id/board_vendor" ]; then
+	mobo_manufacturer=$(cat /sys/devices/virtual/dmi/id/board_vendor 2>/dev/null)
+fi
 mobo_model=$(dmidecode -s baseboard-product-name 2> /dev/null)
+if [ -z "$mobo_model" ] && [ -f "/sys/devices/virtual/dmi/id/board_name" ]; then
+	mobo_model=$(cat /sys/devices/virtual/dmi/id/board_name 2>/dev/null)
+fi
 mobo_version=$(dmidecode -s baseboard-version 2> /dev/null | grep -v Not)
+if [ -z "$mobo_version" ] && [ -f "/sys/devices/virtual/dmi/id/board_version" ]; then
+	mobo_version=$(cat /sys/devices/virtual/dmi/id/board_version 2>/dev/null)
+fi
 mobo_serial=$(dmidecode -s baseboard-serial-number 2> /dev/null)
-
-if [ -n "$mobo_version" ]; then
-	# Report both Model and Version
-	mobo_model="$mobo_model - $mobo_version"
+if [ -z "$mobo_serial" ] && [ -f "/sys/devices/virtual/dmi/id/board_serial" ]; then
+	mobo_serial=$(cat /sys/devices/virtual/dmi/id/board_serial 2>/dev/null)
 fi
 
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
-
 #'''''''''''''''''''''''''''''''''
 
 if [ -n "$mobo_manufacturer" ] || [ -n "$mobo_model" ]; then
@@ -1082,6 +1071,7 @@ if [ -n "$mobo_manufacturer" ] || [ -n "$mobo_model" ]; then
 	echo "			<manufacturer>$(escape_xml "$mobo_manufacturer")</manufacturer>"
 	echo "			<model>$(escape_xml "$mobo_model")</model>"
 	echo "			<serial>$(escape_xml "$mobo_serial")</serial>"
+	echo "			<version>$(escape_xml "$mobo_version")</version>"
 	echo "			<processor_slot_count>$(escape_xml "$system_pc_physical_processors")</processor_slot_count>"
 	echo "			<processor_type>$(escape_xml "$processor_socket")</processor_type>"
 	echo "			<memory_slot_count>$(escape_xml "$memory_slots")</memory_slot_count>"
@@ -1194,7 +1184,6 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Video Cards Info"
 fi
 
-video_pci_adapters=""
 video_pci_adapters=$(lspci 2>/dev/null | grep VGA | cut -d" " -f1)
 
 if [ -n "$video_pci_adapters" ]; then
@@ -1229,7 +1218,6 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Sound Cards Info"
 fi
 
-sound_pci_adapters=""
 sound_pci_adapters=$(lspci 2>/dev/null | grep -Ei 'audio | multmedia' | cut -d" " -f1)
 
 if [ -n "$sound_pci_adapters" ]; then

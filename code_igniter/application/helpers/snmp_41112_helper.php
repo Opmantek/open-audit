@@ -38,26 +38,26 @@ if (!defined('BASEPATH')) {
 * @link      http://www.open-audit.org
  */
 
-# Vendor Radwin
+# Vendor Ubiquiti
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    
-    $details->type = 'wap';
-
-    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.3.2.1.5.0");
-    if (empty($details->serial)) {
-        $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.29.0");
+    $temp = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.25.4.2.1.5");
+    if (!empty($temp) and count($temp) > 0) {
+        foreach ($temp as $line) {
+            if (stripos($line, 'UniFi-Gateway') !== false) {
+                $details->model = 'Unifi Security Gateway';
+                $details->manufacturer = 'Ubiquiti';
+                $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+                if (stripos($details->os_name, 'edgeos') !== false) {
+                    $details->os_family = 'EdgeOS';
+                    $details->os_group = 'Linux';
+                }
+            }
+        }
     }
-
-    $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.1.0");
     if (empty($details->model)) {
-        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.30");
+        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.41112.1.6.3.3");
     }
-
-    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.4458.1000.1.1.3.0");
-
-
-
     return($details);
 };

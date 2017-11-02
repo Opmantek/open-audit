@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.0.10
+* @version   2.0.12
 * @link      http://www.open-audit.org
 */
 
@@ -128,6 +128,7 @@ class devices extends MY_Controller
                     if ($table != 'fields') {
                         $result = false;
                         if ($this->response->meta->format == 'screen') {
+                            # TODO - replace this hard limit of 1,000
                             $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current, 1000);
                         } else {
                             $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
