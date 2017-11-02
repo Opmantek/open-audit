@@ -27,7 +27,7 @@
 *
 **/
 
-$this->log_db('Upgrade database to 2.0.12 commenced');
+$this->log_db('Upgrade database to 2.0.11 commenced');
 
 # attachment
 $this->alter_table('attachment', 'user_id', "DROP user_id", 'drop');
@@ -53,10 +53,10 @@ $sql = "UPDATE `configuration` SET `value` = '20171025' WHERE `name` = 'internal
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `configuration` SET `value` = '2.0.12' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '2.0.11' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->log_db("Upgrade database to 2.0.12 completed");
+$this->log_db("Upgrade database to 2.0.11 completed");
 $this->config->config['internal_version'] = '20171025';
-$this->config->config['display_version'] = '2.0.12';
+$this->config->config['display_version'] = '2.0.11';
