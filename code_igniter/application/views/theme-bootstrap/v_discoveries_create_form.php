@@ -52,6 +52,46 @@ foreach ($address_array as $key => $value) {
     }
 }
 $network_address_array[] = "                                <option value='other'>Other</option>";
+
+# check if we have nmap installed
+$nmap_installed = 'n';
+if (php_uname('s') == "Windows NT") {
+    # check the obvious Windows install locations
+    $test_path = 'c:\Program Files\Nmap\Nmap.exe';
+    if ($nmap_installed == 'n' and file_exists($test_path)) {
+        $nmap_installed = 'y';
+    }
+    $test_path = 'c:\Program Files (x86)\Nmap\Nmap.exe';
+    if ($nmap_installed == 'n' and file_exists($test_path)) {
+        $nmap_installed = 'y';
+    }
+    unset($test_path);
+} else {
+    $command_string = "which nmap 2>/dev/null";
+    exec($command_string, $output, $return_var);
+    if (isset($output[0]) and strpos($output[0], 'nmap')) {
+        $nmap_installed = 'y';
+    } else {
+        $output[0] = '';
+    }
+    if ($nmap_installed == 'n') {
+        if (file_exists('/usr/local/bin/nmap')) {
+            $nmap_installed = 'y';
+        }
+    }
+}
+
+$nmap_warning = '';
+if ($nmap_installed == 'n') {
+    if (php_uname('s') == "Windows NT") {
+        $nmap_warning = "WARNING - Nmap not detected. Get it from <a style='color:#729FCF;' target='_blank' href='http://nmap.org/download.html'>http://nmap.org/download.html</a>.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
+    } else {
+        $nmap_warning = "WARNING - Nmap not detected. Please install it using your package manager.<br />Please see <a target='_blank' href='https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap'>https://community.opmantek.com/display/OA/Open-AudIT+and+Nmap</a> for information about why Open-AudIT requires Nmap and how to install it.";
+    }
+}
+if ($nmap_warning != '') {
+    echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $nmap_warning . '</div>';
+}
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
     <div class="panel panel-default">
