@@ -147,7 +147,7 @@ if (! function_exists('inputRead')) {
         if (empty($CI->config->config['page_size'])) {
             $CI->config->config['page_size'] = 1000;
         }
-        $CI->response->meta->limit = intval($CI->config->config['page_size']);
+        $CI->response->meta->limit = '';
         $CI->response->meta->offset = 0;
         $CI->response->meta->properties = '';
         $CI->response->meta->query_string = '';
@@ -732,16 +732,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->format = 'json';
         }
 
-        # get the limit
-        // if ($CI->response->meta->format != 'screen') {
-        //     $CI->response->meta->limit = '';
-        //     $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because not screen.';
-        //     stdlog($log);
-        // } else {
-        //     $CI->response->meta->limit = 1000;
-        //     $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because for screen.';
-        //     stdlog($log);
-        // }
+        # get and set the limit
         if (isset($_GET['limit'])) {
             $CI->response->meta->limit = intval($_GET['limit']);
             $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', according to GET.';
@@ -751,6 +742,16 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->limit = intval($_POST['limit']);
             $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', according to POST.';
             stdlog($log);
+        }
+        if ($CI->response->meta->format == 'screen' and empty($CI->response->meta->limit)) {
+            $CI->response->meta->limit = intval($CI->config->config['page_size']);
+            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because screen format and no limit requested, so default (page_size).';
+            stdlog($log);
+        }
+        if (!empty($CI->response->meta->limit)) {
+            $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . intval($CI->response->meta->limit);
+        } else {
+            $CI->response->meta->internal->limit = '';
         }
 
         # get the offset
@@ -775,12 +776,6 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->group = intval($_POST['group']);
             $log->summary = 'Set group to ' . $CI->response->meta->group . ', according to POST.';
             stdlog($log);
-        }
-
-        if ($CI->response->meta->limit != '') {
-            $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . $CI->response->meta->limit;
-        } else {
-            $CI->response->meta->internal->limit = '';
         }
 
         # get the list of requested properties (usually) properties=id,name,status

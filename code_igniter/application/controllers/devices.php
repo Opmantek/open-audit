@@ -127,12 +127,13 @@ class devices extends MY_Controller
                 foreach ($temp as $table) {
                     if ($table != 'fields') {
                         $result = false;
-                        if ($this->response->meta->format == 'screen') {
-                            # TODO - replace this hard limit of 1,000
-                            $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current, 1000);
-                        } else {
-                            $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
-                        }
+                        // if ($this->response->meta->format == 'screen') {
+                        //     # TODO - replace this hard limit of 1,000
+                        //     $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current, 1000);
+                        // } else {
+                        //     $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->current);
+                        // }
+                        $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->limit);
                         if ($result !== false) {
                             $this->response->included = array_merge($this->response->included, $result);
                         }
