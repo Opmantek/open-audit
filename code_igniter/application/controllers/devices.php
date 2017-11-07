@@ -127,7 +127,15 @@ class devices extends MY_Controller
                 foreach ($temp as $table) {
                     if ($table != 'fields') {
                         $result = false;
-                        $result = $this->m_devices->read_sub_resource($this->response->meta->id, $table, $this->response->meta->sub_resource_id, $this->response->meta->properties, '', $this->response->meta->limit);
+                        $result = $this->m_devices->read_sub_resource(
+                            $this->response->meta->id, #id
+                            $table, #sub_resource
+                            $this->response->meta->sub_resource_id, # sub id
+                            $this->response->meta->properties, # properties
+                            '', # sort
+                            $this->response->meta->current, # current
+                            $this->response->meta->limit # limit
+                        );
                         if ($result !== false) {
                             $this->response->included = array_merge($this->response->included, $result);
                         }
