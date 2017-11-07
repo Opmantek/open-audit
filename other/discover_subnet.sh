@@ -51,10 +51,7 @@ url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
-sequential="n"
-os_scan="n"
 force_ping="n"
-host_timeout="60"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -71,16 +68,6 @@ for arg in "$@"; do
 	if [ "$parameter" == "-h" ]; then parameter="help"; value="y"; fi
 	eval "$parameter"=\""$value\""
 done
-
-if [ -n "$host_tmeout" ] || [ "$host_timeout" != 0 ]; then
-	host_timeout="--host-timeout $host_timeout"
-fi
-
-if [ "$os_scan" == "y" ]; then
-	os_scan="-O"
-else
-	os_scan=""
-fi
 
 if [ "$help" == "y" ]; then
 	echo ""
@@ -112,22 +99,10 @@ if [ "$help" == "y" ]; then
 	echo "    *n - When discovering devices, do not check for ping response."
 	echo "     y - Check for a ping response and only discover those devices that do respond."
 	echo ""
-	echo "  os_scan"
-	echo "    *n - Do not use the -O Nmap flag when scanning devices."
-	echo "     y - Use -O (will slow down scan and requires SUID be set on the Nmap binary."
-	echo ""
 	echo "  -h or --help or help=y"
 	echo "      y - Display this help output."
 	echo "     *n - Do not display this output."
 	echo ""
-	echo "  host_timeout"
-	echo "     *60 - Give up on scanning the target after 60 seconds."
-	echo "     *   - Do not set this value, allow Nmap to take as long as it needs to scan."
-	echo ""
-	#echo "  log_no_response"
-	#echo "    *n - Do not submit a result if there is no device attached to the given ip address."
-	#echo "     y - Submit a result even if nothing is found."
-	#echo ""
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
@@ -138,15 +113,8 @@ if [ "$help" == "y" ]; then
 	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
 	echo ""
-	#echo "  sequential"
-	#echo "     *n - Set to n to NOT wait for each result from the server before continuing to scan the next ip in the list."
-	#echo "      y - Set to y to wait for a result from the server before continuing on to the next ip to scan. Will extend discovery times."
-	#echo "  syslog"
-	#echo "     *y - Log entries to the Open-AudIT log file."
-	#echo "      n - Do not log entries."
-	#echo ""
 	echo "  timing"
-	echo "   *-T3 - Nmap timing see this page for details"
+	echo "   *-T4 - Nmap timing see this page for details"
 	echo "        - https://nmap.org/book/man-performance.html"
 	echo ""
 	echo "  url"
@@ -157,12 +125,6 @@ if [ "$help" == "y" ]; then
 	echo ""
 	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
 	exit
-fi
-
-if [ "$sequential" == "n" ]; then
-	sequential="-b"
-else
-	sequential=""
 fi
 
 # logging to a file
@@ -215,97 +177,89 @@ function timer ()
 }
 
 script_start=$(timer)
+db_log "Starting discovery for $subnet_range" "" "start"
 
-if [ "$debugging" -gt 0 ]; then
-	echo "Log Level: $debugging"
-	echo "Create File: $create_file"
-	echo "Discovery ID: $discovery_id"
-	echo "Force Ping: $force_ping"
-	echo "Host Timeout: $host_timeout"
-	echo "OS Scan: $os_scan"
-	echo "Submit Online: $submit_online"
-	echo "Subnet Range: $subnet_range"
-	echo "Timing: $timing"
-	echo "URL: $url"
-fi
-
-i=$(which nmap 2>/dev/null)
-if [[ "$i" == *"nmap"* ]]; then
-	if [ "$debugging" -gt 1 ]; then
-		echo "Using NMap."
-	fi
+nmap_full_version=""
+nmap_major_version=""
+nmap_path=$(which nmap 2>/dev/null)
+if [[ "$nmap_path" == *"nmap"* ]]; then
+	nmap_full_version=$(nmap -V | grep -i version | cut -d" " -f3)
+	nmap_major_version=$(echo "$nmap_full_version" | cut -d. -f1)
+	db_log "Discovery for $subnet_range using Nmap version $nmap_full_version at $nmap_path" "" ""
 else
 	if [ "$debugging" -gt 0 ]; then
-		echo "Nmap path not found, aborting."
+		echo "Nmap binary not on path, aborting."
 	fi
-	log_entry="Nmap not found, aborting."
+	log_entry="Nmap binary not on path, aborting."
 	write_log "$log_entry"
+	db_log "Nmap binary not on path, aborting." "fail" "finish"
 	exit 1
 fi
 
 log_entry="Discovery for $subnet_range submitted for discovery $discovery_id starting"
 write_log "$log_entry"
 
-if [ "$debugging" -gt 0 ]; then
-	echo "Scanning Subnet: $subnet_range"
-	echo "URL: $url"
-fi
+log_entry="Discovery for $subnet_range using Nmap version $nmap_full_version at $nmap_path"
+write_log "$log_entry"
 
-if [ -z $(ls -lh "$i" | grep "rws") ]; then
-	if [ "$os_scan" = "-O" ]; then
-		log_entry="Discovery with os scan requested but suid not set on nmap binary. Removing os detection (still scanning)"
-		write_log "$log_entry"
-	fi
-	os_scan=""
+if [ "$debugging" -gt 0 ]; then
+	echo "Create File: $create_file"
+	echo "Discovery ID: $discovery_id"
+	echo "Force Ping: $force_ping"
+	echo "Log Level: $debugging"
+	echo "Nmap Binary: $nmap_path"
+	echo "Nmap Version: $nmap_full_version"
+	echo "Submit Online: $submit_online"
+	echo "Subnet Range: $subnet_range"
+	echo "Timing: $timing"
+	echo "URL: $url"
+	echo ""
 fi
 
 # Nmap command line switches explained
+# -n  == no name resolution
 # -PE == icmp echo
 # -PP == timestamp
 # -sP == ping scan
-# -PE == imcp echo
-# -PP == timestamp
-# -v  == verbose
 # -sn == ping scan only
-# -n  == no name resolution
+# -v  == verbose
 
-i=0
-j=0
+host_count=0
 hosts=""
 
-hosts_in_subnet=$(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
+hosts_in_subnet=$("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
 
 # removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
+host_count=0
 if [ "$force_ping" == "y" ]; then
-	for line in $(nmap -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+	for line in $("$nmap_path" -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
 		if [ "$debugging" -gt 0 ]; then
 			echo "$line"
 		fi
 		host=$(echo "$line" | cut -d" " -f5)
-		let "i = i + 1"
 		if [[ "$line" == *"[host down]"* ]]; then
 			if [[ "$log_no_response" == "y" ]]; then
 				log_entry="Non responsive ip address $host"
 				write_log "$log_entry"
 			fi
 		else
-			let "j = j + 1"
+			let "host_count = host_count + 1"
 			hosts="$hosts"$'\n'"$host"
 		fi
 	done
 else
-	for line in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
-		let "i = i + 1"
+	for line in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
+		let "host_count = host_count + 1"
 		hosts="$hosts"$'\n'"$line"
 	done
-
-	if [ "$debugging" -gt 0 ]; then
-		echo "Total ip addresses: $hosts_in_subnet"
-		echo "Total responding ip addresses: $i"
-	fi
 fi
 
-db_log "Starting discovery, scanning $hosts_in_subnet IP addresses" "" "start"
+if [ "$debugging" -gt 0 ]; then
+	echo "Total ip addresses: $hosts_in_subnet"
+	echo "Total responding ip addresses: $host_count"
+fi
+
+db_log "Scanning $hosts_in_subnet IP addresses" "" ""
 result_file=""
 result=""
 hosts_scanned=0
@@ -318,10 +272,6 @@ if [[ "$hosts" != "" ]]; then
 
 		mac_address=""
 		manufacturer=""
-		description=""
-		os_group=""
-		os_family=""
-		os_name=""
 		ssh_status="false"
 		wmi_status="false"
 		snmp_status="false"
@@ -333,18 +283,18 @@ if [[ "$hosts" != "" ]]; then
 
 		# options
 		# -vv Very Verbose
-		# -n Do not resolve IP to DNS name
-		# -O attempt to determine operating system ($os_scan)
-		# --host-timeout so we don't hang indefinitley
-		# -T3 set the timing (higher is faster) ($timing) default for the script is -T3
+		# -n  Do not resolve IP to DNS name
+		# -Pn Treat all hosts as online
+		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
 		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host"
-			echo "nmap -vv -n $os_scan -Pn --host_timeout 60 $timing $host 2>&1"
+			echo "Scanning Host: $host using the command \"nmap -vv -n -Pn $timing $host 2>&1\""
 		fi
+
 		nmap_tcp_timer_start=$(timer)
-		nmap_scan=$(nmap -vv -n "$os_scan" -Pn "$host_timeout" "$timing" "$host" 2>&1)
+		nmap_scan=$(nmap -vv -n -Pn "$timing" "$host" 2>&1)
+		nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
+
 		if [ "$debugging" -gt 0 ]; then
-			nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
 			echo "Nmap TCP scan time: $nmap_tcp_timer_end"
 			echo ""
 			echo "$nmap_scan"
@@ -355,90 +305,60 @@ if [[ "$hosts" != "" ]]; then
 
 			test=$(echo $line | grep "tcp.*open")
 			if [[ "$test" != "" ]]; then
+				host_is_up="true"
 				port=$(echo $line | awk '{print $1}')
 				program=$(echo $line | awk '{print $3}')
 				nmap_ports="$nmap_ports,$port/$program"
 			fi
 
-			NEEDLE="/tcp"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="open"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					host_is_up="true"
-				fi
-				NEEDLE="closed "
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					host_is_up="true"
-				fi
-			fi
-
-			NEEDLE="Host is up, received arp-response"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
+			test=$(echo $line | grep "tcp.*closed")
+			if [[ "$test" != "" ]]; then
 				host_is_up="true"
 			fi
 
-			NEEDLE="MAC Address:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
+			test=$(echo $line | grep "Host is up, received arp-response")
+			if [[ "$test" != "" ]]; then
+				host_is_up="true"
+			fi
+
+			test=$(echo $line | grep "MAC Address:")
+			if [[ "$test" != "" ]]; then
+				host_is_up="true"
 				mac_address=$(echo "$line" | cut -d" " -f3)
 				manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-				host_is_up="true"
 				if [ "$debugging" -gt 1 ]; then
 					echo "Host $host mac: $mac_address."
 				fi
 			fi
 
-			NEEDLE="Device type:"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="|"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					# could be one of multiple
-					description=$(echo "$line" | cut -d":" -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-					if [ "$debugging" -gt 1 ]; then
-						echo "Host $host description: $description."
-					fi
-				else
-					description=""
-				fi
+			# SSH check
+			test=$(echo $line | grep "22/tcp.*open")
+			if [[ "$test" != "" ]]; then
+				host_is_up="true"
+				ssh_status="true"
 			fi
 
-			# individual ports
-
-			NEEDLE="22/tcp"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="open"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					ssh_status="true"
-				fi
-			fi
-
-			NEEDLE="135/tcp"
-			if [[ "$line" == *"$NEEDLE"* ]]; then
-				NEEDLE="open"
-				if [[ "$line" == *"$NEEDLE"* ]]; then
-					wmi_status="true"
-				fi
+			# WMI check
+			test=$(echo $line | grep "135/tcp.*open")
+			if [[ "$test" != "" ]]; then
+				host_is_up="true"
+				wmi_status="true"
 			fi
 
 		done
 
-		# test for SNMP (separate scan as it's UDP)
+		# SNMP check
 		snmp_status="false"
 		nmap_udp_timer_start=$(timer)
-		command=$(nmap -n -sU -p161 "$timing" --host-timeout 20 "$host" 2>/dev/null | grep "161/udp open")
+		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open")
+		nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
 		if [ "$debugging" -gt 0 ]; then
-			nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
 			echo "Nmap UDP scan time: $nmap_udp_timer_end"
 		fi
-		if [[ "$command" == *"161/udp open"* ]]; then
+		if [[ "$test" != "" ]]; then
+			host_is_up="true"
 			snmp_status="true"
 			nmap_ports="$nmap_ports,161/udp/snmp"
-			if [ "$host_is_up" == "false" ] && [ "$debugging" -gt 1 ]; then
-				echo "SNMP only detected host $host is up."
-			fi
-			if [ "$debugging" -gt 1 ]; then
-				echo "Host $host SNMP status is true."
-			fi
-			host_is_up="true"
 		fi
 
 		result=""
@@ -449,7 +369,6 @@ if [[ "$hosts" != "" ]]; then
 			result="$result		<ip>$host</ip>"$'\n'
 			result="$result		<mac_address>$mac_address</mac_address>"$'\n'
 			result="$result		<manufacturer><![CDATA[$manufacturer]]></manufacturer>"$'\n'
-			#result="$result		<description><![CDATA[$description]]></description>"$'\n'
 			result="$result		<description></description>"$'\n'
 			result="$result		<org_id>$org_id</org_id>"$'\n'
 			result="$result		<snmp_status>$snmp_status</snmp_status>"$'\n'
@@ -462,7 +381,6 @@ if [[ "$hosts" != "" ]]; then
 				result="$result		<debug>false</debug>"$'\n'
 			fi
 			result="$result		<nmap_ports><![CDATA[$nmap_ports]]></nmap_ports>"$'\n'
-			#result="$result     <nmap_result><![CDATA[$nmap_result]]></nmap_result>"$'\n'
 			result="$result	</device>"
 			# add the result for this device to the result_file var for display or file output later on
 			result_file="$result_file"$'\n'"$result"
@@ -485,13 +403,11 @@ if [[ "$hosts" != "" ]]; then
 					db_log "Error when submitting discovery result (device). $send_result" "" "fail" "3"
 				fi
 			else
-				log_entry="IP $host responding."
-				write_log "$log_entry"
+				write_log "IP $host responding."
 				# Don't bother to update the db log table because we're not sending the result to it
 			fi
 		else
-			log_entry="IP $host not responding, ignoring."
-			write_log "$log_entry"
+			write_log "IP $host not responding, ignoring."
 			db_log "IP $host not responding, ignoring." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 		fi
 		result=""
