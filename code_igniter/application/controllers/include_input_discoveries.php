@@ -897,7 +897,7 @@ if (!empty($_POST['data'])) {
                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
                 if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                     # delete our no longer required local copy of the script
-                    $log->message = 'Attempt to copy audit script to ' . $details->ip . ' succeeded';
+                    $log->message = 'Attempt to copy audit script to ' . $device->ip . ' succeeded';
                     discovery_log($log);
                     if ($source_name != 'audit_windows.vbs') {
                         $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
