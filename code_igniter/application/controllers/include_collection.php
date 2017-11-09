@@ -27,9 +27,9 @@
 unset($this->response->data);
 $this->load->model('m_collection');
 
-if ($this->response->meta->collection === 'database' or
-    $this->response->meta->collection === 'roles' or
-    $this->response->meta->collection === 'summaries') {
+if ($this->response->meta->collection === 'database' or $this->response->meta->collection === 'roles' ) {
+    $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
+} else if ($this->response->meta->collection === 'summaries' and $this->response->meta->format == 'screen') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else {
     $this->response->data = $this->m_collection->collection($this->response->meta->collection);
