@@ -54,7 +54,7 @@
                 <tr>
                     <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></a></td>
                     <?php refine('roles.name', $item->attributes->name); ?>
-                    <?php refine('roles.description', $item->attributes->description); ?>
+                    <td><?php echo htmlspecialchars($item->attributes->description); ?></td>
                 </tr>
                 <?php endforeach; ?>
             </tbody>
