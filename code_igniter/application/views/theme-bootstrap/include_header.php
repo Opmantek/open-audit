@@ -40,6 +40,7 @@ if (!empty($this->config->config['servers'])) {
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials'><?php echo __('List Credentials'); ?></a></li>
                                         <?php if ($this->m_users->get_user_permission('', 'credentials', 'c')) { ?>
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/create'><?php echo __('Create Credentials'); ?></a></li>
+                                        <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/credentials/import'><?php echo __('Import Credentials from CSV'); ?></a></li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -58,6 +59,7 @@ if (!empty($this->config->config['servers'])) {
                                         <?php if ($this->m_users->get_user_permission('', 'discoveries', 'c')) { ?>
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create'><?php echo __('Create Discovery'); ?></a></li>
                                             <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/create?single=y'><?php echo __('Discover a single device'); ?></a></li>
+                                            <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/discoveries/import'><?php echo __('Import Discoveries from CSV'); ?></a></li>
                                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                                 <li class="disabled"><a href='#'><?php echo __('Configure Discoveries'); ?></a></li>
                                                 <li class="disabled"><a href='#'><?php echo __('Schedule Discoveries'); ?></a></li>
