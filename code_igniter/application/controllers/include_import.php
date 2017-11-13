@@ -86,6 +86,32 @@ foreach ($csv as $key => $value) {
             $test = $this->m_users->user_org($item->parent_id);
         }
 
+        if ($this->response->meta->collection == 'credentials') {
+            if (empty($item->credentials)) {
+                $item->credentials = new stdClass();
+                foreach ($item as $name => $value) {
+                    $attribute = explode('.', $name);
+                    if ($attribute[0] == 'credentials' and !empty($attribute[1]) and !empty($value)) {
+                        $item->credentials->{$attribute[1]} = $value;
+                        unset($item->{$name});
+                    }
+                }
+            }
+        }
+
+        if ($this->response->meta->collection == 'discoveries') {
+            if (empty($item->other)) {
+                $item->other = new stdClass();
+                foreach ($item as $name => $value) {
+                    $attribute = explode('.', $name);
+                    if ($attribute[0] == 'other' and !empty($attribute[1]) and !empty($value)) {
+                        $item->other->{$attribute[1]} = $value;
+                        unset($item->{$name});
+                    }
+                }
+            }
+        }
+
         if ($test === false) {
             $count_bad += 1;
         } else {
