@@ -290,7 +290,7 @@ class logon extends CI_Controller
         // get the license status from the OAE API
         // license status are: none, free, commercial
         $license = @file_get_contents($oae_license_url, false);
-        if ($license !== false) {
+        if (!empty($license) and $license !== false) {
             $license = json_decode($license);
             if (json_last_error()) {
                 $license = new stdClass();
@@ -344,7 +344,6 @@ class logon extends CI_Controller
         $url = str_replace('open-audit/', '', $oae_url);
         $installed = @json_decode(@file_get_contents($url . '.json'));
         # get the available application list from file
-        #$modules = @json_decode(@file_get_contents('/usr/local/open-audit/other/modules.json'));
         $modules = @json_decode(@file_get_contents(dirname(dirname(dirname(dirname(__FILE__)))).'/other/modules.json'));
         if (!empty($installed) and !empty($modules)) {
             foreach ($installed->products as $ins) {
@@ -374,5 +373,5 @@ class logon extends CI_Controller
         }
     }
 }
-// End of file input.php
-// Location: ./controllers/input.php
+// End of file logon.php
+// Location: ./controllers/logon.php
