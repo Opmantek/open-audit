@@ -55,13 +55,12 @@ switch ($this->response->meta->collection) {
         break;
 
     case "credentials":
-        $values = "'name','org_id','type' and 'credentials'";
-        $sample = ' <tr><td>"name","org_id","type","credentials"</td></tr>
-                    <tr><td>"Public SNMP","1","snmp","{\'community\',\'public\'}"</td></tr>
-                    <tr><td>"My SSH","1","ssh","{\'username\':\'my_user\',\'password\':\'my_password\'}"</td></tr>
-                    <tr><td>"Windows Creds","1","windows","{\'username\':\'my_user\',\'password\':\'my_password\',\'domain\':\'open-audit.com\'}"</td></tr>
-                    <tr><td>"SNMPv3 creds","1","snmpv3","{security_name:\'my sec name\',security_level:\'noAuthNoPriv\',authentication_protocol:\'MD5\',authentication_passphrase:\'my auth pass\',privacy_protocol:\'AES\',privacy_passphrase:\'my priv pass\'}"</td></tr>';
-        $extra = "The field 'credentials' is stored as an encrypted JSON object. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a credential set and then go to menu -> Admin -> Database and click on Credentials. Then export to CSV.";
+        $values = "'name','org_id','type' and credentials (see below).";
+        $sample = ' <tr><td>"name","org_id","type","credentials.community","credentials.username","credentials.password"</td></tr>
+                <tr><td>"Public SNMP","1","snmp","public","",""</td></tr>
+                <tr><td>"My SSH","1","ssh","","my_user","my_password"</td></tr>
+                <tr><td>"Windows Creds","1","windows","","my_win_user@open-audit.com","my_win_password"</td></tr>';
+        $extra = "The field 'credentials' is stored as an encrypted JSON object. You should use the field names of 'credentials.attribute name'. For an example, an SNMP community string would be 'credentials.community'.</p><p>For an example, use the web interface to create a credential set and then go to menu -> Admin -> Database and click on Discoveries. Then export to CSV.</p><p>Valid credentials attributes are: community, username, password, domain, ssh_key, authentication_passphrase, authentication_protocol, privacy_passphrase, privacy_protocol, security_level, security_name.";
         break;
 
     case "devices":
@@ -73,10 +72,10 @@ switch ($this->response->meta->collection) {
         break;
 
     case "discoveries":
-        $values = "'name','org_id','type','network_address' and 'other'";
-        $sample = '<tr><td>"name","org_id","network_address","subnet"</td></tr>
-                   <tr><td>"My Test Discovery","1","http://SERVER/open-audit/","192.168.1.1"</td></tr>';
-        $extra = "The field 'other' is stored as a JSON object. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a credential set and then go to menu -> Admin -> Database and click on Discoveries. Then export to CSV.";
+        $values = "'name','org_id','type','network_address' and 'other.subnet'";
+        $sample = '<tr><td>"name","org_id","type","network_address","other.subnet"</td></tr>
+                   <tr><td>"My Test Discovery","1","subnet","http://SERVER/open-audit/","192.168.1.1"</td></tr>';
+        $extra = "The field 'other' is stored as a JSON object. You should use the field names of 'other.attribute name'. For an example, subnet would be 'other.subnet'.</p><p>For an example, use the web interface to create a discovery and then go to menu -> Admin -> Database and click on Discoveries. Then export to CSV.</p><p>Valid 'other' attributes are subnet, ad_domain and ad_server.";
         break;
 
     case "fields":
@@ -137,13 +136,6 @@ switch ($this->response->meta->collection) {
         $sample = ' <tr><td>"name","org_id","sql"</td></tr>
                     <tr><td>"Linux Device Hardware","1","SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.memory_count AS `system.memory_count`, system.form_factor AS `system.form_factor`, processor.description AS `processor.description` FROM system LEFT JOIN processor ON (processor.system_id = system.id AND processor.current = \'y\') WHERE @filter AND system.os_group = \'Linux\' ORDER BY system.name"</td></tr>
                     <tr><td>"Hardware - Device","1","SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.manufacturer AS `system.manufacturer`, system.model AS `system.model`, system.serial AS `system.serial`, system.os_family AS `system.os_family`, system.asset_number AS `system.asset_number` FROM system WHERE @filter"</td></tr>';
-        break;
-
-    case "roles":
-        $values = "'name' and 'permissions'";
-        $sample = ' <tr><td>"name","description","permissions"</td></tr>
-                    <tr><td>"admin","This role can change global options.","{"attributes":"crud","baselines":"crud","configuration":"crud","database":"crud","errors":"r","groups":"crud","ldap_servers":"crud","logs":"crud","nmis":"crud","queries":"crud","roles":"crud","search":"crud","sessions":"crud","summaries":"crud"}"</td></tr>';
-        $extra = "The field 'permissions' is stored as a JSON object. You should use single quotes in the JSON (the import routine will convert them).</p><p>For an example, use the web interface to create a role and then go to menu -> Admin -> Database and click on Roles. Then export to CSV.";
         break;
 
     case "scripts":
