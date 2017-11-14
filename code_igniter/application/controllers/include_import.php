@@ -112,6 +112,16 @@ foreach ($csv as $key => $value) {
             }
         }
 
+        if ($this->response->meta->collection == 'roles') {
+            if (gettype($item->permissions) === 'string') {
+                $item->permissions = str_replace("'", '"', $item->permissions);
+                $item->permissions = @json_decode($item->permissions);
+            }
+            if (empty($item->permissions)) {
+                $test = false;
+            }
+        }
+
         if ($test === false) {
             $count_bad += 1;
         } else {
@@ -165,6 +175,7 @@ if ($count_bad === 0) {
 } else {
     $flash_status = 'danger';
 }
+
 $this->session->set_flashdata('success', '');
 $this->session->set_flashdata($flash_status, $flash_message);
 

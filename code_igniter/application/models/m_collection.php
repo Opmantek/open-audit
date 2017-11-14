@@ -451,13 +451,14 @@ class M_collection extends MY_Model
             if (empty($data->permissions)) {
                 $data->permissions = '';
             } else {
-                foreach ($data->permissions as $endpoint => $object) {
-                    $permissions->{$endpoint} = '';
-                    foreach ($object as $key => $value) {
-                        $permissions->{$endpoint} .= $key;
-                    }
-                }
-                $data->permissions = json_encode($permissions);
+                // foreach ($data->permissions as $endpoint => $object) {
+                    // $permissions->{$endpoint} = '';
+                    // foreach ($object as $key => $value) {
+                    //     $permissions->{$endpoint} .= $key;
+                    // }
+                // }
+                // $data->permissions = json_encode($permissions);
+                $data->permissions = json_encode($data->permissions);
             }
         }
 

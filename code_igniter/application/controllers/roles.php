@@ -166,7 +166,8 @@ class Roles extends MY_Controller
     */
     public function import_form()
     {
-        include 'include_import_form.php';
+        #include 'include_import_form.php';
+        redirect('roles');
     }
 
     /**
