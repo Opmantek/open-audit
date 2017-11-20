@@ -435,7 +435,7 @@ if (empty($data['mount_point'])) {
                                             $selected = "";
                                         }
                                         if (empty($item->name)) {
-                                            $item->name = ' ';
+                                            $item->name = '&nbsp;';
                                         }
                                         echo "                                    <option value=\"" . $item->value . "\"" . $selected . ">".__("$item->name")."</option>\n";
                                     }
@@ -792,7 +792,6 @@ if (empty($data['mount_point'])) {
 </div>
 
 </div>
-</div>
 
 
 <div id="custom_fields" class="section">
@@ -1053,7 +1052,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                                 $items = array('address','city','state','country');
                                 foreach ($items as $item) { ?>
                                     <div class="form-group">
-                                        <label for="<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
+                                        <label for="locations.<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
                                         <div class="col-sm-8 input-group">
                                             <input disabled type="text" class="form-control" placeholder="" id="locations.<?php echo $item; ?>" name="locations.<?php echo $item; ?>" value="<?php echo $location->$item ?>">
                                         </div>
@@ -1584,12 +1583,75 @@ foreach ($list as $item) {
 ?>
 
 
+        <div id="server" class="section">
+            <div class="panel panel-default">
+<?php
+            $database_keys = array('type', 'name', 'version', 'version_string', 'edition', 'status', 'ip', 'port');
+            $webserver_keys = array('type', 'name', 'version', 'version_string', 'status', 'port');
+            $db_item_keys = array('name', 'id_internal', 'instance', 'path', 'size');
+            $ws_item_keys = array('name', 'description', 'id_internal', 'ip', 'hostname', 'port', 'status', 'instance', 'path');
+            foreach ($data['server'] as $server) {
+                if ($server->type == 'database') {
+                    $server_keys = $database_keys;
+                    $item_keys = $db_item_keys;
+                } else if ($server->type == 'web') {
+                    $server_keys = $webserver_keys;
+                    $item_keys = $ws_item_keys;
+                }
+?>
+                <div class="panel-heading">
+                    <h3 class="panel-title pull-left"><?php echo ucfirst($server->type); ?> Server</h3>
+                    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="server"></span>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="panel-body">
+                    <?php foreach ($server_keys as $key) { ?>
+                    <div class="form-group">
+                        <?php if (!empty($server->{$key})) { ?>
+                       <label for="<?php echo $server->type . '_' . $key . '_' . $server->id; ?>" class="col-sm-4 control-label"><?php echo __(ucwords(str_replace('_', ' ', $key)))?></label>
+                        <div class="col-sm-7 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" id="<?php echo $server->type . '_' . $key . '_' . $server->id; ?>" name="<?php echo $server->type . '_' . $key . '_' . $server->id; ?>" value="<?php echo $server->{$key}; ?>">
+                        </div>
+                        <?php } ?>
+                    </div>
+                    <?php } ?>
+                    <div class="row col-md-10 col-md-offset-1">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                <?php foreach ($item_keys as $key) { ?>
+                                    <th><?php echo __(ucwords(str_replace('_', ' ', $key)))?></th>
+                                <?php } ?>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($data['server_item'] as $item) { ?>
+                                    <tr>
+                                        <?php foreach ($item_keys as $key) { ?>
+                                            <?php if ($item->parent_name == $server->name) { ?>
+                                            <td><?php echo htmlentities($item->{$key}); ?></td>
+                                            <?php } ?>
+                                        <?php } ?>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br />
+                <?php
+                }
+                ?>
+            </div>
+        </div>
+
 
 
 <?php
 // combo style displays
 if ($data['system']->type == 'computer') {
-    $list = array ('disk' => 'partition', 'network' => 'ip', 'server' => 'server_item');
+    #$list = array ('disk' => 'partition', 'network' => 'ip', 'server' => 'server_item');
+    $list = array ('disk' => 'partition', 'network' => 'ip');
     foreach ($list as $item => $sub_item) {
         if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -1610,7 +1672,7 @@ if ($data['system']->type == 'computer') {
                         $count = 0;
                         echo '<div class="col-md-6">';
                         foreach ($item_row as $key => $value) {
-                            if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded') {
+                            if ($key != 'id' and $key != 'server_id' and $key != 'parent_id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded') {
                                 $count++;
                                 $show_key = ucwords(str_replace('_', ' ', $key));
                                 if ($count == $row_attribute_count) {
@@ -1638,7 +1700,7 @@ if ($data['system']->type == 'computer') {
                                             echo "<th>Graph</th>\n";
                                         }
                                         foreach ($data[$sub_item][0] as $sub_key => $sub_value) {
-                                            if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
+                                            if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                 ?>
                                                 <th><?php echo ucwords(str_replace('_', ' ', $sub_key)); ?></th>
                                             <?php
@@ -1660,7 +1722,7 @@ if ($data['system']->type == 'computer') {
                                                         #echo '<td><a href="' . base_url() . 'index.php/main/disk_graph/' . $data['system']->id . '/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
                                                         echo '<td><a href="' . base_url() . 'index.php/devices/' . $data['system']->id . '/partition_graph/' . $sub_value . '" class="btn btn-default" role="button"><span class="glyphicon glyphicon-signal" aria-hidden="true"></span></a></td>';
                                                     }
-                                                    if ($sub_key != 'id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
+                                                    if ($sub_key != 'id' and $sub_key != 'server_id' and $sub_key != 'parent_id' and $sub_key != 'system_id' and $sub_key != 'current' and $sub_key != 'first_seen' and $sub_key != 'last_seen' and $sub_key != 'ip_padded') {
                                                         if (is_int($sub_value)) {
                                                             echo "<td>" . number_format($sub_value) . "</td>\n";
                                                         } else {
