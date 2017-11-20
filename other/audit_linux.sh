@@ -2158,7 +2158,6 @@ echo "	</software>" >> "$xml_file"
 if [ "$debugging" -gt "0" ]; then
 	echo "Service Info"
 fi
-
 echo "	<service>" >> "$xml_file"
 if hash systemctl 2>/dev/null; then
 	# systemD services
@@ -2270,42 +2269,171 @@ echo "	</service>" >> "$xml_file"
 ########################################################
 # SERVER SECTION                                       #
 ########################################################
-server=""
-name=""
-version=""
+if [ "$debugging" -gt "0" ]; then
+	echo "Server Info"
+fi
+
+echo "	<server>" >> "$xml_file"
 test=$(which apache2 2>/dev/null)
 if [ -n "$test" ]; then
-	name="apache2ctl"
-	version=$(apache2 -v | grep "Server version" | cut -d: -f2)
-	status=$(service apache2 status)
-	server=$server"		<item>"
-	server=$server"			<type>web</type>"
-	server=$server"			<name>Apache</name>"
-	server=$server"			<version>$(escape_xml "$version")</version>"
-	server=$server"			<status>$(escape_xml "$status")</status>"
-	server=$server"		</item>"
+	version=$(apache2 -v 2>/dev/null | grep "Server version" | cut -d: -f2 | cut -d/ -f2 | awk '{ print $1 }')
+	version_string=$(apache2 -v 2>/dev/null | grep "Server version" | cut -d: -f2)
+	apache_status=$(service apache2 status 2>/dev/null | grep Active | awk '{ print $2 }')
+	if [ -z "$apache_status" ]; then
+		apache_status=$(service apache2 status 2>/dev/null | head -n1)
+	fi
+	port=$(netstat -tulpn 2>/dev/null | grep apache | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	{
+	echo "		<item>"
+	echo "			<type>web</type>"
+	echo "			<name>Apache</name>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+	echo "			<status>$(escape_xml "$apache_status")</status>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "		</item>"
+	} >> "$xml_file"
 fi
 test=$(which httpd 2>/dev/null)
 if [ -n "$test" ]; then
-	name="httpd"
-	version=$(httpd -v | grep "Server version" | cut -d: -f2)
-	status=$(service httpd status)
-	server=$server"		<item>"
-	server=$server"			<type>web</type>"
-	server=$server"			<name>Apache</name>"
-	server=$server"			<version>$(escape_xml "$version")</version>"
-	server=$server"			<status>$(escape_xml "$status")</status>"
-	server=$server"		</item>"
+	version=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2 | cut -d/ -f2 | awk '{ print $1 }')
+	version_string=$(httpd -v 2>/dev/null | grep "Server version" | cut -d: -f2)
+	apache_status=$(service httpd status 2>/dev/null | grep Active | awk '{ print $2 }')
+	port=$(netstat -tulpn 2>/dev/null | grep httpd | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	{
+	echo "		<item>"
+	echo "			<type>web</type>"
+	echo "			<name>Apache</name>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+	echo "			<status>$(escape_xml "$apache_status")</status>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "		</item>"
+	} >> "$xml_file"
 fi
-if [ -n "$server" ]; then
-	echo "	<server>" >> "$xml_file"
-	echo "$server" >> "$xml_file"
-	echo "	</server>" >> "$xml_file"
+
+test=$(which mysql 2>/dev/null)
+if [ -n "$test" ]; then
+	version=$(mysql --version | awk '{ print $5 }' | cut -d, -f1)
+	version_string=$(mysql --version 2>/dev/null)
+	status=$(service mysql status 2>/dev/null | grep Active | awk '{ print $2 }')
+	if [ -z "$status" ]; then
+		status=$(service mysql status 2>/dev/null | grep Uptime | cut -d: -f2 2>/dev/null)
+		if [ -n "$status" ]; then
+			status="active"
+		fi
+	fi
+	port=$(netstat -tulpn 2>/dev/null | grep mysql | awk '{ print $4 }' | rev | cut -d: -f1 | rev | head -n1)
+	ip=$(netstat -tulpn 2>/dev/null | grep mysql | awk '{ print $4 }' | cut -d: -f1 | head -n1)
+	{
+	echo "		<item>"
+	echo "			<type>database</type>"
+	echo "			<name>MySQL</name>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<version_string>$(escape_xml "$version_string")</version_string>"
+	echo "			<status>$(escape_xml "$status")</status>"
+	echo "			<ip>$(escape_xml "$ip")</ip>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "		</item>"
+	} >> "$xml_file"
 fi
-# if [ -n "$name" ]; then
-# 	hosts=$( "$name" -S 2>/dev/null)
-# 	echo "$hosts"
-# fi
+echo "	</server>" >> "$xml_file"
+
+
+
+echo "	<server_item>" >> "$xml_file"
+if [ -e "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
+	datadir=$(grep datadir /etc/mysql/mysql.conf.d/mysqld.cnf 2>/dev/null | awk '{ print $3 }')
+	if [ -n "$datadir" ]; then
+		for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+			{
+			echo "		<item>"
+			echo "			<type>database</type>"
+			echo "			<parent_name>MySQL</parent_name>"
+			echo "			<name>$(escape_xml "$i")</name>"
+			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+			echo "			<instance>MySQL</instance>"
+			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+			echo "			<size>$(escape_xml "$size")</size>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	fi
+fi
+
+if [ -e "/etc/mysql/my.cnf" ]; then
+	datadir=$(grep datadir /etc/mysql/my.cnf 2>/dev/null | awk '{ print $3 }')
+	if [ -n "$datadir" ]; then
+		for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+			{
+			echo "		<item>"
+			echo "			<type>database</type>"
+			echo "			<parent_name>MySQL</parent_name>"
+			echo "			<name>$(escape_xml "$i")</name>"
+			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+			echo "			<instance>MySQL</instance>"
+			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+			echo "			<size>$(escape_xml "$size")</size>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	fi
+fi
+
+for i in $(apachectl -S 2>/dev/null  | grep port); do
+	if [ -n "$i" ]; then
+		name=$(echo "$i" | awk '{ print $4 }')
+		port=$(echo "$i" | awk '{ print $2 }')
+		config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
+		config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
+		path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+		{
+		echo "		<item>"
+		echo "			<type>website</type>"
+		echo "			<parent_name>Apache</parent_name>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<description></description>"
+		echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+		echo "			<ip></ip>"
+		echo "			<hostname>$(escape_xml "$name")</hostname>"
+		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<status>$(escape_xml "$apache_status")</status>"
+		echo "			<instance></instance>"
+		echo "			<path>$(escape_xml "$path")</path>"
+		echo "		</item>"
+		} >> "$xml_file"
+	fi
+done
+
+for i in $(apachectl -S 2>/dev/null  | grep "\*:[[:digit:]]*[[:space:]]" | grep -v NameVirtualHost); do
+	if [ -n "$i" ]; then
+		name=$(echo "$i" | awk '{ print $2 }')
+		port=$(echo "$i" | awk '{ print $1 }' | cut -d: -f2)
+		config_file=$(echo "$i" | cut -d\( -f2 | cut -d: -f1)
+		config_line=$(echo "$i" | cut -d\( -f2 | cut -d: -f2 | cut -d\) -f1)
+		path=$(tail --lines=+"$config_line" "$config_file" | grep -i documentroot | head -n1 | awk '{ print $2 }')
+		{
+		echo "		<item>"
+		echo "			<type>website</type>"
+		echo "			<parent_name>Apache</parent_name>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<description></description>"
+		echo "			<id_internal>$(escape_xml "$name")</id_internal>"
+		echo "			<ip></ip>"
+		echo "			<hostname>$(escape_xml "$name")</hostname>"
+		echo "			<port>$(escape_xml "$port")</port>"
+		echo "			<status>$(escape_xml "$apache_status")</status>"
+		echo "			<instance></instance>"
+		echo "			<path>$(escape_xml "$path")</path>"
+		echo "		</item>"
+		} >> "$xml_file"
+	fi
+done
+
+echo "	</server_item>" >> "$xml_file"
+
 
 
 ########################################################
