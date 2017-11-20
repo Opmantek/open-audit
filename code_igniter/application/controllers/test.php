@@ -86,6 +86,51 @@ class test extends CI_Controller
         echo "</pre>\n";        
     }
 
+    public function json_sql()
+    {
+        /*
+        DROP TABLE IF EXISTS `components`;
+        CREATE TABLE `components` (
+          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+          `system_id` int(10) unsigned DEFAULT NULL,
+          `current` enum('y','n') NOT NULL DEFAULT 'y',
+          `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+          `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+          `type` varchar(100) NOT NULL DEFAULT '',
+          `key` text NOT NULL,
+          `details` json NOT NULL,
+          PRIMARY KEY (`id`),
+          KEY `system_id` (`system_id`),
+          KEY `type` (`type`),
+          KEY `current` (`current`),
+          CONSTRAINT `component_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        */
+
+        $this->load->model('m_devices_components');
+        echo "<pre>\n";
+        $tables = array('bios', 'disk', 'dns', 'file', 'ip', 'log', 'memory', 'module', 'monitor', 'motherboard', 'netstat', 'network', 'nmap', 'optical', 'pagefile', 'partition', 'print_queue', 'processor', 'route', 'san', 'scsi', 'server', 'server_item', 'service', 'share', 'software', 'software_key', 'sound', 'task', 'user', 'user_group', 'variable', 'video', 'vm', 'windows');
+        foreach ($tables as $table) {
+            $sql = "SELECT CONCAT(\"'\", column_name, \"', `\", column_name, \"`\") as `string` FROM information_schema.columns WHERE  table_name = '$table' AND table_schema = 'openaudit' AND column_name NOT IN ('id', 'system_id', 'first_seen', 'last_seen', 'current')";
+            $columns = '';
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            foreach ($result as $item) {
+                $columns .= ',' . $item->string;
+            }
+            $columns = substr($columns, 1);
+            $match_columns = $this->m_devices_components->match_columns($table);
+            $match_columns_string = "`" . implode("`, '_', `", $match_columns) . "`";
+            $sql = "INSERT INTO `components` (SELECT NULL, system_id, current, first_seen, last_seen, '$table', CONCAT($match_columns_string), JSON_OBJECT($columns) FROM `$table`)";
+            echo $table . "\n\n" . $sql . "\n\n";
+            $item_start = microtime(true);
+            $query = $this->db->query($sql);
+            $time_to_execute = (microtime(true) - $item_start);
+            echo "Execute time: $time_to_execute \n\n\n\n";
+        }
+        echo "</pre>\n";
+    }
+
     public function db_compare()
     {
         $this->load->helper('diff');
