@@ -402,10 +402,8 @@ class devices extends MY_Controller
             if (!empty($this->response->meta->ids)) {
                 $ids = array_merge($ids, explode(',', $this->response->meta->ids));
             }
-            #print_r($ids); exit();
             $device_names = array();
             foreach ($ids as $id) {
-                #$this->response->data = $this->m_devices->read($this->response->meta->id);
                 $this->response->data = $this->m_devices->read($id);
                 $data = new stdClass();
                 $data->name = $this->response->data[0]->attributes->name;
