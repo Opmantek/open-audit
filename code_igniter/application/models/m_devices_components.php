@@ -525,7 +525,8 @@ class M_devices_components extends MY_Model
         if ((string)$table == 'server') {
             for ($i=0; $i<count($input->item); $i++) {
                 if (isset($input->item[$i]->version) and $input->item[$i]->version != '' and $input->item[$i]->type == 'database') {
-                    $input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
+                    #$input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
+                    $input->item[$i]->version_string = (string)$this->get_sql_server_version_string($input->item[$i]->version);
                 }
             }
         }
