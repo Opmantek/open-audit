@@ -35,7 +35,7 @@
  */
 
 $proto = 'http://';
-if ($this->config->config['is_ssl'] == 'true') {
+if ($this->config->config['is_ssl'] === true) {
     $proto = 'https://';
 }
 $network_address = '';
