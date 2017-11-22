@@ -86,6 +86,84 @@ class test extends CI_Controller
         echo "</pre>\n";        
     }
 
+    public function import_json_device()
+    {
+        if (empty($_POST['data'])) {
+            # call a form for input
+            $this->load->view('v_import_json_device');
+        }
+        if (!empty($_POST['data'])) {
+            echo "<pre>\n";
+            $json = @json_decode($_POST['data']);
+            echo "JSON errors";
+            switch (json_last_error()) {
+                case JSON_ERROR_NONE:
+                    echo ' - No errors';
+                break;
+                case JSON_ERROR_DEPTH:
+                    echo ' - Maximum stack depth exceeded';
+                break;
+                case JSON_ERROR_STATE_MISMATCH:
+                    echo ' - Underflow or the modes mismatch';
+                break;
+                case JSON_ERROR_CTRL_CHAR:
+                    echo ' - Unexpected control character found';
+                break;
+                case JSON_ERROR_SYNTAX:
+                    echo ' - Syntax error, malformed JSON';
+                break;
+                case JSON_ERROR_UTF8:
+                    echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+                break;
+                default:
+                    echo ' - Unknown error';
+                break;
+            }
+            echo PHP_EOL;
+
+                if ($json !== null) {
+                $sql = "";
+                # Remove or move a few manually derived items
+                unset($json->data[0]->attributes->id);
+                unset($json->data[0]->attributes->uptime_formatted);
+                unset($json->data[0]->attributes->collector_name);
+                if (!empty($json->data[0]->attributes->ip_padded)) {
+                    $json->data[0]->attributes->ip = $json->data[0]->attributes->ip_padded;
+                    unset($json->data[0]->attributes->ip_padded);
+                }
+                $data = $json->data[0]->attributes;
+                $sql = $this->db->insert_string('system', $data);
+                echo $sql . "\n\n";
+                $query = $this->db->query($sql);
+                $id = $this->db->insert_id();
+                echo "System ID: " . $id . "\n";
+                print_r($json->data[0]->attributes);
+
+                foreach ($json->included as $component) {
+                    if ($component->type != 'locations' and $component->type != 'location' and $component->type != 'purchase' and $component->type != 'orgs' and $component->type != 'fields' and $component->type != 'field') {
+                        if (!empty($component->attributes->ip_padded)) {
+                            $component->attributes->ip = $component->attributes->ip_padded;
+                            unset($component->attributes->ip_padded);
+                        }
+                        if (!empty($component->attributes->destination_padded)) {
+                            $component->attributes->destination = $component->attributes->destination_padded;
+                            unset($component->attributes->destination_padded);
+                        }
+                        if (!empty($component->attributes->next_hop_padded)) {
+                            $component->attributes->next_hop = $component->attributes->next_hop_padded;
+                            unset($component->attributes->next_hop_padded);
+                        }
+                        unset($component->attributes->id);
+                        $component->attributes->system_id = $id;
+                        $data = $component->attributes;
+                        $sql = $this->db->insert_string($component->type, $data);
+                        $query = $this->db->query($sql);
+                    }
+                }
+            }
+        }
+    }
+
     public function json_sql()
     {
         /*
