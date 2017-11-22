@@ -160,6 +160,7 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') == 'Darwin') {
+            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             if (!file_exists('/usr/local/bin/winexe')) {
                 $log->message = 'Winexe not installed on OSX, cannot run execute_windows.';
                 discovery_log($log);
@@ -169,13 +170,13 @@ if (! function_exists('execute_windows')) {
             $username = $temp[0];
             $domain = $temp[1];
             unset($temp);
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             $command_string = 'winexe -U ' . $domain . '/' . $username . '%' . $credentials->credentials->password . ' //' . $ip . ' \'' . $command . '\'';
             $log->command = 'winexe -U ' . $domain . '/' . $username . '%****** //' . $ip . ' \'' . $command . '\'';
             exec($command_string, $return['output'], $return['status']);
         }
 
         if (php_uname('s') == 'Linux') {
+            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
@@ -183,9 +184,17 @@ if (! function_exists('execute_windows')) {
             $username = $temp[0];
             $domain = $temp[1];
             unset($temp);
-            $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%".$password." --uninstall //".$ip." \"$command\" ";
-            $log->command = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%****** --uninstall //".$ip." \"$command\" ";
-            $echo = str_replace($password, '******', $command);
+            // $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%".$password." --uninstall //".$ip." \"$command\" ";
+            // $log->command = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%****** --uninstall //".$ip." \"$command\" ";
+            // $echo = str_replace($password, '******', $command);
+            // exec($command_string, $output, $return_var);
+            if ($domain != '') {
+                $domain .= '/';
+            }
+            $command_string = "screen -D -m timeout 5m ${filepath}/winexe-static -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
+            $log->message = 'Attempting to execute command';
+            $log->command = $command_string;
+            $command_string = str_replace('******', $password, $command_string);
             exec($command_string, $output, $return_var);
         }
 
@@ -277,7 +286,7 @@ if (! function_exists('copy_to_windows')) {
 
         if ($source == '') {
             $log->message = 'No source passed to wmi_helper::copy_to_windows';
-            discovery_log($log);
+            discovery_log($log);wmic /Node:"192.168.88.73" /user:hel\"normal_name" /password:"!@#$%%^^&*()""_+^\123abc" csproduct get uuid
             return false;
         }
 
@@ -477,6 +486,12 @@ if (! function_exists('wmi_command')) {
         }
 
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'Invalid IP supplied to wmi_helper::wmi_command';
+            discovery_log($log);
+            return false;
+        }
+
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No valid IP supplied to wmi_helper::wmi_command';
             discovery_log($log);
             return false;
@@ -490,6 +505,18 @@ if (! function_exists('wmi_command')) {
 
         if ($command == '') {
             $log->message = 'No command passed to wmi_helper::wmi_command';
+            discovery_log($log);
+            return false;
+        }
+
+        if (empty($credentials->credentials->username)) {
+            $log->message = 'Missing username passed to wmi_helper::wmi_command';
+            discovery_log($log);
+            return false;
+        }
+
+        if (empty($credentials->credentials->password)) {
+            $log->message = 'Missing password passed to wmi_helper::wmi_command';
             discovery_log($log);
             return false;
         }
@@ -521,46 +548,47 @@ if (! function_exists('wmi_command')) {
             return false;
         }
 
+        if (php_uname('s') == 'Darwin' and !file_exists('/usr/local/bin/winexe')) {
+            $log->message = 'Winexe not installed on OSX, cannot run wmi_command.';
+            discovery_log($log);
+            return false;
+        }
+
+
         if (php_uname('s') == 'Darwin') {
-            if (!file_exists('/usr/local/bin/winexe')) {
-                $log->message = 'Winexe not installed on OSX, cannot run wmi_command.';
-                discovery_log($log);
-                return false;
-            }
+            $command_string = "/usr/local/bin/winexe";
+        }
+        if (php_uname('s') == 'Linux') {
+            $command_string = "timeout 5m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static";
+        }
+        if (php_uname('s') == 'Darwin' or php_uname('s') == 'Linux') {
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
             $domain = $temp[1];
-            unset($temp);
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
-            $command_string = '/usr/local/bin/winexe -U ' . $domain . '/' . $username . '%' . $password . ' //' . $ip . ' \'wmic ' . $command . '\'';
-            $log->command = '/usr/local/bin/winexe -U ' . $domain . '/' . $username . '%****** //' . $ip . ' \'wmic ' . $command . '\'';
-            $log->message = "Attempting to execute command";
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-            exec($command_string, $return['output'], $return['status']);
-        }
-
-        if (php_uname('s') == 'Linux') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
             if ($domain != '') {
                 $domain .= '/';
             }
-            # $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".str_replace("'", "", escapeshellarg($username))."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
-            
-            #$command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.'/'.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
-            
-            $command_string = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.escapeshellarg($username)."%".str_replace("'", "", escapeshellarg($password))." --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
-            $log->command = 'timeout 5m ' . $filepath . "/winexe-static -U ".$domain.escapeshellarg($username)."%****** --uninstall //".str_replace("'", "", escapeshellarg($ip))." \"wmic $command\" ";
+            unset($temp);
+            $password = escapeshellarg($credentials->credentials->password);
+            $username = escapeshellarg(str_replace("'", "", $username));
+            $command_string .= " -U ".$domain.$username."%****** --uninstall //".$ip." \"wmic $command\" ";
+            $log->command   = $command_string;
             $log->message = "Attempting to execute command";
             $log->id = discovery_log($log);
             $item_start = microtime(true);
+            $command_string = str_replace("******", $password, $command_string);
             exec($command_string, $return['output'], $return['status']);
         }
 
         if (php_uname('s') == 'Windows NT') {
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
             if ($domain != '') {
                 $domain .= '\\';
             }
+            unset($temp);
+
             $command_string = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . str_replace('"', '\"', $password) . '" ' . $command;
             $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
             $log->message = "Attempting to execute command";
