@@ -895,7 +895,7 @@ if (!empty($_POST['data'])) {
             if (php_uname('s') != 'Windows NT') {
                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
-                if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
+                if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
                     # delete our no longer required local copy of the script
                     $log->message = 'Attempt to copy audit script to ' . $device->ip . ' succeeded';
                     discovery_log($log);
@@ -910,7 +910,7 @@ if (!empty($_POST['data'])) {
                         discovery_log($log);
                         $log->severity = 7;
                     }
-                    if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
+                    if (execute_windows($device->ip, $credentials_windows, $command, $log)) {
                         # All complete!
                     } else {
                         # run audit script failed
