@@ -95,8 +95,8 @@ $special['types'] .= '</select><span class="input-group-btn"><button id="edit_ty
 
 
 $special['nmis_export'] = '<div class="form-group"><label for="nmis_export" class="col-sm-4 control-label">NMIS Export</label><div class="col-sm-8 input-group"><select id="nmis_export" class="form-control" disabled><option value="" label=" "> </option>';
-$special['nmis_export'] .= "<option value='y'><?php echo __('Yes'); ?></option>";
-$special['nmis_export'] .= "<option value='n'><?php echo __('No'); ?></option>";
+$special['nmis_export'] .= "<option value='y'>" . __('Yes') . "</option>";
+$special['nmis_export'] .= "<option value='n'>" . __('No') . "</option>";
 $special['nmis_export'] .= '</select><span class="input-group-btn"><button id="edit_nmis_export" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_export"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
