@@ -395,7 +395,7 @@ for each host in hosts
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
         if instr(lcase(line), "161/udp") then
-            if instr(lcase(line), "open") then
+            if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
                 nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
                 host_is_up = "true"

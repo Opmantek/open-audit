@@ -350,7 +350,7 @@ if [[ "$hosts" != "" ]]; then
 		# SNMP check
 		snmp_status="false"
 		nmap_udp_timer_start=$(timer)
-		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open")
+		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open" | grep -v "filtered")
 		nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
 		if [ "$debugging" -gt 0 ]; then
 			echo "Nmap UDP scan time: $nmap_udp_timer_end"
