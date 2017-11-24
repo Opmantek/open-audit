@@ -80,10 +80,16 @@ if (! function_exists('windows_credentials')) {
         }
         foreach ($credentials as $credential) {
             if ($credential->type == 'windows') {
+
+            $log->file = 'wmi_helper';
+            $log->function = 'windows_credentials';
+            $log->message = 'Testing credential set ' . $credential->name;
+            discovery_log($log);
+
                 $command = 'csproduct get uuid';
                 $wmi_result = wmi_command($ip, $credential, $command, $log);
                 unset($log->command);
-                if ($wmi_result['status'] == 0) {
+                if ($wmi_result != false and $wmi_result['status'] == 0) {
                     $log->file = 'wmi_helper';
                     $log->function = 'windows_credentials';
                     $log->message = "Windows credentials complete. Credential set " . $credential->name . " working on " . $ip;
@@ -134,6 +140,7 @@ if (! function_exists('execute_windows')) {
 
         $log->file = 'wmi_helper';
         $log->function = 'execute_windows';
+        $log->command = '';
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::execute_windows';
@@ -207,9 +214,8 @@ if (! function_exists('execute_windows')) {
             } else {
                 $domain = '';
             }
-            $echo = str_replace($credentials->credentials->password, "******", $command);
-            $command_string = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ' . $credentials->credentials->password . ' cmd /c "' . $command . '"';
-            $log->command = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ****** cmd /c "' . $command . '"';
+            $command_string = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
+            $log->command = str_replace($credentials->credentials->password, '******', $command_string);
             exec($command_string, $output, $return_var);
         }
 
@@ -255,7 +261,6 @@ if (! function_exists('copy_to_windows')) {
      */
    function copy_to_windows($ip = '', $credentials, $share, $source = '', $destination, $log)
     {
-
         $log->file = 'wmi_helper';
         $log->function = 'copy_to_windows';
         $return = array('output' => '', 'status' => '');
@@ -286,7 +291,7 @@ if (! function_exists('copy_to_windows')) {
 
         if ($source == '') {
             $log->message = 'No source passed to wmi_helper::copy_to_windows';
-            discovery_log($log);wmic /Node:"192.168.88.73" /user:hel\"normal_name" /password:"!@#$%%^^&*()""_+^\123abc" csproduct get uuid
+            discovery_log($log);
             return false;
         }
 
@@ -417,6 +422,14 @@ if (! function_exists('copy_to_windows')) {
         }
 
         if (php_uname('s') == 'Windows NT') {
+            # Must have paexec
+            if (!file_exists('c:\\xampplite\\open-audit\\other\\paexec.exe')) {
+                $log->message = 'You must have paexec.exe in c:\\xampplite\\open-audit\\other\\';
+                $log->command = '';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                return false;
+            }
             # NOTE - the file to be copied MUST be in c:\windows\
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
@@ -426,9 +439,10 @@ if (! function_exists('copy_to_windows')) {
                 $domain = '';
             }
             unset($temp);
-            $command = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ' . $credentials->credentials->password . ' -c "c:\\windows\\' . $source . '"';
-            $log->command = 'c:\xampplite\open-audit\other\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p ****** -c "c:\\windows\\' . $source . '"';
-            $log->message = 'Copying file to Windows.';
+            $password = str_replace('"', '\"', $credentials->credentials->password);
+            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
+            $log->command = str_replace($password, '******', $command);
+            $log->message = 'Attempting to copy file to Windows.';
             discovery_log($log);
             exec($command, $output, $return_var);
             return true;
@@ -479,6 +493,9 @@ if (! function_exists('wmi_command')) {
         $log->function = 'wmi_command';
         $return = array('output' => '', 'status' => '');
 
+        $log->message = 'Using credentials name ' . $credentials->name;
+        discovery_log($log);
+
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::wmi_command';
             discovery_log($log);
@@ -527,34 +544,11 @@ if (! function_exists('wmi_command')) {
             $password = false;
         }
 
-        if (!empty($credentials->credentials->username)) {
-            $username = $credentials->credentials->username;
-            $temp = explode('@', $username);
-            $username = $temp[0];
-            if (count($temp) > 1) {
-                $domain = $temp[1];
-            } else {
-                $domain = '';
-            }
-            unset($temp);
-        } else {
-            $username = false;
-            $domain = false;
-        }
-
-        if (!$username or !$password) {
-            $log->message = 'Missing credentials passed to wmi_helper::wmi_command';
-            discovery_log($log);
-            return false;
-        }
-
         if (php_uname('s') == 'Darwin' and !file_exists('/usr/local/bin/winexe')) {
             $log->message = 'Winexe not installed on OSX, cannot run wmi_command.';
             discovery_log($log);
             return false;
         }
-
-
         if (php_uname('s') == 'Darwin') {
             $command_string = "/usr/local/bin/winexe";
         }
@@ -588,11 +582,30 @@ if (! function_exists('wmi_command')) {
                 $domain .= '\\';
             }
             unset($temp);
+            $password = $credentials->credentials->password;
+            # $ doesn't require escaping
+            # ' doesn't require escaping when using "password"
+            # " doesn't seem to work even when escaped using \"
+            $log->command = '';
+            $command_string = '';
+            if ((strpos($password, '"') !== false) and (strpos($password, "'") !== false)) {
+                $log->message = 'Incompatible password (cannot have " and \' together in a wmic password).';
+                discovery_log($log);
+                return false;
+            } else if (strpos($password, '"') !== false) {
+                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:\'******\' ' . $command;
+                $log->message = 'Password contains double quotes.';
+                discovery_log($log);
+            } else {
+                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
+                $log->message = 'Password contains single quotes.';
+                discovery_log($log);
+            }
 
-            $command_string = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"' . str_replace('"', '\"', $password) . '" ' . $command;
-            $log->command = '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
+            $log->command = $command_string;
             $log->message = "Attempting to execute command";
             $log->id = discovery_log($log);
+            $command_string = str_replace("******", $password, $command_string);
             $item_start = microtime(true);
             exec($command_string, $return['output'], $return['status']);
             if (empty($return['output'][0])) {

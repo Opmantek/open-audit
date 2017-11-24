@@ -669,38 +669,6 @@ if (!empty($_POST['data'])) {
             unset($found);
         }
 
-        // At as 2.0.8 - do NOT store device level credentials
-        
-        // if (!empty($credentials_snmp) and $input->snmp_status == 'true') {
-        //     $log->ip = $device->ip;
-        //     $log->discovery_id = $device->discovery_id;
-        //     $log->file = 'include_input_discoveries';
-        //     $log->function = 'discoveries';
-        //     $log->message = 'SNMP credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        //     discovery_log($log);
-        //     $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_snmp);
-        // }
-
-        // if (!empty($credentials_ssh) and $input->ssh_status == 'true') {
-        //     $log->ip = $device->ip;
-        //     $log->discovery_id = $device->discovery_id;
-        //     $log->file = 'include_input_discoveries';
-        //     $log->function = 'discoveries';
-        //     $log->message = 'SSH credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        //     discovery_log($log);
-        //     $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_ssh);
-        // }
-
-        // if (isset($credentials_windows) and $input->wmi_status == 'true') {
-        //     $log->ip = $device->ip;
-        //     $log->discovery_id = $device->discovery_id;
-        //     $log->file = 'include_input_discoveries';
-        //     $log->function = 'discoveries';
-        //     $log->message = 'Windows credential update for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        //     discovery_log($log);
-        //     $this->m_devices->sub_resource_create($device->id, 'credential', $credentials_windows);
-        // }
-
         // $device->id is now set
         if ($display == 'y') {
             echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
@@ -846,8 +814,10 @@ if (!empty($_POST['data'])) {
         if ($input->wmi_status == "true" and $credentials_windows) {
             $log->file = 'include_input_discoveries';
             $log->function = 'discoveries';
+            $log->command_time_to_execute = '';
             $log->message = 'Starting windows audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
+
             $share = '\\admin$';
             $destination = 'audit_windows.vbs';
             if ($display == 'y') {
@@ -895,9 +865,9 @@ if (!empty($_POST['data'])) {
             if (php_uname('s') != 'Windows NT') {
                 $source = $this->config->config['base_path'] . '/other/' . $source_name;
                 $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
-                if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
+                if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                     # delete our no longer required local copy of the script
-                    $log->message = 'Attempt to copy audit script to ' . $device->ip . ' succeeded';
+                    $log->message = 'Attempt to copy audit script to ' . $details->ip . ' succeeded';
                     discovery_log($log);
                     if ($source_name != 'audit_windows.vbs') {
                         $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
@@ -910,7 +880,7 @@ if (!empty($_POST['data'])) {
                         discovery_log($log);
                         $log->severity = 7;
                     }
-                    if (execute_windows($device->ip, $credentials_windows, $command, $log)) {
+                    if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
                         # All complete!
                     } else {
                         # run audit script failed
@@ -935,70 +905,103 @@ if (!empty($_POST['data'])) {
                     # We cannot copy the audit script to the target and then run it,
                     # We _must_ run the script locally and use $device->ip as the script target
                     # We will loose the ability to retrieve certain items like files, netstat, tasks, etc
-                    $log->file = 'input';
+                    $log->duration = '';
+                    $log->file = 'include_input_discoveries';
                     $log->function = 'discoveries';
                     $log->message = 'Windows audit is running as LocalSystem, not ideal for ' . $device->ip . ' (System ID ' . $device->id . ')';
                     $log->severity = 4;
                     discovery_log($log);
                     $log->severity = 7;
-                    $username = $credentials_windows->credentials->username;
-                    $temp = explode('@', $username);
-                    $username = $temp[0];
-                    if (count($temp) > 1) {
-                        $domain = $temp[1] . '\\';
+
+                    # cscript cannot parse an arguement containing a "
+                    if (strpos($credentials_windows->credentials->password, '"') !== false or 
+                        strpos($credentials_windows->credentials->username, '"') !== false) {
+                        $log->message = 'Incompatible credentials for audit script. Cannot use " (double quotes) in a wscript command line attribute.';
+                        $log->command_time_to_execute = '';
+                        $log->command_status = 'fail';
+                        $log->severity = 4;
+                        discovery_log($log);
+                        $log->command_status = '';
+                        $log->severity = 7;
                     } else {
-                        $domain = '';
-                    }
-                    unset($temp);
 
-                    if ($display == 'y') {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
-                        $command_string = "%comspec% /c start /b cscript //nologo ".$script_string;
+                        $username = $credentials_windows->credentials->username;
+                        $temp = explode('@', $username);
+                        $username = $temp[0];
+                        if (count($temp) > 1) {
+                            $domain = $temp[1] . '\\';
+                        } else {
+                            $domain = '';
+                        }
+                        unset($temp);
+
+                        $command_string = "%comspec% /c start /b cscript //nologo " . "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
+
+                        $log->command = str_replace($credentials_windows->credentials->password, '******', $command_string);
+                        $log->message = 'Attempting to run audit command (locally).';
+                        discovery_log($log);
+
+                        $command_start = microtime(true);
                         exec($command_string, $output, $return_var);
-                        $command_string = str_replace($credentials_windows->credentials->password, '******', $command_string);
-                        echo 'DEBUG - Command Executed: '.$command_string."\n";
-                        echo 'DEBUG - Return Value: '.$return_var."\n";
-                        echo "DEBUG - Command Output:\n";
-                        print_r($output);
+                        $command_end = microtime(true);
 
+                        if ($display == 'y') {
+                            echo 'DEBUG - Command Executed: '.$command_string."\n";
+                            echo 'DEBUG - Return Value: '.$return_var."\n";
+                            echo "DEBUG - Command Output:\n";
+                            print_r($output);
+                        }
+                        $log->command_time_to_execute = $command_end - $command_start;
+                        $log->command = '';
                         $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         if ($return_var != '0') {
                             $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             $log->severity = 4;
                         }
                         discovery_log($log);
+                        $log->command = '';
                         $log->severity = 7;
                         $output = null;
                         $return_var = null;
-                    } else {
-                        $script_string = "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=0  system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
-                        $command_string = "%comspec% /c start /b cscript //nologo ".$script_string." &";
-                        pclose(popen($command_string, "r"));
-                    }
-                    $command_string = null;
-                    if ($source_name != 'audit_windows.vbs') {
-                        $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
-                        try {
-                            unlink($this->config->config['base_path'] . '/other/' . $source_name);
-                        } catch (Exception $e) {
-                            $log->severity = 4;
-                            $log->message = 'Attempt to delete audit script ' . $source_name . ' failed';
+                        $command_string = null;
+
+                        if ($source_name != 'audit_windows.vbs') {
+                            $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
+                            $command_start = microtime(true);
+                            try {
+                                unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
+                            } catch (Exception $e) {
+                                $log->severity = 4;
+                                $log->message = 'Attempt to delete audit script ' . $source_name . ' failed';
+                            }
+                            $command_end = microtime(true);
+                            $log->command_time_to_execute = $command_end - $command_start;
+                            $log->command = 'unlink(\'' . $this->config->config['base_path'] . '\\other\\' . $source_name . '\');';
+                            discovery_log($log);
+                            $log->severity = 7;
+                            $log->command = '';
                         }
-                        discovery_log($log);
-                        $log->severity = 7;
                     }
                 } else {
                     # We are running as something other than the LocalSystem account.
                     # Therefore we _should_ be able to copy the audit script to the target and start it there
                     # and therefore retrieve ALL information
+                    $log->duration = '';
+                    $log->file = 'include_input_discoveries';
+                    $log->function = 'discoveries';
+                    $log->severity = 7;
+                    $log->message = 'Windows audit is not running as LocalSystem (good), for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                    discovery_log($log);
                     $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
                     rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
                     $source = 'audit_windows_' . $ts . '.vbs';
                     $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi discovery_id=".$discovery->id;
-                    if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
+
+                    if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
                             $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                            $log->command = '';
                             discovery_log($log);
-                        if (execute_windows($device->ip, $credentials_windows, $command, $display)) {
+                        if (execute_windows($device->ip, $credentials_windows, $command, $log)) {
                             # All complete!
                             $log->message = 'Run audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             discovery_log($log);
@@ -1303,11 +1306,7 @@ if (!empty($_POST['data'])) {
                 $log->severity = 7;
             }
         } // close the 'skip'
-        #if ($audit_script != '') {
-        #    $log->message = "Discovery has completed processing $device->ip (System ID $device->id) but an audit script result may be incoming.";
-        #} else {
-            $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
-        #}
+        $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
         discovery_log($log);
     }
 } else {
