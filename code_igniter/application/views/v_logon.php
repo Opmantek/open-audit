@@ -33,6 +33,8 @@
 * @version   2.0.11
 * @link      http://www.open-audit.org
  */
+header("Content-Security-Policy: frame-ancestors 'none'");
+header("X-Frame-Options: DENY");
 ?><!DOCTYPE html>
 <html lang="en">
     <meta name="viewport" content="width=device-width, initial-scale=1" />

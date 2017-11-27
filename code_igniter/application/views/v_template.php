@@ -33,7 +33,8 @@
 * @version   2.0.11
 * @link      http://www.open-audit.org
  */
-
+header("Content-Security-Policy: frame-ancestors 'none'");
+header("X-Frame-Options: DENY");
 if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $include != 'v_database_update' and $include != 'v_database_update_form') {
     redirect('database?action=update');
 }

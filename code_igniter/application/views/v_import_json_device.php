@@ -33,7 +33,8 @@
 * @version   2.0.11
 * @link      http://www.open-audit.org
  */
-
+header("Content-Security-Policy: frame-ancestors 'none'");
+header("X-Frame-Options: DENY");
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
