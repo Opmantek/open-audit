@@ -189,7 +189,7 @@ class logon extends CI_Controller
         if (empty($this->user->id)) {
             // user not validated
             if ($this->response->meta->format != 'json') {
-                redirect('summaries');
+                redirect('logon');
             } else {
                 log_error('ERR-0020', current_url());
                 header($this->response->meta->header);
@@ -197,6 +197,8 @@ class logon extends CI_Controller
                 print_r(json_encode($this->response->meta));
                 exit();
             }
+        } else {
+            $this->session->set_flashdata('error', '');
         }
 
         if ($this->config->config['internal_version'] < $this->config->config['web_internal_version'] and $this->response->meta->format == 'screen') {
