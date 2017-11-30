@@ -151,12 +151,12 @@ if ($table == 'collectors') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = 'Your description of this collector.';
     $dictionary->columns->ip = 'The IP address of this collector used to communicate with the server.';
-    $dictionary->columns->status = 'Unused as yet.';
+    $dictionary->columns->status = 'Unused.';
     $dictionary->columns->check_minutes = 'How often should the collector ask the server for a task.';
     $dictionary->columns->user_id = 'The <code>users.id</code> of the user account this collector uses.';
     $dictionary->columns->uuid = 'This collectors universally unique identifier.';
     $dictionary->columns->network_address = 'The collectors internal IP used when it runs a discovery.';
-    $dictionary->columns->options = 'Unused as yet.';
+    $dictionary->columns->options = 'Unused.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
@@ -252,6 +252,10 @@ if ($table == 'discoveries') {
     $dictionary->columns->subnet = 'The network subnet to execute the discovery on.';
     $dictionary->columns->ad_server = 'The Active Directory server to retrieve a list of subnets from.';
     $dictionary->columns->ad_domain = 'The Active Directory domain to retrieve a list of subnets from.';
+    $dictionary->columns->system_id = 'Used internally when discovering a single device.';
+    $dictionary->columns->device_count = 'The number of devices found by this discovery.';
+    $dictionary->columns->limit = 'The number of devices to limit this discovery to.';
+    $dictionary->columns->discard = 'Used internally when discovering a single device.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
@@ -348,13 +352,14 @@ if ($table == 'ldap_servers') {
     $dictionary->columns->domain = 'The regular domain notation of your LDAP. Eg - <code>open-audit.lan</code>.';
     $dictionary->columns->type = 'One of either <code>active directory</code> or <code>openldap</code>';
     $dictionary->columns->version = 'Default of <code>3</code>';
-    $dictionary->columns->base_dn = '';
+    $dictionary->columns->base_dn = 'The base path from which to search for Users.';
     $dictionary->columns->user_dn = 'Used by OpenLDAP only.';
     $dictionary->columns->user_membership_attribute = 'Used when searching OpenLDAP to match a user\'s uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
     $dictionary->columns->use_roles = 'Should we use this LDAP server to populate a users roles. Set to <code>y</code> or <code>n</code>.';
-    $dictionary->columns->dn_account = '';
+    $dictionary->columns->dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';
     $dictionary->columns->dn_password = 'The password for the dn_account attribute.';
-    $dictionary->columns->refresh = 'Not currently used. Default of 24.';
+    $dictionary->columns->refresh = 'Unused. Default of 24.';
+    $dictionary->columns->refreshed = 'Unused.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }
@@ -456,6 +461,7 @@ An example query SQL showing attributes on devices that have an <code>os_group</
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = $description;
     $dictionary->columns->sql = 'Your SQL to select attributes that will populate this query.';
+    $dictionary->columns->link = 'Unused.';
     $dictionary->columns->menu_display = 'Should we expose this query in the list of reports under the "Reports" menu in the web interface.';
     $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
     $dictionary->columns->edited_by = $edited_by;
@@ -592,7 +598,7 @@ Create individual discovery schedules for each subnet or AD controller, add in r
     $dictionary->columns->day_of_week = 'The day of the week when this task should execute (* for every day).';
     $dictionary->columns->delay_minutes = 'Delay the start of this task by X minutes (not currently implemented).';
     $dictionary->columns->expire_minutes = 'Do not run for longer than X minutes (not currently implemented).';
-    $dictionary->columns->first_run = 'The timestamp after which, this task should run. IE - Run a task after the 1st June 2017 at 10am, set it to "2017-06-01 09:59:00". This value should be zero padded (ie, 09, not 9). This value defaults to "2001-01-01 00:00:00" which means by default, a scheduled task will run at next scheduled execution time.';
+    $dictionary->columns->first_run = 'The timestamp after which, this task should run.<br />IE - Run a task after the 1st June 2017 at 10am, set it to "2017-06-01 09:59:00".<br />This value should be zero padded (ie, 09, not 9).<br />This value defaults to "2001-01-01 00:00:00" which means by default, a scheduled task will run at next scheduled execution time.';
     $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
@@ -615,12 +621,14 @@ if ($table == 'users') {
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->password = 'A hashed password that enables logon when using application authentication.';
-    $dictionary->columns->full_name = '';
-    $dictionary->columns->email = '';
+    $dictionary->columns->full_name = 'The complete first name, last name fo this user.';
+    $dictionary->columns->email = 'The users email address.';
     $dictionary->columns->lang = 'The language to translate the web interface into for the user.';
     $dictionary->columns->active = 'Is this account active? If set to "n", the user cannot logon.';
     $dictionary->columns->roles = 'A JSON document containing the roles assigned to this user. Role names taken from <code>roles.name</code>.';
     $dictionary->columns->orgs = 'A JSON document containing the Orgs assigned to this user. IDs taken from <code>orgs.id</code>.';
+    $dictionary->columns->ldap = 'The LDAP OU of this user (if LDAP is used).';
+    $dictionary->columns->type = 'Only \'user\' and \'collector\' are used at present.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 }

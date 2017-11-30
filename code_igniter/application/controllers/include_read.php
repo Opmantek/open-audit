@@ -63,6 +63,12 @@ if ($this->response->meta->collection == 'credentials') {
 
 # database
 if ($this->response->meta->collection == 'database') {
+    if ($this->response->meta->format == 'screen') {
+        $table = $this->response->meta->id;
+        include 'include_dictionary.php';
+        $this->response->dictionary = $dictionary;
+        unset($dictionary);
+    }
 }
 
 # discoveries
