@@ -65,7 +65,12 @@
                     <div class="form-group">
                         <label for="data[attributes][resource]" class="col-sm-3 control-label"><?php echo __('Resource'); ?></label>
                         <div class="col-sm-8 input-group">
-                             <input type="text" class="form-control" id="data[attributes][resource]" name="data[attributes][resource]" value="devices" readonly>
+                            <select class="form-control" id="data[attributes][resource]" name="data[attributes][resource]">
+                                <option value="" label=" "></option>
+                                <option value="devices"><?php echo __('Devices'); ?></option>
+                                <option value="locations"><?php echo __('Locations'); ?></option>
+                                <option value="queries"><?php echo __('Queries'); ?></option>
+                            </select>
                         </div>
                     </div>
 
@@ -73,10 +78,6 @@
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][type]" name="data[attributes][type]">
-                                <option value="device_class"><?php echo __('Class'); ?></option>
-                                <option value="device_environment"><?php echo __('Environment'); ?></option>
-                                <option value="device_status"><?php echo __('Status'); ?></option>
-                                <option value="device_type"><?php echo __('Type'); ?></option>
                             </select>
                         </div>
                     </div>

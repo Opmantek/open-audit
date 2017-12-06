@@ -62,11 +62,6 @@ $item = $this->response->data[0];
                                     }
                                 } ?>
                                 </select>
-                                <?php if (!empty($edit)) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                                </span>
-                                <?php } ?>
                         </div>
                     </div>
 
@@ -85,12 +80,9 @@ $item = $this->response->data[0];
                                 <option value="device_environment"<?php if ($item->attributes->type == 'device_environment') { echo " selected"; } ?>><?php echo __('Environment'); ?></option>
                                 <option value="device_status"<?php if ($item->attributes->type == 'device_status') { echo " selected"; } ?>><?php echo __('Status'); ?></option>
                                 <option value="device_type"<?php if ($item->attributes->type == 'device_type') { echo " selected"; } ?>><?php echo __('Type'); ?></option>
+                                <option value="type"<?php if ($item->attributes->type == 'type') { echo " selected"; } ?>><?php echo __('Type'); ?></option>
+                                <option value="menu_category"<?php if ($item->attributes->type == 'menu_category') { echo " selected"; } ?>><?php echo __('Menu Category'); ?></option>
                             </select>
-                            <?php if (!empty($edit)) { ?>
-                            <span class="input-group-btn">
-                                <button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
-                            </span>
-                            <?php } ?>
                         </div>
                     </div>
 

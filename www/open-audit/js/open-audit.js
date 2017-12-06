@@ -354,3 +354,23 @@ $(document).ready(function () {
         $('#json_response').css('display', 'block');
     })
 });
+
+
+/* attributes create */
+$(document).ready(function () {
+    $(document).on('change', "#data\\[attributes\\]\\[resource\\]", function () {
+        $("#data\\[attributes\\]\\[type\\]").children().remove();
+        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'devices') {
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_class', text: 'Class' }));
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_environmant', text: 'Environment' }));
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_status', text: 'Status' }));
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_type', text: 'Type' }));
+        }
+        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'locations') {
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'type', text: 'Type' }));
+        }
+        if ($("#data\\[attributes\\]\\[resource\\]").val() == 'queries') {
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'menu_category', text: 'Menu Category' }));
+        }
+    });
+});
