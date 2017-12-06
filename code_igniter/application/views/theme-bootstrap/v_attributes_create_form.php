@@ -83,14 +83,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
+                        <label for="data[attributes][name]" class="col-sm-3 control-label"><?php echo __('Name'); ?> (display)</label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][name]" name="data[attributes][name]">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="data[attributes][value]" class="col-sm-3 control-label"><?php echo __('Value'); ?></label>
+                        <label for="data[attributes][value]" class="col-sm-3 control-label"><?php echo __('Value'); ?> (store)</label>
                         <div class="col-sm-8 input-group">
                              <input type="text" class="form-control" id="data[attributes][value]" name="data[attributes][value]">
                         </div>

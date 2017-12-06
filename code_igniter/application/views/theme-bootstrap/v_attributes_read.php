@@ -61,7 +61,12 @@ $item = $this->response->data[0];
                                 <?php
                                     }
                                 } ?>
-                                </select>
+                            </select>
+                            <?php if (!empty($edit)) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
 
@@ -87,7 +92,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?></label>
+                        <label for="name" class="col-sm-3 control-label"><?php echo __('Name'); ?> (display)</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="name" name="name" value="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
@@ -99,7 +104,7 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="value" class="col-sm-3 control-label"><?php echo __('Value'); ?></label>
+                        <label for="value" class="col-sm-3 control-label"><?php echo __('Value'); ?> (store)</label>
                         <div class="col-sm-8 input-group">
                             <input type="text" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>

@@ -48,7 +48,7 @@
                     <th><?php echo __('Resource')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Name (display)')?></th>
-                    <th><?php echo __('Value (stored)')?></th>
+                    <th><?php echo __('Value (store)')?></th>
                     <?php if ($this->m_users->get_user_permission('', 'attributes', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
