@@ -99,5 +99,8 @@
         </div>
     </div>
 
-
-
+<?php
+if ($this->config->config['rss_enable'] == 'y') {
+    include "include_newsfeed.php";
+}
+?>
