@@ -118,8 +118,6 @@ if ($this->response->meta->collection == 'orgs') {
 
 # queries
 if ($this->response->meta->collection == 'queries') {
-        $this->load->model('m_attributes');
-        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
 }
 
 # scripts

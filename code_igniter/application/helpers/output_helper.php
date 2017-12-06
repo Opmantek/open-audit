@@ -411,6 +411,9 @@ if (! function_exists('output')) {
             $CI->response->included = array_merge($CI->response->included, $result);
         }
 
+        $CI->load->model('m_attributes');
+        $CI->response->included = array_merge($CI->response->included, $CI->m_attributes->collection());
+
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
             $CI->response->include = 'v_error';
