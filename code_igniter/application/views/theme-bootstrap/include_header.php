@@ -365,7 +365,7 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <li>
-                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="../images/logo-opmaps.png" alt=""/></a>
+                        <a title="Maps" href="/omk/open-audit/map"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-opmaps.png" alt=""/></a>
                     </li>
 
                     <?php
@@ -376,11 +376,11 @@ if (!empty($this->config->config['servers'])) {
                     }
                     ?>
                     <li>
-                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="../images/logo-nmis.png" alt=""/></a>
+                        <a title="NMIS" href="<?php echo $link; ?>"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png" alt=""/></a>
                     </li>
 
                     <li>
-                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="../images/oae_sml.png" alt=""/></a>
+                        <a title="Enterprise" href="/omk/open-audit/"><img style="width:22px;" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/oae_sml.png" alt=""/></a>
                     </li>
 
                     <li class="dropdown">
