@@ -254,15 +254,16 @@ INSERT INTO `attributes` VALUES (148,1,'locations','type','TV Station','TV Stati
 INSERT INTO `attributes` VALUES (149,1,'locations','type','University','University','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (150,1,'locations','type','Warehouse','Warehouse','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (151,1,'locations','type','Workshop','Workshop','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (152,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (153,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (154,1,'queries','menu_category','Hardware','Hardware','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (155,1,'queries','menu_category','Network','Network','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (156,1,'queries','menu_category','Other','Other','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (157,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (158,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (159,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (160,1,'queries','menu_category','','','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (152,1,'queries','menu_category','','','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (153,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (154,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (155,1,'queries','menu_category','Discovery','Discovery','system','2000-01-01 00:00:00')
+INSERT INTO `attributes` VALUES (156,1,'queries','menu_category','Hardware','Hardware','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (157,1,'queries','menu_category','Network','Network','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (158,1,'queries','menu_category','Other','Other','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (159,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (160,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (161,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
