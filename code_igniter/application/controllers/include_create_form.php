@@ -66,6 +66,11 @@ if ($collection == 'fields') {
         $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
 }
 
+if ($collection == 'queries') {
+        $this->load->model('m_attributes');
+        $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
 if ($collection == 'scripts') {
         $this->load->model('m_files');
         $this->response->included = array_merge($this->response->included, $this->m_files->collection());
