@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script>
 
     <?php if (($include == 'v_summaries_collection' or $include == 'v_groups_collection') and $this->config->config['oae_prompt'] <= date('Y-m-d') and ($this->config->config['oae_license'] != 'commercial')) { ?>
     // Wait until the DOM has loaded before querying the document
