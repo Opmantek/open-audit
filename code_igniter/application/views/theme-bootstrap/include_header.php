@@ -127,18 +127,21 @@ if (!empty($this->config->config['servers'])) {
                             $reports[] = $item;
                         }
                     }
-                    function my_comparison($a, $b) {
-                        return strcmp($a->name, $b->name);
+                    function my_comparison($asort, $bsort) {
+                        return strcmp($asort->name, $bsort->name);
                     }
                     usort($reports, 'my_comparison');
                     ?>
 
                     <!-- The Report menu -->
-                    <?php $categories = array('Change','Device','Discovery','Hardware','Network','Server','Software','User'); ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Report'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <?php foreach ($categories as $category) { ?>
+                            <?php
+                            foreach ($this->response->included as $item) {
+                                if ($item->type == 'attributes' and $item->attributes->resource == 'queries' and $item->attributes->type == 'menu_category' and $item->attributes->value != '') {
+                                    $category = $item->attributes->value;
+                            ?>
                             <li class="dropdown-submenu">
                                 <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
                                     <a><?php echo $category ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
@@ -158,15 +161,15 @@ if (!empty($this->config->config['servers'])) {
                                         } else {
                                             $link = '<li><a href="' . $this->config->config['oa_web_index'] . '/' . $item->{'type'} . '/' . $item->{'id'} . '/execute">';
                                         }
-                                    ?>
-                                        <?php echo $link; ?><?php echo $item->{'attributes'}->{'name'} ?></a></li>
-                                    <?php } ?>
-                                <?php } ?>
-                                <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
-                                <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/reports'><?php echo __('Learn About Reports'); ?></a></li>
-                                <?php } ?>
+                                        echo $link . $item->{'attributes'}->{'name'} . "</a></li>\n";
+                                    }
+                                }
+                                if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') {
+                                    echo "<li><a style=\"color: #337ab7;\" href=\"" . $this->config->config['oae_url'] . "/features/reports\">" . __('Learn About Reports') . "</a></li>\n";
+                                } ?>
                                 </ul>
                             </li>
+                            <?php } ?>
                             <?php } ?>
                             <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                 <li><a href="#"><?php echo __('Schedule Reports'); ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a></li>
