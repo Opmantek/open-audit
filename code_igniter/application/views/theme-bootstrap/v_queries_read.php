@@ -101,17 +101,6 @@ $item = $this->response->data[0];
                                     }
                                 }
                                 ?>
-                                <!--
-                                <option value="" label=" "<?php if ($item->attributes->menu_category == '') { echo " selected"; } ?>><?php echo __('Change'); ?></option>
-                                <option value="Change"<?php if ($item->attributes->menu_category == 'Change') { echo " selected"; } ?>><?php echo __('Change'); ?></option>
-                                <option value="Device"<?php if ($item->attributes->menu_category == 'Device') { echo " selected"; } ?>><?php echo __('Device'); ?></option>
-                                <option value="Hardware"<?php if ($item->attributes->menu_category == 'Hardware') { echo " selected"; } ?>><?php echo __('Hardware'); ?></option>
-                                <option value="Network"<?php if ($item->attributes->menu_category == 'Network') { echo " selected"; } ?>><?php echo __('Network'); ?></option>
-                                <option value="Other"<?php if ($item->attributes->menu_category == 'Other') { echo " selected"; } ?>><?php echo __('Other'); ?></option>
-                                <option value="Server"<?php if ($item->attributes->menu_category == 'Server') { echo " selected"; } ?>><?php echo __('Server'); ?></option>
-                                <option value="Software"<?php if ($item->attributes->menu_category == 'Software') { echo " selected"; } ?>><?php echo __('Software'); ?></option>
-                                <option value="User"<?php if ($item->attributes->menu_category == 'User') { echo " selected"; } ?>><?php echo __('User'); ?></option>
-                                -->
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
