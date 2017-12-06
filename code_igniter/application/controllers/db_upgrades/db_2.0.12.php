@@ -29,6 +29,8 @@
 
 $this->log_db('Upgrade database to 2.0.12 commenced');
 
+$this->alter_table('queries', 'menu_category', "`menu_category` varchar(200) NOT NULL DEFAULT 'Devices'");
+
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','','','system','2000-01-01 00:00:00')";
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00')";
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00')";

@@ -2040,7 +2040,7 @@ CREATE TABLE `queries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `menu_category` enum('Change','Device','Hardware','Network','Other','Server','Software','User','') NOT NULL DEFAULT '',
+  `menu_category` varchar(200) NOT NULL DEFAULT 'Devices'
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
   `description` text NOT NULL,
   `sql` text NOT NULL,
