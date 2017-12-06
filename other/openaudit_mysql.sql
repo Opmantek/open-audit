@@ -254,6 +254,15 @@ INSERT INTO `attributes` VALUES (148,1,'locations','type','TV Station','TV Stati
 INSERT INTO `attributes` VALUES (149,1,'locations','type','University','University','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (150,1,'locations','type','Warehouse','Warehouse','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (151,1,'locations','type','Workshop','Workshop','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (152,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (153,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (154,1,'queries','menu_category','Hardware','Hardware','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (155,1,'queries','menu_category','Network','Network','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (156,1,'queries','menu_category','Other','Other','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (157,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (158,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (159,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (160,1,'queries','menu_category','','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -485,11 +494,11 @@ INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700'
 INSERT INTO `configuration` VALUES (8,'discovery_nmap_os','n','bool','y','system','2000-01-01 00:00:00','When discovery runs Nmap, should we use the -O flag to capture OS information (will slow down scan and requires SUID on the Nmap binary under Linux).');
 INSERT INTO `configuration` VALUES (9,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (10,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (11,'display_version','2.0.11','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (11,'display_version','2.0.12','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (12,'download_reports','download','text','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (13,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (14,'homepage','groups','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (15,'internal_version','20171025','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (15,'internal_version','20171130','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (17,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (18,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
 INSERT INTO `configuration` VALUES (19,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
