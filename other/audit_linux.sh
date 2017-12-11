@@ -1891,6 +1891,42 @@ else
 	echo "	</disk>" >> "$xml_file"
 fi
 
+##################################
+# Docker Machines                #
+##################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Docker Info"
+fi
+PREVIFS=$IFS
+IFS="$NEWLINEIFS";
+vm_result=""
+for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/null); do
+	vm_ident=$(echo "$line" | awk '{print $1}')
+	name=$(echo "$line" | awk '{print $2}')
+	status=$(echo "$line" | awk '{print $3}')
+	uuid=""
+	if [ "$status" = "Up" ]; then
+		uuid=$(docker exec "$vm_ident" cat /sys/class/dmi/id/product_uuid)
+		if [ -z "$uuid" ]; then
+			uuid-$(docker exec "$vm_ident" cat /sys/devices/virtual/dmi/id/product_uuid)
+		fi
+	fi
+	vm_result=$vm_result"
+		<item>
+			<vm_ident>$(escape_xml "$vm_ident")</vm_ident>
+			<name>$(escape_xml "$name")</name>
+			<status>$(escape_xml "$status")</status>
+			<uuid>$(escape_xml "$uuid")</uuid>
+			<type>docker</typw>
+		</item>"
+done
+if [ -n "$vm_result" ]; then
+	{
+	echo "	<vm>$vm_result"
+	echo "	</vm>"
+	} >> "$xml_file"
+fi
+IFS=$PREVIFS
 
 ##################################
 # NFS MOUNTS SECTION             #
