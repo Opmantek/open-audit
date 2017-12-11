@@ -556,6 +556,9 @@ class M_devices_components extends MY_Model
                 if (!isset($vm->icon)) {
                     $vm->icon = '';
                 }
+                if (empty($vm->vm_ident) and !empty($vm->vm_id)) {
+                    $vm->vm_ident = $vm->vm_id;
+                }
                 if (!isset($vm->uuid) or $vm->uuid == '') {
                     $vm->uuid = '';
                 } else {
