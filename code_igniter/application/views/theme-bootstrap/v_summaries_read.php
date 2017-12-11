@@ -83,18 +83,24 @@ $item = $this->response->data[0];
                     </div>
 
                     <div class="form-group">
-                        <label for="menu_category" class="col-sm-3 control-label">Menu Category</label>
+                        <label for="menu_category" class="col-sm-3 control-label"><?php echo __('Menu Category'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="menu_category" name="menu_category" disabled>
-                                <option value="" label=" "<?php if ($item->attributes->menu_category == '') { echo " selected"; } ?>><?php echo __('Change'); ?></option>
-                                <option value="Change"<?php if ($item->attributes->menu_category == 'Change') { echo " selected"; } ?>><?php echo __('Change'); ?></option>
-                                <option value="Device"<?php if ($item->attributes->menu_category == 'Device') { echo " selected"; } ?>><?php echo __('Device'); ?></option>
-                                <option value="Hardware"<?php if ($item->attributes->menu_category == 'Hardware') { echo " selected"; } ?>><?php echo __('Hardware'); ?></option>
-                                <option value="Network"<?php if ($item->attributes->menu_category == 'Network') { echo " selected"; } ?>><?php echo __('Network'); ?></option>
-                                <option value="Other"<?php if ($item->attributes->menu_category == 'Other') { echo " selected"; } ?>><?php echo __('Other'); ?></option>
-                                <option value="Server"<?php if ($item->attributes->menu_category == 'Server') { echo " selected"; } ?>><?php echo __('Server'); ?></option>
-                                <option value="Software"<?php if ($item->attributes->menu_category == 'Software') { echo " selected"; } ?>><?php echo __('Software'); ?></option>
-                                <option value="User"<?php if ($item->attributes->menu_category == 'User') { echo " selected"; } ?>><?php echo __('User'); ?></option>
+                                <?php
+                                foreach ($this->response->included as $attribute) {
+                                    if ($attribute->type == 'attributes' and $attribute->attributes->resource == 'queries' and $attribute->attributes->type == 'menu_category') {
+                                        $selected = '';
+                                        if ($attribute->attributes->name == $item->attributes->menu_category) {
+                                            $selected = ' selected';
+                                        }
+                                        $label = $attribute->attributes->name;
+                                        if (empty($label)) {
+                                            $label = ' ';
+                                        }
+                                        echo "                                <option $selected label=\"$label\" value=\"" . $attribute->attributes->name . "\">" . $attribute->attributes->value . "</option>\n";
+                                    }
+                                }
+                                ?>
                             </select>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">

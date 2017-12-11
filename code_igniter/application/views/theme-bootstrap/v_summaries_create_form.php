@@ -73,14 +73,21 @@
                         <label for="data[attributes][menu_category]" class="col-sm-3 control-label"><?php echo __('Menu Category'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][menu_category]" name="data[attributes][menu_category]">
-                                <option value="" label=" "></option>
-                                <option value="Change"><?php echo __('Change'); ?></option>
-                                <option value="Device"><?php echo __('Device'); ?></option>
-                                <option value="Hardware"><?php echo __('Hardware'); ?></option>
-                                <option value="Network"><?php echo __('Network'); ?></option>
-                                <option value="Server"><?php echo __('Server'); ?></option>
-                                <option value="Software"><?php echo __('Software'); ?></option>
-                                <option value="User"><?php echo __('User'); ?></option>
+                                <?php
+                                foreach ($this->response->included as $item) {
+                                    if ($item->type == 'attributes' and $item->attributes->resource == 'queries' and $item->attributes->type == 'menu_category') {
+                                        $selected = '';
+                                        if ($item->attributes->name == '') {
+                                            $selected = ' selected';
+                                        }
+                                        $label = $item->attributes->name;
+                                        if (empty($label)) {
+                                            $label = ' ';
+                                        }
+                                        echo "                                <option $selected label=\"$label\" value=\"" . $item->attributes->name . "\">" . $item->attributes->value . "</option>\n";
+                                    }
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
