@@ -69,6 +69,10 @@ $this->log_db($this->db->last_query());
 $this->alter_table('vm', 'vm_id', "`vm_ident` varchar(50) NOT NULL DEFAULT ''");
 $this->alter_table('vm', 'type', "ADD type varchar(50) NOT NULL DEFAULT '' AFTER `vm_ident`", 'add');
 
+$sql = "UPDATE `vm` SET `type` = 'esx' WHERE type = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20171130' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
