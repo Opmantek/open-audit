@@ -275,6 +275,61 @@ class M_collection extends MY_Model
                         } else {
                             $result[$i]->sub_resource_name = '';
                         }
+                    } else if ($result[$i]->type == 'reports') {
+                        $result[$i]->sub_resource_name = "";
+                        // switch ($result[$i]->sub_resource_id) {
+                        //     case '10000':
+                        //         $result[$i]->sub_resource_name = "Devices Discovered Today";
+                        //         break;
+                            
+                        //     case '10001':
+                        //         $result[$i]->sub_resource_name = "Devices Discovered Yesterday";
+                        //         break;
+                            
+                        //     case '10002':
+                        //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 7 Days";
+                        //         break;
+                            
+                        //     case '10003':
+                        //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 30 Days";
+                        //         break;
+                            
+                        //     case '20000':
+                        //         $result[$i]->sub_resource_name = "Software Discovered Today";
+                        //         break;
+                            
+                        //     case '20001':
+                        //         $result[$i]->sub_resource_name = "Software Discovered Yesterday";
+                        //         break;
+                            
+                        //     case '20002':
+                        //         $result[$i]->sub_resource_name = "Software Discovered in the Last 7 Days";
+                        //         break;
+                            
+                        //     case '20003':
+                        //         $result[$i]->sub_resource_name = "Software Discovered in the Last 30 Days";
+                        //         break;
+                            
+                        //     case '30000':
+                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 7 Days";
+                        //         break;
+                            
+                        //     case '30001':
+                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 30 Days";
+                        //         break;
+                            
+                        //     case '30002':
+                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 90 Days";
+                        //         break;
+                            
+                        //     case '30003':
+                        //         $result[$i]->sub_resource_name = "Devices Not Seen for 180 Days";
+                        //         break;
+                            
+                        //     default:
+                        //         $result[$i]->sub_resource_name = "";
+                        //         break;
+                        // }
                     } else {
                         $result[$i]->sub_resource_name = '';
                     }

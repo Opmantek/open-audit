@@ -56,6 +56,23 @@ class M_tasks extends MY_Model
         $sql = "SELECT * FROM `tasks` WHERE `id` = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
+
+        if ($result !== false) {
+            for ($i=0; $i < count($result); $i++) {
+                if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries') {
+                    $sql = "SELECT name AS `name` FROM `" . $result[$i]->type . "` WHERE id = ?";
+                    $data = array($result[$i]->sub_resource_id);
+                    $data_result = $this->run_sql($sql, $data);
+                    if (!empty($data_result[0]->name)) {
+                        $result[$i]->sub_resource_name = $data_result[0]->name;
+                    } else {
+                        $result[$i]->sub_resource_name = '';
+                    }
+                } else if ($result[$i]->type == 'reports') {
+                    $result[$i]->sub_resource_name = "";
+                }
+            }
+        }
         $result = $this->format_data($result, 'tasks');
         return ($result);
     }
