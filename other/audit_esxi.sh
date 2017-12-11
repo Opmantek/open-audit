@@ -529,20 +529,20 @@ if [ "$debugging" -gt "0" ]; then
 fi
 echo "	<vm>" >> $xml_file
 for vm in $(vim-cmd vmsvc/getallvms | grep -v ^Vmid | sed 's/ \+/ /g'); do
-	vm_id=$(echo "$vm" | cut -d" " -f1)
-	#if [ "$vm_id" =~ ^?[0-9]+$ ]; then
-	if expr "$vm_id" : '[0-9]\+$' >/dev/null
+	vm_ident=$(echo "$vm" | cut -d" " -f1)
+	#if [ "$vm_ident" =~ ^?[0-9]+$ ]; then
+	if expr "$vm_ident" : '[0-9]\+$' >/dev/null
 		then
 		vm_name=$(echo "$vm" | cut -d" " -f2)
-		vm_uuid=$(vim-cmd vmsvc/get.config $vm_id | grep uuid | cut -d= -f2- | sed 's/ "//' | sed 's/", //')
-		vm_memory=$(vim-cmd vmsvc/get.summary $vm_id | grep memorySizeMB | cut -d= -f2 | sed 's/ //g' | sed 's/,//')
-		vm_cpu=$(vim-cmd vmsvc/get.summary $vm_id | grep numCpu | cut -d= -f2 | sed 's/ //g' | sed 's/,//')
-		vm_status=$(vim-cmd vmsvc/get.summary $vm_id | grep powerState | cut -d= -f2 | sed 's/ "//' | sed 's/", //')
+		vm_uuid=$(vim-cmd vmsvc/get.config $vm_ident | grep uuid | cut -d= -f2- | sed 's/ "//' | sed 's/", //')
+		vm_memory=$(vim-cmd vmsvc/get.summary $vm_ident | grep memorySizeMB | cut -d= -f2 | sed 's/ //g' | sed 's/,//')
+		vm_cpu=$(vim-cmd vmsvc/get.summary $vm_ident | grep numCpu | cut -d= -f2 | sed 's/ //g' | sed 's/,//')
+		vm_status=$(vim-cmd vmsvc/get.summary $vm_ident | grep powerState | cut -d= -f2 | sed 's/ "//' | sed 's/", //')
 		vm_config_file=$(echo "$vm" | cut -d" " -f4)
-		temp_dir=$(vim-cmd vmsvc/get.config $vm_id | grep datastoreUrl -A5 | grep url | cut -d= -f2- | sed 's/ "//' | sed 's/", //')
+		temp_dir=$(vim-cmd vmsvc/get.config $vm_ident | grep datastoreUrl -A5 | grep url | cut -d= -f2- | sed 's/ "//' | sed 's/", //')
 		vm_config_file=$(echo "$temp_dir$vm_config_file")
 		echo "		<item>" >> $xml_file
-		echo "			<vm_id>"$(escape_xml "$vm_id")"</vm_id>" >> $xml_file
+		echo "			<vm_ident>"$(escape_xml "$vm_ident")"</vm_ident>" >> $xml_file
 		echo "			<name>"$(escape_xml "$vm_name")"</name>" >> $xml_file
 		echo "			<uuid>"$(escape_xml "$vm_uuid")"</uuid>" >> $xml_file
 		echo "			<memory_count>"$(escape_xml "$vm_memory")"</memory_count>" >> $xml_file
@@ -550,6 +550,7 @@ for vm in $(vim-cmd vmsvc/getallvms | grep -v ^Vmid | sed 's/ \+/ /g'); do
 		echo "			<status>"$(escape_xml "$vm_status")"</status>" >> $xml_file
 		echo "			<config_file>"$(escape_xml "$vm_config_file")"</config_file>" >> $xml_file
 		echo "			<vm_group></vm_group>" >> $xml_file
+		echo "			<type>esx</type>" >> $xml_file
 		echo "		</item>" >> $xml_file
 	fi
 done
