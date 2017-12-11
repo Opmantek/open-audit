@@ -65,6 +65,10 @@ $sql = "INSERT INTO `attributes` VALUES (NULL,1,'queries','menu_category','User'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# VMs
+$this->alter_table('vm', 'vm_id', "`vm_ident` varchar(50) NOT NULL DEFAULT ''");
+$this->alter_table('vm', 'type', "ADD type varchar(50) NOT NULL DEFAULT '' AFTER `vm_ident`", 'add');
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20171130' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
