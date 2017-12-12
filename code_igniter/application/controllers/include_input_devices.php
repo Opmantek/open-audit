@@ -333,7 +333,11 @@ if (!empty($details->discovery_id)) {
 
 $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
 
-$this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen);
+$script_version = '';
+if (!empty($details->script_version)) {
+    $script_version = $details->script_version;
+}
+$this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen, $script_version);
 
 foreach ($json as $key => $value) {
     if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {

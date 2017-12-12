@@ -43,7 +43,7 @@ class M_audit_log extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($system_id, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '')
+    public function create($system_id, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version)
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';
@@ -58,8 +58,11 @@ class M_audit_log extends MY_Model
         if ($timestamp == '') {
             $timestamp = $this->config->config['timestamp'];
         }
-        $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $data = array($system_id, "$username", "$type", "$ip_address", "$debug", "$wmi_fails", "$timestamp");
+        if (empty($version)) {
+            $version = $this->config->config['display_version'];
+        }
+        $sql = "INSERT INTO audit_log (`system_id`, `username`, `type`, `ip`, `debug`, `wmi_fails`, `timestamp`, `version`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $data = array($system_id, "$username", "$type", "$ip_address", "$debug", "$wmi_fails", "$timestamp", "$version");
         $this->run_sql($sql, $data);
     }
 
