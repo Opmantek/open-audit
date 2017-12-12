@@ -1917,7 +1917,7 @@ for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/nu
 			<name>$(escape_xml "$name")</name>
 			<status>$(escape_xml "$status")</status>
 			<uuid>$(escape_xml "$uuid")</uuid>
-			<type>docker</typw>
+			<type>docker</type>
 		</item>"
 done
 if [ -n "$vm_result" ]; then
@@ -2381,8 +2381,8 @@ echo "	<server_item>" >> "$xml_file"
 if [ -e "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
 	datadir=$(grep datadir /etc/mysql/mysql.conf.d/mysqld.cnf 2>/dev/null | awk '{ print $3 }')
 	if [ -n "$datadir" ]; then
-		for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
-			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+		for i in $(find "$datadir" -type d 2>/dev/null | rev | cut -d/ -f1 | rev); do
+			size=$(ls -lk "$datadir"/"$i" 2>/dev/null | awk '{ total += $5 }; END { print total/1024/1024 }')
 			{
 			echo "		<item>"
 			echo "			<type>database</type>"
