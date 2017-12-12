@@ -1905,12 +1905,13 @@ for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/nu
 	name=$(echo "$line" | awk '{print $2}')
 	status=$(echo "$line" | awk '{print $3}')
 	uuid=""
-	if [ "$status" = "Up" ]; then
-		uuid=$(docker exec "$vm_ident" cat /sys/class/dmi/id/product_uuid)
-		if [ -z "$uuid" ]; then
-			uuid-$(docker exec "$vm_ident" cat /sys/devices/virtual/dmi/id/product_uuid)
-		fi
-	fi
+	# Cannot use the below as the containers UUID is the same as the docker hosts UUID.
+	# if [ "$status" = "Up" ]; then
+	# 	uuid=$(docker exec "$vm_ident" cat /sys/class/dmi/id/product_uuid)
+	# 	if [ -z "$uuid" ]; then
+	# 		uuid-$(docker exec "$vm_ident" cat /sys/devices/virtual/dmi/id/product_uuid)
+	# 	fi
+	# fi
 	vm_result=$vm_result"
 		<item>
 			<vm_ident>$(escape_xml "$vm_ident")</vm_ident>
