@@ -283,6 +283,7 @@ CREATE TABLE `audit_log` (
   `debug` text NOT NULL,
   `wmi_fails` text NOT NULL,
   `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `version` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   CONSTRAINT `audit_log_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
