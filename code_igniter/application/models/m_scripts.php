@@ -215,7 +215,11 @@ class M_scripts extends MY_Model
             $options->url == 'http://localhost/open-audit/index.php/system/add_system' or 
             $options->url == 'http://localhost/open-audit/index.php/input/devices') {
             # inject our default network address
-            $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/input/devices';
+            if (!empty($CI->config->item('default_network_address'))) {
+                $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/input/devices';
+            } else {
+                unset($options->url);
+            }
         }
 
         $find = 'Configuration from web UI here';
@@ -243,6 +247,7 @@ class M_scripts extends MY_Model
             if (isset($options->files) and is_array($options->files) and count($options->files) > 0) {
                 foreach (array_reverse($options->files) as $key => $value) {
                     if ($data->based_on != 'audit_windows.vbs') {
+                        $value = str_replace('\\', '\\\\', $value);
                         $replace = $find . "\nfiles[".intval($key+1)."]=\"" . $value . "\"";
                     } else {
                         $replace = $find . "\nfiles(".intval($key+1).")=\"" . $value . "\"";
