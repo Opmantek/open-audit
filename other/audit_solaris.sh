@@ -58,7 +58,7 @@ create_file="n"
 discovery_id=""
 
 # the address of the Open-AudIT server "submit" page
-url="http://localhost/open-audit/index.php/discovery/process_subnet"
+url="http://localhost/open-audit/index.php/input/devices"
 
 # optional - assign any PCs audited to this Org - take the org_id from Open-AudIT interface
 org_id=""
@@ -73,7 +73,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="2.0.11"
+version="2.0.12"
 
 # Display help
 help="n"

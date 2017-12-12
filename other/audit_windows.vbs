@@ -102,8 +102,8 @@ self_delete = "n"
 ' 3 = very verbose debug
 debugging = "1"
 
-' Version
-version = "2.0.11"
+' Version - NOTE, special formatted so we match the *nix scripts and can do find/replace
+version="2.0.12"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
