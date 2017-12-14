@@ -146,9 +146,9 @@ if (empty($data['mount_point'])) {
                 <?php if ($data['system']->type != 'computer' and ! empty($data['module'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/module.svg"/><a href="#" data-menuitem="module"><?php echo __('Module'); ?></a></li>
                 <?php } ?>
-                <?php if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) { ?>
-                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Phone'); ?></a></li>
-                <?php } ?>
+                <?php #if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) { ?>
+                   <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Cellular Details'); ?></a></li>
+                <?php #} ?>
 
                 <?php if (isset($data['nmap'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
@@ -791,8 +791,9 @@ if (empty($data['mount_point'])) {
     </div>
 </div>
 
+<!--
 </div>
-
+-->
 
 <div id="custom_fields" class="section">
     <div class="panel panel-default">
@@ -866,13 +867,12 @@ foreach ($list as $item) {
 ?>
 
 <?php
-if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) {
-    $items = "service_number,service_provider,service_plan,service_network,unlock_pin,serial_imei,serial_sim"
+    $items = "service_number,service_provider,service_plan,service_network,unlock_pin,serial_imei,serial_sim";
 ?>
     <div id="phone" class="section">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left"><?php echo __('Phone'); ?></h3>
+                <h3 class="panel-title pull-left"><?php echo __('Cellular Details'); ?></h3>
                 <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="phone"></span>
                 <div class="clearfix"></div>
             </div>
@@ -882,7 +882,7 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                     <div class="col-sm-8 input-group">
                         <select class="form-control" id="service_type" name="service_type" disabled>
                             <option value=""<?php if ($data['system']->{'service_type'} == '') {
-                                echo ' selected'; } ?>> </option>
+                                echo ' selected'; } ?> label=" "> </option>
                             <option value="voice"<?php if ($data['system']->{'service_type'} == 'voice') {
                                 echo ' selected'; } ?>>Voice Only</option>
                             <option value="data"<?php if ($data['system']->{'service_type'} == 'data') {
@@ -910,9 +910,6 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
             </div>
         </div>
     </div>
-<?php
-}
-?>
 
 
     <div id="opmantek" class="section">
@@ -1051,114 +1048,107 @@ if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']
                             if ($location->id == $data['system']->location_id) {
                                 $items = array('address','city','state','country');
                                 foreach ($items as $item) { ?>
-                                    <div class="form-group">
-                                        <label for="locations.<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
-                                        <div class="col-sm-8 input-group">
-                                            <input disabled type="text" class="form-control" placeholder="" id="locations.<?php echo $item; ?>" name="locations.<?php echo $item; ?>" value="<?php echo $location->$item ?>">
-                                        </div>
-                                    </div>
+                    <div class="form-group">
+                        <label for="locations.<?php echo $item; ?>" class="col-sm-4 control-label"><?php echo ucfirst($item); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" id="locations.<?php echo $item; ?>" name="locations.<?php echo $item; ?>" value="<?php echo $location->$item ?>">
+                        </div>
+                    </div>
                                 <?php
                                 }
                             }
                         }
                     } else { ?>
-                        <div class="form-group">
-                            <label for="<?php echo $item; ?>" class="col-sm-4 control-label">Location</label>
-                            <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" value="No locations present (create a location and assign to an Org).">
-                            </div>
+                    <div class="form-group">
+                        <label for="<?php echo $item; ?>" class="col-sm-4 control-label">Location</label>
+                        <div class="col-sm-8 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" value="No locations present (create a location and assign to an Org).">
                         </div>
+                    </div>
                     <?php } ?>
                 </div>
 
-
-
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="owner" class="col-sm-4 control-label"><?php echo __('Owner'); ?></label>
-                            <div class="col-sm-7 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="owner" name="owner" value="<?php echo $data['system']->owner; ?>">
-                                <?php if ($edit) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
-                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                    </button>
-                                </span>
-                                <?php } ?>
-                            </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="owner" class="col-sm-4 control-label"><?php echo __('Owner'); ?></label>
+                        <div class="col-sm-7 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" id="owner" name="owner" value="<?php echo $data['system']->owner; ?>">
+                            <?php if ($edit) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_owner" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="owner">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                            <?php } ?>
                         </div>
-                        <div class="form-group">
-                            <label for="org_id" class="col-sm-4 control-label"><?php echo __('Organisation') ?></label>
-                            <div class="col-sm-7 input-group">
-                                <select id="org_id" class="form-control" disabled><?php
-                                foreach ($data['orgs'] as $org) {
-                                    if ($org->id == $data['system']->org_id) {
-                                        echo '                                    <option value="' . $org->id . '" selected>' . $org->name . '</option>';
-                                    } else {
-                                        echo '                                    <option value="' . $org->id . '">' . $org->name . '</option>';
-                                    }
+                    </div>
+                    <div class="form-group">
+                        <label for="org_id" class="col-sm-4 control-label"><?php echo __('Organisation') ?></label>
+                        <div class="col-sm-7 input-group">
+                            <select id="org_id" class="form-control" disabled><?php
+                            foreach ($data['orgs'] as $org) {
+                                if ($org->id == $data['system']->org_id) {
+                                    echo '                                    <option value="' . $org->id . '" selected>' . $org->name . '</option>';
+                                } else {
+                                    echo '                                    <option value="' . $org->id . '">' . $org->name . '</option>';
                                 }
-                                ?>
-                                </select>
-                                <?php if ($edit) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id">
-                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                    </button>
-                                </span>
-                                <?php } ?>
-                            </div>
+                            }
+                            ?>
+                            </select>
+                            <?php if ($edit) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="row">
-                    <br />
-                    <div class="col-md-6">
-                        <?php
-                        $items = array('location_level','location_suite','location_room','location_rack_position','location_latitude','location_longitude');
-                        foreach ($items as $item) {
-                        ?>
-                        <div class="form-group">
-                            <label for="<?php echo $item ?>" class="col-sm-4 control-label">Device Specific <?php echo ucwords(str_replace('_', ' ', str_replace('location_', '', $item))); ?></label>
-                            <div class="col-sm-8 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item} ?>">
-                                <?php if ($edit) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_<?php echo $item ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item ?>">
-                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                    </button>
-                                </span>
-                                <?php } ?>
-                            </div>
+            <div class="row">
+                <br />
+                <div class="col-md-6">
+                    <?php
+                    $items = array('location_level','location_suite','location_room','location_rack_position','location_latitude','location_longitude');
+                    foreach ($items as $item) {
+                    ?>
+                    <div class="form-group">
+                        <label for="<?php echo $item ?>" class="col-sm-4 control-label">Device Specific <?php echo ucwords(str_replace('_', ' ', str_replace('location_', '', $item))); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item} ?>">
+                            <?php if ($edit) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_<?php echo $item ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item ?>">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                            <?php } ?>
                         </div>
-                        <?php } ?>
                     </div>
-                    <div class="col-md-6">
-                        <?php
-                        $items = array('switch_system_id','switch_port','patch_panel','wall_port');
-                        foreach ($items as $item) {
-                        ?>
-                        <div class="form-group">
-                            <label for="<?php echo $item ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
-                            <div class="col-sm-7 input-group">
-                                <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item}; ?>">
-                                <?php if ($edit) { ?>
-                                <span class="input-group-btn">
-                                    <button id="edit_<?php echo $item ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item ?>">
-                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                    </button>
-                                </span>
-                                <?php } ?>
-                            </div>
-                        </div>
-                        <?php } ?>
-                    </div>
+                    <?php } ?>
                 </div>
-
-
-
+                <div class="col-md-6">
+                    <?php
+                    $items = array('switch_system_id','switch_port','patch_panel','wall_port');
+                    foreach ($items as $item) {
+                    ?>
+                    <div class="form-group">
+                        <label for="<?php echo $item ?>" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', $item)); ?></label>
+                        <div class="col-sm-7 input-group">
+                            <input disabled type="text" class="form-control" placeholder="" id="<?php echo $item ?>" name="<?php echo $item ?>" value="<?php echo $data['system']->{$item}; ?>">
+                            <?php if ($edit) { ?>
+                            <span class="input-group-btn">
+                                <button id="edit_<?php echo $item ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $item ?>">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </button>
+                            </span>
+                            <?php } ?>
+                        </div>
+                    </div>
+                    <?php } ?>
+                </div>
             </div>
         </div>
     </div>
@@ -1340,14 +1330,14 @@ if (!empty($data['software'])) {
 <?php } ?>
 
 
-        <div id="attachment" class="section">
-            <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title pull-left"><?php echo __('Attachments'); ?></h3>
-            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="attachment"></span>
-            <div class="clearfix"></div>
-          </div>
-              <div class="panel-body">
+    <div id="attachment" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left"><?php echo __('Attachments'); ?></h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="attachment"></span>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
                 <?php if (isset($data['attachment']) and count($data['attachment']) > 0) { ?>
                 <table class="table">
                     <thead>
@@ -1391,9 +1381,9 @@ if (!empty($data['software'])) {
                     </tbody>
                 </table>
                 <?php } ?>
-              </div>
             </div>
         </div>
+    </div>
 
 
 
