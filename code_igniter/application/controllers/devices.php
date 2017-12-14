@@ -157,8 +157,9 @@ class devices extends MY_Controller
             if (isset($this->response->data[0]->attributes->location_id)) {
                 $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             }
-            $this->load->model('m_collection');
-            $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
+            # Below removed as now included in output_helper
+            #$this->load->model('m_collection');
+            #$this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         } else {
             // return only the details of the linked org and location
             if (isset($this->response->data[0]->attributes->org_id)) {
