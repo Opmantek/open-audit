@@ -375,7 +375,7 @@ class MY_Model extends CI_Model
             if (!empty($CI->response->meta->limit)) {
                 $limit = 'LIMIT ' . intval($CI->response->meta->limit);
                 if (!empty($CI->response->meta->offset)) {
-                    $limit = $limit . ', ' . intval($CI->response->meta->offset);
+                    $limit = 'LIMIT ' . intval($CI->response->meta->offset) . ', ' . $CI->response->meta->limit;
                 }
             }
         }

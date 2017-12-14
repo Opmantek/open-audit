@@ -732,6 +732,18 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->format = 'json';
         }
 
+        # get the offset
+        if (isset($_GET['offset'])) {
+            $CI->response->meta->offset = intval($_GET['offset']);
+            $log->summary = 'Set offset to ' . $CI->response->meta->offset . ', according to GET.';
+            stdlog($log);
+        }
+        if (isset($_POST['offset'])) {
+            $CI->response->meta->offset = intval($_POST['offset']);
+            $log->summary = 'Set offset to ' . $CI->response->meta->offset . ', according to POST.';
+            stdlog($log);
+        }
+
         # get and set the limit
         if (isset($_GET['limit'])) {
             $CI->response->meta->limit = intval($_GET['limit']);
@@ -752,18 +764,6 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . intval($CI->response->meta->limit);
         } else {
             $CI->response->meta->internal->limit = '';
-        }
-
-        # get the offset
-        if (isset($_GET['offset'])) {
-            $CI->response->meta->offset = intval($_GET['offset']);
-            $log->summary = 'Set offset to ' . $CI->response->meta->offset . ', according to GET.';
-            stdlog($log);
-        }
-        if (isset($_POST['offset'])) {
-            $CI->response->meta->offset = intval($_POST['offset']);
-            $log->summary = 'Set offset to ' . $CI->response->meta->offset . ', according to POST.';
-            stdlog($log);
         }
 
         # get the group
