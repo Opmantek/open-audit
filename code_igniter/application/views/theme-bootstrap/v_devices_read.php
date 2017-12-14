@@ -146,10 +146,7 @@ if (empty($data['mount_point'])) {
                 <?php if ($data['system']->type != 'computer' and ! empty($data['module'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/module.svg"/><a href="#" data-menuitem="module"><?php echo __('Module'); ?></a></li>
                 <?php } ?>
-                <?php #if (stripos($data['system']->type, 'phone') !== false or stripos($data['system']->type, 'modem') !== false) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/phone.svg"/><a href="#" data-menuitem="phone"><?php echo __('Cellular Details'); ?></a></li>
-                <?php #} ?>
-
                 <?php if (isset($data['nmap'])) { ?>
                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/nmap.svg"/><a href="#" data-menuitem="nmap"><?php echo __('Nmap'); ?></a></li>
                 <?php } ?>
