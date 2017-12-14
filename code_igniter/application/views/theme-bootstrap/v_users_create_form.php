@@ -85,7 +85,7 @@
                     <div class="form-group">
                         <label for="data[attributes][email]" class="col-sm-3 control-label"><?php echo __('Email'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][email]" name="data[attributes][email]" value="">
+                            <input type="email" class="form-control" id="data[attributes][email]" name="data[attributes][email]" value="">
                         </div>
                     </div>
 

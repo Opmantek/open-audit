@@ -107,7 +107,7 @@ $item = $this->response->data[0];
                 <div class="form-group">
                     <label for="email" class="col-sm-3 control-label"><?php echo __('Email'); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($item->attributes->email, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
                             <button id="edit_email" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="email"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
