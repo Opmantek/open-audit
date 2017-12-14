@@ -216,7 +216,7 @@ if (!empty($this->config->config['servers'])) {
 
                                         <?php if ($this->m_users->get_user_permission('', $collection, 'c')) { ?>
                                             <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
-                                                <li class="disabled"><a href="#"<?php echo __('Create').' '; ?>> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <li class="disabled"><a href="#"><?php echo __('Create').' '; ?>> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                                 <li class="disabled"><a href="#"><?php echo __('Import').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                             <?php } else { ?>
                                                 <?php if ($collection == 'baselines' or $collection == 'roles') {
