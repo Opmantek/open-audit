@@ -96,6 +96,7 @@
                 </tbody>
             </table>
             <?php } ?>
+            <?php include('include_collection_panel_body_links.php'); ?>
         </div>
     </div>
 
