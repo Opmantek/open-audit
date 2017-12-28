@@ -257,7 +257,7 @@ INSERT INTO `attributes` VALUES (151,1,'locations','type','Workshop','Workshop',
 INSERT INTO `attributes` VALUES (152,1,'queries','menu_category','','','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (153,1,'queries','menu_category','Change','Change','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (154,1,'queries','menu_category','Device','Device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (155,1,'queries','menu_category','Discovery','Discovery','system','2000-01-01 00:00:00')
+INSERT INTO `attributes` VALUES (155,1,'queries','menu_category','Discovery','Discovery','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (156,1,'queries','menu_category','Hardware','Hardware','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (157,1,'queries','menu_category','Network','Network','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (158,1,'queries','menu_category','Other','Other','system','2000-01-01 00:00:00');
@@ -2041,7 +2041,7 @@ CREATE TABLE `queries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `menu_category` varchar(200) NOT NULL DEFAULT 'Devices'
+  `menu_category` varchar(200) NOT NULL DEFAULT 'Devices',
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
   `description` text NOT NULL,
   `sql` text NOT NULL,
