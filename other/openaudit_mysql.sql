@@ -2041,7 +2041,7 @@ CREATE TABLE `queries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `name` varchar(200) NOT NULL DEFAULT '',
-  `menu_category` varchar(200) NOT NULL DEFAULT 'Devices',
+  `menu_category` varchar(200) NOT NULL DEFAULT 'Device',
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
   `description` text NOT NULL,
   `sql` text NOT NULL,

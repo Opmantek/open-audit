@@ -29,7 +29,7 @@
 
 $this->log_db('Upgrade database to 2.0.12 commenced');
 
-$this->alter_table('queries', 'menu_category', "`menu_category` varchar(200) NOT NULL DEFAULT 'Devices'");
+$this->alter_table('queries', 'menu_category', "`menu_category` varchar(200) NOT NULL DEFAULT 'Device'");
 
 $sql = "DELETE FROM `attributes` WHERE `resource` = 'queries' and `type` = 'menu_category'";
 $this->db->query($sql);
