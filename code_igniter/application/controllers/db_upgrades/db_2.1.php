@@ -29,6 +29,11 @@
 
 $this->log_db('Upgrade database to 2.1 commenced');
 
+# licenses
+$this->alter_table('licenses', 'software_name', "ADD `software_name` TEXT NOT NULL AFTER `match_string`", 'add');
+$this->alter_table('licenses', 'software_version', "ADD `software_version` varchar(200) NOT NULL DEFAULT '' AFTER `software_name`", 'add');
+$this->alter_table('licenses', 'sql', "ADD `sql` TEXT NOT NULL AFTER `software_version`", 'add');
+
 # oa_asset_select
 $this->drop_table('oa_asset_select');
 

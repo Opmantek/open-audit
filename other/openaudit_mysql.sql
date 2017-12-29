@@ -1226,6 +1226,9 @@ CREATE TABLE `licenses` (
   `used_count` int(10) unsigned NOT NULL DEFAULT '0',
   `description` text NOT NULL,
   `match_string` text NOT NULL,
+  `software_name` text NOT NULL,
+  `software_version` varchar(200) NOT NULL DEFAULT '',
+  `sql` TEXT NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
