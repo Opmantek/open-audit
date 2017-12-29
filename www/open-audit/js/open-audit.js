@@ -361,7 +361,7 @@ $(document).ready(function () {
         $("#data\\[attributes\\]\\[type\\]").children().remove();
         if ($("#data\\[attributes\\]\\[resource\\]").val() == 'devices') {
             $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_class', text: 'Class' }));
-            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_environmant', text: 'Environment' }));
+            $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_environment', text: 'Environment' }));
             $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_status', text: 'Status' }));
             $("#data\\[attributes\\]\\[type\\]").append($('<option>', { value: 'device_type', text: 'Type' }));
         }

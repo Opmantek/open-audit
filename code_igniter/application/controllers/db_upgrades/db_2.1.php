@@ -29,6 +29,10 @@
 
 $this->log_db('Upgrade database to 2.1 commenced');
 
+$this->alter_table('system', 'environment', "`environment` varchar(100) NOT NULL DEFAULT 'production'");
+
+$this->alter_table('system', 'class', "`class` varchar(100) NOT NULL DEFAULT ''");
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20171225' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
