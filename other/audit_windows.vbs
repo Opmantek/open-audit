@@ -751,11 +751,11 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
                 Set objExecObj = objShell.exec(strParams)
                 Do While Not objExecObj.StdOut.AtEndOfStream
                     strText = objExecObj.StdOut.Readline()
-                    If instr(strText, "Server") then
+                    if instr(strText, "Server") then
                         strServer = trim(replace(strText,"Server:",""))
-                    Elseif instr (strText, "Name") Then
+                    Elseif instr (strText, "Name") then
                         strhost = trim(replace(strText,"Name:",""))
-                    Elseif instr (strText, "Address") Then
+                    Elseif instr (strText, "Address") then
                         man_ip_address = trim(replace(strText,"Address:","")) : stradd = stradd + 1
                     End if
                 Loop
@@ -909,7 +909,7 @@ nPID = "unknown"
 if (cint(local_windows_build_number) > 2222 and not local_windows_build_number = "3000") then
     for each oProc in getObject( "winmgmts:{impersonationLevel=impersonate}!\\.\root\cimv2").instancesOf("Win32_Process")
     if lcase(oProc.name) = "wscript.exe" _
-    or lcase(oProc.name) = "cscript.exe" Then
+    or lcase(oProc.name) = "cscript.exe" then
     sCmdLine = oProc.commandLine
     if  instr(1, sCmdLine, "\" & sScriptName, vbTextCompare) > 0 _
     or instr(1, sCmdLine, " " & sScriptName, vbTextCompare) > 0 _
@@ -1148,11 +1148,11 @@ if audit_location = "local" then
     Do While Not objExecObj.StdOut.AtEndOfStream
         strText = objExecObj.StdOut.Readline()
         Do
-            If InStr(1, strText, "  ") > 0 Then
+            if InStr(1, strText, "  ") > 0 then
                 strText = Replace(strText, "  ", " ")
             Else
                 Exit Do
-            End If
+            end if
         Loop
         splitLine = Split(strText, " ")
         ' IP address is in a row with 5 values, value1 and value2 equals 0.0.0.0 and value4 is a IP Address
@@ -1177,7 +1177,7 @@ end if
 ' New for 1.10 - get SAN details if management software installed
 if san_audit = "y" and audit_location = "local" then
     smcli = "C:\Program Files\IBM_DS\client\smcli.exe"
-    If (objFSO.FileExists(smcli)) Then
+    if (objFSO.FileExists(smcli)) then
         if debugging > "0" then wscript.echo "SAN info" end if
         Dim smcli_output
         if san_discover = "y" then
@@ -1214,7 +1214,7 @@ if san_audit = "y" and audit_location = "local" then
                    objHTTP.Open "POST", san_url, False
                    aErr = Array(Err.Number, Err.Description)
                    On Error GoTo 0
-                    If 0 = aErr(0) Then
+                    if 0 = aErr(0) then
                       result.position = 0
                       On Error Resume Next
                       objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
@@ -3390,7 +3390,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
         dim group_domain
         dim member_domain
         For Each group In GetObject("WinNT://" & system_hostname)
-            If group.Class = "Group" Then
+            if group.Class = "Group" then
                 group_members = ""
                 result.WriteText "      <item>" & vbcrlf
                 result.WriteText "          <name>" & escape_xml(group.Name) & "</name>" & vbcrlf
@@ -3404,7 +3404,7 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
                 'group_members = left(group_members, (len(group_members)-2))
                 result.WriteText "          <members>" & escape_xml(group_members) & "</members>" & vbcrlf
                 result.WriteText "      </item>" & vbcrlf
-            End If
+            end if
         Next
     end if
 
@@ -4214,15 +4214,15 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
     if debugging > "0" then wscript.echo "SQL info" end if
 
     oReg.GetStringValue HKEY_LOCAL_MACHINE, "SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CSDVersion", db_version
-    If (IsNull(db_version)) Then
+    if (IsNull(db_version)) then
         oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\MSSQLServer\MSSQLServer\CurrentVersion\","CurrentVersion", db_version
-    End If
-    If (IsNull(db_version)) Then
+    end if
+    if (IsNull(db_version)) then
         oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\MSSQL.1\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
-    End If
-    If (IsNull(db_version) and en_sql_express = "y") Then
+    end if
+    if (IsNull(db_version) and en_sql_express = "y") then
         oReg.GetStringValue HKEY_LOCAL_MACHINE,"SOFTWARE\Microsoft\Microsoft SQL Server\SQLEXPRESS\MSSQLSERVER\CurrentVersion","CurrentVersion", db_version
-    End If
+    end if
 
     ' attempt to determine the edition of SQL
     db_edition = ""
@@ -4302,19 +4302,19 @@ if ((en_sql_server = "y") or (en_sql_express = "y")) then
 
     Select Case i
     Case 0
-    db_login_type = "Allow SQL Server Authentication only"
-    ' note - if we hit this, because we don't have SQL credentials, we don't enumerate databases
+        db_login_type = "Allow SQL Server Authentication only"
+        ' note - If we hit this, because we don't have SQL credentials, we don't enumerate databases
     Case 1
-    db_login_type = "Allow Windows Authentication only"
+        db_login_type = "Allow Windows Authentication only"
     Case 2
-    db_login_type = "Allow Windows Authentication or SQL Server Authentication"
+        db_login_type = "Allow Windows Authentication or SQL Server Authentication"
     Case 9
-    db_login_type = "Security type unknown"
-    ' note - if we hit this, we don't enumerate databases
+        db_login_type = "Security type unknown"
+        ' note - If we hit this, we don't enumerate databases
     Case default
-    db_login_type = "Unknown"
-    ' note - if we hit this, we cannot log in to the DB Server, therefore, we don't enumerate databases
-    ' this might occur if we connect to SQL 2000. TODO: check this.
+        db_login_type = "Unknown"
+        ' note - If we hit this, we cannot log in to the DB Server, therefore, we don't enumerate databases
+        ' this might occur if we connect to SQL 2000. TODO: check this.
     End Select
 
     if debugging > "1" then wscript.echo "DB Login Type: " & db_login_type end if
@@ -4502,11 +4502,11 @@ if ((iis_w3svc = True) and (iis = True) and ((cint(windows_build_number) = 2195)
     End Select
     server_item = server_item & "       <log_path>" & escape_xml(objItem.logfiledirectory) & "</log_path>" & vbcrlf
     Select Case objItem.LogFilePeriod
-    Case 0: If objItem.LogFileTruncateSize = -1 Then
+    Case 0: if objItem.LogFileTruncateSize = -1 then
     server_item = server_item & "       <log_rotation>Unlimited file size</log_rotation>" & vbcrlf
     Else
     server_item = server_item & "       <log_rotation>When file size reaches " & (objItem.LogFileTruncateSize/1048576) & " MB</log_rotation>" & vbcrlf
-    End If
+    end if
     Case 1:       server_item = server_item & "         <log_rotation>daily</log_rotation>" & vbcrlf
     Case 2:       server_item = server_item & "         <log_rotation>weekly</log_rotation>" & vbcrlf
     Case 3:       server_item = server_item & "         <log_rotation>monthly</log_rotation>" & vbcrlf
@@ -4612,11 +4612,11 @@ if ((iis_w3svc = True) and (iis = True) and (cint(windows_build_number) > 3000))
 
     log_rotation = ""
     Select Case objItem.LogFilePeriod
-    Case 0: If objItem.LogFileTruncateSize = -1 Then
+    Case 0: if objItem.LogFileTruncateSize = -1 then
     log_rotation = "Unlimited file size"
     Else
     log_rotation = objItem.LogFileTruncateSize/1048576 & " MB"
-    End If
+    end if
     Case 1:       log_rotation = "daily"
     Case 2:       log_rotation = "weekly"
     Case 3:       log_rotation = "monthly"
@@ -5254,7 +5254,7 @@ key_release = ""
 key_edition = ""
 subKey = "ProductID"
 oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key
-If IsNull(key) OR key = "" then
+if IsNull(key) OR key = "" then
     strKeyPath = "SOFTWARE\Wow6432Node\Microsoft\VisualStudio\10.0\Registration\01018"
     oReg.GetStringValue HKEY_LOCAL_MACHINE,strKeyPath,subKey,key
     if IsNull(key) OR key = "" then
@@ -6717,7 +6717,7 @@ if submit_online = "y" then
    objHTTP.Open "POST", url, False
    aErr = Array(Err.Number, Err.Description)
    On Error GoTo 0
-    If 0 = aErr(0) Then
+    if 0 = aErr(0) then
       result.position = 0
       On Error Resume Next
       objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
@@ -6781,7 +6781,7 @@ wscript.quit
 
 
 
-Function urlEncode(sString)
+function urlEncode(sString)
     Dim nIndex, aCode, theString
     Set theString = CreateObject("ADODB.Stream")
     theString.Type = 2
@@ -6790,10 +6790,10 @@ Function urlEncode(sString)
     For nIndex = 1 to Len(sString)
     aCode = AscW(Mid(sString,nIndex,1))
     'convert from twos complement
-    If aCode < 0 Then
+    if aCode < 0 then
     aCode = 65536 + aCode
-    End If
-    If ((aCode >= 48 and aCode <= 57) or (aCode >= 65 and aCode <=90) or (aCode >= 97 and aCode <= 122)) then
+    end if
+    if ((aCode >= 48 and aCode <= 57) or (aCode >= 65 and aCode <=90) or (aCode >= 97 and aCode <= 122)) then
     ' Alphanumerics
     theString.WriteText Chr(aCode)
     elseif (aCode = 45 or aCode = 46 or aCode = 95 or aCode = 126) then
@@ -6814,7 +6814,7 @@ Function urlEncode(sString)
     Next
     theString.position = 0
     urlEncode = theString.ReadText()
-End Function
+end function
 
 
 function escape_xml(ByVal data)
@@ -7454,7 +7454,7 @@ function get_edition_type(value)
     get_edition_type = release_type
 end function
 
-Function getkey(Key, ver)
+function getkey(Key, ver)
     ' http://forums.mydigitallife.info/threads/20816-The-Ultimate-PID-Checker?p=584892&viewfull=1#post584892
     ' and
     ' location of key in DigitalProductID changed in Office 2010.
@@ -7483,12 +7483,12 @@ Function getkey(Key, ver)
     KeyOutput = Mid(Chars, Cur + 1, 1) & KeyOutput
     Last = Cur
     Loop While i >= 0
-    If (isWin8 = 1) Then
+    if (isWin8 = 1) then
     keypart1 = Mid(KeyOutput, 2, Last)
     insert = "N"
     KeyOutput = Replace(KeyOutput, keypart1, keypart1 & insert, 2, 1, 0)
-    If Last = 0 Then KeyOutput = insert & KeyOutput
-    End If
+    if Last = 0 then KeyOutput = insert & KeyOutput
+    end if
     a = Mid(KeyOutput, 1, 5)
     b = Mid(KeyOutput, 6, 5)
     c = Mid(KeyOutput, 11, 5)
@@ -7498,14 +7498,14 @@ Function getkey(Key, ver)
     else
     getkey = ""
     end if
-End Function
+end function
 
 '' decodeKey from:
 '' Plugin for OCS Inventory NG 2.x
 '' Creative Commons BY-NC-SA 3.0
 '' Nicolas DEROUET (nicolas.derouet[gmail]com)
 '' http://wiki.ocsinventory-ng.org/index.php?title=Plugins:MSofficeKey
-Function decodeKey(iValues)
+function decodeKey(iValues)
   Dim arrDPID, foundKeys
   arrDPID = Array()
   foundKeys = Array()
@@ -7541,82 +7541,76 @@ Function decodeKey(iValues)
     strProductKey = Mid(charset, k+1, 1) & strProductKey
   Next
 
-  If (withN = 1) Then
+  if (withN = 1) then
     keypart = Mid(strProductKey,2,k)
     strProductKey = Replace(strProductKey, keypart, keypart & "N", 2, 1, 0)
-    If k = 0 Then strProductKey = "N" & strProductKey
-  End If
+    if k = 0 then strProductKey = "N" & strProductKey
+  end if
 
   decodeKey = ""
   For i = 1 To 25
     decodeKey = decodeKey & Mid(strProductKey,i,1)
-    If i Mod 5 = 0 And i <> 25 Then decodeKey = decodeKey & "-"
+    if i Mod 5 = 0 And i <> 25 then decodeKey = decodeKey & "-"
   Next
-End Function
+end function
 
-Function GetSN(sComputer,sRoot,sKeyPath,sValueName)
+function GetSN(sComputer,sRoot,sKeyPath,sValueName)
     On Error Resume Next
     Set objRegistry = GetObject("winmgmts:\\" & sComputer & "\root\default:StdRegProv")
-    If Err.Number = 0 Then
-    'On Error Resume Next
-    'HexBuf = WshShell.RegRead(sRegLocation)
-    intReturn = objRegistry.GetBinaryValue(sRoot, sKeyPath, sValueName, Hexbuf)
-    If intReturn = 0 Then
-    'If Err.Number = 0 Then
-    'On Error GoTo 0
-    For l = LBound(HexBuf) To UBound(HexBuf)
-    tmp=tmp & " "& Hex (HexBuf(l))
-    Next
-
-    StartOffset = 52
-    EndOffset =67
-    Dim Digits (24)
-
-    Digits (0) = "B" : Digits (1) = "C": Digits (2) = "D": Digits (3) = "F":
-    Digits (4) = "G": Digits (5) = "H": Digits (6) = "J": Digits (7) = "K":
-    Digits (8) = "M": Digits (9) = "P": Digits (10) = "Q": Digits (11) = "R":
-    Digits (12) = "T": Digits (13) = "V": Digits (14) = "W": Digits (15) = "X":
-    Digits (16) = "Y": Digits (17) = "2": Digits (18) = "3": Digits (19) = "4":
-    Digits (20) = "6" : Digits (21) = "7" : Digits (22) = "8": Digits (23) = "9"
-
-    dLen = 29
-    sLen = 15
-    Dim HexDigitalPID (15)
-    Dim Des (30)
-    For i = StartOffset To EndOffset
-    HexDigitalPID (i-StartOffset) = HexBuf(i)
-    tmp2=tmp2 & " "& Hex (HexDigitalPID(i-StartOffset))
-    Next
-
-    KEYSTRING =""
-    For i=dLen-1 To 0 Step -1
-    If ((i + 1) mod 6) = 0 Then
-    Des (i) = "-"
-    KEYSTRING =KEYSTRING & "-"
-    Else
-    HN = 0
-    For N = (sLen -1) To 0 Step -1
-    Value = ( (HN *2^8 ) Or HexDigitalPID (N))
-    HexDigitalPID (N) = Value \ 24
-    HN    = (Value mod 24)
-    Next
-    Des(i) = Digits(HN)
-    KEYSTRING =KEYSTRING & Digits(HN)
-    End If
-    Next
-    KEYSTRING2 = StrReverse (KEYSTRING)
-    GetSN = KEYSTRING2
-    Else
-    'Err.Clear
-    'On Error GoTo 0
-    'GetSN = sProduct & " is not installed"
-    End If
-    Else
-    Err.Clear
-    On Error GoTo 0
-    'GetSN = "Error reading registry of " & sComputer
-    End If
-End Function
+    if Err.Number = 0 then
+        'On Error Resume Next
+        'HexBuf = WshShell.RegRead(sRegLocation)
+        intReturn = objRegistry.GetBinaryValue(sRoot, sKeyPath, sValueName, Hexbuf)
+        if intReturn = 0 then
+            for l = LBound(HexBuf) To UBound(HexBuf)
+                tmp=tmp & " "& Hex (HexBuf(l))
+            next
+            StartOffset = 52
+            EndOffset =67
+            Dim Digits (24)
+            Digits (0) = "B" : Digits (1) = "C": Digits (2) = "D": Digits (3) = "F":
+            Digits (4) = "G": Digits (5) = "H": Digits (6) = "J": Digits (7) = "K":
+            Digits (8) = "M": Digits (9) = "P": Digits (10) = "Q": Digits (11) = "R":
+            Digits (12) = "T": Digits (13) = "V": Digits (14) = "W": Digits (15) = "X":
+            Digits (16) = "Y": Digits (17) = "2": Digits (18) = "3": Digits (19) = "4":
+            Digits (20) = "6" : Digits (21) = "7" : Digits (22) = "8": Digits (23) = "9"
+            dLen = 29
+            sLen = 15
+            Dim HexDigitalPID (15)
+            Dim Des (30)
+            for i = StartOffset to EndOffset
+                HexDigitalPID (i-StartOffset) = HexBuf(i)
+                tmp2=tmp2 & " "& Hex (HexDigitalPID(i-StartOffset))
+            next
+            KEYSTRING =""
+            For i=dLen-1 To 0 Step -1
+                if ((i + 1) mod 6) = 0 then
+                    Des (i) = "-"
+                    KEYSTRING =KEYSTRING & "-"
+                Else
+                    HN = 0
+                    For N = (sLen -1) To 0 Step -1
+                        Value = ( (HN *2^8 ) Or HexDigitalPID (N))
+                        HexDigitalPID (N) = Value \ 24
+                        HN = (Value mod 24)
+                    Next
+                    Des(i) = Digits(HN)
+                    KEYSTRING =KEYSTRING & Digits(HN)
+                end if
+            Next
+            KEYSTRING2 = StrReverse (KEYSTRING)
+            GetSN = KEYSTRING2
+        else
+            'Err.Clear
+            'On Error GoTo 0
+            'GetSN = sProduct & " is not installed"
+        end if
+    else
+        Err.Clear
+        On Error GoTo 0
+        'GetSN = "Error reading registry of " & sComputer
+    end if
+end function
 
 function get_adobe(key)
     'This script decrypts any adobe serial stored in
@@ -7656,106 +7650,106 @@ function get_adobe(key)
     ' key. That value provides an index within the string
     ' AdobeSubCipherKey(i). The char located at that index
     ' is the properly decrypted char.
-    For i = 1 To 24
-    CipherIndex = Cint(Mid(strEncryptedKey,i,1)) + 1
-    strDecryptedKey = strDecryptedKey & Mid(AdobeSubCipherKey(i),CipherIndex,1)
-    Next
+    for i = 1 to 24
+        CipherIndex = Cint(Mid(strEncryptedKey,i,1)) + 1
+        strDecryptedKey = strDecryptedKey & Mid(AdobeSubCipherKey(i),CipherIndex,1)
+    next
     'Include dashes for readability
     get_adobe = Mid(strDecryptedKey,1,4) & "-" & Mid(strDecryptedKey,5,4) & "-" & Mid(strDecryptedKey,9,4) & _
     "-" & Mid(strDecryptedKey,13,4) & "-" & Mid(strDecryptedKey,17,4) & "-" & Mid(strDecryptedKey,21,4)
 end function
 
 function CSVParser(CSVDataToProcess)
-   'Declaring variables for text delimiter and text qualifyer
+    'Declaring variables for text delimiter and text qualifyer
     dim TextDelimiter, TextQualifyer
-   'Declaring the variables used in determining action to be taken
+    'Declaring the variables used in determining action to be taken
     dim ProcessQualifyer, NewRecordCreate
-   'Declaring variables dealing with input string
+    'Declaring variables dealing with input string
     dim CharMaxNumber, CharLocation, CharCurrentVal, CharCounter, CharStorage
-   'Declaring variables that handle array duties
+    'Declaring variables that handle array duties
     dim CSVArray(), CSVArrayCount
-   'Setting default values for various variables
+    'Setting default values for various variables
     TextDelimiter = "," '<- Text delimiter is a comma
     TextQualifyer = Chr(34) '<- Chr(34) is the ascii code for "
     ProcessQualifyer = False '<- Determining how record should be processed
     CharMaxNumber = Len(CSVDataToProcess) '<- Calculating no. of characters in variable
     NewRecordCreate = 0 '<- Determining how to handle record at different stages of operation
-   '   0 = Don't create new record
-   '   1 = Write data to existing record
-   '   2 = Close record and open new one
+    '   0 = Don't create new record
+    '   1 = Write data to existing record
+    '   2 = Close record and open new one
     CSVArrayCount = 0 '<- Priming the array counter
     Redim Preserve CSVArray(CSVArrayCount) '<- Initializing the array
     CharCounter = 0 '<- Record character counter
     for CharLocation = 1 to CharMaxNumber 'Starting the main loop
-      'Retrieving the next character in sequence from CSVDataToProcess
-       CharCurrentVal = Mid(CSVDataToProcess, CharLocation, 1)
-      'This will figure out if the record uses a text qualifyer or not
-       if CharCurrentVal = TextQualifyer and CharCounter = 0 then
-         ProcessQualifyer = True
-         CharCurrentVal = ""
-       end if
-      'Advancing the record 'letter count' counter
-       CharCounter = CharCounter + 1
-      'Choosing data extraction method (text qualifyer or no text qualifyer)
-       if ProcessQualifyer = True then
-          'This section handles records with a text qualifyer and text delimiter
-          'It is also handles the special case  scenario, where the qualifyer is
-          'part of the data.  In the CSV file, a double quote represents a single
-          'one  ie.  "" = "
-           if Len(CharStorage) <> 0 then
-              if CharCurrentVal = TextDelimiter then
-                 CharStorage = ""
-                 ProcessQualifyer = False
-                 NewRecordCreate = 2
-              else
-                 CharStorage = ""
-                 NewRecordCreate = 1
-              end if
-           else
-              if CharCurrentVal = TextQualifyer then
-                 CharStorage = CharStorage & CharCurrentVal
-                 NewRecordCreate = 0
-              else
-                 NewRecordCreate = 1
-              end if
-           end if
-      'This section handles a regular CSV record.. without the text qualifyer
-       else
-           if CharCurrentVal = TextDelimiter then
-              NewRecordCreate = 2
-           else
-              NewRecordCreate = 1
-           end if
-       end if
-      'Writing the data to the array
-       select case  NewRecordCreate
-        'This section just writes the info to the array
-         case 1
-           CSVArray(CSVArrayCount) = CSVArray(CSVArrayCount) & CharCurrentVal
-        'This section closes the current record and creates a new one
-         case 2
-           CharCounter = 0
-           CSVArrayCount = CSVArrayCount + 1
-           redim preserve CSVArray(CSVArrayCount)
-       end select
+        'Retrieving the next character in sequence from CSVDataToProcess
+        CharCurrentVal = Mid(CSVDataToProcess, CharLocation, 1)
+        'This will figure out if the record uses a text qualifyer or not
+        if CharCurrentVal = TextQualifyer and CharCounter = 0 then
+            ProcessQualifyer = True
+            CharCurrentVal = ""
+        end if
+        'Advancing the record 'letter count' counter
+        CharCounter = CharCounter + 1
+        'Choosing data extraction method (text qualifyer or no text qualifyer)
+        if ProcessQualifyer = True then
+            'This section handles records with a text qualifyer and text delimiter
+            'It is also handles the special case  scenario, where the qualifyer is
+            'part of the data.  In the CSV file, a double quote represents a single
+            'one  ie.  "" = "
+            if Len(CharStorage) <> 0 then
+                if CharCurrentVal = TextDelimiter then
+                    CharStorage = ""
+                    ProcessQualifyer = False
+                    NewRecordCreate = 2
+                else
+                    CharStorage = ""
+                    NewRecordCreate = 1
+                end if
+            else
+                if CharCurrentVal = TextQualifyer then
+                    CharStorage = CharStorage & CharCurrentVal
+                    NewRecordCreate = 0
+                else
+                    NewRecordCreate = 1
+                end if
+            end if
+            'This section handles a regular CSV record.. without the text qualifyer
+        else
+            if CharCurrentVal = TextDelimiter then
+                NewRecordCreate = 2
+            else
+                NewRecordCreate = 1
+            end if
+        end if
+        'Writing the data to the array
+        select case NewRecordCreate
+            'This section just writes the info to the array
+            case 1
+            CSVArray(CSVArrayCount) = CSVArray(CSVArrayCount) & CharCurrentVal
+            'This section closes the current record and creates a new one
+            case 2
+            CharCounter = 0
+            CSVArrayCount = CSVArrayCount + 1
+            redim preserve CSVArray(CSVArrayCount)
+        end select
     next
-   'Finishing Up
+    'Finishing Up
     CSVParser = CSVArray
 end function
 
-Function AddDashes( strInput, intDashInterval)
+function AddDashes( strInput, intDashInterval)
     if intDashInterval <= 0 then
-    AddDashes = strInput
-    Exit Function
+        AddDashes = strInput
+        Exit Function
     end if
     For i=1 to Len(strInput) step intDashInterval
-    if i <> 1 then
-    temp = temp & "-"
-    end if
-    temp = temp & Mid(strInput,i,intDashInterval)
+        if i <> 1 then
+            temp = temp & "-"
+        end if
+        temp = temp & Mid(strInput,i,intDashInterval)
     Next
     AddDashes = temp
-End Function
+end function
 
 function check_wbem_error(error)
     if abs(error) = 2147217392 then check_wbem_error = "wbemErrInvalidClass - class does not exist on this system."
@@ -7772,13 +7766,13 @@ end function
 function ou(dn)
     dn = split(dn, ",")
     for i = 1 to ubound(dn)
-    ou = ou & dn(i) & ","
+        ou = ou & dn(i) & ","
     next
     ou = mid(ou, 1, len(ou)-1)
 end function
 
 ' Intention: Provides safe access to array subscripts, when dealing with arrays that can vary in length
-' If the array subscript does not exist, the default value will be used
+' if the array subscript does not exist, the default value will be used
 function safeArraySubscript (array, subscript, defaultValue)
     dim value
     value = defaultValue
@@ -7787,41 +7781,40 @@ function safeArraySubscript (array, subscript, defaultValue)
     end if
     safeArraySubscript  = value
 end function
-' http://stackoverflow.com/questions/2108040/zero-length-arrays-in-vbscript
-Function IsDimmedArray(arrParam)
 
+' http://stackoverflow.com/questions/2108040/zero-length-arrays-in-vbscript
+function IsDimmedArray(arrParam)
     Dim lintUBound : lintUBound = 0
     Dim llngError  : llngError = 0
-
     IsDimmedArray = False
-    If Not IsArray(arrParam) Then : Exit Function
-
-    '' Test the bounds
+    if Not IsArray(arrParam) then : Exit Function
+    ' Test the bounds
     On Error Resume Next
-
         lintUBound = UBound(arrParam)
         llngError = Err.Number
-        If (llngError <> 0) Then : Err.Clear
-
+        if (llngError <> 0) then
+            Err.Clear
+        end if
     On Error Goto 0
-    If (llngError = 0) And (lintUBound >= 0) Then : IsDimmedArray = True
+    if (llngError = 0) And (lintUBound >= 0) then
+        IsDimmedArray = True
+    end if
+end function
 
-End Function 
-
-Function BytesToString(ByVal Bytes)
-  Dim Result, N, len
-  Result = ""
-  if IsDimmedArray(Bytes) then
-      For N = 0 To UBound(Bytes)
-        If CInt(Bytes(N)) <> 0 Then
-          Result = Result & Chr(Bytes(N))
-        Else
-          Exit For
-        End If
-      Next
-  end if
-  BytesToString = Result
-End Function
+function BytesToString(ByVal Bytes)
+    Dim Result, N, len
+    Result = ""
+    if IsDimmedArray(Bytes) then
+        For N = 0 To UBound(Bytes)
+            if CInt(Bytes(N)) <> 0 then
+                Result = Result & Chr(Bytes(N))
+            Else
+                Exit For
+            end if
+        Next
+    end if
+    BytesToString = Result
+end function
 
 function gcd(ByVal a, ByVal b)
     while (a <> b) 
@@ -7837,23 +7830,23 @@ end function
 Sub forceCScriptExecution
     Dim Arg, Str
     if not lcase( Right( wscript.FullName, 12 ) ) = "\cscript.exe" then
-    for each arg in WScript.Arguments
-    If InStr( Arg, " " ) Then Arg = """" & Arg & """"
-    Str = Str & " " & Arg
-    Next
-    CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str
-    WScript.Quit
-    End If
+        for each arg in WScript.Arguments
+            if InStr( Arg, " " ) then Arg = """" & Arg & """"
+            Str = Str & " " & Arg
+        Next
+        CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str
+        WScript.Quit
+    end if
 End Sub
 
 Sub hiddenExecution
     Dim Arg, Str
     for each Arg in WScript.Arguments
-    If Not InStr( Arg, "hide_audit_window" ) then
-    If InStr( Arg, " " ) Then Arg = """" & Arg & """"
-    Str = Str & " " & Arg
-    End If
-    Next
+        if Not InStr( Arg, "hide_audit_window" ) then
+            if InStr( Arg, " " ) then Arg = """" & Arg & """"
+                Str = Str & " " & Arg
+            end if
+        Next
     Str = Str & " hide_audit_window=n"
     CreateObject("WScript.Shell").Run "cscript //nologo """ & WScript.ScriptFullName & """ " & Str, 0
     WScript.Quit
