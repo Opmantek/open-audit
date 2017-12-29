@@ -1703,33 +1703,6 @@ LOCK TABLES `notes` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oa_asset_select`
---
-
-DROP TABLE IF EXISTS `oa_asset_select`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `oa_asset_select` (
-  `select_id` int(10) NOT NULL AUTO_INCREMENT,
-  `select_name` varchar(50) NOT NULL,
-  `select_type` enum('','sw','hw','service','other') NOT NULL DEFAULT '',
-  `select_sql` varchar(250) NOT NULL,
-  `group_id` int(10) unsigned DEFAULT NULL,
-  `group_amount` int(10) unsigned DEFAULT '0',
-  PRIMARY KEY (`select_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `oa_asset_select`
---
-
-LOCK TABLES `oa_asset_select` WRITE;
-/*!40000 ALTER TABLE `oa_asset_select` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oa_asset_select` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `oa_change`
 --
 
