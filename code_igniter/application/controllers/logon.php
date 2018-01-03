@@ -253,6 +253,12 @@ class logon extends CI_Controller
         redirect('logon');
     }
 
+    public function logout()
+    {
+        $this->session->sess_destroy();
+        redirect('logon');
+    }
+
     public function check_defaults()
     {
 
