@@ -312,6 +312,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0031']->title = "Collector attempting to logon from unassociated ip address.";
         $error_array['ERR-0031']->detail = 'A collector can only log in from a single IP address. Supplied IP does not match IP on record.';
 
+        $error_array['ERR-0032'] = new stdClass();
+        $error_array['ERR-0032']->code = 'ERR-0032';
+        $error_array['ERR-0032']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0032']->severity = 3;
+        $error_array['ERR-0032']->title = "A hostname or FQDN was supplied that cannot be resolved.";
+        $error_array['ERR-0032']->detail = 'A hostname or FQDN was supplied that cannot be resolved.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);

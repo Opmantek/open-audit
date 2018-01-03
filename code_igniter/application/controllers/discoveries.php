@@ -101,6 +101,26 @@ class Discoveries extends MY_Controller
             $this->response->meta->received_data->attributes->name = 'Device Discovery for ' . $subnet;
             $this->response->meta->received_data->attributes->org_id = $this->user->org_id;
 
+            if (filter_var($subnet, FILTER_VALIDATE_IP) === false) {
+                # User supplied something that is not an IP
+                # Check to see if we can resolve it
+                $ip = gethostbyname($subnet);
+                if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+                    # We cannot resolve the name, throw an error
+                    log_error('ERR-0032', $subnet);
+                    if ($this->response->meta->format == 'json') {
+                        output($this->response);
+                    } else {
+                        $this->session->set_flashdata('error', 'A hostname or FQDN was supplied that cannot be resolved (' . $subnet . ').');
+                        redirect('discoveries');
+                    }
+                    return;
+                } else {
+                    $attributes->other->subnet = $ip;
+                    $this->response->meta->received_data->attributes->subnet = $ip;
+                }
+            }
+
             # create our discovery
             $this->response->meta->id = @$this->m_collection->create();
             if (empty($this->response->meta->id)) {
