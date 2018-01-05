@@ -513,7 +513,7 @@ if (!empty($_POST['data'])) {
             
             // update the previous log entries with our new system_id
             $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $input->ip . "'";
-            $log->message = 'Update the previous log entries with our new system_id';
+            $log->message = 'Update the previous log entries with the system_id';
             $log->command = $sql;
             $command_log_id = discovery_log($log);
             $command_start = microtime(true);
@@ -597,8 +597,8 @@ if (!empty($_POST['data'])) {
                 $network_interfaces = array();
                 $network = new stdClass();
                 $network->system_id = $device->id;
-                if (!empty($device->mac)) {
-                    $network->mac = $device->mac;
+                if (!empty($input->mac_address)) {
+                    $network->mac = $input->mac_address;
                 }
                 $network->ip = ip_address_to_db($device->ip);
                 if (!empty($discovery->other->subnet) and strpos($discovery->other->subnet, '/') !== false) {

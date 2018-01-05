@@ -152,6 +152,10 @@ if (empty($data['mount_point'])) {
                 <?php } ?>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
+                <?php if (!empty($data['ip']) and empty($data['network'])) { ?>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/network.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
+                <?php } ?>
+
               </ul>
           </div>
         </div>
@@ -1443,6 +1447,49 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
 <?php
 }
 ?>
+
+<?php if (!empty($data['ip']) and empty($data['network'])) { ?>
+<div id="ip_address" class="section">
+    <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title pull-left"><?php echo __('IP Addresses'); ?></h3>
+    <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="ip_address"></span>
+    <span class="pull-right" style="padding-right:10px;"><?php echo count($data['ip']); ?> <?php echo ' ' . __('items'); ?></span>
+    <div class="clearfix"></div>
+  </div>
+      <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <?php
+                    foreach ($data['ip'][0] as $key => $value) {
+                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'net_index' and $key != 'set_by') {
+                            echo "                    <th>" . ucwords(str_replace('_', ' ', $key))  . "</th>\n";
+                        }
+                    }
+                    ?>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($data['ip'] as $row) {
+                    echo '                <tr>';
+                    foreach ($row as $key => $value) {
+                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'net_index' and $key != 'set_by') {
+                            echo "                    <td>" . htmlentities($value) . "</td>\n";
+                        }
+                    }
+                    echo '                </tr>';
+                }
+                ?>
+            </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<?php } ?>
+
+
 
 <?php
 // table style displays
