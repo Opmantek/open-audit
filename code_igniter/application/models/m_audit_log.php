@@ -43,7 +43,7 @@ class M_audit_log extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create($system_id, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version)
+    public function create($system_id, $username = '', $type = '', $ip_address = '', $debug = '', $wmi_fails = '', $timestamp = '', $version = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';
