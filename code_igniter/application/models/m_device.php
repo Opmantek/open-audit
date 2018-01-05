@@ -61,7 +61,7 @@ class M_device extends MY_Model
         $log->severity = 7;
         $log->pid = getmypid();
         $log->file = 'm_device';
-        $log->function = 'find_system';
+        $log->function = 'match';
         $log->command = $command;
         $log->message = '';
         $log_message = array(); // we will store our message until we get a system.id, then wrtie them to the log
