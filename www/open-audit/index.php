@@ -50,6 +50,8 @@ if (! ini_get('date.timezone') or (string) ini_get('date.timezone') === 'Austral
 
     if ((string) php_uname('s') == 'Darwin') {
         $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f7,8';
+        # new for high sierra
+        $command_string = '/bin/ls -l /etc/localtime|/usr/bin/cut -d"/" -f8,9';
         exec($command_string, $output, $return_var);
         $timezone = @$output[0];
         if ((string) $timezone === '') {
