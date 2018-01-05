@@ -153,7 +153,7 @@ if (empty($data['mount_point'])) {
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
                 <?php if (!empty($data['ip']) and empty($data['network'])) { ?>
-                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/network.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
+                    <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/ip_address.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
                 <?php } ?>
 
               </ul>
