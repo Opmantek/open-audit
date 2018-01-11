@@ -370,7 +370,7 @@ class Nmis extends MY_Controller
                     foreach ($credentials as $credential) {
                         if ($credential->attributes->type == 'snmp') {
                             $this_device->attributes->community = $credential->attributes->credentials->community;
-                            if ($credential->attributes->credentials->version == '2') {
+                            if (!empty($credential->attributes->credentials->version) and $credential->attributes->credentials->version == '2') {
                                 $this_device->attributes->version = 'snmpv2c';
                             } else {
                                 $this_device->attributes->version = 'snmpv1';
