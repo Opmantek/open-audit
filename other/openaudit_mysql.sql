@@ -2518,7 +2518,7 @@ CREATE TABLE `summaries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `menu_category` enum('Change','Device','Hardware','Network','Other','Server','Software','User','') NOT NULL DEFAULT '',
+  `menu_category` varchar(200) NOT NULL DEFAULT 'Device',
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
   `table` varchar(100) NOT NULL DEFAULT '',
   `column` varchar(100) NOT NULL DEFAULT '',

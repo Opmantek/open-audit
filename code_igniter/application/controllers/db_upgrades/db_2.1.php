@@ -50,6 +50,9 @@ $sql = "INSERT INTO `queries` VALUES (NULL,1,'MS Office','Software','y','MS Offi
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# summaries
+$this->alter_table('summaries', 'menu_category', "`menu_category` varchar(200) NOT NULL DEFAULT 'Device'");
+
 # system
 $this->alter_table('system', 'environment', "`environment` varchar(100) NOT NULL DEFAULT 'production'");
 $this->alter_table('system', 'class', "`class` varchar(100) NOT NULL DEFAULT ''");
