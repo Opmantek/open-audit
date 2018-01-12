@@ -266,6 +266,11 @@ class M_collection extends MY_Model
         if ($collection == 'tasks') {
             if ($result !== false) {
                 for ($i=0; $i < count($result); $i++) {
+
+                    if (!empty($result[$i]->options)) {
+                        $result[$i]->options = json_decode($result[$i]->options);
+                    }
+
                     if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries') {
                         $sql = "SELECT name AS `name` FROM `" . $result[$i]->type . "` WHERE id = ?";
                         $data = array($result[$i]->sub_resource_id);
@@ -529,6 +534,10 @@ class M_collection extends MY_Model
                 $data->options = $CI->response->meta->received_data->options;
             }
             if (!empty($data->options)) {
+                if (gettype($data->options) == 'string') {
+                    $data->options = str_replace('\"', '"', $data->options);
+                    $data->options = my_json_decode($data->options);
+                }
                 $data->options = json_encode($data->options);
             } else {
                 $data->options = '';
@@ -708,10 +717,9 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM scripts WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
+                $existing = new stdClass();
                 if (!empty($result[0]->options)) {
                     $existing = json_decode($result[0]->options);
-                } else {
-                    $existing = new stdClass();
                 }
                 foreach ($data->options as $key => $value) {
                     $existing->$key = $value;
@@ -723,16 +731,19 @@ class M_collection extends MY_Model
         if ($collection === 'tasks') {
             if (!empty($data->options)) {
                 $received = new stdClass();
-                foreach ($data->options as $key => $value) {
-                        $received->$key = $value;
+                if (gettype($data->options) === "object" or gettype($data->options) === "array") {
+                    foreach ($data->options as $key => $value) {
+                            $received->$key = $value;
+                    }
                 }
-                $select = "SELECT * FROM tasks WHERE id = ?";
-                $query = $this->db->query($select, array($data->id));
-                $result = $query->result();
-                if (!empty($result[0]->options)) {
-                    $existing = json_decode($result[0]->options);
-                } else {
-                    $existing = new stdClass();
+                $existing = new stdClass();
+                if (!empty($data->id)) {
+                    $select = "SELECT * FROM tasks WHERE id = ?";
+                    $query = $this->db->query($select, array($data->id));
+                    $result = $query->result();
+                    if (!empty($result[0]->options)) {
+                        $existing = json_decode($result[0]->options);
+                    }
                 }
                 $new = new stdClass();
                 foreach ($existing as $existing_key => $existing_value) {
