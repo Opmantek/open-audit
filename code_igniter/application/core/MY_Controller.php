@@ -80,6 +80,7 @@ class MY_Controller extends CI_Controller
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
+        $this->load->helper('json');
         $this->load->model('m_orgs');
 
         set_time_limit(600);
