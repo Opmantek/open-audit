@@ -319,6 +319,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0032']->title = "A hostname or FQDN was supplied that cannot be resolved.";
         $error_array['ERR-0032']->detail = 'A hostname or FQDN was supplied that cannot be resolved.';
 
+        $error_array['ERR-0033'] = new stdClass();
+        $error_array['ERR-0033']->code = 'ERR-0033';
+        $error_array['ERR-0033']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0033']->severity = 5;
+        $error_array['ERR-0033']->title = "Decoding JSON failed.";
+        $error_array['ERR-0033']->detail = 'Decoding JSON failed.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
