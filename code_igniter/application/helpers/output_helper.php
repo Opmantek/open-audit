@@ -159,19 +159,96 @@ if (! function_exists('output')) {
         }
 
         $output_csv = '';
-        foreach ($CI->response->data[0]->attributes as $attribute => $value) {
-            $output_csv .= '"'.trim($attribute).'",';
+        $table_name = $CI->response->meta->collection;
+        if ($table_name == 'devices') {
+            $table_name = 'system';
         }
-        $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
-        $output_csv .= "\n";
-        foreach ($CI->response->data as $item) {
-            foreach ($item->attributes as $key => $value) {
-                $output_csv .= '"'.str_replace('"', '\"', $value).'",';
+
+        $json_fields = array();
+        $CI->response->meta->data_order = $CI->db->list_fields($table_name);
+
+        if ($CI->response->meta->collection == 'credentials') {
+            $json_attribute = 'credentials';
+            $json_fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
+        }
+
+        if ($CI->response->meta->collection == 'discoveries') {
+            $json_attribute = 'other';
+            $json_fields = array('ad_domain','ad_server','single','subnet');
+        }
+
+
+        if ($CI->response->meta->collection == 'tasks') {
+            $json_attribute = 'options';
+            $json_fields = array('email_address','format','group_id');
+        }
+
+        if ($CI->response->meta->collection == 'credentials' or
+            $CI->response->meta->collection == 'discoveries' or
+            $CI->response->meta->collection == 'tasks') {
+            # Remove $json_attribute from the data order
+            foreach ($CI->response->meta->data_order as $key => $value) {
+                if ($value == $json_attribute) {
+                    unset($CI->response->meta->data_order[$key]);
+                }
             }
-            $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
-            $output_csv .= "\n";
+            # Add the $json_attribute.field_name in to data order
+            foreach ($json_fields as $key) {
+                $CI->response->meta->data_order[] = $json_attribute . '.' . $key;
+            }
+            # Populate the individual rows with the new variables
+            if (!empty($CI->response->data)) {
+                foreach ($CI->response->data as $item) {
+                    # Decode the $json_attribute JSON object
+                    if (!empty($item->attributes->$json_attribute)) {
+                        $json_data = json_decode($item->attributes->$json_attribute);
+                    } else {
+                        $json_data = new stdClass();
+                    }
+                    # Remove the $json_attribute JSON object
+                    unset($item->$json_attribute);
+                    # Set each $json_attribute.$field (even if empty)
+                    foreach ($json_fields as $field) {
+                        if (empty($item->attributes->{$json_attribute.'.'.$field})) {
+                            if (!empty($json_data->$field)) {
+                                $item->attributes->{$json_attribute.'.'.$field} = $json_data->$field;
+                            } else {
+                                $item->attributes->{$json_attribute.'.'.$field} = '';
+                            }
+                        }
+                    }
+                }
+            }
         }
-        echo $output_csv;
+
+        # Our header line
+        $output_csv = '"' . implode('","', $CI->response->meta->data_order) . '"' . "\n";
+
+        # Each individual data line
+        if (!empty($CI->response->data)) {
+            foreach ($CI->response->data as $item) {
+                $line_array = array();
+                foreach ($CI->response->meta->data_order as $field) {
+                    if (empty($item->attributes->$field)) {
+                        $line_array[] = '';
+                    } else {
+                        if (stripos($item->attributes->$field, '"') !== false) {
+                            $item->attributes->$field = str_replace('"', '""', $item->attributes->$field);
+                        }
+                        $line_array[] = $item->attributes->$field;
+                    }
+                }
+                $output_csv .= '"' . implode('","', $line_array) . '"' . "\n";
+                unset($line_array);
+            }
+        }
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            echo $output_csv;
+        } else {
+            echo "<pre>\n";
+            echo $output_csv;
+            echo "</pre>";
+        }
         if ((string) $CI->config->item('download_reports') === 'download') {
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
@@ -182,7 +259,9 @@ if (! function_exists('output')) {
     function sql()
     {
         $CI = & get_instance();
+        echo "<pre>\n";
         print_r(json_encode($CI->response));
+        echo "</pre>";
         exit();
     }
 
@@ -219,6 +298,13 @@ if (! function_exists('output')) {
             foreach ($CI->response->data[0]->attributes as $key => $value) {
                 $CI->response->meta->data_order[] = $key;
             }
+        }
+        if (empty($CI->response->data)) {
+            $table_name = $CI->response->meta->collection;
+            if ($table_name == 'devices') {
+                $table_name = 'system';
+            }
+            $CI->response->meta->data_order = $CI->db->list_fields($table_name);
         }
         echo json_encode($CI->response);
     }
