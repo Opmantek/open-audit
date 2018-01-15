@@ -235,6 +235,9 @@ class M_collection extends MY_Model
                     $result[$i]->status = 'complete';
                 }
             }
+            foreach ($result as $item) {
+                $item->other = json_decode($item->other);
+            }
         }
 
 
