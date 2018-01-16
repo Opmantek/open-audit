@@ -1088,7 +1088,7 @@ fi
 if [ "$debugging" -gt "0" ]; then
 	echo "Optical Drives Info"
 fi
-optical_num_devices=$(cdrdao scanbus 2>&1 | grep -c '/dev')
+optical_num_devices=$(cdrdao scanbus 2>&1 | grep -v 'command not found' | grep -c 'dev')
 
 if [ "$optical_num_devices" != "0" ]; then
 	# The exact mount point will depend on the cd/dvd volume name.  Older GNU/Linux distros always mount on /mnt/cdrom
