@@ -206,10 +206,12 @@ class M_collection extends MY_Model
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
+                    foreach ($result[$i]->credentials as $key => $value) {
+                        $result[$i]->{'credentials.'.$key} = $value;
+                    }
                 }
             }
         }
-
 
         if ($collection == 'discoveries' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
@@ -234,12 +236,14 @@ class M_collection extends MY_Model
                     $result[$i]->discovered = '';
                     $result[$i]->status = 'complete';
                 }
-            }
-            foreach ($result as $item) {
-                $item->other = json_decode($item->other);
+                if (!empty($result[$i]->other)) {
+                    $result[$i]->other = json_decode($result[$i]->other);
+                    foreach ($result[$i]->other as $key => $value) {
+                        $result[$i]->{'other.'.$key} = $value;
+                    }
+                }
             }
         }
-
 
         if ($collection == 'licenses' and !empty($result)) {
             foreach ($result as $item) {
@@ -272,6 +276,9 @@ class M_collection extends MY_Model
 
                     if (!empty($result[$i]->options)) {
                         $result[$i]->options = json_decode($result[$i]->options);
+                        foreach ($result[$i]->options as $key => $value) {
+                            $result[$i]->{'options.'.$key} = $value;
+                        }
                     }
 
                     if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries') {

@@ -199,24 +199,8 @@ if (! function_exists('output')) {
             # Populate the individual rows with the new variables
             if (!empty($CI->response->data)) {
                 foreach ($CI->response->data as $item) {
-                    # Decode the $json_attribute JSON object
-                    if (!empty($item->attributes->$json_attribute)) {
-                        $json_data = json_decode($item->attributes->$json_attribute);
-                    } else {
-                        $json_data = new stdClass();
-                    }
                     # Remove the $json_attribute JSON object
                     unset($item->$json_attribute);
-                    # Set each $json_attribute.$field (even if empty)
-                    foreach ($json_fields as $field) {
-                        if (empty($item->attributes->{$json_attribute.'.'.$field})) {
-                            if (!empty($json_data->$field)) {
-                                $item->attributes->{$json_attribute.'.'.$field} = $json_data->$field;
-                            } else {
-                                $item->attributes->{$json_attribute.'.'.$field} = '';
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -530,12 +514,14 @@ if (! function_exists('output')) {
         foreach ($CI->response->data as $details) {
             $output .= "\t<item>\n";
             foreach ($details->attributes as $attribute => $value) {
-                if (phpversion() >= 5.4) {
-                    $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-                } else {
-                    $value = xml_convert($value);
+                if (gettype($value) == 'string') {
+                    if (phpversion() >= 5.4) {
+                        $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                    } else {
+                        $value = xml_convert($value);
+                    }
+                    $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
                 }
-                $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
             }
             $output .= "\t</item>\n";
         }
