@@ -666,13 +666,15 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM credentials WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
-                $existing_credentials = json_decode($this->encrypt->decode($result[0]->credentials));
+                $existing_credentials = @json_decode($this->encrypt->decode($result[0]->credentials));
                 $new_credentials = new stdClass();
-                foreach ($existing_credentials as $existing_key => $existing_value) {
-                    if (!empty($received_credentials->$existing_key)) {
-                        $new_credentials->$existing_key = $received_credentials->$existing_key;
-                    } else {
-                        $new_credentials->$existing_key = $existing_credentials->$existing_key;
+                if (count($existing_credentials) > 0) {
+                    foreach ($existing_credentials as $existing_key => $existing_value) {
+                        if (!empty($received_credentials->$existing_key)) {
+                            $new_credentials->$existing_key = $received_credentials->$existing_key;
+                        } else {
+                            $new_credentials->$existing_key = $existing_credentials->$existing_key;
+                        }
                     }
                 }
                 $data->credentials = (string)$this->encrypt->encode(json_encode($new_credentials));
