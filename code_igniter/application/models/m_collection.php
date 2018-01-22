@@ -906,7 +906,7 @@ class M_collection extends MY_Model
                 break;
 
             case "summaries":
-                return(' name org_id table column menu_category ');
+                return(' name org_id table column menu_category extra_columns ');
                 break;
 
             case "tasks":
