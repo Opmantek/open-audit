@@ -29,6 +29,15 @@
 
 $this->log_db('Upgrade database to 2.1 commenced');
 
+# Configuration
+$sql = "DELETE FROM `configuration` WHERE `name` = 'server_ip'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # licenses
 $this->alter_table('licenses', 'software_name', "ADD `software_name` TEXT NOT NULL AFTER `match_string`", 'add');
 $this->alter_table('licenses', 'software_version', "ADD `software_version` varchar(200) NOT NULL DEFAULT '' AFTER `software_name`", 'add');

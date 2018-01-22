@@ -542,6 +542,7 @@ INSERT INTO `configuration` VALUES (55,'page_size','1000','number','y','system',
 INSERT INTO `configuration` VALUES (56,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
 INSERT INTO `configuration` VALUES (57,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current netstat data and generate change logs.');
 INSERT INTO `configuration` VALUES (58,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current environment variable data and generate change logs.');
+INSERT INTO `configuration` VALUES (59,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
