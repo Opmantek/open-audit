@@ -167,20 +167,55 @@ if (! function_exists('output')) {
         $json_fields = array();
         $CI->response->meta->data_order = $CI->db->list_fields($table_name);
 
+        if ($CI->response->meta->properties != '*' and $CI->response->meta->properties != '') {
+            $CI->response->meta->properties = str_replace(', ', ',', $CI->response->meta->properties);
+            $CI->response->meta->data_order = explode(',', $CI->response->meta->properties);
+        }
+
+        for ($i=0; $i < count($CI->response->meta->data_order); $i++) {
+            if (empty($CI->response->meta->data_order[$i])) {
+                unset($CI->response->meta->data_order[$i]);
+            }
+        }
+
+        # TODO - if the individual item in data order doesn't exist in the table
+
+        # TODO - individual credentials.credentials.password (discoveries.other, tasks.options, etc)
+
         if ($CI->response->meta->collection == 'credentials') {
             $json_attribute = 'credentials';
-            $json_fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
+            foreach ($CI->response->meta->data_order as $item) {
+                if ($item == $json_attribute) {
+                    $json_fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
+                }
+            }
+        }
+
+        if ($CI->response->meta->collection == 'devices') {
+            for ($i=0; $i < count($CI->response->meta->data_order); $i++) {
+                if (stripos($CI->response->meta->data_order[$i], 'system.') === 0) {
+                    $CI->response->meta->data_order[$i] = str_ireplace('system.', '', $CI->response->meta->data_order[$i]);
+                }
+            }
         }
 
         if ($CI->response->meta->collection == 'discoveries') {
             $json_attribute = 'other';
-            $json_fields = array('ad_domain','ad_server','single','subnet');
+            foreach ($CI->response->meta->data_order as $item) {
+                if ($item == $json_attribute) {
+                    $json_fields = array('ad_domain','ad_server','single','subnet');
+                }
+            }
         }
 
 
         if ($CI->response->meta->collection == 'tasks') {
             $json_attribute = 'options';
-            $json_fields = array('email_address','format','group_id');
+            foreach ($CI->response->meta->data_order as $item) {
+                if ($item == $json_attribute) {
+                    $json_fields = array('email_address','format','group_id');
+                }
+            }
         }
 
         if ($CI->response->meta->collection == 'credentials' or
@@ -213,6 +248,9 @@ if (! function_exists('output')) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
                 foreach ($CI->response->meta->data_order as $field) {
+                    if ($CI->response->meta->collection == 'devices' and !empty($item->attributes->{'system.'.$field})) {
+                        $item->attributes->$field = $item->attributes->{'system.'.$field};
+                    }
                     if (empty($item->attributes->$field)) {
                         $line_array[] = '';
                     } else {
