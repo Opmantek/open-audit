@@ -1016,6 +1016,11 @@ if (! function_exists('inputRead')) {
         if (empty($CI->roles) and $CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_roles');
             $CI->roles = $CI->m_roles->collection();
+            if (empty($CI->roles)) {
+                $CI->session->set_flashdata('error', 'No Roles retrieved from database.');
+                $CI->session->unset_userdata('user_id');
+                redirect('logon');
+            }
         }
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
