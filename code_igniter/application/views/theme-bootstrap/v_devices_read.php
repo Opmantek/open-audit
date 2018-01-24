@@ -634,6 +634,13 @@ if (empty($data['mount_point'])) {
                         </div>
 
                         <div class="form-group">
+                            <label for="os_installation_date" class="col-sm-4 control-label"><?php echo __('OS Install Date')?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="os_installation_date" value="<?php echo $data['system']->os_installation_date; ?>" readonly>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="snmp_oid" class="col-sm-4 control-label"><?php echo __('SNMP OID')?></label>
                             <div class="col-sm-8 input-group">
                                 <input type="text" class="form-control" id="snmp_oid" value="<?php echo $data['system']->snmp_oid; ?>" readonly>
