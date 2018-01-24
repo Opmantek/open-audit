@@ -105,7 +105,7 @@ class M_logon extends MY_Model
             $log->severity = 3;
             stdlog($log);
             $CI->session->set_flashdata('error', 'No Roles retrieved from database.');
-            return false;
+            #return false;
         }
 
         // Orgs
@@ -120,7 +120,7 @@ class M_logon extends MY_Model
             $log->severity = 3;
             stdlog($log);
             $CI->session->set_flashdata('error', 'No Orgs retrieved from database.');
-            return false;
+            #return false;
         }
 
         // Auth against any configured LDAP servers
