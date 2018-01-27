@@ -65,6 +65,9 @@ if ($this->response->meta->collection == 'credentials') {
 if ($this->response->meta->collection == 'database') {
     if ($this->response->meta->format == 'screen') {
         $table = $this->response->meta->id;
+        if ($table === 'devices') {
+            $table = 'system';
+        }
         include 'include_dictionary.php';
         $this->response->dictionary = $dictionary;
         unset($dictionary);
