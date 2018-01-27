@@ -277,7 +277,7 @@ if (! function_exists('inputRead')) {
                 case "database":
                     $sql = '';
                     foreach ($CI->db->list_tables() as $key => $value) {
-                        if ($CI->uri->segment(2) == $value) {
+                        if ($CI->uri->segment(2) == $value or ($CI->uri->segment(2) == 'devices' and $value == 'system')) {
                             $CI->response->meta->id = $CI->uri->segment(2);
                         }
                     }
@@ -809,6 +809,7 @@ if (! function_exists('inputRead')) {
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
                     $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.manufacturer, system.os_family, system.status';
+                    $CI->response->meta->properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.description,system.manufacturer,system.os_family,system.status';
                     $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
                     stdlog($log);
                 } else {
@@ -828,6 +829,10 @@ if (! function_exists('inputRead')) {
         # perform some simple data cleansing
         $CI->response->meta->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->meta->properties);
 
+        // if ($CI->response->meta->properties == 'group.*') {
+        //     $CI->response->meta->properties = '';
+        // }
+
         $CI->response->meta->internal->properties = '';
         // create our internal properties list - this is what gets executed in SQL
         if ($CI->response->meta->properties != '*' and $CI->response->meta->properties != $CI->response->meta->sub_resource . '.*') {
@@ -845,6 +850,61 @@ if (! function_exists('inputRead')) {
         } else {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
+
+        # The data_order
+        $CI->response->meta->data_order = explode(',', $CI->response->meta->properties);
+        if ($CI->response->meta->properties === '' or $CI->response->meta->properties == '*') {
+            $table = $CI->response->meta->collection;
+            if ($table === 'devices') {
+                $table = 'system';
+            }
+            if ($CI->db->table_exists($table)) {
+                $CI->response->meta->data_order = $CI->db->list_fields($table);
+            }
+        }
+        if ($CI->response->meta->collection == 'credentials') {
+            foreach ($CI->response->meta->data_order as $item) {
+                if ($item === 'credentials') {
+                    $fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
+                    foreach ($fields as $field) {
+                        $CI->response->meta->data_order[] = 'credentials.' . $field;
+                    }
+                }
+            }
+        }
+
+        if ($CI->response->meta->collection == 'discoveries') {
+            foreach ($CI->response->meta->data_order as $item) {
+                if ($item === 'other') {
+                    $fields = array('email_address','format','group_id');
+                    foreach ($fields as $field) {
+                        $CI->response->meta->data_order[] = 'other.' . $field;
+                    }
+                }
+            }
+        }
+
+        if ($CI->response->meta->collection == 'tasks') {
+            foreach ($CI->response->meta->data_order as $item) {
+                if ($item === 'options') {
+                    $fields = array('ad_domain','ad_server','single','subnet');
+                    foreach ($fields as $field) {
+                        $CI->response->meta->data_order[] = 'options.' . $field;
+                    }
+                }
+            }
+        }
+
+        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute') {
+           $fields = array('name','count');
+           unset($CI->response->meta->data_order);
+           $CI->response->meta->data_order = array();
+            foreach ($fields as $field) {
+                $CI->response->meta->data_order[] = $field;
+            }
+        }
+
+
 
         # get the filter
         $filter = array();
