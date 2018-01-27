@@ -76,6 +76,26 @@ if (! function_exists('output')) {
         } else {
             unset($CI->response->errors);
         }
+
+        // $data_order = array();
+        // foreach ($CI->response->data as $item) {
+        //     foreach ($item->attributes as $key => $value) {
+        //         $data_order[] = $key;
+        //     }
+        // }
+        // $data_order = array_unique($data_order);
+        // $data_order = array_values($data_order);
+        // $CI->response->meta->data_order = $data_order;
+
+        if ($CI->response->meta->collection == 'queries') {
+            if (!empty($CI->response->data)) {
+                $CI->response->meta->data_order = array();
+                foreach ($CI->response->data[0]->attributes as $key => $value) {
+                    $CI->response->meta->data_order[] = $key;
+                }
+            }
+        }
+
         switch ($CI->response->meta->format) {
             case 'screen':
                 output_screen($CI->response);
@@ -164,92 +184,59 @@ if (! function_exists('output')) {
             $table_name = 'system';
         }
 
-        $json_fields = array();
-        $CI->response->meta->data_order = $CI->db->list_fields($table_name);
-
-        if ($CI->response->meta->properties != '*' and $CI->response->meta->properties != '') {
-            $CI->response->meta->properties = str_replace(', ', ',', $CI->response->meta->properties);
-            $CI->response->meta->data_order = explode(',', $CI->response->meta->properties);
-        }
-
-        for ($i=0; $i < count($CI->response->meta->data_order); $i++) {
-            if (empty($CI->response->meta->data_order[$i])) {
-                unset($CI->response->meta->data_order[$i]);
-            }
-        }
-
-        # TODO - if the individual item in data order doesn't exist in the table
+        # TODO - if the individual item in data order doesn't exist in the table, no rows shown
 
         # TODO - individual credentials.credentials.password (discoveries.other, tasks.options, etc)
 
         if ($CI->response->meta->collection == 'credentials') {
-            $json_attribute = 'credentials';
-            foreach ($CI->response->meta->data_order as $item) {
-                if ($item == $json_attribute) {
-                    $json_fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
-                }
-            }
-        }
-
-        if ($CI->response->meta->collection == 'devices') {
-            for ($i=0; $i < count($CI->response->meta->data_order); $i++) {
-                if (stripos($CI->response->meta->data_order[$i], 'system.') === 0) {
-                    $CI->response->meta->data_order[$i] = str_ireplace('system.', '', $CI->response->meta->data_order[$i]);
-                }
-            }
-        }
-
-        if ($CI->response->meta->collection == 'discoveries') {
-            $json_attribute = 'other';
-            foreach ($CI->response->meta->data_order as $item) {
-                if ($item == $json_attribute) {
-                    $json_fields = array('ad_domain','ad_server','single','subnet');
-                }
-            }
-        }
-
-
-        if ($CI->response->meta->collection == 'tasks') {
-            $json_attribute = 'options';
-            foreach ($CI->response->meta->data_order as $item) {
-                if ($item == $json_attribute) {
-                    $json_fields = array('email_address','format','group_id');
-                }
-            }
-        }
-
-        if ($CI->response->meta->collection == 'credentials' or
-            $CI->response->meta->collection == 'discoveries' or
-            $CI->response->meta->collection == 'tasks') {
-            # Remove $json_attribute from the data order
             foreach ($CI->response->meta->data_order as $key => $value) {
-                if ($value == $json_attribute) {
+                if ($value == 'credentials') {
                     unset($CI->response->meta->data_order[$key]);
                 }
             }
-            # Add the $json_attribute.field_name in to data order
-            foreach ($json_fields as $key) {
-                $CI->response->meta->data_order[] = $json_attribute . '.' . $key;
+        }
+        if ($CI->response->meta->collection == 'discoveries') {
+            foreach ($CI->response->meta->data_order as $key => $value) {
+                if ($value == 'other') {
+                    unset($CI->response->meta->data_order[$key]);
+                }
             }
-            # Populate the individual rows with the new variables
-            if (!empty($CI->response->data)) {
-                foreach ($CI->response->data as $item) {
-                    # Remove the $json_attribute JSON object
-                    unset($item->$json_attribute);
+        }
+        if ($CI->response->meta->collection == 'tasks') {
+            foreach ($CI->response->meta->data_order as $key => $value) {
+                if ($value == 'options') {
+                    unset($CI->response->meta->data_order[$key]);
+                }
+            }
+        }
+
+        $table = $CI->response->meta->collection;
+        if ($table == 'devices' or $table == 'queries') {
+            $table = 'system';
+        }
+
+        $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
+        $csv_header = $CI->response->meta->data_order;
+        if ($CI->response->meta->collection != 'credentials' and
+            $CI->response->meta->collection != 'discoveries' and
+            $CI->response->meta->collection != 'tasks') {
+            for ($i=0; $i < count($csv_header); $i++) {
+                if (stripos($csv_header[$i], $table.'.') === 0) {
+                    $csv_header[$i] = str_ireplace($table.'.', '', $csv_header[$i]);
                 }
             }
         }
 
         # Our header line
-        $output_csv = '"' . implode('","', $CI->response->meta->data_order) . '"' . "\n";
+        $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
 
         # Each individual data line
         if (!empty($CI->response->data)) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
                 foreach ($CI->response->meta->data_order as $field) {
-                    if ($CI->response->meta->collection == 'devices' and !empty($item->attributes->{'system.'.$field})) {
-                        $item->attributes->$field = $item->attributes->{'system.'.$field};
+                    if (!empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
+                        $item->attributes->$field = str_replace('"', '""', $item->attributes->{$CI->response->meta->collection.'.'.$field});
                     }
                     if (empty($item->attributes->$field)) {
                         $line_array[] = '';
@@ -300,6 +287,18 @@ if (! function_exists('output')) {
             $filename = 'openaudit';
         }
 
+        if (($CI->response->meta->collection == 'queries' and $CI->response->meta->action == 'execute') or
+            ($CI->response->meta->collection == 'devices' and $CI->response->meta->sub_resource == 'group') or 
+            ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute')) {
+            if (!empty($CI->response->data)) {
+                unset ($CI->response->meta->data_order);
+                $CI->response->meta->data_order = array();
+                foreach ($CI->response->data[0]->attributes as $key => $value) {
+                    $CI->response->meta->data_order[] = $key;
+                }
+            }
+        }
+
         header('Content-Type: application/json');
         if ((string) $CI->config->item('download_reports') === 'download') {
             header('Content-Disposition: attachment;filename="'.$filename.'.json"');
@@ -314,19 +313,6 @@ if (! function_exists('output')) {
         } else {
             unset($CI->response->meta->internal);
             unset($CI->response->meta->sql);
-        }
-        if (!empty($CI->response->data[0]->attributes) and $CI->response->meta->collection != 'nmis') {
-            $CI->response->meta->data_order = array();
-            foreach ($CI->response->data[0]->attributes as $key => $value) {
-                $CI->response->meta->data_order[] = $key;
-            }
-        }
-        if (empty($CI->response->data)) {
-            $table_name = $CI->response->meta->collection;
-            if ($table_name == 'devices') {
-                $table_name = 'system';
-            }
-            $CI->response->meta->data_order = $CI->db->list_fields($table_name);
         }
         echo json_encode($CI->response);
     }
