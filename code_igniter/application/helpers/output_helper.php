@@ -77,24 +77,58 @@ if (! function_exists('output')) {
             unset($CI->response->errors);
         }
 
-        // $data_order = array();
-        // foreach ($CI->response->data as $item) {
-        //     foreach ($item->attributes as $key => $value) {
-        //         $data_order[] = $key;
-        //     }
-        // }
-        // $data_order = array_unique($data_order);
-        // $data_order = array_values($data_order);
-        // $CI->response->meta->data_order = $data_order;
+        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute') {
+           unset($CI->response->meta->data_order);
+           $CI->response->meta->data_order = array('name','count');
+        } else if ($CI->response->meta->collection == 'charts') {
+            # Do nothing
+        } else if ($CI->response->meta->collection == 'nmis') {
+            # Do nothing
+        } else {
 
-        if ($CI->response->meta->collection == 'queries') {
             if (!empty($CI->response->data)) {
                 $CI->response->meta->data_order = array();
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
                     $CI->response->meta->data_order[] = $key;
                 }
             }
+
+            if ($CI->response->meta->collection == 'credentials') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'credentials') {
+                        $fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'credentials.' . $field;
+                        }
+                    }
+                }
+            }
+
+            if ($CI->response->meta->collection == 'discoveries') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'other') {
+                        $fields = array('email_address','format','group_id');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'other.' . $field;
+                        }
+                    }
+                }
+            }
+
+            if ($CI->response->meta->collection == 'tasks') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'options') {
+                        $fields = array('ad_domain','ad_server','single','subnet');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'options.' . $field;
+                        }
+                    }
+                }
+            }
+
+            $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
         }
+
 
         switch ($CI->response->meta->format) {
             case 'screen':
@@ -188,6 +222,8 @@ if (! function_exists('output')) {
 
         # TODO - individual credentials.credentials.password (discoveries.other, tasks.options, etc)
 
+
+        # TOTO - move there into output function. Need to check credentials.credentials isn't being used anywhere (and tasks.options, files.options, discoveries.other, etc).
         if ($CI->response->meta->collection == 'credentials') {
             foreach ($CI->response->meta->data_order as $key => $value) {
                 if ($value == 'credentials') {
@@ -215,7 +251,7 @@ if (! function_exists('output')) {
             $table = 'system';
         }
 
-        $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
+        #$CI->response->meta->data_order = array_values($CI->response->meta->data_order);
         $csv_header = $CI->response->meta->data_order;
         if ($CI->response->meta->collection != 'credentials' and
             $CI->response->meta->collection != 'discoveries' and

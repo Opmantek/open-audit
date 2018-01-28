@@ -851,61 +851,6 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
 
-        # The data_order
-        $CI->response->meta->data_order = explode(',', $CI->response->meta->properties);
-        if ($CI->response->meta->properties === '' or $CI->response->meta->properties == '*') {
-            $table = $CI->response->meta->collection;
-            if ($table === 'devices') {
-                $table = 'system';
-            }
-            if ($CI->db->table_exists($table)) {
-                $CI->response->meta->data_order = $CI->db->list_fields($table);
-            }
-        }
-        if ($CI->response->meta->collection == 'credentials') {
-            foreach ($CI->response->meta->data_order as $item) {
-                if ($item === 'credentials') {
-                    $fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
-                    foreach ($fields as $field) {
-                        $CI->response->meta->data_order[] = 'credentials.' . $field;
-                    }
-                }
-            }
-        }
-
-        if ($CI->response->meta->collection == 'discoveries') {
-            foreach ($CI->response->meta->data_order as $item) {
-                if ($item === 'other') {
-                    $fields = array('email_address','format','group_id');
-                    foreach ($fields as $field) {
-                        $CI->response->meta->data_order[] = 'other.' . $field;
-                    }
-                }
-            }
-        }
-
-        if ($CI->response->meta->collection == 'tasks') {
-            foreach ($CI->response->meta->data_order as $item) {
-                if ($item === 'options') {
-                    $fields = array('ad_domain','ad_server','single','subnet');
-                    foreach ($fields as $field) {
-                        $CI->response->meta->data_order[] = 'options.' . $field;
-                    }
-                }
-            }
-        }
-
-        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute') {
-           $fields = array('name','count');
-           unset($CI->response->meta->data_order);
-           $CI->response->meta->data_order = array();
-            foreach ($fields as $field) {
-                $CI->response->meta->data_order[] = $field;
-            }
-        }
-
-
-
         # get the filter
         $filter = array();
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
