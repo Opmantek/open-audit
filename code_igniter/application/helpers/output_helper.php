@@ -84,6 +84,9 @@ if (! function_exists('output')) {
             # Do nothing
         } else if ($CI->response->meta->collection == 'nmis') {
             # Do nothing
+            if (empty($CI->response->meta->data_order)) {
+                $CI->response->meta->data_order = array();
+            }
         } else {
 
             if (!empty($CI->response->data)) {
