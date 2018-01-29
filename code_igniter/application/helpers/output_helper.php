@@ -89,8 +89,10 @@ if (! function_exists('output')) {
             }
         } else {
 
+            unset($CI->response->meta->data_order);
+            $CI->response->meta->data_order = array();
+
             if (!empty($CI->response->data)) {
-                $CI->response->meta->data_order = array();
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
                     $CI->response->meta->data_order[] = $key;
                 }
@@ -130,6 +132,7 @@ if (! function_exists('output')) {
             }
 
             $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
+            $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
         }
 
 
@@ -254,7 +257,7 @@ if (! function_exists('output')) {
             $table = 'system';
         }
 
-        #$CI->response->meta->data_order = array_values($CI->response->meta->data_order);
+        $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
         $csv_header = $CI->response->meta->data_order;
         if ($CI->response->meta->collection != 'credentials' and
             $CI->response->meta->collection != 'discoveries' and
@@ -324,18 +327,6 @@ if (! function_exists('output')) {
             $filename = $CI->response->meta->collection;
         } else {
             $filename = 'openaudit';
-        }
-
-        if (($CI->response->meta->collection == 'queries' and $CI->response->meta->action == 'execute') or
-            ($CI->response->meta->collection == 'devices' and $CI->response->meta->sub_resource == 'group') or 
-            ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute')) {
-            if (!empty($CI->response->data)) {
-                unset ($CI->response->meta->data_order);
-                $CI->response->meta->data_order = array();
-                foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    $CI->response->meta->data_order[] = $key;
-                }
-            }
         }
 
         header('Content-Type: application/json');
