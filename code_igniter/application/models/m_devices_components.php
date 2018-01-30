@@ -289,7 +289,7 @@ class M_devices_components extends MY_Model
                 $match_columns = array('model');
         }
         if ($table == 'vm') {
-                $match_columns = array('name', 'uuid');
+                $match_columns = array('uuid');
         }
         if ($table == 'windows') {
                 $match_columns = array('service_pack', 'build_number');

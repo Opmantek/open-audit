@@ -76,6 +76,66 @@ if (! function_exists('output')) {
         } else {
             unset($CI->response->errors);
         }
+
+        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'execute') {
+           unset($CI->response->meta->data_order);
+           $CI->response->meta->data_order = array('name','count');
+        } else if ($CI->response->meta->collection == 'charts') {
+            # Do nothing
+        } else if ($CI->response->meta->collection == 'nmis') {
+            # Do nothing
+            if (empty($CI->response->meta->data_order)) {
+                $CI->response->meta->data_order = array();
+            }
+        } else {
+
+            unset($CI->response->meta->data_order);
+            $CI->response->meta->data_order = array();
+
+            if (!empty($CI->response->data[0]->attributes)) {
+                foreach ($CI->response->data[0]->attributes as $key => $value) {
+                    $CI->response->meta->data_order[] = $key;
+                }
+            }
+
+            if ($CI->response->meta->collection == 'credentials') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'credentials') {
+                        $fields = array('community', 'security_name', 'security_level', 'authentication_protocol', 'authentication_passphrase', 'privacy_protocol', 'privacy_passphrase', 'username', 'password', 'ssh_key');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'credentials.' . $field;
+                        }
+                    }
+                }
+            }
+
+            if ($CI->response->meta->collection == 'discoveries') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'other') {
+                        $fields = array('email_address','format','group_id');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'other.' . $field;
+                        }
+                    }
+                }
+            }
+
+            if ($CI->response->meta->collection == 'tasks') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'options') {
+                        $fields = array('ad_domain','ad_server','single','subnet');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'options.' . $field;
+                        }
+                    }
+                }
+            }
+
+            $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
+            $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
+        }
+
+
         switch ($CI->response->meta->format) {
             case 'screen':
                 output_screen($CI->response);
@@ -159,19 +219,87 @@ if (! function_exists('output')) {
         }
 
         $output_csv = '';
-        foreach ($CI->response->data[0]->attributes as $attribute => $value) {
-            $output_csv .= '"'.trim($attribute).'",';
+        $table_name = $CI->response->meta->collection;
+        if ($table_name == 'devices') {
+            $table_name = 'system';
         }
-        $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
-        $output_csv .= "\n";
-        foreach ($CI->response->data as $item) {
-            foreach ($item->attributes as $key => $value) {
-                $output_csv .= '"'.str_replace('"', '\"', $value).'",';
+
+        # TODO - if the individual item in data order doesn't exist in the table, no rows shown
+
+        # TODO - individual credentials.credentials.password (discoveries.other, tasks.options, etc)
+
+
+        # TOTO - move there into output function. Need to check credentials.credentials isn't being used anywhere (and tasks.options, files.options, discoveries.other, etc).
+        if ($CI->response->meta->collection == 'credentials') {
+            foreach ($CI->response->meta->data_order as $key => $value) {
+                if ($value == 'credentials') {
+                    unset($CI->response->meta->data_order[$key]);
+                }
             }
-            $output_csv = mb_substr($output_csv, 0, mb_strlen($output_csv) -1);
-            $output_csv .= "\n";
         }
-        echo $output_csv;
+        if ($CI->response->meta->collection == 'discoveries') {
+            foreach ($CI->response->meta->data_order as $key => $value) {
+                if ($value == 'other') {
+                    unset($CI->response->meta->data_order[$key]);
+                }
+            }
+        }
+        if ($CI->response->meta->collection == 'tasks') {
+            foreach ($CI->response->meta->data_order as $key => $value) {
+                if ($value == 'options') {
+                    unset($CI->response->meta->data_order[$key]);
+                }
+            }
+        }
+
+        $table = $CI->response->meta->collection;
+        if ($table == 'devices' or $table == 'queries') {
+            $table = 'system';
+        }
+
+        $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
+        $csv_header = $CI->response->meta->data_order;
+        if ($CI->response->meta->collection != 'credentials' and
+            $CI->response->meta->collection != 'discoveries' and
+            $CI->response->meta->collection != 'tasks') {
+            for ($i=0; $i < count($csv_header); $i++) {
+                if (stripos($csv_header[$i], $table.'.') === 0) {
+                    $csv_header[$i] = str_ireplace($table.'.', '', $csv_header[$i]);
+                }
+            }
+        }
+
+        # Our header line
+        $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
+
+        # Each individual data line
+        if (!empty($CI->response->data)) {
+            foreach ($CI->response->data as $item) {
+                $line_array = array();
+                foreach ($CI->response->meta->data_order as $field) {
+                    if (!empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
+                        $item->attributes->$field = str_replace('"', '""', $item->attributes->{$CI->response->meta->collection.'.'.$field});
+                    }
+                    if (empty($item->attributes->$field)) {
+                        $line_array[] = '';
+                    } else {
+                        if (stripos($item->attributes->$field, '"') !== false) {
+                            $item->attributes->$field = str_replace('"', '""', $item->attributes->$field);
+                        }
+                        $line_array[] = $item->attributes->$field;
+                    }
+                }
+                $output_csv .= '"' . implode('","', $line_array) . '"' . "\n";
+                unset($line_array);
+            }
+        }
+        if ((string) $CI->config->item('download_reports') === 'download') {
+            echo $output_csv;
+        } else {
+            echo "<pre>\n";
+            echo $output_csv;
+            echo "</pre>";
+        }
         if ((string) $CI->config->item('download_reports') === 'download') {
             header('Content-Type: text/csv');
             header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
@@ -182,7 +310,9 @@ if (! function_exists('output')) {
     function sql()
     {
         $CI = & get_instance();
+        echo "<pre>\n";
         print_r(json_encode($CI->response));
+        echo "</pre>";
         exit();
     }
 
@@ -213,12 +343,6 @@ if (! function_exists('output')) {
         } else {
             unset($CI->response->meta->internal);
             unset($CI->response->meta->sql);
-        }
-        if (!empty($CI->response->data[0]->attributes) and $CI->response->meta->collection != 'nmis') {
-            $CI->response->meta->data_order = array();
-            foreach ($CI->response->data[0]->attributes as $key => $value) {
-                $CI->response->meta->data_order[] = $key;
-            }
         }
         echo json_encode($CI->response);
     }
@@ -411,8 +535,10 @@ if (! function_exists('output')) {
             $CI->response->included = array_merge($CI->response->included, $result);
         }
 
-        $CI->load->model('m_attributes');
-        $CI->response->included = array_merge($CI->response->included, $CI->m_attributes->collection());
+        if ($CI->db->table_exists('attributes')) {
+            $CI->load->model('m_attributes');
+            $CI->response->included = array_merge($CI->response->included, $CI->m_attributes->collection());
+        }
 
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
@@ -444,12 +570,14 @@ if (! function_exists('output')) {
         foreach ($CI->response->data as $details) {
             $output .= "\t<item>\n";
             foreach ($details->attributes as $attribute => $value) {
-                if (phpversion() >= 5.4) {
-                    $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
-                } else {
-                    $value = xml_convert($value);
+                if (gettype($value) == 'string') {
+                    if (phpversion() >= 5.4) {
+                        $value = htmlspecialchars($value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+                    } else {
+                        $value = xml_convert($value);
+                    }
+                    $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
                 }
-                $output .= "\t\t<".$attribute.'>'.trim($value).'</'.$attribute.">\n";
             }
             $output .= "\t</item>\n";
         }

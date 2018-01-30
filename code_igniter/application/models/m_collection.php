@@ -206,10 +206,12 @@ class M_collection extends MY_Model
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
+                    foreach ($result[$i]->credentials as $key => $value) {
+                        $result[$i]->{'credentials.'.$key} = $value;
+                    }
                 }
             }
         }
-
 
         if ($collection == 'discoveries' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
@@ -234,9 +236,14 @@ class M_collection extends MY_Model
                     $result[$i]->discovered = '';
                     $result[$i]->status = 'complete';
                 }
+                if (!empty($result[$i]->other)) {
+                    $result[$i]->other = json_decode($result[$i]->other);
+                    foreach ($result[$i]->other as $key => $value) {
+                        $result[$i]->{'other.'.$key} = $value;
+                    }
+                }
             }
         }
-
 
         if ($collection == 'licenses' and !empty($result)) {
             foreach ($result as $item) {
@@ -266,6 +273,14 @@ class M_collection extends MY_Model
         if ($collection == 'tasks') {
             if ($result !== false) {
                 for ($i=0; $i < count($result); $i++) {
+
+                    if (!empty($result[$i]->options)) {
+                        $result[$i]->options = json_decode($result[$i]->options);
+                        foreach ($result[$i]->options as $key => $value) {
+                            $result[$i]->{'options.'.$key} = $value;
+                        }
+                    }
+
                     if ($result[$i]->type == 'discoveries' or $result[$i]->type == 'queries' or $result[$i]->type == 'summaries') {
                         $sql = "SELECT name AS `name` FROM `" . $result[$i]->type . "` WHERE id = ?";
                         $data = array($result[$i]->sub_resource_id);
@@ -529,6 +544,10 @@ class M_collection extends MY_Model
                 $data->options = $CI->response->meta->received_data->options;
             }
             if (!empty($data->options)) {
+                if (gettype($data->options) == 'string') {
+                    $data->options = str_replace('\"', '"', $data->options);
+                    $data->options = my_json_decode($data->options);
+                }
                 $data->options = json_encode($data->options);
             } else {
                 $data->options = '';
@@ -647,13 +666,15 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM credentials WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
-                $existing_credentials = json_decode($this->encrypt->decode($result[0]->credentials));
+                $existing_credentials = @json_decode($this->encrypt->decode($result[0]->credentials));
                 $new_credentials = new stdClass();
-                foreach ($existing_credentials as $existing_key => $existing_value) {
-                    if (!empty($received_credentials->$existing_key)) {
-                        $new_credentials->$existing_key = $received_credentials->$existing_key;
-                    } else {
-                        $new_credentials->$existing_key = $existing_credentials->$existing_key;
+                if (count($existing_credentials) > 0) {
+                    foreach ($existing_credentials as $existing_key => $existing_value) {
+                        if (!empty($received_credentials->$existing_key)) {
+                            $new_credentials->$existing_key = $received_credentials->$existing_key;
+                        } else {
+                            $new_credentials->$existing_key = $existing_credentials->$existing_key;
+                        }
                     }
                 }
                 $data->credentials = (string)$this->encrypt->encode(json_encode($new_credentials));
@@ -708,10 +729,9 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM scripts WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
+                $existing = new stdClass();
                 if (!empty($result[0]->options)) {
                     $existing = json_decode($result[0]->options);
-                } else {
-                    $existing = new stdClass();
                 }
                 foreach ($data->options as $key => $value) {
                     $existing->$key = $value;
@@ -723,16 +743,19 @@ class M_collection extends MY_Model
         if ($collection === 'tasks') {
             if (!empty($data->options)) {
                 $received = new stdClass();
-                foreach ($data->options as $key => $value) {
-                        $received->$key = $value;
+                if (gettype($data->options) === "object" or gettype($data->options) === "array") {
+                    foreach ($data->options as $key => $value) {
+                            $received->$key = $value;
+                    }
                 }
-                $select = "SELECT * FROM tasks WHERE id = ?";
-                $query = $this->db->query($select, array($data->id));
-                $result = $query->result();
-                if (!empty($result[0]->options)) {
-                    $existing = json_decode($result[0]->options);
-                } else {
-                    $existing = new stdClass();
+                $existing = new stdClass();
+                if (!empty($data->id)) {
+                    $select = "SELECT * FROM tasks WHERE id = ?";
+                    $query = $this->db->query($select, array($data->id));
+                    $result = $query->result();
+                    if (!empty($result[0]->options)) {
+                        $existing = json_decode($result[0]->options);
+                    }
                 }
                 $new = new stdClass();
                 foreach ($existing as $existing_key => $existing_value) {
@@ -883,7 +906,7 @@ class M_collection extends MY_Model
                 break;
 
             case "summaries":
-                return(' name org_id table column menu_category ');
+                return(' name org_id table column menu_category extra_columns ');
                 break;
 
             case "tasks":

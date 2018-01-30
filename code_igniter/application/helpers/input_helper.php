@@ -277,7 +277,7 @@ if (! function_exists('inputRead')) {
                 case "database":
                     $sql = '';
                     foreach ($CI->db->list_tables() as $key => $value) {
-                        if ($CI->uri->segment(2) == $value) {
+                        if ($CI->uri->segment(2) == $value or ($CI->uri->segment(2) == 'devices' and $value == 'system')) {
                             $CI->response->meta->id = $CI->uri->segment(2);
                         }
                     }
@@ -809,6 +809,7 @@ if (! function_exists('inputRead')) {
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
                     $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.manufacturer, system.os_family, system.status';
+                    $CI->response->meta->properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.description,system.manufacturer,system.os_family,system.status';
                     $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
                     stdlog($log);
                 } else {
@@ -827,6 +828,10 @@ if (! function_exists('inputRead')) {
 
         # perform some simple data cleansing
         $CI->response->meta->properties = str_replace(array('\'', '"', '(', ')'), '', $CI->response->meta->properties);
+
+        // if ($CI->response->meta->properties == 'group.*') {
+        //     $CI->response->meta->properties = '';
+        // }
 
         $CI->response->meta->internal->properties = '';
         // create our internal properties list - this is what gets executed in SQL
@@ -1016,6 +1021,11 @@ if (! function_exists('inputRead')) {
         if (empty($CI->roles) and $CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_roles');
             $CI->roles = $CI->m_roles->collection();
+            if (empty($CI->roles)) {
+                $CI->session->set_flashdata('error', 'No Roles retrieved from database.');
+                $CI->session->unset_userdata('user_id');
+                redirect('logon');
+            }
         }
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');

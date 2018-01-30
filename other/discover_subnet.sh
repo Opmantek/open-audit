@@ -232,7 +232,9 @@ hosts_in_subnet=$("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap d
 # removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
 host_count=0
 if [ "$force_ping" == "y" ]; then
-	for line in $("$nmap_path" -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+	# Changed from -sn to -PE. -PE is an actual ping, not an "nmap" ping.
+	#for line in $("$nmap_path" -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+	for line in $("$nmap_path" -vv -PE -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
 		if [ "$debugging" -gt 0 ]; then
 			echo "$line"
 		fi

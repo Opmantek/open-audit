@@ -97,27 +97,6 @@ last_seen_by="audit"
 ########################################################
 # DEFINE SCRIPT FUNCTIONS                              #
 ########################################################
-
-function timer()
-# Returns the elapsed time in seconds.
-#
-# usage :
-#
-#   start=$(timer)
-#   # commands...
-#   total_seconds=$(timer "$start")
-#
-{
-if [[ $# -eq 0 ]]; then
-        echo $(date '+%s')
-else
-        local  stime=$1
-        etime=$(date '+%s')
-        if [[ -z "$stime" ]]; then stime=$etime; fi
-        dt=$((etime - stime))
-        echo $dt
-fi
-}
 function lcase()
 # Returns the lower case version of the argument.
 #
@@ -329,9 +308,6 @@ fi
 ########################################################
 # CREATE THE AUDIT FILE                                #
 ########################################################
-
-
-start_time=$(timer)
 
 # Set the TimeSamp
 system_timestamp=`date +'%F %T'`
@@ -1059,7 +1035,6 @@ echo "</system>" >> $xml_file
 
 if [ "$submit_online" = "y" ]; then
         echo "Submitting results to server"
-        #wget --delete-after --post-file="$xml_file" $url 2>/dev/null
         wget --post-file="$xml_file" $url 2>/dev/null
 fi
 
@@ -1067,9 +1042,3 @@ fi
 if [ "$create_file" != "y" ]; then
         `rm -f $PWD/$xml_file`
 fi
-
-
-if [ $debugging -gt 0 ]; then
-        echo 'Audit Generated in ' $(timer $start_time) ' seconds.'
-fi
-

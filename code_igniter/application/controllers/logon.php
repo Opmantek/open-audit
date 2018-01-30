@@ -281,7 +281,7 @@ class logon extends CI_Controller
             // need to create a link to OAE on port 8042 to check the license
             // we cannot detect and use the browser http[s] as it may being used in the client browser,
             //     but stripped by a https offload or proxy
-            $oae_license_url = 'http://localhost'.$oae_url.'license';
+            $oae_license_url = 'http://'.$_SERVER['HTTP_HOST'].$oae_url.'license';
             // we create a link for the browser using the same address + the path & file in oae_url
             if (isset($_SERVER['HTTPS']) and $_SERVER['HTTPS'] == 'on') {
                 $oae_url = 'https://'.$_SERVER['HTTP_HOST'].$oae_url;
@@ -328,6 +328,10 @@ class logon extends CI_Controller
         } else {
             $this->config->config['oae_product'] = 'Open-AudIT Community';
         }
+
+        // Set our Server's IP addresses
+        $server_ip = server_ip();
+        $this->m_configuration->update('server_ip', (string)$server_ip, 'system');
 
         // Delete any old sessions stored in the DB
         $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";

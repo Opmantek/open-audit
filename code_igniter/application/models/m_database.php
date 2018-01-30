@@ -53,6 +53,9 @@ class M_database extends MY_Model
         } else {
             $id = $id;
         }
+        if ($id === 'devices') {
+            $id = 'system';
+        }
         $return = array();
         $tables = $this->db->list_tables();
         foreach ($tables as $table) {

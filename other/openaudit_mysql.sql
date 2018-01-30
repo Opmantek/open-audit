@@ -542,6 +542,7 @@ INSERT INTO `configuration` VALUES (55,'page_size','1000','number','y','system',
 INSERT INTO `configuration` VALUES (56,'discovery_linux_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a Linux target, should we use sudo.');
 INSERT INTO `configuration` VALUES (57,'delete_noncurrent_netstat','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current netstat data and generate change logs.');
 INSERT INTO `configuration` VALUES (58,'delete_noncurrent_variable','y','bool','y','system','2000-01-01 00:00:00','Should we store non-current environment variable data and generate change logs.');
+INSERT INTO `configuration` VALUES (59,'server_ip','','text','n','system','2000-01-01 00:00:00','The locally detected IP Addresses of this server.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1228,7 +1229,7 @@ CREATE TABLE `licenses` (
   `match_string` text NOT NULL,
   `software_name` text NOT NULL,
   `software_version` varchar(200) NOT NULL DEFAULT '',
-  `sql` TEXT NOT NULL,
+  `sql` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -2518,7 +2519,7 @@ CREATE TABLE `summaries` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `menu_category` enum('Change','Device','Hardware','Network','Other','Server','Software','User','') NOT NULL DEFAULT '',
+  `menu_category` varchar(200) NOT NULL DEFAULT 'Device',
   `menu_display` enum('y','n') NOT NULL DEFAULT 'y',
   `table` varchar(100) NOT NULL DEFAULT '',
   `column` varchar(100) NOT NULL DEFAULT '',
