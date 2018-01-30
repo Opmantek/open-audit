@@ -92,7 +92,7 @@ if (! function_exists('output')) {
             unset($CI->response->meta->data_order);
             $CI->response->meta->data_order = array();
 
-            if (!empty($CI->response->data)) {
+            if (!empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
                     $CI->response->meta->data_order[] = $key;
                 }
