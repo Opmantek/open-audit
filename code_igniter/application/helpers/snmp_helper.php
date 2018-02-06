@@ -826,7 +826,7 @@ if (!function_exists('snmp_audit')) {
         }
         // last attempt at a MAC - just use whatever's in the first interface MAC
         if (empty($details->mac_address)) {
-            $log->message = 'MAC Address retrieval for '.$ip;
+            $log->message = 'MAC Address retrieval (oid #1) for '.$ip;
             $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.1';
             $log->id = discovery_log($log);
             $item_start = microtime(true);
@@ -839,7 +839,7 @@ if (!function_exists('snmp_audit')) {
             $details->mac_address = format_mac($details->mac_address);
         }
         if (empty($details->mac_address)) {
-            $log->message = 'MAC Address retrieval for '.$ip;
+            $log->message = 'MAC Address retrieval (oid #2) for '.$ip;
             $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.2';
             $log->id = discovery_log($log);
             $item_start = microtime(true);
@@ -852,7 +852,7 @@ if (!function_exists('snmp_audit')) {
             $details->mac_address = format_mac($details->mac_address);
         }
         if (empty($details->mac_address)) {
-            $log->message = 'MAC Address retrieval for '.$ip;
+            $log->message = 'MAC Address retrieval (oid #3) for '.$ip;
             $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.3';
             $log->id = discovery_log($log);
             $item_start = microtime(true);
