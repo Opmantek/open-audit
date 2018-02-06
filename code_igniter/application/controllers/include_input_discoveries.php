@@ -412,7 +412,10 @@ if (!empty($_POST['data'])) {
         if ($input->ssh_status == 'true') {
             $ssh_details = ssh_audit($device->ip, $credentials, $log);
             if (!empty($ssh_details)) {
-                $credentials_ssh = $ssh_details->credentials;
+
+                if (!empty($ssh_details->credentials)) {
+                    $credentials_ssh = $ssh_details->credentials;
+                }
                 unset($ssh_details->credentials);
                 $device->last_seen_by = 'ssh';
                 $device->audits_ip = '127.0.0.1';
@@ -488,6 +491,15 @@ if (!empty($_POST['data'])) {
         }
         if (!empty($discovery->devices_assigned_to_location)) {
             $device->location_id = $discovery->devices_assigned_to_location;
+        }
+
+        if (!empty($network_interfaces) and empty($device->mac_address)) {
+            foreach ($network_interfaces as $interface) {
+                if ($interface->ip == $device->ip) {
+                    $device->mac_address = $interface->mac;
+                    $device->subnet = $interface->subnet;
+                }
+            }
         }
 
         // insert or update the device
@@ -577,56 +589,28 @@ if (!empty($_POST['data'])) {
         $this->m_audit_log->create($device->id, $user, $device->last_seen_by, $device->audits_ip, '', '', $device->last_seen);
         unset($user);
 
-
-        // update any network interfaces and ip addresses retrieved by SNMP
-        $log->ip = $device->ip;
+        if (!empty($device->ip)) {
+            $log->ip = $device->ip;
+        }
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
-        $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        discovery_log($log);
+
+        // update any network interfaces retrieved by SNMP
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
+            $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            discovery_log($log);
             $found = new stdClass();
             $found->item = array();
             $found->item = $network_interfaces;
             $this->m_devices_components->process_component('network', $device, $found);
             unset($found);
-        } else {
-            if ($action == 'insert') {
-                # Create an entry in the ip table so our 'networks' find the device
-                $network_interfaces = array();
-                $network = new stdClass();
-                $network->system_id = $device->id;
-                if (!empty($input->mac_address)) {
-                    $network->mac = $input->mac_address;
-                }
-                $network->ip = ip_address_to_db($device->ip);
-                if (!empty($discovery->other->subnet) and strpos($discovery->other->subnet, '/') !== false) {
-                    $network_details = network_details($discovery->other->subnet);
-                    $network->netmask = $network_details->netmask;
-                    $network->cidr = $network_details->network_slash;
-                    $network->network = $discovery->other->subnet;
-                    $network->set_by = 'discovery auto';
-                } else {
-                    $network->netmask = '255.255.255.0';
-                    $network->cidr = '24';
-                    $network_details = explode('.', $device->ip);
-                    $network->network = $network_details[0] . '.' .  $network_details[1] . '.' .  $network_details[2] . '.0/24';
-                    $network->set_by = 'discovery guess';
-                }
-                unset($network_details);
-                $network->version = 4;
-                $network_interfaces[] = $network;
-                $found = new stdClass();
-                $found->item = array();
-                $found->item = $network_interfaces;
-                $this->m_devices_components->process_component('ip', $device, $found);
-                unset($found);
-            }
         }
 
-        // insert any ip addresses
-        if (isset($ip->item) and count($ip->item) > 0) {
+        // update any ip addresses retrieved by SNMP
+        if (!empty($ip->item)) {
+            $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            discovery_log($log);
             $log->ip = $device->ip;
             $log->discovery_id = $device->discovery_id;
             $log->file = 'include_input_discoveries';
@@ -634,6 +618,36 @@ if (!empty($_POST['data'])) {
             $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
             discovery_log($log);
             $this->m_devices_components->process_component('ip', $device, $ip);
+        }
+
+        // create or update the entry in the ip table from non-SNMP data
+        //     so our 'networks' endpoint and functions can find the device
+        if (empty($ip->item)) {
+            $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            discovery_log($log);
+            $item = new stdClass();
+            $item->system_id = $device->id;
+            $item->ip = $device->ip;
+            $item->version = 4;
+            $item->mac = '';
+            if (!empty($input->mac_address)) {
+                $item->mac = (string)$input->mac_address;
+            }
+            if (!empty($discovery->other->subnet) and strpos($discovery->other->subnet, '/') !== false) {
+                $network_details = network_details($discovery->other->subnet);
+                $item->netmask = $network_details->netmask;
+                $item->cidr = $network_details->network_slash;
+                $item->network = $discovery->other->subnet;
+            } else {
+                $network_details = explode('.', $device->ip);
+                $item->netmask = '255.255.255.0';
+                $item->cidr = '24';
+                $item->network = $network_details[0] . '.' .  $network_details[1] . '.' .  $network_details[2] . '.0/24';
+            }
+            # new special routine as we may already have IPs (from a real audit) but not this particular
+            # discovery run, so we don't want to remove these esiting IPs. Special function for this.
+            $this->m_devices_components->nmap_ip($device, $item);
+            unset($item);
         }
 
         // finish off with updating any network IPs that don't have a matching interface
