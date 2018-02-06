@@ -626,6 +626,9 @@ class M_device extends MY_Model
         }
 
         # insert the network card details of we have them
+        # This is only required for manual uploading of devices (via web form or via CSV)
+        #.   Discoveries and audits already have IP items populated
+        # TODO - Can we move this into another function and only run if we're manually inserting devices?
         if ((isset($details->mac_address) and $details->mac_address != '') and
             (isset($details->ip) and $details->ip != '') and
             (isset($details->subnet) and $details->subnet != '') and
