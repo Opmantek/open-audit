@@ -227,6 +227,7 @@ if (!empty($_POST['data'])) {
         $device->audits_ip = (string)$input->ip;
         $device->last_seen_by = 'nmap';
         $device->discovery_id = $discovery->id;
+        $device->mac_address = (string)$input->mac_address;
 
         if ($this->config->item('discovery_use_dns') == 'y') {
             $device = dns_validate($device);
@@ -270,7 +271,7 @@ if (!empty($_POST['data'])) {
             unset($log->id, $command_log_id);
             
             // update the previous log entries with our new system_id
-            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $input->ip . "'";
+            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
             $log->message = 'Update the current log entries with our new device';
             $log->command = $sql;
             $command_log_id = discovery_log($log);
@@ -463,14 +464,14 @@ if (!empty($_POST['data'])) {
 
         if (empty($device->manufacturer) and !empty($input->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
-                $log->message = 'MAC ' . $input->mac_address . ' matched to manufacturer ' . $device->manufacturer;
+                $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
                 discovery_log($log);
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
         }
 
         if (empty($device->manufacturer) and !empty($device->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
-                $log->message = 'MAC ' . $input->mac_address . ' matched to manufacturer ' . $device->manufacturer;
+                $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
                 discovery_log($log);
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
         }
@@ -524,7 +525,7 @@ if (!empty($_POST['data'])) {
             unset($log->id, $command_log_id);
             
             // update the previous log entries with our new system_id
-            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $input->ip . "'";
+            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
             $log->message = 'Update the previous log entries with the system_id';
             $log->command = $sql;
             $command_log_id = discovery_log($log);
@@ -560,7 +561,7 @@ if (!empty($_POST['data'])) {
             discovery_log($log);
 
             // update the previous log entries with our new system_id
-            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $input->ip . "'";
+            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
             $log->message = 'Update the previous log entries with our new system_id';
             $log->command = $sql;
             $command_log_id = discovery_log($log);
@@ -630,8 +631,8 @@ if (!empty($_POST['data'])) {
             $item->ip = $device->ip;
             $item->version = 4;
             $item->mac = '';
-            if (!empty($input->mac_address)) {
-                $item->mac = (string)$input->mac_address;
+            if (!empty($device->mac_address)) {
+                $item->mac = (string)$device->mac_address;
             }
             if (!empty($discovery->other->subnet) and strpos($discovery->other->subnet, '/') !== false) {
                 $network_details = network_details($discovery->other->subnet);
