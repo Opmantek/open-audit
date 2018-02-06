@@ -55,7 +55,6 @@ dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/input/discoveries"
 dim objHTTP
 dim sequential : sequential = "y"
-dim os_scan : os_scan = "n"
 dim hosts
 dim hosts_in_subnet
 dim host
@@ -100,9 +99,6 @@ for each strArg in objArgs
             case "log_no_response"
                 log_no_response = varArray(1)
 
-            case "os_scan"
-                os_scan = varArray(1)
-
             case "org_id"
                 org_id = varArray(1)
 
@@ -132,12 +128,6 @@ for each strArg in objArgs
     end if
 next
 
-if ( os_scan = "y" ) then
-    os_scan = "-O"
-else
-    os_scan = ""
-end if
-
 if (help = "y") then
     wscript.echo "------------------------------"
     wscript.echo "Open-AudIT Subnet Audit Script"
@@ -160,10 +150,6 @@ if (help = "y") then
     wscript.echo ""
     wscript.echo "  discovery_id"
     wscript.echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
-    wscript.echo ""
-    wscript.echo "  os_scan"
-    wscript.echo "    *n - Do not use the -O Nmap flag when scanning devices."
-    wscript.echo "     y - Use -O (will slow down scan and requires SUID be set on the Nmap binary."
     wscript.echo ""
     wscript.echo "  echo_output"
     wscript.echo "    *n - Do not echo the result to the screen."
@@ -322,7 +308,7 @@ for each host in hosts
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 30 " & host
+    command = nmap_path & " -vv -n --host-timeout 30 " & host
     nmap_ports = ""
     execute_command()
 
