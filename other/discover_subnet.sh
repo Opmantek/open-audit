@@ -289,7 +289,7 @@ if [[ "$hosts" != "" ]]; then
 		# -Pn Treat all hosts as online
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
 		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host using the command \"nmap -vv -n -Pn $timing $host 2>&1\""
+			echo "Scanning Host: $host using the command: nmap -vv -n -Pn $timing $host 2>&1"
 		fi
 
 		nmap_tcp_timer_start=$(timer)
@@ -349,9 +349,19 @@ if [[ "$hosts" != "" ]]; then
 
 		done
 
+		# Apple IOS check
+		test=$(nmap -n -Pn -p62078 "$timing" "$host" 2>/dev/null | grep "62078/tcp.*open" | grep -v "filtered")
+		if [[ "$test" != "" ]]; then
+			host_is_up="true"
+			nmap_ports="$nmap_ports,62078/tcp/iphone-sync"
+		fi
+
 		# SNMP check
 		snmp_status="false"
 		nmap_udp_timer_start=$(timer)
+		if [ "$debugging" -gt 1 ]; then
+			echo "Scaning for SNMP using the command: nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\" | grep -v \"filtered\""
+		fi
 		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open" | grep -v "filtered")
 		nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
 		if [ "$debugging" -gt 0 ]; then

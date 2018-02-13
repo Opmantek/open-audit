@@ -373,6 +373,23 @@ for each host in hosts
         end if
     Loop
 
+    ' Apple IOS check
+    command = nmap_path & " -n -Pn -p62078 --host-timeout 20 " & host
+    execute_command()
+    Do Until objExecObject.Status = 0
+        WScript.Sleep 100
+    Loop
+    Do Until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if instr(lcase(line), "62078/tcp") then
+            if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
+                nmap_ports = nmap_ports & ",62078/tcp/iphone-sync"
+                host_is_up = "true"
+            end if
+        end if
+    Loop
+
+    ' UDP check
     command = nmap_path & " -n -sU -p161 --host-timeout 20 " & host
     execute_command()
     Do Until objExecObject.Status = 0

@@ -458,8 +458,41 @@ if (!empty($_POST['data'])) {
         $log->function = 'discoveries';
 
         # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
-        if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_result, '5060/') !== false) {
+        if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_ports, '5060/') !== false) {
             $device->type = 'voip phone';
+        }
+
+        # Port 62078 is used by IOS for iTunes wifi sync
+        if (stripos($input->nmap_ports, '62078/tcp/iphone-sync') !== false) {
+            # thie could be an iPad (tablet), iPod (media device) or iPhone (smart phone).
+            $log->message = 'Detected port TCP 62078 open. Assuming an Apple IOS device';
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            $device->type = 'smart phone';
+            if (stripos($device->hostname, 'iphone') !== false) {
+                $device->type = 'smart phone';
+                $device->model = 'Apple iPhone';
+            }
+            if (stripos($device->hostname, 'ipad') !== false) {
+                $device->type = 'tablet';
+                $device->model = 'Apple iPad';
+            }
+            if (stripos($device->hostname, 'ipod') !== false) {
+                $device->type = 'media device';
+                $device->model = 'Apple iPod';
+            }
+            $device->os_group = 'Apple IOS';
+            $device->os_family = 'Apple IOS';
+            $device->os_name = 'Apple IOS';
+        }
+
+        # Android devices typically jave a hostname of android-***
+        if (stripos($device->hostname, 'android') !== false) {
+            # Could be a table or smart phone. We have no way of knowing so simply guessing it's a smart phone
+            $device->type = 'smart phone';
+            $device->os_group = 'Android';
+            $device->os_family = 'Android';
+            $device->os_name = 'Android';
         }
 
         if (empty($device->manufacturer) and !empty($input->mac_address)) {
