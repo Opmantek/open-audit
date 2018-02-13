@@ -342,10 +342,10 @@ class M_device extends MY_Model
 
         if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
             if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
-                $log_message[] = 'Running match_mac for: ' . $details->mac_address . ' excluding VMware MACs';
+                $log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' excluding VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
             } else {
-                $log_message[] = 'Running match_mac for: ' . $details->mac_address . ' including VMware MACs';
+                $log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' including VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
             }
 
@@ -356,23 +356,59 @@ class M_device extends MY_Model
             if (count($row) > 0) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
-                $log_message[] = 'HIT on Mac Address (details): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
+                $log_message[] = 'HIT on Mac Address (ip table): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
                 foreach ($log_message as $message) {
                     $log->message = $message;
                     discovery_log($log);
                 }
                 return $details->id;
             }
-            $log_message[] = 'MISS on match_mac.';
+            $log_message[] = 'MISS on match_mac (ip table).';
         } else {
             if (strtolower($this->config->config['match_mac']) != 'y') {
-                $log_message[] = 'Not running match_mac, config item not set';
+                $log_message[] = 'Not running match_mac (ip table), config item not set';
             } else if (!empty($details->id)) {
-                $log_message[] = 'Not running match_mac, device id already set.';
+                $log_message[] = 'Not running match_mac (ip table), device id already set.';
             } else if (empty($details->mac_address)) {
-                $log_message[] = 'Not running match_mac, mac_address not set.';
+                $log_message[] = 'Not running match_mac (ip table), mac_address not set.';
             } else  {
-                $log_message[] = 'Not running match_mach.';
+                $log_message[] = 'Not running match_mach (ip table).';
+            }
+        }
+
+        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
+            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                $log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' excluding VMware MACs';
+                $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+            } else {
+                $log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' including VMware MACs';
+                $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND system.status != 'deleted' LIMIT 1";
+            }
+
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->mac_address");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on Mac Address (network table): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+            $log_message[] = 'MISS on match_mac (network table).';
+        } else {
+            if (strtolower($this->config->config['match_mac']) != 'y') {
+                $log_message[] = 'Not running match_mac (network table), config item not set';
+            } else if (!empty($details->id)) {
+                $log_message[] = 'Not running match_mac (network table), device id already set.';
+            } else if (empty($details->mac_address)) {
+                $log_message[] = 'Not running match_mac (network table), mac_address not set.';
+            } else  {
+                $log_message[] = 'Not running match_mach (network table).';
             }
         }
 
@@ -383,10 +419,10 @@ class M_device extends MY_Model
                     if (!empty($mac) and (string)$mac != '00:00:00:00:00:00') {
                         # check the ip table
                         if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
-                            $log_message[] = 'Running match_mac for: ' . $mac . ' excluding VMware MACs';
+                            $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' excluding VMware MACs';
                             $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
                         } else {
-                            $log_message[] = 'Running match_mac for: ' . $mac . ' including VMware MACs';
+                            $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' including VMware MACs';
                             $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
                         }
                         $sql = $this->clean_sql($sql);
@@ -396,7 +432,7 @@ class M_device extends MY_Model
                         if (count($row) > 0) {
                             $details->id = $row->id;
                             $log->system_id = $details->id;
-                            $log_message[] = 'HIT on Mac Address (audit): ' . $mac . ' (System ID ' . $details->id . ')';
+                            $log_message[] = 'HIT on Mac Address (addresses): ' . $mac . ' (System ID ' . $details->id . ')';
                             foreach ($log_message as $message) {
                                 $log->message = $message;
                                 discovery_log($log);
@@ -406,16 +442,16 @@ class M_device extends MY_Model
                     }
                 }
             }
-            $log_message[] = 'MISS on match_mac.';
+            $log_message[] = 'MISS on match_mac (addresses).';
         } else {
             if (strtolower($this->config->config['match_mac']) != 'y') {
-                $log_message[] = 'Not running match_mac, config item not set';
+                $log_message[] = 'Not running match_mac (addresses), config item not set';
             } else if (!empty($details->id)) {
-                $log_message[] = 'Not running match_mac, device id already set.';
+                $log_message[] = 'Not running match_mac (addresses), device id already set.';
             } else if (empty($details->mac_addresses)) {
-                $log_message[] = 'Not running match_mac, mac_addresses not set.';
+                $log_message[] = 'Not running match_mac (addresses), mac_addresses not set.';
             } else  {
-                $log_message[] = 'Not running match_mac.';
+                $log_message[] = 'Not running match_mac (addresses).';
             }
         }
 
