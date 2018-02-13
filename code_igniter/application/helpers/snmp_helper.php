@@ -628,6 +628,10 @@ if (!function_exists('snmp_audit')) {
         if (!empty($details->manufacturer) and (stripos($details->manufacturer, 'tplink') !== false or stripos($details->manufacturer, 'tp-link') !== false)) {
             $details->manufacturer = 'TP-Link Technology';
         }
+        if (!empty($details->sysDescr) and stripos($details->sysDescr, "Apple AirPort") !== false) {
+            $details->model = 'Apple AirPort';
+            $details->type = 'wap';
+        }
         if (!empty($details->sysDescr) and stripos($details->sysDescr, 'buffalo terastation') !== false) {
             $details->manufacturer = 'Buffalo';
             $details->model = 'TeraStation';
