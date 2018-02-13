@@ -35,7 +35,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # set our versions
-$sql = "UPDATE `configuration` SET `value` = '20180104' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20180105' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -44,5 +44,5 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->log_db("Upgrade database to 2.1.1 completed");
-$this->config->config['internal_version'] = '20180104';
+$this->config->config['internal_version'] = '20180105';
 $this->config->config['display_version'] = '2.1.1';
