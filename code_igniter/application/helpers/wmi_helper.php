@@ -643,7 +643,7 @@ if (! function_exists('wmi_audit')) {
 
 
         if (empty($ip)) {
-            $log->message = 'No IP supplied to wmi_helper::wmi_audiy.';
+            $log->message = 'No IP supplied to wmi_helper::wmi_audit.';
             discovery_log($log);
             return false;
         }
