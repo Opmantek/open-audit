@@ -264,6 +264,38 @@ INSERT INTO `attributes` VALUES (158,1,'queries','menu_category','Other','Other'
 INSERT INTO `attributes` VALUES (159,1,'queries','menu_category','Server','Server','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (160,1,'queries','menu_category','Software','Software','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (161,1,'queries','menu_category','User','User','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Agency','agency','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Association','association','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Authority','authority','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Board','board','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Body','body','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Bureau','bureau','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Business','business','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Centre','centre','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Charity','charity','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Commission','commission','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Committee','committee','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Corporation','corporation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Council','council','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Court','court','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Department','department','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Directorate','directorate','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Division','division','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Foundation','foundation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Government Owned Corporation','government owned corporation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Government','government','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Group','group','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Institute','institute','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Office','office','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Ombudsman','ombudsman','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Organisation','organisation','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Project','project','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Regulator','regulator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Scheme','scheme','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Section','section','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Service','service','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Tribunal','tribunal','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Trust','trust','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1836,6 +1868,7 @@ CREATE TABLE `orgs` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `parent_id` int(10) unsigned DEFAULT '1',
   `description` text NOT NULL,
+  `type` varchar(100) NOT NULL DEFAULT 'organisation',
   `ad_group` varchar(100) NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
