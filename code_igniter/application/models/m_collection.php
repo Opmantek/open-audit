@@ -941,7 +941,7 @@ class M_collection extends MY_Model
                 break;
 
             case "orgs":
-                return(' name description parent_id ad_group ');
+                return(' name description parent_id ad_group type ');
                 break;
 
             case "queries":
