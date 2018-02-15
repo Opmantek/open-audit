@@ -119,6 +119,7 @@ if (mb_detect_encoding($input) !== 'UTF-8') {
 }
 
 $input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
+$input = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $input);
 libxml_use_internal_errors(true);
 $error = false;
 $xml = false;
