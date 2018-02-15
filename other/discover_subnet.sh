@@ -52,6 +52,7 @@ user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 force_ping="n"
+version="2.1.1"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -203,16 +204,21 @@ log_entry="Discovery for $subnet_range using Nmap version $nmap_full_version at 
 write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
-	echo "Create File: $create_file"
-	echo "Discovery ID: $discovery_id"
-	echo "Force Ping: $force_ping"
-	echo "Log Level: $debugging"
-	echo "Nmap Binary: $nmap_path"
-	echo "Nmap Version: $nmap_full_version"
-	echo "Submit Online: $submit_online"
-	echo "Subnet Range: $subnet_range"
-	echo "Timing: $timing"
-	echo "URL: $url"
+	echo "----------------------------"
+	echo "Open-AudIT Discover Subnet script"
+	echo "Version: $version"
+	echo "----------------------------"
+	echo "My PID is           $$"
+	echo "Create File:        $create_file"
+	echo "Discovery ID:       $discovery_id"
+	echo "Force Ping:         $force_ping"
+	echo "Log Level:          $debugging"
+	echo "Nmap Binary:        $nmap_path"
+	echo "Nmap Version:       $nmap_full_version"
+	echo "Submit Online:      $submit_online"
+	echo "Subnet Range:       $subnet_range"
+	echo "Timing:             $timing"
+	echo "URL:                $url"
 	echo ""
 fi
 

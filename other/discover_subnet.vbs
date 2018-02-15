@@ -72,6 +72,7 @@ dim temp
 dim port
 dim program
 dim script_timer : script_timer = Timer
+dim version: version = "2.1.1"
 
 
 ' below we take any command line arguements
@@ -261,9 +262,23 @@ end if
 log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
 write_log()
 
-if debugging > "0" then wscript.echo "My PID: " & current_pid
-if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet_range
-if debugging > "0" then wscript.echo "URL: " & url
+if debugging > "0" then
+    wscript.echo "----------------------------"
+    wscript.echo "Open-AudIT Discover Subnet script"
+    wscript.echo "Version: $version"
+    wscript.echo "----------------------------"
+    wscript.echo "My PID is           " & current_pid
+    wscript.echo "Create File:        " & create_file
+    wscript.echo "Discovery ID:       " & discovery_id
+    wscript.echo "Force Ping:         " & force_ping
+    wscript.echo "Log Level:          " & debugging
+    wscript.echo "Nmap Binary:        " & nmap_path
+   'wscript.echo "Nmap Version:       " & nmap_full_version
+    wscript.echo "Submit Online:      " & submit_online
+    wscript.echo "Subnet Range:       " & subnet_range
+    wscript.echo "URL:                " & url
+    wscript.echo "----------------------------"
+end if
 
 exit_status = "y"
 
