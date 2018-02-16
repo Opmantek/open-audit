@@ -352,7 +352,7 @@ system_os_version=`vmware -v`
 system_serial=$(trim `echo "$smbiosDump" | sed -n '/^  System Info:/,/^  [A-Za-z]/p' | grep '    Serial' | cut -d":" -f2 | sed 's/"//g'`)
 system_model=$(trim `echo "$smbiosDump" | sed -n '/^  System Info:/,/^  [A-Za-z]/p' | grep '    Product' | cut -d":" -f2 | sed 's/"//g'`)
 system_manufacturer=$(trim `echo "$smbiosDump" | sed -n '/^  System Info:/,/^  [A-Za-z]/p' | grep '    Manufacturer' | cut -d":" -f2 | sed 's/"//g'`)
-system_uptime=$(trim `echo "$quickstats" | grep uptime | cut -d= -f2 | sed 's/,//g' | sed 's/\"//g'`)
+system_uptime=$(trim `echo "$quickStats" | grep uptime | cut -d= -f2 | sed 's/,//g' | sed 's/\"//g'`)
 system_form_factor=$(trim `echo "$smbiosDump" | sed -n '/^  Chassis Info:/,/^  [A-Za-z]/p' | grep '    Type' | cut -d":" -f2 | cut -d" " -f3 | sed 's/"//g' | sed 's/(//g' | sed 's/)//g'`)
 system_pc_os_bit=`uname -m | grep x86_64 | cut -d_ -f2`
 
@@ -484,6 +484,9 @@ if [ "$memory_slots" != "0" ]; then
 		fi
 		memory_bank=""
 		memory_bank=$(trim `echo "$smbiosDump" | sed -n "/^$bank/,/^  [A-Za-z]/p" | grep '    Bank' | cut -d: -f2 | sed 's/\"//g'`)
+		if [ -z "$memory_bank" ]; then
+			memory_bank=$(trim `echo "$smbiosDump" | sed -n "/^$bank/,/^  [A-Za-z]/p" | grep '    Location' | cut -d: -f2 | sed 's/\"//g'`)
+		fi
 		memory_form_factor=""
 		memory_form_factor=$(trim `echo "$smbiosDump" | sed -n "/^$bank/,/^  [A-Za-z]/p" | grep '    Form Factor' | cut -d: -f2 | sed 's/(//g' | sed 's/)//g' | cut -d" " -f3`)
 		memory_type=""
