@@ -83,7 +83,7 @@ if (!empty($_POST['data'])) {
         $syslog->summary = 'Invalid data';
         $syslog->message = 'Invalid XML input for discovery from '.$_SERVER['REMOTE_ADDR'];
         stdlog($syslog);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         exit;
     }
     unset($xml_input);
@@ -176,14 +176,14 @@ if (!empty($_POST['data'])) {
             # Our ip address matched an ip in the discovery_ip_exclude list - skip it
             $log->message = $input->ip . ' is in the list of excluded ip addresses - skipping.';
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             continue;
         }
         // check we have an actual valid IP
         if (filter_var($input->ip, FILTER_VALIDATE_IP) === false) {
             $log->message = "Invalid IP address submitted (" . $input->ip . "), skipping.";
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             continue;
         }
 
@@ -207,7 +207,7 @@ if (!empty($_POST['data'])) {
 
         $log->message = 'Received data for ' . $input->ip . ', now starting to process';
         $individual_log_id_start = discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
 
         if (!empty($discovery->id)) {
             $sql = "/* input::discoveries */ " . "UPDATE discoveries SET device_count = device_count + 1 WHERE id = ?";
@@ -234,17 +234,17 @@ if (!empty($_POST['data'])) {
             if (!empty($device->hostname)) {
                 $log->message = 'IP ' . $device->ip . ' resolved to hostname ' . $device->hostname;
                 discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             }
             if (!empty($device->domain)) {
                 $log->message = 'IP ' . $device->ip . ' resolved to domain ' . $device->domain;
                 discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             }
             if (!empty($device->fqdn)) {
                 $log->message = 'IP ' . $device->ip . ' resolved to fqdn ' . $device->fqdn;
                 discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             }
         }
 
@@ -253,7 +253,7 @@ if (!empty($_POST['data'])) {
             $log->system_id = $device->id;
             $log->message = "Device with ID " . $device->id . " found on initial Nmap result.";
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
 
             // remove any old logs for this device
             $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
@@ -267,7 +267,7 @@ if (!empty($_POST['data'])) {
             $log->command_time_to_execute = $command_end - $command_start;
             $log->id = $command_log_id;
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
             
             // update the previous log entries with our new system_id
@@ -282,7 +282,7 @@ if (!empty($_POST['data'])) {
             $log->command_time_to_execute = $command_end - $command_start;
             $log->id = $command_log_id;
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
 
             // Device specific credentials
@@ -467,7 +467,7 @@ if (!empty($_POST['data'])) {
             # thie could be an iPad (tablet), iPod (media device) or iPhone (smart phone).
             $log->message = 'Detected port TCP 62078 open. Assuming an Apple IOS device';
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             $device->type = 'smart phone';
             if (stripos($device->hostname, 'iphone') !== false) {
                 $device->type = 'smart phone';
@@ -499,14 +499,14 @@ if (!empty($_POST['data'])) {
             $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
                 $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
                 discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
 
         if (empty($device->manufacturer) and !empty($device->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
                 $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
                 discovery_log($log);
-                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+                unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
 
         // $log->command_output = json_encode($device->system);
@@ -554,7 +554,7 @@ if (!empty($_POST['data'])) {
             $log->command_time_to_execute = $command_end - $command_start;
             $log->id = $command_log_id;
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
             
             // update the previous log entries with our new system_id
@@ -569,7 +569,7 @@ if (!empty($_POST['data'])) {
             $log->command_time_to_execute = $command_end - $command_start;
             $log->id = $command_log_id;
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
 
             $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
@@ -605,7 +605,7 @@ if (!empty($_POST['data'])) {
             $log->command_time_to_execute = $command_end - $command_start;
             $log->id = $command_log_id;
             discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_complete, $log->command_error_message);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             unset($log->id, $command_log_id);
         }
 
@@ -1048,15 +1048,18 @@ if (!empty($_POST['data'])) {
                     if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
                             $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             $log->command = '';
+                            $log->file = 'include_input_discoveries';
                             discovery_log($log);
                         if (execute_windows($device->ip, $credentials_windows, $command, $log)) {
                             # All complete!
                             $log->message = 'Run audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                            $log->file = 'include_input_discoveries';
                             discovery_log($log);
                         } else {
                             # run audit script failed
                             $log->message = 'Run audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
                             $log->severity = 4;
+                            $log->file = 'include_input_discoveries';
                             discovery_log($log);
                             $log->severity = 7;
                         }
@@ -1064,6 +1067,7 @@ if (!empty($_POST['data'])) {
                         # copy audit script to Windows failed
                         $log->message = 'Copy audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         $log->severity = 4;
+                        $log->file = 'include_input_discoveries';
                         discovery_log($log);
                         $log->severity = 7;
                     }
@@ -1075,6 +1079,7 @@ if (!empty($_POST['data'])) {
                             $log->severity = 4;
                             $log->message = 'Attempt to delete audit script c:\\windows\\audit_windows_' . $ts . '.vbs failed';
                         }
+                        $log->file = 'include_input_discoveries';
                         discovery_log($log);
                         $log->severity = 7;
                     }
@@ -1085,6 +1090,7 @@ if (!empty($_POST['data'])) {
         # Audit via SSH
         if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh)) {
             $log->message = 'Starting SSH audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
+            $log->file = 'include_input_discoveries';
             discovery_log($log);
             // switch (strtolower($remote_os)) {
             switch (strtolower($device->os_group)) {
@@ -1134,6 +1140,7 @@ if (!empty($_POST['data'])) {
             #discovery_log($log);
             unset($log->command, $log->message);
             if (!empty($result[0])) {
+                $log->file = 'include_input_discoveries';
                 $log->message = 'Script details retrieved.';
                 $log->command = $sql;
                 $log->status = 'success';

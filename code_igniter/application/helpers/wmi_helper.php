@@ -218,13 +218,6 @@ if (! function_exists('execute_windows')) {
             $log->command = str_replace($credentials->credentials->password, '******', $command_string);
             exec($command_string, $output, $return_var);
         }
-
-
-        if ($return_var == 0) {
-            $log->command_complete = 'y';
-        } else {
-            $log->command_complete = 'n';
-        }
         discovery_log($log);
         unset($log->id, $log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
 
