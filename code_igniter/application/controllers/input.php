@@ -80,21 +80,26 @@ class input extends CI_Controller
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
 
-        if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
+        if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '') and $_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '127.0.1.1' and stripos($this->config->config['ip'], $_SERVER['REMOTE_ADDR']) === false) {
             $log->severity = 3;
             $log->summary = 'Unauthorized';
             $log->message = 'Unauthorized XML input for ' . $this->uri->segment(2, 0) . ' from ' . $_SERVER['REMOTE_ADDR'] . '. Not in list of blessed subnets.';
-            if ($this->uri->segment(2, 0) == 'discoveries') {
-                if (!empty($_POST['data'])) {
-                    $xml_input = $_POST['data'];
-                    $xml = new SimpleXMLElement($xml_input);
-                    if (!empty($xml->device->discovery_id)) {
-                        $log->message = 'Unauthorized XML input for discoveries from ' . $_SERVER['REMOTE_ADDR'] . ' for discovery #' . intval($xml->device->discovery_id) . '. Not in list of blessed subnets.';
-                        discovery_log($log);
-                    }
+            if ($this->uri->segment(2, 0) == 'discoveries' and !empty($_POST['data'])) {
+                $xml_input = $_POST['data'];
+                $xml = new SimpleXMLElement($xml_input);
+                if (!empty($xml->device->discovery_id)) {
+                    $log->message = 'Unauthorized XML input for discoveries from ' . $_SERVER['REMOTE_ADDR'] . ' for discovery #' . intval($xml->device->discovery_id) . '. Not in list of blessed subnets.';
+                    $log->discovery_id = intval($xml->device->discovery_id);
+                    echo "=====================\n" . $log->message . "\n======================\n";
+                    discovery_log($log);
+                } else {
+                    echo "=====================\n" . $log->message . "\n======================\n";
+                    stdlog($log);
                 }
+            } else {
+                echo "=====================\n" . $log->message . "\n======================\n";
+                stdlog($log);
             }
-            stdlog($log);
             exit;
         }
 
