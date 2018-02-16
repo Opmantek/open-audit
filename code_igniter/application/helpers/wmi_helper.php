@@ -214,7 +214,7 @@ if (! function_exists('execute_windows')) {
             } else {
                 $domain = '';
             }
-            $command_string = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
+            $command_string = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
             $log->command = str_replace($credentials->credentials->password, '******', $command_string);
             exec($command_string, $output, $return_var);
         }
@@ -440,7 +440,7 @@ if (! function_exists('copy_to_windows')) {
             }
             unset($temp);
             $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
+            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
             $log->command = str_replace($password, '******', $command);
             $log->message = 'Attempting to copy file to Windows.';
             discovery_log($log);
