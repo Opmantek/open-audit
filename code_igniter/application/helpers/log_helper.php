@@ -233,7 +233,7 @@ if (! function_exists('discovery_log')) {
 
         # Special case because the log submit may work, but the discovery process may not.
         # If we have this special string, mark the discovery as complete.
-        if (stripos($log->messahe, 'Completed discovery, scanned') !== false and !empty($log->discovery_id)) {
+        if (stripos($log->message, 'Completed discovery, scanned') !== false and !empty($log->discovery_id)) {
             $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
             $data = array($log->discovery_id);
             $query = $this->db->query($sql, $data);
