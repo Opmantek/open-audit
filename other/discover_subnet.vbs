@@ -427,7 +427,9 @@ for each host in hosts
     end if
 
     if host_is_up = "true" then
-        nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
+        if len(nmap_ports) > 0 then
+            nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
+        end if
         result =          " <device>" & vbcrlf
         result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
         result = result & "     <ip><![CDATA[" & host & "]]></ip>" & vbcrlf
