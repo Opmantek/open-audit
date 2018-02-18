@@ -142,10 +142,12 @@ class M_collection extends MY_Model
         $result = $this->run_sql($sql, array());
 
         # Add the Org name into every row that contains the orgs_id attribute
-        for ($i=0; $i < count($result); $i++) {
-            foreach ($orgs as $org) {
-                if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
-                    $result[$i]->org_name = $org->name;
+        if (!empty($result) and !empty($orgs)) {
+            for ($i=0; $i < count($result); $i++) {
+                foreach ($orgs as $org) {
+                    if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
+                        $result[$i]->org_name = $org->name;
+                    }
                 }
             }
         }
