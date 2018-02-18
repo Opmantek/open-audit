@@ -191,10 +191,6 @@ if (! function_exists('execute_windows')) {
             $username = $temp[0];
             $domain = $temp[1];
             unset($temp);
-            // $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%".$password." --uninstall //".$ip." \"$command\" ";
-            // $log->command = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%****** --uninstall //".$ip." \"$command\" ";
-            // $echo = str_replace($password, '******', $command);
-            // exec($command_string, $output, $return_var);
             if ($domain != '') {
                 $domain .= '/';
             }
