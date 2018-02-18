@@ -1882,7 +1882,7 @@ CREATE TABLE `orgs` (
 
 LOCK TABLES `orgs` WRITE;
 /*!40000 ALTER TABLE `orgs` DISABLE KEYS */;
-INSERT INTO `orgs` VALUES (1,'Default Organisation',1,'','open-audit_orgs_default_organisation','system','2000-01-01 00:00:00');
+INSERT INTO `orgs` VALUES (1,'Default Organisation',1,'','organisation','open-audit_orgs_default_organisation','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `orgs` ENABLE KEYS */;
 UNLOCK TABLES;
 
