@@ -167,7 +167,7 @@ foreach ($xml->children() as $input) {
             $syslog->message = $this->db->last_query();
             stdlog($syslog);
         }
-        if (!empty($discovery->other->single) and $discovery->other->single == 'y') {
+        if (!empty($discovery->other->single) and $discovery->other->single == 'y' and $discovery->discard == 'y') {
             sleep(10);
             $sql = "/* input::discoveries */ " . "DELETE FROM `credentials` WHERE description = 'Discovery " . $discovery->other->subnet . "'";
             $data = array();
