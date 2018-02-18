@@ -368,7 +368,8 @@ if [[ "$hosts" != "" ]]; then
 		if [ "$debugging" -gt 1 ]; then
 			echo "Scaning for SNMP using the command: nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\" | grep -v \"filtered\""
 		fi
-		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open" | grep -v "filtered")
+		#test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open" | grep -v "filtered")
+		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open")
 		nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
 		if [ "$debugging" -gt 0 ]; then
 			echo "Nmap UDP scan time: $nmap_udp_timer_end"
@@ -419,6 +420,10 @@ if [[ "$hosts" != "" ]]; then
 				send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1)
 				if [ -n "$send_result" ]; then
 					db_log "Error when submitting discovery result (device). $send_result" "" "fail" "3"
+					if [[ $debugging -gt 0 ]]; then
+						echo "Error when submitting discovery result (device)"
+						echo "$send_result"
+					fi
 				fi
 			else
 				write_log "IP $host responding."
