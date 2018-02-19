@@ -270,7 +270,6 @@ if debugging > "0" then
     wscript.echo "My PID is           " & current_pid
     wscript.echo "Create File:        " & create_file
     wscript.echo "Discovery ID:       " & discovery_id
-    wscript.echo "Force Ping:         " & force_ping
     wscript.echo "Log Level:          " & debugging
     wscript.echo "Nmap Binary:        " & nmap_path
    'wscript.echo "Nmap Version:       " & nmap_full_version
