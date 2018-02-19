@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   2.1
+# @version   2.1.1
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,6 +52,7 @@ user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 force_ping="n"
+version="2.1.1"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
@@ -203,16 +204,21 @@ log_entry="Discovery for $subnet_range using Nmap version $nmap_full_version at 
 write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
-	echo "Create File: $create_file"
-	echo "Discovery ID: $discovery_id"
-	echo "Force Ping: $force_ping"
-	echo "Log Level: $debugging"
-	echo "Nmap Binary: $nmap_path"
-	echo "Nmap Version: $nmap_full_version"
-	echo "Submit Online: $submit_online"
-	echo "Subnet Range: $subnet_range"
-	echo "Timing: $timing"
-	echo "URL: $url"
+	echo "----------------------------"
+	echo "Open-AudIT Discover Subnet script"
+	echo "Version: $version"
+	echo "----------------------------"
+	echo "My PID is           $$"
+	echo "Create File:        $create_file"
+	echo "Discovery ID:       $discovery_id"
+	echo "Force Ping:         $force_ping"
+	echo "Log Level:          $debugging"
+	echo "Nmap Binary:        $nmap_path"
+	echo "Nmap Version:       $nmap_full_version"
+	echo "Submit Online:      $submit_online"
+	echo "Subnet Range:       $subnet_range"
+	echo "Timing:             $timing"
+	echo "URL:                $url"
 	echo ""
 fi
 
@@ -289,7 +295,7 @@ if [[ "$hosts" != "" ]]; then
 		# -Pn Treat all hosts as online
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
 		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host using the command \"nmap -vv -n -Pn $timing $host 2>&1\""
+			echo "Scanning Host: $host using the command: nmap -vv -n -Pn $timing $host 2>&1"
 		fi
 
 		nmap_tcp_timer_start=$(timer)
@@ -349,10 +355,21 @@ if [[ "$hosts" != "" ]]; then
 
 		done
 
+		# Apple IOS check
+		test=$(nmap -n -Pn -p62078 "$timing" "$host" 2>/dev/null | grep "62078/tcp.*open" | grep -v "filtered")
+		if [[ "$test" != "" ]]; then
+			host_is_up="true"
+			nmap_ports="$nmap_ports,62078/tcp/iphone-sync"
+		fi
+
 		# SNMP check
 		snmp_status="false"
 		nmap_udp_timer_start=$(timer)
-		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open" | grep -v "filtered")
+		if [ "$debugging" -gt 1 ]; then
+			echo "Scaning for SNMP using the command: nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\" | grep -v \"filtered\""
+		fi
+		#test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open" | grep -v "filtered")
+		test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open")
 		nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
 		if [ "$debugging" -gt 0 ]; then
 			echo "Nmap UDP scan time: $nmap_udp_timer_end"
@@ -403,6 +420,10 @@ if [[ "$hosts" != "" ]]; then
 				send_result=$(curl --data "data=$result" "$url" -k -s -S 2>&1)
 				if [ -n "$send_result" ]; then
 					db_log "Error when submitting discovery result (device). $send_result" "" "fail" "3"
+					if [[ $debugging -gt 0 ]]; then
+						echo "Error when submitting discovery result (device)"
+						echo "$send_result"
+					fi
 				fi
 			else
 				write_log "IP $host responding."

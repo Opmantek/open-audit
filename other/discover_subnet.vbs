@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
 ' 
-' @version   2.1
+' @version   2.1.1
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -55,7 +55,6 @@ dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/input/discoveries"
 dim objHTTP
 dim sequential : sequential = "y"
-dim os_scan : os_scan = "n"
 dim hosts
 dim hosts_in_subnet
 dim host
@@ -73,6 +72,7 @@ dim temp
 dim port
 dim program
 dim script_timer : script_timer = Timer
+dim version: version = "2.1.1"
 
 
 ' below we take any command line arguements
@@ -99,9 +99,6 @@ for each strArg in objArgs
 
             case "log_no_response"
                 log_no_response = varArray(1)
-
-            case "os_scan"
-                os_scan = varArray(1)
 
             case "org_id"
                 org_id = varArray(1)
@@ -132,12 +129,6 @@ for each strArg in objArgs
     end if
 next
 
-if ( os_scan = "y" ) then
-    os_scan = "-O"
-else
-    os_scan = ""
-end if
-
 if (help = "y") then
     wscript.echo "------------------------------"
     wscript.echo "Open-AudIT Subnet Audit Script"
@@ -160,10 +151,6 @@ if (help = "y") then
     wscript.echo ""
     wscript.echo "  discovery_id"
     wscript.echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
-    wscript.echo ""
-    wscript.echo "  os_scan"
-    wscript.echo "    *n - Do not use the -O Nmap flag when scanning devices."
-    wscript.echo "     y - Use -O (will slow down scan and requires SUID be set on the Nmap binary."
     wscript.echo ""
     wscript.echo "  echo_output"
     wscript.echo "    *n - Do not echo the result to the screen."
@@ -275,9 +262,22 @@ end if
 log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
 write_log()
 
-if debugging > "0" then wscript.echo "My PID: " & current_pid
-if debugging > "0" then wscript.echo "Scanning Subnet: " & subnet_range
-if debugging > "0" then wscript.echo "URL: " & url
+if debugging > "0" then
+    wscript.echo "----------------------------"
+    wscript.echo "Open-AudIT Discover Subnet script"
+    wscript.echo "Version: $version"
+    wscript.echo "----------------------------"
+    wscript.echo "My PID is           " & current_pid
+    wscript.echo "Create File:        " & create_file
+    wscript.echo "Discovery ID:       " & discovery_id
+    wscript.echo "Log Level:          " & debugging
+    wscript.echo "Nmap Binary:        " & nmap_path
+   'wscript.echo "Nmap Version:       " & nmap_full_version
+    wscript.echo "Submit Online:      " & submit_online
+    wscript.echo "Subnet Range:       " & subnet_range
+    wscript.echo "URL:                " & url
+    wscript.echo "----------------------------"
+end if
 
 exit_status = "y"
 
@@ -322,7 +322,7 @@ for each host in hosts
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n " & os_scan & " --host-timeout 30 " & host
+    command = nmap_path & " -vv -n --host-timeout 30 " & host
     nmap_ports = ""
     execute_command()
 
@@ -387,6 +387,23 @@ for each host in hosts
         end if
     Loop
 
+    ' Apple IOS check
+    command = nmap_path & " -n -Pn -p62078 --host-timeout 20 " & host
+    execute_command()
+    Do Until objExecObject.Status = 0
+        WScript.Sleep 100
+    Loop
+    Do Until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if instr(lcase(line), "62078/tcp") then
+            if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
+                nmap_ports = nmap_ports & ",62078/tcp/iphone-sync"
+                host_is_up = "true"
+            end if
+        end if
+    Loop
+
+    ' UDP check
     command = nmap_path & " -n -sU -p161 --host-timeout 20 " & host
     execute_command()
     Do Until objExecObject.Status = 0
@@ -395,7 +412,8 @@ for each host in hosts
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
         if instr(lcase(line), "161/udp") then
-            if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
+            ' if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
+            if (instr(lcase(line), "open")) then
                 nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
                 host_is_up = "true"
@@ -409,7 +427,9 @@ for each host in hosts
     end if
 
     if host_is_up = "true" then
-        nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
+        if len(nmap_ports) > 0 then
+            nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
+        end if
         result =          " <device>" & vbcrlf
         result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
         result = result & "     <ip><![CDATA[" & host & "]]></ip>" & vbcrlf

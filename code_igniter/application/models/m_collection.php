@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1
+* @version   2.1.1
 * @link      http://www.open-audit.org
  */
 class M_collection extends MY_Model
@@ -142,10 +142,12 @@ class M_collection extends MY_Model
         $result = $this->run_sql($sql, array());
 
         # Add the Org name into every row that contains the orgs_id attribute
-        for ($i=0; $i < count($result); $i++) {
-            foreach ($orgs as $org) {
-                if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
-                    $result[$i]->org_name = $org->name;
+        if (!empty($result) and !empty($orgs)) {
+            for ($i=0; $i < count($result); $i++) {
+                foreach ($orgs as $org) {
+                    if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
+                        $result[$i]->org_name = $org->name;
+                    }
                 }
             }
         }
@@ -467,22 +469,15 @@ class M_collection extends MY_Model
             } else {
                 $data->description = '';
             }
-            if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false) {
-                $this->load->model('m_networks');
-                $this->load->helper('network');
-                $temp = network_details($data->other->subnet);
-                if (!empty($temp->error) and filter_var($data->other->subnet, FILTER_VALIDATE_IP) === false) {
-                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
-                    log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
-                    return;
-                } elseif (strpos($data->other->subnet, '/') !== false) {
-                    $network = new stdClass();
-                    $network->name = $data->other->subnet;
-                    $network->network = $data->other->subnet;
-                    $network->org_id = $data->org_id;
-                    $network->description = $data->name;
-                    $this->m_networks->upsert($network);
-                } elseif (filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
+            $this->load->model('m_networks');
+            $this->load->helper('network');
+
+            if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false and filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
+                # We have a single IP - ie 192.168.1.1
+                $test = $this->m_networks->check_ip($data->other->subnet);
+                if (!$test) {
+                    # This IP is not in any existing subnets - insert a /30
+                    # TODO - account for Org ID in existing as check_ip returns only true/false, and does not acount for orgs
                     $temp = network_details($data->other->subnet.'/30');
                     $network = new stdClass();
                     $network->name = $temp->network.'/'.$temp->network_slash;
@@ -491,15 +486,73 @@ class M_collection extends MY_Model
                     $network->description = $data->name;
                     $this->m_networks->upsert($network);
                 }
-            } else {
-                if ($data->type == 'subnet') {
-                    $warning = 'IP range, instead of subnet supplied. No network entry created.';
-                    if ($this->config->config['blessed_subnets_use'] != 'n') {
-                        $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
-                    }
-                    $this->session->set_flashdata('warning', $warning);
-                }
             }
+
+            if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false and strpos($data->other->subnet, '/') !== false) {
+                # We have a regular subnet - ie 192.168.1.0/24
+                $temp = network_details($data->other->subnet);
+                if (!empty($temp->error)) {
+                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
+                    log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
+                    return;
+                }
+                $network = new stdClass();
+                $network->name = $temp->network.'/'.$temp->network_slash;
+                $network->network = $temp->network.'/'.$temp->network_slash;
+                $network->org_id = $data->org_id;
+                $network->description = $data->name;
+                $this->m_networks->upsert($network);
+            }
+
+            if ($data->type == 'subnet' and stripos($data->other->subnet, '-') !== false) {
+                # We have a range and cannot insert a network
+                $warning = 'IP range, instead of subnet supplied. No network entry created.';
+                if ($this->config->config['blessed_subnets_use'] != 'n') {
+                    $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
+                }
+                $this->session->set_flashdata('warning', $warning);
+            }
+
+            // if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false) {
+            //     # We have either an IP address or a subnet
+
+            //     if (strpos($data->other->subnet, '/') === false and filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
+            //         # We only have an IP address - see if it already is covered by an existing networks entry
+            //         $test = $this->m_networks->check_ip($data->other->subnet);
+            //         if (!$test) {
+            //             # Not an any existing - need to insert.
+            //         }
+            //     }
+            //     $temp = network_details($data->other->subnet);
+            //     if (!empty($temp->error) and filter_var($data->other->subnet, FILTER_VALIDATE_IP) === false) {
+            //         $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
+            //         log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
+            //         return;
+            //     } elseif (strpos($data->other->subnet, '/') !== false) {
+            //         $network = new stdClass();
+            //         $network->name = $data->other->subnet;
+            //         $network->network = $data->other->subnet;
+            //         $network->org_id = $data->org_id;
+            //         $network->description = $data->name;
+            //         $this->m_networks->upsert($network);
+            //     } elseif (filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
+            //         $temp = network_details($data->other->subnet.'/30');
+            //         $network = new stdClass();
+            //         $network->name = $temp->network.'/'.$temp->network_slash;
+            //         $network->network = $temp->network.'/'.$temp->network_slash;
+            //         $network->org_id = $data->org_id;
+            //         $network->description = $data->name;
+            //         $this->m_networks->upsert($network);
+            //     }
+            // } else {
+            //     if ($data->type == 'subnet') {
+            //         $warning = 'IP range, instead of subnet supplied. No network entry created.';
+            //         if ($this->config->config['blessed_subnets_use'] != 'n') {
+            //             $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
+            //         }
+            //         $this->session->set_flashdata('warning', $warning);
+            //     }
+            // }
             $data->other = json_encode($data->other);
         }
 
@@ -890,7 +943,7 @@ class M_collection extends MY_Model
                 break;
 
             case "orgs":
-                return(' name description parent_id ad_group ');
+                return(' name description parent_id ad_group type ');
                 break;
 
             case "queries":
