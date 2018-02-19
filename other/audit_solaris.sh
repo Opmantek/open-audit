@@ -86,6 +86,9 @@ last_seen_by="audit"
 # NEWLINEIFS=$(echo -en "\n\b");
 # IFS="$NEWLINEIFS";
 
+# Setting PATH
+export PATH=$PATH:/usr/bin:/usr/sbin:/usr/sfw/bin
+
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
 
@@ -946,7 +949,7 @@ if [ "$debugging" -gt "0" ]; then
         echo "User Info"
 fi
 
-echo "      <user>" >> $xml_file
+echo "  <user>" >> $xml_file
 
 ORIGIFS=$IFS
 
@@ -969,7 +972,7 @@ done
 
 IFS=$ORIGIFS
 
-echo "      </user>" >> $xml_file
+echo "  </user>" >> $xml_file
 
 ########################################################
 # SOFTWARE SECTION                                     #
@@ -983,12 +986,15 @@ packages=`pkginfo | awk '{print $2}'`
 
 echo "      <software>" >> $xml_file
 # include OS in software
-echo "\t\t<item>\n\t\t\t<name>$system_os_name</name>\n\t\t\t<version>$system_os_version</version>\n\t\t\t<description>Operating System</description>\n\t\t\t<publisher>Oracle</publisher>\n\t\t</item>\n" >> $xml_file
+echo "      <item><name>$system_os_name</name><version>$system_os_version</version><description>Operating System</description><publisher>Oracle</publisher></item>" >> $xml_file
 for info in $packages; do
     softwarename=$info
     version=`pkgparam $info VERSION`
     homepage=`pkgparam $info HOTLINE`
-    echo "\t\t<item>\n\t\t\t<name>$softwarename</name>\n\t\t\t<version>$version</version>\n\t\t\t<url>$homepage</url>\n\t\t</item>\n" >> $xml_file
+    if [ "$homepage" = "Please contact your local service provider" ]; then
+        homepage=""
+    fi
+    echo "<item><name>$softwarename</name><version>$version</version><url>$homepage</url></item>" >> $xml_file
 done
 
 echo "      </software>" >> $xml_file
@@ -1004,7 +1010,7 @@ fi
 echo "      <service>" >> $xml_file
 
 for service in $(svcs -a | grep online | awk '{print $3}'); do
-    echo "\t\t<item>\n\t\t\t<name>$service</name>\n\t\t</item>" >> $xml_file
+    echo "      <item><name>$service</name></item>" >> $xml_file
 done
 echo "      </service>" >> $xml_file
 
@@ -1035,7 +1041,7 @@ echo "</system>" >> $xml_file
 
 if [ "$submit_online" = "y" ]; then
         echo "Submitting results to server"
-        wget --post-file="$xml_file" $url 2>/dev/null
+        wget --no-check-certificate --post-file="$xml_file" $url 2>/dev/null
 fi
 
 
