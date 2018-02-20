@@ -156,7 +156,7 @@ class M_device extends MY_Model
             $log_message[] = "Running match_hostname_uuid for uuid: " . $details->uuid . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid", "$details->hostname");
+            $data = array("$details->hostname", "$details->uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if (count($row) > 0) {
@@ -462,7 +462,7 @@ class M_device extends MY_Model
             $log_message[] = 'Running match_ip for IP: ' . $details->ip;
             $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array(ip_address_to_db($details->ip), "$details->ip");
+            $data = array(ip_address_to_db($details->ip));
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if (count($row) > 0) {
