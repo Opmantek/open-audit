@@ -425,10 +425,13 @@ for each host in hosts
     if (instr(local_net, host & " ") > 0) then
         wmi_status = "true"
     end if
-
     if host_is_up = "true" then
         if len(nmap_ports) > 0 then
             nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
+        else
+            if debugging > "0" then
+                wscript.echo "No open ports, but device is up for IP: " & host
+            end if
         end if
         result =          " <device>" & vbcrlf
         result = result & "     <subnet_range><![CDATA[" & subnet_range & "]]></subnet_range>" & vbcrlf
