@@ -167,6 +167,23 @@ $sql = "INSERT INTO `attributes` VALUES (NULL,1,'orgs','type','Trust','trust','s
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# New device types
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','iPhone','iphone','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','iPad','ipad','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','iPod','ipod','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','device_type','Android','android','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # Orgs type
 $this->alter_table('orgs', 'type', "ADD `type` varchar(100) NOT NULL DEFAULT 'organisation' AFTER `description`", 'add');
 

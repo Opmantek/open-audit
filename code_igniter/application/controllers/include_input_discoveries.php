@@ -476,17 +476,17 @@ foreach ($xml->children() as $input) {
         $log->message = 'Detected port TCP 62078 open. Assuming an Apple IOS device';
         discovery_log($log);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        $device->type = 'smart phone';
+        $device->type = 'iphone';
         if (stripos($device->hostname, 'iphone') !== false) {
-            $device->type = 'smart phone';
+            $device->type = 'iphone';
             $device->model = 'Apple iPhone';
         }
         if (stripos($device->hostname, 'ipad') !== false) {
-            $device->type = 'tablet';
+            $device->type = 'ipad';
             $device->model = 'Apple iPad';
         }
         if (stripos($device->hostname, 'ipod') !== false) {
-            $device->type = 'media device';
+            $device->type = 'ipod';
             $device->model = 'Apple iPod';
         }
         $device->os_group = 'Apple IOS';
@@ -497,7 +497,7 @@ foreach ($xml->children() as $input) {
     # Android devices typically jave a hostname of android-***
     if (stripos($device->hostname, 'android') !== false) {
         # Could be a table or smart phone. We have no way of knowing so simply guessing it's a smart phone
-        $device->type = 'smart phone';
+        $device->type = 'android';
         $device->os_group = 'Android';
         $device->os_family = 'Android';
         $device->os_name = 'Android';
@@ -580,6 +580,7 @@ foreach ($xml->children() as $input) {
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         unset($log->id, $command_log_id);
 
+        $log->severity = 7;
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
         $device->original_last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
@@ -592,6 +593,7 @@ foreach ($xml->children() as $input) {
     } else {
         // we have a new system - INSERT
         $action = 'insert';
+        $log->severity = 7;
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         discovery_log($log);
         $device->id = $this->m_device->insert($device);
