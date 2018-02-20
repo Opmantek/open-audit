@@ -705,7 +705,6 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
                 os_name = ""
                 computer_ou = ""
                 last_seen = ""
-                icon = ""
                 last_logon = ""
                 dns_hostname = ""
                 on error resume next
@@ -782,7 +781,6 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
 
                 os_name = "Microsoft " & objRecordSet.Fields("operatingsystem").Value
                 family = os_family(objRecordSet.Fields("operatingsystem").Value)
-                icon = lcase(replace(family, " ", "_"))
                 if os_group = "Windows" then
                     result.WriteText "<?xml version=""1.0"" encoding=""UTF-8""?>" & vbcrlf
                     result.WriteText "<system>" & vbcrlf
@@ -793,7 +791,7 @@ if ((error_returned <> 0) or ((pc_alive = 0) and (ping_target = "y"))) then
                     result.WriteText "        <ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
                     result.WriteText "        <domain>" & escape_xml(computer_dns) & "</domain>" & vbcrlf
                     result.WriteText "        <type>computer</type>" & vbcrlf
-                    result.WriteText "        <icon>" & escape_xml(icon) & "</icon>" & vbcrlf
+                    result.WriteText "        <icon>windows</icon>" & vbcrlf
                     result.WriteText "        <os_group>" & escape_xml(os_group) & "</os_group>" & vbcrlf
                     result.WriteText "        <os_family>" & escape_xml(family) & "</os_family>" & vbcrlf
                     result.WriteText "        <os_name>" & escape_xml(os_name) & "</os_name>" & vbcrlf
@@ -936,7 +934,6 @@ for each objItem in colItems
     system_os_family = os_family(objItem.Caption)
     system_os_name = objItem.Caption
     system_os_name = replace(system_os_name, "(R)", "")
-    system_os_icon = replace(lcase(system_os_family), " ", "_")
     system_description = objItem.Description
     if details_to_lower = "y" then system_description = lcase(system_description) end if
     OSInstall = objItem.InstallDate
@@ -1285,7 +1282,7 @@ result.WriteText "      <domain>" & escape_xml(system_domain) & "</domain>" & vb
 result.WriteText "      <ip>" & escape_xml(man_ip_address) & "</ip>" & vbcrlf
 result.WriteText "      <description>" & escape_xml(system_description) & "</description>" & vbcrlf
 result.WriteText "      <type>computer</type>" & vbcrlf
-result.WriteText "      <icon>" & system_os_icon & "</icon>" & vbcrlf
+result.WriteText "      <icon>windows</icon>" & vbcrlf
 result.WriteText "      <os_group>Windows</os_group>" & vbcrlf
 result.WriteText "      <os_family>" & escape_xml(system_os_family) & "</os_family>" & vbcrlf
 result.WriteText "      <os_name>" & escape_xml(system_os_name) & "</os_name>" & vbcrlf
