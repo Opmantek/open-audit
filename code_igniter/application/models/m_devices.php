@@ -1269,6 +1269,9 @@ class M_devices extends MY_Model
                 if (strripos($details->os_name, "slackware") !== false) {
                     $details->icon = 'slackware';
                 }
+                if (strripos($details->os_name, "solaris") !== false) {
+                    $details->icon = 'solaris';
+                }
                 if (strripos($details->os_name, "solus") !== false) {
                     $details->icon = 'solus';
                 }
