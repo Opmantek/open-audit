@@ -337,8 +337,6 @@ class devices extends MY_Controller
             if (!empty($temp)) {
                 $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             }
-            $this->load->model('m_collection');
-            $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
         }
