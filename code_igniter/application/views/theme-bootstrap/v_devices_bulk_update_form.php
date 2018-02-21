@@ -63,8 +63,10 @@ $special['environment'] .= '</select><span class="input-group-btn"><button id="e
 
 
 $special['locations'] = '<div class="form-group"><label for="location_id" class="col-sm-4 control-label">Location</label><div class="col-sm-8 input-group"><select id="location_id" class="form-control" disabled><option value="" label=" "> </option>';
-foreach ($data['locations'] as $item) {
-    $special['locations'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
+if (!empty($data['locations'])) {
+    foreach ($data['locations'] as $item) {
+        $special['locations'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
+    }
 }
 $special['locations'] .= '</select><span class="input-group-btn"><button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
