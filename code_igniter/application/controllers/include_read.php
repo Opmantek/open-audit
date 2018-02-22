@@ -153,10 +153,6 @@ if ($this->response->meta->collection == 'users') {
     }
 }
 
-if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
-    $this->response->edit = true;
-}
-
 output($this->response);
 
 $log = new stdClass();
