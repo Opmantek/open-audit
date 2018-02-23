@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1
+* @version   2.1.1
 * @link      http://www.open-audit.org
  */
 class M_discoveries extends MY_Model
@@ -60,11 +60,6 @@ class M_discoveries extends MY_Model
         if (!empty($result[0]->other)) {
             $result[0]->other = json_decode($result[0]->other);
         }
-        if (!empty($this->config->config['discovery_nmap_os'])) {
-            $nmap_os = $this->config->config['discovery_nmap_os'];
-        } else {
-            $nmap_os = 'n';
-        }
         if ($result[0]->type == 'subnet') {
             $command = '';
             // Unix based discovery
@@ -77,8 +72,7 @@ class M_discoveries extends MY_Model
                             " echo_output=n" .
                             " create_file=n" .
                             " debugging=0" .
-                            " discovery_id=" . $result[0]->id .
-                            " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                            " discovery_id=" . $result[0]->id . " > /dev/null 2>&1 &";
                 if (php_uname('s') == 'Linux') {
                     $command = 'nohup ' . $command;
                 }
@@ -92,8 +86,7 @@ class M_discoveries extends MY_Model
                             " echo_output=n" .
                             " create_file=n" .
                             " debugging=0" .
-                            " discovery_id=" . $result[0]->id .
-                            " os_scan=" . $nmap_os;
+                            " discovery_id=" . $result[0]->id;
             }
             $result[0]->command = $command;
         }
@@ -197,12 +190,6 @@ class M_discoveries extends MY_Model
         $data = array(intval($limit), intval($id));
         $this->run_sql($sql, $data);
 
-        if (!empty($this->config->config['discovery_nmap_os'])) {
-            $nmap_os = $this->config->config['discovery_nmap_os'];
-        } else {
-            $nmap_os = 'n';
-        }
-
         if ($CI->response->meta->debug) {
             $debugging = 1;
         } else {
@@ -223,8 +210,7 @@ class M_discoveries extends MY_Model
                                     " echo_output=n" .
                                     " create_file=n" .
                                     " debugging=" . $debugging .
-                                    " discovery_id=" . $discovery->id .
-                                    " os_scan=" . $nmap_os . " > /dev/null 2>&1 &";
+                                    " discovery_id=" . $discovery->id . " > /dev/null 2>&1 &";
                 if (php_uname('s') == 'Linux') {
                     $command_string = 'nohup ' . $command_string;
                 }
@@ -256,8 +242,7 @@ class M_discoveries extends MY_Model
                                     " echo_output=n" .
                                     " create_file=n" .
                                     " debugging=0" .
-                                    " discovery_id=" . $discovery->id .
-                                    " os_scan=" . $nmap_os;
+                                    " discovery_id=" . $discovery->id;
                 pclose(popen($command_string, "r"));
             }
         }

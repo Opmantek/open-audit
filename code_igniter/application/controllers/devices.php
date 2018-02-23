@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1
+* @version   2.1.1
 * @link      http://www.open-audit.org
 */
 
@@ -337,8 +337,6 @@ class devices extends MY_Controller
             if (!empty($temp)) {
                 $this->response->included = array_merge($this->response->included, $this->m_fields->collection());
             }
-            $this->load->model('m_collection');
-            $this->response->included = array_merge($this->response->included, $this->m_collection->collection('attributes'));
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
         }

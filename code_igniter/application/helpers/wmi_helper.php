@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.1
+ * @version   2.1.1
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -60,6 +60,7 @@ if (! function_exists('windows_credentials')) {
         if (empty($log)) {
             $log = new stdClass();
         }
+        $log->severity = 7;
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
         $log->message = 'Windows credentials starting';
@@ -80,36 +81,26 @@ if (! function_exists('windows_credentials')) {
         }
         foreach ($credentials as $credential) {
             if ($credential->type == 'windows') {
-
-            $log->file = 'wmi_helper';
-            $log->function = 'windows_credentials';
-            $log->message = 'Testing credential set ' . $credential->name;
-            discovery_log($log);
-
-                $command = 'csproduct get uuid';
-                $wmi_result = wmi_command($ip, $credential, $command, $log);
-                unset($log->command);
+                $log->file = 'wmi_helper';
+                $log->function = 'windows_credentials';
+                $log->message = 'Testing credential set ' . $credential->name;
+                $log->command = 'csproduct get uuid';
+                $wmi_result = wmi_command($ip, $credential, $log->command, $log);
                 if ($wmi_result != false and $wmi_result['status'] == 0) {
-                    $log->file = 'wmi_helper';
-                    $log->function = 'windows_credentials';
                     $log->message = "Windows credentials complete. Credential set " . $credential->name . " working on " . $ip;
-                    $log->severity = 6;
                     discovery_log($log);
-                    unset($log->command);
                     return $credential;
                 } else {
-                    $log->severity = 7;
-                    $log->function = 'windows_credentials';
                     $log->message = "Credential set for Windows named " . $credential->name . " not working on " . $ip;
                     discovery_log($log);
                 }
             }
         }
+        unset($log->command);
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
         $log->message = 'Windows credentials complete. No working Windows credentials for ' . $ip . ' found.';
-        $log->severity = 3;
-        $log->severity_text = 'error';
+        $log->severity = 7;
         discovery_log($log);
         return false;
     }
@@ -191,10 +182,6 @@ if (! function_exists('execute_windows')) {
             $username = $temp[0];
             $domain = $temp[1];
             unset($temp);
-            // $command_string = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%".$password." --uninstall //".$ip." \"$command\" ";
-            // $log->command = "screen -D -m timeout 5m /usr/local/open-audit/other/winexe-static -U ".$domain . '/' . $username."%****** --uninstall //".$ip." \"$command\" ";
-            // $echo = str_replace($password, '******', $command);
-            // exec($command_string, $output, $return_var);
             if ($domain != '') {
                 $domain .= '/';
             }
@@ -214,16 +201,9 @@ if (! function_exists('execute_windows')) {
             } else {
                 $domain = '';
             }
-            $command_string = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
+            $command_string = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
             $log->command = str_replace($credentials->credentials->password, '******', $command_string);
             exec($command_string, $output, $return_var);
-        }
-
-
-        if ($return_var == 0) {
-            $log->command_complete = 'y';
-        } else {
-            $log->command_complete = 'n';
         }
         discovery_log($log);
         unset($log->id, $log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
@@ -440,7 +420,7 @@ if (! function_exists('copy_to_windows')) {
             }
             unset($temp);
             $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
+            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
             $log->command = str_replace($password, '******', $command);
             $log->message = 'Attempting to copy file to Windows.';
             discovery_log($log);
@@ -491,10 +471,11 @@ if (! function_exists('wmi_command')) {
 
         $log->file = 'wmi_helper';
         $log->function = 'wmi_command';
+        $log->severity = 7;
         $return = array('output' => '', 'status' => '');
 
-        $log->message = 'Using credentials name ' . $credentials->name;
-        discovery_log($log);
+        $log->message = 'Using credentials named ' . $credentials->name;
+        #discovery_log($log);
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::wmi_command';
@@ -586,24 +567,31 @@ if (! function_exists('wmi_command')) {
             # $ doesn't require escaping
             # ' doesn't require escaping when using "password"
             # " doesn't seem to work even when escaped using \"
+            $log->message = 'Attempting to execute command';
             $log->command = '';
             $command_string = '';
+            $log->severity = 7;
+            $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:\'******\' ' . $command;
+
             if ((strpos($password, '"') !== false) and (strpos($password, "'") !== false)) {
+                $log->severity = 5;
                 $log->message = 'Incompatible password (cannot have " and \' together in a wmic password).';
                 discovery_log($log);
                 return false;
-            } else if (strpos($password, '"') !== false) {
-                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:\'******\' ' . $command;
-                $log->message = 'Password contains double quotes.';
-                discovery_log($log);
-            } else {
-                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
-                $log->message = 'Password contains single quotes.';
-                discovery_log($log);
             }
 
+            if (strpos($password, '"') !== false) {
+                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:\'******\' ' . $command;
+                $log->message = 'Password contains double quotes.';
+            }
+
+            if (strpos($password, "'") !== false) {
+                $command_string =  '%comspec% /c start /b wmic /Node:"' . $ip . '" /user:"' . $domain.$username . '" /password:"******" ' . $command;
+                $log->message = 'Password contains single quotes.';
+            }
+
+            $log->severity = 7;
             $log->command = $command_string;
-            $log->message = "Attempting to execute command";
             $log->id = discovery_log($log);
             $command_string = str_replace("******", $password, $command_string);
             $item_start = microtime(true);
@@ -638,12 +626,13 @@ if (! function_exists('wmi_audit')) {
     {
         $log->file = 'wmi_helper';
         $log->function = 'wmi_audit';
+        $log->severity = 7;
         $log->message = 'WMI audit starting';
         discovery_log($log);
 
 
         if (empty($ip)) {
-            $log->message = 'No IP supplied to wmi_helper::wmi_audiy.';
+            $log->message = 'No IP supplied to wmi_helper::wmi_audit.';
             discovery_log($log);
             return false;
         }

@@ -442,6 +442,7 @@ if ($table == 'orgs') {
     $dictionary->columns->name = $name;
     $dictionary->columns->parent_id = 'Linked to <code>orgs.id</code>';
     $dictionary->columns->description = $description;
+    $dictionary->columns->type = 'The type of organisation.';
     $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;

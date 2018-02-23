@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.1
+ * @version   2.1.1
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -124,7 +124,8 @@ class M_device extends MY_Model
         }
 
         # Match based on the OMK uuid
-        if (!empty($details->omk_uuid)) {
+        if (!empty($details->omk_uuid) and empty($details->id)) {
+            // $log_message[] = "Running match_omk_uuid for " . $details->omk_uuid;
             $sql = "SELECT system.id FROM system WHERE system.omk_uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->omk_uuid");
@@ -140,12 +141,22 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            // $log_message[] = 'MISS on match_omk_uuid.';
+        } else {
+            // if (empty($details->omk_uuid)) {
+            //     $log_message[] = "Not running match_omk_uuid, omk_uuid not set.";
+            // } else if (!empty($details->id)) {
+            //     $log_message[] = "Not running match_omk_uuid, device id already set.";
+            // } else {
+            //     $log_message[] = "Not running match_omk_uuid.";
+            // }
         }
 
-        if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and !empty($details->uuid) and !empty($details->hostname)) {
+        if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and empty($details->id) and !empty($details->uuid) and !empty($details->hostname)) {
+            $log_message[] = "Running match_hostname_uuid for uuid: " . $details->uuid . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array("$details->uuid", "$details->hostname");
+            $data = array("$details->hostname", "$details->uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if (count($row) > 0) {
@@ -158,9 +169,23 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_hostname_uuid.';
+        } else {
+            if (strtolower($this->config->config['match_hostname_uuid']) != 'y') {
+                $log_message[] = "Not running match_hostname_uuid, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_hostname_uuid, device id already set.";
+            } else if (empty($device->uuid)) {
+                $log_message[] = "Not running match_hostname_uuid, uuid not set.";
+            } else if (empty($device->hostname)) {
+                $log_message[] = "Not running match_hostname_uuid, hostname not set.";
+            } else {
+                $log_message[] = "Not running match_hostname_uuid.";
+            }
         }
 
-        if (strtolower($this->config->config['match_hostname_dbus']) == 'y' and !empty($details->dbus_identifier) and !empty($details->hostname)) {
+        if (strtolower($this->config->config['match_hostname_dbus']) == 'y' and empty($details->id) and !empty($details->dbus_identifier) and !empty($details->hostname)) {
+            $log_message[] = "Running match_hostname_dbus for dbus_identifier: " . $details->dbus_identifier . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", "$details->dbus_identifier");
@@ -176,9 +201,23 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_hostname_dbus.';
+        } else {
+            if (strtolower($this->config->config['match_hostname_dbus']) != 'y') {
+                $log_message[] = "Not running match_hostname_dbus, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_hostname_dbus, device id already set.";
+            } else if (empty($device->dbus_identifier)) {
+                $log_message[] = "Not running match_hostname_dbus, dbus_identifier not set.";
+            } else if (empty($device->hostname)) {
+                $log_message[] = "Not running match_hostname_dbus, hostname not set.";
+            } else {
+                $log_message[] = "Not running match_hostname_dbus.";
+            }
         }
 
-        if (strtolower($this->config->config['match_hostname_serial']) == 'y' and !empty($details->serial) and !empty($details->hostname)) {
+        if (strtolower($this->config->config['match_hostname_serial']) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->hostname)) {
+            $log_message[] = "Running match_hostname_serial for serial: " . $details->serial . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname", "$details->serial");
@@ -194,9 +233,23 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_hostname_serial.';
+        } else {
+            if (strtolower($this->config->config['match_hostname_serial']) != 'y') {
+                $log_message[] = "Not running match_hostname_serial, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_hostname_serial, device id already set.";
+            } else if (empty($device->serial)) {
+                $log_message[] = "Not running match_hostname_serial, serial not set.";
+            } else if (empty($device->hostname)) {
+                $log_message[] = "Not running match_hostname_serial, hostname not set.";
+            } else {
+                $log_message[] = "Not running match_hostname_serial.";
+            }
         }
 
-        if (strtolower($this->config->config['match_dbus']) == 'y' and !empty($details->dbus_identifier)) {
+        if (strtolower($this->config->config['match_dbus']) == 'y' and empty($details->id) and !empty($details->dbus_identifier)) {
+            $log_message[] = "Running match_dbus for " . $details->dbus_identifier;
             $sql = "SELECT system.id FROM system WHERE system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->dbus_identifier");
@@ -212,9 +265,21 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_dbus.';
+        } else {
+            if (strtolower($this->config->config['match_dbus']) != 'y') {
+                $log_message[] = "Not running match_dbus, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_dbus, device id already set.";
+            } else if (empty($device->dbus_identifier)) {
+                $log_message[] = "Not running match_dbus, dbus_identifier not set.";
+            } else {
+                $log_message[] = "Not running match_dbus.";
+            }
         }
 
         if (strtolower($this->config->config['match_fqdn']) == 'y' and empty($details->id) and !empty($details->fqdn)) {
+            $log_message[] = "Running match_fqdn for " . $details->fqdn;
             $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->fqdn");
@@ -230,9 +295,21 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_fqdn.';
+        } else {
+            if (strtolower($this->config->config['match_fqdn']) != 'y') {
+                $log_message[] = "Not running match_fqdn, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_fqdn, device id already set.";
+            } else if (empty($device->fqdn)) {
+                $log_message[] = "Not running match_fqdn, fqdn not set.";
+            } else {
+                $log_message[] = "Not running match_fqdn.";
+            }
         }
 
         if (strtolower($this->config->config['match_serial_type']) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->type)) {
+            $log_message[] = "Running match_serial_type for serial: " . $details->serial . ", with type: " . $details->type;
             $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array("$details->serial", "$details->type");
@@ -248,12 +325,27 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_serial_type.';
+        } else {
+            if (strtolower($this->config->config['match_serial_type']) != 'y') {
+                $log_message[] = "Not running match_serial_type, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_serial_type, device id already set.";
+            } else if (empty($device->serial)) {
+                $log_message[] = "Not running match_serial_type, serial not set.";
+            } else if (empty($device->type)) {
+                $log_message[] = "Not running match_serial_type, type not set.";
+            } else {
+                $log_message[] = "Not running match_serial_type.";
+            }
         }
 
         if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
             if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                $log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' excluding VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
             } else {
+                $log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' including VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
             }
 
@@ -264,42 +356,102 @@ class M_device extends MY_Model
             if (count($row) > 0) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
-                $log_message[] = 'HIT on Mac Address (details): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
+                $log_message[] = 'HIT on Mac Address (ip table): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
                 foreach ($log_message as $message) {
                     $log->message = $message;
                     discovery_log($log);
                 }
                 return $details->id;
             }
+            $log_message[] = 'MISS on match_mac (ip table).';
+        } else {
+            if (strtolower($this->config->config['match_mac']) != 'y') {
+                $log_message[] = 'Not running match_mac (ip table), config item not set';
+            } else if (!empty($details->id)) {
+                $log_message[] = 'Not running match_mac (ip table), device id already set.';
+            } else if (empty($details->mac_address)) {
+                $log_message[] = 'Not running match_mac (ip table), mac_address not set.';
+            } else  {
+                $log_message[] = 'Not running match_mach (ip table).';
+            }
+        }
 
+        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
+            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                $log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' excluding VMware MACs';
+                $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+            } else {
+                $log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' including VMware MACs';
+                $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND system.status != 'deleted' LIMIT 1";
+            }
+
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->mac_address");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on Mac Address (network table): ' . $details->mac_address . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+            $log_message[] = 'MISS on match_mac (network table).';
+        } else {
+            if (strtolower($this->config->config['match_mac']) != 'y') {
+                $log_message[] = 'Not running match_mac (network table), config item not set';
+            } else if (!empty($details->id)) {
+                $log_message[] = 'Not running match_mac (network table), device id already set.';
+            } else if (empty($details->mac_address)) {
+                $log_message[] = 'Not running match_mac (network table), mac_address not set.';
+            } else  {
+                $log_message[] = 'Not running match_mach (network table).';
+            }
+        }
+
+        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_addresses)) {
             # check all MAC addresses - this caters for an actual audit script result
-            if (!empty($details->mac_addresses) and count($details->mac_addresses) > 0 and $details->id == '') {
-                foreach ($details->mac_addresses as $mac_address) {
-                    foreach ($mac_address as $mac) {
-                        if ($mac != '' and $mac != '00:00:00:00:00:00') {
-                            # check the ip table
-                            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
-                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
-                            } else {
-                                $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
+            foreach ($details->mac_addresses as $mac_address) {
+                foreach ($mac_address as $mac) {
+                    if (!empty($mac) and (string)$mac != '00:00:00:00:00:00') {
+                        # check the ip table
+                        if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                            $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' excluding VMware MACs';
+                            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+                        } else {
+                            $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' including VMware MACs';
+                            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
+                        }
+                        $sql = $this->clean_sql($sql);
+                        $data = array("$mac");
+                        $query = $this->db->query($sql, $data);
+                        $row = $query->row();
+                        if (count($row) > 0) {
+                            $details->id = $row->id;
+                            $log->system_id = $details->id;
+                            $log_message[] = 'HIT on Mac Address (addresses): ' . $mac . ' (System ID ' . $details->id . ')';
+                            foreach ($log_message as $message) {
+                                $log->message = $message;
+                                discovery_log($log);
                             }
-                            $sql = $this->clean_sql($sql);
-                            $data = array("$mac");
-                            $query = $this->db->query($sql, $data);
-                            $row = $query->row();
-                            if (count($row) > 0) {
-                                $details->id = $row->id;
-                                $log->system_id = $details->id;
-                                $log_message[] = 'HIT on Mac Address (audit): ' . $mac . ' (System ID ' . $details->id . ')';
-                                foreach ($log_message as $message) {
-                                    $log->message = $message;
-                                    discovery_log($log);
-                                }
-                                return $details->id;
-                            }
+                            return $details->id;
                         }
                     }
                 }
+            }
+            $log_message[] = 'MISS on match_mac (addresses).';
+        } else {
+            if (strtolower($this->config->config['match_mac']) != 'y') {
+                $log_message[] = 'Not running match_mac (addresses), config item not set';
+            } else if (!empty($details->id)) {
+                $log_message[] = 'Not running match_mac (addresses), device id already set.';
+            } else if (empty($details->mac_addresses)) {
+                $log_message[] = 'Not running match_mac (addresses), mac_addresses not set.';
+            } else  {
+                $log_message[] = 'Not running match_mac (addresses).';
             }
         }
 
@@ -307,9 +459,10 @@ class M_device extends MY_Model
         if (strtolower($this->config->config['match_ip']) == 'y' and empty($details->id) and !empty($details->ip) and filter_var($details->ip, FILTER_VALIDATE_IP)) {
             # first check the ip table as eny existing devices that have been seen
             # by more than just Nmap will have an entry here
+            $log_message[] = 'Running match_ip for IP: ' . $details->ip;
             $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
-            $data = array(ip_address_to_db($details->ip), "$details->ip");
+            $data = array(ip_address_to_db($details->ip));
             $query = $this->db->query($sql, $data);
             $row = $query->row();
             if (count($row) > 0) {
@@ -345,9 +498,21 @@ class M_device extends MY_Model
                     return $details->id;
                 }
             }
+            $log_message[] = 'MISS on match_ip.';
+        } else {
+            if (strtolower($this->config->config['match_ip']) != 'y') {
+                $log_message[] = 'Not running match_ip, config item not set';
+            } else if (!empty($details->id)) {
+                $log_message[] = 'Not running match_ip, device id already set.';
+            } else if (empty($details->ip)) {
+                $log_message[] = 'Not running match_ip, ip not set.';
+            } else  {
+                $log_message[] = 'Not running match_ip.';
+            }
         }
 
         if (strtolower($this->config->config['match_hostname']) == 'y' and empty($details->id) and !empty($details->hostname)) {
+            $log_message[] = 'Running match_hostname for hostname: ' . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE (system.hostname = ?) AND system.status != 'deleted'";
             $sql = $this->clean_sql($sql);
             $data = array("$details->hostname");
@@ -391,17 +556,28 @@ class M_device extends MY_Model
                     unset($temp);
                 }
             }
+            $log_message[] = 'MISS on match_hostname.';
+        } else {
+            if (strtolower($this->config->config['match_hostname']) != 'y') {
+                $log_message[] = 'Not running match_hostname, config item not set';
+            } else if (!empty($details->id)) {
+                $log_message[] = 'Not running match_hostname, device id already set.';
+            } else if (empty($details->hostname)) {
+                $log_message[] = 'Not running match_hostname, hostname not set.';
+            } else  {
+                $log_message[] = 'Not running match_hostname.';
+            }
         }
 
-        $temp = @(string) $details->id;
+        $temp = @(string)$details->id;
         if (is_null($temp) or $temp == '') {
-            $log_message[] = 'Could not find a match for the device with IP '  . $details->ip;
+            $log_message[] = 'Could not find any matching attributes for the device with IP '  . $details->ip;
             foreach ($log_message as $message) {
                 $log->message = $message;
                 discovery_log($log);
             }
         } else {
-            $log_message[] = 'Returning system_id for device with IP '  . $details->ip . ' (' . $details->id . ')';
+            $log_message[] = 'Returning system.id for device with IP '  . $details->ip . ' (' . $details->id . ')';
             foreach ($log_message as $message) {
                 $log->message = $message;
                 discovery_log($log);
@@ -626,20 +802,25 @@ class M_device extends MY_Model
         }
 
         # insert the network card details of we have them
-        if ((isset($details->mac_address) and $details->mac_address != '') and
-            (isset($details->ip) and $details->ip != '') and
-            (isset($details->subnet) and $details->subnet != '') and
-            (isset($details->id) and $details->id != '')) {
-            $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES (NULL, ?, 'y', ?, ?, ?, '', ?, ?, '4', '', '')";
-            $sql = $this->clean_sql($sql);
-            $data = array(
-                "$details->id",
-                "$details->timestamp",
-                "$details->timestamp",
-                "$details->mac_address",
-                "$details->ip",
-                "$details->subnet");
-            $query = $this->db->query($sql, $data);
+        # This is only required for manual uploading of devices (via web form or via CSV)
+        #.   Discoveries and audits already have IP items populated
+        # TODO - Can we move this into another function and only run if we're manually inserting devices?
+        if (!empty($details->last_seen_by) and ($details->last_seen_by == 'web form' or $details->last_seen_by == 'user')) {
+            if ((isset($details->mac_address) and $details->mac_address != '') and
+                (isset($details->ip) and $details->ip != '') and
+                (isset($details->subnet) and $details->subnet != '') and
+                (isset($details->id) and $details->id != '')) {
+                $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES (NULL, ?, 'y', ?, ?, ?, '', ?, ?, '4', '', '')";
+                $sql = $this->clean_sql($sql);
+                $data = array(
+                    "$details->id",
+                    "$details->timestamp",
+                    "$details->timestamp",
+                    "$details->mac_address",
+                    "$details->ip",
+                    "$details->subnet");
+                $query = $this->db->query($sql, $data);
+            }
         }
 
         # check if we have a matching entry in the vm table and update it if required

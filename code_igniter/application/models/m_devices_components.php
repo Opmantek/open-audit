@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1
+* @version   2.1.1
 * @link      http://www.open-audit.org
  */
 class M_devices_components extends MY_Model
@@ -572,7 +572,7 @@ class M_devices_components extends MY_Model
                         $vm->icon = $row->icon;
                         $sql = "UPDATE `system` SET `system`.`vm_server_name` = ?, `system`.`vm_system_id` = ? WHERE `system`.`id` = ?";
                         $sql = $this->clean_sql($sql);
-                        $data = array("$details->name", "$details->id", $vm->guest_system_id);
+                        $data = array("$details->hostname", "$details->id", $vm->guest_system_id);
                         $query = $this->db->query($sql, $data);
                     }
                 }
@@ -592,7 +592,6 @@ class M_devices_components extends MY_Model
         // get any existing current rows from the database
         $sql = "SELECT *, '' AS updated FROM `$table` WHERE current = 'y' AND `$table`.`system_id` = ?";
         $sql = $this->clean_sql($sql);
-        #$data = array($details->id); # this will be changed when we convert the system table
         $data = array($details->id);
         $query = $this->db->query($sql, $data);
         $db_result = $query->result();
@@ -605,13 +604,12 @@ class M_devices_components extends MY_Model
 
         // get the field list from the table
         $fields = $this->db->list_fields($table);
-
         // ensure we have a filtered array with only single copies of each $item
         $items = array();
         // for every input item
         foreach ($input->item as $input_key => $input_item) {
             $matched = 'n';
-            // loop through the building up item array
+            // loop through them, building up item array
             foreach ($items as $output_key => $output_item) {
                 // the matched count is the number of columns in the match_columns array
                 // that have equal values in our input items
@@ -625,7 +623,8 @@ class M_devices_components extends MY_Model
                     }
                 }
                 if ($match_count == (count($match_columns))) {
-                    // we have two matching items - combine them
+                    // we have all the same matching items - combine them
+                    # NOTE - we use isset and != '' because if we used empty, 0 would falsely match
                     foreach ($fields as $field) {
                         if ((!isset($output_item->$field) or $output_item->$field == '') and isset($input_item->$field) and $input_item->$field != '') {
                             $output_item->$field = (string) $input_item->$field;
@@ -640,7 +639,6 @@ class M_devices_components extends MY_Model
                 $items[] = $input_item;
             }
         }
-
         // for each item from the audit
         foreach ($items as $input_item) {
             // set these flags on a per audit item basis
@@ -721,7 +719,6 @@ class M_devices_components extends MY_Model
                 $sql = $this->clean_sql($sql);
                 $query = $this->db->query($sql, $data);
                 $id = $this->db->insert_id();
-
                 if ($alert and strtolower($create_alerts) == 'y') {
                     // We have existing items and this is a new item - raise an alert
                     $alert_details = '';
@@ -1577,6 +1574,103 @@ class M_devices_components extends MY_Model
         }
 
         return ($resultset);
+    }
+
+    public function nmap_ip($device = null, $ip = null) {
+        $this->load->helper('log');
+        $log = new stdClass();
+        $log->file = 'system';
+        $log->severity = 7;
+
+        if (is_null($device)) {
+            $log->message = 'No device object passed to nmap_ip.';
+            $log->severity = 4;
+            discovery_log($log);
+            return false;
+        }
+        if (is_null($ip)) {
+            $log->message = 'No ip object passed to nmap_ip.';
+            $log->severity = 4;
+            discovery_log($log);
+            return false;
+        }
+        if (empty($device->id)) {
+            $log->message = 'No device id passed to nmap_ip.';
+            $log->severity = 4;
+            discovery_log($log);
+            return false;
+        }
+        if (empty($ip->ip)) {
+            $log->message = 'No ip address passed to nmap_ip.';
+            $log->severity = 4;
+            discovery_log($log);
+            return false;
+        }
+
+        # We're talking to the DB, so ensure IP is of the correct format
+        $ip->ip = ip_address_to_db($ip->ip);
+        if (empty($ip->mac)) {
+            $ip->mac = '';
+        }
+        if (empty($ip->net_index)) {
+            $ip->net_index = '';
+        }
+        if (empty($ip->netmask)) {
+            $ip->netmask = '';
+        }
+        if (empty($ip->cidr)) {
+            $ip->cidr = '';
+        }
+        if (empty($ip->version)) {
+            $ip->netmask = 4;
+        }
+        if (empty($ip->network)) {
+            $ip->network = '';
+        }
+
+        # get any existing IPs
+        $sql = "SELECT * FROM `ip` WHERE `ip`.`ip` = ? AND `ip`.`system_id` = ? AND `ip`.`current` = 'y'";
+        $sql = $this->clean_sql($sql);
+        $data = array($ip->ip, $device->id);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+
+        $update = false;
+        # Search for any matching entries and combine
+        if (!empty($result)) {
+            foreach ($result as $row) {
+                if (($ip->mac == $row->mac) or ($ip->mac != '' and $row->mac == '') or ($ip->mac == '' and $row->mac != '')) {
+                    $update = true;
+                    foreach ($ip as $key => $value) {
+                        if (empty($ip->$key)) {
+                            $ip->$key = $row->$key;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        if ($update) {
+            # UPDATE
+            $log->message = 'Updating ip with ID ' . $row->id;
+            discovery_log($log);
+            $sql = "UPDATE `ip` SET `last_seen` = ?, `mac` = ?, `net_index` = ?, `netmask` = ?, `cidr` = ?, `version` = ?, `network` = ? WHERE id = ?";
+            $sql = $this->clean_sql($sql);
+            $data = array($device->last_seen, $ip->mac, $ip->net_index, $ip->netmask, $ip->cidr, $ip->version, $ip->network, $row->id);
+            $query = $this->db->query($sql, $data);
+        } else {
+            # INSERT
+            $log->message = 'Inserting ip ' . $ip->ip;
+            discovery_log($log);
+            $sql = "INSERT INTO `ip` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, ?, ?, ?, ?, '')";
+            $data = array($device->id, $device->first_seen, $device->last_seen, $ip->mac, $ip->net_index, $ip->ip, $ip->netmask, $ip->cidr, $ip->version, $ip->network);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql, $data);
+        }
+
+
+
     }
 
     public function create_dns_entries($id = 0)

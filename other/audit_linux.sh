@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   2.1
+# @version   2.1.1
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="2.1"
+version="2.1.1"
 
 # Display help
 help="n"
@@ -567,12 +567,12 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 	fi
 
 	# Suse Based
-	if echo "$system_os_name" | grep -Fqi "Suse" ; then
-		if [ -z "$system_os_family" ]; then
-			system_os_family="Suse"
-		fi
-		break;
-	fi
+	# if echo "$system_os_name" | grep -Fqi "Suse" ; then
+	# 	if [ -z "$system_os_family" ]; then
+	# 		system_os_family="Suse"
+	# 	fi
+	# 	break;
+	# fi
 
 	if [ -z "$system_os_family" ]; then
 		if [ -e "/etc/arch-release" ]; then
@@ -611,6 +611,19 @@ for system_release_file in /etc/*[_-]version /etc/*[_-]release; do
 		break;
 	fi
 done
+
+if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
+	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
+	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
+	system_os_family=$(grep ID /etc/os-release | cut -d= -f2)
+fi
+
+if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]] || [[ "$system_os_family" == *"SuSE"* ]] || [[ "$system_os_family" == *"SuSe"* ]]; then
+	system_os_family="Suse"
+	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
+	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
+fi
+	
 
 if [ "$busybox" = "n" ] && [ -z "$system_ip_address" ]; then
 	system_ip_address=$(ip route get $(ip route show 0.0.0.0/0 2>/dev/null | grep -oP 'via \K\S+') 2>/dev/null | grep -oP 'src \K\S+')
@@ -1262,7 +1275,7 @@ case $system_os_family in
 					tail -n +6 >>\
 					"$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' )
 				service smb status > /dev/null 2>&1 &&\
 					sed -e '/^$/d' -e 's/^[ \t]*//' -e '/^[#;]/d' /etc/samba/smb.conf |\
 					grep -E "^\[|^comment|^path" |\
@@ -1338,6 +1351,11 @@ for net_connection_id in $(ls /sys/class/net/) ; do
 		# net_card_lease_file="/var/lib/dhcp/dhclient.$net_card_id.leases"
 		# below only works for RH
 		# net_card_lease_file="/var/lib/dhclient/dhclient-$net_card_id.leases"
+
+		# Wicked for Suse
+		# wicked test dhcp4 eth0
+		#  - unsure if this actually requests an IP and maybe causes networking to drop
+		#  - pinging 8.8.8.8 while running the command showed 0 dropped responses, so maybe not?
 
 		if [ ! -e "$net_card_lease_file" ]; then
 			net_card_dhcp_enab="False"
@@ -2143,7 +2161,7 @@ case $system_os_family in
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -2213,14 +2231,14 @@ if hash systemctl 2>/dev/null; then
 			start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
 		fi
 		{
-		echo "      <item>"
-		echo "          <description>$(escape_xml "$display_name")</description>"
-		echo "          <name>$(escape_xml "$name")</name>"
-		echo "          <start_mode>$(escape_xml "$start_mode")</start_mode>"
-		echo "          <executable>$(escape_xml "$binary")</executable>"
-		echo "          <state>$(escape_xml "$state")</state>"
-		echo "          <user>$(escape_xml "$user")</user>"
-		echo "      </item>"
+		echo "		<item>"
+		echo "			<description>$(escape_xml "$display_name")</description>"
+		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<start_mode>$(escape_xml "$start_mode")</start_mode>"
+		echo "			<executable>$(escape_xml "$binary")</executable>"
+		echo "			<state>$(escape_xml "$state")</state>"
+		echo "			<user>$(escape_xml "$user")</user>"
+		echo "		</item>"
 		} >> "$xml_file"
 	done
 else
@@ -2248,27 +2266,27 @@ else
 					[ -e $service_name ] || break
 					if [ "$service_name" != "README" ] && [ "$service_name" != "upstart" ] && [ "$service_name" != "skeleton" ]; then
 						{
-						echo "      <item>"
+						echo "		<item>"
 						service_display_name=$(echo "$service_name" | cut -d/ -f4)
-						echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
-						echo "          <name>$(escape_xml "$service_name")</name>"
+						echo "			<description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
+						echo "			<name>$(escape_xml "$service_name")</name>"
 						} >> "$xml_file"
 						if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null ; then
-							echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
+							echo "			<start_mode>Manual</start_mode>" >> "$xml_file"
 						else
-							echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
+							echo "			<start_mode>Auto</start_mode>" >> "$xml_file"
 						fi
 						service_name=$(echo "$service_name" | cut -d/ -f4)
 						if  [ "$service_name" != "README" ] && [ "$service_name" != "upstart" ] && [ "$service_name" != "skeleton" ] && [ "$service_name" != "rcS" ]; then
 							service_state=$(service "$service_display_name" status 2>/dev/null | grep -i running)
-							echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
+							echo "			<state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 							service_state=""
 						fi
-						echo "      </item>" >> "$xml_file"
+						echo "		</item>" >> "$xml_file"
 					fi
 				done
 				;;
-			'CentOS' | 'RedHat' | 'SUSE' )
+			'CentOS' | 'RedHat' | 'SUSE' | 'Suse' )
 				# INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
 				# chkconfig --list |\
 				#     sed -e '/^$/d' -e '/xinetd based services:/d' |\
@@ -2279,22 +2297,22 @@ else
 					[ -e $service_name ] || break
 					if [ "$service_name" != "functions" ] && [ "$service_name" != "rcS" ]; then
 						{
-						echo "      <item>"
+						echo "		<item>"
 						service_display_name=$(echo "$service_name" | cut -d/ -f4)
-						echo "          <description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
-						echo "          <name>$(escape_xml "$service_name")</name>"
+						echo "			<description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
+						echo "			<name>$(escape_xml "$service_name")</name>"
 						} >> "$xml_file"
 						if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null ; then
-							echo "          <start_mode>Manual</start_mode>" >> "$xml_file"
+							echo "			<start_mode>Manual</start_mode>" >> "$xml_file"
 						else
-							echo "          <start_mode>Auto</start_mode>" >> "$xml_file"
+							echo "			<start_mode>Auto</start_mode>" >> "$xml_file"
 						fi
 						if  [ "$service_name" != "functions" ] && [ "$service_name" != "rcS" ]; then
 							service_state=$(service "$service_display_name" status 2>/dev/null | grep -E -i "running|stopped")
 							echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
 							service_state=""
 						fi
-						echo "      </item>" >> "$xml_file"
+						echo "		</item>" >> "$xml_file"
 					fi
 				done
 				;;

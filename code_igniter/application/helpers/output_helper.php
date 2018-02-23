@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1
+* @version   2.1.1
 * @link      http://www.open-audit.org
  */
 if (! function_exists('output')) {
@@ -537,7 +537,9 @@ if (! function_exists('output')) {
 
         if ($CI->db->table_exists('attributes')) {
             $CI->load->model('m_attributes');
-            $CI->response->included = array_merge($CI->response->included, $CI->m_attributes->collection());
+            $attributes = $CI->m_attributes->collection();
+            usort($attributes, "sort_attributes");
+            $CI->response->included = array_merge($CI->response->included, $attributes);
         }
 
         if (!empty($CI->response->errors)) {
@@ -885,6 +887,11 @@ if (! function_exists('output')) {
             $CI->response->table = $table;
             unset($table);
         }
+    }
+
+    function sort_attributes($a, $b)
+    {
+        return strcmp(strtolower($a->attributes->name), strtolower($b->attributes->name));
     }
 
 /* End of file output_helper.php */

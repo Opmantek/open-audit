@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1
+* @version   2.1.1
 * @link      http://www.open-audit.org
  */
 
@@ -766,7 +766,7 @@ if (empty($data['mount_point'])) {
                     if (php_uname('s') != 'Windows NT') {
                         $icon_path = $this->config->config['base_path'] . '/www/open-audit/device_images/';
                     } else {
-                        $icon_path = $this->config->config['base_path'] . '..\\htdocs\\open-audit\\device_images\\';
+                        $icon_path = $this->config->config['base_path'] . '\\..\\htdocs\\open-audit\\device_images\\';
                     }
                     if (file_exists($icon_path.$data['system']->icon.'.svg')) { ?>
                         <img alt="" class="center-block img-responsive" style="width: 50%;" title="" src="<?php echo base_url(); ?>device_images/<?php echo $data['system']->icon; ?>.svg" />
