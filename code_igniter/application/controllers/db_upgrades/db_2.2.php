@@ -29,6 +29,114 @@
 
 $this->log_db('Upgrade database to 2.2 commenced');
 
+# dashboards
+$sql = "DROP TABLE IF EXISTS `dashboards`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `dashboards` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` enum('default','org','user','') NOT NULL DEFAULT '',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# widgets
+$sql = "DROP TABLE IF EXISTS `widgets`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `widgets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `type` enum('line','pie','') DEFAULT 'line',
+  `table` varchar(50) NOT NULL DEFAULT '',
+  `column` varchar(50) NOT NULL DEFAULT '',
+  `secondary_column` varchar(50) NOT NULL DEFAULT '',
+  `where` text NOT NULL,
+  `limit` smallint signed NOT NULL DEFAULT '0',
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "SELECT * FROM `roles`";
+$query = $this->db->query($sql);
+$result = $query->result();
+$this->log_db($this->db->last_query());
+
+$already_updated = false;
+foreach ($result as $row) {
+	if ($row->name == 'admin') {
+		$permissions = @json_decode($row->permissions);
+		if (!empty($permissions->dashboards)) {
+			$already_updated = true;
+		}
+	}
+}
+
+if (!$already_updated) {
+	foreach ($result as $row) {
+		$permissions = @json_decode($row->permissions);
+		switch ($row->name) {
+			case 'admin':
+				$permissions->dashboards = 'crud';
+				$permissions->widgets = 'crud';
+				break;
+
+			case 'org_admin':
+				$permissions->dashboards = 'crud';
+				$permissions->widgets = 'crud';
+				break;
+
+			case 'reporter':
+				$permissions->dashboards = 'crud';
+				$permissions->widgets = 'crud';
+				break;
+
+			case 'user':
+				$permissions->dashboards = 'r';
+				$permissions->widgets = 'r';
+				break;
+
+			case 'collector':
+				$permissions->dashboards = '';
+				$permissions->widgets = '';
+				break;
+
+			case 'agent':
+				$permissions->dashboards = '';
+				$permissions->widgets = '';
+				break;
+
+			default:
+				$permissions->dashboards = '';
+				$permissions->widgets = '';
+				break;
+		}
+		$row->permissions = json_encode($permissions);
+		$sql = "UPDATE `roles` SET permissions = ? WHERE id = ?";
+		$data = array($row->permissions, $row->id);
+		$this->db->query($sql, $data);
+		$this->log_db($this->db->last_query());
+	}
+}
+
+# users
+$this->alter_table('users', 'dashboard_id', "ADD `dashboard_id` int(10) unsigned DEFAULT 1 AFTER `type`", 'add');
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180218' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
