@@ -699,6 +699,7 @@ CREATE TABLE `dashboards` (
   `type` enum('default','org','user','') NOT NULL DEFAULT '',
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `description` text NOT NULL,
+  `sidebar` enum('y','n') NOT NULL DEFAULT 'y',
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -3078,6 +3079,7 @@ CREATE TABLE `widgets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `description` text NOT NULL,
   `type` enum('line','pie','') DEFAULT 'line',
   `table` varchar(50) NOT NULL DEFAULT '',
   `column` varchar(50) NOT NULL DEFAULT '',
@@ -3085,6 +3087,7 @@ CREATE TABLE `widgets` (
   `where` text NOT NULL,
   `limit` smallint signed NOT NULL DEFAULT '0',
   `options` text NOT NULL,
+  `sql` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
