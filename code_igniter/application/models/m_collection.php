@@ -445,6 +445,13 @@ class M_collection extends MY_Model
             $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
         }
 
+        if ($collection === 'dashboards') {
+            if (empty($data->options) and !empty($CI->response->meta->received_data->options)) {
+                $data->options = $CI->response->meta->received_data->options;
+            }
+            $data->options = json_encode($data->options);
+        }
+
         if ($collection === 'discoveries') {
             if ($data->type == 'subnet') {
                 if (empty($data->other->subnet)) {
@@ -734,6 +741,25 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'dashboards') {
+            if (!empty($data->options)) {
+                $select = "SELECT * FROM dashboards WHERE id = ?";
+                $query = $this->db->query($select, array($data->id));
+                $result = $query->result();
+                $existing = new stdClass();
+                if (!empty($result[0]->options)) {
+                    $existing = json_decode($result[0]->options);
+                }
+                if (!empty($data->options->layout)) {
+                    $existing->layout = $data->options->layout;
+                }
+                foreach ($data->options->widgets as $key => $value) {
+                    $existing->widgets->$key = $value;
+                }
+                $data->options = (string)json_encode($existing);
+            }
+        }
+
         if ($collection === 'discoveries') {
             if (!empty($data->other)) {
                 $received_other = new stdClass();
@@ -910,6 +936,10 @@ class M_collection extends MY_Model
                 return(' name org_id description type credentials ');
                 break;
 
+            case "dashboards":
+                return(' name org_id description type options sidebar ');
+                break;
+
             case "discoveries":
                 return(' name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete ');
                 break;
@@ -969,6 +999,10 @@ class M_collection extends MY_Model
             case "users":
                 return(' name org_id permissions password full_name email lang active roles orgs type ');
                 break;
+
+            case "widgets":
+                return(' name org_id description type table column secondary_column where limit options sql ');
+                break;
         }
     }
 
@@ -1000,6 +1034,10 @@ class M_collection extends MY_Model
 
             case "credentials":
                 return(array('name','org_id','type','credentials'));
+                break;
+
+            case "dashboards":
+                return(array('name','options'));
                 break;
 
             case "discoveries":
@@ -1060,6 +1098,10 @@ class M_collection extends MY_Model
 
             case "users":
                 return(array('name','org_id','lang','active','roles','orgs'));
+                break;
+
+            case "widgets":
+                return(array('name','org_id','type'));
                 break;
         }
     }
