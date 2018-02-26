@@ -203,6 +203,32 @@ if ($table == 'dashboards') {
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Quickly view the status of devices on your network.<br /><br />
     ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '                                <br /><br />
+                                <h4 class="text-center">Layout</h4>
+                                <br />
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td>Widget #1</td>
+                                            <td>Widget #2</td>
+                                            <td>Widget #3</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Widget #4</td>
+                                            <td>Widget #5</td>
+                                            <td>Widget #6</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->sidebar = 'Do you wish to see the dtandard sidebar on the left.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+
 }
 
 if ($table == 'devices') {
@@ -641,4 +667,26 @@ if ($table == 'warranties') {
     $dictionary->marketing = '<p>Warranties are an essential item to track. Open-AudIT makes it easy to record and report on warranties. Easily create reports to tell you what devices have expiring warranties and run have them run automatically. Be able to forecast your replacement equipment purchases for your next purchase period simply and easily.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
+}
+
+if ($table == 'widgets') {
+    $dictionary->sentence = 'Widgets are used on Dashboards and are completely open to user design.';
+    $dictionary->about = '<p>Widgets can easily be created to show whatever is specific to your environment on your dashboards.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->marketing = '<p>Widgets are the building blocks of Open-AudIT Dashboards.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->description = $description;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->table = 'The primary database table upon which to base this widget.';
+    $dictionary->columns->column = 'The first column from the primary table upon which to group by.';
+    $dictionary->columns->secondary_column = '';
+    $dictionary->columns->where = 'Any required filter.';
+    $dictionary->columns->limit = 'Limit the query to the first X items.';
+    $dictionary->columns->type = 'Only "line" and "pie" are used at present.';
+    $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per "queries", you must include "WHERE @filter AND" in your SQL.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
 }
