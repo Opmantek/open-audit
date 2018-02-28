@@ -73,7 +73,7 @@ class M_configuration extends MY_Model
         }
         // We might also use the received data
         if (empty($id) and !empty($CI->response->meta->collection) and $CI->response->meta->collection == 'configuration' and !empty($CI->response->meta->received_data->attributes->name)) {
-            $sql = "SELECT id FROM configuration WHERE name = ?";
+            $sql = "/* m_configuration::read */ " . "SELECT id FROM configuration WHERE name = ?";
             $data = array($CI->response->meta->received_data->attributes->name);
             $result = $this->run_sql($sql, array());
             if (!empty($result[0]->id)) {
@@ -84,7 +84,7 @@ class M_configuration extends MY_Model
         if (empty($id)) {
             return;
         }
-        $sql = "SELECT * FROM configuration WHERE id = ?";
+        $sql = "/* m_configuration::read */ " . "SELECT * FROM configuration WHERE id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'configuration');
@@ -112,7 +112,7 @@ class M_configuration extends MY_Model
         }
         // We accept either an integer ID or a string NAME
         if (!empty($id) and !is_integer($id)) {
-            $sql = "SELECT id FROM configuration WHERE name = ?";
+            $sql = "/* m_configuration::update */ " . "SELECT id FROM configuration WHERE name = ?";
             $data = array((string)$id);
             $result = $this->run_sql($sql, $data);
             if (!empty($result[0]->id)) {
@@ -135,7 +135,11 @@ class M_configuration extends MY_Model
         if (empty($edited_by)) {
             $edited_by = $this->user->full_name;
         }
-        $sql = "UPDATE `configuration` SET `value` = ?, edited_by = ?, edited_date = NOW() WHERE id = ?";
+        if ($this->db->dbdriver === 'mysql') {
+            $sql = "/* m_configuration::update */ " . "UPDATE configuration SET value = ?, edited_by = ?, edited_date = NOW() WHERE id = ?";
+        } else if ($this->db->dbdriver === 'mssql') {
+            $sql = "/* m_configuration::update */ " . "UPDATE [configuration] SET value = ?, edited_by = ?, edited_date = getdatetime2() WHERE id = ?";
+        }
         $data = array((string)$value, (string)$edited_by, intval($id));
         $this->run_sql($sql, $data);
         return true;
@@ -199,7 +203,11 @@ class M_configuration extends MY_Model
         stdlog($this->log);
 
         if ($this->db->table_exists('configuration')) {
-            $sql = "SELECT name, value FROM `configuration`";
+            if ($this->db->dbdriver === 'mysql') {
+                $sql = "SELECT name, value FROM `configuration`";
+            } else if ($this->db->dbdriver === 'mssql') {
+                $sql = "SELECT name, value FROM [configuration]";
+            }
             $result = $this->run_sql($sql, array());
         } else if ($this->db->table_exists('oa_config')) {
             $this->load->library('encrypt');
@@ -254,7 +262,12 @@ class M_configuration extends MY_Model
         unset($i, $j, $temp, $basic_url);
 
         # set the timestamp
-        $sql = "SELECT NOW() as `timestamp`";
+        
+        if ($this->db->dbdriver === 'mysql') {
+            $sql = "SELECT NOW() as `timestamp`";
+        } else if ($this->db->dbdriver === 'mssql') {
+            $sql = "SELECT CONVERT (smalldatetime, SYSDATETIME()) AS [timestamp]";
+        }
         $result = $this->run_sql($sql, array());
         $this->config->config['timestamp'] = $result[0]->timestamp;
 

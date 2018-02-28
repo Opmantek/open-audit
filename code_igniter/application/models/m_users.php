@@ -116,7 +116,7 @@ class M_users extends MY_Model
         }
 
         do {
-            $sql = "SELECT a.id AS `id` FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";
+            $sql = "SELECT a.id AS id FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";
             $query = $this->db->query($sql, array($org_id));
             $result = $query->result();
             if (!empty($result[0]->id)) {
@@ -296,7 +296,7 @@ class M_users extends MY_Model
             return false;
         }
 
-        $sql = "SELECT $org_id_name AS `org_id` FROM $table WHERE `$id_name` = ?";
+        $sql = "SELECT $org_id_name AS org_id FROM $table WHERE $id_name = ?";
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
@@ -372,32 +372,41 @@ class M_users extends MY_Model
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
             $user_prefix = 'user_';
         }
-
-        $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'users'";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (count($result) !== 0) {
-            $db_table = 'users';
+        if ($this->db->dbdriver === 'mysql') {
+            $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'users'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (count($result) !== 0) {
+                $db_table = 'users';
+            } else {
+                $db_table = 'oa_user';
+            }
         } else {
-            $db_table = 'oa_user';
+            $db_table = 'users';
         }
-        # See if we have a column named $column in the DB
-        # SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = 'openaudit' AND `TABLE_NAME` = 'bios' AND `COLUMN_NAME` = 'system_id';
-        $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE `TABLE_SCHEMA` = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $db_table . "' AND `COLUMN_NAME` = 'user_id'";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (count($result) !== 1) {
+
+        if ($this->db->dbdriver === 'mysql') {
+            # See if we have a column named $column in the DB
+            # SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = 'openaudit' AND `TABLE_NAME` = 'bios' AND `COLUMN_NAME` = 'system_id';
+            $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE `TABLE_SCHEMA` = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $db_table . "' AND `COLUMN_NAME` = 'user_id'";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (count($result) !== 1) {
+                $db_id_column = 'id';
+                $db_prefix = '';
+            } else {
+                $db_id_column = 'user_id';
+                $db_prefix = 'user_';
+            }
+        } else {
             $db_id_column = 'id';
             $db_prefix = '';
-        } else {
-            $db_id_column = 'user_id';
-            $db_prefix = 'user_';
         }
 
 
         if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
             // user is logged in, return the $this->user object
-            $sql = "SELECT * FROM `" . $db_table . "` WHERE `" . $db_table . "`.`" . $db_id_column . "` = ? LIMIT 1";
+            $sql = "SELECT * FROM " . $db_table . " WHERE " . $db_table . "." . $db_id_column . " = ?";
             $sql = $this->clean_sql($sql);
             $data = array(intval($this->session->userdata['user_id']));
             $query = $this->db->query($sql, $data);

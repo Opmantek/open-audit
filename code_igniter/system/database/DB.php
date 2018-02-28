@@ -148,14 +148,16 @@ function &DB($params = '', $active_record_override = NULL)
 		$DB->initialize();
 	}
 
-	if (isset($params['stricton']) && $params['stricton'] == TRUE)
-	{
-		$DB->query('SET SESSION sql_mode="STRICT_ALL_TABLES"');
-	}
+	if ($params['dbdriver'] === 'mysql') {
+		if (isset($params['stricton']) && $params['stricton'] == TRUE)
+		{
+			$DB->query('SET SESSION sql_mode="STRICT_ALL_TABLES"');
+		}
 
-	if (isset($params['stricton']) && $params['stricton'] == FALSE)
-	{
-		$DB->query('SET SESSION sql_mode=""');
+		if (isset($params['stricton']) && $params['stricton'] == FALSE)
+		{
+			$DB->query('SET SESSION sql_mode=""');
+		}
 	}
 	
 	return $DB;
