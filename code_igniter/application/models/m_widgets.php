@@ -43,37 +43,6 @@ class M_widgets extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-
-        # name check
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            return false;
-        } else {
-            $name = $CI->response->meta->received_data->attributes->name;
-        }
-
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $org_id = $this->user->org_id;
-        } else {
-            $org_id = $CI->response->meta->received_data->attributes->org_id;
-        }
-
-        if (empty($CI->response->meta->received_data->attributes->description)) {
-            $description = '';
-        } else {
-            $description = $CI->response->meta->received_data->attributes->description;
-        }
-        // $sql = "INSERT INTO `dashboards` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        // $data = array("$name", "$org_id", "$type", intval($user_id), $description, $options, $user);
-        // $id = intval($this->run_sql($sql, $data));
-        // return ($id);
-    }
-
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
@@ -184,6 +153,31 @@ class M_widgets extends MY_Model
         }
         # get the response data
         $sql = "SELECT " . $properties . " FROM `widgets` " . $filter . " " . $sort . " " . $limit;
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'widgets');
+        return ($result);
+    }
+
+    public function execute($id = '') {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'deleting data';
+        stdlog($this->log);
+        $CI = & get_instance();
+        if ($id == '') {
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $sql = "/* m_widgets::execute */ " . "SELECT * FROM widgets WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $widget = $result[0];
+        if (empty($widget->secondary_column)) {
+            $sql = "SELECT " . $widget->table . "." . $widget->column . " AS name, '' AS description, COUNT(" . $widget->table . ".id) AS `count` FROM system WHERE @filter GROUP BY " . $widget->table . "." . $widget->column;
+        } else {
+            $sql = "SELECT " . $widget->table . "." . $widget->column . " AS name, " . $widget->table . "." . $widget->secondary_column . " AS description, COUNT(" . $widget->table . ".id) AS `count` FROM system WHERE @filter GROUP BY " . $widget->table . "." . $widget->column;
+        }
+        $sql = str_replace('@filter', $widget->table . ".org_id IN (" . $CI->user->org_list . ")", $sql);
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'widgets');
         return ($result);
