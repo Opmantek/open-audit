@@ -83,6 +83,9 @@ class MY_Model extends CI_Model
             } else if ($type == 'errors') {
                 $item->id = $entry->code;
             }
+            if ($type == 'widgets' and isset($entry->percent)) {
+                $entry->percent = intval($entry->percent);
+            }
             $item->type = $type;
             $item->attributes = $entry;
             $item->links = new stdClass();
