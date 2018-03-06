@@ -158,6 +158,61 @@ class M_widgets extends MY_Model
         return ($result);
     }
 
+    private function pie_data($widget, $org_list) {
+        $device_tables = array('bios','connections','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
+        $group_by = $widget->group_by;
+        if (empty($group_by)) {
+            $group_by = $widget->primary;
+        }
+        $temp = explode('.', $widget->primary);
+        $primary_table = $temp[0];
+        unset($temp);
+        $temp = explode('.', $widget->secondary);
+        $secondary_table = $temp[0];
+        unset($temp);
+        if ($primary_table == 'system') {
+            if ($primary_table == $secondary_table) {
+                $join = 'system';
+                $filter = 'system.org_id IN (' . $org_list . ') AND ';
+            } else {
+                $join = 'system';
+                $filter = 'system.org_id IN (' . $org_list . ') AND ';
+            }
+        }
+        if (!empty($widget->sql)) {
+            $sql = $widget_sql;
+        } else  if (in_array($primary_table, $device_tables)) {
+            $sql = "SELECT " .  $this->sql_esc($widget->primary) . " AS " . $this->sql_esc('name') . ", " . 
+                                $this->sql_esc($widget->secondary) . " AS " . $this->sql_esc('description') . ", " . 
+                                $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
+                                " COUNT(" . $this->sql_esc($widget->primary) . ") AS " . $this->sql_esc('count') . 
+                                " FROM " .  $this->sql_esc('system') . " LEFT JOIN " . $this->sql_esc($primary_table) . 
+                                " ON (" . $this->sql_esc('system.id') . ' = ' . $this->sql_esc($primary_table . '.system_id') . ") " . 
+                                " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
+            $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
+            // if (!empty($widget->filter)) {
+            //     $sql = str_replace('@filter', $widget->table . ".org_id IN (" . $CI->user->org_list . ") AND " . $widget->filter, $sql);
+            // } else {
+            //     $sql = str_replace('@filter', $widget->table . ".org_id IN (" . $CI->user->org_list . ")", $sql);
+            // }
+        } else if ($primary_table == 'system') {
+            $sql = "SELECT " .  $this->sql_esc($widget->primary) . " AS " . $this->sql_esc('name') . ", " . 
+                                $this->sql_esc($widget->secondary) . " AS " . $this->sql_esc('description') . ", " . 
+                                $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
+                                " COUNT(" . $this->sql_esc($widget->primary) . ") AS " . $this->sql_esc('count') . ", " . 
+                                " CAST((COUNT(*) / (SELECT COUNT(" . $this->sql_esc($widget->primary) . ") FROM " . $this->sql_esc($primary_table) . " WHERE " . $this->sql_esc('system.org_id') . "IN (" . $org_list . ")) * 100) AS unsigned) AS 'percent'" . 
+                                " FROM " .  $this->sql_esc('system') . 
+                                " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
+            if (!empty($widget->limit)) {
+                $limit = intval($widget->limit);
+                $sql .= ' LIMIT ' . $limit;
+            }
+            $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
+        }
+        $result = $this->run_sql($sql, array());
+        return $result;
+    }
+
     public function execute($id = '') {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
@@ -172,13 +227,9 @@ class M_widgets extends MY_Model
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $widget = $result[0];
-        if (empty($widget->secondary_column)) {
-            $sql = "SELECT " . $widget->table . "." . $widget->column . " AS name, '' AS description, COUNT(" . $widget->table . ".id) AS `count` FROM system WHERE @filter GROUP BY " . $widget->table . "." . $widget->column;
-        } else {
-            $sql = "SELECT " . $widget->table . "." . $widget->column . " AS name, " . $widget->table . "." . $widget->secondary_column . " AS description, COUNT(" . $widget->table . ".id) AS `count` FROM system WHERE @filter GROUP BY " . $widget->table . "." . $widget->column;
+        if ($widget->type == 'pie') {
+            $result = $this->pie_data($widget, $CI->user->org_list);
         }
-        $sql = str_replace('@filter', $widget->table . ".org_id IN (" . $CI->user->org_list . ")", $sql);
-        $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'widgets');
         return ($result);
     }
