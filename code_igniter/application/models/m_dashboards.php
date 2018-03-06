@@ -43,61 +43,6 @@ class M_dashboards extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function create()
-    {
-        $this->log->function = strtolower(__METHOD__);
-        $this->log->status = 'creating data';
-        stdlog($this->log);
-        $CI = & get_instance();
-
-        # name check
-        if (empty($CI->response->meta->received_data->attributes->name)) {
-            return false;
-        } else {
-            $name = $CI->response->meta->received_data->attributes->name;
-        }
-
-        if (empty($CI->response->meta->received_data->attributes->org_id)) {
-            $org_id = intval($this->user->org_id);
-        } else {
-            $org_id = intval($CI->response->meta->received_data->attributes->org_id);
-        }
-        if (empty($CI->response->meta->received_data->attributes->type)) {
-            $type = "user";
-        } else {
-            $type = $CI->response->meta->received_data->attributes->type;
-        }
-        if ($type != 'default' and $type != 'org' and $type != 'user') {
-            $type = "user";
-        }
-        if (empty($CI->response->meta->received_data->attributes->user_id)) {
-            $user_id = '0';
-        } else {
-            $user_id = intval($CI->response->meta->received_data->attributes->user_id);
-        }
-        if (empty($CI->response->meta->received_data->attributes->description)) {
-            $description = '';
-        } else {
-            $description = $CI->response->meta->received_data->attributes->description;
-        }
-        if (empty($CI->response->meta->received_data->attributes->options)) {
-            $options = '';
-        } else {
-            $options = $CI->response->meta->received_data->attributes->options;
-        }
-        $options = json_encode($options);
-
-        if (empty($CI->user->name)) {
-            $user = '';
-        } else {
-            $user = $CI->user->name;
-        }
-        $sql = "INSERT INTO `dashboards` VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, NOW())";
-        $data = array("$name", intval($org_id), "$type", intval($user_id), $description, $options, $user);
-        $id = intval($this->run_sql($sql, $data));
-        return ($id);
-    }
-
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
