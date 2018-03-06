@@ -675,16 +675,18 @@ if ($table == 'widgets') {
     ' . $link . '<br /><br /></p>';
     $dictionary->marketing = '<p>Widgets are the building blocks of Open-AudIT Dashboards.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
+    $dictionary->notes = 'The primary and optional secondary items should be fully qualified - ie, system.type or software.name.';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->description = $description;
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->table = 'The primary database table upon which to base this widget.';
-    $dictionary->columns->column = 'The first column from the primary table upon which to group by.';
-    $dictionary->columns->secondary_column = '';
+    $dictionary->columns->primary = 'The fully qualified column upon which to group by.';
+    $dictionary->columns->secondary = 'The optional secondary column.';
+    $dictionary->columns->ternary = 'The optional third column.';
     $dictionary->columns->where = 'Any required filter.';
     $dictionary->columns->limit = 'Limit the query to the first X items.';
+    $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
     $dictionary->columns->type = 'Only "line" and "pie" are used at present.';
     $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per "queries", you must include "WHERE @filter AND" in your SQL.';
     $dictionary->columns->edited_by = $edited_by;
