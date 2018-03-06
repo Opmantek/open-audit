@@ -50,6 +50,12 @@ $sql = "CREATE TABLE `dashboards` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# scripts
+# New HP-UX saudit script
+$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_hpux.sh', '" . $options . "', 'The default audit HP-UX config.', 'audit_hpux.sh', '', 'system', '2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # widgets
 $sql = "DROP TABLE IF EXISTS `widgets`";
 $this->db->query($sql);
@@ -62,8 +68,10 @@ $sql = "CREATE TABLE `widgets` (
   `description` text NOT NULL,
   `type` enum('line','pie','') DEFAULT 'line',
   `table` varchar(50) NOT NULL DEFAULT '',
-  `column` varchar(50) NOT NULL DEFAULT '',
-  `secondary_column` varchar(50) NOT NULL DEFAULT '',
+  `primary` varchar(50) NOT NULL DEFAULT '',
+  `secondary` varchar(50) NOT NULL DEFAULT '',
+  `ternary` varchar(50) NOT NULL DEFAULT '',
+  `group_by` varchar(50) NOT NULL DEFAULT '',
   `where` text NOT NULL,
   `limit` smallint signed NOT NULL DEFAULT '0',
   `options` text NOT NULL,
