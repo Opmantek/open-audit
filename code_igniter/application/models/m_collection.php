@@ -446,10 +446,23 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'dashboards') {
-            if (empty($data->options) and !empty($CI->response->meta->received_data->options)) {
-                $data->options = $CI->response->meta->received_data->options;
+            if (empty($CI->response->meta->received_data->attributes->options)) {
+                $options = '';
+            } else {
+                $options = $CI->response->meta->received_data->attributes->options;
             }
-            $data->options = json_encode($data->options);
+            $my_options = new stdClass();
+            $my_options->layout = '3x2';
+            $my_options->widget_count = intval($options->widget_count);
+            $my_options->widgets = array();
+            for ($i=1; $i <= $my_options->widget_count; $i++) {
+                $widget = new stdClass();
+                foreach ($options->widgets->$i as $key => $value) {
+                    $widget->{$key} = $value;
+                }
+                $my_options->widgets[] = $widget;
+            }
+            $data->options = json_encode($my_options);
         }
 
         if ($collection === 'discoveries') {
@@ -741,24 +754,26 @@ class M_collection extends MY_Model
             }
         }
 
-        if ($collection === 'dashboards') {
-            if (!empty($data->options)) {
-                $select = "SELECT * FROM dashboards WHERE id = ?";
-                $query = $this->db->query($select, array($data->id));
-                $result = $query->result();
-                $existing = new stdClass();
-                if (!empty($result[0]->options)) {
-                    $existing = json_decode($result[0]->options);
-                }
-                if (!empty($data->options->layout)) {
-                    $existing->layout = $data->options->layout;
-                }
-                foreach ($data->options->widgets as $key => $value) {
-                    $existing->widgets->$key = $value;
-                }
-                $data->options = (string)json_encode($existing);
-            }
-        }
+        // if ($collection === 'dashboards') {
+        //     if (!empty($data->options)) {
+        //         $select = "SELECT * FROM dashboards WHERE id = ?";
+        //         $query = $this->db->query($select, array($data->id));
+        //         $result = $query->result();
+        //         $existing = new stdClass();
+        //         if (!empty($result[0]->options)) {
+        //             $existing = json_decode($result[0]->options);
+        //         }
+        //         if (!empty($data->options->layout)) {
+        //             $existing->layout = $data->options->layout;
+        //         }
+        //         echo "<pre>\n"; print_r($data); print_r($existing); exit();
+        //         #foreach ($data->options->widgets as $key => $value) {
+        //         for ($i=0; $i <= 6 ; $i++) {
+        //             $existing->widgets->$i->position = $widget->position;
+        //         }
+        //         $data->options = (string)json_encode($existing);
+        //     }
+        // }
 
         if ($collection === 'discoveries') {
             if (!empty($data->other)) {
@@ -1001,7 +1016,7 @@ class M_collection extends MY_Model
                 break;
 
             case "widgets":
-                return(' name org_id description type table column secondary_column where limit options sql ');
+                return(' name org_id description type table primary secondary ternary where limit group_by options sql ');
                 break;
         }
     }
@@ -1101,7 +1116,7 @@ class M_collection extends MY_Model
                 break;
 
             case "widgets":
-                return(array('name','org_id','type'));
+                return(array('name','org_id','type','primary'));
                 break;
         }
     }
