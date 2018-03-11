@@ -160,28 +160,48 @@ class M_widgets extends MY_Model
 
     private function pie_data($widget, $org_list) {
         $device_tables = array('bios','connections','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','task','user','user_group','variable','video','vm','warranty','windows');
+        $other_tables = array('agents','attributes','collectors','connections','credentials','dashboards','discoveries','fields','files','groups','ldap_servers','licenses','locations','networks','orgs','queries','scripts','summaries','tasks','users','widgets');
+        $sql = '';
         $group_by = $widget->group_by;
         if (empty($group_by)) {
             $group_by = $widget->primary;
         }
         $temp = explode('.', $widget->primary);
         $primary_table = $temp[0];
+        $primary_table = $this->sql_unesc($primary_table);
         unset($temp);
         $temp = explode('.', $widget->secondary);
         $secondary_table = $temp[0];
+        $secondary_table = $this->sql_unesc($secondary_table);
         unset($temp);
-        if ($primary_table == 'system') {
-            if ($primary_table == $secondary_table) {
-                $join = 'system';
-                $filter = 'system.org_id IN (' . $org_list . ') AND ';
-            } else {
-                $join = 'system';
-                $filter = 'system.org_id IN (' . $org_list . ') AND ';
-            }
-        }
+
+        $CI = & get_instance();
         if (!empty($widget->sql)) {
-            $sql = $widget_sql;
-        } else  if (in_array($primary_table, $device_tables)) {
+            $sql = $widget->sql;
+            if (stripos($sql, 'where @filter and') === false and stripos($sql, 'where @filter group by') === false) {
+                # invalid query
+                return false;
+            }
+            $temp = explode(' ', $sql);
+            $full = $temp[1];
+            $temp = explode('.', $full);
+            $primary_table = $temp[0];
+            $attribute = $full;
+            unset($temp);
+            if ($primary_table == 'system' or in_array($primary_table, $device_tables)) {
+                $collection = 'devices';
+                $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            } else if (in_array($primary_table, $other_tables)) {
+                $collection = $primary_table;
+                $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
+            } else {
+                # invalid query
+                return false;
+            }
+
+        } else if (in_array($primary_table, $device_tables)) {
+            $collection = 'devices';
+            $attribute = $widget->primary;
             $sql = "SELECT " .  $this->sql_esc($widget->primary) . " AS " . $this->sql_esc('name') . ", " . 
                                 $this->sql_esc($widget->secondary) . " AS " . $this->sql_esc('description') . ", " . 
                                 $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
@@ -189,13 +209,19 @@ class M_widgets extends MY_Model
                                 " FROM " .  $this->sql_esc('system') . " LEFT JOIN " . $this->sql_esc($primary_table) . 
                                 " ON (" . $this->sql_esc('system.id') . ' = ' . $this->sql_esc($primary_table . '.system_id') . ") " . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
-            $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
-            // if (!empty($widget->filter)) {
-            //     $sql = str_replace('@filter', $widget->table . ".org_id IN (" . $CI->user->org_list . ") AND " . $widget->filter, $sql);
-            // } else {
-            //     $sql = str_replace('@filter', $widget->table . ".org_id IN (" . $CI->user->org_list . ")", $sql);
-            // }
+            if (!empty($widget->where)) {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
+            } else {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            }
+            if (!empty($widget->limit)) {
+                $limit = intval($widget->limit);
+                $sql .= ' LIMIT ' . $limit;
+            }
+
         } else if ($primary_table == 'system') {
+            $collection = 'devices';
+            $attribute = $widget->primary;
             $sql = "SELECT " .  $this->sql_esc($widget->primary) . " AS " . $this->sql_esc('name') . ", " . 
                                 $this->sql_esc($widget->secondary) . " AS " . $this->sql_esc('description') . ", " . 
                                 $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
@@ -203,13 +229,38 @@ class M_widgets extends MY_Model
                                 " CAST((COUNT(*) / (SELECT COUNT(" . $this->sql_esc($widget->primary) . ") FROM " . $this->sql_esc($primary_table) . " WHERE " . $this->sql_esc('system.org_id') . "IN (" . $org_list . ")) * 100) AS unsigned) AS 'percent'" . 
                                 " FROM " .  $this->sql_esc('system') . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
+            if (!empty($widget->where)) {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
+            } else {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            }
             if (!empty($widget->limit)) {
                 $limit = intval($widget->limit);
                 $sql .= ' LIMIT ' . $limit;
             }
-            $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
         }
         $result = $this->run_sql($sql, array());
+
+        $CI->response->meta->sql[] = $sql;
+        $total_count = 0;
+        for ($i=0; $i < count($result); $i++) {
+            $total_count += intval($result[$i]->count);
+            if (intval($result[$i]->count) === 0 and is_null($result[$i]->name)) {
+                unset($result[$i]);
+            }
+        }
+        foreach ($result as $row) {
+            $row->percent = intval(($row->{'count'} / $total_count) * 100);
+            if (!empty($widget->link)) {
+            $link = $widget->link;
+                $link = str_ireplace('@name', $row->description, $link);
+                $link = str_ireplace('@description', $row->description, $link);
+                $link = str_ireplace('@ternary', $row->description, $link);
+                $row->link = $link;
+            } else {
+                $row->link = $collection . '?' . $attribute . '=' . $row->name;
+            }
+        }
         return $result;
     }
 
