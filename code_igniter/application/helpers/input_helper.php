@@ -61,6 +61,22 @@ if (! function_exists('from_unix_timestamp')) {
     }
 }
 
+if (! function_exists('set_collection')) {
+    function set_collection()
+    {
+        $CI = & get_instance();
+        $collection = @$CI->uri->segment(1);
+        $collections = array('agents','attributes','charts','collectors','configuration','connections','credentials','dashboards','database','devices','discovery','discoveries','errors','fields','files','groups','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','reports','roles','scripts','search','summaries','tasks','users','widgets');
+        if (!empty($collection) and in_array($collection, $collections)) {
+            #$log->summary = 'Set collection to ' . $collection . ', according to URI.';
+        } else {
+            $collection = 'summaries';
+            #$log->summary = 'Set collection to summaries as a default.';
+        }
+        return $collection;
+    }
+}
+
 if (! function_exists('inputRead')) {
     /**
      * The standard input function for Open-AudIT.
@@ -205,16 +221,17 @@ if (! function_exists('inputRead')) {
         }
         
         # get our collection - usually devices, groups, reports, etc
-        $temp = $CI->uri->segment(1);
-        if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
-            $CI->response->meta->collection = (string)$temp;
-            $log->summary = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
-            stdlog($log);
-        } else {
-            $CI->response->meta->collection = 'summaries';
-            $log->summary = 'Set collection to summaries as a default.';
-            stdlog($log);
-        }
+        // $temp = $CI->uri->segment(1);
+        // if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
+        //     $CI->response->meta->collection = (string)$temp;
+        //     $log->summary = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
+        //     stdlog($log);
+        // } else {
+        //     $CI->response->meta->collection = 'summaries';
+        //     $log->summary = 'Set collection to summaries as a default.';
+        //     stdlog($log);
+        // }
+        $CI->response->meta->collection = set_collection();
         $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
         unset($temp);
 
