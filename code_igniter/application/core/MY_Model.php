@@ -256,6 +256,15 @@ class MY_Model extends CI_Model
         return ($result);
     }
 
+    public function sql_unesc($attribute) {
+        $attribute = str_replace("`", "", $attribute);
+        $attribute = str_replace("[", "", $attribute);
+        $attribute = str_replace("]", "", $attribute);
+        $attribute = str_replace("'", "", $attribute);
+        $attribute = str_replace("\"", "", $attribute);
+        return $attribute;
+    }
+
     public function sql_esc($attribute) {
         if (empty($attribute) or $attribute == '.') {
             $attribute = "''";
