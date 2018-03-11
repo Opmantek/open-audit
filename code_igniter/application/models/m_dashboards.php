@@ -63,6 +63,31 @@ class M_dashboards extends MY_Model
         return ($result);
     }
 
+    public function read_sub_resource($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        if ($id == '') {
+            $CI = & get_instance();
+            $id = intval($CI->response->meta->id);
+        } else {
+            $id = intval($id);
+        }
+        $return = array();
+        $sql = "SELECT options FROM dashboards WHERE id = ?";
+        $data = array($id);
+        $result = $this->run_sql($sql, $data);
+        $options = json_decode($result[0]->options);
+        foreach ($options->widgets as $widget) {
+            $sql = "SELECT * FROM widgets WHERE id = ?";
+            $data = array(intval($widget->widget_id));
+            $result = $this->run_sql($sql, $data);
+            $return[] = $result[0];
+        }
+        $return = $this->format_data($return, 'widgets');
+        return $return;
+    }
+
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
