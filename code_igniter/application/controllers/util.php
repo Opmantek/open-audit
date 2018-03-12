@@ -158,7 +158,15 @@ class Util extends CI_Controller
         $json->data = $data;
         header('Content-Type: application/json');
         echo json_encode($json);
+    }
 
+    public function summary_tables()
+    {
+        $data = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
+        $json = new stdClass();
+        $json->data = $data;
+        header('Content-Type: application/json');
+        echo json_encode($json);
     }
 }
 // End of file util.php

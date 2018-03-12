@@ -264,6 +264,65 @@ class M_widgets extends MY_Model
         return $result;
     }
 
+    private function line_data($widget, $org_list) {
+        if (!empty($widget->sql)) {
+
+        }
+
+        if (empty($widget->sql)) {
+            $device_tables = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
+            if (!in_array($widget->primary, $device_tables)) {
+                return false;
+            }
+            $sql = "SELECT DATE(" . $this->sql_esc('change_log.timestamp') . ") AS " . $this->sql_esc('date') . ", count(DATE(" . $this->sql_esc('change_log.timestamp') . " )) AS " . $this->sql_esc('count') . "  FROM " . $this->sql_esc('change_log') . " LEFT JOIN " . $this->sql_esc('system') . " ON (" . $this->sql_esc('system.id') . " = " . $this->sql_esc('change_log.system_id') . ") WHERE @filter AND " . $this->sql_esc('change_log.timestamp') . " >= DATE_SUB(CURDATE(), INTERVAL " . intval($widget->limit) . " DAY) AND " . $this->sql_esc('change_log.db_table') . " = '" . $widget->primary . "'  AND " . $this->sql_esc('change_log.db_action') . " = '" . $widget->secondary . "' GROUP BY DATE(" . $this->sql_esc('change_log.timestamp') . ")";
+            if (!empty($widget->where)) {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
+            } else {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            }
+            $result = $this->run_sql($sql, array());
+            foreach ($result as $row) {
+                $row->name = strtotime($row->date);
+                $row->link = 'devices?sub_resource=change_log&amp;change_log.db_table=' . $widget->primary . '&amp;change_log.db_action=' . $widget->secondary . '&amp;change_log.timestamp=LIKE' . $row->date;
+            }
+            $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
+            $begin = new DateTime( $start );
+            $end = new DateTime(date('Y-m-d'));
+            // 
+            // $end = new DateTime( '2010-05-10' );
+
+            $interval = DateInterval::createFromDateString('1 day');
+            $period = new DatePeriod($begin, $interval, $end);
+
+            foreach ( $period as $dt ) {
+                $the_date = $dt->format('Y-m-d');
+                #echo $dt->format( "l Y-m-d H:i:s\n" );
+                $add_row = true;
+                foreach ($result as $row) {
+                    if ($row->date == $the_date) {
+                        $add_row = false;
+                    }
+                }
+                if ($add_row) {
+                    $row = new stdClass();
+                    $row->date = $the_date;
+                    $row->name = strtotime($the_date);
+                    $row->count = 0;
+                    $row->link = '';
+                    $result[] = $row;
+                }
+            }
+            #$result = asort($result);
+            usort($result, array($this,'cmp'));
+            return $result;
+        }
+
+    }
+
+    function cmp($a, $b) {
+        return strcmp(strtolower($a->name), strtolower($b->name));
+    }
+
     public function execute($id = '') {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
@@ -280,6 +339,9 @@ class M_widgets extends MY_Model
         $widget = $result[0];
         if ($widget->type == 'pie') {
             $result = $this->pie_data($widget, $CI->user->org_list);
+        }
+        if ($widget->type == 'line') {
+            $result = $this->line_data($widget, $CI->user->org_list);
         }
         $result = $this->format_data($result, 'widgets');
         return ($result);
