@@ -29,6 +29,9 @@
 
 $this->log_db('Upgrade database to 2.2 commenced');
 
+# credentials
+$this->alter_table('credentials', 'type', "`type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other' AFTER `description`");
+
 # dashboards
 $sql = "DROP TABLE IF EXISTS `dashboards`";
 $this->db->query($sql);
@@ -50,11 +53,33 @@ $sql = "CREATE TABLE `dashboards` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-# scripts
-# New HP-UX saudit script
-$sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_hpux.sh', '" . $options . "', 'The default audit HP-UX config.', 'audit_hpux.sh', '', 'system', '2000-01-01 00:00:00')";
+$sql = 'INSERT INTO `dashboards` VALUES (NULL,\'Dashboard\',1,\'org\',0,\'The Default Open-AudIT Dashboard\',\'y\',\'{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}\',\'system\',\'2000-01-01 00:00:00\')';
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+
+# scripts
+# New HP-UX saudit script
+// $sql = "DELETE FROM `scripts` WHERE `name` = 'audit_hpux.sh'";
+// $this->db->query($sql);
+// $this->log_db($this->db->last_query());
+
+// $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_hpux.sh', '" . $options . "', 'The default audit HP-UX config.', 'audit_hpux.sh', '', 'system', '2000-01-01 00:00:00')";
+// $this->db->query($sql);
+// $this->log_db($this->db->last_query());
+
+# fields
+$this->drop_key('fields', 'sys_man_additional_fields_group');
+
+# file
+#$this->drop_foreign_key('file', 'file_system_id');
+#$this->drop_key('file', 'file_files_id');
+
+# print_queue
+$this->alter_table('print_queue', 'status', "`status` varchar(100) NOT NULL DEFAULT '' AFTER `type`");
+
+# system
+$this->alter_table('system', 'access_details', "DROP access_details", 'drop');
 
 # widgets
 $sql = "DROP TABLE IF EXISTS `widgets`";
@@ -83,6 +108,31 @@ $sql = "CREATE TABLE `widgets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Daily Discovered Devices',1,'','line','','system','create','','','',90,'','','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Daily Discovered Software',1,'','line','','software','create','','','',30,'','','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Not Seen',1,'','pie','','','','','','',0,'','SELECT IF ( system.last_seen = \"2000-01-01\", \"unknown\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), \"180 Days or more\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), \"150-180 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), \"120-150 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), \"90-120 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), \"60-90 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), \"30-60 days\", \"7-30 days\" ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.last_seen = \"2000-01-01\", \"system.last_seen=\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), CONCAT(\"system.last_seen=<\", DATE(NOW() - INTERVAL 180 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 180 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 150 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 150 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 120 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 120 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 90 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 90 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 60 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 60 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 30 day)), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 30 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 7 day))) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter AND DATE(system.last_seen) < DATE(NOW() - INTERVAL 7 day) GROUP BY `my_name` ORDER BY system.last_seen','devices?@description','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Device Types',1,'','pie','','system.type','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Operating System Families',1,'','pie','','system.os_family','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Device manufacturers',1,'','pie','','system.manufacturer','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 
 $sql = "SELECT * FROM `roles`";
 $query = $this->db->query($sql);

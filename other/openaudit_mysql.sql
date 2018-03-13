@@ -713,6 +713,7 @@ CREATE TABLE `dashboards` (
 
 LOCK TABLES `dashboards` WRITE;
 /*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
+INSERT INTO `dashboards` VALUES (NULL,'Dashboard',1,'org',0,'The Default Open-AudIT Dashboard','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2881,7 +2882,7 @@ CREATE TABLE `users` (
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
   `type` enum('agent','collector','user') NOT NULL DEFAULT 'user',
-  `dashboard_id` int(10) unsigned DEFAULT 1,
+  `dashboard_id` int(10) unsigned DEFAULT '1',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -3103,6 +3104,12 @@ CREATE TABLE `widgets` (
 
 LOCK TABLES `widgets` WRITE;
 /*!40000 ALTER TABLE `widgets` DISABLE KEYS */;
+INSERT INTO `widgets` VALUES (NULL,'Daily Discovered Devices',1,'','line','','system','create','','','',90,'','','','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (NULL,'Daily Discovered Software',1,'','line','','software','create','','','',30,'','','','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (NULL,'Devices Not Seen',1,'','pie','','','','','','',0,'','SELECT IF ( system.last_seen = "2000-01-01", "unknown", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), "180 Days or more", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), "150-180 days", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), "120-150 days", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), "90-120 days", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), "60-90 days", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), "30-60 days", "7-30 days" ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.last_seen = "2000-01-01", "system.last_seen=", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), CONCAT("system.last_seen=<", DATE(NOW() - INTERVAL 180 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), CONCAT("system.last_seen=>", DATE(NOW() - INTERVAL 180 day), "&system.last_seen=<", DATE(NOW() - INTERVAL 150 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), CONCAT("system.last_seen=>", DATE(NOW() - INTERVAL 150 day), "&system.last_seen=<", DATE(NOW() - INTERVAL 120 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), CONCAT("system.last_seen=>", DATE(NOW() - INTERVAL 120 day), "&system.last_seen=<", DATE(NOW() - INTERVAL 90 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), CONCAT("system.last_seen=>", DATE(NOW() - INTERVAL 90 day), "&system.last_seen=<", DATE(NOW() - INTERVAL 60 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), CONCAT("system.last_seen=>", DATE(NOW() - INTERVAL 60 day), "&system.last_seen=<", DATE(NOW() - INTERVAL 30 day)), CONCAT("system.last_seen=>", DATE(NOW() - INTERVAL 30 day), "&system.last_seen=<", DATE(NOW() - INTERVAL 7 day))) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter AND DATE(system.last_seen) < DATE(NOW() - INTERVAL 7 day) GROUP BY `my_name` ORDER BY system.last_seen','devices?@description','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (NULL,'Device Types',1,'','pie','','system.type','','','','',0,'','','','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (NULL,'Operating System Families',1,'','pie','','system.os_family','','','','',0,'','','','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (NULL,'Device manufacturers',1,'','pie','','system.manufacturer','','','','',0,'','','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `widgets` ENABLE KEYS */;
 UNLOCK TABLES;
 
