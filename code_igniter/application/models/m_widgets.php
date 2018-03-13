@@ -196,7 +196,9 @@ class M_widgets extends MY_Model
                 $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
             } else {
                 # invalid query
-                return false;
+                #return false;
+                $collection = 'devices';
+                $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
             }
 
         } else if (in_array($primary_table, $device_tables)) {
@@ -243,6 +245,16 @@ class M_widgets extends MY_Model
 
         $CI->response->meta->sql[] = $sql;
         $total_count = 0;
+        # We need to allow for grouping using a column name that is NOT 'name' as this can clash with existing schema.
+        #   In this case (always in custom SQL), you should use my_name instead
+        for ($i=0; $i < count($result); $i++) { 
+            foreach ($result[$i] as $key => $value) {
+                if (strpos($key, 'my_') === 0) {
+                    $new_key = str_replace('my_', '', $key);
+                    $result[$i]->{$new_key} = $value;
+                }
+            }
+        }
         for ($i=0; $i < count($result); $i++) {
             $total_count += intval($result[$i]->count);
             if (intval($result[$i]->count) === 0 and is_null($result[$i]->name)) {
@@ -281,46 +293,48 @@ class M_widgets extends MY_Model
                 $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
             }
             $result = $this->run_sql($sql, array());
-            foreach ($result as $row) {
-                $row->name = strtotime($row->date);
-                $row->link = 'devices?sub_resource=change_log&amp;change_log.db_table=' . $widget->primary . '&amp;change_log.db_action=' . $widget->secondary . '&amp;change_log.timestamp=LIKE' . $row->date;
+            if (!empty($result)) {
+                foreach ($result as $row) {
+                    $row->name = strtotime($row->date);
+                    $row->link = 'devices?sub_resource=change_log&amp;change_log.db_table=' . $widget->primary . '&amp;change_log.db_action=' . $widget->secondary . '&amp;change_log.timestamp=LIKE' . $row->date;
+                }
             }
             $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
             $begin = new DateTime( $start );
             $end = new DateTime(date('Y-m-d'));
-            // 
-            // $end = new DateTime( '2010-05-10' );
-
             $interval = DateInterval::createFromDateString('1 day');
             $period = new DatePeriod($begin, $interval, $end);
-
             foreach ( $period as $dt ) {
                 $the_date = $dt->format('Y-m-d');
                 #echo $dt->format( "l Y-m-d H:i:s\n" );
                 $add_row = true;
-                foreach ($result as $row) {
-                    if ($row->date == $the_date) {
+                for ($i=0; $i < count($result); $i++) {
+                    if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
                         $add_row = false;
+                        $result[$i]->timestamp = strtotime($the_date);
                     }
                 }
                 if ($add_row) {
                     $row = new stdClass();
+                    $row->timestamp = strtotime($the_date);
                     $row->date = $the_date;
-                    $row->name = strtotime($the_date);
                     $row->count = 0;
                     $row->link = '';
                     $result[] = $row;
                 }
             }
-            #$result = asort($result);
-            usort($result, array($this,'cmp'));
+            usort($result, array($this,'cmp_timestamp'));
             return $result;
         }
 
     }
 
-    function cmp($a, $b) {
+    function cmp_name($a, $b) {
         return strcmp(strtolower($a->name), strtolower($b->name));
+    }
+
+    function cmp_timestamp($a, $b) {
+        return strcmp(strtolower($a->timestamp), strtolower($b->timestamp));
     }
 
     public function execute($id = '') {

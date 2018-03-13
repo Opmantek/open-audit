@@ -1018,7 +1018,7 @@ class M_collection extends MY_Model
                 break;
 
             case "users":
-                return(' name org_id permissions password full_name email lang active roles orgs type ');
+                return(' name org_id permissions password full_name email lang active roles orgs type dashboard_id ');
                 break;
 
             case "widgets":
