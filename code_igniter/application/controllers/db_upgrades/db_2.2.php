@@ -109,11 +109,11 @@ $sql = "CREATE TABLE `widgets` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Daily Discovered Devices',1,'','line','','system','create','','','',90,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'New Devices Discovered per Day',1,'','line','','system','create','','','',30,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Daily Discovered Software',1,'','line','','software','create','','','',30,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'New Software Discovered per Day',1,'','line','','software','create','','','',30,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -190,6 +190,10 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $sql = "INSERT INTO `widgets` VALUES (NULL,'Networks',1,'','pie','','','','','','',0,'','SELECT ip.network AS `my_name`, COUNT(ip.system_id) AS `count` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = \'y\') WHERE @filter AND ip.network != \'\' GROUP BY `my_name`','devices?ip.network=@name','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Audited per Day',1,'','line','','','','','','',0,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
