@@ -238,7 +238,7 @@ class M_widgets extends MY_Model
             }
             if (!empty($widget->limit)) {
                 $limit = intval($widget->limit);
-                $sql .= ' LIMIT ' . $limit;
+                $sql .= ' ORDER BY `count` DESC LIMIT ' . $limit;
             }
         }
         $result = $this->run_sql($sql, array());
@@ -247,30 +247,44 @@ class M_widgets extends MY_Model
         $total_count = 0;
         # We need to allow for grouping using a column name that is NOT 'name' as this can clash with existing schema.
         #   In this case (always in custom SQL), you should use my_name instead
-        for ($i=0; $i < count($result); $i++) { 
-            foreach ($result[$i] as $key => $value) {
-                if (strpos($key, 'my_') === 0) {
-                    $new_key = str_replace('my_', '', $key);
-                    $result[$i]->{$new_key} = $value;
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) { 
+                foreach ($result[$i] as $key => $value) {
+                    if (strpos($key, 'my_') === 0) {
+                        $new_key = str_replace('my_', '', $key);
+                        $result[$i]->{$new_key} = $value;
+                        unset($result[$i]->{$key});
+                    }
                 }
             }
-        }
-        for ($i=0; $i < count($result); $i++) {
-            $total_count += intval($result[$i]->count);
-            if (intval($result[$i]->count) === 0 and is_null($result[$i]->name)) {
-                unset($result[$i]);
+            for ($i=0; $i < count($result); $i++) {
+                $total_count += intval($result[$i]->count);
+                if (intval($result[$i]->count) === 0 and is_null($result[$i]->name)) {
+                    unset($result[$i]);
+                }
             }
-        }
-        foreach ($result as $row) {
-            $row->percent = intval(($row->{'count'} / $total_count) * 100);
-            if (!empty($widget->link)) {
-            $link = $widget->link;
-                $link = str_ireplace('@name', $row->description, $link);
-                $link = str_ireplace('@description', $row->description, $link);
-                $link = str_ireplace('@ternary', $row->description, $link);
-                $row->link = $link;
-            } else {
-                $row->link = $collection . '?' . $attribute . '=' . $row->name;
+            $result = array_values($result);
+            foreach ($result as $row) {
+                if (!empty($row->count) and !empty($total_count)) {
+                    $row->percent = intval(($row->count / $total_count) * 100);
+                } else {
+                    $row->percent = 0;
+                }
+                if (!empty($widget->link)) {
+                    $link = $widget->link;
+                    if (!empty($row->name)) {
+                        $link = str_ireplace('@name', $row->name, $link);
+                    }
+                    if (!empty($row->description)) {
+                        $link = str_ireplace('@description', $row->description, $link);
+                    }
+                    if (!empty($row->ternary)) {
+                        $link = str_ireplace('@ternary', $row->ternary, $link);
+                    }
+                    $row->link = $link;
+                } else {
+                    $row->link = $collection . '?' . $attribute . '=' . $row->name;
+                }
             }
         }
         return $result;
@@ -278,7 +292,67 @@ class M_widgets extends MY_Model
 
     private function line_data($widget, $org_list) {
         if (!empty($widget->sql)) {
+            $sql = $widget->sql;
+            if (stripos($sql, 'where @filter and') === false and stripos($sql, 'where @filter group by') === false) {
+                # invalid query
+                # return false;
+                # These entries musy only be created by a user with Admin role as no filter allows anything in the DB to be queried (think multi-tenancy).
+            } else {
+                $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+            }
+            $result = $this->run_sql($sql, array());
+            if (!empty($result)) {
+                foreach ($result as $row) {
+                    $row->timestamp = strtotime($row->date);
+                }
+                usort($result, array($this,'cmp_timestamp'));
 
+                $link = $widget->link;
+                foreach ($result as $row) {
+                    if (!empty($row->name)) {
+                        $link = str_ireplace('@name', $row->name, $link);
+                    }
+                    if (!empty($row->description)) {
+                        $link = str_ireplace('@description', $row->description, $link);
+                    }
+                    if (!empty($row->ternary)) {
+                        $link = str_ireplace('@ternary', $row->ternary, $link);
+                    }
+                    if (!empty($row->date)) {
+                        $link = str_ireplace('@date', $row->date, $link);
+                    }
+                    if (!empty($row->timestamp)) {
+                        $link = str_ireplace('@timestamp', $row->timestamp, $link);
+                    }
+                    $row->link = $link;
+                }
+                $start = date('Y-m-d', strtotime($result[0]->date));
+                $begin = new DateTime( $start );
+                $i = count($result)-1;
+                $end = new DateTime($result[$i]->date);
+                $interval = DateInterval::createFromDateString('1 day');
+                $period = new DatePeriod($begin, $interval, $end);
+                foreach ( $period as $dt ) {
+                    $the_date = $dt->format('Y-m-d');
+                    $add_row = true;
+                    for ($i=0; $i < count($result); $i++) {
+                        if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
+                            $add_row = false;
+                            $result[$i]->timestamp = strtotime($the_date);
+                        }
+                    }
+                    if ($add_row) {
+                        $row = new stdClass();
+                        $row->timestamp = strtotime($the_date);
+                        $row->date = $the_date;
+                        $row->count = 0;
+                        $row->link = '';
+                        $result[] = $row;
+                    }
+                }
+
+            }
+            return $result;
         }
 
         if (empty($widget->sql)) {
