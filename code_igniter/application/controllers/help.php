@@ -54,175 +54,202 @@ class Help extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('m_files');
+        $this->load->model('m_help');
+        inputRead();
         $this->output->url = $this->config->item('oa_web_index');
+        $this->response->meta->collection = 'help';
+        $this->response->meta->heading = 'Help';
 
+        $this->load->model('m_files');
 
         # Nasty hack to be removed because we don't call readInput()
-        $this->response = new stdClass();
-        $this->response->included = array();
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "10000";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/10000";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "10000";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Discovered Today";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "10001";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/10001";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "10001";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Discovered Yesterday";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "10002";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/10002";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "10002";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Discovered in the Last 7 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "10003";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/10003";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "10003";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Discovered in the Last 30 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "20000";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/20000";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "20000";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Software Discovered Today";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "20001";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/20001";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "20001";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Software Discovered Yesterday";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "20002";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/20002";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "20002";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Software Discovered in the Last 7 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "20003";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/20003";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "20003";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Software Discovered in the Last 30 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "30000";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/30000";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "30001";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Not Seen for 7 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "30001";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/30001";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "30002";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Not Seen for 30 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "30002";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/30002";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "30003";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Not Seen for 90 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
-        $enterprise_report = new stdClass();
-        $enterprise_report->id =  "30003";
-        $enterprise_report->links = new stdClass();
-        $enterprise_report->links->self = "/omk/oae/reports/30003";
-        $enterprise_report->type = "reports";
-        $enterprise_report->attributes = new stdClass();
-        $enterprise_report->attributes->id = "30004";
-        $enterprise_report->attributes->description = "";
-        $enterprise_report->attributes->menu_category = "Discovery";
-        $enterprise_report->attributes->menu_display = "y";
-        $enterprise_report->attributes->name = "Devices Not Seen for 180 Days";
-        $this->response->included[] = $enterprise_report;
-        unset($enterprise_report);
+        // $this->response = new stdClass();
+        // $this->response->included = array();
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "10000";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/10000";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "10000";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Discovered Today";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "10001";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/10001";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "10001";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Discovered Yesterday";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "10002";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/10002";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "10002";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Discovered in the Last 7 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "10003";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/10003";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "10003";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Discovered in the Last 30 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "20000";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/20000";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "20000";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Software Discovered Today";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "20001";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/20001";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "20001";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Software Discovered Yesterday";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "20002";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/20002";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "20002";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Software Discovered in the Last 7 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "20003";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/20003";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "20003";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Software Discovered in the Last 30 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "30000";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/30000";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "30001";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Not Seen for 7 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "30001";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/30001";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "30002";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Not Seen for 30 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "30002";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/30002";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "30003";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Not Seen for 90 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
+        // $enterprise_report = new stdClass();
+        // $enterprise_report->id =  "30003";
+        // $enterprise_report->links = new stdClass();
+        // $enterprise_report->links->self = "/omk/oae/reports/30003";
+        // $enterprise_report->type = "reports";
+        // $enterprise_report->attributes = new stdClass();
+        // $enterprise_report->attributes->id = "30004";
+        // $enterprise_report->attributes->description = "";
+        // $enterprise_report->attributes->menu_category = "Discovery";
+        // $enterprise_report->attributes->menu_display = "y";
+        // $enterprise_report->attributes->name = "Devices Not Seen for 180 Days";
+        // $this->response->included[] = $enterprise_report;
+        // unset($enterprise_report);
 
-        $this->load->model('m_collection');
-        $result = $this->m_collection->collection('queries');
-        $this->response->included = array_merge($this->response->included, $result);
-        $result = $this->m_collection->collection('summaries');
-        $this->response->included = array_merge($this->response->included, $result);
+        // $this->load->model('m_collection');
+        // $result = $this->m_collection->collection('queries');
+        // $this->response->included = array_merge($this->response->included, $result);
+        // $result = $this->m_collection->collection('summaries');
+        // $this->response->included = array_merge($this->response->included, $result);
+
+        
+        // $this->response->meta->format = 'screen';
+        // $this->load->helper('url');
+        // if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+        //     $this->response->meta->format = 'json';
+        // }
+        // if (isset($_GET['format'])) {
+        //     $this->response->meta->format = $_GET['format'];
+        // }
+        // if (isset($_POST['format'])) {
+        //     $this->response->meta->format = $_POST['format'];
+        // }
+        // if ($this->response->meta->format == '') {
+        //     $this->response->meta->format = 'json';
+        // }
+        // echo "<pre>\n"; print_r($_GET); exit();
+
+        // $this->response->meta->header = 'Help';
+        // $this->response->meta->action = 'read';
+        // $this->response->meta->debug = false;
+
+
     }
 
     /**
@@ -233,8 +260,8 @@ class Help extends MY_Controller
     */
     public function index()
     {
-        $this->data['include'] = 'v_help_index';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        output($this->response);
     }
 
     /**
@@ -245,8 +272,9 @@ class Help extends MY_Controller
     */
     function groups()
     {
-        $this->data['include'] = 'v_help_groups';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        $this->m_help->groups();
+        output($this->response);
     }
 
     /**
@@ -257,8 +285,9 @@ class Help extends MY_Controller
     */
     function queries()
     {
-        $this->data['include'] = 'v_help_queries';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        $this->m_help->queries();
+        output($this->response);
     }
 
     /**
@@ -269,8 +298,9 @@ class Help extends MY_Controller
     */
     function roles()
     {
-        $this->data['include'] = 'v_help_roles';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        $this->m_help->roles();
+        output($this->response);
     }
 
     /**
@@ -281,8 +311,8 @@ class Help extends MY_Controller
     */
     function statistics()
     {
-        $this->data['include'] = 'v_help_statistics';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        output($this->response);
     }
 
     /**
@@ -293,8 +323,9 @@ class Help extends MY_Controller
     */
     function summaries()
     {
-        $this->data['include'] = 'v_help_summaries';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        $this->m_help->summaries();
+        output($this->response);
     }
 
     /**
@@ -305,8 +336,9 @@ class Help extends MY_Controller
     */
     function support()
     {
-        $this->data['include'] = 'v_help_support';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        $this->m_help->support();
+        output($this->response);
     }
 
     /**
@@ -317,8 +349,8 @@ class Help extends MY_Controller
     */
     function enterprise()
     {
-        $this->data['include'] = 'v_help_enterprise';
-        $this->load->view('v_template', $this->data);
+        $this->response->meta->action = __FUNCTION__;
+        output($this->response);
     }
 
 }
