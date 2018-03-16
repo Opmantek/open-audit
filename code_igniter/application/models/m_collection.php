@@ -1022,7 +1022,7 @@ class M_collection extends MY_Model
                 break;
 
             case "widgets":
-                return(' name org_id description type table primary secondary ternary where limit group_by options sql link ');
+                return(' name org_id description type table primary secondary ternary dataset_title where limit group_by options sql link ');
                 break;
         }
     }

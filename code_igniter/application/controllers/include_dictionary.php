@@ -688,6 +688,7 @@ if ($table == 'widgets') {
     $dictionary->columns->limit = 'Limit the query to the first X items.';
     $dictionary->columns->group_by = 'This is generally the primary column, unless otherwise configured.';
     $dictionary->columns->type = 'Only "line" and "pie" are used at present.';
+    $dictionary->columns->dataset_title = 'The text for the bottom of the chart in a line chart (only).';
     $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per "queries", you must include "WHERE @filter AND" in your SQL.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
