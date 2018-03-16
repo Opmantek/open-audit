@@ -404,11 +404,19 @@ class M_widgets extends MY_Model
     }
 
     function cmp_name($a, $b) {
-        return strcmp(strtolower($a->name), strtolower($b->name));
+        if (!empty($a->name) and !empty($b->name)) {
+            return strcmp(strtolower($a->name), strtolower($b->name));
+        } else {
+            return;
+        }
     }
 
     function cmp_timestamp($a, $b) {
-        return strcmp(strtolower($a->timestamp), strtolower($b->timestamp));
+        if (!empty($a->timestamp) and !empty($b->timestamp)) {
+            return strcmp(strtolower($a->timestamp), strtolower($b->timestamp));
+        } else {
+            return;
+        }
     }
 
     public function execute($id = '') {
