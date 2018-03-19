@@ -241,7 +241,7 @@ class M_help extends MY_Model
         $data->php->ext_simplexml = phpversion('simplexml');
         $data->php->ext_snmp = phpversion('snmp');
         $data->php->ext_xml = phpversion('xml');
-        $data->php->ext_zip = phpversion('zip');
+        #$data->php->ext_zip = phpversion('zip');
         $data->php->log_errors = ini_get('log_errors');
         $data->php->max_execution_time = ini_get('max_execution_time');
         $data->php->max_input_time = ini_get('max_input_time');
