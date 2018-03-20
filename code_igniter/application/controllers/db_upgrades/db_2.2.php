@@ -67,6 +67,10 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 
+$sql = "INSERT INTO `dashboards` VALUES (NULL,'Purchasing Dashboard',1,'org',0,'','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"11\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"26\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"25\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"23\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"24\"}]}','Open-AudIT Enterprise','2018-03-20 20:34:04')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # scripts
 # New HP-UX saudit script
 // $sql = "DELETE FROM `scripts` WHERE `name` = 'audit_hpux.sh'";
@@ -133,19 +137,19 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'New Software Discovered per Day',1,'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Not Seen',1,'','pie','','','','','','','',0,'','SELECT IF ( system.last_seen = \"2000-01-01\", \"unknown\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), \"180 Days or more\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), \"150-180 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), \"120-150 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), \"90-120 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), \"60-90 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), \"30-60 days\", \"7-30 days\" ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.last_seen = \"2000-01-01\", \"system.last_seen=\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), CONCAT(\"system.last_seen=<\", DATE(NOW() - INTERVAL 180 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 180 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 150 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 150 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 120 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 120 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 90 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 90 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 60 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 60 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 30 day)), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 30 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 7 day))) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter AND DATE(system.last_seen) < DATE(NOW() - INTERVAL 7 day) GROUP BY `my_name` ORDER BY system.last_seen','devices?@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Not Seen (0-180+ Days)',1,'','pie','','','','','','','',0,'','SELECT IF ( system.last_seen = \"2000-01-01\", \"unknown\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), \"180 Days or more\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), \"150-180 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), \"120-150 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), \"90-120 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), \"60-90 days\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), \"30-60 days\", \"7-30 days\" ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.last_seen = \"2000-01-01\", \"system.last_seen=\", ( IF ( system.last_seen < DATE(NOW() - INTERVAL 180 day), CONCAT(\"system.last_seen=<\", DATE(NOW() - INTERVAL 180 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 150 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 180 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 150 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 120 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 150 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 120 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 90 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 120 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 90 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 60 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 90 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 60 day)), ( IF ( system.last_seen < DATE(NOW() - INTERVAL 30 day), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 60 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 30 day)), CONCAT(\"system.last_seen=>\", DATE(NOW() - INTERVAL 30 day), \"&system.last_seen=<\", DATE(NOW() - INTERVAL 7 day))) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter AND DATE(system.last_seen) < DATE(NOW() - INTERVAL 7 day) GROUP BY `my_name` ORDER BY system.last_seen','devices?@description','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Device Types',1,'','pie','','system.type','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Type',1,'','pie','','system.type','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Operating System Families',1,'','pie','','system.os_family','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by OS Family',1,'','pie','','system.os_family','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Device manufacturers',1,'','pie','','system.manufacturer','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Manufacturer',1,'','pie','','system.manufacturer','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -153,11 +157,11 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Software Keys',1,'','pie','','softwa
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices By Status',1,'','pie','','system.status','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Status',1,'','pie','','system.status','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices By Function',1,'','pie','','system.function','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Function',1,'','pie','','system.function','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -165,7 +169,7 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Servers',1,'','pie','','server.name'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Expiring Warranties',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.warranty_expires = \'2000-01-01\', \'unknown\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 730 day), \'2 Years or more\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 365 day), \'1-2 years\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 270 day), \'270-365 days\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 180 day), \'180-270 days\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 90 day), \'90-180 days\', \'Less than 90 Days\' ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.warranty_expires = \'2000-01-01\', \'system.warranty_expires=2000-01-01\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 730 day), CONCAT(\'system.warranty_expires=>\', DATE(NOW() + INTERVAL 730 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 365 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 730 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 365 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 270 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 365 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 270 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 180 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 270 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 180 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 90 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 180 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 90 day)), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 90 day), \'&system.warranty_expires=>\', DATE(NOW()) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.warranty_expires','devices?@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'End of Warranty (0-2+ Years)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.warranty_expires = \'2000-01-01\', \'unknown\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 730 day), \'2 Years or more\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 365 day), \'1-2 years\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 270 day), \'270-365 days\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 180 day), \'180-270 days\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 90 day), \'90-180 days\', \'Less than 90 Days\' ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.warranty_expires = \'2000-01-01\', \'system.warranty_expires=2000-01-01\', ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 730 day), CONCAT(\'system.warranty_expires=>\', DATE(NOW() + INTERVAL 730 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 365 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 730 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 365 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 270 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 365 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 270 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 180 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 270 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 180 day)), ( IF ( system.warranty_expires > DATE(NOW() + INTERVAL 90 day), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 180 day), \'&system.warranty_expires=>\', DATE(NOW() + INTERVAL 90 day)), CONCAT(\'system.warranty_expires=<\', DATE(NOW() + INTERVAL 90 day), \'&system.warranty_expires=>\', DATE(NOW()) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.warranty_expires','devices?@description','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -173,15 +177,15 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Class',1,'','pie','','sys
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'DNS Domains',1,'','pie','','system.dns_domain','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by DNS Domain',1,'','pie','','system.dns_domain','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Operating System Groups',1,'','pie','','system.os_group','','','','','',0,'','','','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by OS Group',1,'','pie','','system.os_group','','','','','',0,'','','','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Per Location',1,'','pie','','','','','','','',0,'','SELECT locations.name as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) WHERE @filter GROUP BY locations.name','devices?system.location_id=@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Location',1,'','pie','','','','','','','',0,'','SELECT locations.name as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) WHERE @filter GROUP BY locations.name','devices?system.location_id=@description','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -209,10 +213,25 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Networks',1,'','pie','','','','','',
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Audited per Day',1,'','line','','','','','','','',0,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices Audited per Day',1,'','line','','','','','','','',30,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date%','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "INSERT INTO `widgets` VALUES (NULL,'End Of Life (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.end_of_life = \"2000-01-01\", \"unknown\", ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 90 day), \"90+ Days\", ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 60 day), \"60-90 Days\", ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 30 day), \"30-60 Days\", ( IF ( system.end_of_life > DATE(NOW()), \"0-30 days\", \"Less than 30 Days\" ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.end_of_life = \"2000-01-01\", \"system.end_of_life=2000-01-01\", ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 90 day), CONCAT(\"system.end_of_life=>\", DATE(NOW() + INTERVAL 90 day)), ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 60 day), CONCAT(\"system.end_of_life=<\", DATE(NOW() + INTERVAL 90 day), \"&system.end_of_life=>\", DATE(NOW() + INTERVAL 60 day)), ( IF ( system.end_of_life > DATE(NOW() + INTERVAL 30 day), CONCAT(\"system.end_of_life=<\", DATE(NOW() + INTERVAL 60 day), \"&system.end_of_life=>\", DATE(NOW() + INTERVAL 30 day)), ( CONCAT(\"system.end_of_life=<\", DATE(NOW() + INTERVAL 30 day), \"&system.end_of_life=>\", DATE(NOW())) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.end_of_life;','devices?@description','Administrator','2018-03-20 11:27:42')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'End of Service (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.end_of_service = \"2000-01-01\", \"unknown\", ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 90 day), \"90+ Days\", ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 60 day), \"60-90 Days\", ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 30 day), \"30-60 Days\", ( IF ( system.end_of_service > DATE(NOW()), \"0-30 days\", \"Less than 30 Days\" ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.end_of_service = \"2000-01-01\", \"system.end_of_service=2000-01-01\", ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 90 day), CONCAT(\"system.end_of_service=>\", DATE(NOW() + INTERVAL 90 day)), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 60 day), CONCAT(\"system.end_of_service=<\", DATE(NOW() + INTERVAL 90 day), \"&system.end_of_service=>\", DATE(NOW() + INTERVAL 60 day)), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 30 day), CONCAT(\"system.end_of_service=<\", DATE(NOW() + INTERVAL 60 day), \"&system.end_of_service=>\", DATE(NOW() + INTERVAL 30 day)), ( CONCAT(\"system.end_of_service=<\", DATE(NOW() + INTERVAL 30 day), \"&system.end_of_service=>\", DATE(NOW())) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.end_of_service;','devices?@description','Administrator','2018-03-20 11:59:01')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Device Age (0-3+ Years)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.purchase_date = \"2000-01-01\", \"unknown\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), \"3+ Years\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), \"2-3 Years\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), \"1-2 Years\", \"Less Than 1 Year\" ) ) ) ) ) ) ) AS `my_name`, IF ( system.purchase_date = \"2000-01-01\", \"system.purchase_date=2000-01-01\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), CONCAT(\"system.purchase_date=<\", DATE(NOW() - INTERVAL 3 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 3 year), \"&system.purchase_date=<\", DATE(NOW() - INTERVAL 2 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 2 year), \"&system.purchase_date=<\", DATE(NOW() - INTERVAL 1 year)), CONCAT(\"system.purchase_date=<\", DATE(NOW() - INTERVAL 1 year), \"&system.purchase_date=>\", DATE(NOW())) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.purchase_date','devices?@description','Administrator','2018-03-20 12:25:38')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'End of Lease (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.lease_expiry_date = \"2000-01-01\", \"unknown\", ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 90 day), \"90+ Days\", ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 60 day), \"60-90 Days\", ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 30 day), \"30-60 Days\", ( IF ( system.lease_expiry_date > DATE(NOW()), \"0-30 days\", \"Less than 30 Days\" ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.lease_expiry_date = \"2000-01-01\", \"system.lease_expiry_date=2000-01-01\", ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 90 day), CONCAT(\"system.lease_expiry_date=>\", DATE(NOW() + INTERVAL 90 day)), ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 60 day), CONCAT(\"system.lease_expiry_date=<\", DATE(NOW() + INTERVAL 90 day), \"&system.lease_expiry_date=>\", DATE(NOW() + INTERVAL 60 day)), ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 30 day), CONCAT(\"system.lease_expiry_date=<\", DATE(NOW() + INTERVAL 60 day), \"&system.lease_expiry_date=>\", DATE(NOW() + INTERVAL 30 day)), ( CONCAT(\"system.lease_expiry_date=<\", DATE(NOW() + INTERVAL 30 day), \"&system.lease_expiry_date=>\", DATE(NOW())) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.lease_expiry_date;','devices?@description','Administrator','2018-03-20 11:59:01')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 $sql = "SELECT * FROM `roles`";
 $query = $this->db->query($sql);
