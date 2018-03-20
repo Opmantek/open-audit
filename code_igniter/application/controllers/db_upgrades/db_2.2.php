@@ -29,6 +29,15 @@
 
 $this->log_db('Upgrade database to 2.2 commenced');
 
+# configuration
+$sql = "UPDATE `configuration` SET `editable` = 'y' WHERE `name` = 'process_netstat_windows_dns'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `configuration` SET `value` = 'n' WHERE `name` = 'process_netstat_windows_dns' and `value` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # credentials
 $this->alter_table('credentials', 'type', "`type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other' AFTER `description`");
 
@@ -53,7 +62,7 @@ $sql = "CREATE TABLE `dashboards` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = 'INSERT INTO `dashboards` VALUES (NULL,\'Dashboard\',1,\'org\',0,\'The Default Open-AudIT Dashboard\',\'y\',\'{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}\',\'system\',\'2000-01-01 00:00:00\')';
+$sql = 'INSERT INTO `dashboards` VALUES (NULL,\'Default Dashboard\',1,\'org\',0,\'The Default Open-AudIT Dashboard\',\'y\',\'{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}\',\'system\',\'2000-01-01 00:00:00\')';
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -80,6 +89,12 @@ $this->alter_table('print_queue', 'status', "`status` varchar(100) NOT NULL DEFA
 
 # system
 $this->alter_table('system', 'access_details', "DROP access_details", 'drop');
+
+$this->alter_table('system', 'end_of_life', "ADD `end_of_life` date NOT NULL DEFAULT '2000-01-01' AFTER `warranty_type`", 'add');
+
+$this->alter_table('system', 'end_of_service', "ADD `end_of_service` date NOT NULL DEFAULT '2000-01-01' AFTER `end_of_life`", 'add');
+
+$this->alter_table('system', 'asset_tag', "ADD `asset_tag` text NOT NULL AFTER `asset_number`", 'add');
 
 # widgets
 $sql = "DROP TABLE IF EXISTS `widgets`";

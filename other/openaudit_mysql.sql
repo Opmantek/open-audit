@@ -561,7 +561,7 @@ INSERT INTO `configuration` VALUES (38,'match_serial_type','y','bool','y','syste
 INSERT INTO `configuration` VALUES (39,'match_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
 INSERT INTO `configuration` VALUES (40,'nmis','n','bool','y','system','2000-01-01 00:00:00','Enable import / export to NMIS functions.');
 INSERT INTO `configuration` VALUES (41,'nmis_url','','text','y','system','2000-01-01 00:00:00','The web server address of NMIS.');
-INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','n','bool','n','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
+INSERT INTO `configuration` VALUES (42,'process_netstat_windows_dns','n','bool','y','system','2000-01-01 00:00:00','Should we keep track of Windows netstat ports used by DNS above port 1000.');
 INSERT INTO `configuration` VALUES (43,'oae_license','','text','n','system','2000-01-01 00:00:00','License status of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (44,'oae_prompt','2015-06-01','date','n','system','2000-01-01 00:00:00','Prompt to activate a license for Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (45,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
@@ -713,7 +713,7 @@ CREATE TABLE `dashboards` (
 
 LOCK TABLES `dashboards` WRITE;
 /*!40000 ALTER TABLE `dashboards` DISABLE KEYS */;
-INSERT INTO `dashboards` VALUES (NULL,'Dashboard',1,'org',0,'The Default Open-AudIT Dashboard','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}','system','2000-01-01 00:00:00');
+INSERT INTO `dashboards` VALUES (NULL,'Default Dashboard',1,'org',0,'The Default Open-AudIT Dashboard','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2677,6 +2677,7 @@ CREATE TABLE `system` (
   `location_latitude` float(10,6) NOT NULL,
   `location_longitude` float(10,6) NOT NULL,
   `asset_number` varchar(50) NOT NULL DEFAULT '',
+  `asset_tag` text NOT NULL,
   `vm_server_name` varchar(150) NOT NULL DEFAULT '',
   `vm_system_id` int(10) unsigned DEFAULT NULL,
   `vm_group` varchar(150) NOT NULL DEFAULT '',
@@ -2694,6 +2695,8 @@ CREATE TABLE `system` (
   `warranty_duration` int(5) unsigned NOT NULL DEFAULT '0',
   `warranty_expires` date NOT NULL DEFAULT '2000-01-01',
   `warranty_type` enum('','24x7x365','9x5x5','Next Business Day') NOT NULL DEFAULT '',
+  `end_of_life` date NOT NULL DEFAULT '2000-01-01',
+  `end_of_service` date NOT NULL DEFAULT '2000-01-01',
   `switch_system_id` int(10) DEFAULT NULL,
   `switch_port` int(10) unsigned NOT NULL DEFAULT '0',
   `patch_panel` varchar(45) NOT NULL DEFAULT '',
