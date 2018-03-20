@@ -291,7 +291,7 @@ class M_devices extends MY_Model
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?";
             $data = array($id);
         } elseif ($sub_resource == 'purchase') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
         } elseif ($sub_resource == 'discovery_log') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? " . $limit;
