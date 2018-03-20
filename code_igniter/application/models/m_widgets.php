@@ -286,6 +286,15 @@ class M_widgets extends MY_Model
                     $row->link = $collection . '?' . $attribute . '=' . $row->name;
                 }
             }
+        } else {
+            $item = new stdClass();
+            $item->name = '';
+            $item->description = '';
+            $item->ternary = '';
+            $item->count = 0;
+            $item->percent = 100;
+            $item->link = '';
+            $result[] = $item;
         }
         return $result;
     }
@@ -352,6 +361,7 @@ class M_widgets extends MY_Model
                 }
 
             }
+            usort($result, array($this,'cmp_timestamp'));
             return $result;
         }
 
@@ -375,12 +385,13 @@ class M_widgets extends MY_Model
             }
             $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
             $begin = new DateTime( $start );
-            $end = new DateTime(date('Y-m-d'));
-            $interval = DateInterval::createFromDateString('1 day');
+            $finish = date('Y-m-d', strtotime('+1 days'));
+            $end = new DateTime($finish);
+            $interval = new DateInterval('P1D');
             $period = new DatePeriod($begin, $interval, $end);
+
             foreach ( $period as $dt ) {
                 $the_date = $dt->format('Y-m-d');
-                #echo $dt->format( "l Y-m-d H:i:s\n" );
                 $add_row = true;
                 for ($i=0; $i < count($result); $i++) {
                     if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
@@ -400,7 +411,6 @@ class M_widgets extends MY_Model
             usort($result, array($this,'cmp_timestamp'));
             return $result;
         }
-
     }
 
     function cmp_name($a, $b) {
