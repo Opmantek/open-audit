@@ -242,8 +242,17 @@ class M_widgets extends MY_Model
             }
         }
         $result = $this->run_sql($sql, array());
-
         $CI->response->meta->sql[] = $sql;
+        if (!empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                if (empty($result[$i]->name) and empty($result[$i]->count)) {
+                    unset($result[$i]);
+                }
+            }
+        }
+        if (!empty($result)) {
+            $result = array_values($result);
+        }
         $total_count = 0;
         # We need to allow for grouping using a column name that is NOT 'name' as this can clash with existing schema.
         #   In this case (always in custom SQL), you should use my_name instead
@@ -335,12 +344,29 @@ class M_widgets extends MY_Model
                     }
                     $row->link = $link;
                 }
-                $start = date('Y-m-d', strtotime($result[0]->date));
-                $begin = new DateTime( $start );
-                $i = count($result)-1;
-                $end = new DateTime($result[$i]->date);
-                $interval = DateInterval::createFromDateString('1 day');
-                $period = new DatePeriod($begin, $interval, $end);
+                // $start = date('Y-m-d', strtotime($result[0]->date));
+                // $begin = new DateTime( $start );
+                // $i = count($result)-1;
+                // $end = new DateTime($result[$i]->date);
+                // $interval = DateInterval::createFromDateString('1 day');
+                // $period = new DatePeriod($begin, $interval, $end);
+
+                if (count($result) < 2) {
+                    $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
+                    $begin = new DateTime( $start );
+                    $finish = date('Y-m-d', strtotime('+1 days'));
+                    $end = new DateTime($finish);
+                    $interval = new DateInterval('P1D');
+                    $period = new DatePeriod($begin, $interval, $end);
+                } else {
+                    $start = date('Y-m-d', strtotime($result[0]->date));
+                    $begin = new DateTime( $start );
+                    $i = count($result)-1;
+                    $end = new DateTime($result[$i]->date);
+                    $interval = DateInterval::createFromDateString('1 day');
+                    $period = new DatePeriod($begin, $interval, $end);
+                }
+
                 foreach ( $period as $dt ) {
                     $the_date = $dt->format('Y-m-d');
                     $add_row = true;
