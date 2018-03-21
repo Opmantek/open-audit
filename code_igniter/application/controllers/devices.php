@@ -81,7 +81,11 @@ class devices extends MY_Controller
                 $this->response->data = $this->m_devices->collection();
             }
         }
-        $this->response->meta->filtered = count($this->response->data);
+        if (is_array($this->response->data)) {
+            $this->response->meta->filtered = count($this->response->data);
+        } else {
+            $this->response->meta->filtered = 0;
+        }
         output($this->response);
         $log = new stdClass();
         $log->type = 'access';

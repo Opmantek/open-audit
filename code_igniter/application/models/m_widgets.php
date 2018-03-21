@@ -419,10 +419,12 @@ class M_widgets extends MY_Model
             foreach ( $period as $dt ) {
                 $the_date = $dt->format('Y-m-d');
                 $add_row = true;
-                for ($i=0; $i < count($result); $i++) {
-                    if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
-                        $add_row = false;
-                        $result[$i]->timestamp = strtotime($the_date);
+                if (!empty($result)) {
+                    for ($i=0; $i < count($result); $i++) {
+                        if (!empty($result[$i]->date) and $result[$i]->date == $the_date) {
+                            $add_row = false;
+                            $result[$i]->timestamp = strtotime($the_date);
+                        }
                     }
                 }
                 if ($add_row) {

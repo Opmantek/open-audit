@@ -204,7 +204,7 @@ class M_collection extends MY_Model
             unset($item);
         }
 
-        if ($collection == 'credentials') {
+        if ($collection == 'credentials' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));

@@ -356,7 +356,7 @@ class M_devices extends MY_Model
 
         $result = $this->run_sql($sql, $data);
 
-        if ($sub_resource == 'credential') {
+        if ($sub_resource == 'credential' and !empty($result)) {
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
@@ -1420,4 +1420,56 @@ class M_devices extends MY_Model
         }
         return ($count);
     }
+
+
+    public function model_guess($device)
+    {
+        if (stripos($device->manufacturer, 'Ubiquiti') !== false) {
+            if (stripos($device->sysDescr, 'UAP') !== false) {
+                $device->type = 'wap';
+                $device->model = 'UniFi AP';
+            }
+            if (stripos($device->sysDescr, 'UAP-LR') !== false) {
+                $device->model = 'UniFi AP-LR';
+            }
+            if (stripos($device->sysDescr, 'UAP-Pro') !== false) {
+                $device->model = 'UniFi AP-Pro';
+            }
+
+            if (stripos($device->sysDescr, 'UAP-AC') !== false) {
+                $device->model = 'UniFi AP-AC';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-EDU') !== false) {
+                $device->model = 'UniFi AP-AC-EDU';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-HD') !== false) {
+                $device->model = 'UniFi AP-AC-HD';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-Lite') !== false) {
+                $device->model = 'UniFi AP-AC-Lite';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-LR') !== false) {
+                $device->model = 'UniFi AP-AC-LR';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-PRO') !== false) {
+                $device->model = 'UniFi AP-AC-Pro';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-PRO-Gen2') !== false) {
+                $device->model = 'UniFi AP-AC-Pro gen 2';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-SHD') !== false) {
+                $device->model = 'UniFi AP-AC-SHD';
+            }
+
+            if (stripos($device->sysDescr, 'UAP-AC-Mesh-Pro') !== false) {
+                $device->model = 'UniFi AP-AC-Mesh-Pro';
+            }
+
+            if (stripos($device->sysDescr, 'UAP-Outdoor') !== false) {
+                $device->model = 'UniFi AP-Outdoor';
+            }
+        }
+        return($device);
+    }
+
 }

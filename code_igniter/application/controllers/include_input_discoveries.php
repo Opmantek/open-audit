@@ -517,6 +517,15 @@ foreach ($xml->children() as $input) {
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
 
+    if (empty($device->model)) {
+        $device = $this->m_devices->model_guess($device);
+        if (!empty($device->model)) {
+            $log->message = 'Best guess at model to be ' . $device->model;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+        }
+    }
+
     // $log->command_output = json_encode($device->system);
     // $log->message = 'System Data';
     // discovery_log($log);
@@ -764,16 +773,6 @@ foreach ($xml->children() as $input) {
     // if required, the audit scripts will insert their own audit logs
     $this->m_audit_log->update('debug', '', $device->id, $device->last_seen);
 
-    // DISPLAY OUTPUT
-    if ($display == 'y') {
-        #$device->show_output = true;
-        // echo "=======DETAILS======\n";
-        // print_r($device);
-        // echo "====================\n";
-        // ob_flush();
-        // flush();
-    }
-
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
     $log->severity = 5;
@@ -925,7 +924,7 @@ foreach ($xml->children() as $input) {
             $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
             if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $display)) {
                 # delete our no longer required local copy of the script
-                $log->message = 'Attempt to copy audit script to ' . $details->ip . ' succeeded';
+                $log->message = 'Attempt to copy audit script to ' . $device->ip . ' succeeded';
                 discovery_log($log);
                 if ($source_name != 'audit_windows.vbs') {
                     $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
