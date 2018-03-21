@@ -237,30 +237,30 @@ hosts_in_subnet=$("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap d
 
 # removed the below for 1.12.2 - scan every IP now as we're checking for devices not responding to a ping
 host_count=0
-if [ "$force_ping" == "y" ]; then
-	# Changed from -sn to -PE. -PE is an actual ping, not an "nmap" ping.
-	#for line in $("$nmap_path" -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
-	for line in $("$nmap_path" -vv -PE -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
-		if [ "$debugging" -gt 0 ]; then
-			echo "$line"
-		fi
-		host=$(echo "$line" | cut -d" " -f5)
-		if [[ "$line" == *"[host down]"* ]]; then
-			if [[ "$log_no_response" == "y" ]]; then
-				log_entry="Non responsive ip address $host"
-				write_log "$log_entry"
-			fi
-		else
-			let "host_count = host_count + 1"
-			hosts="$hosts"$'\n'"$host"
-		fi
-	done
-else
+# if [ "$force_ping" == "y" ]; then
+# 	# Changed from -sn to -PE. -PE is an actual ping, not an "nmap" ping.
+# 	#for line in $("$nmap_path" -v -sn -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+# 	for line in $("$nmap_path" -vv -PE -n "$timing" "$subnet_range" 2>/dev/null | grep "scan report for"); do
+# 		if [ "$debugging" -gt 0 ]; then
+# 			echo "$line"
+# 		fi
+# 		host=$(echo "$line" | cut -d" " -f5)
+# 		if [[ "$line" == *"[host down]"* ]]; then
+# 			if [[ "$log_no_response" == "y" ]]; then
+# 				log_entry="Non responsive ip address $host"
+# 				write_log "$log_entry"
+# 			fi
+# 		else
+# 			let "host_count = host_count + 1"
+# 			hosts="$hosts"$'\n'"$host"
+# 		fi
+# 	done
+# else
 	for line in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
 		let "host_count = host_count + 1"
 		hosts="$hosts"$'\n'"$line"
 	done
-fi
+# fi
 
 if [ "$debugging" -gt 0 ]; then
 	echo "Total ip addresses: $hosts_in_subnet"
@@ -292,14 +292,21 @@ if [[ "$hosts" != "" ]]; then
 		# options
 		# -vv Very Verbose
 		# -n  Do not resolve IP to DNS name
-		# -Pn Treat all hosts as online
+		# -Pn Treat all hosts as online ($force_ping) default for the script is to use this
 		# -T4 set the timing (higher is faster) ($timing) default for the script is -T4
-		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host using the command: nmap -vv -n -Pn $timing $host 2>&1"
-		fi
-
 		nmap_tcp_timer_start=$(timer)
-		nmap_scan=$(nmap -vv -n -Pn "$timing" "$host" 2>&1)
+		if [ "$force_ping" == "y" ]; then
+			nmap_scan=$(nmap -vv -n "$timing" "$host" 2>&1)
+			if [ "$debugging" -gt 0 ]; then
+				echo "Scanning Host: $host using the command: nmap -vv -n $timing $host 2>&1"
+			fi
+		else
+			nmap_scan=$(nmap -vv -n -Pn "$timing" "$host" 2>&1)
+			if [ "$debugging" -gt 0 ]; then
+				echo "Scanning Host: $host using the command: nmap -vv -n -Pn $timing $host 2>&1"
+			fi
+		fi
+		#statements
 		nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
 
 		if [ "$debugging" -gt 0 ]; then
