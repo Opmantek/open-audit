@@ -375,7 +375,7 @@ if [[ "$hosts" != "" ]]; then
 			echo "Nmap UDP scan time: $nmap_udp_timer_end"
 		fi
 		if [[ "$test" != "" ]]; then
-			host_is_up="true"
+			#host_is_up="true"
 			snmp_status="true"
 			nmap_ports="$nmap_ports,161/udp/snmp"
 		fi
