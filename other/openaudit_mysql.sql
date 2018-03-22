@@ -2882,7 +2882,7 @@ CREATE TABLE `users` (
   `email` varchar(100) NOT NULL,
   `roles` text NOT NULL,
   `orgs` text NOT NULL,
-  `lang` enum('de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
+  `lang` enum('cs','de','en','es','fr','pt-br') NOT NULL DEFAULT 'en',
   `active` varchar(1) NOT NULL DEFAULT 'y',
   `ldap` text NOT NULL,
   `type` enum('agent','collector','user') NOT NULL DEFAULT 'user',
