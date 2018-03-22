@@ -67,9 +67,14 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 
-$sql = "INSERT INTO `dashboards` VALUES (NULL,'Purchasing Dashboard',1,'org',0,'','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"11\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"26\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"25\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"23\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"24\"}]}','Open-AudIT Enterprise','2018-03-20 20:34:04')";
+$sql = "INSERT INTO `dashboards` VALUES (NULL,'Purchasing Dashboard',1,'org',0,'Hardware Management','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"11\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"26\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"25\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"23\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"24\"}]}','Open-AudIT Enterprise','2018-03-20 20:34:04')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `dashboards` VALUES (NULL,'Network Dashboard',1,'org',0,'Networks and Locations','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"20\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"19\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"16\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"21\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"22\"}]}','Administrator','2018-03-21 19:15:41')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 
 # scripts
 # New HP-UX saudit script
@@ -228,7 +233,7 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'End of Service (0-90+ Days)',1,'','p
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Device Age (0-3+ Years)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.purchase_date = \"2000-01-01\", \"unknown\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), \"3+ Years\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), \"2-3 Years\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), \"1-2 Years\", \"Less Than 1 Year\" ) ) ) ) ) ) ) AS `my_name`, IF ( system.purchase_date = \"2000-01-01\", \"system.purchase_date=2000-01-01\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), CONCAT(\"system.purchase_date=<\", DATE(NOW() - INTERVAL 3 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 3 year), \"&system.purchase_date=<\", DATE(NOW() - INTERVAL 2 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 2 year), \"&system.purchase_date=<\", DATE(NOW() - INTERVAL 1 year)), CONCAT(\"system.purchase_date=<\", DATE(NOW() - INTERVAL 1 year), \"&system.purchase_date=>\", DATE(NOW())) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.purchase_date','devices?@description','Administrator','2018-03-20 12:25:38')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Device Age (0-3+ Years)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.purchase_date = \"2000-01-01\", \"unknown\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), \"3+ Years\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), \"2-3 Years\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), \"1-2 Years\", \"Less Than 1 Year\" ) ) ) ) ) ) ) AS `my_name`, IF ( system.purchase_date = \"2000-01-01\", \"system.purchase_date=2000-01-01\", ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), CONCAT(\"system.purchase_date=<\", DATE(NOW() - INTERVAL 3 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 3 year), \"&system.purchase_date=<\", DATE(NOW() - INTERVAL 2 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 2 year), \"&system.purchase_date=<\", DATE(NOW() - INTERVAL 1 year)), CONCAT(\"system.purchase_date=>\", DATE(NOW() - INTERVAL 1 year)) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.purchase_date','devices?@description','Administrator','2018-03-20 12:25:38')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
