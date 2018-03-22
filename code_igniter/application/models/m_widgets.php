@@ -281,13 +281,13 @@ class M_widgets extends MY_Model
                 }
                 if (!empty($widget->link)) {
                     $link = $widget->link;
-                    if (!empty($row->name)) {
+                    if (isset($row->name)) {
                         $link = str_ireplace('@name', $row->name, $link);
                     }
-                    if (!empty($row->description)) {
+                    if (isset($row->description)) {
                         $link = str_ireplace('@description', $row->description, $link);
                     }
-                    if (!empty($row->ternary)) {
+                    if (isset($row->ternary)) {
                         $link = str_ireplace('@ternary', $row->ternary, $link);
                     }
                     $row->link = $link;
@@ -327,29 +327,23 @@ class M_widgets extends MY_Model
 
                 $link = $widget->link;
                 foreach ($result as $row) {
-                    if (!empty($row->name)) {
+                    if (isset($row->name)) {
                         $link = str_ireplace('@name', $row->name, $link);
                     }
-                    if (!empty($row->description)) {
+                    if (isset($row->description)) {
                         $link = str_ireplace('@description', $row->description, $link);
                     }
-                    if (!empty($row->ternary)) {
+                    if (isset($row->ternary)) {
                         $link = str_ireplace('@ternary', $row->ternary, $link);
                     }
-                    if (!empty($row->date)) {
+                    if (isset($row->date)) {
                         $link = str_ireplace('@date', $row->date, $link);
                     }
-                    if (!empty($row->timestamp)) {
+                    if (isset($row->timestamp)) {
                         $link = str_ireplace('@timestamp', $row->timestamp, $link);
                     }
                     $row->link = $link;
                 }
-                // $start = date('Y-m-d', strtotime($result[0]->date));
-                // $begin = new DateTime( $start );
-                // $i = count($result)-1;
-                // $end = new DateTime($result[$i]->date);
-                // $interval = DateInterval::createFromDateString('1 day');
-                // $period = new DatePeriod($begin, $interval, $end);
 
                 if (count($result) < 2) {
                     $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
@@ -386,6 +380,13 @@ class M_widgets extends MY_Model
                     }
                 }
 
+            } else {
+                $item = new stdClass();
+                $item->timestamp = strtotime(date());
+                $item->date = date('Y-m-d');
+                $item->count = 0;
+                $item->link = '';
+                $result[] = $item;
             }
             usort($result, array($this,'cmp_timestamp'));
             return $result;
