@@ -407,7 +407,8 @@ class M_widgets extends MY_Model
             if (!empty($result)) {
                 foreach ($result as $row) {
                     $row->name = strtotime($row->date);
-                    $row->link = 'devices?sub_resource=change_log&amp;change_log.db_table=' . $widget->primary . '&amp;change_log.db_action=' . $widget->secondary . '&amp;change_log.timestamp=LIKE' . $row->date;
+                    #$row->link = 'devices?sub_resource=change_log&amp;change_log.db_table=' . $widget->primary . '&amp;change_log.db_action=' . $widget->secondary . '&amp;change_log.timestamp=LIKE' . $row->date;
+                    $row->link = 'devices?sub_resource=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
                 }
             }
             $start = date('Y-m-d', strtotime('-' . $widget->limit . ' days'));
