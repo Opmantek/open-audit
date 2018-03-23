@@ -1046,19 +1046,31 @@ if (! function_exists('inputRead')) {
         }
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
-            if ((!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {
-                log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                //output();
-                $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
-                if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
-                    redirect($CI->response->meta->collection);
-                } else {
-                    if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'collection') {
-                        $CI->session->unset_userdata('user_id');
-                        $CI->session->set_flashdata('error', 'User cannot run summaries::collection.');
-                        redirect('logon');
+            $check_premission = true;
+            if ($CI->response->meta->collection == 'users' and $CI->user->id == $CI->response->meta->id and !empty($CI->response->meta->received_data) and $CI->response->meta->action == 'update') {
+                $user_allowed_attributes = array('id', 'name', 'full_name', 'email', 'lang', 'password', 'dashboard_id');
+                $check_premission = false;
+                foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+                    if (!in_array($key, $user_allowed_attributes)) {
+                        $check_premission = true;
+                    }
+                }
+            }
+            if (!empty($check_permission)) {
+                if ((!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {
+                    log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
+                    //output();
+                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                    if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
+                        redirect($CI->response->meta->collection);
                     } else {
-                        redirect('summaries');
+                        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'collection') {
+                            $CI->session->unset_userdata('user_id');
+                            $CI->session->set_flashdata('error', 'User cannot run summaries::collection.');
+                            redirect('logon');
+                        } else {
+                            redirect('summaries');
+                        }
                     }
                 }
             }
