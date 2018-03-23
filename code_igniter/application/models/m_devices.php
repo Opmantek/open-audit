@@ -619,7 +619,10 @@ class M_devices extends MY_Model
             # get the total count (without a LIMIT and GROUPBY)
             $sql = "/* m_devices::collection_sub_resource */ " . "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter;
             $result = $this->run_sql($sql, array());
-            $CI->response->meta->total = intval($result[0]->count);
+            $CI->response->meta->total = 0;
+            if (!empty($result[0]->count)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         }
         $sql = "/* m_devices::collection_sub_resource */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
