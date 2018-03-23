@@ -27,7 +27,7 @@
 *
 **/
 
-$this->log_db('Upgrade database to 2.2 commenced');
+$this->log_db('Upgrade database to 2.2.0 commenced');
 
 # configuration
 $sql = "UPDATE `configuration` SET `editable` = 'y' WHERE `name` = 'process_netstat_windows_dns'";
@@ -311,10 +311,10 @@ $sql = "UPDATE `configuration` SET `value` = '20180218' WHERE `name` = 'internal
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `configuration` SET `value` = '2.2' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '2.2.0' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->log_db("Upgrade database to 2.2 completed");
+$this->log_db("Upgrade database to 2.2.0 completed");
 $this->config->config['internal_version'] = '20180218';
-$this->config->config['display_version'] = '2.2';
+$this->config->config['display_version'] = '2.2.0';
