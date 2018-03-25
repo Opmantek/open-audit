@@ -329,6 +329,19 @@ class Help extends MY_Controller
     }
 
     /**
+    * Our widgets help
+    *
+    * @access public
+    * @return NULL
+    */
+    function defaults()
+    {
+        $this->response->meta->action = __FUNCTION__;
+        $this->response->data = $this->m_help->defaults($this->response->meta->sub_resource);
+        output($this->response);
+    }
+
+    /**
     * Our support help
     *
     * @access public

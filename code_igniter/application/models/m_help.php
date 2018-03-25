@@ -163,6 +163,95 @@ class M_help extends MY_Model
         }
     }
 
+    public function defaults($collection)
+    {
+        $CI = & get_instance();
+        if ((string) php_uname('s') === 'Windows NT') {
+            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
+        } else {
+            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
+        }
+
+        $result = array();
+        $sql = "DROP TABLE IF EXISTS `temp`";
+        $query = $this->db->query($sql);
+
+        switch ($collection) {
+            case 'attributes';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '1', `resource` varchar(200) NOT NULL DEFAULT '', `type` varchar(200) NOT NULL DEFAULT '', `name` varchar(200) NOT NULL DEFAULT '', `value` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'configuration';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `value` longtext NOT NULL, `type` varchar(10) NOT NULL DEFAULT 'text', `editable` varchar(1) NOT NULL DEFAULT 'n', `edited_by` varchar(100) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', `description` text NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'credentials';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other', `credentials` text NOT NULL, `org_id` int(10) unsigned NOT NULL DEFAULT '1', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'dashboards';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(100) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '0', `type` enum('default','org','user','') NOT NULL DEFAULT '', `user_id` int(10) unsigned NOT NULL DEFAULT '0', `description` text NOT NULL, `sidebar` enum('y','n') NOT NULL DEFAULT 'y', `options` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'groups';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '1', `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `sql` text NOT NULL, `link` text NOT NULL, `expose` enum('y','n') NOT NULL DEFAULT 'y', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'locations';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '1', `type` enum('Airforce','Airport','Ambulance Station','Army','Cloud','Conference Center','Court House','Data Center','Depot','District','Doctors Office','Embassy','Factory','Fire Station','Guard','Head Office','High School','Hospital','Hotel','House','Library','Light House','Marina','Mobile Phone Tower','Motel','Navy','Newsagent','Nursing Home','Observatory','Office','Oil Rig','Police','Power Plant','Power Substation','Prison','Radio Station','Regional','Resort','Retail','School','Security','Stadium','Train Station','Travel Agency','TV Station','University','Warehouse','Workshop') NOT NULL DEFAULT 'Office', `room` varchar(100) NOT NULL DEFAULT '', `suite` varchar(100) NOT NULL DEFAULT '', `level` varchar(100) NOT NULL DEFAULT '', `address` varchar(100) NOT NULL DEFAULT '', `suburb` varchar(100) NOT NULL DEFAULT '', `city` varchar(100) NOT NULL DEFAULT '', `district` varchar(100) NOT NULL DEFAULT '', `region` varchar(100) NOT NULL DEFAULT '', `area` varchar(100) NOT NULL DEFAULT '', `state` varchar(100) NOT NULL DEFAULT '', `postcode` varchar(10) NOT NULL DEFAULT '', `country` varchar(100) NOT NULL DEFAULT '', `tags` varchar(250) NOT NULL DEFAULT '', `phone` varchar(20) NOT NULL DEFAULT '', `picture` varchar(100) NOT NULL DEFAULT '', `latitude` float(10,6) NOT NULL, `longitude` float(10,6) NOT NULL, `geo` varchar(200) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'orgs';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `parent_id` int(10) unsigned DEFAULT '1', `description` text NOT NULL, `type` varchar(100) NOT NULL DEFAULT 'organisation', `ad_group` varchar(100) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'queries';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `org_id` int(10) unsigned NOT NULL DEFAULT '1', `name` varchar(200) NOT NULL DEFAULT '', `menu_category` varchar(200) NOT NULL DEFAULT 'Device', `menu_display` enum('y','n') NOT NULL DEFAULT 'y', `description` text NOT NULL, `sql` text NOT NULL, `link` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'roles';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `description` text NOT NULL, `permissions` text NOT NULL, `ad_group` varchar(100) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                break;
+
+            case 'scripts';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '1', `options` text NOT NULL, `description` text NOT NULL, `based_on` varchar(200) NOT NULL DEFAULT '', `hash` varchar(250) NOT NULL DEFAULT '', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'summaries';
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '1', `menu_category` varchar(200) NOT NULL DEFAULT 'Device', `menu_display` enum('y','n') NOT NULL DEFAULT 'y', `table` varchar(100) NOT NULL DEFAULT '', `column` varchar(100) NOT NULL DEFAULT '', `extra_columns` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            case 'widgets':
+                $sql = "CREATE TABLE `temp` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(100) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '0', `description` text NOT NULL, `type` enum('line','pie','') DEFAULT 'line', `table` varchar(50) NOT NULL DEFAULT '', `primary` varchar(50) NOT NULL DEFAULT '', `secondary` varchar(50) NOT NULL DEFAULT '', `ternary` varchar(50) NOT NULL DEFAULT '', `dataset_title` varchar(200) NOT NULL DEFAULT '', `group_by` varchar(50) NOT NULL DEFAULT '', `where` text NOT NULL, `limit` smallint signed NOT NULL DEFAULT '0', `options` text NOT NULL, `sql` text NOT NULL, `link` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+                break;
+
+            default:
+                $sql = '';
+                break;
+        }
+
+        if (!empty($sql)) {
+            $query = $this->db->query($sql);
+            $items = array();
+            for ($i=0; $i < count($sql_file); $i++) {
+                if (strpos($sql_file[$i], "INSERT INTO `$collection` VALUES") !== false) {
+                    $sql = str_ireplace("INSERT INTO `$collection` VALUES", "INSERT INTO `temp` VALUES", $sql_file[$i]);
+                    $this->db->query($sql);
+                }
+            }
+        }
+
+        if (!empty($sql)) {
+            $sql = "SELECT * FROM `temp`";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            $result = $this->format_data($result, $collection);
+            $sql = "DROP TABLE IF EXISTS `temp`";
+            $this->db->query($sql);
+        }
+        return ($result);
+    }
+
     public function support($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
