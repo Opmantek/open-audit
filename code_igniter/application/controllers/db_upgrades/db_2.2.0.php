@@ -197,7 +197,7 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Location',1,'','pie','','
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Collector',1,'','pie','','','','','','','',0,'','SELECT collectors.name AS `my_name`, collectors.uuid AS `description`, COUNT(system.id) AS `count` FROM `collectors` LEFT JOIN `system` ON (collectors.uuid = system.collector_uuid) WHERE @filter GROUP BY `my_name`','devices?system.collector_uuid=@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Collector',1,'','pie','','','','','','','',0,'','SELECT IF (collectors.name IS NULL, \'localhost\', collectors.name) AS `my_name`, IF(collectors.uuid IS NULL, \'\', collectors.uuid) AS `description`, COUNT(system.id) AS `count` FROM `system` LEFT JOIN `collectors` ON (collectors.uuid = system.collector_uuid) WHERE @filter GROUP BY `my_name`','devices?system.collector_uuid=@description','system','2000-01-01 00:00:00');";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
