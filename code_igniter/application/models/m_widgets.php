@@ -273,26 +273,25 @@ class M_widgets extends MY_Model
                 }
             }
             $result = array_values($result);
-            foreach ($result as $row) {
-                if (!empty($row->count) and !empty($total_count)) {
-                    $row->percent = intval(($row->count / $total_count) * 100);
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->count) and !empty($total_count)) {
+                    $result[$i]->percent = intval(($result[$i]->count / $total_count) * 100);
                 } else {
-                    $row->percent = 0;
+                    $result[$i]->percent = 0;
                 }
                 if (!empty($widget->link)) {
-                    $link = $widget->link;
-                    if (isset($row->name)) {
-                        $link = str_ireplace('@name', $row->name, $link);
+                    $result[$i]->link = $widget->link;
+                    if (isset($result[$i]->name)) {
+                        $result[$i]->link = str_ireplace('@name', $result[$i]->name, $result[$i]->link);
                     }
-                    if (isset($row->description)) {
-                        $link = str_ireplace('@description', $row->description, $link);
+                    if (isset($result[$i]->description)) {
+                        $result[$i]->link = str_ireplace('@description', $result[$i]->description, $result[$i]->link);
                     }
-                    if (isset($row->ternary)) {
-                        $link = str_ireplace('@ternary', $row->ternary, $link);
+                    if (isset($result[$i]->ternary)) {
+                        $result[$i]->link = str_ireplace('@ternary', $result[$i]->ternary, $result[$i]->link);
                     }
-                    $row->link = $link;
                 } else {
-                    $row->link = $collection . '?' . $attribute . '=' . $row->name;
+                    $result[$i]->link = $collection . '?' . $attribute . '=' . $result[$i]->name;
                 }
             }
         } else {
@@ -405,7 +404,6 @@ class M_widgets extends MY_Model
             if (!empty($result)) {
                 foreach ($result as $row) {
                     $row->name = strtotime($row->date);
-                    #$row->link = 'devices?sub_resource=change_log&amp;change_log.db_table=' . $widget->primary . '&amp;change_log.db_action=' . $widget->secondary . '&amp;change_log.timestamp=LIKE' . $row->date;
                     $row->link = 'devices?sub_resource=change_log&change_log.db_table=' . $widget->primary . '&change_log.db_action=' . $widget->secondary . '&change_log.timestamp=LIKE' . $row->date;
                 }
             }
