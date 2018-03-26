@@ -933,6 +933,10 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "applications":
+                return(' name org_id description ');
+                break;
+
             case "agents":
                 return(' name org_id description ip status check_minutes user_id uuid options ');
                 break;
@@ -1033,6 +1037,10 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "applications":
+                return(array('name','org_id'));
+                break;
+
             case "agents":
                 return(array('name','org_id','status'));
                 break;

@@ -229,6 +229,28 @@ class M_devices extends MY_Model
         return($result);
     }
 
+    public function get_device_applications($device_id = '')
+    {
+        $CI = & get_instance();
+        $CI->load->model('m_orgs');
+        $CI->load->model('m_fields');
+        $CI->load->model('m_groups');
+        $log = new stdClass();
+        $log->file = 'system';
+        $log->level = 7;
+
+        if (empty($device_id)) {
+            $log->message = 'No device ID for applications, returning false';
+            stdlog($log);
+            return false;
+        }
+
+        $sql = "SELECT applications.id AS `applications.id`, applications.name AS `applications.name`, applications.description AS `applications.description`, application.id AS `id` FROM applications LEFT JOIN application ON applications.id = application.applications_id LEFT JOIN system ON (application.system_id = system.id) WHERE system.id = ? ORDER BY applications.name";
+        $application = $this->run_sql($sql, array(intval($device_id)));
+        $result = $this->format_data($application, 'application');
+        return($result);
+    }
+
     public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y', $limit = '')
     {
         $CI = & get_instance();

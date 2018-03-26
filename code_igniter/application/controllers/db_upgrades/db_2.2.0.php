@@ -29,21 +29,21 @@
 
 $this->log_db('Upgrade database to 2.2.0 commenced');
 
-# application_server
-$sql = "DROP TABLE IF EXISTS `application_server`";
+# application
+$sql = "DROP TABLE IF EXISTS `application`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "CREATE TABLE `application_server` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `application_servrers_id` int(10) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `application_servrer_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$sql = "CREATE TABLE `application` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `application_servrers_id` int(10) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `application_servrer_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-# application servers
-$sql = "DROP TABLE IF EXISTS `application_servers`";
+# applications
+$sql = "DROP TABLE IF EXISTS `applications`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "CREATE TABLE `application_servers` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '1', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$sql = "CREATE TABLE `applications` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '1', `description` text NOT NULL, `options` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -306,37 +306,44 @@ if (!$already_updated) {
 		switch ($row->name) {
 			case 'admin':
 				$permissions->dashboards = 'crud';
-				$permissions->widgets = 'crud';
+        $permissions->widgets = 'crud';
+        $permissions->applications = 'crud';
 				break;
 
 			case 'org_admin':
 				$permissions->dashboards = 'crud';
 				$permissions->widgets = 'crud';
+        $permissions->applications = 'crud';
 				break;
 
 			case 'reporter':
 				$permissions->dashboards = 'crud';
 				$permissions->widgets = 'crud';
+        $permissions->applications = 'r';
 				break;
 
 			case 'user':
 				$permissions->dashboards = 'r';
 				$permissions->widgets = 'r';
+        $permissions->applications = 'r';
 				break;
 
 			case 'collector':
 				$permissions->dashboards = '';
 				$permissions->widgets = '';
+        $permissions->applications = '';
 				break;
 
 			case 'agent':
 				$permissions->dashboards = '';
 				$permissions->widgets = '';
+        $permissions->applications = '';
 				break;
 
 			default:
 				$permissions->dashboards = '';
 				$permissions->widgets = '';
+        $permissions->applications = '';
 				break;
 		}
 		$row->permissions = json_encode($permissions);
