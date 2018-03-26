@@ -257,6 +257,10 @@ $sql= "INSERT INTO `widgets` VALUES (NULL,'Daily Discovered New Software',1,'Any
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Org',1,'Devies assigned by Org','pie','','','','','Devices','','',0,'','SELECT orgs.name as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE @filter GROUP BY orgs.name','devices?system.location_id=@description','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "SELECT * FROM `roles`";
 $query = $this->db->query($sql);
 $result = $query->result();
