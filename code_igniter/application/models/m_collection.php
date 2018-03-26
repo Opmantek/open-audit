@@ -217,27 +217,33 @@ class M_collection extends MY_Model
 
         if ($collection == 'discoveries' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND `command_status` LIKE '% of %' ORDER BY `timestamp` DESC LIMIT 1";
+                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND (`command_status` LIKE '% of %' OR `command_status` LIKE 'stopped%') ORDER BY `timestamp` DESC LIMIT 1";
                 $data = array(intval($result[$i]->id));
                 $data_result = $this->run_sql($sql, $data);
                 if (!empty($data_result)) {
                     $result[$i]->discovered = $data_result[0]->command_status;
-                    $temp = explode(' ', $result[$i]->discovered);
-                    $temp[0] = str_replace('(', '', $temp[0]);
-                    $temp[2] = str_replace(')', '', $temp[2]);
-                    if ($temp[0] == $temp[2]) {
-                        if (strtolower($result[$i]->complete) != 'y') {
-                            $result[$i]->status = 'failed';
+                    if($data_result[0]->command_status == 'stopped' ){
+                        $result[$i]->discovered = '';
+                        $result[$i]->status = 'stopped';
+                    }else{
+                        $temp = explode(' ', $result[$i]->discovered);
+                        $temp[0] = str_replace('(', '', $temp[0]);
+                        $temp[2] = str_replace(')', '', $temp[2]);
+                        if ($temp[0] == $temp[2]) {
+                            if (strtolower($result[$i]->complete) != 'y') {
+                                $result[$i]->status = 'failed';
+                            } else {
+                                $result[$i]->status = 'complete';
+                            }
                         } else {
-                            $result[$i]->status = 'complete';
+                                $result[$i]->status = 'in progress';
                         }
-                    } else {
-                            $result[$i]->status = 'in progress';
                     }
                 } else {
                     $result[$i]->discovered = '';
                     $result[$i]->status = 'complete';
                 }
+
                 if (!empty($result[$i]->other)) {
                     $result[$i]->other = json_decode($result[$i]->other);
                     foreach ($result[$i]->other as $key => $value) {
@@ -298,51 +304,51 @@ class M_collection extends MY_Model
                         //     case '10000':
                         //         $result[$i]->sub_resource_name = "Devices Discovered Today";
                         //         break;
-                            
+
                         //     case '10001':
                         //         $result[$i]->sub_resource_name = "Devices Discovered Yesterday";
                         //         break;
-                            
+
                         //     case '10002':
                         //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 7 Days";
                         //         break;
-                            
+
                         //     case '10003':
                         //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 30 Days";
                         //         break;
-                            
+
                         //     case '20000':
                         //         $result[$i]->sub_resource_name = "Software Discovered Today";
                         //         break;
-                            
+
                         //     case '20001':
                         //         $result[$i]->sub_resource_name = "Software Discovered Yesterday";
                         //         break;
-                            
+
                         //     case '20002':
                         //         $result[$i]->sub_resource_name = "Software Discovered in the Last 7 Days";
                         //         break;
-                            
+
                         //     case '20003':
                         //         $result[$i]->sub_resource_name = "Software Discovered in the Last 30 Days";
                         //         break;
-                            
+
                         //     case '30000':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 7 Days";
                         //         break;
-                            
+
                         //     case '30001':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 30 Days";
                         //         break;
-                            
+
                         //     case '30002':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 90 Days";
                         //         break;
-                            
+
                         //     case '30003':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 180 Days";
                         //         break;
-                            
+
                         //     default:
                         //         $result[$i]->sub_resource_name = "";
                         //         break;
@@ -446,10 +452,15 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
+
+            if(substr($data->network_address, -1) !== '/'){
+                $data->network_address = $data->network_address.'/';
+            }
+
             if ($data->type == 'subnet') {
                 if (empty($data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
-                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
+                   // $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
                     #redirect('/discoveries');
                 } else {
                     $data->description = 'Subnet - ' . $data->other->subnet;
@@ -735,6 +746,11 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
+
+            if(substr($data->network_address, -1) !== '/'){
+                $data->network_address = $data->network_address.'/';
+            }
+
             if (!empty($data->other)) {
                 $received_other = new stdClass();
                 foreach ($data->other as $key => $value) {
@@ -751,6 +767,7 @@ class M_collection extends MY_Model
                         $new_other->$existing_key = $existing_other->$existing_key;
                     }
                 }
+
                 unset($data->other);
                 $data->other = (string)json_encode($new_other);
                 if (!empty($received_other->subnet)) {
@@ -768,6 +785,19 @@ class M_collection extends MY_Model
                 if (!empty($received_other->ad_domain)) {
                     $data->description = 'Active Directory - ' . $received_other->ad_domain;
                 }
+            }
+            if(!empty($data->killed)){
+                unset($data->killed);
+                $log = new stdClass();
+                $log->discovery_id = $data->id;
+                $log->system_id = null;
+                $log->timestamp = $this->config->config['timestamp'];
+                $log->severity = 6;
+                $log->function = "logs";
+                $log->command_status = "stopped";
+                $log->pid = getmypid();
+                $log->message = "Discovery process has been manually stopped.";
+                discovery_log($log);
             }
         }
 
