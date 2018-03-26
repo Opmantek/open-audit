@@ -49,6 +49,59 @@ LOCK TABLES `agents` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `application_server`
+--
+
+DROP TABLE IF EXISTS `application_server`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `application_server` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `application_servrers_id` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `application_servrer_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `application_server`
+--
+
+LOCK TABLES `application_server` WRITE;
+/*!40000 ALTER TABLE `application_server` DISABLE KEYS */;
+/*!40000 ALTER TABLE `application_server` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `application_servers`
+--
+
+DROP TABLE IF EXISTS `application_servers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `application_servers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `application_servers`
+--
+
+LOCK TABLES `application_servrer` WRITE;
+/*!40000 ALTER TABLE `application_servers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `application_servers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `attachment`
 --
 
@@ -716,7 +769,8 @@ LOCK TABLES `dashboards` WRITE;
 INSERT INTO `dashboards` VALUES (NULL,'Default Dashboard',1,'org',0,'The Default Open-AudIT Dashboard','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"3"},{"position":"4","size":"1","widget_id":"5"},{"position":"5","size":"1","widget_id":"6"},{"position":"6","size":"1","widget_id":"2"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (NULL,'Purchasing Dashboard',1,'org',0,'Hardware Management','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"11"},{"position":"2","size":"1","widget_id":"26"},{"position":"3","size":"1","widget_id":"25"},{"position":"4","size":"1","widget_id":"8"},{"position":"5","size":"1","widget_id":"23"},{"position":"6","size":"1","widget_id":"24"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (NULL,'Network Dashboard',1,'org',0,'Networks and Locations','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"20"},{"position":"2","size":"1","widget_id":"19"},{"position":"3","size":"1","widget_id":"15"},{"position":"4","size":"1","widget_id":"16"},{"position":"5","size":"1","widget_id":"21"},{"position":"6","size":"1","widget_id":"22"}]}','system','2000-01-01 00:00:00');
-INSERT INTO `dashboards` VALUES (4,'Discovery Dashboard',1,'org',0,'Discovered Devices','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"22"},{"position":"4","size":"1","widget_id":"27"},{"position":"5","size":"1","widget_id":"28"},{"position":"6","size":"1","widget_id":"29"}]}','system','2000-01-01 00:00:00');
+INSERT INTO `dashboards` VALUES (NULL,'Discovery Dashboard',1,'org',0,'Discovered Devices','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"1"},{"position":"2","size":"1","widget_id":"2"},{"position":"3","size":"1","widget_id":"22"},{"position":"4","size":"1","widget_id":"27"},{"position":"5","size":"1","widget_id":"28"},{"position":"6","size":"1","widget_id":"29"}]}','system','2000-01-01 00:00:00');
+INSERT INTO `dashboards` VALUES (NULL,'Devices Dashboard',1,'org',0,'Devices Information','y','{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"15"},{"position":"2","size":"1","widget_id":"30"},{"position":"3","size":"1","widget_id":"8"},{"position":"4","size":"1","widget_id":"22"},{"position":"5","size":"1","widget_id":"27"},{"position":"6","size":"1","widget_id":"29"}]}','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 

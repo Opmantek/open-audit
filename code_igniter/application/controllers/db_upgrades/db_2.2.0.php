@@ -29,6 +29,25 @@
 
 $this->log_db('Upgrade database to 2.2.0 commenced');
 
+# application_server
+$sql = "DROP TABLE IF EXISTS `application_server`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `application_server` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `application_servrers_id` int(10) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `application_servrer_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# application servers
+$sql = "DROP TABLE IF EXISTS `application_servers`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `application_servers` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(200) NOT NULL DEFAULT '', `org_id` int(10) unsigned NOT NULL DEFAULT '1', `description` text NOT NULL, `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
 # configuration
 $sql = "UPDATE `configuration` SET `editable` = 'y' WHERE `name` = 'process_netstat_windows_dns'";
 $this->db->query($sql);
@@ -78,6 +97,11 @@ $this->log_db($this->db->last_query());
 $sql = "INSERT INTO `dashboards` VALUES (4,'Discovery Dashboard',1,'org',0,'Discovered Devices','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"1\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"2\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"22\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"27\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"28\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"29\"}]}','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `dashboards` VALUES (NULL,'Devices Dashboard',1,'org',0,'Devices Information','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"30\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"22\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"27\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"29\"}]}','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 
 
 # scripts
