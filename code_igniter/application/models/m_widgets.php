@@ -324,25 +324,23 @@ class M_widgets extends MY_Model
                     $row->timestamp = strtotime($row->date);
                 }
                 usort($result, array($this,'cmp_timestamp'));
-
-                $link = $widget->link;
-                foreach ($result as $row) {
-                    if (isset($row->name)) {
-                        $link = str_ireplace('@name', $row->name, $link);
+                for ($i=0; $i < count($result); $i++) {
+                    $result[$i]->link = $widget->link;
+                    if (isset($result[$i]->name)) {
+                        $result[$i]->link = str_ireplace('@name', $result[$i]->name, $result[$i]->link);
                     }
-                    if (isset($row->description)) {
-                        $link = str_ireplace('@description', $row->description, $link);
+                    if (isset($result[$i]->description)) {
+                        $result[$i]->link = str_ireplace('@description', $result[$i]->description, $result[$i]->link);
                     }
-                    if (isset($row->ternary)) {
-                        $link = str_ireplace('@ternary', $row->ternary, $link);
+                    if (isset($result[$i]->ternary)) {
+                        $result[$i]->link = str_ireplace('@ternary', $result[$i]->ternary, $result[$i]->link);
                     }
-                    if (isset($row->date)) {
-                        $link = str_ireplace('@date', $row->date, $link);
+                    if (isset($result[$i]->date)) {
+                        $result[$i]->link = str_ireplace('@date', $result[$i]->date, $result[$i]->link);
                     }
-                    if (isset($row->timestamp)) {
-                        $link = str_ireplace('@timestamp', $row->timestamp, $link);
+                    if (isset($result[$i]->timestamp)) {
+                        $result[$i]->link = str_ireplace('@timestamp', $result[$i]->timestamp, $result[$i]->link);
                     }
-                    $row->link = $link;
                 }
 
                 if (count($result) < 2) {
@@ -382,7 +380,7 @@ class M_widgets extends MY_Model
 
             } else {
                 $item = new stdClass();
-                $item->timestamp = strtotime(date());
+                $item->timestamp = strtotime(date('Y-m-d'));
                 $item->date = date('Y-m-d');
                 $item->count = 0;
                 $item->link = '';
