@@ -116,9 +116,6 @@ $this->alter_table('system', 'end_of_service', "ADD `end_of_service` date NOT NU
 
 $this->alter_table('system', 'asset_tag', "ADD `asset_tag` text NOT NULL AFTER `asset_number`", 'add');
 
-# users
-$this->alter_table('users', 'lang', "`lang` enum('cs','de','en','es','fr','pt-br') NOT NULL DEFAULT 'en' AFTER `orgs`");
-
 # widgets
 $sql = "DROP TABLE IF EXISTS `widgets`";
 $this->db->query($sql);
@@ -343,6 +340,7 @@ if (!$already_updated) {
 }
 
 # users
+$this->alter_table('users', 'lang', "`lang` enum('cs','de','en','es','fr','pt-br') NOT NULL DEFAULT 'en' AFTER `orgs`");
 $this->alter_table('users', 'dashboard_id', "ADD `dashboard_id` int(10) unsigned DEFAULT 1 AFTER `type`", 'add');
 
 # set our versions
