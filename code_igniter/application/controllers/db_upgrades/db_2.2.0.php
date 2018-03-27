@@ -80,7 +80,7 @@ $sql = "CREATE TABLE `dashboards` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `dashboards` VALUES (NULL,'Default Dashboard',1,'org',0,'The Default Open-AudIT Dashboard','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"1\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"2\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"3\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"5\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"6\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"2\"}]}','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `dashboards` VALUES (NULL,'Default Dashboard',1,'org',0,'The Default Open-AudIT Dashboard','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"1\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"2\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"3\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"4\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"5\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"6\"}]}','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
