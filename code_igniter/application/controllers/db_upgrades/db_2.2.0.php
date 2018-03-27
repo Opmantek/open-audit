@@ -47,7 +47,6 @@ $sql = "CREATE TABLE `applications` ( `id` int(10) unsigned NOT NULL AUTO_INCREM
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
 # configuration
 $sql = "UPDATE `configuration` SET `editable` = 'y' WHERE `name` = 'process_netstat_windows_dns'";
 $this->db->query($sql);
@@ -102,24 +101,8 @@ $sql = "INSERT INTO `dashboards` VALUES (NULL,'Devices Dashboard',1,'org',0,'Dev
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
-
-# scripts
-# New HP-UX saudit script
-// $sql = "DELETE FROM `scripts` WHERE `name` = 'audit_hpux.sh'";
-// $this->db->query($sql);
-// $this->log_db($this->db->last_query());
-
-// $sql = "INSERT INTO `scripts` VALUES (NULL, 'audit_hpux.sh', '" . $options . "', 'The default audit HP-UX config.', 'audit_hpux.sh', '', 'system', '2000-01-01 00:00:00')";
-// $this->db->query($sql);
-// $this->log_db($this->db->last_query());
-
 # fields
 $this->drop_key('fields', 'sys_man_additional_fields_group');
-
-# file
-#$this->drop_foreign_key('file', 'file_system_id');
-#$this->drop_key('file', 'file_files_id');
 
 # print_queue
 $this->alter_table('print_queue', 'status', "`status` varchar(100) NOT NULL DEFAULT '' AFTER `type`");
