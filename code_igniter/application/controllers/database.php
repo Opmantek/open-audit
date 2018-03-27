@@ -693,8 +693,8 @@ class Database extends MY_Controller
         }
 
         if (($db_internal_version < '20171225') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 2.1
-            include "db_upgrades/db_2.1.php";
+            # upgrade for 2.1.0
+            include "db_upgrades/db_2.1.0.php";
         }
 
         if (($db_internal_version < '20180105') and ($this->db->platform() == 'mysql')) {
@@ -703,8 +703,8 @@ class Database extends MY_Controller
         }
 
         if (($db_internal_version < '20180218') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 2.2
-            include "db_upgrades/db_2.2.php";
+            # upgrade for 2.2.0
+            include "db_upgrades/db_2.2.0.php";
         }
 
         $this->data['include'] = 'v_database_update';

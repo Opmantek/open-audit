@@ -411,6 +411,7 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
 	echo "Script Name         $script_name"
+	echo "URL                 $url"
 	echo "----------------------------"
 fi
 
@@ -1910,27 +1911,25 @@ else
 	echo "	</disk>" >> "$xml_file"
 fi
 
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Guest (Docker, Proxmox, LXC) Info"
+fi
+vm_result=""
+
 ##################################
 # Docker Machines                #
 ##################################
-if [ "$debugging" -gt "0" ]; then
+if [ "$debugging" -gt "0" ] && [ -n $(which docker 2>/dev/null)]; then
 	echo "Docker Info"
 fi
 PREVIFS=$IFS
 IFS="$NEWLINEIFS";
-vm_result=""
 for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/null); do
 	vm_ident=$(echo "$line" | awk '{print $1}')
 	name=$(echo "$line" | awk '{print $2}')
 	status=$(echo "$line" | awk '{print $3}')
 	uuid=""
-	# Cannot use the below as the containers UUID is the same as the docker hosts UUID.
-	# if [ "$status" = "Up" ]; then
-	# 	uuid=$(docker exec "$vm_ident" cat /sys/class/dmi/id/product_uuid)
-	# 	if [ -z "$uuid" ]; then
-	# 		uuid-$(docker exec "$vm_ident" cat /sys/devices/virtual/dmi/id/product_uuid)
-	# 	fi
-	# fi
 	vm_result=$vm_result"
 		<item>
 			<vm_ident>$(escape_xml "$vm_ident")</vm_ident>
@@ -1940,13 +1939,82 @@ for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/nu
 			<type>docker</type>
 		</item>"
 done
+
+##################################
+# PROXMOX GUESTS SECTION         #
+##################################
+guests=$(qm list 2>/dev/null | grep -v "BOOTDISK")
+if [ -n "$guests" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "Proxmox Info"
+	fi
+	guest_config_dir="/etc/pve/qemu-server/"
+	for guest in $guests; do
+		guest=$(echo "$guest" | awk '$1=$1')
+		guest_id=$(echo "$guest" | cut -d" " -f1)
+		if [ -n "$guest_id" ]; then
+			guest_name=$(echo "$guest" | cut -d" " -f2)
+			guest_status=$(echo "$guest" | cut -d" " -f3)
+			guest_memory_count=0
+			guest_memory_count=$(echo "$guest" | cut -d" " -f4)
+			guest_memory_count=$(($guest_memory_count * 1024))
+			guest_config_file=$(echo "$guest_config_dir$guest_id.conf")
+			guest_uuid=""
+			guest_cpu_count=""
+			if [ -f "$guest_config_file" ]; then
+				guest_uuid=$(grep uuid "$guest_config_file" | cut -d"=" -f2)
+				guest_cpu_count=$(grep cores "$guest_config_file" | cut -d":" -f2)
+			fi
+			vm_result=$vm_result"
+		<item>
+			<vm_ident>"$(escape_xml "$guest_id")"</vm_ident>
+			<name>"$(escape_xml "$guest_name")"</name>
+			<status>"$(escape_xml "$guest_status")"</status>
+			<uuid>"$(escape_xml "$guest_uuid")"</uuid>
+			<memory_count>"$(escape_xml "$guest_memory_count")"</memory_count>
+			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>
+			<config_file>"$(escape_xml "$guest_config_file")"</config_file>
+			<type>proxmox</type>
+		</item>"
+		fi
+	done
+fi
+
+##################################
+# LXC GUESTS SECTION             #
+##################################
+lxcguests=$(lxc-ls 2>/dev/null)
+if [ -n "$lxcguests" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "LXC Guests Info"
+	fi
+	guest_config_dir="/etc/pve/lxc/"
+	for guest in $lxcguests; do
+		guest_id=$guest
+		guest_name=$(awk '{if($1=="hostname:") host=$NF} END {print host}' $guest_config_dir/${guest_id}.conf)
+		guest_memory_count=$(awk '{if($1=="memory:") mem=$NF} END {print mem}' $guest_config_dir/${guest_id}.conf)
+		guest_memory_count=$(($guest_memory_count * 1024))
+		guest_cpu_count=$(awk '{if($1=="cpulimit:") cpu=$NF} END {print cpu}' $guest_config_dir/${guest_id}.conf)
+		vm_result=$vm_result"
+		<item>
+			<vm_ident>"$(escape_xml "$guest_id")"</vm_ident>
+			<name>"$(escape_xml "$guest_name")"</name>
+			<status></status>
+			<uuid>"$(escape_xml "$guest_id")"</uuid>
+			<memory_count>"$(escape_xml "$guest_memory_count")"</memory_count>
+			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>
+			<config_file>"$(escape_xml "$guest_config_dir${guest_id}.conf")"</config_file>
+			<type>lxc</type>
+		</item>"
+	done
+fi
+
 if [ -n "$vm_result" ]; then
 	{
 	echo "	<vm>$vm_result"
 	echo "	</vm>"
 	} >> "$xml_file"
 fi
-IFS=$PREVIFS
 
 ##################################
 # NFS MOUNTS SECTION             #

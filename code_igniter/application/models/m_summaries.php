@@ -128,8 +128,8 @@ class M_summaries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
+        $CI = & get_instance();
         if ($id == '') {
-            $CI = & get_instance();
             $id = intval($CI->response->meta->id);
             $set_count = true;
             $limit = str_replace('LIMIT ', '', $CI->response->meta->internal->limit);
@@ -177,6 +177,7 @@ class M_summaries extends MY_Model
         } else {
             $sql = "SELECT " . $dashboard[0]->id . " AS `id`, COUNT(*) AS `count`, " . $dashboard[0]->column . " AS `name` FROM `" . $dashboard[0]->table . "` WHERE `$org_id` IN (" . $CI->user->org_list . ")" . $filter . " GROUP BY `" . $dashboard[0]->column . "`";
         }
+        $CI->response->meta->sql[] = $sql;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'summaries');
         switch ($dashboard[0]->table) {
