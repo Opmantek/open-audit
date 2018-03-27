@@ -554,6 +554,13 @@ class M_devices extends MY_Model
                 stdlog($log);
                 return false;
             }
+        } else if ($sub_resource == 'application') {
+            $sql = "INSERT INTO application VALUES (NULL, ?, ?, ?, NOW())";
+            $data = array(intval($CI->response->meta->id),
+                            intval($CI->response->meta->received_data->attributes->{'applications_id'}),
+                            $CI->user->full_name);
+            $this->db->query($sql, $data);
+            return true;
         } else {
             $log->summary = "sub_resource not equal to credential or attachment - exiting.";
             stdlog($log);
