@@ -193,7 +193,11 @@ class M_widgets extends MY_Model
                 $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
             } else if (in_array($primary_table, $other_tables)) {
                 $collection = $primary_table;
-                $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
+                if ($collection != 'orgs') {
+                    $sql = str_replace('@filter', $this->sql_esc($primary_table.'.org_id') . " IN (" . $org_list . ")", $sql);
+                } else {
+                    $sql = str_replace('@filter', $this->sql_esc('system.org_id') . " IN (" . $org_list . ")", $sql);
+                }
             } else {
                 # invalid query
                 #return false;
