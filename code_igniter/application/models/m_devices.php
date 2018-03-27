@@ -555,7 +555,7 @@ class M_devices extends MY_Model
                 return false;
             }
         } else if ($sub_resource == 'application') {
-            $sql = "INSERT INTO application VALUES (NULL, ?, ?, ?, NOW())";
+            $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
             $data = array(intval($CI->response->meta->id),
                             intval($CI->response->meta->received_data->attributes->{'applications_id'}),
                             $CI->user->full_name);

@@ -34,7 +34,7 @@ $sql = "DROP TABLE IF EXISTS `application`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "CREATE TABLE `application` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `applications_id` int(10) unsigned NOT NULL DEFAULT '0', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `application_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$sql = "CREATE TABLE `application` ( `id` int(10) unsigned NOT NULL AUTO_INCREMENT, `system_id` int(10) unsigned DEFAULT NULL, `applications_id` int(10) unsigned NOT NULL DEFAULT '0', `current` enum('y','n') NOT NULL DEFAULT 'y', `edited_by` varchar(200) NOT NULL DEFAULT '', `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00', PRIMARY KEY (`id`), KEY `system_id` (`system_id`), CONSTRAINT `application_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -86,7 +86,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 
-$sql = "INSERT INTO `dashboards` VALUES (NULL,'Purchasing Dashboard',1,'org',0,'Hardware Management','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"11\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"26\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"25\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"23\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"24\"}]}','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `dashboards` VALUES (NULL,'Purchasing Dashboard',1,'org',0,'Purchase Management','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"11\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"26\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"25\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"31\"}]}','system','2000-01-01 00:00:00');";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -284,6 +284,11 @@ $this->log_db($this->db->last_query());
 $sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Org',1,'Devies assigned by Org','pie','','','','','Devices','','',0,'','SELECT orgs.name as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE @filter GROUP BY orgs.name','devices?system.location_id=@description','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Application Services',1,'Devices by defined Application','pie','','','','','Devices','','',0,'','SELECT applications.name AS `my_name`, COUNT(application.system_id) AS `count`, applications.id AS `my_description` FROM applications LEFT JOIN application ON (applications.id = application.applications_id) LEFT JOIN `system` ON (application.system_id = system.id) WHERE @filter GROUP BY `my_name`','devices?application.applications_id=@description','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 
 $sql = "SELECT * FROM `roles`";
 $query = $this->db->query($sql);
