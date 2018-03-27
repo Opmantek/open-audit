@@ -107,6 +107,15 @@ $this->drop_key('fields', 'sys_man_additional_fields_group');
 # print_queue
 $this->alter_table('print_queue', 'status', "`status` varchar(100) NOT NULL DEFAULT '' AFTER `type`");
 
+# queries
+$sql = "DELETE FROM `queries` WHERE `name` = 'Files' and `description` = 'Any changes in the table \'file\'.'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'Files','Change','y','Any changes in the table \'file\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table = \'file\'','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # system
 $this->alter_table('system', 'access_details', "DROP access_details", 'drop');
 
