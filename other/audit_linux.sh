@@ -197,6 +197,7 @@ escape_xml ()
 {
 	# escape characters
 	result="$1"
+	result=$(echo "$result" | tr -d -c '\n\r -~')
 	if echo "$result" | grep -Eq -e '[&<>"]' -e "'"; then
 		result="<![CDATA[$result]]>"
 	fi
@@ -410,6 +411,7 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
 	echo "Script Name         $script_name"
+	echo "URL                 $url"
 	echo "----------------------------"
 fi
 
@@ -1909,27 +1911,25 @@ else
 	echo "	</disk>" >> "$xml_file"
 fi
 
+
+if [ "$debugging" -gt "0" ]; then
+	echo "Guest (Docker, Proxmox, LXC) Info"
+fi
+vm_result=""
+
 ##################################
 # Docker Machines                #
 ##################################
-if [ "$debugging" -gt "0" ]; then
+if [ "$debugging" -gt "0" ] && [ -n $(which docker 2>/dev/null)]; then
 	echo "Docker Info"
 fi
 PREVIFS=$IFS
 IFS="$NEWLINEIFS";
-vm_result=""
 for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/null); do
 	vm_ident=$(echo "$line" | awk '{print $1}')
 	name=$(echo "$line" | awk '{print $2}')
 	status=$(echo "$line" | awk '{print $3}')
 	uuid=""
-	# Cannot use the below as the containers UUID is the same as the docker hosts UUID.
-	# if [ "$status" = "Up" ]; then
-	# 	uuid=$(docker exec "$vm_ident" cat /sys/class/dmi/id/product_uuid)
-	# 	if [ -z "$uuid" ]; then
-	# 		uuid-$(docker exec "$vm_ident" cat /sys/devices/virtual/dmi/id/product_uuid)
-	# 	fi
-	# fi
 	vm_result=$vm_result"
 		<item>
 			<vm_ident>$(escape_xml "$vm_ident")</vm_ident>
@@ -1939,13 +1939,82 @@ for line in $(docker ps -a --format "{{.ID}}\t{{.Names}}\t{{.Status}}" 2>/dev/nu
 			<type>docker</type>
 		</item>"
 done
+
+##################################
+# PROXMOX GUESTS SECTION         #
+##################################
+guests=$(qm list 2>/dev/null | grep -v "BOOTDISK")
+if [ -n "$guests" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "Proxmox Info"
+	fi
+	guest_config_dir="/etc/pve/qemu-server/"
+	for guest in $guests; do
+		guest=$(echo "$guest" | awk '$1=$1')
+		guest_id=$(echo "$guest" | cut -d" " -f1)
+		if [ -n "$guest_id" ]; then
+			guest_name=$(echo "$guest" | cut -d" " -f2)
+			guest_status=$(echo "$guest" | cut -d" " -f3)
+			guest_memory_count=0
+			guest_memory_count=$(echo "$guest" | cut -d" " -f4)
+			guest_memory_count=$(($guest_memory_count * 1024))
+			guest_config_file=$(echo "$guest_config_dir$guest_id.conf")
+			guest_uuid=""
+			guest_cpu_count=""
+			if [ -f "$guest_config_file" ]; then
+				guest_uuid=$(grep uuid "$guest_config_file" | cut -d"=" -f2)
+				guest_cpu_count=$(grep cores "$guest_config_file" | cut -d":" -f2)
+			fi
+			vm_result=$vm_result"
+		<item>
+			<vm_ident>"$(escape_xml "$guest_id")"</vm_ident>
+			<name>"$(escape_xml "$guest_name")"</name>
+			<status>"$(escape_xml "$guest_status")"</status>
+			<uuid>"$(escape_xml "$guest_uuid")"</uuid>
+			<memory_count>"$(escape_xml "$guest_memory_count")"</memory_count>
+			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>
+			<config_file>"$(escape_xml "$guest_config_file")"</config_file>
+			<type>proxmox</type>
+		</item>"
+		fi
+	done
+fi
+
+##################################
+# LXC GUESTS SECTION             #
+##################################
+lxcguests=$(lxc-ls 2>/dev/null)
+if [ -n "$lxcguests" ]; then
+	if [ "$debugging" -gt "0" ]; then
+		echo "LXC Guests Info"
+	fi
+	guest_config_dir="/etc/pve/lxc/"
+	for guest in $lxcguests; do
+		guest_id=$guest
+		guest_name=$(awk '{if($1=="hostname:") host=$NF} END {print host}' $guest_config_dir/${guest_id}.conf)
+		guest_memory_count=$(awk '{if($1=="memory:") mem=$NF} END {print mem}' $guest_config_dir/${guest_id}.conf)
+		guest_memory_count=$(($guest_memory_count * 1024))
+		guest_cpu_count=$(awk '{if($1=="cpulimit:") cpu=$NF} END {print cpu}' $guest_config_dir/${guest_id}.conf)
+		vm_result=$vm_result"
+		<item>
+			<vm_ident>"$(escape_xml "$guest_id")"</vm_ident>
+			<name>"$(escape_xml "$guest_name")"</name>
+			<status></status>
+			<uuid>"$(escape_xml "$guest_id")"</uuid>
+			<memory_count>"$(escape_xml "$guest_memory_count")"</memory_count>
+			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>
+			<config_file>"$(escape_xml "$guest_config_dir${guest_id}.conf")"</config_file>
+			<type>lxc</type>
+		</item>"
+	done
+fi
+
 if [ -n "$vm_result" ]; then
 	{
 	echo "	<vm>$vm_result"
 	echo "	</vm>"
 	} >> "$xml_file"
 fi
-IFS=$PREVIFS
 
 ##################################
 # NFS MOUNTS SECTION             #
@@ -2214,11 +2283,17 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Service Info"
 fi
 echo "	<service>" >> "$xml_file"
+systemd_services=""
+upstart_service=""
 if hash systemctl 2>/dev/null; then
 	# systemD services
+	if [ "$debugging" -gt "1" ]; then
+		echo "    systemd services"
+	fi
+	systemd_services=$(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1 | cut -d. -f1)
 	for name in $(systemctl list-units -all --type=service --no-pager --no-legend 2>/dev/null | cut -d" " -f1); do
-		display_name=$(echo "$name" | cut -d. -f1)
 		description=$(systemctl show "$name" -p Description | cut -d= -f2)
+		description="$description (using systemd)"
 		binary=$(systemctl show "$name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
 		state=$(systemctl show "$name" -p ActiveState | cut -d= -f2)
 		user=$(systemctl show "$name" -p User | cut -d= -f2)
@@ -2230,10 +2305,13 @@ if hash systemctl 2>/dev/null; then
 		if [ -z "$start_mode" ]; then
 			start_mode=$(systemctl show "$name" -p After | cut -d= -f2)
 		fi
+		service_name=$(lcase "$name")
+		suffix=".service"
+		service_name=${service_name%$suffix}
 		{
 		echo "		<item>"
-		echo "			<description>$(escape_xml "$display_name")</description>"
-		echo "			<name>$(escape_xml "$name")</name>"
+		echo "			<name>$(escape_xml "$service_name")</name>"
+		echo "			<description>$(escape_xml "$description")</description>"
 		echo "			<start_mode>$(escape_xml "$start_mode")</start_mode>"
 		echo "			<executable>$(escape_xml "$binary")</executable>"
 		echo "			<state>$(escape_xml "$state")</state>"
@@ -2241,83 +2319,117 @@ if hash systemctl 2>/dev/null; then
 		echo "		</item>"
 		} >> "$xml_file"
 	done
-else
-	case $system_os_family in
-			'Ubuntu' | 'Debian' )
-				if [ -r /etc/inittab ]; then
-					INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-				else
-					if [ -r /etc/init/rc-sysinit.conf ]; then
-						INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
-					fi
-				fi
-				# upstart services
-				for s in $(initctl 2>/dev/null | awk ' { print $1 } ' | sort | uniq) ; do
-					if [ "$s" = "rc" ]; then
-						service_start_mode="Auto"
-					else
-						service_start_mode="Manual"
-					fi
-					service_name=$(escape_xml "$s")
-					echo "\t\t<item>\n\t\t\t<name>$service_name</name>\n\t\t\t<start_mode>$service_start_mode</start_mode>\n\t\t</item>" >> "$xml_file"
-				done
-				# SysV init services
-				for service_name in /etc/init.d/* ; do
-					[ -e $service_name ] || break
-					if [ "$service_name" != "README" ] && [ "$service_name" != "upstart" ] && [ "$service_name" != "skeleton" ]; then
-						{
-						echo "		<item>"
-						service_display_name=$(echo "$service_name" | cut -d/ -f4)
-						echo "			<description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
-						echo "			<name>$(escape_xml "$service_name")</name>"
-						} >> "$xml_file"
-						if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null ; then
-							echo "			<start_mode>Manual</start_mode>" >> "$xml_file"
-						else
-							echo "			<start_mode>Auto</start_mode>" >> "$xml_file"
-						fi
-						service_name=$(echo "$service_name" | cut -d/ -f4)
-						if  [ "$service_name" != "README" ] && [ "$service_name" != "upstart" ] && [ "$service_name" != "skeleton" ] && [ "$service_name" != "rcS" ]; then
-							service_state=$(service "$service_display_name" status 2>/dev/null | grep -i running)
-							echo "			<state>$(escape_xml "$service_state")</state>" >> "$xml_file"
-							service_state=""
-						fi
-						echo "		</item>" >> "$xml_file"
-					fi
-				done
-				;;
-			'CentOS' | 'RedHat' | 'SUSE' | 'Suse' )
-				# INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-				# chkconfig --list |\
-				#     sed -e '/^$/d' -e '/xinetd based services:/d' |\
-				#     awk -v ID="$INITDEFAULT" ' { sub(/:/, "", $1); print "\t\t<service>\n\t\t\t<service_name>"$1"</service_name>"; if ($2 =="on" || $5 ==ID":on") print "\t\t\t<service_start_mode>Auto</service_start_mode>"; else if ($2 =="off" || $5 ==ID":off") print "\t\t\t<service_start_mode>Manual</service_start_mode>"; print "\t\t</service>" } ' >> "$xml_file"
-				# ;;
-				INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
-				for service_name in /etc/init.d/* ; do
-					[ -e $service_name ] || break
-					if [ "$service_name" != "functions" ] && [ "$service_name" != "rcS" ]; then
-						{
-						echo "		<item>"
-						service_display_name=$(echo "$service_name" | cut -d/ -f4)
-						echo "			<description>$(escape_xml "$service_display_name")</description>" >> "$xml_file"
-						echo "			<name>$(escape_xml "$service_name")</name>"
-						} >> "$xml_file"
-						if ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null ; then
-							echo "			<start_mode>Manual</start_mode>" >> "$xml_file"
-						else
-							echo "			<start_mode>Auto</start_mode>" >> "$xml_file"
-						fi
-						if  [ "$service_name" != "functions" ] && [ "$service_name" != "rcS" ]; then
-							service_state=$(service "$service_display_name" status 2>/dev/null | grep -E -i "running|stopped")
-							echo "          <state>$(escape_xml "$service_state")</state>" >> "$xml_file"
-							service_state=""
-						fi
-						echo "		</item>" >> "$xml_file"
-					fi
-				done
-				;;
-	esac
 fi
+
+if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; then
+	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	# upstart services
+	if [ -n `which initctl 2>/dev/null` ]; then
+		if [ "$debugging" -gt "1" ]; then
+			echo "    upstart services"
+		fi
+		upstart_services=$(initctl list 2>/dev/null | sort | uniq | cut -d" " -f1)
+		for item in $(initctl list 2>/dev/null | sort | uniq) ; do
+			start_mode="Manual"
+			if [[ "$item" == *" start"* ]]; then
+				start_mode="Auto"
+			fi
+			service_state="Stopped"
+			if [[ "$item" == *"unning"* ]]; then
+				service_state="Running"
+			fi
+			service_name=$(echo "$item" | cut -d" " -f1)
+			service_name=$(lcase "$service_name")
+			found=""
+			for systemd in $systemd_services; do
+				if [ "$service_name" = "$systemd" ]; then
+					found="true"
+				fi
+			done
+			service_description="$item (using upstart)"
+			if [ -z "$found" ]; then
+				{
+				echo "		<item>"
+				echo "			<name>$(escape_xml "$service_name")</name>"
+				echo "			<description>$(escape_xml "$service_description")</description>"
+				echo "			<start_mode>$(escape_xml "$start_mode")</start_mode>"
+				echo "			<state>$(escape_xml "$service_state")</state>"
+				echo "		</item>"
+				} >> "$xml_file"
+			fi
+		done
+	fi
+fi
+
+if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ]; then
+	INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
+fi
+
+if [ "$debugging" -gt "1" ]; then
+	echo "    init.d services"
+fi
+for service in /etc/init.d/* ; do
+	[ -e $service ] || break
+	if [ "$service" != "functions" ] && [ "$service" != "README" ] && [ "$service" != "upstart" ] && [ "$service" != "skeleton" ] && [ "$service_name" != "rcS" ]; then
+		service_name=$(echo "$service" | cut -d/ -f4)
+		service_name=$(lcase "$service_name")
+		suffix=".sh"
+		service_name=${service_name%$suffix}
+		service_description=""
+		service_state=""
+		service_binary=""
+		systemctl=$(which systemctl 2>/dev/null)
+		if [ -n "$systemctl" ]; then
+			# systemd is present - ask it
+			service_state=$(service "$service_name" status 2>/dev/null | grep " Active:" | awk '{ print $2 }')
+			service_description=$(systemctl show "$service_name" -p Description | cut -d= -f2)
+			service_binary=$(systemctl show "$service_name" -p ExecStart | cut -d" " -f2 | cut -d= -f2)
+		fi
+		if [ -z "service_description" ] || [ "$service_description" = " " ] || [ "$service_description" = "$service_name.service" ]; then
+			service_description="$service"
+		fi
+		service_description="$service_description (using init.d)"
+		if [ -z "service_state" ]; then
+			service_state=$(service "$service_name" status 2>/dev/null | grep -E -i "running|stopped")
+		fi
+		if [[ "$service_state" == *"unning"* ]]; then
+			service_state="Running"
+		fi
+		if [[ "$service_state" == *"not running"* ]]; then
+			service_state="Stopped"
+		fi
+		if [[ "$service_state" == *"topped"* ]]; then
+			service_state="Stopped"
+		fi
+		start_mode="Automatic"
+		test=$(ls /etc/rc"$INITDEFAULT".d/*"$service_name"* 2>/dev/null)
+		if [ -n "$test" ]; then
+			start_mode="Manual"
+		fi
+		found=""
+		for systemd in $systemd_services; do
+			if [ "$service_name" = "$systemd" ]; then
+				found="true"
+			fi
+		done
+		for systemd in $upstart_services; do
+			if [ "$service_name" = "$systemd" ]; then
+				found="true"
+			fi
+		done
+		if [ -z "$found" ]; then
+			{
+			echo "		<item>"
+			echo "			<name>$(escape_xml "$service_name")</name>"
+			echo "			<description>$(escape_xml "$service_description")</description>" >> "$xml_file"
+			echo "			<start_mode>$(escape_xml "$start_mode")</start_mode>" >> "$xml_file"
+			echo "			<executable>$(escape_xml "$service_binary")</executable>"
+			echo "			<state>$(escape_xml "$service_state")</state>" >> "$xml_file"
+			echo "		</item>" >> "$xml_file"
+			} >> "$xml_file"
+		fi
+	fi
+done
 
 echo "	</service>" >> "$xml_file"
 

@@ -61,6 +61,7 @@ $count_update = 0;
 $count_create = 0;
 if ($this->response->meta->collection === 'devices') {
     $last_seen_by = 'user';
+    # TODO - change to MySQL date, not PHP date
     $last_seen = date('Y-m-d H:i:s');
 }
 

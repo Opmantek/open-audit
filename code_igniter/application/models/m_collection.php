@@ -204,7 +204,7 @@ class M_collection extends MY_Model
             unset($item);
         }
 
-        if ($collection == 'credentials') {
+        if ($collection == 'credentials' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
@@ -449,6 +449,26 @@ class M_collection extends MY_Model
 
         if ($collection === 'credentials') {
             $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
+        }
+
+        if ($collection === 'dashboards') {
+            if (empty($CI->response->meta->received_data->attributes->options)) {
+                $options = '';
+            } else {
+                $options = $CI->response->meta->received_data->attributes->options;
+            }
+            $my_options = new stdClass();
+            $my_options->layout = '3x2';
+            $my_options->widget_count = intval($options->widget_count);
+            $my_options->widgets = array();
+            for ($i=1; $i <= $my_options->widget_count; $i++) {
+                $widget = new stdClass();
+                foreach ($options->widgets->$i as $key => $value) {
+                    $widget->{$key} = $value;
+                }
+                $my_options->widgets[] = $widget;
+            }
+            $data->options = json_encode($my_options);
         }
 
         if ($collection === 'discoveries') {
@@ -745,6 +765,33 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'dashboards') {
+            if (!empty($data->options)) {
+                $select = "SELECT * FROM dashboards WHERE id = ?";
+                $query = $this->db->query($select, array($data->id));
+                $result = $query->result();
+                $existing = new stdClass();
+                if (!empty($result[0]->options)) {
+                    $existing = json_decode($result[0]->options);
+                }
+                if (!empty($data->options->layout)) {
+                    $existing->layout = $data->options->layout;
+                }
+                if (!empty($data->options->widgets->position)) {
+                    foreach ($data->options->widgets->position as $key => $value) {
+                        $widget_position = $key;
+                        $widget_id = $value;
+                    }
+                }
+                foreach ($existing->widgets as $widget) {
+                    if ($widget->position == $widget_position) {
+                        $widget->widget_id = $widget_id;
+                    }
+                }
+                $data->options = (string)json_encode($existing);
+            }
+        }
+
         if ($collection === 'discoveries') {
 
             if(substr($data->network_address, -1) !== '/'){
@@ -916,6 +963,10 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "applications":
+                return(' name org_id description ');
+                break;
+
             case "agents":
                 return(' name org_id description ip status check_minutes user_id uuid options ');
                 break;
@@ -938,6 +989,10 @@ class M_collection extends MY_Model
 
             case "credentials":
                 return(' name org_id description type credentials ');
+                break;
+
+            case "dashboards":
+                return(' name org_id description type options sidebar ');
                 break;
 
             case "discoveries":
@@ -997,7 +1052,11 @@ class M_collection extends MY_Model
                 break;
 
             case "users":
-                return(' name org_id permissions password full_name email lang active roles orgs type ');
+                return(' name org_id permissions password full_name email lang active roles orgs type dashboard_id ');
+                break;
+
+            case "widgets":
+                return(' name org_id description type table primary secondary ternary dataset_title where limit group_by options sql link ');
                 break;
         }
     }
@@ -1008,6 +1067,10 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "applications":
+                return(array('name','org_id'));
+                break;
+
             case "agents":
                 return(array('name','org_id','status'));
                 break;
@@ -1030,6 +1093,10 @@ class M_collection extends MY_Model
 
             case "credentials":
                 return(array('name','org_id','type','credentials'));
+                break;
+
+            case "dashboards":
+                return(array('name','options'));
                 break;
 
             case "discoveries":
@@ -1090,6 +1157,10 @@ class M_collection extends MY_Model
 
             case "users":
                 return(array('name','org_id','lang','active','roles','orgs'));
+                break;
+
+            case "widgets":
+                return(array('name','org_id','type'));
                 break;
         }
     }

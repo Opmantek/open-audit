@@ -51,7 +51,6 @@ create_file="y"
 submit_online="y"
 
 # the address of the Open-AudIT server "submit" page
-# url="http://localhost/index.php/system/add_system"
 url="http://localhost/open-audit/index.php/input/devices"
 
 # 0 = no debug

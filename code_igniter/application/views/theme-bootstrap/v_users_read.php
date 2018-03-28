@@ -120,6 +120,7 @@ $item = $this->response->data[0];
                     <label for="lang" class="col-sm-3 control-label"><?php echo __('Language'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="data_type form-control" id="lang" name="lang" disabled>
+                            <option value='cs' <?php if ($item->attributes->lang == 'cs') { echo 'selected'; } ?>><?php echo __('Czech'); ?></option>
                             <option value='de' <?php if ($item->attributes->lang == 'de') { echo 'selected'; } ?>><?php echo __('German'); ?></option>
                             <option value='en' <?php if ($item->attributes->lang == 'en') { echo 'selected'; } ?>><?php echo __('English'); ?></option>
                             <option value='es' <?php if ($item->attributes->lang == 'es') { echo 'selected'; } ?>><?php echo __('Spanish'); ?></option>
