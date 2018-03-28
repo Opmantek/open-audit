@@ -36,7 +36,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   2.1.1
+# @version   2.2
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -51,7 +51,6 @@ create_file="y"
 submit_online="y"
 
 # the address of the Open-AudIT server "submit" page
-# url="http://localhost/index.php/system/add_system"
 url="http://localhost/open-audit/index.php/input/devices"
 
 # 0 = no debug
@@ -61,7 +60,7 @@ url="http://localhost/open-audit/index.php/input/devices"
 debugging=1
 
 # Version
-version="2.1.1"
+version="2.2"
 
 discovery_id=""
 help=""

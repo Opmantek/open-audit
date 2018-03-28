@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1.1
+* @version   2.2
 * @link      http://www.open-audit.org
  */
 if (! function_exists('get_manufacturer_from_mac')) {
@@ -5515,7 +5515,7 @@ if (! function_exists('get_manufacturer_from_mac')) {
         if (stripos(strtolower($mac), '00:15:6a') === 0) { return('DG2L Technologies Pvt. Ltd.'); }
         if (stripos(strtolower($mac), '00:15:6b') === 0) { return('Perfisans Networks Corp.'); }
         if (stripos(strtolower($mac), '00:15:6c') === 0) { return('SANE SYSTEM CO., LTD'); }
-        if (stripos(strtolower($mac), '00:15:6d') === 0) { return('Ubiquiti Networks Inc.'); }
+        if (stripos(strtolower($mac), '00:15:6d') === 0) { return('Ubiquiti'); }
         if (stripos(strtolower($mac), '00:15:6e') === 0) { return('A. W. Communication Systems Ltd'); }
         if (stripos(strtolower($mac), '00:15:6f') === 0) { return('Xiranet Communications GmbH'); }
         if (stripos(strtolower($mac), '00:15:70') === 0) { return('Zebra Technologies Inc'); }

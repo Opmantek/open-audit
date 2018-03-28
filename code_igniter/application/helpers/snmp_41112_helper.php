@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1.1
+* @version   2.2
 * @link      http://www.open-audit.org
  */
 
@@ -48,6 +48,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
             if (stripos($line, 'UniFi-Gateway') !== false) {
                 $details->model = 'Unifi Security Gateway';
                 $details->manufacturer = 'Ubiquiti';
+                $details->type = 'gateway';
                 $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
                 if (stripos($details->os_name, 'edgeos') !== false) {
                     $details->os_family = 'EdgeOS';

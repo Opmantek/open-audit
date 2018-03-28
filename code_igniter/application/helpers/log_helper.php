@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1.1
+* @version   2.2
 * @link      http://www.open-audit.org
  */
 if (! function_exists('log_error')) {
@@ -211,7 +211,7 @@ if (! function_exists('discovery_log')) {
             $sql = "/* log_helper::discovery_log */ " . "UPDATE discovery_log SET command = ?, command_status = ?, command_time_to_execute = ?, command_output = ? WHERE id = ?";
             $data = array((string)$log->command, (string)$log->command_status, $log->command_time_to_execute, (string)$log->command_output, $log->id);
             $query = $CI->db->query($sql, $data);
-            return($log->id);
+            $return_id = intval($log->id);
         } else {
             $sql = "/* log_helper::discovery_log */ " . "INSERT INTO discovery_log VALUES (NULL, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $data = array($log->discovery_id,
@@ -228,7 +228,7 @@ if (! function_exists('discovery_log')) {
                             $log->command_time_to_execute,
                             $log->command_output);
             $query = $CI->db->query($sql, $data);
-            return($CI->db->insert_id());
+            $return_id = intval($CI->db->insert_id());
         }
 
         # Special case because the log submit may work, but the discovery process may not.
@@ -236,8 +236,10 @@ if (! function_exists('discovery_log')) {
         if (stripos($log->message, 'Completed discovery, scanned') !== false and !empty($log->discovery_id)) {
             $sql = "/* log_helper::discovery_log */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
             $data = array($log->discovery_id);
-            $query = $this->db->query($sql, $data);
+            $query = $CI->db->query($sql, $data);
         }
+
+        return $return_id;
     }
 }
 

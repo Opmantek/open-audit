@@ -28,7 +28,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.1.1
+ * @version   2.2
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -223,7 +223,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname", "$details->serial");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $log_message[] = 'HIT on hostname + serial: ' . $details->hostname . ' + ' . $details->serial . ' (System ID ' . $details->id . ')';
@@ -285,7 +285,7 @@ class M_device extends MY_Model
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (is_array($row) and count($row) > 0) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $log_message[] = 'HIT on fqdn: ' . $details->fqdn . ' (System ID ' . $details->id . ')';
@@ -518,7 +518,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $log_message[] = 'HIT on hostname: ' . $details->hostname . ' (System ID ' . $details->id . ')';
@@ -1007,7 +1007,7 @@ class M_device extends MY_Model
             $query = $this->db->query($sql, $data);
             $row = $query->row();
 
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 if (strlen($row->hostname) > 15 and isset($details->hostname) and strlen($details->hostname) == 15) {
                     unset($details->hostname);
                 }

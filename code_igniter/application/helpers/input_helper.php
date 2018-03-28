@@ -33,7 +33,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1.1
+* @version   2.2
 * @link      http://www.open-audit.org
  */
 if (! function_exists('from_unix_timestamp')) {
@@ -58,6 +58,22 @@ if (! function_exists('from_unix_timestamp')) {
             $datetime = '%' . $datetime . '%';
         }
         return $datetime;
+    }
+}
+
+if (! function_exists('set_collection')) {
+    function set_collection()
+    {
+        $CI = & get_instance();
+        $collection = @$CI->uri->segment(1);
+        $collections = array('agents','applications','attributes','charts','collectors','configuration','connections','credentials','dashboards','database','devices','discovery','discoveries','errors','fields','files','groups','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','reports','roles','scripts','search','summaries','tasks','users','widgets');
+        if (!empty($collection) and in_array($collection, $collections)) {
+            #$log->summary = 'Set collection to ' . $collection . ', according to URI.';
+        } else {
+            $collection = 'summaries';
+            #$log->summary = 'Set collection to summaries as a default.';
+        }
+        return $collection;
     }
 }
 
@@ -168,7 +184,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
 
-        $collections = ' agents attributes charts collectors configuration connections credentials database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries tasks users ';
+        $collections = ' agents applications attributes charts collectors configuration connections credentials dashboards database devices discovery discoveries errors fields files groups ldap_servers licenses locations logs networks nmis orgs queries reports roles scripts search summaries tasks users widgets ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -205,16 +221,17 @@ if (! function_exists('inputRead')) {
         }
         
         # get our collection - usually devices, groups, reports, etc
-        $temp = $CI->uri->segment(1);
-        if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
-            $CI->response->meta->collection = (string)$temp;
-            $log->summary = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
-            stdlog($log);
-        } else {
-            $CI->response->meta->collection = 'summaries';
-            $log->summary = 'Set collection to summaries as a default.';
-            stdlog($log);
-        }
+        // $temp = $CI->uri->segment(1);
+        // if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
+        //     $CI->response->meta->collection = (string)$temp;
+        //     $log->summary = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
+        //     stdlog($log);
+        // } else {
+        //     $CI->response->meta->collection = 'summaries';
+        //     $log->summary = 'Set collection to summaries as a default.';
+        //     stdlog($log);
+        // }
+        $CI->response->meta->collection = set_collection();
         $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
         unset($temp);
 
@@ -1029,19 +1046,31 @@ if (! function_exists('inputRead')) {
         }
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
-            if ((!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {
-                log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                //output();
-                $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
-                if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
-                    redirect($CI->response->meta->collection);
-                } else {
-                    if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'collection') {
-                        $CI->session->unset_userdata('user_id');
-                        $CI->session->set_flashdata('error', 'User cannot run summaries::collection.');
-                        redirect('logon');
+            $check_premission = true;
+            if ($CI->response->meta->collection == 'users' and $CI->user->id == $CI->response->meta->id and !empty($CI->response->meta->received_data) and $CI->response->meta->action == 'update') {
+                $user_allowed_attributes = array('id', 'name', 'full_name', 'email', 'lang', 'password', 'dashboard_id');
+                $check_premission = false;
+                foreach ($CI->response->meta->received_data->attributes as $key => $value) {
+                    if (!in_array($key, $user_allowed_attributes)) {
+                        $check_premission = true;
+                    }
+                }
+            }
+            if (!empty($check_permission)) {
+                if ((!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {
+                    log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
+                    //output();
+                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                    if ($CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, 'r')) {
+                        redirect($CI->response->meta->collection);
                     } else {
-                        redirect('summaries');
+                        if ($CI->response->meta->collection == 'summaries' and $CI->response->meta->action == 'collection') {
+                            $CI->session->unset_userdata('user_id');
+                            $CI->session->set_flashdata('error', 'User cannot run summaries::collection.');
+                            redirect('logon');
+                        } else {
+                            redirect('summaries');
+                        }
                     }
                 }
             }

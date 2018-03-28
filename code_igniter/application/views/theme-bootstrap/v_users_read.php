@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1.1
+* @version   2.2
 * @link      http://www.open-audit.org
  */
 $item = $this->response->data[0];
@@ -120,6 +120,7 @@ $item = $this->response->data[0];
                     <label for="lang" class="col-sm-3 control-label"><?php echo __('Language'); ?></label>
                     <div class="col-sm-8 input-group">
                         <select class="data_type form-control" id="lang" name="lang" disabled>
+                            <option value='cs' <?php if ($item->attributes->lang == 'cs') { echo 'selected'; } ?>><?php echo __('Czech'); ?></option>
                             <option value='de' <?php if ($item->attributes->lang == 'de') { echo 'selected'; } ?>><?php echo __('German'); ?></option>
                             <option value='en' <?php if ($item->attributes->lang == 'en') { echo 'selected'; } ?>><?php echo __('English'); ?></option>
                             <option value='es' <?php if ($item->attributes->lang == 'es') { echo 'selected'; } ?>><?php echo __('Spanish'); ?></option>

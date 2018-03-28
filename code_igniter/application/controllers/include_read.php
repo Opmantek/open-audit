@@ -61,6 +61,11 @@ if ($this->response->meta->collection == 'credentials') {
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
 }
 
+# dashboards
+if ($this->response->meta->collection == 'dashboards') {
+    $this->response->included = array_merge($this->response->included, $this->m_dashboards->read_sub_resource($this->response->meta->id));
+}
+
 # database
 if ($this->response->meta->collection == 'database') {
     if ($this->response->meta->format == 'screen') {

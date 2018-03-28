@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.1.1
+* @version   2.2
 * @link      http://www.open-audit.org
  */
 if (! function_exists('output')) {
@@ -639,8 +639,8 @@ if (! function_exists('output')) {
         $url = $server_url[0].'//'.$server_url[2];
         if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
-            if ($CI->response->meta->total > $CI->response->meta->filtered and ($CI->response->meta->offset + $CI->response->meta->limit) < ($CI->response->meta->total + $CI->response->meta->limit)) {
-                $offset = intval($CI->response->meta->offset + $CI->response->meta->limit);
+            if (intval($CI->response->meta->total) > intval($CI->response->meta->filtered) and (intval($CI->response->meta->offset) + intval($CI->response->meta->limit)) < (intval($CI->response->meta->total) + intval($CI->response->meta->limit))) {
+                $offset = intval($CI->response->meta->offset) + intval($CI->response->meta->limit);
                 if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
                     $CI->response->links->next = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
                 } else {
