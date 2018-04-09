@@ -46,7 +46,6 @@ org_id=""
 submit_online="y"
 subnet_range=""
 discovery_id=""
-syslog="y"
 url="http://localhost/open-audit/index.php/input/discoveries"
 user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
@@ -128,18 +127,6 @@ if [ "$help" == "y" ]; then
 	exit
 fi
 
-# logging to a file
-function write_log()
-{
-	if [ "$syslog" == "y" ]; then
-		now=$(date "+%b %d %T")
-		if [[ $debugging -gt 1 ]]; then
-			echo "Logged: $1"
-		fi
-		echo "$now $system_hostname $$ 7 U:$user S:discover_subnet M:$1" >> /usr/local/open-audit/other/log_system.log
-	fi
-}
-
 function db_log()
 {
 	now=$(date "+%F %T")
@@ -201,17 +188,9 @@ else
 	if [ "$debugging" -gt 0 ]; then
 		echo "Nmap binary not on path, aborting."
 	fi
-	log_entry="Nmap binary not on path, aborting."
-	write_log "$log_entry"
 	db_log "Nmap binary not on path, aborting." "" "finish" "5"
 	exit 1
 fi
-
-log_entry="Discovery for $subnet_range submitted for discovery $discovery_id starting"
-write_log "$log_entry"
-
-log_entry="Discovery for $subnet_range using Nmap version $nmap_full_version at $nmap_path"
-write_log "$log_entry"
 
 if [ "$debugging" -gt 0 ]; then
 	echo "----------------------------"
@@ -411,7 +390,6 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 			if [ "$debugging" -gt 0 ]; then
 				echo "Submitting online."$'\n'
 			fi
-			write_log "IP $host responding, submitting."
 			db_log "IP $host responding, submitting." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 			# curl options
 			# -k = ignore invalid (self signed) certs
@@ -427,11 +405,9 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 				fi
 			fi
 		else
-			write_log "IP $host responding."
 			# Don't bother to update the db log table because we're not sending the result to it
 		fi
 	else
-		write_log "IP $host not responding, ignoring."
 		db_log "IP $host not responding, ignoring." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 	fi
 	result=""
@@ -460,9 +436,5 @@ if [[ "$create_file" == "y" ]]; then
 	result_file="<devices>$result_file"$'\n'"</devices>"$'\n'
 	echo "$result_file" > discovery_subnet.xml
 fi
-
-log_entry="Discovery for $subnet_range submitted for discovery $discovery_id completed"
-write_log "$log_entry"
-
 
 db_log "Completed discovery, scanned $hosts_scanned IP addresses" $(timer "$script_start") "finish"

@@ -74,6 +74,21 @@ dim program
 dim script_timer : script_timer = Timer
 dim version: version = "2.2"
 
+dim hosts_scanned : hosts_scanned = 0
+dim host_timer : host_timer = 0
+
+dim nmap_version : nmap_version = ""
+dim nmap_path : nmap_path = ""
+' nmap path on a default install is - C:\Program Files (x86)\Nmap\nmap.exe
+' Only set the above if you have installed into a custom directory AND it is not on your users $path
+
+dim db_log_message : db_log_message = ""
+dim db_log_duration : db_log_duration = 0
+dim db_log_status : db_log_status = ""
+dim db_log_severity : db_log_severity = 6
+dim db_log_output : db_log_output = ""
+dim db_log_level : db_log_level = 5
+dim db_log_command : db_log_command = ""
 
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
@@ -168,8 +183,8 @@ if (help = "y") then
     wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
     wscript.echo ""
     wscript.echo "  sequential"
-    wscript.echo "      *n - When we run this script, post each device result and wait for a response before continuing to the next device."
-    wscript.echo "       Y - Post each device result and continue on processing the next device without waiting for a response from the Open-AudIT server."
+    wscript.echo "     *y - When we run this script, post each device result and wait for a response before continuing to the next device."
+    wscript.echo "      n - Post each device result and continue on processing the next device without waiting for a response from the Open-AudIT server."
     wscript.echo ""
     wscript.echo "  submit_online"
     wscript.echo "      *y - Submit the audit result to the Open-AudIT server."
@@ -232,47 +247,73 @@ local_net = local_net & " " & system_hostname & " "
 
 if debugging > 0 then wscript.echo "Log Level: " & debugging & vbcrlf end if
 
-dim nmap_path : nmap_path = ""
-if (instr(lcase(objShell.ExpandEnvironmentStrings( "PATH=%PATH%" )), "\nmap")) then
-    ' nmap is installed, proceed.
-    nmap_path = "nmap"
-else
-    'nmap not in path - check a couple of default folders.
-    nmap_path = "c:\Program Files\Nmap\nmap.exe"
-    if (objFSO.FileExists(nmap_path)) then
-        ' found it
+db_log_status = "start"
+db_log_message = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
+db_log()
+
+if nmap_path = "" then
+    if (instr(lcase(objShell.ExpandEnvironmentStrings( "PATH=%PATH%" )), "\nmap")) then
+        ' nmap is installed, proceed.
+        temp = split(objShell.ExpandEnvironmentStrings("PATH=%PATH%"), ";")
+        dim test
+        for each test in temp
+            if instr(lcase(test),"nmap") then
+                nmap_path = test & "\nmap.exe"
+            end if
+        next
     else
-        nmap_path = ""
-    end if
-    if (nmap_path = "") then
-        nmap_path = "C:\Program Files (x86)\Nmap\nmap.exe"
+        'nmap not in path - check a couple of default folders.
+        nmap_path = "c:\Program Files\Nmap\nmap.exe"
         if (objFSO.FileExists(nmap_path)) then
             ' found it
         else
             nmap_path = ""
         end if
-    end if
-    if (nmap_path = "") then
-        log_entry = "Nmap not found, aborting."
-        write_log()
-        wscript.quit 1
+        if (nmap_path = "") then
+            nmap_path = "C:\Program Files (x86)\Nmap\nmap.exe"
+            if (objFSO.FileExists(nmap_path)) then
+                ' found it
+            else
+                nmap_path = ""
+            end if
+        end if
+        if (nmap_path = "") then
+            db_log_severity = 5
+            db_log_status = "finish"
+            db_log_message "Nmap binary not on path, aborting."
+            db_log()
+            wscript.quit 1
+        end if
     end if
 end if
 
-log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " starting"
-write_log()
+exit_status = "n"
+command = nmap_path & " --version"
+execute_command()
+Do Until objExecObject.StdOut.AtEndOfStream
+    line = objExecObject.StdOut.ReadLine
+    if instr(lcase(line), "nmap version") then
+        temp = split(line)
+        nmap_version = temp(2)
+    end if
+Loop
+
+db_log_severity = 7
+db_log_status = ""
+db_log_message = "Discovery for " & subnet_range & " using Nmap version " & nmap_version & " at " & nmap_path
+db_log()
 
 if debugging > "0" then
     wscript.echo "----------------------------"
     wscript.echo "Open-AudIT Discover Subnet script"
-    wscript.echo "Version: $version"
+    wscript.echo "Version: version"
     wscript.echo "----------------------------"
     wscript.echo "My PID is           " & current_pid
     wscript.echo "Create File:        " & create_file
     wscript.echo "Discovery ID:       " & discovery_id
     wscript.echo "Log Level:          " & debugging
     wscript.echo "Nmap Binary:        " & nmap_path
-   'wscript.echo "Nmap Version:       " & nmap_full_version
+    wscript.echo "Nmap Version:       " & nmap_version
     wscript.echo "Submit Online:      " & submit_online
     wscript.echo "Subnet Range:       " & subnet_range
     wscript.echo "URL:                " & url
@@ -280,7 +321,6 @@ if debugging > "0" then
 end if
 
 exit_status = "y"
-
 command = nmap_path & " -n -sL " & subnet_range
 execute_command()
 Do Until objExecObject.StdOut.AtEndOfStream
@@ -295,20 +335,14 @@ Do Until objExecObject.StdOut.AtEndOfStream
     end if
 Loop
 
-dim hosts_scanned : hosts_scanned = 0
-dim db_log_duration : db_log_duration = 0
-dim db_log_status : db_log_status = ""
-dim db_log_message : db_log_message = ""
-dim host_timer : host_timer = 0
-
-db_log_status = "start"
-db_log_message = "Starting discovery, scanning " & hosts_in_subnet & " IP addresses"
+db_log_message = "Scanning " & hosts_in_subnet & " IP addresses"
+db_log_command = command
 db_log()
 
 hosts = split(trim(hosts))
 for each host in hosts
     hosts_scanned = hosts_scanned + 1
-    db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
+    db_log_status = ""
     if debugging > "0" then wscript.echo "Scanning Host: " & host end if
     db_log_duration = 0
     host_timer = Timer
@@ -324,11 +358,20 @@ for each host in hosts
     host_is_up = "false"
     command = nmap_path & " -vv -n --host-timeout 30 " & host
     nmap_ports = ""
+    db_log_severity = 7
+    db_log_level = 7
+    db_log_message = "Scanning Host: " & host
+    db_log_command = command
+    db_log()
     execute_command()
 
     Do Until objExecObject.Status = 0
         WScript.Sleep 100
     Loop
+
+    db_log_duration = Timer - host_timer
+    db_log_message = "Nmap TCP scan time for " & host & ": " & db_log_duration
+    db_log()
 
     Do Until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
@@ -343,6 +386,11 @@ for each host in hosts
             port = temp(0)
             program = temp(2)
             nmap_ports = nmap_ports & "," & port & "/" & program
+            if debugging > 1 then
+                db_log_duration = ""
+                db_log_message = "Host " & host & " is up, received port " & port & " response"
+                db_log()
+            end if
         end if
 
         if instr(lcase(line), "/tcp") then
@@ -354,6 +402,16 @@ for each host in hosts
             end if
         end if
 
+        if instr(lcase(line), "Host " & host & " is up, received arp-response") then
+            host_is_up="true"
+            if debugging > 1 then
+                db_log_duration = ""
+                db_log_message = "Host " & host & " is up, received arp-response"
+                db_log_output = line
+                db_log()
+            end if
+        end if
+
         if instr(lcase(line), "mac address:") then
             i = split(line, " ")
             mac_address = i(2)
@@ -362,6 +420,13 @@ for each host in hosts
             i = split(line, "(")
             manufacturer = replace(i(1), ")", "")
             manufacturer = trim(manufacturer)
+            host_is_up="true"
+            if debugging > 1 then
+                db_log_duration = ""
+                db_log_message = "Host " & host & " is up, received arp-response from " & mac_address
+                db_log_output = line
+                db_log()
+            end if
         end if
 
         if instr(lcase(line), "device type:") then
@@ -399,6 +464,11 @@ for each host in hosts
             if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
                 nmap_ports = nmap_ports & ",62078/tcp/iphone-sync"
                 host_is_up = "true"
+                if debugging > 1 then
+                    db_log_message = "Host " & host & " is up, received iphone-sync response"
+                    db_log_output = line
+                    db_log()
+                end if
             end if
         end if
     Loop
@@ -416,7 +486,6 @@ for each host in hosts
             if (instr(lcase(line), "open")) then
                 nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
-                host_is_up = "true"
             end if
         end if
     Loop
@@ -425,6 +494,7 @@ for each host in hosts
     if (instr(local_net, host & " ") > 0) then
         wmi_status = "true"
     end if
+
     if host_is_up = "true" then
         if len(nmap_ports) > 0 then
             nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
@@ -455,46 +525,78 @@ for each host in hosts
 
         db_log_duration = Timer - host_timer
         if submit_online = "y" then
+            if debugging > 0 then
+                wscript.echo "IP " & host & " responding, submitting."
+            end if
+            db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
+            db_log_severity = 6
             db_log_message = "IP " & host & " responding, submitting."
             db_log()
-            log_entry = "IP " & host & " responding, submitting."
-            write_log()
+            db_log_severity = 7
             result = "<devices>" & vbcrlf & result & "</devices>"
             Err.clear
+            error_returned = 0
             on error resume next
-                Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-                objHTTP.setTimeouts 5000, 5000, 5000, 120000
-                objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-                if sequential = "y" then
-                    objHTTP.Open "POST", url, False ' wait for a response before continuing
-                else
-                    objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
-                end if
+            Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+            objHTTP.setTimeouts 5000, 5000, 5000, 120000
+            objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
+            if sequential = "y" then
+                objHTTP.Open "POST", url, False ' wait for a response before continuing
+            else
+                objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
+            end if
+            error_returned = Err.Number
+            error_description = Err.Description
+            on error goto 0
+            if error_returned = 0 then
+                on error resume next
                 objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
                 objHTTP.Send "data=" + result + vbcrlf
-            on error goto 0
-            if (error_returned <> 0) then
-                log_entry = "Result send for " & host & " failed"
-                write_log
+                on error goto 0
+                if sequential = "y" then
+                    while objHTTP.readyState <> 4
+                        objHTTP.waitForResponse 5
+                    wend
+                    error_returned = objHTTP.status
+                    error_description = Err.Description
+                    if (error_returned <> 200) then
+                        wscript.echo "Error when submitting discovery result (device)."
+                        wscript.echo "Error Returned: " & error_returned
+                        wscript.echo "Error Description: " & error_description
+                        db_log_message = "Error when submitting discovery result (device)."
+                        db_log_status = "fail"
+                        db_log_severity = 3
+                        db_log_output = objHTTP.ResponseText
+                        db_log()
+                    elseif echo_output = "y" then
+                        wscript.echo objHTTP.ResponseText
+                    end if
+                end if
             else
-                log_entry = "Result send for " & host & " succeeded"
-                write_log
-            end if
-            if debugging > 1 and sequential = "n" then
-                wscript.echo
-                wscript.echo "Response"
-                wscript.echo "--------"
-                wscript.echo objHTTP.ResponseText
+                wscript.echo "Cannot open URL: " & url
+                wscript.echo "Error Returned: " & error_returned
+                wscript.echo "Error Description: " & error_description
+                wscript.echo "Cannot submit online as requested - ABORTING."
+                db_log_message "Error when opening URL to submit"
+                db_log_status = "fail"
+                db_log_command = url
+                db_log_severity = 3
+                db_log_output = error_description
+                db_log()
+                wscript.exit 1
             end if
         else
-            log_entry = "IP " & host & " responding."
-            write_log()
+            wscript.echo "IP " & host & " responding."
         end if ' submit_online
     else
-        log_entry = "IP " & host & " not responding, ignoring."
-        write_log()
+        if debugging > 0 then 
+            wscript.echo "IP " & host & " not responding, ignoring."
+        end if
+        db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
+        db_log_severity = 6
         db_log_message = "IP " & host & " not responding, ignoring."
         db_log()
+        db_log_severity = 7
     end if ' host_is_up'
 next
 result =          " <device>" & vbcrlf
@@ -507,7 +609,7 @@ result_file = result_file & result
 result_file = "<devices>" & vbcrlf & result_file & vbcrlf & "</devices>"
 
 
-if echo_output = "y" then
+if (echo_output = "y" and submit_online <> "y") then
     wscript.echo result_file
 end if
 
@@ -535,15 +637,12 @@ if create_file = "y" then
         error_description = Err.Description
     on error goto 0
     if (error_returned <> 0) then
+        if debugging > "0" then wscript.echo "Failed to create output file named " & OutputFile & " for " & subnet_range & " submitted for discovery " & discovery_id
         if debugging > "0" then wscript.echo "Problem writing to file." end if
         if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
         if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-        log_entry = "Failed to create output file named " & OutputFile & " for " & subnet_range & " submitted for discovery " & discovery_id
-        write_log
     else
-        if debugging > "0" then wscript.echo "Output file created." end if
-        log_entry = "Output file named " & OutputFile & " created for " & subnet_range & " submitted for discovery " & discovery_id
-        write_log
+        if debugging > "0" then wscript.echo "Output file named " & OutputFile & " created for " & subnet_range & " submitted for discovery " & discovery_id
     end if
 end if
 
@@ -554,33 +653,27 @@ if submit_online = "y" then
         Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
         objHTTP.setTimeouts 5000, 5000, 5000, 120000
         objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-        objHTTP.Open "POST", url, FALSE ' as at 1.8.2, wait for the output
-        'objHTTP.Open "POST", url, TRUE
+        objHTTP.Open "POST", url, FALSE ' wait for the output
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-        ' reverted the below (changed in 1/8/2 and back in 1.8.4) to send the final subnet
-        ' finished result instead of the entire result file
-        'objHTTP.Send "data=" + result_file + vbcrlf
         objHTTP.Send "data=" + result + vbcrlf
+        while objHTTP.readyState <> 4
+            objHTTP.waitForResponse 5
+        wend
+        error_returned = objHTTP.Status
     on error goto 0
-    if (error_returned <> 0) then
-        if debugging > "0" then wscript.echo "Result complete send failed for " & subnet_range & " submitted for discovery " & discovery_id end if
-        log_entry = "Result send failed for " & subnet_range & " submitted for discovery " & discovery_id
-        write_log
-        if (not isempty(objHTTP.ResponseText) and objHTTP.ResponseText > "" and debugging > "1") then
-            wscript.echo objHTTP.ResponseText
+    if (error_returned <> 200) then
+        if debugging > "0" then
+            wscript.echo "Result complete send failed for " & subnet_range & " submitted for discovery " & discovery_id
         end if
     else
-        if debugging > "0" then wscript.echo "Result complete send succeeded for " & subnet_range & " submitted for discovery " & discovery_id end if
-        log_entry = "Result send successful for " & subnet_range & " submitted for discovery " & discovery_id
-        write_log
-        if (not isempty(objHTTP.ResponseText) and objHTTP.ResponseText > "" and debugging > "2") then
-            wscript.echo objHTTP.ResponseText
+        if debugging > "0" then
+            wscript.echo "Result complete send succeeded for " & subnet_range & " submitted for discovery " & discovery_id
         end if
     end if
+    if (echo_output = "y" and debugging > "0") then
+        wscript.echo objHTTP.ResponseText
+    end if
 end if
-
-log_entry = "Discovery for " & subnet_range & " submitted for discovery " & discovery_id & " completed"
-write_log()
 
 db_log_message = "Completed discovery, scanned " & hosts_scanned & " IP addresses"
 db_log_duration = Timer - script_timer
@@ -592,10 +685,14 @@ function get_timestamp()
     get_timestamp = monthname(month(now()), True) & " " & Right("0" & Day(Now()),2) & " " & Right("0" & Hour(Now()),2) & ":" & Right("0" & Minute(Now()),2) & ":" & Right("0" & Second(Now()),2)
 end function
 
-
-
 function db_log()
-    ' set db_log_message (string), db_log_duration (seconds), db_log_status (1 of 256)
+    ' db_log_message (string),
+    ' db_log_duration (seconds),
+    ' db_log_status (1 of 256)
+    ' db_log_severity (1-7)
+    ' db_log_output (the command output)
+    ' db_log_level (1-5)
+    ' db_log_command (the actual command that was executed)
     timestamp = get_timestamp()
     on error resume next
         Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
@@ -603,37 +700,12 @@ function db_log()
         objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
         objHTTP.Open "POST", "http://localhost/open-audit/index.php/input/logs", FALSE
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=6&pid=" & current_pid & "&ip=127.0.0.1&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=0&command_status=" & db_log_status & vbcrlf
+        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=" & db_log_severity & "&pid=" & current_pid & "&ip=127.0.0.1&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=" & db_log_duration & "&command_status=" & db_log_status & "&command_output=" & db_log_output & "&command=" & db_log_command
     on error goto 0
+    db_log_message = ""
+    db_log_command = ""
+    db_log_output = ""
 end function
-
-
-function write_log()
-    timestamp = get_timestamp()
-    if debugging > 1 then
-        wscript.echo "Writing Log (if required): " & timestamp & " " & system_hostname & " " & current_pid & " S:discover_subnet U:" & user & " " & log_entry & vbcrlf
-    end if
-    if syslog = "y" then
-        on error resume next
-        dim objTS
-        set objTS = objFSO.OpenTextFile("c:\xampplite\open-audit\other\log_system.log", FOR_APPENDING, True)
-        error_returned = Err.Number
-        error_description = Err.Description
-        on error goto 0
-        if (error_returned <> 0) then
-            if debugging > "0" then wscript.echo "Problem opening log file." end if
-            if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-            if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-            Err.Clear
-        else
-            log_entry = timestamp & " " & system_hostname & " " & current_pid & " U:" & user & " S:discover_subnet M:" & log_entry & vbcrlf
-            objTS.Write log_entry
-            objTS.Close
-            Set objTS = Nothing
-        end if
-    end if
-end function
-
 
 function execute_command()
     if debugging > 1 then wscript.echo "Executing: " & command end if
@@ -647,16 +719,17 @@ function execute_command()
     on error goto 0
     if (error_returned <> 0) then
         if debugging > "0" then wscript.echo "Discovery command failed (" & command & "). Error Number: " & error_returned & " Error Description: " & error_description end if
-        'if syslog = "y" then
-            if exit_status = "y" then
-                exit_text = " Aborting script."
-            else
-                exit_text = ""
-            end if
-            timestamp = get_timestamp()
-            log_entry = timestamp & " " & system_hostname & " " & current_pid & " Discovery command failed (" & command & ")." & exit_text & vbcrlf
-            write_log()
-        'end if
+        if exit_status = "y" then
+            db_log_message = "Discovery command failed (Aborting script)."
+        else
+            db_log_message = "Discovery command failed."
+        end if
+        db_log_duration = 0
+        db_log_severity = 4
+        db_log_output = error_description
+        db_log_level = 5
+        db_log_command = command
+        db_log()
         Err.Clear
         if exit_status = "y" then
             wscript.quit 1
