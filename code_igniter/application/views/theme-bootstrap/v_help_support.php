@@ -34,9 +34,9 @@
 * @link      http://www.open-audit.org
  */
 if (php_uname('s') == 'Windows NT') {
-    $files = "c:\\xampplite\\open-audit\\other\\log_system.log,\nc:\\omk\\log\\open-audit.log,\nc:\\omk\\log\\opCommon.log,\nc:\\omk\\log\\opDaemon.log,\nc:\\omk\\log\\performance.log,\nc:\\omk\\conf\\opCommon.nmis";
+    $files = "c:\\omk\\log\\open-audit.log,\nc:\\omk\\log\\opCommon.log,\nc:\\omk\\log\\opDaemon.log,\nc:\\omk\\log\\performance.log,\nc:\\omk\\conf\\opCommon.nmis";
 } else {
-    $files = "/usr/local/open-audit/other/log_system.log,\n/usr/local/omk/log/open-audit.log,\n/usr/local/omk/log/opCommon.log,\n/usr/local/omk/log/opDaemon.log,\n/usr/local/omk/log/performance.log,\n/usr/local/omk/conf/opCommon.nmis";
+    $files = "/usr/local/omk/log/open-audit.log,\n/usr/local/omk/log/opCommon.log,\n/usr/local/omk/log/opDaemon.log,\n/usr/local/omk/log/performance.log,\n/usr/local/omk/conf/opCommon.nmis";
 }
 
 ?>
