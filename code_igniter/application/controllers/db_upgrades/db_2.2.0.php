@@ -56,6 +56,15 @@ $sql = "UPDATE `configuration` SET `value` = 'n' WHERE `name` = 'process_netstat
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'output_escape_csv'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'output_escape_csv','y','bool','y','system','2000-01-01 00:00:00','Escape CSV output so Excel will not attempt to run contents.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
 # credentials
 $this->alter_table('credentials', 'type', "`type` enum('aws','basic_auth','cim','ipmi','mysql','netapp','other','snmp','snmp_v3','sql_server','ssh','ssh_key','vmware','web','windows') NOT NULL DEFAULT 'other' AFTER `description`");
 

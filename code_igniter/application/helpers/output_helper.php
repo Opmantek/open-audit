@@ -277,17 +277,20 @@ if (! function_exists('output')) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
                 foreach ($CI->response->meta->data_order as $field) {
+                    $value = '';
                     if (!empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
-                        $item->attributes->$field = str_replace('"', '""', $item->attributes->{$CI->response->meta->collection.'.'.$field});
+                        $value = $item->attributes->{$CI->response->meta->collection.'.'.$field};
                     }
-                    if (empty($item->attributes->$field)) {
-                        $line_array[] = '';
-                    } else {
-                        if (stripos($item->attributes->$field, '"') !== false) {
-                            $item->attributes->$field = str_replace('"', '""', $item->attributes->$field);
+                    if (!empty($item->attributes->$field)) {
+                        $value = $item->attributes->$field;
+                    }
+                    $value = str_replace('"', '""', $value);
+                    if (!empty($CI->config->item('output_escape_csv')) and (string)$CI->config->item('output_escape_csv') === 'y') {
+                        if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
+                            $value = "'" . $value;
                         }
-                        $line_array[] = $item->attributes->$field;
                     }
+                    $line_array[] = $value;
                 }
                 $output_csv .= '"' . implode('","', $line_array) . '"' . "\n";
                 unset($line_array);
@@ -295,15 +298,13 @@ if (! function_exists('output')) {
         }
         if ((string) $CI->config->item('download_reports') === 'download') {
             echo $output_csv;
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
+            header('Cache-Control: max-age=0');
         } else {
             echo "<pre>\n";
             echo $output_csv;
             echo "</pre>";
-        }
-        if ((string) $CI->config->item('download_reports') === 'download') {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-            header('Cache-Control: max-age=0');
         }
     }
 
