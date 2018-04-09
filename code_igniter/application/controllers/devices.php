@@ -430,7 +430,7 @@ class devices extends MY_Controller
                 $discovery_id = $this->m_collection->create($data, 'discoveries');
                 $this->m_discoveries->execute($discovery_id);
             }
-            $message = 'Discovery started for devices: ' . implode(', ', $device_names);
+            $message = htmlentities('Discovery started for devices: ' . htmlentities(implode(', ', $device_names)));
             $this->session->set_flashdata('success', $message);
             unset($this->response->data);
             $this->response->data = array();

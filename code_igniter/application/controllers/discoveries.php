@@ -111,7 +111,7 @@ class Discoveries extends MY_Controller
                     if ($this->response->meta->format == 'json') {
                         output($this->response);
                     } else {
-                        $this->session->set_flashdata('error', 'A hostname or FQDN was supplied that cannot be resolved (' . $subnet . ').');
+                        $this->session->set_flashdata('error', 'A hostname or FQDN was supplied that cannot be resolved (' . htmlentities($subnet) . ').');
                         redirect('discoveries');
                     }
                     return;

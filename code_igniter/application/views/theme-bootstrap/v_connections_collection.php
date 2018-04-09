@@ -52,9 +52,6 @@
                     <th><?php echo __('Provider')?></th>
                     <th><?php echo __('Type')?></th>
                     <th><?php echo __('Speed')?></th>
-                    <!-- <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
-                    <th class="text-center"><?php echo __('Edit')?></th>
-                    <?php } ?> -->
                     <?php if ($this->m_users->get_user_permission('', 'connections', 'd')) { ?>
                     <th class="text-center"><?php echo __('Delete')?></th>
                     <?php } ?>
@@ -71,9 +68,6 @@
                     <?php refine('connections.provider', $item->attributes->provider); ?>
                     <?php refine('connections.service_type', $item->attributes->service_type); ?>
                     <?php refine('connections.speed', $item->attributes->speed); ?>
-                    <!-- <?php if ($this->m_users->get_user_permission('', 'connections', 'u')) { ?>
-                    <td class="text-center"><a class="btn btn-sm btn-info" href="connections/<?php echo intval($item->id); ?>?action=update"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a></td>
-                    <?php } ?> -->
                     <?php if ($this->m_users->get_user_permission('', 'connections', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>

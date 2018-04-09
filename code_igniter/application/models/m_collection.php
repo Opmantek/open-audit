@@ -698,7 +698,7 @@ class M_collection extends MY_Model
         $id = intval($this->run_sql($sql, $data_array));
 
         if (!empty($id)) {
-            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
+            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . htmlentities($data->name) . '".');
             return ($id);
         } else {
             # TODO - log a better error
