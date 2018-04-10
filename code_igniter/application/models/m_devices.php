@@ -1291,6 +1291,9 @@ class M_devices extends MY_Model
                 if (strripos($details->os_name, "fedora") !== false) {
                     $details->icon = 'fedora';
                 }
+                if (strripos($details->os_name, "hp-ux") !== false) {
+                    $details->icon = 'hp-ux';
+                }
                 if ((strripos($details->os_name, "mandriva") !== false) or
                     (strripos($details->os_name, "mandrake") !== false)) {
                     $details->icon = 'mandriva';
@@ -1401,6 +1404,9 @@ class M_devices extends MY_Model
                 }
                 if (strripos($details->os_name, "fedora") !== false) {
                     $details->icon = 'fedora';
+                }
+                if (strripos($details->os_name, "hp-ux") !== false) {
+                    $details->icon = 'hp-ux';
                 }
                 if ((strripos($details->os_name, "mandriva") !== false) or
                     (strripos($details->os_name, "mandrake") !== false)) {

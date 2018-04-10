@@ -557,6 +557,7 @@ if (! function_exists('ssh_audit')) {
             'solaris_domain' => 'domainname 2>/dev/null',
 
             'osx_serial' => 'system_profiler SPHardwareDataType 2>/dev/null | grep "Serial Number (system):" | cut -d: -f2 | sed "s/^ *//g"',
+            'hpux_serial' => 'machinfo 2>/dev/null | grep "Machine serial number:" | cut -d: -f2',
 
             'os_group' => 'uname 2>/dev/null',
             'os_name' => 'cat /etc/os-release 2>/dev/null | grep -i ^PRETTY_NAME | cut -d= -f2 | cut -d\" -f2',
@@ -569,15 +570,22 @@ if (! function_exists('ssh_audit')) {
             'ubiquiti_os' => 'cat /etc/motd 2>/dev/null | grep -i EdgeOS 2>/dev/null',
             'ubiquiti_os_version' => 'cat /etc/version 2>/dev/null',
             'ddwrt_os_name' => 'cat /etc/motd 2>/dev/null | grep -i DD-WRT 2>/dev/null',
+            'hpux_os_group' => 'uname -s',
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
             'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
+            'hpux_model' => 'machinfo 2>/dev/null | grep -i "Model:" | cut -d: -f2',
 
             'dbus_identifier' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}"',
             'esx_uuid' => 'vim-cmd hostsvc/hostsummary 2>/dev/null | sed -n "/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p" | grep uuid | cut -d= -f2 | sed s/,//g | sed s/\"//g',
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
             'lshal_uuid' => 'lshal 2>/dev/null | grep "system.hardware.uuid"',
+            'hpux_uuid' => 'machinfo 2>/dev/null | grep -i "Machine ID number:" | cut -d: -f2',
+
+            'hpux_hostname' => 'machinfo 2>/dev/null | grep -i "Nodename" | cut -d: -f2',
+            'hpux_domain' => 'lsconf 2>/dev/null | grep -i "Domain Name:" | cut -d" " -f3',
+            'hpux_os_version' => 'machinfo 2>/dev/null | grep -i "Release:" | cut -d: -f2',
 
             'which_sudo' => 'which sudo 2>/dev/null'
         );
@@ -721,6 +729,27 @@ if (! function_exists('ssh_audit')) {
             $device->manufacturer = $device->ddwrt_model;
         }
         unset($device->ddwrt_model);
+
+        if (!empty($device->hpux_os_group) and trim($device->hpux_os_group) === 'HP-UX') {
+            $device->os_group = 'HP-UX';
+            $device->os_family = 'HP-UX';
+            $device->os_name = 'HP-UX';
+            $device->type = 'computer';
+            $device->class = 'server';
+            $device->uuid = trim($device->hpux_uuid);
+            $device->model = trim($device->hpux_model);
+            $device->serial = trim($device->hpux_serial);
+            $device->hostname = trim($device->hpux_hostname);
+            $device->domain = trim($device->hpux_domain);
+            $device->os_version = trim($device->hpux_os_version);
+        }
+        unset($device->hpux_os_group);
+        unset($device->hpux_uuid);
+        unset($device->hpux_model);
+        unset($device->hpux_serial);
+        unset($device->hpux_hostname);
+        unset($device->hpux_domain);
+        unset($device->hpux_os_version);
 
         # UUID
         $array = array('solaris_uuid', 'esx_uuid', 'osx_uuid', 'lshal_uuid');
