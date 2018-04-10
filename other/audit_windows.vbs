@@ -2233,17 +2233,19 @@ if (cint(windows_build_number) >= 6000) then
             verticalPixels = 0
             screenResolution = ""
             ratio=""
-            if colItems.Count > 0 then
-                For Each MonitorMode In colItems
-                    intIndex = MonitorMode.PreferredMonitorSourceModeIndex
-                    horizontalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).HorizontalActivePixels)
-                    verticalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).VerticalActivePixels)
-                    if debugging > "2" then
-                        wscript.echo "    Horizontal Pixels: " & horizontalPixels
-                        wscript.echo "    Vertical Pixels: " & verticalPixels
-                    end if
-                Next
-            end if
+            screen_size = ""
+            
+            On Error Resume Next
+            For Each MonitorMode In colItems
+                intIndex = MonitorMode.PreferredMonitorSourceModeIndex
+                horizontalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).HorizontalActivePixels)
+                verticalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).VerticalActivePixels)
+                if debugging > "2" then
+                    wscript.echo "    Horizontal Pixels: " & horizontalPixels
+                    wscript.echo "    Vertical Pixels: " & verticalPixels
+                end if
+            Next
+            on error goto 0
 
             if not(horizontalPixels=0 or verticalPixels=0) then
                 screenResolution = horizontalPixels & " x " & verticalPixels
@@ -2259,17 +2261,15 @@ if (cint(windows_build_number) >= 6000) then
                    "FROM WmiMonitorBasicDisplayParams WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
             Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
 
-            if colItems.Count > 0 then
-                For Each MonitorParam In colItems
-                    ' screen sizes. Convert cm to in.
-                    Width = MonitorParam.MaxHorizontalImageSize / 2.54
-                    Height = MonitorParam.MaxVerticalImageSize / 2.54
-                    screen_size = Round(Sqr((Height ^ 2) + (Width ^ 2)),1)
-                    if debugging > "2" then wscript.echo "    Size: " & screen_size
-                Next
-            else
-                screen_size = ""
-            end if
+            On Error Resume Next
+            For Each MonitorParam In colItems
+                ' screen sizes. Convert cm to in.
+                Width = MonitorParam.MaxHorizontalImageSize / 2.54
+                Height = MonitorParam.MaxVerticalImageSize / 2.54
+                screen_size = Round(Sqr((Height ^ 2) + (Width ^ 2)),1)
+                if debugging > "2" then wscript.echo "    Size: " & screen_size
+            Next
+            on error goto 0
 
             ' manufacture date
             manufacture_date = ""
