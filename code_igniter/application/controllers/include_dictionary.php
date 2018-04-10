@@ -661,6 +661,7 @@ if ($table == 'users') {
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->dashboard_id = 'The dashboard that will be shown by default for this user.';
     $dictionary->columns->password = 'A hashed password that enables logon when using application authentication.';
     $dictionary->columns->full_name = 'The complete first name, last name fo this user.';
     $dictionary->columns->email = 'The users email address.';
