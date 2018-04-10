@@ -67,11 +67,15 @@ class M_search extends MY_Model
             // make our padded IP
             // TODO - better logic here - account for 2 digit and 1 digit octets
             $temp = explode('.', $value);
-            for ($i=0; $i < count($temp); $i++) { 
-                $temp[$i] = mb_substr("000".$temp[$i], -3);
+            for ($i=0; $i < count($temp); $i++) {
+                if (empty($temp[$i])) {
+                    $temp[$i] = '%';
+                } else {
+                    $temp[$i] = mb_substr("000".$temp[$i], -3);
+                }
             }
-            #$padded_ip = '%' . implode('.', $temp) . '%';
-            $padded_ip = implode('.', $temp);
+            $padded_ip = '%' . implode('.', $temp) . '%';
+            #$padded_ip = implode('.', $temp);
 
             $sql = "SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status`, ip.ip AS `ip.ip` FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE system.org_id IN (" . $CI->user->org_list . ") AND (
                 system.name LIKE '%" . $value . "%' OR
