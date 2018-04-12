@@ -794,7 +794,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'discoveries') {
 
-            if(substr($data->network_address, -1) !== '/'){
+            if(!empty($data->network_address) and substr($data->network_address, -1) !== '/'){
                 $data->network_address = $data->network_address.'/';
             }
 
