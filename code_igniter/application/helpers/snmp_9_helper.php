@@ -4840,7 +4840,9 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     if ($oid == '1.3.6.1.4.1.9.1.1348') {
         $details->model = 'Cisco UC Virtual Machine';
-        $details->type = 'voip gateway';
+        $details->type = 'computer';
+        $details->form_factor = 'virtual';
+        $details->class = 'virtual server';
     }
     if ($oid == '1.3.6.1.4.1.9.1.1349') {
         $details->model = 'Cisco Wave 8541';
