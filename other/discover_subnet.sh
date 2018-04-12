@@ -404,7 +404,7 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 					echo "$send_result"
 				fi
 			fi
-		else
+		# else
 			# Don't bother to update the db log table because we're not sending the result to it
 		fi
 	else
