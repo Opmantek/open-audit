@@ -125,6 +125,19 @@ $sql = "INSERT INTO `queries` VALUES (NULL,1,'Files','Change','y','Any changes i
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# scripts
+$sql = "DELETE FROM `scripts` WHERE `name` = 'audit_hpux.sh'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `scripts` VALUES (NULL,'audit_hpux.sh',1,'{\"submit_online\":\"n\",\"create_file\":\"y\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}','The default audit HPUX config.','audit_hpux.sh','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `scripts` SET `options` = '{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}' WHERE `options` = '{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/system\\/add_system\",\"debugging\":1}'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # system
 $this->alter_table('system', 'access_details', "DROP access_details", 'drop');
 
