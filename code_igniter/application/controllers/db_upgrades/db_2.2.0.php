@@ -76,7 +76,7 @@ $this->log_db($this->db->last_query());
 $sql = "CREATE TABLE `dashboards` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('default','org','user','') NOT NULL DEFAULT '',
   `user_id` int(10) unsigned NOT NULL DEFAULT '0',
   `description` text NOT NULL,
@@ -155,7 +155,7 @@ $this->log_db($this->db->last_query());
 $sql = "CREATE TABLE `widgets` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '0',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
   `type` enum('line','pie','') DEFAULT 'line',
   `table` varchar(50) NOT NULL DEFAULT '',
