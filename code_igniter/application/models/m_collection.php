@@ -453,13 +453,19 @@ class M_collection extends MY_Model
 
         if ($collection === 'dashboards') {
             if (empty($CI->response->meta->received_data->attributes->options)) {
-                $options = '';
+                $options = new stdClass();
+                $options->widget_count = 0;
+                $options->widgets = new stdClass();
             } else {
                 $options = $CI->response->meta->received_data->attributes->options;
             }
             $my_options = new stdClass();
             $my_options->layout = '3x2';
-            $my_options->widget_count = intval($options->widget_count);
+            if (!empty($my_options->widget_count)) {
+                $my_options->widget_count = intval($options->widget_count);
+            } else {
+                $my_options->widget_count = 0;
+            }
             $my_options->widgets = array();
             for ($i=1; $i <= $my_options->widget_count; $i++) {
                 $widget = new stdClass();
