@@ -250,6 +250,9 @@ class MY_Model extends CI_Model
             # need to log down here for the above so we can use $this->db to get the last insert id
             $sqllog->severity = 7;
             stdlog($sqllog);
+            if (empty($result)) {
+                $result = array();
+            }
             return ($result);
         }
         // return what we have
