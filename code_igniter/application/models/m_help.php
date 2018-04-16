@@ -300,6 +300,10 @@ class M_help extends MY_Model
         $result = $query->result();
         $data->database->timezone = $result[0]->timezone;
         $data->database->version = $this->db->version();
+        $sql = "SELECT NOW() AS `timestamp`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $data->database->timestamp = $result[0]->timestamp;
 
         $data->webserver->document_root = $_SERVER['DOCUMENT_ROOT'];
         $data->webserver->forwarded_proto = $_SERVER['HTTP_X_FORWARDED_PROTO'];
@@ -337,6 +341,7 @@ class M_help extends MY_Model
         $data->php->memory_limit = ini_get('memory_limit');
         $data->php->process_owner = '';
         $data->php->timezone = date_default_timezone_get();
+        $data->php->timestamp = date('Y-m-d h:i:s a', time());
         $data->php->upload_max_filesize = ini_get('upload_max_filesize');
         $data->php->version = phpversion();
 
@@ -533,26 +538,26 @@ class M_help extends MY_Model
             }
             unset($output);
             unset($command_string);
-            # Access Log - should be -rw-rw-rw-
-            $command_string = 'ls -l /usr/local/open-audit/other/log_access.log | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            if (!empty($output[0])) {
-                $data->permissions->access_log = $output[0];
-            } else {
-                $data->permissions->access_log = 'Error - missing file';
-            }
-            unset($output);
-            unset($command_string);
-            # System Log - should be -rw-rw-rw-
-            $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
-            exec($command_string, $output, $return_var);
-            if (!empty($output[0])) {
-                $data->permissions->system_log = $output[0];
-            } else {
-                $data->permissions->system_log = 'Error - missing file';
-            }
-            unset($output);
-            unset($command_string);
+            // # Access Log - should be -rw-rw-rw-
+            // $command_string = 'ls -l /usr/local/open-audit/other/log_access.log | cut -d" " -f1';
+            // exec($command_string, $output, $return_var);
+            // if (!empty($output[0])) {
+            //     $data->permissions->access_log = $output[0];
+            // } else {
+            //     $data->permissions->access_log = 'Error - missing file';
+            // }
+            // unset($output);
+            // unset($command_string);
+            // # System Log - should be -rw-rw-rw-
+            // $command_string = 'ls -l /usr/local/open-audit/other/log_system.log | cut -d" " -f1';
+            // exec($command_string, $output, $return_var);
+            // if (!empty($output[0])) {
+            //     $data->permissions->system_log = $output[0];
+            // } else {
+            //     $data->permissions->system_log = 'Error - missing file';
+            // }
+            // unset($output);
+            // unset($command_string);
         }
         $CI->response->data = array();
         $CI->response->data[0] = $data;
