@@ -461,7 +461,7 @@ class M_collection extends MY_Model
             }
             $my_options = new stdClass();
             $my_options->layout = '3x2';
-            if (!empty($my_options->widget_count)) {
+            if (!empty($options->widget_count)) {
                 $my_options->widget_count = intval($options->widget_count);
             } else {
                 $my_options->widget_count = 0;
