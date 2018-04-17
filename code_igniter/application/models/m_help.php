@@ -319,22 +319,14 @@ class M_help extends MY_Model
         $data->php->error_log = ini_get('error_log');
         $data->php->error_reporting = ini_get('error_reporting');
         $extensions = get_loaded_extensions();
-        $data->php->extensions = '';
+        $data->php->extensions = implode($extensions, ', ');
+        $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mcrypt', 'mysqli', 'posix', 'session', 'simplexml', 'snmp', 'xml');
         foreach ($extensions as $extension) {
-            $data->php->extensions .= $extension . ', ';
+            $data->php->{'ext_'.$extension} = phpversion($extension);
+            if (empty($data->php->{'ext_'.$extension}) and extension_loaded($extension)) {
+                $data->php->{'ext_'.$extension} = 'unknown version';
+            }
         }
-        $data->php->ext_json = phpversion('json');
-        $data->php->ext_ldap = phpversion('ldap');
-        $data->php->ext_libxml = phpversion('libxml');
-        $data->php->ext_mbstring = phpversion('mbstring');
-        $data->php->ext_mcrypt = phpversion('mcrypt');
-        $data->php->ext_mysqli = phpversion('mysqli');
-        $data->php->ext_posix = phpversion('posix');
-        $data->php->ext_session = phpversion('session');
-        $data->php->ext_simplexml = phpversion('simplexml');
-        $data->php->ext_snmp = phpversion('snmp');
-        $data->php->ext_xml = phpversion('xml');
-        #$data->php->ext_zip = phpversion('zip');
         $data->php->log_errors = ini_get('log_errors');
         $data->php->max_execution_time = ini_get('max_execution_time');
         $data->php->max_input_time = ini_get('max_input_time');
