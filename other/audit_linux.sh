@@ -1149,48 +1149,6 @@ if [ "$optical_num_devices" != "0" ]; then
 	echo "	</optical>" >> "$xml_file"
 fi
 
-
-##################################
-# PROXMOX GUESTS SECTION         #
-##################################
-guests=$(qm list 2>/dev/null | grep -v "BOOTDISK")
-if [ -n "$guests" ]; then
-	if [ "$debugging" -gt "0" ]; then
-		echo "Proxmox Guests Info"
-	fi
-	guest_config_dir="/etc/pve/qemu-server/"
-	echo "	<vm>" >> "$xml_file"
-	for guest in $guests; do
-		guest=$(echo "$guest" | awk '$1=$1')
-		guest_id=$(echo "$guest" | cut -d" " -f1)
-		if [ -n "$guest_id" ]; then
-			guest_name=$(echo "$guest" | cut -d" " -f2)
-			guest_status=$(echo "$guest" | cut -d" " -f3)
-			guest_memory_count=0
-			guest_memory_count=$(echo "$guest" | cut -d" " -f4)
-			guest_memory_count=$(($guest_memory_count * 1024))
-			guest_config_file=$(echo "$guest_config_dir$guest_id.conf")
-			guest_uuid=""
-			guest_cpu_count=""
-			if [ -f "$guest_config_file" ]; then
-				guest_uuid=$(grep uuid "$guest_config_file" | cut -d"=" -f2)
-				guest_cpu_count=$(grep cores "$guest_config_file" | cut -d":" -f2)
-			fi
-			echo "		<item>" >> "$xml_file"
-			echo "			<vm_id>"$(escape_xml "$guest_id")"</vm_id>" >> "$xml_file"
-			echo "			<name>"$(escape_xml "$guest_name")"</name>" >> "$xml_file"
-			echo "			<uuid>"$(escape_xml "$guest_uuid")"</uuid>" >> "$xml_file"
-			echo "			<memory_count>"$(escape_xml "$guest_memory_count")"</memory_count>" >> "$xml_file"
-			echo "			<cpu_count>"$(escape_xml "$guest_cpu_count")"</cpu_count>" >> "$xml_file"
-			echo "			<status>"$(escape_xml "$guest_status")"</status>" >> "$xml_file"
-			echo "			<config_file>"$(escape_xml "$guest_config_file")"</config_file>" >> "$xml_file"
-			echo "			<vm_group></vm_group>" >> "$xml_file"
-			echo "		</item>" >> "$xml_file"
-		fi
-	done
-	echo "	</vm>" >> "$xml_file"
-fi
-
 ##################################
 # VIDEO CARDS SECTION            #
 ##################################
