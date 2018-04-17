@@ -273,6 +273,7 @@ if (! function_exists('output')) {
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
 
         # Each individual data line
+        $output_escape_csv = @$CI->config->item('output_escape_csv');
         if (!empty($CI->response->data)) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
@@ -285,7 +286,7 @@ if (! function_exists('output')) {
                         $value = $item->attributes->$field;
                     }
                     $value = str_replace('"', '""', $value);
-                    if (!empty($CI->config->item('output_escape_csv')) and (string)$CI->config->item('output_escape_csv') === 'y') {
+                    if (!empty($output_escape_csv) and $output_escape_csv === 'y') {
                         if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
                             $value = "'" . $value;
                         }
