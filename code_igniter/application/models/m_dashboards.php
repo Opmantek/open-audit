@@ -82,7 +82,11 @@ class M_dashboards extends MY_Model
             $sql = "SELECT * FROM widgets WHERE id = ?";
             $data = array(intval($widget->widget_id));
             $result = $this->run_sql($sql, $data);
-            $return[] = $result[0];
+            if (!empty($result[0])) {
+                $return[] = $result[0];
+            } else {
+                return array();
+            }
         }
         $return = $this->format_data($return, 'widgets');
         return $return;
