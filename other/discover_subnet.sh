@@ -51,6 +51,7 @@ user=$(whoami)
 system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 force_ping="n"
+consider_161_enough="n"
 version="2.2"
 
 # OSX - nmap not in _www user's path
@@ -83,9 +84,13 @@ if [ "$help" == "y" ]; then
 	echo ""
 	echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: debugging=1)."
 	echo ""
+	echo "  consider_161_enough"
+	echo "    *-n - If the target responds ONLY to port 161, do not consider it up."
+	echo "      y - Consider the target up if UDP port 161 responds."
+	echo ""
 	echo "  create_file"
-	echo "     y - Create an XML file containing the audit result."
 	echo "    *n - Do not create an XML result file."
+	echo "     y - Create an XML file containing the audit result."
 	echo ""
 	echo "  debugging"
 	echo "     0 - No output."
@@ -100,15 +105,15 @@ if [ "$help" == "y" ]; then
 	echo "     y - Check for a ping response and only discover those devices that do respond."
 	echo ""
 	echo "  -h or --help or help=y"
-	echo "      y - Display this help output."
 	echo "     *n - Do not display this output."
+	echo "      y - Display this help output."
 	echo ""
 	echo "  org_id"
 	echo "       - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
 	echo ""
 	echo "  submit_online"
-	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
 	echo "     n - Do not submit the audit result"
+	echo "    *y - Submit the audit result to the Open-AudIT Server defined by the 'url' variable."
 	echo ""
 	echo "  subnet_range"
 	echo "       - Any given subnet as per the Nmap command line options. http://nmap.org/book/man-target-specification.html EG - 192.168.1-3.1-20, 192.168.1.0/24, etc."
@@ -358,6 +363,9 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 	if [[ "$test" != "" ]]; then
 		snmp_status="true"
 		nmap_ports="$nmap_ports,161/udp/snmp"
+		if [ "$consider_161_enough" == "y" ]; then
+			host_is_up="true"
+		fi
 	fi
 
 	result=""
