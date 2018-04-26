@@ -266,7 +266,7 @@ if (! function_exists('ssh_command')) {
 
         $ssh->setTimeout(120);
 
-        if ($sudo == '' or $credentials->credentials->username == 'root') {
+        if ($sudo == 'n' or $sudo == '' or $credentials->credentials->username == 'root') {
             $result = $ssh->exec($command);
         } else {
             $which_sudo = $ssh->exec('which sudo');
