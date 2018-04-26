@@ -273,21 +273,25 @@ if (! function_exists('output')) {
         $output_csv = '"' . implode('","', $csv_header) . '"' . "\n";
 
         # Each individual data line
+        $output_escape_csv = @$CI->config->item('output_escape_csv');
         if (!empty($CI->response->data)) {
             foreach ($CI->response->data as $item) {
                 $line_array = array();
                 foreach ($CI->response->meta->data_order as $field) {
+                    $value = '';
                     if (!empty($item->attributes->{$CI->response->meta->collection.'.'.$field})) {
-                        $item->attributes->$field = str_replace('"', '""', $item->attributes->{$CI->response->meta->collection.'.'.$field});
+                        $value = $item->attributes->{$CI->response->meta->collection.'.'.$field};
                     }
-                    if (empty($item->attributes->$field)) {
-                        $line_array[] = '';
-                    } else {
-                        if (stripos($item->attributes->$field, '"') !== false) {
-                            $item->attributes->$field = str_replace('"', '""', $item->attributes->$field);
+                    if (!empty($item->attributes->$field)) {
+                        $value = $item->attributes->$field;
+                    }
+                    $value = str_replace('"', '""', $value);
+                    if (!empty($output_escape_csv) and $output_escape_csv === 'y') {
+                        if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
+                            $value = "'" . $value;
                         }
-                        $line_array[] = $item->attributes->$field;
                     }
+                    $line_array[] = $value;
                 }
                 $output_csv .= '"' . implode('","', $line_array) . '"' . "\n";
                 unset($line_array);
@@ -295,15 +299,13 @@ if (! function_exists('output')) {
         }
         if ((string) $CI->config->item('download_reports') === 'download') {
             echo $output_csv;
+            header('Content-Type: text/csv');
+            header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
+            header('Cache-Control: max-age=0');
         } else {
             echo "<pre>\n";
             echo $output_csv;
             echo "</pre>";
-        }
-        if ((string) $CI->config->item('download_reports') === 'download') {
-            header('Content-Type: text/csv');
-            header('Content-Disposition: attachment;filename="'.$filename.'.csv"');
-            header('Cache-Control: max-age=0');
         }
     }
 
@@ -639,8 +641,8 @@ if (! function_exists('output')) {
         $url = $server_url[0].'//'.$server_url[2];
         if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
-            if ($CI->response->meta->total > $CI->response->meta->filtered and ($CI->response->meta->offset + $CI->response->meta->limit) < ($CI->response->meta->total + $CI->response->meta->limit)) {
-                $offset = intval($CI->response->meta->offset + $CI->response->meta->limit);
+            if (intval($CI->response->meta->total) > intval($CI->response->meta->filtered) and (intval($CI->response->meta->offset) + intval($CI->response->meta->limit)) < (intval($CI->response->meta->total) + intval($CI->response->meta->limit))) {
+                $offset = intval($CI->response->meta->offset) + intval($CI->response->meta->limit);
                 if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
                     $CI->response->links->next = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
                 } else {

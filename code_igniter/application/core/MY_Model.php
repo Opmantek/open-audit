@@ -83,6 +83,9 @@ class MY_Model extends CI_Model
             } else if ($type == 'errors') {
                 $item->id = $entry->code;
             }
+            if ($type == 'widgets' and isset($entry->percent)) {
+                $entry->percent = intval($entry->percent);
+            }
             $item->type = $type;
             $item->attributes = $entry;
             $item->links = new stdClass();
@@ -247,10 +250,61 @@ class MY_Model extends CI_Model
             # need to log down here for the above so we can use $this->db to get the last insert id
             $sqllog->severity = 7;
             stdlog($sqllog);
+            if (empty($result)) {
+                $result = array();
+            }
             return ($result);
         }
         // return what we have
         return ($result);
+    }
+
+    public function sql_unesc($attribute) {
+        $attribute = str_replace("`", "", $attribute);
+        $attribute = str_replace("[", "", $attribute);
+        $attribute = str_replace("]", "", $attribute);
+        $attribute = str_replace("'", "", $attribute);
+        $attribute = str_replace("\"", "", $attribute);
+        return $attribute;
+    }
+
+    public function sql_esc($attribute) {
+        if (empty($attribute) or $attribute == '.') {
+            $attribute = "''";
+            return $attribute;
+        }
+        if (strpos($attribute, '.') === 0) {
+            $attribute = substr($attribute, 1);
+        }
+        if (strpos($attribute, '.') === strlen($attribute)-1) {
+            $attribute = substr($attribute, 0, strlen($attribute)-1);
+        }
+        $attribute = str_replace("`", "", $attribute);
+        $attribute = str_replace("[", "", $attribute);
+        $attribute = str_replace("]", "", $attribute);
+        $attribute = str_replace("'", "", $attribute);
+        $attribute = str_replace("\"", "", $attribute);
+        if (strpos($attribute, '.') !== false) {
+            $attributes = explode(".", $attribute);
+            for ($i=0; $i < count($attributes); $i++) {
+                if ($this->db->dbdriver == 'mysql') {
+                    $attributes[$i] = "`" . $attributes[$i] . "`";
+                }
+                if ($this->db->dbdriver == 'mssql') {
+                    $attributes[$i] = "[" . $attributes[$i] . "]";
+                }
+            }
+            $attribute = implode('.', $attributes);
+            return $attribute;
+        } else {
+            if ($this->db->dbdriver == 'mysql') {
+                $attribute = "`" . $attribute . "`";
+            }
+            if ($this->db->dbdriver == 'mssql') {
+                $attribute = "[" . $attribute . "]";
+            }
+            return $attribute;
+        }
     }
 
     public function collection_sql($collection = '', $type = 'sql')

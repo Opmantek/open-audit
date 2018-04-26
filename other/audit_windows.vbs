@@ -2229,12 +2229,14 @@ if (cint(windows_build_number) >= 6000) then
                    "FROM WmiMonitorListedSupportedSourceModes WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
 
             Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
-
             horizontalPixels = 0
             verticalPixels = 0
             screenResolution = ""
-            For Each MonitorMode In colItems
+            ratio=""
+            screen_size = ""
             
+            On Error Resume Next
+            For Each MonitorMode In colItems
                 intIndex = MonitorMode.PreferredMonitorSourceModeIndex
                 horizontalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).HorizontalActivePixels)
                 verticalPixels = cint(MonitorMode.MonitorSourceModes(intIndex).VerticalActivePixels)
@@ -2243,7 +2245,8 @@ if (cint(windows_build_number) >= 6000) then
                     wscript.echo "    Vertical Pixels: " & verticalPixels
                 end if
             Next
-            ratio=""
+            on error goto 0
+
             if not(horizontalPixels=0 or verticalPixels=0) then
                 screenResolution = horizontalPixels & " x " & verticalPixels
                 common = gcd(horizontalPixels, verticalPixels)
@@ -2258,6 +2261,7 @@ if (cint(windows_build_number) >= 6000) then
                    "FROM WmiMonitorBasicDisplayParams WHERE InstanceName=""" & escape_wmi(Monitor.InstanceName) & """"
             Set colItems = objWMIService2.ExecQuery(strQuery, , 48)
 
+            On Error Resume Next
             For Each MonitorParam In colItems
                 ' screen sizes. Convert cm to in.
                 Width = MonitorParam.MaxHorizontalImageSize / 2.54
@@ -2265,6 +2269,7 @@ if (cint(windows_build_number) >= 6000) then
                 screen_size = Round(Sqr((Height ^ 2) + (Width ^ 2)),1)
                 if debugging > "2" then wscript.echo "    Size: " & screen_size
             Next
+            on error goto 0
 
             ' manufacture date
             manufacture_date = ""

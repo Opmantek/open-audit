@@ -87,7 +87,7 @@ if (!empty($this->response->meta->baseurl)) {
 <?php
 include "include_header.php";
 if (!empty($this->response->errors) and !empty($this->response->errors[0]->title) and !empty($this->response->errors[0]->detail)) {
-    echo '<div class="alert alert-danger" role="alert"><strong>' . $this->response->errors[0]->title . "</strong><br />" . $this->response->errors[0]->detail . "</div>\n";
+    echo '<div class="alert alert-danger" role="alert"><strong>' . htmlentities($this->response->errors[0]->title) . "</strong><br />" . htmlentities($this->response->errors[0]->detail) . "</div>\n";
 }
 
 $temp = @$this->session->flashdata('error');
@@ -114,13 +114,12 @@ if (!empty($temp)) {
 $temp1 = @$this->session->flashdata('error');
 $temp2 = @$this->response->errors[0]->detail;
 if (!empty($temp1) and !empty($temp2)) {
-    echo '<div class="alert alert-danger" role="alert">' . $this->response->errors[0]->detail . "</div>\n";
+    echo '<div class="alert alert-danger" role="alert">' . htmlentities($this->response->errors[0]->detail) . "</div>\n";
 }
 $temp = @$this->response->meta->flash;
 if (!empty($temp)) {
-    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . $this->response->meta->flash->message . "</div>\n";
+    echo '<div class="alert alert-' . $this->response->meta->flash->status . '" role="alert">' . htmlentities($this->response->meta->flash->message) . "</div>\n";
 }
-
 if (!empty($this->response->meta->action) and $this->response->meta->action == 'import_form') {
     include('v_collection_import_form.php');
 } else {

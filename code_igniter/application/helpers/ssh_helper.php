@@ -579,6 +579,14 @@ if (! function_exists('ssh_audit')) {
             'osx_uuid' => 'system_profiler SPHardwareDataType 2>/dev/null | grep UUID | cut -d: -f2',
             'lshal_uuid' => 'lshal 2>/dev/null | grep "system.hardware.uuid"',
 
+            'hpux_hostname' => 'hostname 2>/dev/null',
+            'hpux_domain' => 'domainname 2>/dev/null',
+            'hpux_os_name' => 'machinfo 2>/dev/null | grep -i "Release:" | cut -d: -f2',
+            'hpux_os_group' => 'uname -s',
+            'hpux_model' => 'model 2>/dev/null',
+            'hpux_serial' => 'machinfo 2>/dev/null | grep "Machine serial number:" | cut -d: -f2',
+            'hpux_uuid' => 'machinfo 2>/dev/null | grep -i "Machine ID number:" | cut -d: -f2',
+
             'which_sudo' => 'which sudo 2>/dev/null'
         );
 
@@ -721,6 +729,26 @@ if (! function_exists('ssh_audit')) {
             $device->manufacturer = $device->ddwrt_model;
         }
         unset($device->ddwrt_model);
+
+        if (!empty($device->hpux_os_group) and trim($device->hpux_os_group) === 'HP-UX') {
+            $device->os_group = 'HP-UX';
+            $device->os_family = 'HP-UX';
+            $device->type = 'computer';
+            $device->class = 'server';
+            $device->os_name = trim($device->hpux_os_name);
+            $device->uuid = trim($device->hpux_uuid);
+            $device->model = trim($device->hpux_model);
+            $device->serial = trim($device->hpux_serial);
+            $device->hostname = trim($device->hpux_hostname);
+            $device->domain = trim($device->hpux_domain);
+        }
+        unset($device->hpux_os_group);
+        unset($device->hpux_uuid);
+        unset($device->hpux_model);
+        unset($device->hpux_serial);
+        unset($device->hpux_hostname);
+        unset($device->hpux_domain);
+        unset($device->hpux_os_name);
 
         # UUID
         $array = array('solaris_uuid', 'esx_uuid', 'osx_uuid', 'lshal_uuid');

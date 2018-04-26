@@ -138,7 +138,7 @@ class M_logon extends MY_Model
                 $query = $this->db->query($sql);
             }
             $ldap_servers = $query->result();
-            if (count($ldap_servers > 0)) {
+            if (!empty($ldap_servers)) {
                 $log->summary = 'LDAP server list retrieved.';
                 $log->detail = count($ldap_servers) . ' LDAP servers retrieved from database.';
                 stdlog($log);

@@ -204,7 +204,7 @@ class M_collection extends MY_Model
             unset($item);
         }
 
-        if ($collection == 'credentials') {
+        if ($collection == 'credentials' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
@@ -217,27 +217,33 @@ class M_collection extends MY_Model
 
         if ($collection == 'discoveries' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND `command_status` LIKE '% of %' ORDER BY `timestamp` DESC LIMIT 1";
+                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND (`command_status` LIKE '% of %' OR `command_status` LIKE 'stopped%') ORDER BY `timestamp` DESC LIMIT 1";
                 $data = array(intval($result[$i]->id));
                 $data_result = $this->run_sql($sql, $data);
                 if (!empty($data_result)) {
                     $result[$i]->discovered = $data_result[0]->command_status;
-                    $temp = explode(' ', $result[$i]->discovered);
-                    $temp[0] = str_replace('(', '', $temp[0]);
-                    $temp[2] = str_replace(')', '', $temp[2]);
-                    if ($temp[0] == $temp[2]) {
-                        if (strtolower($result[$i]->complete) != 'y') {
-                            $result[$i]->status = 'failed';
+                    if($data_result[0]->command_status == 'stopped' ){
+                        $result[$i]->discovered = '';
+                        $result[$i]->status = 'stopped';
+                    }else{
+                        $temp = explode(' ', $result[$i]->discovered);
+                        $temp[0] = str_replace('(', '', $temp[0]);
+                        $temp[2] = str_replace(')', '', $temp[2]);
+                        if ($temp[0] == $temp[2]) {
+                            if (strtolower($result[$i]->complete) != 'y') {
+                                $result[$i]->status = 'failed';
+                            } else {
+                                $result[$i]->status = 'complete';
+                            }
                         } else {
-                            $result[$i]->status = 'complete';
+                                $result[$i]->status = 'in progress';
                         }
-                    } else {
-                            $result[$i]->status = 'in progress';
                     }
                 } else {
                     $result[$i]->discovered = '';
                     $result[$i]->status = 'complete';
                 }
+
                 if (!empty($result[$i]->other)) {
                     $result[$i]->other = json_decode($result[$i]->other);
                     foreach ($result[$i]->other as $key => $value) {
@@ -298,51 +304,51 @@ class M_collection extends MY_Model
                         //     case '10000':
                         //         $result[$i]->sub_resource_name = "Devices Discovered Today";
                         //         break;
-                            
+
                         //     case '10001':
                         //         $result[$i]->sub_resource_name = "Devices Discovered Yesterday";
                         //         break;
-                            
+
                         //     case '10002':
                         //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 7 Days";
                         //         break;
-                            
+
                         //     case '10003':
                         //         $result[$i]->sub_resource_name = "Devices Discovered in the Last 30 Days";
                         //         break;
-                            
+
                         //     case '20000':
                         //         $result[$i]->sub_resource_name = "Software Discovered Today";
                         //         break;
-                            
+
                         //     case '20001':
                         //         $result[$i]->sub_resource_name = "Software Discovered Yesterday";
                         //         break;
-                            
+
                         //     case '20002':
                         //         $result[$i]->sub_resource_name = "Software Discovered in the Last 7 Days";
                         //         break;
-                            
+
                         //     case '20003':
                         //         $result[$i]->sub_resource_name = "Software Discovered in the Last 30 Days";
                         //         break;
-                            
+
                         //     case '30000':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 7 Days";
                         //         break;
-                            
+
                         //     case '30001':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 30 Days";
                         //         break;
-                            
+
                         //     case '30002':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 90 Days";
                         //         break;
-                            
+
                         //     case '30003':
                         //         $result[$i]->sub_resource_name = "Devices Not Seen for 180 Days";
                         //         break;
-                            
+
                         //     default:
                         //         $result[$i]->sub_resource_name = "";
                         //         break;
@@ -445,11 +451,42 @@ class M_collection extends MY_Model
             $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
         }
 
+        if ($collection === 'dashboards') {
+            if (empty($CI->response->meta->received_data->attributes->options)) {
+                $options = new stdClass();
+                $options->widget_count = 0;
+                $options->widgets = new stdClass();
+            } else {
+                $options = $CI->response->meta->received_data->attributes->options;
+            }
+            $my_options = new stdClass();
+            $my_options->layout = '3x2';
+            if (!empty($options->widget_count)) {
+                $my_options->widget_count = intval($options->widget_count);
+            } else {
+                $my_options->widget_count = 0;
+            }
+            $my_options->widgets = array();
+            for ($i=1; $i <= $my_options->widget_count; $i++) {
+                $widget = new stdClass();
+                foreach ($options->widgets->$i as $key => $value) {
+                    $widget->{$key} = $value;
+                }
+                $my_options->widgets[] = $widget;
+            }
+            $data->options = json_encode($my_options);
+        }
+
         if ($collection === 'discoveries') {
+
+            if(substr($data->network_address, -1) !== '/'){
+                $data->network_address = $data->network_address.'/';
+            }
+
             if ($data->type == 'subnet') {
                 if (empty($data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
-                    $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
+                   // $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
                     #redirect('/discoveries');
                 } else {
                     $data->description = 'Subnet - ' . $data->other->subnet;
@@ -667,7 +704,7 @@ class M_collection extends MY_Model
         $id = intval($this->run_sql($sql, $data_array));
 
         if (!empty($id)) {
-            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . $data->name . '".');
+            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . htmlentities($data->name) . '".');
             return ($id);
         } else {
             # TODO - log a better error
@@ -734,7 +771,39 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'dashboards') {
+            if (!empty($data->options)) {
+                $select = "SELECT * FROM dashboards WHERE id = ?";
+                $query = $this->db->query($select, array($data->id));
+                $result = $query->result();
+                $existing = new stdClass();
+                if (!empty($result[0]->options)) {
+                    $existing = json_decode($result[0]->options);
+                }
+                if (!empty($data->options->layout)) {
+                    $existing->layout = $data->options->layout;
+                }
+                if (!empty($data->options->widgets->position)) {
+                    foreach ($data->options->widgets->position as $key => $value) {
+                        $widget_position = $key;
+                        $widget_id = $value;
+                    }
+                }
+                foreach ($existing->widgets as $widget) {
+                    if ($widget->position == $widget_position) {
+                        $widget->widget_id = $widget_id;
+                    }
+                }
+                $data->options = (string)json_encode($existing);
+            }
+        }
+
         if ($collection === 'discoveries') {
+
+            if(!empty($data->network_address) and substr($data->network_address, -1) !== '/'){
+                $data->network_address = $data->network_address.'/';
+            }
+
             if (!empty($data->other)) {
                 $received_other = new stdClass();
                 foreach ($data->other as $key => $value) {
@@ -751,6 +820,7 @@ class M_collection extends MY_Model
                         $new_other->$existing_key = $existing_other->$existing_key;
                     }
                 }
+
                 unset($data->other);
                 $data->other = (string)json_encode($new_other);
                 if (!empty($received_other->subnet)) {
@@ -768,6 +838,19 @@ class M_collection extends MY_Model
                 if (!empty($received_other->ad_domain)) {
                     $data->description = 'Active Directory - ' . $received_other->ad_domain;
                 }
+            }
+            if(!empty($data->killed)){
+                unset($data->killed);
+                $log = new stdClass();
+                $log->discovery_id = $data->id;
+                $log->system_id = null;
+                $log->timestamp = $this->config->config['timestamp'];
+                $log->severity = 6;
+                $log->function = "logs";
+                $log->command_status = "stopped";
+                $log->pid = getmypid();
+                $log->message = "Discovery process has been manually stopped.";
+                discovery_log($log);
             }
         }
 
@@ -886,6 +969,10 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "applications":
+                return(' name org_id description ');
+                break;
+
             case "agents":
                 return(' name org_id description ip status check_minutes user_id uuid options ');
                 break;
@@ -908,6 +995,10 @@ class M_collection extends MY_Model
 
             case "credentials":
                 return(' name org_id description type credentials ');
+                break;
+
+            case "dashboards":
+                return(' name org_id description type options sidebar ');
                 break;
 
             case "discoveries":
@@ -967,7 +1058,11 @@ class M_collection extends MY_Model
                 break;
 
             case "users":
-                return(' name org_id permissions password full_name email lang active roles orgs type ');
+                return(' name org_id permissions password full_name email lang active roles orgs type dashboard_id ');
+                break;
+
+            case "widgets":
+                return(' name org_id description type table primary secondary ternary dataset_title where limit group_by options sql link ');
                 break;
         }
     }
@@ -978,6 +1073,10 @@ class M_collection extends MY_Model
             return('');
         }
         switch ($collection) {
+            case "applications":
+                return(array('name','org_id'));
+                break;
+
             case "agents":
                 return(array('name','org_id','status'));
                 break;
@@ -1000,6 +1099,10 @@ class M_collection extends MY_Model
 
             case "credentials":
                 return(array('name','org_id','type','credentials'));
+                break;
+
+            case "dashboards":
+                return(array('name','options'));
                 break;
 
             case "discoveries":
@@ -1060,6 +1163,10 @@ class M_collection extends MY_Model
 
             case "users":
                 return(array('name','org_id','lang','active','roles','orgs'));
+                break;
+
+            case "widgets":
+                return(array('name','org_id','type'));
                 break;
         }
     }

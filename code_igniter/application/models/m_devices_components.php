@@ -259,7 +259,8 @@ class M_devices_components extends MY_Model
                 $match_columns = array('name', 'type', 'instance');
         }
         if ($table == 'service') {
-                $match_columns = array('description', 'name', 'executable');
+                #$match_columns = array('description', 'name', 'executable');
+                $match_columns = array('name', 'executable');
         }
         if ($table == 'share') {
                 $match_columns = array('name', 'path');

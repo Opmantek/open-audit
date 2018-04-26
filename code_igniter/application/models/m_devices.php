@@ -229,6 +229,28 @@ class M_devices extends MY_Model
         return($result);
     }
 
+    public function get_device_applications($device_id = '')
+    {
+        $CI = & get_instance();
+        $CI->load->model('m_orgs');
+        $CI->load->model('m_fields');
+        $CI->load->model('m_groups');
+        $log = new stdClass();
+        $log->file = 'system';
+        $log->level = 7;
+
+        if (empty($device_id)) {
+            $log->message = 'No device ID for applications, returning false';
+            stdlog($log);
+            return false;
+        }
+
+        $sql = "SELECT applications.id AS `applications.id`, applications.name AS `applications.name`, applications.description AS `applications.description`, application.id AS `id` FROM applications LEFT JOIN application ON applications.id = application.applications_id LEFT JOIN system ON (application.system_id = system.id) WHERE system.id = ? ORDER BY applications.name";
+        $application = $this->run_sql($sql, array(intval($device_id)));
+        $result = $this->format_data($application, 'application');
+        return($result);
+    }
+
     public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y', $limit = '')
     {
         $CI = & get_instance();
@@ -291,7 +313,7 @@ class M_devices extends MY_Model
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT location_id, locations.name AS `location_name`, location_level, location_suite, location_room, location_rack, location_rack_position, location_rack_size, location_latitude, location_longitude FROM system LEFT JOIN locations ON (system.location_id = locations.id) WHERE system.id = ?";
             $data = array($id);
         } elseif ($sub_resource == 'purchase') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT asset_number, asset_tag, end_of_life, end_of_service, purchase_invoice, purchase_order_number, purchase_cost_center, purchase_vendor, purchase_date, purchase_service_contract_number, lease_expiry_date, purchase_amount, warranty_duration, warranty_expires, warranty_type FROM system WHERE id = ?";
             $data = array($id);
         } elseif ($sub_resource == 'discovery_log') {
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? " . $limit;
@@ -356,7 +378,7 @@ class M_devices extends MY_Model
 
         $result = $this->run_sql($sql, $data);
 
-        if ($sub_resource == 'credential') {
+        if ($sub_resource == 'credential' and !empty($result)) {
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
@@ -532,6 +554,13 @@ class M_devices extends MY_Model
                 stdlog($log);
                 return false;
             }
+        } else if ($sub_resource == 'application') {
+            $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
+            $data = array(intval($CI->response->meta->id),
+                            intval($CI->response->meta->received_data->attributes->{'applications_id'}),
+                            $CI->user->full_name);
+            $this->db->query($sql, $data);
+            return true;
         } else {
             $log->summary = "sub_resource not equal to credential or attachment - exiting.";
             stdlog($log);
@@ -619,7 +648,10 @@ class M_devices extends MY_Model
             # get the total count (without a LIMIT and GROUPBY)
             $sql = "/* m_devices::collection_sub_resource */ " . "SELECT COUNT(*) AS `count` FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter;
             $result = $this->run_sql($sql, array());
-            $CI->response->meta->total = intval($result[0]->count);
+            $CI->response->meta->total = 0;
+            if (!empty($result[0]->count)) {
+                $CI->response->meta->total = intval($result[0]->count);
+            }
         }
         $sql = "/* m_devices::collection_sub_resource */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
@@ -1259,6 +1291,9 @@ class M_devices extends MY_Model
                 if (strripos($details->os_name, "fedora") !== false) {
                     $details->icon = 'fedora';
                 }
+                if (strripos($details->os_name, "hp-ux") !== false) {
+                    $details->icon = 'hp-ux';
+                }
                 if ((strripos($details->os_name, "mandriva") !== false) or
                     (strripos($details->os_name, "mandrake") !== false)) {
                     $details->icon = 'mandriva';
@@ -1370,6 +1405,9 @@ class M_devices extends MY_Model
                 if (strripos($details->os_name, "fedora") !== false) {
                     $details->icon = 'fedora';
                 }
+                if (strripos($details->os_name, "hp-ux") !== false) {
+                    $details->icon = 'hp-ux';
+                }
                 if ((strripos($details->os_name, "mandriva") !== false) or
                     (strripos($details->os_name, "mandrake") !== false)) {
                     $details->icon = 'mandriva';
@@ -1420,4 +1458,56 @@ class M_devices extends MY_Model
         }
         return ($count);
     }
+
+
+    public function model_guess($device)
+    {
+        if (stripos($device->manufacturer, 'Ubiquiti') !== false) {
+            if (stripos($device->sysDescr, 'UAP') !== false) {
+                $device->type = 'wap';
+                $device->model = 'UniFi AP';
+            }
+            if (stripos($device->sysDescr, 'UAP-LR') !== false) {
+                $device->model = 'UniFi AP-LR';
+            }
+            if (stripos($device->sysDescr, 'UAP-Pro') !== false) {
+                $device->model = 'UniFi AP-Pro';
+            }
+
+            if (stripos($device->sysDescr, 'UAP-AC') !== false) {
+                $device->model = 'UniFi AP-AC';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-EDU') !== false) {
+                $device->model = 'UniFi AP-AC-EDU';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-HD') !== false) {
+                $device->model = 'UniFi AP-AC-HD';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-Lite') !== false) {
+                $device->model = 'UniFi AP-AC-Lite';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-LR') !== false) {
+                $device->model = 'UniFi AP-AC-LR';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-PRO') !== false) {
+                $device->model = 'UniFi AP-AC-Pro';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-PRO-Gen2') !== false) {
+                $device->model = 'UniFi AP-AC-Pro gen 2';
+            }
+            if (stripos($device->sysDescr, 'UAP-AC-SHD') !== false) {
+                $device->model = 'UniFi AP-AC-SHD';
+            }
+
+            if (stripos($device->sysDescr, 'UAP-AC-Mesh-Pro') !== false) {
+                $device->model = 'UniFi AP-AC-Mesh-Pro';
+            }
+
+            if (stripos($device->sysDescr, 'UAP-Outdoor') !== false) {
+                $device->model = 'UniFi AP-Outdoor';
+            }
+        }
+        return($device);
+    }
+
 }

@@ -31,7 +31,7 @@ if (count($this->response->meta->filter) > 0) {
             $link = $refine_link . 'status=!=""';
         }
         $label = 'label-info';
-        echo '<span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
+        echo '<span class="label ' . $label . '">' . $item->name . ' ' . $item->operator . ' ' . htmlentities(urldecode($item->value)) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
     }
     echo '</div>';
     echo '</div>';
