@@ -173,7 +173,6 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sub_resource = '';
         $CI->response->meta->sub_resource_id = 0;
         $CI->response->meta->total = 0;
-        $CI->response->meta->uri_escaped = '';
         $CI->response->meta->version = 1;
         $CI->response->meta->filter = array();
         $CI->response->meta->internal = new stdClass();
@@ -181,18 +180,7 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sql = array();
         $CI->response->links = array();
         $CI->response->included = array();
-
-        $uri = $_SERVER["REQUEST_URI"];
-        $temp = explode('?', $uri);
-        $uri = @urldecode($temp[1]);
-        $uri = urlencode($uri);
-        if (!empty($uri)) {
-            $CI->response->meta->uri_escaped = $temp[0] . '?' .  $uri;
-        } else {
-            $CI->response->meta->uri_escaped = $temp[0];
-        }
-        unset($uri);
-        unset($temp);
+        $CI->response->meta->query_parameters = array();
 
         $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
@@ -887,7 +875,6 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->query_string = str_replace('&amp;', '&', $CI->response->meta->query_string);
         if ($CI->response->meta->query_string != '') {
             $reserved_words = ' group properties limit sub_resource sub_resource_id action sort current offset format debug groupby query include ids graph report_name as_at ';
-            #foreach (explode('&', urldecode($_SERVER['QUERY_STRING'])) as $item) {
             foreach (explode('&', $CI->response->meta->query_string) as $item) {
                 $query = new stdClass();
                 $query->name = substr($item, 0, strpos($item, '='));
@@ -954,8 +941,9 @@ if (! function_exists('inputRead')) {
                 }
 
                 if (strpos($reserved_words, ' '.$query->name.' ') === false and $query->name != '') {
-                    $CI->response->meta->filter [] = $query;
+                    $CI->response->meta->filter[] = $query;
                 }
+                $CI->response->meta->query_parameters[] = $query;
                 unset($query);
             }
         }
