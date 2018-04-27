@@ -78,6 +78,11 @@ if (!empty($this->response->meta->baseurl)) {
 }
 ?>
         var web_folder = '<?php echo $this->config->config['oa_web_folder']; ?>';
+
+        function logout() {
+            $.get( "/omk/open-audit/logout");
+        }
+
     </script>
     <script src="<?php echo $this->config->config['oa_web_folder']; ?>/js/open-audit.js"></script>
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/open-audit.css">

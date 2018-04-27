@@ -389,7 +389,7 @@ if (!empty($this->config->config['servers'])) {
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo htmlspecialchars($this->user->full_name, REPLACE_FLAGS, CHARSET); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="<?php echo $this->config->config['oa_web_index']; ?>/logon/logoff" role="button"><?php echo __('Logout'); ?></a></li>
+                            <li><a onclick="logout();" href="<?php echo $this->config->config['oa_web_index']; ?>/logon/logoff" role="button"><?php echo __('Logout'); ?></a></li>
                             <li><a href="#" role="button" class="debug"><?php echo __('Debug'); ?></a></li>
                         </ul>
                     </li>
