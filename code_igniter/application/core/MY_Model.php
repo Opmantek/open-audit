@@ -367,6 +367,9 @@ class MY_Model extends CI_Model
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
             $reserved = ' properties limit resource action sort current offset format ';
             foreach ($CI->response->meta->filter as $item) {
+                if (empty($item->operator)) {
+                    $item->operator = '=';
+                }
                 if (strpos(' '.$item->name.' ', $reserved) === false) {
                     // We MUST have a name like 'connections.name', not just 'name'
                     if (strpos($item->name, '.') !== false) {
