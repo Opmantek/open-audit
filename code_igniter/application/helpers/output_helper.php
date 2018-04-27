@@ -633,64 +633,111 @@ if (! function_exists('output')) {
         return($data);
     }
 
+    function create_url($query_parameters = null)
+    {
+        $link = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?';
+        if (!empty($query_parameters)) {
+            for ($i=0; $i < count($query_parameters); $i++) {
+            if ($query_parameters[$i]->operator == '=') {
+                $query_parameters[$i]->operator = '';
+            }
+                $link .= urlencode($query_parameters[$i]->name) . '=' . $query_parameters[$i]->operator . urlencode($query_parameters[$i]->value) . '&';
+            }
+        }
+        $link = substr($link, 0, strlen($link)-1);
+        return $link;
+    }
+
     function create_links()
     {
         $CI = & get_instance();
         $offset = '';
-        $server_url = explode('/', $CI->config->config['base_url']);
-        $url = $server_url[0].'//'.$server_url[2];
+
         if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
+            $query_parameters = $CI->response->meta->query_parameters;
             if (intval($CI->response->meta->total) > intval($CI->response->meta->filtered) and (intval($CI->response->meta->offset) + intval($CI->response->meta->limit)) < (intval($CI->response->meta->total) + intval($CI->response->meta->limit))) {
                 $offset = intval($CI->response->meta->offset) + intval($CI->response->meta->limit);
-                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                    $CI->response->links->next = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
-                } else {
-                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
-                        $CI->response->links->next = $url . $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
-                    } else {
-                        $CI->response->links->next = $url . $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                $hit = false;
+                for ($i=0; $i < count($query_parameters); $i++) {
+                    if ($query_parameters[$i]->name == 'offset') {
+                        $query_parameters[$i]->value = $offset;
+                        $hit = true;
                     }
                 }
+                if (!$hit) {
+                    $item = new stdClass();
+                    $item->name = 'offset';
+                    $item->value = $offset;
+                    $query_parameters == $item;
+                    unset($item);
+                }
             }
+            $CI->response->links->next = create_url($query_parameters);
+            unset($query_parameters);
 
             #prev link
-            if ($CI->response->meta->offset > 0) {
-                $offset = intval($CI->response->meta->offset - $CI->response->meta->limit);
-                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                    $CI->response->links->prev = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
-                } else {
-                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
-                        $CI->response->links->prev = $url . $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
-                    } else {
-                        $CI->response->links->prev = $url . $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+            $query_parameters = $CI->response->meta->query_parameters;
+            if (!empty($CI->response->meta->offset)) {
+                $temp = intval($CI->response->meta->limit);
+                if (empty($temp)) { $temp = $CI->config->item('page_size'); }
+                if ($temp < 0) { $temp = 0; }
+                $offset = intval($CI->response->meta->offset - $temp);
+                if (!empty($offset)) {
+                    $hit = false;
+                    for ($i=0; $i < count($query_parameters); $i++) {
+                        if ($query_parameters[$i]->name == 'offset') {
+                            $query_parameters[$i]->value = $offset;
+                            $hit = true;
+                        }
+                    }
+                    if (!$hit) {
+                        $item = new stdClass();
+                        $item->name = 'offset';
+                        $item->value = $offset;
+                        $query_parameters == $item;
+                        unset($item);
                     }
                 }
             }
+            $CI->response->links->prev = create_url($query_parameters);
+            unset($query_parameters);
 
             # first link
             $offset = 0;
-            if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                $CI->response->links->first = $url . str_replace('offset='.$CI->response->meta->offset, '', $_SERVER["REQUEST_URI"]);
-            } else {
-                $CI->response->links->first = $url . $_SERVER["REQUEST_URI"];
+            $query_parameters = $CI->response->meta->query_parameters;
+            for ($i=0; $i < count($query_parameters); $i++) {
+                if ($query_parameters[$i]->name == 'offset') {
+                    unset($query_parameters[$i]);
+                }
             }
+            $CI->response->links->first = create_url($query_parameters);
+            unset($query_parameters);
 
             # last link
+            $query_parameters = $CI->response->meta->query_parameters;
             if ($CI->response->meta->total > $CI->response->meta->limit) {
-                $offset = intval($CI->response->meta->total) - intval($CI->response->meta->limit);
-                if (strpos($_SERVER["REQUEST_URI"], 'offset=') !== false) {
-                    $CI->response->links->last = str_replace('offset='.$CI->response->meta->offset, 'offset='.$offset, $_SERVER["REQUEST_URI"]);
-                } else {
-                    if (strpos($_SERVER["REQUEST_URI"], '?') !== false) {
-                        $CI->response->links->last = $url . $_SERVER["REQUEST_URI"] . '&offset=' . $offset;
-                    } else {
-                        $CI->response->links->last = $url . $_SERVER["REQUEST_URI"] . '?offset=' . $offset;
+                $temp = intval($CI->response->meta->limit);
+                if (empty($temp)) { $temp = $CI->config->item('page_size'); }
+                if ($temp < 0) { $temp = 0; }
+                $offset = intval($CI->response->meta->total) - intval($temp);
+                $hit = false;
+                for ($i=0; $i < count($query_parameters); $i++) {
+                    if ($query_parameters[$i]->name == 'offset') {
+                        $query_parameters[$i]->value = $offset;
+                        $hit = true;
                     }
                 }
-            } else {
-                $CI->response->links->last = $url . $_SERVER["REQUEST_URI"];
+                if (!$hit) {
+                    $item = new stdClass();
+                    $item->name = 'offset';
+                    $item->value = $offset;
+                    $query_parameters == $item;
+                    unset($item);
+                }
             }
+            $CI->response->links->last = create_url($query_parameters);
+            unset($query_parameters);
         }
     }
 
