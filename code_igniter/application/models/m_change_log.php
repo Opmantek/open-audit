@@ -33,17 +33,6 @@
 * @version   2.2.1
 * @link      http://www.open-audit.org
  */
-
-/**
- * @access   public
- *
- * @category Object
- *
- * @author   Mark Unwin <marku@opmantek.com>
- * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
- *
- * @link     http://www.open-audit.org
- */
 class M_change_log extends MY_Model
 {
     public function __construct()
@@ -54,15 +43,6 @@ class M_change_log extends MY_Model
         $this->log->type = 'system';
     }
 
-    /**
-     * Create an alert for a given piece for a given system.
-     *
-     * @access  public
-     *
-     * @param   system_id, alert table, alert row, details, timestamp
-     *
-     * @return nothing
-     */
     public function create($system_id, $db_table, $db_row, $db_action, $details, $timestamp)
     {
         $this->log->function = strtolower(__METHOD__);
