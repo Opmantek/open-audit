@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Roles.
+* Base Object Roles
 *
 * @access   public
 * @category Object

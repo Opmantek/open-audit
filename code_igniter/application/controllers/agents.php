@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Agents.
+* Base Object Agents
 *
 * @access   public
 * @category Object

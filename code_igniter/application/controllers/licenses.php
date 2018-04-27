@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Licenses.
+* Base Object Licenses
 *
 * @access   public
 * @category Object

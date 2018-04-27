@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Charts
 *
 * @access   public
 * @category Object

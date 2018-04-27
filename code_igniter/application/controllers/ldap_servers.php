@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Ldap_servers.
+* Base Object Ldap_servers
 *
 * @access   public
 * @category Object

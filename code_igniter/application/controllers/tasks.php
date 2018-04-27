@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Tasks.
+* Base Object Tasks
 *
 * @access   public
 * @category Object

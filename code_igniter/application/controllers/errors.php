@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Fields
+* Base Object Errors
 *
 * @access   public
 * @category Object

@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Networks.
+* Base Object Networks
 *
 * @access   public
 * @category Object
@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class networks extends MY_Controller
+class Networks extends MY_Controller
 {
     public function __construct()
     {

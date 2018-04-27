@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Connections.
+* Base Object Applications
 *
 * @access   public
 * @category Object

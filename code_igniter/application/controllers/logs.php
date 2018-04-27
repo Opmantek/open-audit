@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Logs.
+* Base Object Logs
 *
 * @access   public
 * @category Object
@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class logs extends MY_Controller
+class Logs extends MY_Controller
 {
     /**
     * Constructor

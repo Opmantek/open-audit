@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Credentials.
+* Base Object Credentials
 *
 * @access   public
 * @category Object

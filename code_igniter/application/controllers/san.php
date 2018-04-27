@@ -1,5 +1,5 @@
 <?php
-#
+/**
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,15 +24,25 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   2.2.1
+* @link      http://www.open-audit.org
+*/
 
 /**
- * @author Mark Unwin <marku@opmantek.com>
- *
- *
- * @version   2.2.1
- *
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* Base Object San
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
  */
 class San extends CI_Controller
 {

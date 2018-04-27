@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Summaries.
+* Base Object Summaries
 *
 * @access   public
 * @category Object

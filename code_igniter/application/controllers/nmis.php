@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Nmis.
+* Base Object Nmis
 *
 * @access   public
 * @category Object

@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object devices
+* Base Object Devices
 *
 * @access   public
 * @category Object

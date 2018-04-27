@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Locations.
+* Base Object Locations
 *
 * @access   public
 * @category Object

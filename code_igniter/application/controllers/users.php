@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Users.
+* Base Object Users
 *
 * @access   public
 * @category Object

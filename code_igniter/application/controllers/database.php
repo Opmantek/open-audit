@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Database.
+* Base Object Database
 *
 * @access   public
 * @category Object

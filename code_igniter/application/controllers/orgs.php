@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Orgs.
+* Base Object Orgs
 *
 * @access   public
 * @category Object
@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class orgs extends MY_Controller
+class Orgs extends MY_Controller
 {
     public function __construct()
     {

@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Groups.
+* Base Object Groups
 *
 * @access   public
 * @category Object

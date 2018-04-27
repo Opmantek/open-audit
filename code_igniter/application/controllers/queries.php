@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Queries.
+* Base Object Queries
 *
 * @access   public
 * @category Object

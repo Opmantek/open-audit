@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Files
+* Base Object Help
 *
 * @access   public
 * @category Object

@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Collectors.
+* Base Object Collectors
 *
 * @access   public
 * @category Object

@@ -35,7 +35,7 @@
 */
 
 /**
-* Base Object Input
+* Base Object Login
 *
 * @access   public
 * @category Object
@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class login extends CI_Controller
+class Login extends CI_Controller
 {
     /**
     * Constructor
