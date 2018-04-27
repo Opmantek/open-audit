@@ -49,4 +49,39 @@ if (!defined('CHARSET')) {
     }
 }
 
+function refine($property, $value, $display = '', $align = 'left')
+{
+    if ($display == '') {
+        $display = $value;
+    }
+    $CI = & get_instance();
+    if (strlen($display) > 28) {
+        $trim = intval($CI->config->config['gui_trim_characters']);
+        if (empty($trim)) {
+            $trim = 25;
+        }
+        $display = mb_substr($display, 0, $trim) . ' ...';
+    }
+
+    $query_parameters = $CI->response->meta->query_parameters;
+    $item = new stdClass();
+    $item->name = $property;
+    $item->operator = '=';
+    $item->value = $value;
+    $query_parameters[] = $item;
+    $include_link = create_url($query_parameters);
+    unset($query_parameters);
+
+    $query_parameters = $CI->response->meta->query_parameters;
+    $item = new stdClass();
+    $item->name = $property;
+    $item->operator = '!=';
+    $item->value = $value;
+    $query_parameters[] = $item;
+    $exclude_link = create_url($query_parameters);
+    unset($query_parameters);
+
+    echo '            <td class="text-' . $align . '"><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href=\'' . $exclude_link . '\'>Exclude</a><br /><a href=\'' . $include_link . '\'>Include</a>"></span><span title="' . htmlspecialchars($value) . '">' . htmlspecialchars($display, REPLACE_FLAGS, CHARSET) . "</span></td>\n";
+}
+
 include "theme-bootstrap/v_template.php";
