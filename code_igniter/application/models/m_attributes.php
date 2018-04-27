@@ -83,23 +83,8 @@ class M_attributes extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-
-        // get a list of Orgs so we can populate the names
-        // $sql = "SELECT id, name FROM orgs";
-        // $result = $this->run_sql($sql, array());
-        // $orgs = $result;
-
         $sql = $this->collection_sql('attributes', 'sql');
         $result = $this->run_sql($sql, array());
-
-        // for ($i=0; $i < count($result); $i++) {
-        //     foreach ($orgs as $org) {
-        //         if (!empty($result[$i]->org_id) and $org->id == $result[$i]->org_id) {
-        //             $result[$i]->org_name = $org->name;
-        //         }
-        //     }
-        // }
-
         $result = $this->format_data($result, 'attributes');
         return ($result);
     }
