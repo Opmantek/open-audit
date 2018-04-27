@@ -283,11 +283,7 @@ if (!empty($this->response->data)) { ?>
                     echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
 
                 } else {
-                    if (strlen($item->attributes->$property) > 30) {
-                        echo "            <td class=\"wrap\"><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span><span title=\"" . $item->attributes->$property . "\">&nbsp;" . substr($item->attributes->$property, 0, 30) . "...</span></td>\n";
-                    } else {
-                        echo "            <td><span class=\"small glyphicon glyphicon-filter\" aria-hidden=\"true\" data-html=\"true\" data-toggle=\"popover\" title=\"Refine\" data-content=\"<a href='" . $refine_link . $property . "=!=" . urlencode($item->attributes->$property) . "'>Exclude</a><br /><a href='" . $refine_link . $property . "=" . urlencode($item->attributes->$property) . "'>Include</a><br />\"></span>&nbsp;" . $item->attributes->$property . "</td>\n";
-                    }
+                    refine($property, $item->attributes->$property);
                 }
             } else {
                 echo "            <td></td>\n";
