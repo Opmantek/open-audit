@@ -24,7 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
 $this->load->model('m_database');
 $db_table = $this->response->meta->collection;
 if ($this->response->meta->collection === 'devices') {

@@ -24,7 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
 if (empty($this->response->meta->received_data)) {
     log_error('ERR-0025');
     output($this->response);

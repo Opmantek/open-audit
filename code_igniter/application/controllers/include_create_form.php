@@ -24,8 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
-
 $this->response->data = array();
 $temp = new stdClass();
 $temp->type = $this->response->meta->collection;

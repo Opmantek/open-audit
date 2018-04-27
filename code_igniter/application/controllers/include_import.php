@@ -24,7 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
 $this->load->model('m_users');
 $this->load->helper('file');
 $this->load->helper('log');

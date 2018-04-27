@@ -24,7 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
 $this->load->model('m_collection');
 if ($this->m_collection->reset($this->response->meta->collection)) {
     $this->response->data = array();

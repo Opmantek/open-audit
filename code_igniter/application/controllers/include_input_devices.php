@@ -24,9 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-#$this->response->meta->format = 'screen';
 $this->benchmark->mark('code_start');
-
 // load our required helpers
 $this->load->helper('log');
 $this->load->helper('error');

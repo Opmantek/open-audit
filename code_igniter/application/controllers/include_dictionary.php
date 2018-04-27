@@ -24,7 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
 $dictionary = new stdClass();
 $dictionary->table = $table;
 $dictionary->about = '';

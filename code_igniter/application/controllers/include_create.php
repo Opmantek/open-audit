@@ -24,7 +24,6 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-
 $this->load->model('m_collection');
 $this->response->meta->id = $this->{'m_collection'}->create();
 
