@@ -38,6 +38,14 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'gui_trim_characters','25','num
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "UPDATE `configuration` SET `value` = '/omk/open-audit/map' WHERE `value` = '/omk/oae/map'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `configuration` SET `value` = '/omk/open-audit' WHERE `value` = '/omk/oae'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180512' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

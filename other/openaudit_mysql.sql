@@ -603,7 +603,7 @@ INSERT INTO `configuration` VALUES (23,'log_retain_level_5','90','number','y','s
 INSERT INTO `configuration` VALUES (24,'log_retain_level_6','30','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 6.');
 INSERT INTO `configuration` VALUES (25,'log_retain_level_7','7','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 7.');
 INSERT INTO `configuration` VALUES (26,'maps_api_key','AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0','text','y','system','2000-01-01 00:00:00','The API key for Google Maps.');
-INSERT INTO `configuration` VALUES (27,'maps_url','/omk/oae/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
+INSERT INTO `configuration` VALUES (27,'maps_url','/omk/open-audit/map','text','y','system','2000-01-01 00:00:00','The web server address of opMaps.');
 INSERT INTO `configuration` VALUES (28,'match_dbus','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its dbus id.');
 INSERT INTO `configuration` VALUES (29,'match_fqdn','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its fqdn.');
 INSERT INTO `configuration` VALUES (30,'match_hostname','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based only on its hostname.');
