@@ -52,10 +52,10 @@ if ($this->response->meta->collection === 'licenses') {
     }
 }
 
-if ($this->response->meta->collection == 'configuration') {
-    $this->response->meta->total = $this->response->meta->filtered;
-}
-
+// if ($this->response->meta->collection == 'configuration') {
+//     $this->response->meta->total = $this->response->meta->filtered;
+// }
+$this->response->meta->links = $this->response->links;
 output($this->response);
 
 $log = new stdClass();

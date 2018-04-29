@@ -638,9 +638,9 @@ if (! function_exists('output')) {
         $link = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?';
         if (!empty($query_parameters)) {
             for ($i=0; $i < count($query_parameters); $i++) {
-            if ($query_parameters[$i]->operator == '=') {
-                $query_parameters[$i]->operator = '';
-            }
+                if (empty($query_parameters[$i]->operator) or $query_parameters[$i]->operator == '=') {
+                    $query_parameters[$i]->operator = '';
+                }
                 $link .= urlencode($query_parameters[$i]->name) . '=' . $query_parameters[$i]->operator . urlencode($query_parameters[$i]->value) . '&';
             }
         }
@@ -652,7 +652,6 @@ if (! function_exists('output')) {
     {
         $CI = & get_instance();
         $offset = '';
-
         if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
             $query_parameters = $CI->response->meta->query_parameters;
@@ -669,7 +668,7 @@ if (! function_exists('output')) {
                     $item = new stdClass();
                     $item->name = 'offset';
                     $item->value = $offset;
-                    $query_parameters == $item;
+                    $query_parameters[] = $item;
                     unset($item);
                 }
             }
@@ -695,8 +694,14 @@ if (! function_exists('output')) {
                         $item = new stdClass();
                         $item->name = 'offset';
                         $item->value = $offset;
-                        $query_parameters == $item;
+                        $query_parameters[] = $item;
                         unset($item);
+                    }
+                } else {
+                    for ($i=0; $i < count($query_parameters); $i++) {
+                        if ($query_parameters[$i]->name == 'offset') {
+                            unset($query_parameters[$i]);
+                        }
                     }
                 }
             }
@@ -732,7 +737,7 @@ if (! function_exists('output')) {
                     $item = new stdClass();
                     $item->name = 'offset';
                     $item->value = $offset;
-                    $query_parameters == $item;
+                    $query_parameters[] = $item;
                     unset($item);
                 }
             }
