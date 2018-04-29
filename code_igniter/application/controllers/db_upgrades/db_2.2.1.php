@@ -30,6 +30,10 @@
 $this->log_db('Upgrade database to 2.2.1 commenced');
 
 # Rmove an unused configutration item
+$sql = "DELETE FROM `configuration` WHERE `name` = 'gui_trim_characters'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "INSERT INTO `configuration` VALUES (NULL,'gui_trim_characters','25','number','y','system','2000-01-01 00:00:00','When showing a table of information in the web GUI, replace characters creater than this with \"...\".')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
