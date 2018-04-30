@@ -115,8 +115,10 @@ class Users extends MY_Controller
             # Only allow users with config update permission (which should only be those with Admin role)
             if ($this->m_users->get_user_permission('', 'configuration', 'u')) {
                 $this->response->data = $this->{'m_users'}->read($this->response->meta->id);
-                $userdata = array('user_id' => $this->response->meta->id, 'user_debug' => '');
+                $access_token = bin2hex(openssl_random_pseudo_bytes(30));
+                $userdata = array('user_id' => $this->response->meta->id, 'user_debug' => '', 'access_token' => $access_token);
                 $this->session->set_userdata($userdata);
+                $this->response->meta->access_token = $access_token;
                 print_r(json_encode($this->response));
             } else {
                 return;
