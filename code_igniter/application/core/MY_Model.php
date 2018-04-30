@@ -374,9 +374,9 @@ class MY_Model extends CI_Model
                     // We MUST have a name like 'connections.name', not just 'name'
                     if (strpos($item->name, '.') !== false) {
                         if ($item->operator != 'in') {
-                            $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . $item->value . '"';
+                            $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . str_replace('"', '\"', $item->value) . '"';
                         } else {
-                            $filter .= ' AND ' . $item->name . ' in ' . $item->value;
+                            $filter .= ' AND ' . $item->name . ' in ' . str_replace('"', '\"', $item->value);
                         }
                     }
                 }
