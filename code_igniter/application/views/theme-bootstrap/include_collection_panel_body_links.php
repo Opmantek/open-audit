@@ -14,10 +14,12 @@ if (count($this->response->meta->filter) > 0) {
     echo '<div class="panel-body"><h4>';
     foreach ($this->response->meta->filter as $item) {
         $query_parameters = $this->response->meta->query_parameters;
+        $operator = $item->operator;
         if ($item->operator == '=') {
-            $operator = '';
-        } else {
-            $operator = $item->operator;
+            $item->operator = '';
+        }
+        if ($operator == '') {
+            $operator = '=';
         }
         for ($i=0; $i < count($query_parameters); $i++) {
             $parameter = $query_parameters[$i];
@@ -26,7 +28,7 @@ if (count($this->response->meta->filter) > 0) {
             }
         }
         $link = create_url($query_parameters);
-        echo '<span class="label label-info">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
+        echo '<span class="label label-info">' . htmlentities($item->name) . ' ' . $operator . ' ' . htmlentities(urldecode($item->value)) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
         unset($query_parameters);
     }
     echo '</h4></div>';
