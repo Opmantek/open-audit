@@ -326,6 +326,20 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0033']->title = "Decoding JSON failed.";
         $error_array['ERR-0033']->detail = 'Decoding JSON failed.';
 
+        $error_array['ERR-0034'] = new stdClass();
+        $error_array['ERR-0034']->code = 'ERR-0034';
+        $error_array['ERR-0034']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0034']->severity = 5;
+        $error_array['ERR-0034']->title = "No access token supplied.";
+        $error_array['ERR-0034']->detail = 'The access token from the previous request/response was not supplied when submitting data.';
+
+        $error_array['ERR-0035'] = new stdClass();
+        $error_array['ERR-0035']->code = 'ERR-0035';
+        $error_array['ERR-0035']->status = 'HTTP/1.1 400 Bad Request';
+        $error_array['ERR-0035']->severity = 5;
+        $error_array['ERR-0035']->title = "Invalid access token supplied.";
+        $error_array['ERR-0035']->detail = 'An invalid access token was supplied when submitting data.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);

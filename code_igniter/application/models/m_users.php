@@ -407,6 +407,10 @@ class M_users extends MY_Model
             // user is logged in, return the $this->user object
             $sql = "SELECT * FROM " . $db_table . " WHERE " . $db_table . "." . $db_id_column . " = ?";
             $sql = $this->clean_sql($sql);
+            $access_token = '';
+            if (!empty($this->session->userdata['access_token'])) {
+                $access_token = $this->session->userdata['access_token'];
+            }
             $data = array(intval($this->session->userdata['user_id']));
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() > 0) {
@@ -421,7 +425,10 @@ class M_users extends MY_Model
                     $CI->user->password = $CI->user->user_password;
                     $CI->user->full_name = $CI->user->user_full_name;
                 }
-                $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
+                $CI->user->access_token = $access_token;
+                $access_token = bin2hex(openssl_random_pseudo_bytes(30));
+                $CI->access_token = $access_token;
+                $userdata = array('user_id' => $CI->user->id, 'user_debug' => '', 'access_token' => $access_token);
                 $this->session->set_userdata($userdata);
                 return;
             } else {
