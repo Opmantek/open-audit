@@ -638,10 +638,12 @@ if (! function_exists('output')) {
         $link = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?';
         if (!empty($query_parameters)) {
             for ($i=0; $i < count($query_parameters); $i++) {
-                if (empty($query_parameters[$i]->operator) or $query_parameters[$i]->operator == '=') {
-                    $query_parameters[$i]->operator = '';
+                if (!empty($query_parameters[$i]->name)) {
+                    if (empty($query_parameters[$i]->operator) or $query_parameters[$i]->operator == '=') {
+                        $query_parameters[$i]->operator = '';
+                    }
+                    $link .= urlencode($query_parameters[$i]->name) . '=' . $query_parameters[$i]->operator . urlencode($query_parameters[$i]->value) . '&';
                 }
-                $link .= urlencode($query_parameters[$i]->name) . '=' . $query_parameters[$i]->operator . urlencode($query_parameters[$i]->value) . '&';
             }
         }
         $link = substr($link, 0, strlen($link)-1);
@@ -655,7 +657,7 @@ if (! function_exists('output')) {
         if ($CI->response->meta->total > 0 and $CI->response->meta->collection != 'charts') {
             # next link
             $query_parameters = $CI->response->meta->query_parameters;
-            if (intval($CI->response->meta->total) > intval($CI->response->meta->filtered) and (intval($CI->response->meta->offset) + intval($CI->response->meta->limit)) < (intval($CI->response->meta->total) + intval($CI->response->meta->limit))) {
+            if (intval($CI->response->meta->total) > intval($CI->response->meta->filtered) and  (intval($CI->response->meta->offset)  <  intval($CI->response->meta->total))) {
                 $offset = intval($CI->response->meta->offset) + intval($CI->response->meta->limit);
                 $hit = false;
                 for ($i=0; $i < count($query_parameters); $i++) {
