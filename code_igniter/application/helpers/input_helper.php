@@ -147,6 +147,7 @@ if (! function_exists('inputRead')) {
 
         # initialise our properties
         $CI->response->meta = new stdClass();
+        $CI->response->meta->access_token = @$CI->access_token;
         $CI->response->meta->action = '';
         $CI->response->meta->baseurl = $CI->config->config['base_url'];
         $CI->response->meta->collection = '';
@@ -420,13 +421,25 @@ if (! function_exists('inputRead')) {
 
         # put any POST data into the object
         if ($REQUEST_METHOD == 'POST') {
-            #if (is_array($CI->input->post('data'))) {
             if (!empty($_POST['data']) and is_array($_POST{'data'})) {
-                #$CI->response->meta->received_data = $CI->input->post('data');
+                # This is form submitted data
                 $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
+                if (empty($CI->response->meta->received_data->access_token)) {
+                    # Redirect as we must have an auth token from when we requested the create form
+                    log_error('ERR-0034', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
+                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                    redirect($CI->response->meta->collection);
+                }
+                if ($CI->response->meta->received_data->access_token != $CI->user->access_token) {
+                    # Redirect as we must have an auth token from when we requested the create form
+                    log_error('ERR-0035', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
+                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                    redirect($CI->response->meta->collection);
+                }
             } else {
+                # This is straight JSON submitted data in a string
                 $CI->response->meta->received_data = @json_decode($_POST{'data'});
             }
         }
