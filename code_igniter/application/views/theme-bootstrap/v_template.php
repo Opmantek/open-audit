@@ -88,6 +88,7 @@ if (!empty($this->response->meta->baseurl)) {
     <link rel="stylesheet" href="<?php echo $this->config->config['oa_web_folder']; ?>/css/open-audit.css">
 </head>
 <body>
+
 <div class="container-fluid">
 <?php
 include "include_header.php";

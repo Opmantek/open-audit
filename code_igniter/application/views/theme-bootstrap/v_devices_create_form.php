@@ -45,6 +45,7 @@
 
   <div class="panel-body">
     <form action="<?php echo $this->response->links->self; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <fieldset>
         <div class="form-group">
             <div class="row">

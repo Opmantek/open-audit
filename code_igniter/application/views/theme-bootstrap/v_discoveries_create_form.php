@@ -94,6 +94,7 @@ if ($nmap_warning != '') {
 }
 ?>
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 

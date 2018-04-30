@@ -43,6 +43,7 @@
   </div>
   <div class="panel-body">
     <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>">
+        <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
         <div class="form-group">
             <label for="id" class="col-sm-2 control-label"><?php echo __('ID'); ?></label>
             <div class="col-sm-4">

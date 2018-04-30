@@ -36,6 +36,7 @@
 $item = $this->response->data[0];
 ?>
 <form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
