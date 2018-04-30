@@ -29,6 +29,10 @@
 
 $this->log_db('Upgrade database to 2.2.1 commenced');
 
+# cluster
+$this->alter_table('cluster', 'type', "`type` enum('high availability','load balancing','perforance','storage','other', '') NOT NULL DEFAULT '' AFTER `org_id`");
+$this->alter_table('cluster', 'purpose', "`purpose` enum('application','database','file','virtualisation','web','other', '') NOT NULL DEFAULT '' AFTER `type`");
+
 # configuration
 $sql = "DELETE FROM `configuration` WHERE `name` = 'gui_trim_characters'";
 $this->db->query($sql);

@@ -502,8 +502,8 @@ CREATE TABLE `cluster` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('high availability','load balancing','perforance','storage','other') DEFAULT NULL,
-  `purpose` enum('application','database','file','virtualisation','web','other') DEFAULT NULL,
+  `type` enum('high availability','load balancing','perforance','storage','other', '') NOT NULL DEFAULT '',
+  `purpose` enum('application','database','file','virtualisation','web','other', '') NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
