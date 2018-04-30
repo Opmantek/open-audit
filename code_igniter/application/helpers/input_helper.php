@@ -161,9 +161,9 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->id = null;
         $CI->response->meta->ids = 0;
         $CI->response->meta->include = '';
-        if (empty($CI->config->config['page_size'])) {
-            $CI->config->config['page_size'] = 1000;
-        }
+        // if (empty($CI->config->config['page_size'])) {
+        //     $CI->config->config['page_size'] = 1000;
+        // }
         $CI->response->meta->limit = '';
         $CI->response->meta->offset = 0;
         $CI->response->meta->properties = '';
@@ -420,28 +420,25 @@ if (! function_exists('inputRead')) {
         }
 
         # put any POST data into the object
+        $data_supplied_by = '';
         if ($REQUEST_METHOD == 'POST') {
             if (!empty($_POST['data']) and is_array($_POST{'data'})) {
                 # This is form submitted data
                 $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
-                if (empty($CI->response->meta->received_data->access_token)) {
-                    # Redirect as we must have an auth token from when we requested the create form
-                    log_error('ERR-0034', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
-                    redirect($CI->response->meta->collection);
-                }
-                if ($CI->response->meta->received_data->access_token != $CI->user->access_token) {
-                    # Redirect as we must have an auth token from when we requested the create form
-                    log_error('ERR-0035', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
-                    $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
-                    redirect($CI->response->meta->collection);
-                }
+                $detail = 'form';
+                $log->summary = "data supplied via form.";
             } else {
                 # This is straight JSON submitted data in a string
                 $CI->response->meta->received_data = @json_decode($_POST{'data'});
+                $log->detail = "data supplied via json.";
             }
+            $log->severity = 4;
+            $log->summary = var_dump($_POST);
+            stdlog($log);
+            $log->detail = '';
+            $log->severity = 7;
         }
 
         if ($REQUEST_METHOD == 'PATCH') {
@@ -776,6 +773,10 @@ if (! function_exists('inputRead')) {
         }
 
         # get and set the limit
+        $CI->config->config['page_size'] = intval($CI->config->config['page_size']);
+        if (empty($CI->config->config['page_size'])) {
+            $CI->config->config['page_size'] = 1000;
+        }
         if (isset($_GET['limit'])) {
             $CI->response->meta->limit = intval($_GET['limit']);
             $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', according to GET.';
@@ -880,6 +881,33 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->properties = substr($CI->response->meta->internal->properties, 0, -1);
         } else {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
+        }
+
+        if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form') {
+            if (empty($CI->response->meta->received_data->access_token)) {
+                # Redirect as we must have an auth token from when we requested the create form
+                log_error('ERR-0034', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                if ($CI->response->meta->format != 'screen') {
+                    output();
+                    exit();
+                } else {
+                    redirect($CI->response->meta->collection);
+                    exit();
+                }
+            }
+            if ($CI->response->meta->received_data->access_token != $CI->user->access_token) {
+                # Redirect as we must have an auth token from when we requested the create form
+                log_error('ERR-0035', $CI->response->meta->collection . ':' . $CI->response->meta->action);
+                $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
+                if ($CI->response->meta->format != 'screen') {
+                    output();
+                    exit();
+                } else {
+                    redirect($CI->response->meta->collection);
+                    exit();
+                }
+            }
         }
 
         # get the filter
