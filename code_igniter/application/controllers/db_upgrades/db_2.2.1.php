@@ -29,7 +29,7 @@
 
 $this->log_db('Upgrade database to 2.2.1 commenced');
 
-# Rmove an unused configutration item
+# configuration
 $sql = "DELETE FROM `configuration` WHERE `name` = 'gui_trim_characters'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -45,6 +45,9 @@ $this->log_db($this->db->last_query());
 $sql = "UPDATE `configuration` SET `value` = '/omk/open-audit' WHERE `value` = '/omk/oae'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+# locations
+$this->alter_table('locations', 'type', "`type` varchar(100) NOT NULL DEFAULT '' AFTER `org_id`");
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180512' WHERE `name` = 'internal_version'";
