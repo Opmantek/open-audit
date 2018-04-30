@@ -210,6 +210,9 @@ function json_format($json)
                     $new_json .= $char;
                 }
                 break;
+            case "<":
+                $new_json .= "&lt;";
+                break;
             case '}':
             case ']':
                 if (!$in_string) {
