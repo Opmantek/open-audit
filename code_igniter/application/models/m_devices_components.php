@@ -381,6 +381,9 @@ class M_devices_components extends MY_Model
         # there won't be an input->item
         if ((string)$table == 'netstat') {
             $input = $this->format_netstat_data($input, $details);
+            if (empty($input)) {
+                return;
+            }
         }
 
         // make sure we have an entry for each match column, even if it's empty
@@ -1244,6 +1247,9 @@ class M_devices_components extends MY_Model
 
     public function format_netstat_data($input, $details)
     {
+        if (!is_string($input) or empty($input)) {
+            return array();
+        }
         $lines = explode("\n", $input);
         if (count($lines) == 0) {
             define('NL_NIX', "\n");
