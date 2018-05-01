@@ -126,35 +126,35 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0005'] = new stdClass();
         $error_array['ERR-0005']->code = 'ERR-0005';
         $error_array['ERR-0005']->status = 'HTTP/1.1 404 Not Found';
-        $error_array['ERR-0005']->severity = 3;
+        $error_array['ERR-0005']->severity = 5;
         $error_array['ERR-0005']->title = "No data returned";
         $error_array['ERR-0005']->detail = 'A request was made to a model, but no data was retrieved from the database.';
 
         $error_array['ERR-0006'] = new stdClass();
         $error_array['ERR-0006']->code = 'ERR-0006';
         $error_array['ERR-0006']->status = 'HTTP/1.1 403 Forbidden';
-        $error_array['ERR-0006']->severity = 3;
+        $error_array['ERR-0006']->severity = 5;
         $error_array['ERR-0006']->title = "User is not authorised to view group";
         $error_array['ERR-0006']->detail = 'A user attempted to view the details of a group he is not authorised to. To enable this user to view this group, edit the user via menu -> Resources -> Users -> List Users and allow at least View Group level of access.';
 
         $error_array['ERR-0007'] = new stdClass();
         $error_array['ERR-0007']->code = 'ERR-0007';
         $error_array['ERR-0007']->status = 'HTTP/1.1 404 Not Found';
-        $error_array['ERR-0007']->severity = 3;
+        $error_array['ERR-0007']->severity = 5;
         $error_array['ERR-0007']->title = "Resource does not exist";
         $error_array['ERR-0007']->detail = 'A user attempted to view a resource which does not exist.';
 
         $error_array['ERR-0008'] = new stdClass();
         $error_array['ERR-0008']->code = 'ERR-0008';
         $error_array['ERR-0008']->status = 'HTTP/1.1 403 Forbidden';
-        $error_array['ERR-0008']->severity = 3;
+        $error_array['ERR-0008']->severity = 5;
         $error_array['ERR-0008']->title = 'User insufficient access.';
         $error_array['ERR-0008']->detail = 'A user attempted to access a resource for which they do not have authorisation.';
 
         $error_array['ERR-0009'] = new stdClass();
         $error_array['ERR-0009']->code = 'ERR-0009';
         $error_array['ERR-0009']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0009']->severity = 3;
+        $error_array['ERR-0009']->severity = 4;
         $error_array['ERR-0009']->title = "Parameters you have provided failed use";
         $error_array['ERR-0009']->detail = 'Parameters you have provided failed use.';
 
@@ -189,49 +189,49 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0014'] = new stdClass();
         $error_array['ERR-0014']->code = 'ERR-0014';
         $error_array['ERR-0014']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0014']->severity = 3;
+        $error_array['ERR-0014']->severity = 4;
         $error_array['ERR-0014']->title = "Cannot delete default resource.";
         $error_array['ERR-0014']->detail = 'Cannot delete default resource.';
 
         $error_array['ERR-0015'] = new stdClass();
         $error_array['ERR-0015']->code = 'ERR-0015';
         $error_array['ERR-0015']->status = 'HTTP/1.1 403 Forbidden';
-        $error_array['ERR-0015']->severity = 3;
+        $error_array['ERR-0015']->severity = 5;
         $error_array['ERR-0015']->title = "User not authorised";
         $error_array['ERR-0015']->detail = 'User attempted to perform an operation for which they are not authorised';
 
         $error_array['ERR-0016'] = new stdClass();
         $error_array['ERR-0016']->code = 'ERR-0016';
         $error_array['ERR-0016']->status = 'HTTP/1.1 404 Not Found';
-        $error_array['ERR-0016']->severity = 3;
+        $error_array['ERR-0016']->severity = 4;
         $error_array['ERR-0016']->title = "File does not exist";
         $error_array['ERR-0016']->detail = 'A user attempted to access an file which does not exist, could not be read or is incorrectly formatted.';
 
         $error_array['ERR-0017'] = new stdClass();
         $error_array['ERR-0017']->code = 'ERR-0017';
         $error_array['ERR-0017']->status = 'HTTP/1.1 404 Not Found';
-        $error_array['ERR-0017']->severity = 3;
+        $error_array['ERR-0017']->severity = 4;
         $error_array['ERR-0017']->title = "File not writable";
         $error_array['ERR-0017']->detail = 'A user attempted to write to an file which does not have write permissions set.';
 
         $error_array['ERR-0018'] = new stdClass();
         $error_array['ERR-0018']->code = 'ERR-0018';
         $error_array['ERR-0018']->status = 'HTTP/1.1 403 Forbidden';
-        $error_array['ERR-0018']->severity = 3;
+        $error_array['ERR-0018']->severity = 5;
         $error_array['ERR-0018']->title = "User not authorised to use Org";
         $error_array['ERR-0018']->detail = 'A user attempted to write to an org_id to an object for which they do not have permission.';
 
         $error_array['ERR-0019'] = new stdClass();
         $error_array['ERR-0019']->code = 'ERR-0019';
         $error_array['ERR-0019']->status = 'HTTP/1.1 500 Internal Server Error';
-        $error_array['ERR-0019']->severity = 3;
+        $error_array['ERR-0019']->severity = 4;
         $error_array['ERR-0019']->title = "Could not connect to LDAP";
         $error_array['ERR-0019']->detail = 'When attempting to connect to LDAP for Active Directory, could not.';
 
         $error_array['ERR-0020'] = new stdClass();
         $error_array['ERR-0020']->code = 'ERR-0020';
         $error_array['ERR-0020']->status = 'HTTP/1.1 401 Unauthorized';
-        $error_array['ERR-0020']->severity = 3;
+        $error_array['ERR-0020']->severity = 5;
         $error_array['ERR-0020']->title = "User not authorised, credentials required";
         $error_array['ERR-0020']->detail = 'When attempting to access a resource, credentials are required.';
 
@@ -252,21 +252,21 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0023'] = new stdClass();
         $error_array['ERR-0023']->code = 'ERR-0023';
         $error_array['ERR-0023']->status = 'HTTP/1.1 500 Internal Server Error';
-        $error_array['ERR-0023']->severity = 2;
+        $error_array['ERR-0023']->severity = 3;
         $error_array['ERR-0023']->title = '';
         $error_array['ERR-0023']->detail = 'SQL command failed.';
 
         $error_array['ERR-0024'] = new stdClass();
         $error_array['ERR-0024']->code = 'ERR-0024';
         $error_array['ERR-0024']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0024']->severity = 3;
+        $error_array['ERR-0024']->severity = 4;
         $error_array['ERR-0024']->title = "Cannot create resource with supplied data";
         $error_array['ERR-0024']->detail = 'Cannot create resource with supplied data. A required field is missing.';
 
         $error_array['ERR-0025'] = new stdClass();
         $error_array['ERR-0025']->code = 'ERR-0025';
         $error_array['ERR-0025']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0025']->severity = 2;
+        $error_array['ERR-0025']->severity = 4;
         $error_array['ERR-0025']->title = '';
         $error_array['ERR-0025']->detail = 'Update did not supply PATCH data.';
 
@@ -301,44 +301,44 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0030'] = new stdClass();
         $error_array['ERR-0030']->code = 'ERR-0030';
         $error_array['ERR-0030']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0030']->severity = 3;
+        $error_array['ERR-0030']->severity = 4;
         $error_array['ERR-0030']->title = "Required attributes not supplied (collector UUID)";
         $error_array['ERR-0030']->detail = 'When attempting logon with a collector account, you must supply a UUID.';
 
         $error_array['ERR-0031'] = new stdClass();
         $error_array['ERR-0031']->code = 'ERR-0031';
         $error_array['ERR-0031']->status = 'HTTP/1.1 403 Forbidden';
-        $error_array['ERR-0031']->severity = 3;
+        $error_array['ERR-0031']->severity = 4;
         $error_array['ERR-0031']->title = "Collector attempting to logon from unassociated ip address.";
         $error_array['ERR-0031']->detail = 'A collector can only log in from a single IP address. Supplied IP does not match IP on record.';
 
         $error_array['ERR-0032'] = new stdClass();
         $error_array['ERR-0032']->code = 'ERR-0032';
         $error_array['ERR-0032']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0032']->severity = 3;
+        $error_array['ERR-0032']->severity = 6;
         $error_array['ERR-0032']->title = "A hostname or FQDN was supplied that cannot be resolved.";
         $error_array['ERR-0032']->detail = 'A hostname or FQDN was supplied that cannot be resolved.';
 
         $error_array['ERR-0033'] = new stdClass();
         $error_array['ERR-0033']->code = 'ERR-0033';
         $error_array['ERR-0033']->status = 'HTTP/1.1 500 Internal Server Error';
-        $error_array['ERR-0033']->severity = 5;
+        $error_array['ERR-0033']->severity = 4;
         $error_array['ERR-0033']->title = "Decoding JSON failed.";
         $error_array['ERR-0033']->detail = 'Decoding JSON failed.';
 
         $error_array['ERR-0034'] = new stdClass();
         $error_array['ERR-0034']->code = 'ERR-0034';
         $error_array['ERR-0034']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0034']->severity = 5;
+        $error_array['ERR-0034']->severity = 4;
         $error_array['ERR-0034']->title = "No access token supplied.";
-        $error_array['ERR-0034']->detail = 'The access token from the previous request/response was not supplied when submitting data.';
+        $error_array['ERR-0034']->detail = 'The access token from the previous request/response was not supplied when submitting data. This is required as at version 2.2.1 because of cross site request forgery protections.';
 
         $error_array['ERR-0035'] = new stdClass();
         $error_array['ERR-0035']->code = 'ERR-0035';
         $error_array['ERR-0035']->status = 'HTTP/1.1 400 Bad Request';
-        $error_array['ERR-0035']->severity = 5;
+        $error_array['ERR-0035']->severity = 4;
         $error_array['ERR-0035']->title = "Invalid access token supplied.";
-        $error_array['ERR-0035']->detail = 'An invalid access token was supplied when submitting data.';
+        $error_array['ERR-0035']->detail = 'An invalid access token was supplied when submitting data. You should only submit a form to create an item when that is the last page you have opened. Opening a page after opening the form page will cause the form submission to fail because of cross site request forgery protections implemented in version 2.2.1.';
 
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
