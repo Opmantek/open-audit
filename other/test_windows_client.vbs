@@ -153,12 +153,16 @@ if (user = "") then
         user = objItem.userName
         If Err.Number <> 0 Then ShowError("Cannot select userName.") end if
     Next
-    temp = split(user, "\")
-    If Err.Number <> 0 Then ShowError("No slash in retrieved userName.") end if
-    user_domain = temp(0)
-    If Err.Number <> 0 Then ShowError("Cannot select userName, domain.") end if
-    user_name = temp(1)
-    If Err.Number <> 0 Then ShowError("Cannot select userName name.") end if
+    wscript.echo "User from Win32_ComputerSystem.userName is: " & user
+    If InStr(user, "\") > 0 then
+        temp = split(user, "\")
+        user_domain = temp(0)
+        user_name = temp(1)
+    else
+        wscript.echo "WARNING - No slash in retrieved userName, using previously detected attributes."
+        user_domain = running_user_domain
+        user_name = running_user
+    end if
 else
     temp = split(user, "@")
     If Err.Number <> 0 Then ShowError("No @ in supplied user name.") end if
@@ -527,6 +531,33 @@ if (isnull(temp) or temp <> "1") then
 else
     wscript.echo "PASS - UAC registry entry exists and is set to 1."
 end if
+
+
+
+wscript.echo
+wscript.echo "------------------------"
+wscript.echo "Checking SMB1"
+wscript.echo "------------------------"
+dim smb1
+Err.Clear
+oreg.GetDWORDValue HKEY_LOCAL_MACHINE, "SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters", "SMB1", smb1
+if Err.Number <> 0 then
+    wscript.echo "PASS - SMB1 not present in registry, therefore enabled."
+else
+    if (smb1 = "" or isnull(smb1)) then
+        wscript.echo "PASS - SMB1 not present in registry, therefore enabled."
+    elseif (smb1 = "1" or smb1 = "" or isnull(smb1)) then
+        wscript.echo "PASS - SMB1 configured with a value of 1, therefore enabled."
+    elseif (smb1 = "0") then
+        wscript.echo "FAIL - SMB1 configured with a value of 0, therefore disabled."
+    elseif (smb1 <> "0" and smb1 <> "1") then
+        wscript.echo "FAIL - SMB1 configured with an invalid value of " & smb1 & ", cannot determine SMB1 status."
+    else
+        wscript.echo "WARNING - Unknown issue detecting SMB1 in registry."
+    end if
+end if
+
+
 
 
 
