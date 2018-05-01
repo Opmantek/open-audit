@@ -427,18 +427,18 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
-                $detail = 'form';
-                $log->summary = "data supplied via form.";
+                $log->detail = "data supplied via form.";
+                $data_supplied_by = 'form';
             } else {
                 # This is straight JSON submitted data in a string
                 $CI->response->meta->received_data = @json_decode($_POST{'data'});
                 $log->detail = "data supplied via json.";
+                $data_supplied_by = 'json';
             }
-            $log->severity = 4;
-            $log->summary = var_dump($_POST);
+            $log->summary = json_encode($CI->response->meta->received_data);
             stdlog($log);
             $log->detail = '';
-            $log->severity = 7;
+            $log->summary = '';
         }
 
         if ($REQUEST_METHOD == 'PATCH') {
@@ -884,6 +884,9 @@ if (! function_exists('inputRead')) {
         }
 
         if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form') {
+            $log->summary = 'POSTed access token: ' . $CI->response->meta->received_data->access_token;
+            $log->detail = 'Cookie access_token: ' . $CI->user->access_token;
+            stdlog($log);
             if (empty($CI->response->meta->received_data->access_token)) {
                 # Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0034', $CI->response->meta->collection . ':' . $CI->response->meta->action);
