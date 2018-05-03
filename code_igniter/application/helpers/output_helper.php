@@ -768,7 +768,7 @@ if (! function_exists('output')) {
             $table .= "<tr>";
             foreach ($item->attributes as $key => $value) {
                 if (stripos($key, '_padded') === false) {
-                    $table .= "<td>" . $value . "</td>";
+                    $table .= "<td>" . htmlspecialchars($value) . "</td>";
                 }
             }
             $table .= "</tr>";
@@ -797,7 +797,7 @@ if (! function_exists('output')) {
             $table .= "<tr>";
             foreach ($item->attributes as $key => $value) {
                 if (stripos($key, '_padded') === false) {
-                    $table .= "<td>" . $value . "</td>";
+                    $table .= "<td>" . htmlspecialchars($value) . "</td>";
                 }
             }
             $table .= "</tr>";
