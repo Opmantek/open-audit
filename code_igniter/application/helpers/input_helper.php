@@ -884,7 +884,8 @@ if (! function_exists('inputRead')) {
         }
 
         if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form') {
-            $log->summary = 'POSTed access token: ' . $CI->response->meta->received_data->access_token;
+            $log->status = 'checking access token';
+            $log->summary = 'POSTed access token: ' . @$CI->response->meta->received_data->access_token;
             $log->detail = 'Cookie access_token: ' . $CI->user->access_token;
             stdlog($log);
             if (empty($CI->response->meta->received_data->access_token)) {
@@ -911,6 +912,7 @@ if (! function_exists('inputRead')) {
                     exit();
                 }
             }
+            $log->status = 'parsing input';
         }
 
         # get the filter
