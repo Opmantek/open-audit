@@ -205,7 +205,13 @@ class M_queries extends MY_Model
         $data = array($id);
         $queries = $this->run_sql($sql, $data);
         $query = $queries[0];
-        $sql = $query->sql;
+        # below accounts for queries that end in a ; and/or a CR or spaces, etc
+        # when we add on LIMIT = 12345, it will break unless we strip those characters
+        $sql = trim($query->sql);
+        if (strpos($sql, ';') == strlen($sql)-1) {
+            $sql = substr($sql, 0, strlen($sql)-1);
+            $sql = trim($sql);
+        }
         unset($queries);
         $filter = "system.org_id IN (" . $CI->user->org_list . ")";
         $user_filter = $this->build_filter();
