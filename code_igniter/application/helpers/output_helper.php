@@ -640,7 +640,7 @@ if (! function_exists('output')) {
         if ($CI->config->config['is_ssl'] === true) {
             $proto = 'https://';
         }
-        $link = $proto . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?';
+        $link = $proto . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF'] . '?';
         if (!empty($query_parameters)) {
             for ($i=0; $i < count($query_parameters); $i++) {
                 if (!empty($query_parameters[$i]->name)) {
