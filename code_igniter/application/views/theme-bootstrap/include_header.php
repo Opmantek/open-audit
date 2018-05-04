@@ -181,13 +181,14 @@ if (!empty($this->config->config['servers'])) {
                         </ul>
                     </li>
 
-
+                    <?php
+                    $collections = array('applications','attributes','baselines','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','queries','orgs','roles','summaries','users','widgets');
+                    $commercial_collections = array('applications','baselines','dashboards','maps','roles','widgets');
+                    ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Manage'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-
                         <?php
-                        $collections = array('attributes','baselines','connections','devices','fields','groups','licenses','locations','maps','networks','queries','orgs','roles','summaries','users');
                         foreach ($collections as $collection) {
                             if ($collection == 'maps') { ?>
                                 <li class="dropdown-submenu">
@@ -202,44 +203,61 @@ if (!empty($this->config->config['servers'])) {
                             }
                             if ($this->m_users->get_user_permission('', $collection, 'r')) { ?>
                                 <li class="dropdown-submenu">
-                                    <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
+                                    <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections)) { ?>
                                     <a href="#"><?php echo ucwords(str_replace('_', ' ', $collection)); ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
                                     <?php } else { ?>
                                     <a href="#"><?php echo ucwords(str_replace('_', ' ', $collection)); ?></a>
                                     <?php } ?>
                                     <ul class="dropdown-menu" style="min-width:250px;">
-                                        <?php if ($this->config->config['oae_license'] != 'commercial' and $collection == 'baselines') { ?>
+
+                                        <!-- LIST -->
+                                        <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections)) { ?>
                                         <li class="disabled"><a href="#">List <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                        <?php } else if (in_array($collection, $commercial_collections)) { ?>
+                                        <li><a href='<?php echo $this->config->config['oae_url']; ?>/<?php echo $collection; ?>'><?php echo __('List').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } else { ?>
                                         <li><a href='<?php echo $this->config->config['oa_web_index']; ?>/<?php echo $collection; ?>'><?php echo __('List').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
                                         <?php } ?>
 
+                                        <!-- CREATE / IMPORT -->
                                         <?php if ($this->m_users->get_user_permission('', $collection, 'c')) { ?>
-                                            <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
-                                                <li class="disabled"><a href="#"><?php echo __('Create').' '; ?>> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                            <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections)) { ?>
+                                                <li class="disabled"><a href="#"><?php echo __('Create').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <?php if ($collection == 'roles') { ?>
                                                 <li class="disabled"><a href="#"><?php echo __('Import').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                            <?php } else { ?>
-                                                <?php if ($collection == 'baselines' or $collection == 'roles') {
-                                                    $link = $this->config->config['oae_url'];
-                                                } else {
-                                                    $link = $this->config->config['oa_web_index'];
-                                                } ?>
+                                                <?php } ?>
+                                            <?php } else if (in_array($collection, $commercial_collections)) {
+                                                $link = $this->config->config['oae_url']; ?>
                                                 <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Create').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
-                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'><?php echo __('Import'). ' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
+
+                                            <?php } else {
+                                                $link = $this->config->config['oa_web_index']; ?>
                                                 <?php if ($collection == 'devices') { ?>
-                                                <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Import Devices from Audit Script Result'); ?></a></li>
-                                                <li><a href='<?php echo $link; ?>/nmis/create'><?php echo __('Import Devices from NMIS'); ?></a></li>
-                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'><?php echo __('Export Devices to CSV'); ?></a></li>
-                                                <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li>
+                                                    <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Import Devices from Audit Script Result'); ?></a></li>
+                                                    <li><a href='<?php echo $link; ?>/nmis/create'><?php echo __('Import Devices from NMIS'); ?></a></li>
+                                                    <li><a href='<?php echo $this->config->config['oae_url']; ?>/device_exports'><?php echo __('Export Devices to CSV'); ?></a></li>
+                                                    <li><a href='<?php echo $link; ?>/nmis?system.nmis_manage=y&system.status=production'><?php echo __('Export Devices to NMIS'); ?></a></li>
+                                                <?php } else { ?>
+                                                    <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/create'><?php echo __('Create').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                    <li><a href='<?php echo $link; ?>/<?php echo $collection; ?>/import'><?php echo __('Import').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?> from CSV</a></li>
                                                 <?php } ?>
                                             <?php } ?>
                                         <?php } ?>
 
-                                        <?php if ($this->config->config['oae_license'] != 'commercial' and ($collection == 'baselines' or $collection == 'roles')) { ?>
-                                        <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/<?php echo $collection; ?>'><?php echo __('Learn About').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                        <!-- SCHEDULE -->
+                                        <?php
+                                        if ($this->m_users->get_user_permission('', $collection, 'c')) {
+                                            if ($this->config->config['oae_license'] == 'commercial') {
+                                                if ($collection == 'baselines') { ?>
+                                                <li><a href='<?php echo $this->config->config['oae_url']; ?>/tasks?tasks.type=baselines'><?php echo __('Schedule').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                                <?php } ?>
+                                            <?php } ?>
                                         <?php } ?>
 
-
+                                        <!-- LEARN -->
+                                        <?php if ($this->config->config['oae_license'] != 'commercial' and in_array($collection, $commercial_collections)) { ?>
+                                        <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/<?php echo $collection; ?>'><?php echo __('Learn About').' '; ?> <?php echo ucwords(str_replace('_', ' ', $collection)); ?></a></li>
+                                        <?php } ?>
 
                                     </ul>
                                 </li>
