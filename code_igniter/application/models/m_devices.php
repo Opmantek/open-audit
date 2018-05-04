@@ -153,25 +153,27 @@ class M_devices extends MY_Model
         $result = $this->run_sql($sql, array($id));
 
         # Populate our collector name if it exists
-        $result[0]->collector_name = '';
-        if (!empty($result[0]->collector_uuid)) {
-            $sql = "/* m_devices::read */ " . "SELECT `name` FROM `collectors` WHERE `uuid` = ?";
-            $data = array((string)$result[0]->collector_uuid);
-            $collector = $this->run_sql($sql, $data);
-            if (!empty($collector[0]->{'name'})) {
-                $result[0]->collector_name = $collector[0]->{'name'};
+        if (!empty($result)) {
+            $result[0]->collector_name = '';
+            if (!empty($result[0]->collector_uuid)) {
+                $sql = "/* m_devices::read */ " . "SELECT `name` FROM `collectors` WHERE `uuid` = ?";
+                $data = array((string)$result[0]->collector_uuid);
+                $collector = $this->run_sql($sql, $data);
+                if (!empty($collector[0]->{'name'})) {
+                    $result[0]->collector_name = $collector[0]->{'name'};
+                }
             }
-        }
 
-        $result = $this->format_data($result, 'devices');
-        # format our uptime from unixtime to humane readable
-        if (!empty($result[0]->attributes->uptime)) {
-            $seconds = intval($result[0]->attributes->uptime);
-            $dtF = new \DateTime('@0');
-            $dtT = new \DateTime("@$seconds");
-            $result[0]->attributes->uptime_formatted = $dtF->diff($dtT)->format('%a days, %H:%i:%S');
-        } else {
-            $result[0]->attributes->uptime_formatted = '';
+            $result = $this->format_data($result, 'devices');
+            # format our uptime from unixtime to humane readable
+            if (!empty($result[0]->attributes->uptime)) {
+                $seconds = intval($result[0]->attributes->uptime);
+                $dtF = new \DateTime('@0');
+                $dtT = new \DateTime("@$seconds");
+                $result[0]->attributes->uptime_formatted = $dtF->diff($dtT)->format('%a days, %H:%i:%S');
+            } else {
+                $result[0]->attributes->uptime_formatted = '';
+            }
         }
         return($result);
     }
