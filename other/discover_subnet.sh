@@ -39,7 +39,7 @@ IFS='
 '
 
 create_file="n"
-debugging=2
+debugging=1
 echo_output="y"
 log_no_response="n"
 org_id=""
@@ -94,8 +94,7 @@ if [ "$help" == "y" ]; then
 	echo ""
 	echo "  debugging"
 	echo "     0 - No output."
-	echo "     1 - Minimal Output."
-	echo "    *2 - Verbose output."
+	echo "    *1 - Debug Output."
 	echo ""
 	echo "  discovery_id"
 	echo "     * - The Open-AudIT discovery id. This is populated by Open-AudIT when running this script from discovery."
@@ -154,7 +153,10 @@ function db_log()
 
 	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command" -X POST http://localhost/open-audit/index.php/input/logs
 	if [ "$debugging" -gt 0 ]; then
+		echo "$1"
+		echo ""
 		echo "curl -d \"type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=127.0.0.1&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command\" -X POST http://localhost/open-audit/index.php/input/logs"
+		echo ""
 	fi
 }
 
@@ -190,9 +192,6 @@ if [[ "$nmap_path" == *"nmap"* ]]; then
 	nmap_major_version=$(echo "$nmap_full_version" | cut -d. -f1)
 	db_log "Discovery for $subnet_range using Nmap version $nmap_full_version at $nmap_path" "" "" "7"
 else
-	if [ "$debugging" -gt 0 ]; then
-		echo "Nmap binary not on path, aborting."
-	fi
 	db_log "Nmap binary not on path, aborting." "" "finish" "5"
 	exit 1
 fi
@@ -224,9 +223,6 @@ fi
 # -sn == ping scan only
 # -v  == verbose
 hosts_in_subnet=$("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-if [ "$debugging" -gt 0 ]; then
-	echo "Total ip addresses: $hosts_in_subnet"
-fi
 db_log "Scanning $hosts_in_subnet IP addresses" "" "" "" "" "" "$nmap_path -n -sL $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
 result_file=""
 result=""
@@ -255,33 +251,26 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 	nmap_tcp_timer_start=$(timer)
 	if [ "$force_ping" == "y" ]; then
 		nmap_scan=$(nmap -vv -n "$timing" "$host" 2>&1)
+		nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
+		db_log "Scanning Host: $host" "$nmap_tcp_timer_end" "" "7" "" "7" "nmap -vv -n $timing $host 2>%261"
 		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host using the command: nmap -vv -n $timing $host 2>&1"
-		fi
-		if [ "$debugging" -gt 1 ]; then
-			db_log "Scanning Host: $host" "" "" "7" "" "7" "nmap -vv -n $timing $host 2>%261"
+			echo "Scanning Host took $nmap_tcp_timer_end seconds using the command: nmap -vv -n $timing $host 2>&1"
+			echo ""
 		fi
 	else
 		nmap_scan=$(nmap -vv -n -Pn "$timing" "$host" 2>&1)
+		nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
+		db_log "Scanning Host: $host" "$nmap_tcp_timer_end" "" "7" "" "7" "nmap -vv -n -Pn $timing $host 2>%261"
 		if [ "$debugging" -gt 0 ]; then
-			echo "Scanning Host: $host using the command: nmap -vv -n -Pn $timing $host 2>&1"
-		fi
-		if [ "$debugging" -gt 1 ]; then
-			db_log "Scanning Host: $host" "" "" "7" "" "7" "nmap -vv -n -Pn $timing $host 2>%261"
+			echo "Scanning Host took $nmap_tcp_timer_end seconds using the command: nmap -vv -n -Pn $timing $host 2>&1"
+			echo ""
 		fi
 	fi
-	#statements
-	nmap_tcp_timer_end=$(timer "$nmap_tcp_timer_start")
 
 	if [ "$debugging" -gt 0 ]; then
-		echo "Nmap TCP scan time for $host: $nmap_tcp_timer_end"
 		echo ""
 		echo "$nmap_scan"
 		echo ""
-	fi
-
-	if [ "$debugging" -gt 1 ]; then
-		db_log "Nmap TCP scan time for $host: $nmap_tcp_timer_end" "$nmap_tcp_timer_end" "" "7"
 	fi
 
 	for line in $nmap_scan; do
@@ -292,22 +281,19 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 			port=$(echo $line | awk '{print $1}')
 			program=$(echo $line | awk '{print $3}')
 			nmap_ports="$nmap_ports,$port/$program"
-			if [ "$debugging" -gt 1 ]; then
-				db_log "Host $host is up, received port $port response" "" "" "7" "$test"
-			fi
+			db_log "Host $host is up, received port $port response" "" "" "7" "$test"
 		fi
 
 		test=$(echo $line | grep "tcp.*closed")
 		if [[ "$test" != "" ]]; then
 			host_is_up="true"
+			db_log "Host $host is up, received port closed response" "" "" "7" "$test"
 		fi
 
 		test=$(echo $line | grep "Host $host is up, received arp-response")
 		if [[ "$test" != "" ]]; then
 			host_is_up="true"
-			if [ "$debugging" -gt 1 ]; then
-				db_log "Host $host is up, received arp-response" "" "" "7" "$line"
-			fi
+			db_log "Host $host is up, received arp-response" "" "" "7" "$line"
 		fi
 
 		test=$(echo $line | grep "MAC Address:")
@@ -315,12 +301,7 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 			host_is_up="true"
 			mac_address=$(echo "$line" | cut -d" " -f3)
 			manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
-			if [ "$debugging" -gt 1 ]; then
-				echo "Host $host is up, received arp-response from $mac_address"
-			fi
-			if [ "$debugging" -gt 1 ]; then
-				db_log "Host $host is up, received arp-response from $mac_address" "" "" "7" "$line"
-			fi
+			db_log "Host $host is up, received arp-response from $mac_address" "" "" "7" "$line"
 		fi
 
 		# SSH check
@@ -328,6 +309,7 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 		if [[ "$test" != "" ]]; then
 			host_is_up="true"
 			ssh_status="true"
+			db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line"
 		fi
 
 		# WMI check
@@ -335,6 +317,7 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 		if [[ "$test" != "" ]]; then
 			host_is_up="true"
 			wmi_status="true"
+			db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line"
 		fi
 
 	done
@@ -344,27 +327,25 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 	if [[ "$test" != "" ]]; then
 		host_is_up="true"
 		nmap_ports="$nmap_ports,62078/tcp/iphone-sync"
-		if [ "$debugging" -gt 1 ]; then
-			db_log "Host $host is up, received iphone-sync response" "" "" "7" "$line"
-		fi
+		db_log "Host $host is up, received iphone-sync (TCP port 62078 open) response" "" "" "7" "$line"
 	fi
 
 	# SNMP check
 	snmp_status="false"
 	nmap_udp_timer_start=$(timer)
-	if [ "$debugging" -gt 1 ]; then
-		echo "Scaning for SNMP using the command: nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\" | grep -v \"filtered\""
-	fi
 	test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open")
 	nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
+	db_log "Scanning Host for SNMP: $host" "$nmap_udp_timer_end" "" "7" "" "7" "nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\""
 	if [ "$debugging" -gt 0 ]; then
-		echo "Nmap UDP scan time: $nmap_udp_timer_end"
+		echo "Scanning Host for SNMP took $nmap_udp_timer_end seconds using the command: nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\""
+		echo ""
 	fi
 	if [[ "$test" != "" ]]; then
 		snmp_status="true"
 		nmap_ports="$nmap_ports,161/udp/snmp"
 		if [ "$consider_161_enough" == "y" ]; then
 			host_is_up="true"
+			db_log "Host $host is up, received snmp (UDP port 161 open) response and we consider this enough as per config" "" "" "7" "$line"
 		fi
 	fi
 
@@ -394,11 +375,14 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 		# wrap this device in xml tags for submission individually
 		result="<devices>"$'\n'"$result"$'\n'"</devices>"
 
+		if [[ "$echo_output" == "y" ]]; then
+			echo ""
+			echo "$result"
+			echo ""
+		fi
+
 		if [[ "$submit_online" == "y" ]]; then
-			if [ "$debugging" -gt 0 ]; then
-				echo "Submitting online."$'\n'
-			fi
-			db_log "IP $host responding, submitting." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
+			db_log "IP $host responding, submitting online." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
 			# curl options
 			# -k = ignore invalid (self signed) certs
 			# -s = Silent mode. Don’t show progress meter or error messages.
@@ -422,22 +406,19 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 done
 
 resultcomplete="<devices><device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
-
-if [[ "$submit_online" == "y" ]]; then
-	if [[ "$echo_output" == "y" ]]; then
-		send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
-		echo "$send_result"
-	else
-		#send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S  2>&1 1> /dev/null)
-		send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
-		if [ -n "$send_result" ]; then
-			db_log "Error when submitting discovery result (complete). $send_result" "" "fail" "3"
-		fi
-	fi
+if [[ "$echo_output" == "y" ]]; then
+	echo ""
+	echo "$resultcomplete"
+	echo ""
 fi
 
-if [[ "$echo_output" == "y" ]]; then
-	echo "<devices>$result_file<device><subnet_range>$subnet_range</subnet_range><discovery_id>$discovery_id</discovery_id><complete>y</complete></device></devices>"
+if [[ "$submit_online" == "y" ]]; then
+	send_result=$(curl --data "data=$resultcomplete" "$url" -k -s -S 2>&1)
+	if [ -n "$send_result" ]; then
+		db_log "Error when submitting discovery result (complete). $send_result" "" "fail" "3"
+		echo ""
+		echo "$send_result"
+	fi
 fi
 
 if [[ "$create_file" == "y" ]]; then
