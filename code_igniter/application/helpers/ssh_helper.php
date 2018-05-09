@@ -765,7 +765,7 @@ if (! function_exists('ssh_audit')) {
 
         unset($array);
         if (empty($device->dbus_identifier)) {
-            if (empty($device->uuid) and $username != 'root') {
+            if (empty($device->uuid) and $username != 'root' and $CI->config->config['discovery_linux_use_sudo'] == 'y') {
                 if (!empty($device->which_sudo)) {
                     # Run DMIDECODE to get the UUID (requires root or sudo)
                     $output = '';
