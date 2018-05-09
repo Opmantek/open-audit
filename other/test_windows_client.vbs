@@ -63,8 +63,8 @@ for each arg in objArgs
         arg_value = mid(arg,inStr(arg,"=")+1)
         select case lcase(arg_name)
 
-            case "user"
-                user = arg_value
+            'case "user"
+            '    user = arg_value
 
             case "help"
                 help = arg_value
@@ -100,9 +100,9 @@ if (help = "y") then
     wscript.echo ""
     wscript.echo "Valid command line options are below (items containing * are the defaults) and should take the format name=value (eg: user=user@domain)."
     wscript.echo ""
-    wscript.echo "  user"
-    wscript.echo "     - This is not set by default. If supplied it will test the supplied user. If not set it will test the user runninng this script. Format should be user@domain."
-    wscript.echo ""
+    'wscript.echo "  user"
+    'wscript.echo "     - This is not set by default. If supplied it will test the supplied user. If not set it will test the user runninng this script. Format should be user@domain."
+    'wscript.echo ""
     wscript.echo "  debugging"
     wscript.echo "  *0 - If set to 1 verbose output will be generated."
     wscript.echo ""
@@ -137,15 +137,8 @@ If Err.Number <> 0 Then ShowError("Cannot retrieve user name of user running thi
 running_user_domain = objNetwork.userDomain
 If Err.Number <> 0 Then ShowError("Cannot retrieve user domain of user running this script.") end if
 
-wscript.echo
-wscript.echo "------------------------"
-wscript.echo "Collecting Attributes   "
-wscript.echo "------------------------"
-wscript.echo "Hostname: " & hostname
-wscript.echo "User running this script: " & running_user
-wscript.echo "Domain of user running this script: " & running_user_domain
-
-dim user_domain, user_name
+dim user_domain, user_name, user_from_cs
+user_from_cs = "False"
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
 If Err.Number <> 0 Then ShowError("Cannot select from Win32_ComputerSystem (1).") end if
 if (user = "") then
@@ -153,16 +146,19 @@ if (user = "") then
         user = objItem.userName
         If Err.Number <> 0 Then ShowError("Cannot select userName.") end if
     Next
-    wscript.echo "User from Win32_ComputerSystem.userName is: " & user
+    'wscript.echo "User from Win32_ComputerSystem is:     " & user
     If InStr(user, "\") > 0 then
         temp = split(user, "\")
         user_domain = temp(0)
         user_name = temp(1)
+        user_from_cs = "True"
     else
         wscript.echo "WARNING - No slash in retrieved userName, using previously detected attributes."
         user_domain = running_user_domain
         user_name = running_user
     end if
+    'wscript.echo "User Name from Win32_ComputerSystem:   " & user_name
+    'wscript.echo "User Domain from Win32_ComputerSystem: " & user_domain
 else
     temp = split(user, "@")
     If Err.Number <> 0 Then ShowError("No @ in supplied user name.") end if
@@ -172,51 +168,40 @@ else
     If Err.Number <> 0 Then ShowError("No name in supplied user name.") end if
 end if
 
-wscript.echo "User Name: " & user_name
-wscript.echo "User Domain: " & user_domain
 
-dim current_timezone, daylight_in_effect, dns_hostname, computer_domain
-dim domain_role, enable_daylight_savings_time, part_of_domain, workgroup
+dim cs_current_timezone, cs_daylight_in_effect, cs_dns_hostname, cs_domain
+dim cs_domain_role, cs_enable_ds_time, cs_part_of_domain, cs_workgroup
 Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
 If Err.Number <> 0 Then ShowError("Cannot select from Win32_ComputerSystem (2).") end if
 For Each objItem In colItems
 
-    current_timezone = objItem.CurrentTimeZone
+    cs_current_timezone = objItem.CurrentTimeZone
     If Err.Number <> 0 Then ShowError("Cannot select CurrentTimezone from Win32_ComputerSystem.") end if
-    wscript.echo "CurrentTimeZone: " & current_timezone
 
-    daylight_in_effect = objItem.DaylightInEffect
+    cs_daylight_in_effect = objItem.DaylightInEffect
     If Err.Number <> 0 Then ShowError("Cannot select DaylightInEffect from Win32_ComputerSystem.") end if
-    wscript.echo "DaylightInEffect: " & daylight_in_effect
 
-    dns_hostname = objItem.DNSHostName
+    cs_dns_hostname = objItem.DNSHostName
     If Err.Number <> 0 Then ShowError("Cannot select DNSHostName from Win32_ComputerSystem.") end if
-    wscript.echo "DNSHostName: " & dns_hostname
 
-    computer_domain = objItem.Domain
+    cs_domain = objItem.Domain
     If Err.Number <> 0 Then ShowError("Cannot select Domain from Win32_ComputerSystem.") end if
-    wscript.echo "Domain: " & computer_domain
 
-    domain_role = "unknown"
-    if objItem.DomainRole = 0 then domain_role = "Standalone Workstation" end if
-    if objItem.DomainRole = 1 then domain_role = "Member Workstation" end if
-    if objItem.DomainRole = 2 then domain_role = "Standalone Server" end if
-    if objItem.DomainRole = 3 then domain_role = "Member Server" end if
-    if objItem.DomainRole = 4 then domain_role = "Backup Domain Controller" end if
-    if objItem.DomainRole = 5 then domain_role = "Primary Domain Controller" end if
-    wscript.echo "DomainRole: " & domain_role
-
-    enable_daylight_savings_time = objItem.EnableDaylightSavingsTime
+    cs_enable_ds_time = objItem.EnableDaylightSavingsTime
     If Err.Number <> 0 Then ShowError("Cannot select EnableDaylightSavingsTime from Win32_ComputerSystem.") end if
-    wscript.echo "EnableDaylightSavingsTime: " & enable_daylight_savings_time
 
-    part_of_domain = objItem.PartOfDomain
+    cs_part_of_domain = objItem.PartOfDomain
     If Err.Number <> 0 Then ShowError("Cannot select PartOfDomain from Win32_ComputerSystem.") end if
-    wscript.echo "PartOfDomain: " & part_of_domain
 
-    workgroup = objItem.Workgroup
+    cs_workgroup = objItem.Workgroup
     If Err.Number <> 0 Then ShowError("Cannot select Workgroup from Win32_ComputerSystem.") end if
-    wscript.echo "Workgroup: " & workgroup
+
+    if objItem.DomainRole = 0 then cs_domain_role = "Standalone Workstation" end if
+    if objItem.DomainRole = 1 then cs_domain_role = "Member Workstation" end if
+    if objItem.DomainRole = 2 then cs_domain_role = "Standalone Server" end if
+    if objItem.DomainRole = 3 then cs_domain_role = "Member Server" end if
+    if objItem.DomainRole = 4 then cs_domain_role = "Backup Domain Controller" end if
+    if objItem.DomainRole = 5 then cs_domain_role = "Primary Domain Controller" end if
 Next
 
 dim os_number, os_name
@@ -224,65 +209,15 @@ Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_OperatingSystem", "W
 If Err.Number <> 0 Then ShowError("Cannot select from Win32_OperatingSystem.") end if
 for each objItem In colItems
     os_name = objItem.Caption
-    wscript.echo "OS Name: " & os_name
     os_number = objItem.BuildNumber
-    wscript.echo "OS Build Number: " & os_number
 next
 
-
-dim client_site_name, dc_site_name, domain_short, dns_forest_name, short_domain_name
-dim domain_controller_name, domain_controller_address, domain_controller_address_type
-if (part_of_domain = "True") then
-    'Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_NTDomain where domainname = '' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
-    Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_NTDomain where domainname > '" & computer_domain & "' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
-    If Err.Number <> 0 Then
-        wscript.echo "-----ERROR-----"
-        wscript.echo "Cannot select from Win32_NTDomain."
-        wscript.echo "Error Number: " & Err.Number
-        wscript.echo "Source: " & Err.Source 
-        wscript.echo "Description: " &  Err.Description
-        wscript.echo "---------------"
-    Else
-        For Each objItem In colItems
-            wscript.echo "Domain Details"
-            client_site_name = objItem.ClientSiteName
-            If Err.Number <> 0 Then ShowError("Cannot select ClientSiteName from Win32_NTDomain.") end if
-            wscript.echo "ClientSiteName: " & client_site_name
-
-            wscript.echo "DcSiteName: " & objItem.DcSiteName
-            If Err.Number <> 0 Then ShowError("Cannot select DcSiteName from Win32_NTDomain.") end if
-
-            domain_short = objItem.Description
-            If Err.Number <> 0 Then ShowError("Cannot select Description from Win32_NTDomain.") end if
-            wscript.echo "Description: " & domain_short
-
-            wscript.echo "DnsForestName: " & objItem.DnsForestName
-            If Err.Number <> 0 Then ShowError("Cannot select DnsForestName from Win32_NTDomain.") end if
-
-            wscript.echo "DomainControllerAddress: " & objItem.DomainControllerAddress
-            If Err.Number <> 0 Then ShowError("Cannot select DomainControllerAddress from Win32_NTDomain.") end if
-
-            wscript.echo "DomainControllerAddressType: " & objItem.DomainControllerAddressType
-            If Err.Number <> 0 Then ShowError("Cannot select DomainControllerAddressType from Win32_NTDomain.") end if
-
-            domain_controller_name = objItem.DomainControllerName
-            If Err.Number <> 0 Then ShowError("Cannot select DomainControllerName from Win32_NTDomain.") end if
-            wscript.echo "DomainControllerName: " & domain_controller_name
-
-            short_domain_name = objItem.DomainName
-            If Err.Number <> 0 Then ShowError("Cannot select DomainName from Win32_NTDomain.") end if
-            wscript.echo "DomainName: " & short_domain_name
-            wscript.echo ""
-        Next
-    end If
-end If 
-
-dim local_time
+dim lt_local_time
 set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_LocalTime", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
 If Err.Number <> 0 Then ShowError("Cannot select from Win32_LocalTime.") end if
 For Each objItem In colItems
-    local_time = objItem.Year & "-" & objItem.Month & "-" & objItem.Day & " " & objItem.Hour & ":" & objItem.Minute & ":" & objItem.Second
-    If Err.Number <> 0 Then ShowError("Failed to create local time.")
+    lt_local_time = objItem.Year & "-" & objItem.Month & "-" & objItem.Day & " " & objItem.Hour & ":" & objItem.Minute & ":" & objItem.Second
+    If Err.Number <> 0 Then ShowError("Failed to create local time (1).")
 Next
 
 dim group_domain, member_domain, local_administrators
@@ -292,39 +227,103 @@ colGroups.Filter = Array("group")
 If Err.Number <> 0 Then ShowError("Cannot filter Group from WinNT.") end if
 For Each objGroup In colGroups
     if objGroup.Name = "Administrators" then
-    If Err.Number <> 0 Then ShowError("Cannot select Name from WinNT.") end if
+        If Err.Number <> 0 Then
+            ShowError("Cannot select Name from WinNT.")
+        end if
         For Each objUser in objGroup.Members
             group_domain = split(objUser.ADSPath, "/")
-            If Err.Number <> 0 Then ShowError("Cannot split ADSPath from WinNT.") end if
-            member_domain = group_domain(ubound(group_domain)-1)
-            If Err.Number <> 0 Then ShowError("Cannot get domain from split ADSPath.") end if
+            If Err.Number <> 0 Then
+                ShowError("Cannot split ADSPath from WinNT.")
+            end if
+                member_domain = group_domain(ubound(group_domain)-1)
+            If Err.Number <> 0 Then
+                ShowError("Cannot get domain from split ADSPath.")
+            end if
             local_administrators = local_administrators & objUser.name & "@" & member_domain & ","
         Next
-        wscript.echo "Local Administrators: " & left(local_administrators,len(local_administrators)-1)
     end if
 Next
 
-if (part_of_domain = "True" and _
-        lcase(user_domain) <> lcase(hostname) and _
-        lcase(running_user_domain) <> lcase(computer_domain) and _
-        lcase(running_user_domain) <> lcase(short_domain_name)) then
+wscript.echo ""
+wscript.echo "Computer Settings"
+wscript.echo "================="
+wscript.echo "Computer Time:             " & lt_local_time
+wscript.echo "Computer Name:             " & hostname
+' wscript.echo "User Running Name:         " & running_user
+' wscript.echo "User Running Domain:       " & running_user_domain
+wscript.echo "User Name:                 " & user_name
+wscript.echo "User Domain:               " & user_domain
+wscript.echo "User derived from CS:      " & user_from_cs
+wscript.echo "Daylight In Effect:        " & cs_daylight_in_effect
+wscript.echo "EnableDaylightSavingsTime: " & cs_enable_ds_time
+wscript.echo "Current Time Zone:         " & cs_current_timezone
+wscript.echo "Computer DNS Name:         " & cs_dns_hostname
+wscript.echo "Computer Domain:           " & cs_domain
+wscript.echo "Workgroup:                 " & cs_workgroup
+wscript.echo "PartOfDomain:              " & cs_part_of_domain
+wscript.echo "DomainRole:                " & cs_domain_role
+wscript.echo "OS Name:                   " & os_name
+wscript.echo "OS Build Number:           " & os_number
+wscript.echo "Local Administrators:      " & left(local_administrators,len(local_administrators)-1)
+wscript.echo ""
 
+dim ad_client_site_name, ad_dc_site_name, ad_description, ad_dns_forest_name
+dim ad_domain_controller_address, ad_domain_controller_address_type, ad_domain_controller_name, ad_domain_name
+if (cs_part_of_domain = "True") then
+    Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_NTDomain where domainname = '" & user_domain & "' ", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
+    If Err.Number <> 0 Then
+        wscript.echo "-----ERROR-----"
+        wscript.echo "Cannot select from Win32_NTDomain."
+        wscript.echo "Error Number: " & Err.Number
+        wscript.echo "Source: " & Err.Source 
+        wscript.echo "Description: " &  Err.Description
+        wscript.echo "---------------"
+    Else
+        For Each objItem In colItems
+            ad_client_site_name = objItem.ClientSiteName
+            If Err.Number <> 0 Then ShowError("Cannot select ClientSiteName from Win32_NTDomain.") end if
+
+            ad_dc_site_name = objItem.DcSiteName
+            If Err.Number <> 0 Then ShowError("Cannot select DcSiteName from Win32_NTDomain.") end if
+
+            ad_description = objItem.Description
+            If Err.Number <> 0 Then ShowError("Cannot select Description from Win32_NTDomain.") end if
+
+            ad_dns_forest_name = objItem.DnsForestName
+            If Err.Number <> 0 Then ShowError("Cannot select DnsForestName from Win32_NTDomain.") end if
+
+            ad_domain_controller_address = objItem.DomainControllerAddress
+            If Err.Number <> 0 Then ShowError("Cannot select DomainControllerAddress from Win32_NTDomain.") end if
+
+            ad_domain_controller_address_type = objItem.DomainControllerAddressType
+            If Err.Number <> 0 Then ShowError("Cannot select DomainControllerAddressType from Win32_NTDomain.") end if
+
+            ad_domain_controller_name = objItem.DomainControllerName
+            If Err.Number <> 0 Then ShowError("Cannot select DomainControllerName from Win32_NTDomain.") end if
+
+            ad_domain_name = objItem.DomainName
+            If Err.Number <> 0 Then ShowError("Cannot select DomainName from Win32_NTDomain.") end if
+        Next
+    end If
+end If
+
+
+
+if (cs_part_of_domain = "True" and _
+        lcase(user_domain) <> lcase(hostname) and _
+        lcase(user_domain) <> lcase(cs_domain) and _
+        lcase(user_domain) <> lcase(ad_description) and _
+        lcase(user_domain) <> lcase(ad_domain_name)) then
     ' we need to use an Active Directory account to be able to query Active Directory
     wscript.echo vbcrlf & "FAIL - You must use a domain account to run this script if you are querying a domain. Please log on to this computer with a domain account and re-run this script."
-    wscript.echo "PartOfDomain: " & part_of_domain
-    wscript.echo "UserDomain: " & lcase(user_domain)
-    wscript.echo "Hostname: " & lcase(hostname)
-    wscript.echo "User Running Domain: " & lcase(running_user_domain)
-    wscript.echo "Computer Domain: " & lcase(computer_domain)
     wscript.quit 1
 end if
 
 dim ldap_domain, user_ldap, user_ldap_groups
-if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
+if (cs_part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
     ' this PC belongs to a domain.
 
-    ldap_domain = "dc=" & replace(computer_domain, ".", ",dc=")
-    wscript.echo "LDAP Domain: " & ldap_domain
+    ldap_domain = "dc=" & replace(cs_domain, ".", ",dc=")
 
     Const ADS_SCOPE_SUBTREE = 2
     Set objConnection = CreateObject("ADODB.Connection")
@@ -342,7 +341,6 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
     objCommand.Properties("Searchscope") = ADS_SCOPE_SUBTREE 
     If Err.Number <> 0 Then ShowError("Cannot set Search Scope.") end if
     dim command_text : command_text = "SELECT distinguishedName FROM 'LDAP://" & ldap_domain & "' WHERE objectCategory='user' AND sAMAccountName='" & user_name & "'"
-    if (debugging = 1) then wscript.echo "LDAP Connect String: " & command_text end if
 
     objCommand.CommandText = command_text
     If Err.Number <> 0 Then ShowError("Cannot set CommandText.") end if
@@ -357,11 +355,9 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
     Do Until objRecordSet.EOF
         user_ldap = objRecordSet.Fields("distinguishedName").Value
         If Err.Number <> 0 Then ShowError("Cannot get distinguishedName.") end if
-        wscript.echo "User LDAP Account: " & user_ldap
         objRecordSet.MoveNext
     Loop
 
-    if (debugging = 1) then wscript.echo VBCRLF & "-----Domain PC and User------" end if
     Set objUser = GetObject("LDAP://" & user_ldap) 
     If Err.Number <> 0 Then ShowError("Cannot connect to LDAP.") end if
     Set colGroups = objUser.Groups
@@ -399,44 +395,61 @@ if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
             end if
         Next
     End Function
+end if
+
+if (cs_part_of_domain = "True") then
+    wscript.echo "Active Directory Details"
+    wscript.echo "========================"
+    wscript.echo "AD Client Site Name:               " & ad_client_site_name
+    wscript.echo "AD DC Site Name:                   " & ad_dc_site_name
+    wscript.echo "AD Description:                    " & ad_description
+    wscript.echo "AD Domain Name (short):            " & ad_domain_name
+    wscript.echo "AD DNS Forest Name:                " & ad_dns_forest_name
+    wscript.echo "AD Domain Controller Address:      " & ad_domain_controller_address
+    wscript.echo "AD Domain Controller Name:         " & ad_domain_controller_name
+    wscript.echo "AD Domain Controller Address Type: " & ad_domain_controller_address_type
+    wscript.echo "LDAP Connect String:               " & command_text
+    wscript.echo "LDAP Domain:                       " & ldap_domain
+    wscript.echo "LDAP User Account:                 " & user_ldap
     if (user_ldap_groups > "") then
-        wscript.echo "User LDAP Groups: " & left(user_ldap_groups,len(user_ldap_groups)-1)
+        wscript.echo "User LDAP Groups:                  " & left(user_ldap_groups,len(user_ldap_groups)-1)
     else
-        wscript.echo "User LDAP Groups: None other than primary."
+        wscript.echo "User LDAP Groups:                  None other than primary."
     end if
 end if
 
 
-
-dim dc_current_timezone, dc_daylight_in_effect, dc_enable_daylight_savings_time, dc_local_time
+dim ad_dc_current_timezone, ad_dc_daylight_in_effect, ad_dc_enable_daylight_savings_time, ad_dc_local_time
 ' Connect to the AD Controller and retrieve it's time
-if (part_of_domain = "True") then
-    if  (instr(lcase(domain_role), "controller") = 0 ) then
+if (cs_part_of_domain = "True") then
+    if (instr(lcase(cs_domain_role), "ontroller") = 0 ) then
         ' we belong to a domain and we are not a domain controller.
         set objWMIService = GetObject("winmgmts:\\" & domain_controller_name & "\root\cimv2")
-        If Err.Number <> 0 Then ShowError("Problem authenticating to Domain Controller '" & domain_controller_name & "'") end if
+        If Err.Number <> 0 Then ShowError("Problem authenticating to Domain Controller '" & ad_domain_controller_name & "'") end if
 
         colItems = objWMIService.ExecQuery("SELECT * FROM Win32_LocalTime", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
-        If Err.Number <> 0 Then ShowError("Cannot select from Win32_LocalTime on " & domain_controller_name) end if
+        If Err.Number <> 0 Then ShowError("Cannot select from Win32_LocalTime on " & ad_domain_controller_name) end if
         For Each objItem In colItems
-            dc_local_time = objItem.Year & "-" & objItem.Month & "-" & objItem.Day & " " & objItem.Hour & ":" & objItem.Minute & ":" & objItem.Second
-            If Err.Number <> 0 Then ShowError("Failed to create local time.") end if
+            ad_dc_local_time = objItem.Year & "-" & objItem.Month & "-" & objItem.Day & " " & objItem.Hour & ":" & objItem.Minute & ":" & objItem.Second
+            If Err.Number <> 0 Then ShowError("Failed to create local time (2).") end if
         Next
 
         Set colItems = objWMIService.ExecQuery("SELECT * FROM Win32_ComputerSystem", "WQL", wbemFlagReturnImmediately + wbemFlagForwardOnly)
         For Each objItem In colItems
-            dc_current_timezone = objItem.CurrentTimeZone
+            ad_dc_current_timezone = objItem.CurrentTimeZone
             If Err.Number <> 0 Then ShowError("Cannot select CurrentTimezone from Win32_ComputerSystem on " & domain_controller_name) end if
-            wscript.echo "DC CurrentTimeZone: " & dc_current_timezone
 
-            dc_daylight_in_effect = objItem.DaylightInEffect
+            ad_dc_daylight_in_effect = objItem.DaylightInEffect
             If Err.Number <> 0 Then ShowError("Cannot select DaylightInEffect from Win32_ComputerSystem on " & domain_controller_name) end if
-            wscript.echo "DC DaylightInEffect: " & dc_daylight_in_effect
 
-            dc_enable_daylight_savings_time = objItem.EnableDaylightSavingsTime
+            ad_dc_enable_daylight_savings_time = objItem.EnableDaylightSavingsTime
             If Err.Number <> 0 Then ShowError("Cannot select EnableDaylightSavingsTime from Win32_ComputerSystem on " & domain_controller_name) end if
-            wscript.echo "DC EnableDaylightSavingsTime: " & dc_enable_daylight_savings_time
         next
+        wscript.echo "DC Current Time:                 " & ad_dc_local_time
+        wscript.echo "DC Current Time Zone:            " & ad_dc_current_timezone
+        wscript.echo "DC Daylight In Effect:           " & ad_dc_daylight_in_effect
+        wscript.echo "DC Enable Daylight Savings Time: " & ad_dc_enable_daylight_savings_time
+        wscript.echo
     end if
 end if
 
@@ -448,17 +461,17 @@ wscript.echo "Running Tests"
 wscript.echo "------------------------"
 
 ' check localtime versus domain controller time
-if (part_of_domain = "True" and instr(lcase(domain_role), "controller") = 0 ) then
-    if ( abs(datediff("s", local_time, dc_local_time)) > 300) then
+if (cs_part_of_domain = "True" and instr(lcase(cs_domain_role), "controller") = 0 ) then
+    if ( abs(datediff("s", lt_local_time, ad_dc_local_time)) > 300) then
         wscript.echo "FAIL - There is a difference of greater than 5 minutes between your local time and that of your nearest Domain Controller."
     end if
-    if (current_timezone <> dc_current_timezone) then
+    if (cs_current_timezone <> dc_current_timezone) then
         wscript.echo "FAIL - Local timezone should be the same as your nearest Domain Controller."
     end if
-    if (daylight_in_effect <> dc_daylight_in_effect) then
+    if (cs_daylight_in_effect <> dc_daylight_in_effect) then
         wscript.echo "FAIL - Daylight Savings in Effect should be the same as your nearest Domain Controller."
     end if
-    if (enable_daylight_savings_time <> dc_enable_daylight_savings_time) then
+    if (cs_enable_daylight_savings_time <> dc_enable_daylight_savings_time) then
         wscript.echo "FAIL - Enable Daylight Savings should be the same as your nearest Domain Controller."
     end if
 end if
@@ -474,7 +487,7 @@ end if
 
 
 ' The domain user must be a member of the local Administrators group
-if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname) and instr(lcase(local_administrators), lcase(user))) then
+if (cs_part_of_domain = "True" and lcase(user_domain) <> lcase(hostname) and instr(lcase(local_administrators), lcase(user))) then
     wscript.echo "PASS - Domain account is in the local Administrators group."
 end if
 
@@ -482,7 +495,7 @@ end if
 ' The domain user must be in the local Administrators group
 ' or in a group that is in the local Administrators group
 dim local_admin, domain_admin
-if (part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
+if (cs_part_of_domain = "True" and lcase(user_domain) <> lcase(hostname)) then
     temp = split(local_administrators, ",")
     temp2 = split(user_ldap_groups, ",")
     dim hit_la, d_group
