@@ -2678,17 +2678,17 @@ if [ "$submit_online" = "y" ]; then
 		fi
 		if [ "$debugging" -gt 3 ]; then
 			if [ "$ignore_invalid_ssl" = "y" ]; then
-				curl -k -o add_system --data "@$xml_file" "$url"
+				curl -k -o add_system --data-binary "@$xml_file" "$url"
 			else
-				curl -o add_system --data "@$xml_file" "$url"
+				curl -o add_system --data-binary "@$xml_file" "$url"
 			fi
 			cat add_system
 			rm add_system
 		else
 			if [ "$ignore_invalid_ssl" = "y" ]; then
-				curl -k --data "@$xml_file" "$url" >/dev/null 2>&1
+				curl -k --data-binary "@$xml_file" "$url" >/dev/null 2>&1
 			else
-				curl --data "@$xml_file" "$url" >/dev/null 2>&1
+				curl --data-binary "@$xml_file" "$url" >/dev/null 2>&1
 			fi
 		fi
 	else
