@@ -2670,13 +2670,12 @@ if [ "$submit_online" = "y" ]; then
 	sed -i -e 's/+/%2B/g' "$xml_file"
 	sed -i -e 's/"/%22/g' "$xml_file"
 	sed -i -e 's/&/%26/g' "$xml_file"
-	if [ "$debugging" -gt 1 ]; then
-		echo "Submitting results to server"
-		echo "URL: $url"
-	fi
-
 
 	if [ -n "$(which curl 2>/dev/null)" ]; then
+		if [ "$debugging" -gt 1 ]; then
+			echo "Submitting results to server using cURL"
+			echo "URL: $url"
+		fi
 		if [ "$debugging" -gt 3 ]; then
 			if [ "$ignore_invalid_ssl" = "y" ]; then
 				curl -k -o add_system --data "@$xml_file" "$url"
@@ -2694,6 +2693,10 @@ if [ "$submit_online" = "y" ]; then
 		fi
 	else
 		if [ -n "$(which wget 2>/dev/null)" ]; then
+			if [ "$debugging" -gt 1 ]; then
+				echo "Submitting results to server using wget"
+				echo "URL: $url"
+			fi
 			if [ "$debugging" -gt 3 ]; then
 				if [ "$ignore_invalid_ssl" = "y" ]; then
 					wget --no-check-certificate -O add_system --post-file="$xml_file" "$url"
