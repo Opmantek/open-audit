@@ -335,7 +335,7 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 	nmap_udp_timer_start=$(timer)
 	test=$(nmap -n -sU -p161 "$timing" "$host" 2>/dev/null | grep "161/udp.*open")
 	nmap_udp_timer_end=$(timer "$nmap_udp_timer_start")
-	db_log "Scanning Host for SNMP: $host" "$nmap_udp_timer_end" "" "7" "" "7" "nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\""
+	db_log "Scanning Host for SNMP: $host" "$nmap_udp_timer_end" "" "7" "$test" "7" "nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\""
 	if [ "$debugging" -gt 0 ]; then
 		echo "Scanning Host for SNMP took $nmap_udp_timer_end seconds using the command: nmap -n -sU -p161 $timing $host 2>/dev/null | grep \"161/udp.*open\""
 		echo ""
