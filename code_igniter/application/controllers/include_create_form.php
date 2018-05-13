@@ -30,6 +30,10 @@ $temp->type = $this->response->meta->collection;
 $this->response->data[] = $temp;
 unset($temp);
 
+$table = $this->response->meta->collection;
+include 'include_dictionary.php';
+$this->response->dictionary = $dictionary;
+
 $collection = $this->response->meta->collection;
 if ($collection == 'attributes' or
     $collection == 'credentials' or

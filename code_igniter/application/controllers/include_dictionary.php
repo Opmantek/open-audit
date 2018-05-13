@@ -30,6 +30,17 @@ $dictionary->about = '';
 $dictionary->marketing = '';
 $dictionary->notes = '';
 $dictionary->columns = new stdClass();
+$db_table = $table;
+if ($table == 'devices') { $db_table = 'system'; }
+$dictionary->attributes = new stdClass();
+$dictionary->attributes->fields = array();
+$dictionary->attributes->create = array();
+$dictionary->attributes->update = array();
+
+$temp = $this->db->field_data($db_table);
+foreach ($temp as $item) {
+    $dictionary->attributes->fields[] = $item->name;
+}
 
 $link = 'For more detailed information, here is a link to the <em>' . $table . '</em> page on the Open-AudIT Knowledgebase <a href="https://community.opmantek.com/display/OA/' . $table . '">LINK</a>.';
 $link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . $table . '">Knowledge Base</a>.';
@@ -65,6 +76,8 @@ if ($table == 'applications') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id');
+    $dictionary->attributes->update = array('name','org_id','description');
 }
 
 if ($table == 'attributes') {
@@ -89,6 +102,8 @@ if ($table == 'attributes') {
     $dictionary->columns->value = 'The value for this particular item.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','type','resource','value');
+    $dictionary->attributes->update = array('name','org_id','resource','type','value');
 }
 
 if ($table == 'audit_log') {
@@ -172,6 +187,8 @@ if ($table == 'collectors') {
     $dictionary->columns->options = 'Unused.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','status');
+    $dictionary->attributes->update = array('name','org_id','description','ip','status','check_minutes','user_id','uuid','network_address','options');
 }
 
 if ($table == 'connections') {
@@ -187,6 +204,8 @@ if ($table == 'connections') {
     $dictionary->columns->provider = 'The ISP or Telco providing this link.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id');
+    $dictionary->attributes->update = array('name','org_id','description','provider','service_type','product_name','service_identifier','speed','location_id_a','location_id_b','system_id_a','system_id_b','line_number_a','line_number_b','ip_address_external_a','ip_address_external_b','ip_address_internal_a','ip_address_internal_b');
 }
 
 if ($table == 'credentials') {
@@ -208,6 +227,8 @@ if ($table == 'credentials') {
     $dictionary->columns->credentials = 'An encrypted JSON document containing the required attributes depending on the <code>credentials.type</code>.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','type','credentials');
+    $dictionary->attributes->update = array('name','org_id','description','type','credentials');
 }
 
 if ($table == 'dashboards') {
@@ -241,7 +262,8 @@ if ($table == 'dashboards') {
     $dictionary->columns->sidebar = 'Do you wish to see the dtandard sidebar on the left.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
-
+    $dictionary->attributes->create = array('name','options');
+    $dictionary->attributes->update = array('name','org_id','description','type','options','sidebar');
 }
 
 if ($table == 'devices') {
@@ -297,6 +319,7 @@ if ($table == 'discoveries') {
     $dictionary->columns->discard = 'Used internally when discovering a single device.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','type','network_address','other');array('name','org_id','description','type','devices_assigned_to_org','devices_assigned_to_location','network_address','system_id','other','discard','last_run','complete');
 }
 
 if ($table == 'export') {
@@ -327,6 +350,8 @@ if ($table == 'fields') {
     $dictionary->columns->placement = 'Where on the Device Details screen you would like to see this field appear.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','type','placement','group_id');
+    $dictionary->attributes->update = array('name','org_id','type','values','placement','group_id');
 }
 
 if ($table == 'files') {
@@ -348,6 +373,8 @@ Supported clients are Windows and Linux.<br /><br />
     $dictionary->columns->description = $description;
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','path');
+    $dictionary->attributes->update = array('name','org_id','description','path');
 }
 
 if ($table == 'groups') {
@@ -368,6 +395,8 @@ An example for SQL to select all devices running the Debian OS - <code>SELECT DI
     $dictionary->columns->expose = 'Should we expose this group in the web interface.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','sql');
+    $dictionary->attributes->update = array('name','org_id','description','sql');
 }
 
 if ($table == 'ldap_servers') {
@@ -401,6 +430,8 @@ if ($table == 'ldap_servers') {
     $dictionary->columns->refreshed = 'Unused.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','lang','host','port','secure','domain','type','version','use_roles','refresh');
+    $dictionary->attributes->update = array('name','org_id','description','lang','host','port','secure','domain','type','version','base_dn','user_dn','user_membership_attribute','use_roles','dn_account','dn_password','refresh');
 }
 
 if ($table == 'licenses') {
@@ -422,6 +453,8 @@ To create an entry to track your licenses you <em>must</em> to provide a name, a
     $dictionary->columns->match_string = 'A string that matches the <code>software.name</code> attribute. You can use the standard SQL wildcard of percent (%) to match one or more characters.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','org_descendants','purchase_count','match_string');
+    $dictionary->attributes->update = array('name','org_id','description','org_descendants','purchase_count','match_string');
 }
 
 if ($table == 'locations') {
@@ -438,6 +471,8 @@ if ($table == 'locations') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id');
+    $dictionary->attributes->update = array('name','org_id','type','room','suite','level','address','suburb','city','district','region','area','state','postcode','country','tags','phone','picture','latitude','longitude','geo');
 }
 
 if ($table == 'maps') {
@@ -464,6 +499,8 @@ if ($table == 'networks') {
     $dictionary->columns->network = 'The network in the format 192.168.1.0/24.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','network');
+    $dictionary->attributes->update = array('name','org_id','description','network');
 }
 
 if ($table == 'orgs') {
@@ -485,6 +522,8 @@ if ($table == 'orgs') {
     $dictionary->columns->ad_group = 'Used when LDAP servers have been configured to populate a users details - this includes the Orgs to which they have access. If a user is in this LDAP group, they are assigned this org.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','parent_id');
+    $dictionary->attributes->update = array('name','description','parent_id','ad_group','type');
 }
 
 if ($table == 'queries') {
@@ -506,6 +545,8 @@ An example query SQL showing attributes on devices that have an <code>os_group</
     $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','sql','menu_category','menu_display');
+    $dictionary->attributes->update = array('name','org_id','description','sql','menu_category','menu_display');
 }
 
 if ($table == 'reports') {
@@ -535,6 +576,8 @@ if ($table == 'roles') {
     $dictionary->columns->permissions = 'This attribute is stored as a JSON object. It is the result of the table above and contained the endpoint name along with "c", "r", "u" and/or "d" which represent create, read, update and delete. These are the actions a user can perform on items from the particular endpoint.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','permissions');
+    $dictionary->attributes->update = array('name','description','permissions','ad_group');
 }
 
 if ($table == 'servers') {
@@ -580,6 +623,8 @@ if ($table == 'scripts') {
     $dictionary->columns->hash = 'Not currently used. Intended as a hash of the script when the options are applied.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','options','based_on');
+    $dictionary->attributes->update = array('name','org_id','description','options','based_on');
 }
 
 if ($table == 'summaries') {
@@ -601,6 +646,8 @@ if ($table == 'summaries') {
     $dictionary->columns->menu_category = 'Which sub-menu should we display this query in.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','table','column','menu_category');
+    $dictionary->attributes->update = array('name','org_id','table','column','menu_category','extra_columns');
 }
 
 if ($table == 'support') {
@@ -642,6 +689,8 @@ Create individual discovery schedules for each subnet or AD controller, add in r
     $dictionary->columns->last_run = 'The last date and time this task was executed (read only).';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','type','sub_resource_id','uuid','enabled','minute','hour','day_of_month','month','day_of_week');
+    $dictionary->attributes->update = array('name','org_id','description','enabled','type','minute','hour','day_of_month','month','day_of_week','options','uuid','sub_resource_id','options','last_run');
 
 }
 
@@ -672,6 +721,8 @@ if ($table == 'users') {
     $dictionary->columns->type = 'Only \'user\' and \'collector\' are used at present.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','lang','active','roles','orgs');
+    $dictionary->attributes->update = array('name','org_id','permissions','password','full_name','email','lang','active','roles','orgs','type','dashboard_id');
 }
 
 if ($table == 'warranties') {
@@ -708,4 +759,6 @@ if ($table == 'widgets') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->valid_columns = array('bios.current','bios.description','bios.manufacturer','bios.version','disk.current','disk.description','disk.interface_type','disk.manufacturer','disk.model','disk.model_family','disk.partition_count','disk.status','disk.version','ip.cidr','ip.current','ip.netmask','ip.network','ip.version','log.current','log.file_name','log.name','memory.current','memory.detail','memory.form_factor','memory.size','memory.speed','memory.type','module.class_text','module.current','module.description','monitor.aspect_ratio','monitor.current','monitor.description','monitor.manufacturer','monitor.model','monitor.size','motherboard.current','motherboard.manufacturer','motherboard.memory_slot_count','motherboard.model','motherboard.processor_slot_count','network.connection_status','network.current','network.dhcp_enabled','network.dhcp_server','network.dns_domain','network.dns_server','network.manufacturer','network.model','network.type','optical.current','optical.model','optical.mount_point','pagefile.current','pagefile.max_size','pagefile.name','pagefile_initial_size','partition.bootable','partition.current','partition.description','partition.format','partition.mount_point','partition.mount_type','partition.name','partition.type','print_queue.color','print_queue.current','print_queue.duplex','print_queue.location','print_queue.manufacturer','print_queue.model','print_queue.port_name','print_queue.shared','print_queue.status','print_queue.type','processor.architecture','processor.core_count','processor.current','processor.description','processor.logical_count','processor.manufacturer','processor.physical_count','processor.socket','route.current','route.destination','route.mask','route.next_hop','route.type','server.current','server.description','server.edition','server.full_name','server.name','server.status','server.type','server.version','server.version_string','server_item.current','server_item.type','service.current','service.executable','service.name','service.start_mode','service.state','service.user','share.current','share.name','share.path','software.current','software.install_source','software.name','software_key.current','software_key.edition','software_key.name','software_key.rel','software_key.string','sound.current','sound.manufacturer','sound.model','system.class','system.contact_name','system.environment','system.form_factor','system.function','system.icon','system.invoice_id','system.lease_expiry_date','system.location_id','system.location_latitude','system.location_level','system.location_longitude','system.location_rack','system.location_rack_position','system.location_rack_size','system.location_room','system.location_suite','system.manufacturer','system.memory_count','system.model','system.oae_manage','system.org_id','system.os_bit','system.os_family','system.os_group','system.os_installation_date','system.os_name','system.os_version','system.owner','system.patch_panel','system.printer_color','system.printer_duplex','system.printer_port_name','system.printer_shared','system.printer_shared_name','system.processor_count','system.purchase_amount','system.purchase_cost_center','system.purchase_date','system.purchase_invoice','system.purchase_order_number','system.purchase_service_contract_number','system.purchase_vendor','system.service_network','system.service_number','system.service_plan','system.service_provider','system.service_type','system.snmp_oid','system.status','system.sysContact','system.sysDescr','system.sysLocation','system.sysObjectID','system.type','system.wall_port','system.warranty_duration','system.warranty_expires','system.warranty_type','user.current','user.domain','user.password_changeable','user.password_required','user.status','user.type','user_group.current','user_group.name','video.current','video.manufacturer','video.model','video.size','vm.current','vm.cpu_count','vm.memory_count','vm.status','windows.active_directory_ou','windows.boot_device','windows.build_number','windows.client_site_name','windows.country_code','windows.current','windows.domain_controller_address','windows.domain_controller_name','windows.domain_role','windows.domain_short','windows.id_number','windows.install_directory','windows.language','windows.organisation','windows.part_of_domain','windows.registered_user','windows.servicce_pack','windows.time_caption','windows.time_daylight','windows.version','windows.workgroup');
     $dictionary->valid_tables = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
+    $dictionary->attributes->create = array('name','org_id','type');
+    $dictionary->attributes->update = array('name','org_id','description','type','table','primary','secondary','ternary','dataset_title','where','limit','group_by','options','sql','link');
 }
