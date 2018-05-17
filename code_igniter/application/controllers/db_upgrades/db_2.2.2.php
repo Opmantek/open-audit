@@ -29,6 +29,22 @@
 
 $this->log_db('Upgrade database to 2.2.2 commenced');
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'access_token_count'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'access_token_count','10','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM `configuration` WHERE `name` = 'access_token_enable'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'access_token_enable','y','bool','y','system','2000-01-01 00:00:00','Should we enable access tokens for CSRF mitigation.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180620' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

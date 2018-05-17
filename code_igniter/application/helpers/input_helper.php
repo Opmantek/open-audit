@@ -883,12 +883,13 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
 
-        if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form') {
+        if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form' and !empty($CI->config->config['access_token_enable']) and $CI->config->config['access_token_enable'] != 'y') {
             $log->status = 'checking access token';
             $log->summary = 'POSTed access token: ' . @$CI->response->meta->received_data->access_token;
-            $log->detail = 'Cookie access_token: ' . $CI->user->access_token;
-            stdlog($log);
+            $log->detail = 'Cookie access_tokens: ' . implode(', ', $CI->user->access_token);
             if (empty($CI->response->meta->received_data->access_token)) {
+                $log->status = 'access token check failed';
+                stdlog($log);
                 # Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0034', $CI->response->meta->collection . ':' . $CI->response->meta->action);
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
@@ -900,7 +901,9 @@ if (! function_exists('inputRead')) {
                     exit();
                 }
             }
-            if ($CI->response->meta->received_data->access_token != $CI->user->access_token) {
+            if (!in_array($CI->response->meta->received_data->access_token, $CI->user->access_token)) {
+                $log->status = 'access token check failed';
+                stdlog($log);
                 # Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0035', $CI->response->meta->collection . ':' . $CI->response->meta->action);
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
@@ -912,6 +915,8 @@ if (! function_exists('inputRead')) {
                     exit();
                 }
             }
+            $log->status = 'access token check passed';
+            stdlog($log);
             $log->status = 'parsing input';
         }
 
