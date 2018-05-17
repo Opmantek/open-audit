@@ -35,30 +35,22 @@ include 'include_dictionary.php';
 $this->response->dictionary = $dictionary;
 
 $collection = $this->response->meta->collection;
-if ($collection == 'attributes' or
-    $collection == 'credentials' or
-    $collection == 'connections' or
-    $collection == 'discoveries' or
-    $collection == 'fields' or
-    $collection == 'files' or
-    $collection == 'groups' or
-    $collection == 'ldap_servers' or
-    $collection == 'licenses' or
-    $collection == 'locations' or
-    $collection == 'networks' or
-    $collection == 'nmis' or
-    $collection == 'orgs' or
-    $collection == 'queries' or
-    $collection == 'scripts' or
-    $collection == 'summaries' or
-    $collection == 'users') {
-    $this->load->model('m_orgs');
-    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+$this->load->model('m_orgs');
+$this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+
+if ($collection == 'connections') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
 }
 
-if ($collection == 'connections' or
-    $collection == 'discoveries' or
-    $collection == 'nmis') {
+if ($collection == 'dashboards') {
+    $this->load->model('m_widgets');
+    $this->response->included = array_merge($this->response->included, $this->m_widgets->collection());
+}
+
+if ($collection == 'discoveries') {
+    $this->load->model('m_collection');
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
 }
@@ -68,14 +60,52 @@ if ($collection == 'fields') {
         $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
 }
 
+if ($collection == 'locations') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
+if ($collection == 'nmis') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+}
+
+if ($collection == 'orgs') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
+if ($collection == 'queries') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
 if ($collection == 'scripts') {
         $this->load->model('m_files');
         $this->response->included = array_merge($this->response->included, $this->m_files->collection());
 }
 
+if ($collection == 'summaries') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
+if ($collection == 'tasks') {
+    $this->load->model('m_collection');
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('discoveries'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('groups'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('queries'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('summaries'));
+    #$this->load->model('m_reports');
+    #$this->response->included = array_merge($this->response->included, $this->m_reports->collection());
+}
+
 if ($collection == 'users') {
         $this->load->model('m_roles');
         $this->response->included = array_merge($this->response->included, $this->m_roles->collection());
+        $this->load->model('m_dashboards');
+        $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection());
 }
 
 unset($collection);

@@ -138,6 +138,18 @@ class Files extends MY_Controller
     }
 
     /**
+    * Supply JSON attributes for the user to create an object
+    *
+    * @access public
+    * @return NULL
+    */
+    public function create_form()
+    {
+        $this->response->meta->response = 'json';
+        include 'include_create_form.php';
+    }
+
+    /**
     * Supply a HTML form for the user to upload a collection of objects in CSV
     *
     * @access public

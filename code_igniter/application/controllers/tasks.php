@@ -132,6 +132,7 @@ class tasks extends MY_Controller
     */
     private function create_form()
     {
+        $this->response->meta->response = 'json';
         include 'include_create_form.php';
     }
 

@@ -491,7 +491,7 @@ if ($table == 'networks') {
     $dictionary->about = '<p>A network is derived from discovery entries and device attribtes.<br /><br />
     Open-AudIT can be configured to only accept audit results from the networks contained here. To set this go to the configuration and set the attribute <code>blessed_subnets_use</code>.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = '';
+    $dictionary->notes = 'The network should be in the format 192.168.1.0/24.';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
