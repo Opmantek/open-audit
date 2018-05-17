@@ -162,6 +162,16 @@ class Test extends CI_Controller
                             $component->attributes->next_hop = $component->attributes->next_hop_padded;
                             unset($component->attributes->next_hop_padded);
                         }
+                        if ($component->type == 'credential') {
+                            if (empty($component->attributes->credentials)) {
+                                $component->attributes->credentials = '';
+                            } else {
+                                $component->attributes->credentials = json_encode($component->attributes->credentials);
+                            }
+                        }
+                        if ($component->type == 'edit_log') {
+                            unset($component->attributes->full_name);
+                        }
                         unset($component->attributes->id);
                         $component->attributes->system_id = $id;
                         $data = $component->attributes;
