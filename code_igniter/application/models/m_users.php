@@ -407,6 +407,9 @@ class M_users extends MY_Model
             // user is logged in, return the $this->user object
             $sql = "SELECT * FROM " . $db_table . " WHERE " . $db_table . "." . $db_id_column . " = ?";
             $sql = $this->clean_sql($sql);
+            if (empty($this->config->config['access_token_count'])) {
+                $this->config->config['access_token_count'] = 10;
+            }
             $access_token = '';
             if (!empty($this->session->userdata['access_token'])) {
                 $access_token = $this->session->userdata['access_token'];
