@@ -264,7 +264,7 @@ if (! function_exists('ssh_command')) {
             return false;
         }
 
-        $ssh->setTimeout(120);
+        $ssh->setTimeout(300);
 
         if ($sudo == 'n' or $sudo == '' or $credentials->credentials->username == 'root') {
             $result = $ssh->exec($command);
@@ -764,8 +764,10 @@ if (! function_exists('ssh_audit')) {
         }
 
         unset($array);
-        if (empty($device->dbus_identifier)) {
-            if (empty($device->uuid) and $username != 'root' and $CI->config->config['discovery_linux_use_sudo'] == 'y') {
+        if (empty($device->dbus_identifier) and empty($device->uuid) and $username != 'root') {
+            if (($CI->config->config['discovery_linux_use_sudo'] == 'y' and strtolower($device->os_group) == 'linux') or
+                ($CI->config->config['discovery_sunos_use_sudo'] == 'y' and strtolower($device->os_group) == 'sunos') or
+                (strtolower($device->os_group) != 'linux' and strtolower($device->os_group) != 'sunos')) {
                 if (!empty($device->which_sudo)) {
                     # Run DMIDECODE to get the UUID (requires root or sudo)
                     $output = '';

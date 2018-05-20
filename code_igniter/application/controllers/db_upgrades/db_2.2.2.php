@@ -45,6 +45,14 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'access_token_enable','y','bool
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_sunos_use_sudo'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180620' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

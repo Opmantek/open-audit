@@ -1257,17 +1257,46 @@ foreach ($xml->children() as $input) {
         # audit anything that's not ESX
         if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
             $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-            $test = @$this->config->item('discovery_linux_use_sudo');
-            if (!empty($test) and
-                $this->config->item('discovery_linux_use_sudo') !== 'y' and
-                strtolower($device->os_group) == 'linux') {
-                # Running linux audit without sudo
-                $log->message = 'Running Linux audit without sudo, as per config.';
-                discovery_log($log);
-                $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
+            if (strtolower($device->os_group) == 'linux') {
+                $test = @$this->config->item('discovery_linux_use_sudo');
+                if (!empty($test) and $this->config->item('discovery_linux_use_sudo') === 'y') {
+                    $log->message = 'Running Linux audit using sudo, as per config.';
+                    discovery_log($log);
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
+                } else {
+                    $log->message = 'Running Linux audit without sudo, as per config.';
+                    discovery_log($log);
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
+                }
+            } else if (strtolower($device->os_group) == 'sunos') {
+                $test = @$this->config->item('discovery_sunos_use_sudo');
+                if (!empty($test) and $this->config->item('discovery_sunos_use_sudo') === 'y') {
+                    $log->message = 'Running SunOS audit using sudo, as per config.';
+                    discovery_log($log);
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
+                } else {
+                    $log->message = 'Running SunOS audit without sudo, as per config.';
+                    discovery_log($log);
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
+                }
             } else {
                 $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
+                if (!$result) {
+                    $log->severity = 5;
+                    $log->message = 'Running audit using sudo failed. Attempting to run without sudo.';
+                    discovery_log($log);
+                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
+                    if (!$result) {
+                        $log->severity = 3;
+                        $log->message = 'Running audit without sudo failed.';
+                        discovery_log($log);
+                    }
+                } else {
+                    $log->message = 'Running audit using sudo succeeded.';
+                    discovery_log($log);
+                }
             }
+            $log->severity = 7;
         }
         # audit ESX
         # TODO - Cannot copy audit_esxi.sh - more work required to fix
