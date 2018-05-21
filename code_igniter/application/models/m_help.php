@@ -288,6 +288,11 @@ class M_help extends MY_Model
         $result = $query->result();
         $data->database->logs = $result[0]->count;
 
+        $sql = "SELECT `severity`, COUNT(*) as `count`, MIN(timestamp) AS `first`, MAX(timestamp) AS `last` FROM `logs` GROUP BY `severity`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $data->logs = $result;
+
         // $this->load->model('m_database');
         // $tables = $this->m_database->collection();
         // $data->database->tables = new stdClass();
