@@ -773,7 +773,7 @@ if (! function_exists('inputRead')) {
         }
 
         # get and set the limit
-        $CI->config->config['page_size'] = intval($CI->config->config['page_size']);
+        $CI->config->config['page_size'] = @intval($CI->config->config['page_size']);
         if (empty($CI->config->config['page_size'])) {
             $CI->config->config['page_size'] = 1000;
         }
