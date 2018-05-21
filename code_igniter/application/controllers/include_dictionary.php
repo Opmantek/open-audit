@@ -37,10 +37,13 @@ $dictionary->attributes->fields = array();
 $dictionary->attributes->create = array();
 $dictionary->attributes->update = array();
 
-$temp = $this->db->field_data($db_table);
-foreach ($temp as $item) {
-    $dictionary->attributes->fields[] = $item->name;
+if ($this->db->table_exists($db_table)) {
+    $temp = $this->db->field_data($db_table);
+    foreach ($temp as $item) {
+        $dictionary->attributes->fields[] = $item->name;
+    }
 }
+
 
 $link = 'For more detailed information, here is a link to the <em>' . $table . '</em> page on the Open-AudIT Knowledgebase <a href="https://community.opmantek.com/display/OA/' . $table . '">LINK</a>.';
 $link = 'For more detailed information, check the Open-AudIT <a href="https://community.opmantek.com/display/OA/' . $table . '">Knowledge Base</a>.';
