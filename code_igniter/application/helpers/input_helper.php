@@ -883,7 +883,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
 
-        if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form' and !empty($CI->config->config['access_token_enable']) and $CI->config->config['access_token_enable'] != 'y') {
+        if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form' and !empty($CI->config->config['access_token_enable']) and $CI->config->config['access_token_enable'] == 'y') {
             $log->status = 'checking access token';
             $log->summary = 'POSTed access token: ' . @$CI->response->meta->received_data->access_token;
             $log->detail = 'Cookie access_tokens: ' . implode(', ', $CI->user->access_token);

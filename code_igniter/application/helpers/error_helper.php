@@ -331,14 +331,14 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0034']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0034']->severity = 4;
         $error_array['ERR-0034']->title = "No access token supplied.";
-        $error_array['ERR-0034']->detail = 'The access token from the previous request/response was not supplied when submitting data. This is required as at version 2.2.1 because of cross site request forgery protections.';
+        $error_array['ERR-0034']->detail = 'A valid access token was not supplied when submitting data. This is required as at version 2.2.1 because of cross site request forgery protections. Access Tokens are configurable in the Configuration.';
 
         $error_array['ERR-0035'] = new stdClass();
         $error_array['ERR-0035']->code = 'ERR-0035';
         $error_array['ERR-0035']->status = 'HTTP/1.1 400 Bad Request';
         $error_array['ERR-0035']->severity = 4;
         $error_array['ERR-0035']->title = "Invalid access token supplied.";
-        $error_array['ERR-0035']->detail = 'An invalid access token was supplied when submitting data. You should only submit a form to create an item when that is the last page you have opened. Opening a page after opening the form page will cause the form submission to fail because of cross site request forgery protections implemented in version 2.2.1.';
+        $error_array['ERR-0035']->detail = 'An invalid access token was supplied when submitting data. Access Tokens have been configured and the token you have supplied is not among the last X valid tokens. Access Tokens are configurable in the Configuration.';
 
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
