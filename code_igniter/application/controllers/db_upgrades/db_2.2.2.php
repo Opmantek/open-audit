@@ -33,7 +33,7 @@ $sql = "DELETE FROM `configuration` WHERE `name` = 'access_token_count'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'access_token_count','10','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'access_token_count','20','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
