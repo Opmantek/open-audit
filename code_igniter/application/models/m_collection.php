@@ -75,8 +75,10 @@ class M_collection extends MY_Model
             return false;
         }
 
-        $count = count($result);
-        if ($count === 0) {
+        #$count = count($result);
+        $count = intval($result[0]->count);
+        #if ($count === 0) {
+        if ($count !== 0) {
             $log->severity = 3;
             $log->status = 'failure';
             $log->summary = 'Table not empty';
