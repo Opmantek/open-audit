@@ -41,6 +41,12 @@ if (count($this->response->data) == 0) {
 $this->load->model('m_orgs');
 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 
+# applications
+if ($this->response->meta->collection == 'applications') {
+    $this->load->model('m_applications');
+    $this->response->included = array_merge($this->response->included, $this->m_applications->read_sub_resource($this->response->meta->id));
+}
+
 # attributes
 if ($this->response->meta->collection == 'attributes') {
 }

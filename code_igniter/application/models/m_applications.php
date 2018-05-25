@@ -83,11 +83,21 @@ class M_applications extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-
         $sql = $this->collection_sql('applications', 'sql');
         $result = $this->run_sql($sql, array());
-
         $result = $this->format_data($result, 'applications');
+        return ($result);
+    }
+
+    public function read_sub_resource($id)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $org_ids = implode(',', $CI->user->orgs);
+        $sql = "SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `system`.`org_id` IN  (" . $org_ids . ")";
+        $result = $this->run_sql($sql, array());
+        $result = $this->format_data($result, 'devices');
         return ($result);
     }
 }
