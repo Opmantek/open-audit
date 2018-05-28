@@ -124,10 +124,6 @@ class M_logon extends MY_Model
 
         // Auth against any configured LDAP servers
         if ($this->db->table_exists('ldap_servers')) {
-            $log->summary = 'LDAP Servers table exists, querying.';
-            $log->detail = '';
-            $log->severity = 7;
-            stdlog($log);
             if (!empty($user['domain'])) {
                 $sql = "/* m_logon::logon */ " . "SELECT * FROM ldap_servers WHERE domain LIKE ?";
                 $data = array($user['domain']);
@@ -138,8 +134,9 @@ class M_logon extends MY_Model
             }
             $ldap_servers = $query->result();
             if (!empty($ldap_servers)) {
-                $log->summary = 'LDAP server list retrieved.';
+                $log->summary = 'LDAP Servers table exists and is not empty.';
                 $log->detail = count($ldap_servers) . ' LDAP servers retrieved from database.';
+                $log->severity = 7;
                 stdlog($log);
                 // We have configured ldap_servers - validate
                 foreach ($ldap_servers as $ldap) {
@@ -529,6 +526,8 @@ class M_logon extends MY_Model
                 }
             }
         }
+        $log->status = 'HTTP/1.1 401 Unauthorized';
+        $log->summary = 'Invalid logon attempt.';
         $log->severity = 5;
         $log->message = "User $username attempted to log on with invalid credentials. IP " . $_SERVER['REMOTE_ADDR'];
         stdlog($log);

@@ -200,6 +200,22 @@ class Util extends CI_Controller
         header('Content-Type: application/json');
         echo json_encode($json);
     }
+
+
+    // public function check_db()
+    // {
+    //     $this->load->model('m_configuration');
+    //     $this->m_configuration->load();
+    //     $json = new stdClass();
+    //     $json->file_version = $this->config->config['web_internal_version'];
+    //     $json->db_version = $this->config->config['internal_version'];
+    //     $json->db_upgrade = false;
+    //     if ($this->config->config['internal_version'] < $this->config->config['web_internal_version']) {
+    //         $json->db_upgrade = true;
+    //     }
+    //     header('Content-Type: application/json');
+    //     echo json_encode($json);
+    // }
 }
 // End of file util.php
 // Location: ./controllers/util.php
