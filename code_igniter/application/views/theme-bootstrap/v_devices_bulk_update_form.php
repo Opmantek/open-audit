@@ -103,8 +103,8 @@ $special['nmis_export'] .= '</select><span class="input-group-btn"><button id="e
 
 
 $special['oae_manage'] = '<div class="form-group"><label for="oae_manage" class="col-sm-4 control-label">Manage in Open-AudIT Enterprise</label><div class="col-sm-8 input-group"><select id="oae_manage" class="form-control" disabled><option value="" label=" "> </option>';
-$special['oae_manage'] .= "<option value='y'><?php echo __('Yes'); ?></option>";
-$special['oae_manage'] .= "<option value='n'><?php echo __('No'); ?></option>";
+$special['oae_manage'] .= "<option value='y'>" . __('Yes') . "</option>";
+$special['oae_manage'] .= "<option value='n'>" . __('No') . "</option>";
 $special['oae_manage'] .= '</select><span class="input-group-btn"><button id="edit_oae_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="oae_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 ?>

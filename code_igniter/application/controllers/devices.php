@@ -338,6 +338,8 @@ class devices extends MY_Controller
         if (empty($this->response->meta->sub_resource)) {
             $this->load->model('m_locations');
             $this->load->model('m_fields');
+            $this->load->model('m_attributes');
+            $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
             $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
             $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
             unset($temp);
