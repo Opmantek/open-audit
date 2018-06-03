@@ -81,6 +81,7 @@ class M_device extends MY_Model
                 }
                 $temp = explode(".", $details->hostname);
                 $hostname = $temp[0];
+                $details->hostname = $hostname;
                 $log_message[] = "Using first split '.' from hostname as hostname (" . $hostname . ").";
                 unset($temp);
             }
