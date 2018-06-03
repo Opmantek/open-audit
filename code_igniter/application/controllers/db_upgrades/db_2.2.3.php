@@ -37,6 +37,41 @@ $sql = "UPDATE `scripts` SET `options` = '{\"submit_online\":\"y\",\"create_file
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# system
+$this->alter_table('system', 'status', "`status` varchar(100) NOT NULL DEFAULT 'production' AFTER `printer_duplex`");
+
+$this->alter_table('system', 'type', "`type` varchar(50) NOT NULL DEFAULT 'unknown' AFTER `description`");
+
+$sql = "UPDATE `system` SET `status` = 'production' WHERE `status` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `system` SET `environment` = 'production' WHERE `environment` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `system` SET `type` = 'unknown' WHERE `type` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `system` SET `oae_manage` = 'y' WHERE `oae_manage` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `system` SET `nmis_manage` = 'y' WHERE `nmis_manage` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `system` SET `location_id` = 1 WHERE `location_id` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `system` SET `org_id` = 1 WHERE `org_id` = ''";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
+
 # users
 $this->alter_table('users', 'access_token', "ADD `access_token` TEXT NOT NULL AFTER `dashboard_id`", 'add');
 
