@@ -66,7 +66,7 @@ if (! function_exists('set_collection')) {
     {
         $CI = & get_instance();
         $collection = @$CI->uri->segment(1);
-        $collections = array('agents','applications','attributes','charts','collectors','configuration','connections','credentials','dashboards','database','devices','discovery','discoveries','errors','fields','files','groups','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','reports','roles','scripts','search','summaries','tasks','users','widgets');
+        $collections = array('agents','applications','attributes','charts','collectors','configuration','connections','credentials','dashboards','database','devices','discovery','discoveries','errors','fields','files','groups','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','racks','reports','roles','scripts','search','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
             #$log->summary = 'Set collection to ' . $collection . ', according to URI.';
         } else {
@@ -137,6 +137,8 @@ if (! function_exists('inputRead')) {
         
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
+        unset($_GET['user']);
+        unset($_GET['uuid']);
 
         # make sure we have the required header
         if (empty($_SERVER['HTTP_ACCEPT'])) {

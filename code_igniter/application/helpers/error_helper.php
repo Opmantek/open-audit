@@ -340,6 +340,13 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0035']->title = "Invalid access token supplied.";
         $error_array['ERR-0035']->detail = 'An invalid access token was supplied when submitting data. Access Tokens have been configured and the token you have supplied is not among the last X valid tokens. Access Tokens are configurable in the Configuration.';
 
+        $error_array['ERR-0036'] = new stdClass();
+        $error_array['ERR-0036']->code = 'ERR-0036';
+        $error_array['ERR-0036']->status = 'HTTP/1.1 403 Forbidden';
+        $error_array['ERR-0036']->severity = 4;
+        $error_array['ERR-0036']->title = "Invalid user supplied.";
+        $error_array['ERR-0036']->detail = 'A user was supplied int he request header that does not exist within Open-AudIT. Please specify a valid user.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);

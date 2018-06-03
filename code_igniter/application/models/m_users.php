@@ -367,6 +367,7 @@ class M_users extends MY_Model
         $this->load->library('session');
         $this->load->helper('url');
         $this->load->helper('log');
+        $this->load->helper('error');
         $user_prefix = '';
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
             $user_prefix = 'user_';
@@ -402,6 +403,100 @@ class M_users extends MY_Model
             $db_prefix = '';
         }
 
+        if (!empty($_SERVER['HTTP_USER'])) {
+            $user = $_SERVER['HTTP_USER'];
+            $sql = "SELECT * FROM `users` WHERE `name` = ?";
+            $data = array($user);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql, $data);
+            if ($query->num_rows() == 1) {
+                $user = $query->row();
+            } else {
+                log_error('ERR-0036');
+                redirect('logon');
+            }
+        }
+        if (!empty($_SERVER['REMOTE_ADDR']) and ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' or $_SERVER['REMOTE_ADDR'] == '::1')) {
+            $ip = '127.0.0.1';
+        }
+        if (!empty($_SERVER['HTTP_UUID'])) {
+            $supplied_uuid = $_SERVER['HTTP_UUID'];
+            $files = array('/usr/local/opmojo/conf/opCommon.nmis', '/usr/local/omk/conf/opCommon.nmis');
+            $operating_system = php_uname('s');
+            if ($operating_system == 'Windows NT') {
+                $files = array('c:\\omk\\conf\\opCommon.nmis', 'c:\\usr\\local\\opmojo\\conf\\opCommon.nmis');
+            }
+            unset($operating_system);
+            $uuid = '';
+            foreach ($files as $file) {
+                if ($uuid == '') {
+                    $contents = @file($file);
+                    if (!empty($contents)) {
+                        foreach ($contents as $line) {
+                            if ($uuid == '') {
+                                if (stripos($line, 'uuid') !== false) {
+                                    $line = trim(str_replace('\'uuid\' =>', '', $line));
+                                    $line = trim(str_replace('"uuid" =>', '', $line));
+                                    $line = trim(str_replace("'", '', $line));
+                                    $line = trim(str_replace('"', '', $line));
+                                    $uuid = $line;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if ($uuid == '') {
+                # Cannot read from filesystem and parse opCommon.nmis config file - abort
+                $CI->response = new stdClass();
+                $CI->response->meta = new stdClass();
+                $CI->response->errors = array();
+                log_error('ERR-0015', 'm_users:validate Cannot read UUID');
+                if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format'] and $_GET['format'] == 'json'))) {
+                    echo json_encode($CI->response);
+                    exit();
+                } else {
+                    $this->session->set_userdata('url', current_url());
+                    redirect('logon');
+                    exit();
+                }
+            }
+            if ($supplied_uuid != $uuid) {
+                # Bad UUID supplied
+                $CI->response = new stdClass();
+                $CI->response->meta = new stdClass();
+                $CI->response->errors = array();
+                log_error('ERR-0015', 'm_users:validate Bad UUID');
+                if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format'] and $_GET['format'] == 'json'))) {
+                    echo json_encode($CI->response);
+                    exit();
+                } else {
+                    $this->session->set_userdata('url', current_url());
+                    redirect('logon');
+                    exit();
+                }
+            }
+        }
+        if (!empty($user) and !empty($ip) and !empty($supplied_uuid)) {
+            unset($_GET['user']);
+            unset($_GET['uuid']);
+            $CI->user = $user;
+            $access_token = array();
+            $access_token = @json_decode($CI->user->access_token);
+            $temp = bin2hex(openssl_random_pseudo_bytes(30));
+            $access_token[] = $temp;
+            $access_token = array_slice($access_token, -intval($CI->config->config['access_token_count']));
+            $sql = "UPDATE `users` SET `access_token` = ? WHERE `id` = ?";
+            $data = array(json_encode($access_token), $CI->user->id);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql, $data);
+            $CI->user->access_token = $access_token;
+            $CI->access_token = $temp;
+            $userdata = array('user_id' => $CI->user->id, 'user_debug' => '', 'access_token' => $access_token);
+            $this->session->set_userdata($userdata);
+            return;
+        }
 
         if (isset($this->session->userdata['user_id']) and is_numeric($this->session->userdata['user_id'])) {
             // user is logged in, return the $this->user object
@@ -441,7 +536,7 @@ class M_users extends MY_Model
                 return;
             } else {
                 // the user_id stored in the session does not exist
-                log_error('ERR-0015', $CI->response->meta->collection . ':' . $CI->response->meta->action . ' Bad session data');
+                log_error('ERR-0015', 'm_users:validate Bad session data');
                 if ($CI->response->meta->format == 'json') {
                     echo json_encode($CI->response);
                     exit();
