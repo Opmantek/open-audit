@@ -70,10 +70,17 @@ $sql = "UPDATE `system` SET `org_id` = 1 WHERE `org_id` = ''";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
-
 # users
 $this->alter_table('users', 'access_token', "ADD `access_token` TEXT NOT NULL AFTER `dashboard_id`", 'add');
+
+# widgets
+$sql = "DELETE FROM `widgets` WHERE `name` = 'Devices by Org'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Org',1,'Devies assigned by Org','pie','','','','','Devices','','',0,'','SELECT orgs.name as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE @filter GROUP BY orgs.name','devices?system.org_id=@description','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180625' WHERE `name` = 'internal_version'";
