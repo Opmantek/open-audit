@@ -29,6 +29,11 @@
 
 $this->log_db('Upgrade database to 2.2.3 commenced');
 
+# discovery log
+$sql = "DELETE FROM `discovery_log` WHERE `discovery_id` NOT IN (SELECT `id` FROM `discoveries`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # networks
 $this->alter_table('networks', 'type', "ADD `type` enum('Personal Area Network', 'Local Area Network', 'Wireless Local Area Network', 'Campus Area Network', 'Metropolitan Area Network', 'Wide Area Network', 'Storage-Area Network', 'System-Area Network', 'Passive Optical Local Area Network', 'Enterprise Private Network', 'Virtual Private Network') NOT NULL DEFAULT 'Local Area Network'", 'add');
 
