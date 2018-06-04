@@ -43,6 +43,11 @@ if (empty($this->response->meta->total) and !empty($this->response->meta->filter
     $this->response->meta->total = $this->response->meta->filtered;
 }
 
+if ($this->response->meta->collection === 'discoveries') {
+    $this->load->model('m_collection');
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
+}
+
 if ($this->response->meta->collection === 'licenses') {
     if (intval($this->response->meta->total) < 100) {
         for ($i=0; $i < count($this->response->data); $i++) {
