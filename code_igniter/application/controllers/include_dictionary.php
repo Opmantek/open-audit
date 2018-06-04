@@ -500,10 +500,11 @@ if ($table == 'networks') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = $description;
     $dictionary->columns->network = 'The network in the format 192.168.1.0/24.';
+    $dictionary->columns->type = 'The type of network.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','network');
-    $dictionary->attributes->update = array('name','org_id','description','network');
+    $dictionary->attributes->update = array('name','org_id','description','network','type');
 }
 
 if ($table == 'orgs') {
