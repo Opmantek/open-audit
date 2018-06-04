@@ -88,6 +88,8 @@ if ($this->response->meta->collection == 'discoveries') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
     $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+    $this->load->model('m_collection');
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
 }
 
 # fields
