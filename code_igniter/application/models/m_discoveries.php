@@ -105,15 +105,16 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        if ($id != 0) {
-            $CI = & get_instance();
-            $sql = "/* discoveries::delete */ " . "DELETE FROM `discoveries` WHERE id = ?";
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            return true;
-        } else {
+        if (empty($id)) {
             return false;
         }
+        $CI = & get_instance();
+        $sql = "/* discoveries::delete */ " . "DELETE FROM `discoveries` WHERE id = ?";
+        $data = array($id);
+        $this->run_sql($sql, $data);
+        $sql = "/* discoveries::delete */ " . "DELETE FROM `discovery_log` WHERE discovery_id = ?";
+        $this->run_sql($sql, $data);
+        return true;
     }
 
     public function collection()
