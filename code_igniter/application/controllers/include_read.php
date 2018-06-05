@@ -37,18 +37,32 @@ if (count($this->response->data) == 0) {
     }
 }
 
-# all
+$table = $this->response->meta->collection;
+if ($table == 'database') {
+    $table = $this->response->meta->id;
+}
+include 'include_dictionary.php';
+$this->response->dictionary = $dictionary;
+
+$collection = $this->response->meta->collection;
+
+# All
 $this->load->model('m_orgs');
 $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
 
 # applications
 if ($this->response->meta->collection == 'applications') {
     $this->load->model('m_applications');
+    # Associated devices
     $this->response->included = array_merge($this->response->included, $this->m_applications->read_sub_resource($this->response->meta->id));
 }
 
 # attributes
 if ($this->response->meta->collection == 'attributes') {
+}
+
+# collectors
+if ($this->response->meta->collection == 'collectors') {
 }
 
 # configuration
@@ -57,16 +71,19 @@ if ($this->response->meta->collection == 'configuration') {
 
 # connections
 if ($this->response->meta->collection == 'connections') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
 }
 
 # credentials
 if ($this->response->meta->collection == 'credentials') {
-    $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
 }
 
 # dashboards
 if ($this->response->meta->collection == 'dashboards') {
+    $this->load->model('m_widgets');
+    $this->response->included = array_merge($this->response->included, $this->m_widgets->collection());
+    # Associated widgets
     $this->response->included = array_merge($this->response->included, $this->m_dashboards->read_sub_resource($this->response->meta->id));
 }
 
@@ -83,13 +100,15 @@ if ($this->response->meta->collection == 'database') {
     }
 }
 
+
 # discoveries
 if ($this->response->meta->collection == 'discoveries') {
-    $this->load->model('m_locations');
-    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
-    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
     $this->load->model('m_collection');
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
+    # The discovery log
+    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
 }
 
 # fields
@@ -106,6 +125,7 @@ if ($this->response->meta->collection == 'groups') {
 if ($this->response->meta->collection == 'ldap_servers') {
 }
 
+# licenses
 if ($this->response->meta->collection == 'licenses') {
     $this->load->model('m_licenses');
     $temp = $this->m_licenses->execute();
@@ -115,9 +135,11 @@ if ($this->response->meta->collection == 'licenses') {
 
 # locations
 if ($this->response->meta->collection == 'locations') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
 }
 
-# locations
+# logs
 if ($this->response->meta->collection == 'logs') {
 }
 
@@ -125,34 +147,51 @@ if ($this->response->meta->collection == 'logs') {
 if ($this->response->meta->collection == 'networks') {
 }
 
+# nmis
+if ($this->response->meta->collection == 'nmis') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+}
+
 # orgs
 if ($this->response->meta->collection == 'orgs') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
     $this->response->included = array_merge($this->response->included, $this->m_orgs->read($this->response->data[0]->attributes->parent_id));
 }
 
 # queries
 if ($this->response->meta->collection == 'queries') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
+# roles
+if ($this->response->meta->collection == 'roles') {
+    # Associated users
+    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
 }
 
 # scripts
 if ($this->response->meta->collection == 'scripts') {
-        $this->load->model('m_files');
-        $this->response->included = array_merge($this->response->included, $this->m_files->collection());
+    $this->load->model('m_files');
+    $this->response->included = array_merge($this->response->included, $this->m_files->collection());
 }
 
 # summaries
 if ($this->response->meta->collection == 'summaries') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
 }
 
 # tasks
 if ($this->response->meta->collection == 'tasks') {
     $this->load->model('m_collection');
     $this->response->included = array_merge($this->response->included, $this->m_collection->collection('collectors'));
-}
-
-# roles
-if ($this->response->meta->collection == 'roles') {
-    $this->response->included = array_merge($this->response->included, $this->m_roles->read_sub_resource($this->response->meta->id));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('discoveries'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('groups'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('queries'));
+    $this->response->included = array_merge($this->response->included, $this->m_collection->collection('summaries'));
 }
 
 # users
@@ -162,6 +201,8 @@ if ($this->response->meta->collection == 'users') {
     if (!empty($this->response->data[0]->attributes)) {
         $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
     }
+    $this->load->model('m_dashboards');
+    $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection());
 }
 
 if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
