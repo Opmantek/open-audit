@@ -462,7 +462,7 @@ class M_users extends MY_Model
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
                     echo json_encode($CI->response);
                     exit();
-                } else if (!empty($_GET['format'] and $_GET['format'] == 'json')) {
+                } else if (!empty($_GET['format']) and $_GET['format'] == 'json') {
                     echo json_encode($CI->response);
                     exit();
                 } else {
