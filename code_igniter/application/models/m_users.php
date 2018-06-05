@@ -479,7 +479,7 @@ class M_users extends MY_Model
                 log_error('ERR-0015', 'm_users:validate Bad UUID');
                 $this->log->summary = 'Bad UUID';
                 stdlog($this->log);
-                if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format'] and $_GET['format'] == 'json'))) {
+                if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format']) and $_GET['format'] == 'json')) {
                     echo json_encode($CI->response);
                     exit();
                 } else {
