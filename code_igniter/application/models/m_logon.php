@@ -491,8 +491,6 @@ class M_logon extends MY_Model
                         continue;
                     }
                 }
-            } else {
-                $CI->session->set_flashdata('error', "No LDAP servers retrieved from database.");
             }
         }
 
@@ -531,6 +529,7 @@ class M_logon extends MY_Model
         $log->severity = 5;
         $log->message = "User $username attempted to log on with invalid credentials. IP " . $_SERVER['REMOTE_ADDR'];
         stdlog($log);
+        $CI->session->set_flashdata('error', "Invalid credentials.");
         return false;
     }
 }
