@@ -54,7 +54,7 @@ $name = 'The name given to this item. Ideally it should be unique.';
 $org_id = 'The Organisation that owns this item. Links to <code>orgs.id</code>.';
 $description = 'Your description of this item.';
 $edited_by = 'The name of the user who last changed or added this item (read only).';
-$edited_date = 'The date this item was changed or added (read only).';
+$edited_date = 'The date this item was changed or added (read only). NOTE - This is the timestamp from the server.';
 $system_id = 'The id of the linked device. Links to <code>system.id</code>';
 
 if ($table == 'attachments') {
@@ -76,6 +76,7 @@ if ($table == 'applications') {
     $dictionary->notes = '';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
+    $dictionary->columns->description = $description;
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
@@ -101,8 +102,9 @@ if ($table == 'attributes') {
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
-    $dictionary->columns->resource = 'Currently only "devices" is a valid value.';
+    $dictionary->columns->resource = 'The foreign table to reference.';
     $dictionary->columns->value = 'The value for this particular item.';
+    $dictionary->columns->type = 'The attribute in the foreign table.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','type','resource','value');
