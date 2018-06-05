@@ -410,8 +410,12 @@ class M_users extends MY_Model
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
             if ($query->num_rows() == 1) {
+                $this->log->summary = 'Valid username submitted via headers';
+                stdlog($this->log);
                 $user = $query->row();
             } else {
+                $this->log->summary = 'Invalid username submitted via headers';
+                stdlog($this->log);
                 log_error('ERR-0036');
                 redirect('logon');
             }
@@ -453,6 +457,8 @@ class M_users extends MY_Model
                 $CI->response->meta = new stdClass();
                 $CI->response->errors = array();
                 log_error('ERR-0015', 'm_users:validate Cannot read UUID');
+                $this->log->summary = 'Cannot read UUID';
+                stdlog($this->log);
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format'] and $_GET['format'] == 'json'))) {
                     echo json_encode($CI->response);
                     exit();
@@ -468,6 +474,8 @@ class M_users extends MY_Model
                 $CI->response->meta = new stdClass();
                 $CI->response->errors = array();
                 log_error('ERR-0015', 'm_users:validate Bad UUID');
+                $this->log->summary = 'Bad UUID';
+                stdlog($this->log);
                 if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false or (!empty($_GET['format'] and $_GET['format'] == 'json'))) {
                     echo json_encode($CI->response);
                     exit();
@@ -476,6 +484,10 @@ class M_users extends MY_Model
                     redirect('logon');
                     exit();
                 }
+            }
+            if ($supplied_uuid == $uuid) {
+                $this->log->summary = 'Valid UUID submitted via headers';
+                stdlog($this->log);
             }
         }
         if (!empty($user) and !empty($ip) and !empty($supplied_uuid)) {
@@ -495,6 +507,7 @@ class M_users extends MY_Model
             $CI->access_token = $temp;
             $userdata = array('user_id' => $CI->user->id, 'user_debug' => '', 'access_token' => $access_token);
             $this->session->set_userdata($userdata);
+            #$this->config->config['access_token_enable'] = 'n';
             return;
         }
 
