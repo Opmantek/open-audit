@@ -205,13 +205,17 @@ class devices extends MY_Controller
             $this->load->model('m_devices');
             $id = $this->m_devices->create($device);
             $device->id = $id;
+            $mac = '';
+            if (!empty($device->mac)) {
+                $mac = strtolower($device->mac);
+            }
             if (!empty($device->ip) and !empty($device->netmask)) {
                 $this->load->helper('network');
                 $network = network_details($device->ip . ' ' . $device->netmask);
                 if (empty($network->error)) {
                     $this->load->model('m_devices_components');
                     $device_ip = new stdClass();
-                    $device_ip->mac = '';
+                    $device_ip->mac = $mac;
                     $device_ip->net_index = '';
                     $device_ip->ip = $network->address;
                     $device_ip->netmask = $network->netmask;

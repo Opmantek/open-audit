@@ -109,6 +109,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="data[attributes][mac]" class="col-sm-3 control-label"><?php echo __('Mac Address'); ?></label>
+                        <div class="col-sm-8 input-group">
+                            <input type="text" class="form-control" id="data[attributes][mac]" name="data[attributes][mac]">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="data[attributes][status]" class="col-sm-3 control-label"><?php echo __('Status'); ?></label>
                         <div class="col-sm-8 input-group">
                             <select class="form-control" id="data[attributes][status]" name="data[attributes][status]">
