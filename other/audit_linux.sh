@@ -736,8 +736,24 @@ if [ -z "$system_pc_os_bit" ]; then
 fi
 
 # Get the System Memory
-system_pc_memory=$(grep MemTotal /proc/meminfo | cut -d: -f2 | cut -dk -f1)
-system_pc_memory=$(trim "$system_pc_memory")
+# system_pc_memory=$(grep MemTotal /proc/meminfo | cut -d: -f2 | cut -dk -f1)
+# system_pc_memory=$(trim "$system_pc_memory")
+
+memory_slots="0"
+system_pc_memory="0"
+memory_slots=$(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}' | wc -l)
+if [ "$memory_slots" != "0" ]; then
+	IFS="$ORIGIFS";
+	for memory_handle in $(dmidecode -t 17 2>/dev/null | awk '/DMI type 17/{print $2}'); do
+		bank_info=$(dmidecode -t 17 2>/dev/null | sed -n '/^Handle '"$memory_handle"'/,/^$/p')
+		memory_capacity=$(echo "$bank_info" | awk '/Size:/{print $2}' | sed 's/[^0-9]//g')
+		system_pc_memory=$((system_pc_memory + memory_capacity))
+	done;
+	system_pc_memory=$((system_pc_memory * 1024))
+else
+	system_pc_memory=$(grep MemTotal /proc/meminfo | cut -d: -f2 | cut -dk -f1)
+	system_pc_memory=$(trim "$system_pc_memory")
+fi
 
 # Get the Number of Physical Processors
 #
