@@ -340,6 +340,36 @@ class M_device extends MY_Model
             }
         }
 
+        if (strtolower($this->config->config['match_serial']) == 'y' and empty($details->id) and !empty($details->serial)) {
+            $log_message[] = "Running match_serial for serial: " . $details->serial;
+            $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = $this->clean_sql($sql);
+            $data = array("$details->serial");
+            $query = $this->db->query($sql, $data);
+            $row = $query->row();
+            if (count($row) > 0) {
+                $details->id = $row->id;
+                $log->system_id = $details->id;
+                $log_message[] = 'HIT on serial: ' . $details->serial . ' (System ID ' . $details->id . ')';
+                foreach ($log_message as $message) {
+                    $log->message = $message;
+                    discovery_log($log);
+                }
+                return $details->id;
+            }
+            $log_message[] = 'MISS on match_serial.';
+        } else {
+            if (strtolower($this->config->config['match_serial']) != 'y') {
+                $log_message[] = "Not running match_serial, config item not set.";
+            } else if (!empty($details->id)) {
+                $log_message[] = "Not running match_serial, device id already set.";
+            } else if (empty($device->serial)) {
+                $log_message[] = "Not running match_serial, serial not set.";
+            } else {
+                $log_message[] = "Not running match_serial.";
+            }
+        }
+
         if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
             if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
                 $log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' excluding VMware MACs';
