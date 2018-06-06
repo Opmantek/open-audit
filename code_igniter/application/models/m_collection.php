@@ -1032,7 +1032,7 @@ class M_collection extends MY_Model
                 break;
 
             case "networks":
-                return(' name org_id description network ');
+                return(' name org_id description type network ');
                 break;
 
             case "orgs":
