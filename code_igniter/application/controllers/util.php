@@ -74,38 +74,6 @@ class Util extends CI_Controller
     }
 
     /**
-    * OAP/E request for an array of OrgID's a user is allowed to act upon
-    * ONLY valid from localhost
-    *
-    * @access public
-    * @return JSON
-    */
-    // public function user_orgs()
-    // {
-    //     header('Content-Type: application/json');
-    //     if ($_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '::1') {
-    //         http_response_code(403);
-    //         return;
-    //     }
-    //     $user_id = $this->uri->segment(3, 0);
-    //     $user_id = intval($user_id);
-    //     if (empty($user_id)) {
-    //         http_response_code(400);
-    //         return;
-    //     }
-    //     $this->load->model('m_users');
-    //     $orgs = $this->m_users->get_orgs($user_id);
-    //     if (!$orgs) {
-    //         http_response_code(404);
-    //         return;
-    //     }
-    //     http_response_code(200);
-    //     echo json_encode($orgs);
-    //     return;
-    // }
-
-
-    /**
     * Process the supplied data and return a padded version string
     *
     * @access public
