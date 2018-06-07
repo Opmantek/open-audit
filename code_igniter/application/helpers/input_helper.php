@@ -430,15 +430,15 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
-                $log->detail = "data supplied via form.";
+                $log->summary = "data supplied via form.";
                 $data_supplied_by = 'form';
             } else {
                 # This is straight JSON submitted data in a string
                 $CI->response->meta->received_data = @json_decode($_POST{'data'});
-                $log->detail = "data supplied via json.";
+                $log->summary = "data supplied via json.";
                 $data_supplied_by = 'json';
             }
-            $log->summary = json_encode($CI->response->meta->received_data);
+            $log->detail = json_encode($CI->response->meta->received_data);
             stdlog($log);
             $log->detail = '';
             $log->summary = '';
