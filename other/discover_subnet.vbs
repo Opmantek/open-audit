@@ -389,6 +389,7 @@ for each host in hosts
             if debugging > 1 then
                 db_log_duration = ""
                 db_log_message = "Host " & host & " is up, received port " & port & " response"
+                db_log_output = line
                 db_log()
             end if
         end if
@@ -396,9 +397,15 @@ for each host in hosts
         if instr(lcase(line), "/tcp") then
             if instr(lcase(line), "open") then
                 host_is_up = "true"
+                db_log_message = "Host " & host & " is up, received port " & port & " open response"
+                db_log_output = line
+                db_log()
             end if
             if instr(lcase(line), "closed ") then
                 host_is_up = "true"
+                db_log_message = "Host " & host & " is up, received port " & port & " closed response"
+                db_log_output = line
+                db_log()
             end if
         end if
 
@@ -442,12 +449,18 @@ for each host in hosts
         if instr(lcase(line), "22/tcp") then
             if instr(lcase(line), "open") then
                 ssh_status = "true"
+                db_log_message = "Host " & host & " is up, received ssh (TCP port 22 open) response"
+                db_log_output = line
+                db_log()
             end if
         end if
 
         if instr(lcase(line), "135/tcp") then
             if instr(lcase(line), "open") then
                 wmi_status = "true"
+                db_log_message = "Host " & host & " is up, received wmi (TCP port 135 open) response"
+                db_log_output = line
+                db_log()
             end if
         end if
     Loop
@@ -464,11 +477,9 @@ for each host in hosts
             if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
                 nmap_ports = nmap_ports & ",62078/tcp/iphone-sync"
                 host_is_up = "true"
-                if debugging > 1 then
-                    db_log_message = "Host " & host & " is up, received iphone-sync response"
-                    db_log_output = line
-                    db_log()
-                end if
+                db_log_message = "Host " & host & " is up, received iphone-sync (TCP port 62078) response"
+                db_log_output = line
+                db_log()
             end if
         end if
     Loop
@@ -486,6 +497,9 @@ for each host in hosts
             if (instr(lcase(line), "open")) then
                 nmap_ports = nmap_ports & ",161/udp/snmp"
                 snmp_status = "true"
+                db_log_message = "Received snmp (UDP port 161 open) response"
+                db_log_output = line
+                db_log()
             end if
         end if
     Loop
@@ -493,12 +507,18 @@ for each host in hosts
     ' special case of determining WMI on localhost on Windows
     if (instr(local_net, host & " ") > 0) then
         wmi_status = "true"
+        db_log_message = "Scanning localhost, so setting WMI status to true"
+        db_log_output = ""
+        db_log()
     end if
 
     if host_is_up = "true" then
         if len(nmap_ports) > 0 then
             nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
         else
+            db_log_message = "No open ports, but device is up for IP: " & host
+            db_log_output = ""
+            db_log()
             if debugging > "0" then
                 wscript.echo "No open ports, but device is up for IP: " & host
             end if
@@ -531,6 +551,7 @@ for each host in hosts
             db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
             db_log_severity = 6
             db_log_message = "IP " & host & " responding, submitting."
+            db_log_output = ""
             db_log()
             db_log_severity = 7
             result = "<devices>" & vbcrlf & result & "</devices>"
@@ -595,6 +616,7 @@ for each host in hosts
         db_log_status = "(" & hosts_scanned & " of " & hosts_in_subnet & ")"
         db_log_severity = 6
         db_log_message = "IP " & host & " not responding, ignoring."
+        db_log_output = ""
         db_log()
         db_log_severity = 7
     end if ' host_is_up'
