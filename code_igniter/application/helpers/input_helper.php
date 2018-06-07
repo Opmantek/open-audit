@@ -891,8 +891,10 @@ if (! function_exists('inputRead')) {
             $log->summary = 'POSTed access token: ' . @$CI->response->meta->received_data->access_token;
             $log->detail = 'Cookie access_tokens: ' . implode(', ', $CI->user->access_token);
             if (empty($CI->response->meta->received_data->access_token)) {
-                $log->status = 'access token check failed';
+                $log->status = 'access token check failed (empty)';
+                $log->severity = 4;
                 stdlog($log);
+                $log->severity = 7;
                 # Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0034', $CI->response->meta->collection . ':' . $CI->response->meta->action);
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);
@@ -905,8 +907,10 @@ if (! function_exists('inputRead')) {
                 }
             }
             if (!in_array($CI->response->meta->received_data->access_token, $CI->user->access_token)) {
-                $log->status = 'access token check failed';
+                $log->status = 'access token check failed (not in array)';
+                $log->severity = 4;
                 stdlog($log);
+                $log->severity = 7;
                 # Redirect as we must have an auth token from when we requested the create form
                 log_error('ERR-0035', $CI->response->meta->collection . ':' . $CI->response->meta->action);
                 $CI->session->set_flashdata('error', $CI->response->errors[0]->detail);

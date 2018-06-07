@@ -372,6 +372,9 @@ class M_users extends MY_Model
         if (isset($CI->config->config['internal_version']) and intval($CI->config->config['internal_version']) < 20160409) {
             $user_prefix = 'user_';
         }
+        if (empty($this->config->config['access_token_count'])) {
+            $this->config->config['access_token_count'] = 10;
+        }
         if ($this->db->dbdriver === 'mysql') {
             $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'users'";
             $query = $this->db->query($sql);
@@ -511,6 +514,8 @@ class M_users extends MY_Model
             $userdata = array('user_id' => $CI->user->id, 'user_debug' => '', 'access_token' => $access_token);
             $this->session->set_userdata($userdata);
             #$this->config->config['access_token_enable'] = 'n';
+            $this->log->summary = 'User validated by name, uuid and localhost';
+            stdlog($this->log);
             return;
         }
 
@@ -518,9 +523,6 @@ class M_users extends MY_Model
             // user is logged in, return the $this->user object
             $sql = "SELECT * FROM " . $db_table . " WHERE " . $db_table . "." . $db_id_column . " = ?";
             $sql = $this->clean_sql($sql);
-            if (empty($this->config->config['access_token_count'])) {
-                $this->config->config['access_token_count'] = 10;
-            }
             $access_token = '';
             if (!empty($this->session->userdata['access_token'])) {
                 $access_token = $this->session->userdata['access_token'];
