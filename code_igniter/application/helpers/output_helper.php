@@ -537,12 +537,20 @@ if (! function_exists('output')) {
             $CI->response->included = array_merge($CI->response->included, $result);
         }
 
-        // if ($CI->db->table_exists('attributes')) {
-        //     $CI->load->model('m_attributes');
-        //     $attributes = $CI->m_attributes->collection();
-        //     usort($attributes, "sort_attributes");
-        //     $CI->response->included = array_merge($CI->response->included, $attributes);
-        // }
+        $include = true;
+        foreach ($CI->response->included as $item) {
+            if ($item->type == 'attributes') {
+                $include = false;
+            }
+        }
+        if ($include) {
+            if ($CI->db->table_exists('attributes')) {
+                $CI->load->model('m_attributes');
+                $attributes = $CI->m_attributes->collection();
+                usort($attributes, "sort_attributes");
+                $CI->response->included = array_merge($CI->response->included, $attributes);
+            }
+        }
 
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
