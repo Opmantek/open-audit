@@ -373,3 +373,13 @@ $(document).ready(function () {
         }
     });
 });
+
+
+/* The Decomission Collector link */
+$(document).ready(function () {
+    $(".decomission_link").click(function () {
+        if (confirm("Please use Open-AudIT Enterprise to decomission this Collector.") !== true) {
+            return;
+        }
+    });
+});
