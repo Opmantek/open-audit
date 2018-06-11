@@ -35,7 +35,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # networks
-$this->alter_table('networks', 'type', "ADD `type` enum('Personal Area Network', 'Home Area Network', 'Local Area Network', 'Wireless Local Area Network', 'Campus Area Network', 'Metropolitan Area Network', 'Wide Area Network', 'Storage-Area Network', 'System-Area Network', 'Passive Optical Local Area Network', 'Enterprise Private Network', 'Virtual Private Network') NOT NULL DEFAULT 'Local Area Network'", 'add');
+$this->alter_table('networks', 'type', "ADD `type` enum('Personal Area Network', 'Home Area Network', 'Local Area Network', 'Wireless Local Area Network', 'Campus Area Network', 'Metropolitan Area Network', 'Wide Area Network', 'Storage-Area Network', 'System-Area Network', 'Passive Optical Local Area Network', 'Enterprise Private Network', 'Virtual Private Network') NOT NULL DEFAULT 'Local Area Network' AFTER `org_id`", 'add');
 
 # scripts
 $sql = "UPDATE `scripts` SET `options` = '{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/input\\/devices\",\"debugging\":1}' WHERE                         `options` = '{\"submit_online\":\"y\",\"create_file\":\"n\",\"url\":\"http:\\/\\/localhost\\/open-audit\\/index.php\\/system\\/add_system\",\"debugging\":1}'";
