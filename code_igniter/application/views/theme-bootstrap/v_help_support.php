@@ -79,6 +79,10 @@ if (php_uname('s') == 'Windows NT') {
             <div class="col-md-12"><br /><?php echo __('PERMISSIONS'); ?>
             <pre><?php print_r($this->response->data[0]->permissions); ?></pre>
             </div>
+
+            <div class="col-md-12"><br /><?php echo __('DEVICES'); ?>
+            <pre><?php print_r($this->response->data[0]->devices); ?></pre>
+            </div>
         </div>
     </div>
 </div>
