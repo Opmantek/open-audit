@@ -175,6 +175,21 @@ if (count($this->response->meta->filter) > 0) {
                 array_splice($query_parameters, $i, 1);
             }
         }
+        if ($item->name == 'system.status') {
+            $found = false;
+            foreach ($this->response->meta->query_parameters as $parameter) {
+                if ($parameter->name == 'system.status') {
+                    $found = true;
+                }
+            }
+            if (!$found) {
+                $parameter = new stdClass();
+                $parameter->name = 'system.status';
+                $parameter->operator = '!=';
+                $parameter->value = '';
+                $query_parameters[] = $parameter;
+            }
+        }
         $link = create_url($query_parameters);
         echo '<span class="label label-info">' . $item->name . ' ' . $item->operator . ' ' . urldecode($item->value) . '&nbsp;&nbsp;<a href="' . $link . '">&times;</a></span>&nbsp;';
         unset($query_parameters);
