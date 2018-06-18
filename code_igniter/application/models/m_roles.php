@@ -234,6 +234,32 @@ class M_roles extends MY_Model
         return $result;
     }
 
+    # pass this a collection and permission and it will update the role->permissions if that collection exists
+    # and insert it if it doescn't exist
+    public function update_permissions($role, $collection, $permissions)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $id = intval($id);
+        if (!empty($id)) {
+            $sql = "SELECT * FROM `roles` WHERE id = ?";
+            $data = array($id);
+            $result = $this->run_sql($sql, $data);
+            $role = $result[0];
+        }
+        if (!empty($role)) {
+            $role_permissions = @json_decode($role->permissions);
+        }
+        if (!empty($role_permissions)) {
+            $role_permissions->{$collection} = $permissions;
+            $role->permissions = json_encode($role_permissions);
+            $sql = "UPDATE `roles` SET `permissions` = ? WHERE `id` = ?";
+            $data = array($role_permissions, $id);
+            $result = $this->run_sql($sql, $data);
+        }
+        return;
+    }
+
     private function build_properties() {
         $CI = & get_instance();
         $properties = '';
