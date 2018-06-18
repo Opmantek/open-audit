@@ -330,7 +330,11 @@ class M_help extends MY_Model
         $data->php->error_reporting = ini_get('error_reporting');
         $extensions = get_loaded_extensions();
         $data->php->extensions = implode($extensions, ', ');
-        $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mcrypt', 'mysqli', 'posix', 'session', 'simplexml', 'snmp', 'xml');
+        if (php_uname('s') == 'Windows NT') {
+            $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mcrypt', 'mysqli', 'session', 'simplexml', 'snmp', 'xml');
+        } else {
+            $extensions = array('json', 'ldap', 'libxml', 'mbstring', 'mcrypt', 'mysqli', 'posix', 'session', 'simplexml', 'snmp', 'xml');
+        }
         foreach ($extensions as $extension) {
             $data->php->{'ext_'.$extension} = phpversion($extension);
             if (empty($data->php->{'ext_'.$extension}) and extension_loaded($extension)) {
