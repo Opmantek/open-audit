@@ -148,7 +148,7 @@ class M_widgets extends MY_Model
         } else {
             $properties = '*';
             $filter = '';
-            $sort = '';
+            $sort = 'ORDER BY `name`';
             $limit = '';
         }
         # get the response data

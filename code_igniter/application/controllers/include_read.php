@@ -83,8 +83,6 @@ if ($this->response->meta->collection == 'credentials') {
 if ($this->response->meta->collection == 'dashboards') {
     $this->load->model('m_widgets');
     $this->response->included = array_merge($this->response->included, $this->m_widgets->collection());
-    # Associated widgets
-    $this->response->included = array_merge($this->response->included, $this->m_dashboards->read_sub_resource($this->response->meta->id));
 }
 
 # database
