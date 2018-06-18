@@ -34,6 +34,11 @@ $this->log_db('Upgrade database to 2.2.4 commenced');
 // $this->m_roles->update_permissions(2, 'maps', 'crud');
 // $this->m_roles->update_permissions(3, 'maps', 'crud');
 
+# configuration - remove the Maps API key
+$sql = "UPDATE `configuration` SET `value` = '' WHERE `name` = 'maps_api_key' and value = 'AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180630' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
