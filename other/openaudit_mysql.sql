@@ -570,7 +570,7 @@ CREATE TABLE `configuration` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `description` text NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
