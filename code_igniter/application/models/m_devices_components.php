@@ -466,7 +466,7 @@ class M_devices_components extends MY_Model
                     $this->m_networks->upsert($network);
                 }
             }
-            if ($details->type == 'computer' and $details->os_group == 'VMware') {
+            if ($details->type == 'computer' and !empty($details->os_group) and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
                 $sql = "DELETE FROM `ip` WHERE `ip`.`system_id` = ?";
