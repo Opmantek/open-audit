@@ -29,12 +29,8 @@
 
 $this->log_db('Upgrade database to 2.2.4 commenced');
 
-# maps
-// $this->load->model('m_roles');
-// $this->m_roles->update_permissions(2, 'maps', 'crud');
-// $this->m_roles->update_permissions(3, 'maps', 'crud');
-
-# configuration - remove the Maps API key
+# configuration
+#     - remove the Maps API key, see https://community.opmantek.com/display/opCommon/Google+Maps+API+Key
 $sql = "UPDATE `configuration` SET `value` = '' WHERE `name` = 'maps_api_key' and value = 'AIzaSyAhAUqssRASeC0Pfyx1TW1DXRmboG5bdG0'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
