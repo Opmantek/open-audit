@@ -70,6 +70,7 @@
                                 <option value="" label=" "></option>
                                 <option value="devices"><?php echo __('Devices'); ?></option>
                                 <option value="locations"><?php echo __('Locations'); ?></option>
+                                <option value="orgs"><?php echo __('Orgs'); ?></option>
                                 <option value="queries"><?php echo __('Queries'); ?></option>
                             </select>
                         </div>
