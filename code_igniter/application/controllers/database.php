@@ -732,10 +732,10 @@ class Database extends MY_Controller
             include "db_upgrades/db_2.2.5.php";
         }
 
-        // if (($db_internal_version < '20180710') and ($this->db->platform() == 'mysql')) {
-        //     # upgrade for 2.2.6
-        //     include "db_upgrades/db_2.2.6.php";
-        // }
+        if (($db_internal_version < '20180710') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 2.2.6
+            include "db_upgrades/db_2.2.6.php";
+        }
 
         $this->data['include'] = 'v_database_update';
         $this->data['heading'] = 'Database Upgrade';
