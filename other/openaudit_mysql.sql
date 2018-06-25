@@ -537,8 +537,8 @@ CREATE TABLE `cluster` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('high availability','load balancing','perforance','storage','other', '') NOT NULL DEFAULT '',
-  `purpose` enum('application','database','file','virtualisation','web','other', '') NOT NULL DEFAULT '',
+  `type` enum('high availability','load balancing','perforance','storage','other','') NOT NULL DEFAULT '',
+  `purpose` enum('application','database','file','virtualisation','web','other','') NOT NULL DEFAULT '',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -688,7 +688,7 @@ DROP TABLE IF EXISTS `connections`;
 CREATE TABLE `connections` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
   `description` text NOT NULL,
   `provider` varchar(100) NOT NULL,
   `service_type` varchar(100) NOT NULL,
@@ -1836,7 +1836,7 @@ CREATE TABLE `networks` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `network` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `type` enum('Personal Area Network', 'Home Area Network', 'Local Area Network', 'Wireless Local Area Network', 'Campus Area Network', 'Metropolitan Area Network', 'Wide Area Network', 'Storage-Area Network', 'System-Area Network', 'Passive Optical Local Area Network', 'Enterprise Private Network', 'Virtual Private Network') NOT NULL DEFAULT 'Local Area Network',
+  `type` enum('Personal Area Network','Home Area Network','Local Area Network','Wireless Local Area Network','Campus Area Network','Metropolitan Area Network','Wide Area Network','Storage-Area Network','System-Area Network','Passive Optical Local Area Network','Enterprise Private Network','Virtual Private Network') NOT NULL DEFAULT 'Local Area Network',
   `description` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -3118,7 +3118,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `password` varchar(250) NOT NULL,
   `full_name` varchar(100) NOT NULL,
