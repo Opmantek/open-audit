@@ -49,32 +49,66 @@ LOCK TABLES `agents` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `application`
+-- Table structure for table `application_components`
 --
 
-DROP TABLE IF EXISTS `application`;
+DROP TABLE IF EXISTS `application_components`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `application` (
+CREATE TABLE `application_components` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `system_id` int(10) unsigned DEFAULT NULL,
-  `applications_id` int(10) unsigned NOT NULL DEFAULT '0',
-  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `application_id` int(10) unsigned DEFAULT NULL,
+  `name` text NOT NULL,
+  `description` text NOT NULL,
+  `notes` text NOT NULL,
+  `type` enum('database','device','external service','file','other','service','share','client software','server software','task','website') NOT NULL DEFAULT 'other',
+  `foreign_id` int(10) unsigned DEFAULT NULL,
+  `redundancy_level` enum('primary','secondary','ternary') NOT NULL DEFAULT 'primary',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
-  CONSTRAINT `application_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+  CONSTRAINT `application_components_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `application_components_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `application`
+-- Dumping data for table `application_components`
 --
 
-LOCK TABLES `application` WRITE;
-/*!40000 ALTER TABLE `application` DISABLE KEYS */;
-/*!40000 ALTER TABLE `application` ENABLE KEYS */;
+LOCK TABLES `application_components` WRITE;
+/*!40000 ALTER TABLE `application_components` DISABLE KEYS */;
+/*!40000 ALTER TABLE `application_components` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `application_fields`
+--
+
+DROP TABLE IF EXISTS `application_fields`;
+CREATE TABLE `application_fields` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `applications_id`int(10) unsigned DEFAULT NULL,
+  `attributes_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `application_id` (`application_id`),
+  CONSTRAINT `application_fields_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `application_fields`
+--
+
+LOCK TABLES `application_fields` WRITE;
+/*!40000 ALTER TABLE `application_fields` DISABLE KEYS */;
+/*!40000 ALTER TABLE `application_fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -89,6 +123,7 @@ CREATE TABLE `applications` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
+  `notes` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',

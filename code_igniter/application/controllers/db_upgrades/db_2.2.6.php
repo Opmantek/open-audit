@@ -29,6 +29,53 @@
 
 $this->log_db('Upgrade database to 2.2.6 commenced');
 
+# application_components
+$this->drop_table('application_components');
+$sql = "CREATE TABLE `application_components` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `application_id` int(10) unsigned DEFAULT NULL,
+  `name` text NOT NULL,
+  `description` text NOT NULL,
+  `notes` text NOT NULL,
+  `type` enum('database','device','external service','file','other','service','share','client software','server software','task','website') NOT NULL DEFAULT 'other',
+  `foreign_id` int(10) unsigned DEFAULT NULL,
+  `redundancy_level` enum('primary','secondary','ternary') NOT NULL DEFAULT 'primary',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `application_components_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `application_components_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `application_components` VALUES (SELECT NULL, `system_id`, `applications_id`, `system`.`name`, '', '', 'device', `system_id`, 'primary', 'system', '2000-01-01 00:00:00' FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id`)";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# application fields
+$this->drop_table('application_fields');
+$sql = "CREATE TABLE `application_fields` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `applications_id`int(10) unsigned DEFAULT NULL,
+  `attributes_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `value` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `application_id` (`application_id`),
+  CONSTRAINT `application_fields_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# applications
+$this->alter_table('applications', 'notes', "ADD `notes` text NOT NULL AFTER `description`", 'add');
+
+# locations tables
 $this->drop_table('rows');
 $this->drop_table('rooms');
 $this->drop_table('floors');
