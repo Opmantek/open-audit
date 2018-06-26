@@ -90,15 +90,16 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `application_fields`;
 CREATE TABLE `application_fields` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `applications_id`int(10) unsigned DEFAULT NULL,
-  `attributes_id` int(10) unsigned DEFAULT NULL,
+  `application_id`int(10) unsigned DEFAULT NULL,
+  `attribute_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(200) NOT NULL DEFAULT '',
   `value` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `application_id` (`application_id`),
-  CONSTRAINT `application_fields_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE
+  CONSTRAINT `application_fields_application_id` FOREIGN KEY (`application_id`) REFERENCES `applications` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `application_fields_attribute_id` FOREIGN KEY (`attribute_id`) REFERENCES `attributes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
