@@ -1521,9 +1521,12 @@ if (!function_exists('snmp_audit')) {
                         }
                     }
                 } else {
-                    if (strtolower($interface->type != 'software loopback')) {
-                        $interfaces_filtered[] = $interface;
-                    }
+                    $interfaces_filtered[] = $interface;
+                    // Unsure why we were excluding the loopback.
+                    // Do NOT exclude as at 2.2.6
+                    // if (strtolower($interface->type != 'software loopback')) {
+                    //     $interfaces_filtered[] = $interface;
+                    // }
                 }
                 // $log->command_time_to_execute = (microtime(true) - $item_start);
                 // discovery_log($log);
