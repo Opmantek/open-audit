@@ -89,7 +89,7 @@ class M_applications extends MY_Model
         return ($result);
     }
 
-    public function read_sub_resource($id)
+    public function read_sub_resource_old($id)
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
@@ -98,6 +98,85 @@ class M_applications extends MY_Model
         $sql = "SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, `system`.`description` AS `system.description` FROM `application` LEFT JOIN `system` ON `application`.`system_id` = `system`.`id` WHERE `system`.`org_id` IN  (" . $org_ids . ")";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'devices');
+        return ($result);
+    }
+
+    public function application_components($id)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $id = intval($id);
+        $sql = "SELECT * FROM `application_components` WHERE `application_components`.`application_id` = ?";
+        $result = $this->run_sql($sql, array($id));
+        foreach ($result as $row) {
+            $table = '';
+            switch ($row->type) {
+                case 'database':
+                    $table = 'server_item';
+                    break;
+
+                case 'device':
+                    $table = 'system';
+                    break;
+
+                case 'external service':
+                    $table = '';
+                    break;
+
+                case 'file':
+                    $table = 'file';
+                    break;
+
+                case 'other':
+                    $table = '';
+                    break;
+
+                case 'service':
+                    $table = 'service';
+                    break;
+
+                case 'share':
+                    $table = 'share';
+                    break;
+
+                case 'client software':
+                    $table = 'software';
+                    break;
+
+                case 'server software':
+                    $table = 'software';
+                    break;
+
+                case 'task':
+                    $table = 'task';
+                    break;
+
+                case 'website':
+                    $table = 'server_item';
+                    break;
+            }
+            $row->foreign_name = '';
+            if (!empty($table)) {
+                $sql = "SELECT name FROM " . $table . " WHERE id = ?";
+                $result_2 = $this->run_sql($sql, array($row->foreign_id));
+                if (!empty($result_2[0]->name)) {
+                    $row->foreign_name = $result_2[0]->name;
+                    $row->{$table.'.id'} = intval($row->foreign_id);
+                }
+            }
+        }
+        $result = $this->format_data($result, 'application_components');
+        return ($result);
+    }
+
+    public function application_fields($id)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $id = intval($id);
+        $sql = "SELECT `application_fields`.*, `attributes`.`name` FROM `application_fields` LEFT JOIN `attributes` ON `application_fields`.`attribute_id` = `attributes`.`id` WHERE `application_fields`.`application_id` = ?";
+        $result = $this->run_sql($sql, array($id));
+        $result = $this->format_data($result, 'application_fields');
         return ($result);
     }
 }

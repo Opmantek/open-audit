@@ -42,6 +42,8 @@ $this->response->included = array_merge($this->response->included, $this->m_orgs
 
 # applications
 if ($collection == 'applications') {
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
 }
 
 # attributes
