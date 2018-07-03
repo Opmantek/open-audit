@@ -141,15 +141,6 @@ class M_device extends MY_Model
                 }
                 return $details->id;
             }
-            // $log_message[] = 'MISS on match_omk_uuid.';
-        } else {
-            // if (empty($details->omk_uuid)) {
-            //     $log_message[] = "Not running match_omk_uuid, omk_uuid not set.";
-            // } else if (!empty($details->id)) {
-            //     $log_message[] = "Not running match_omk_uuid, device id already set.";
-            // } else {
-            //     $log_message[] = "Not running match_omk_uuid.";
-            // }
         }
 
         if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and empty($details->id) and !empty($details->uuid) and !empty($details->hostname)) {
@@ -490,7 +481,7 @@ class M_device extends MY_Model
             # first check the ip table as eny existing devices that have been seen
             # by more than just Nmap will have an entry here
             $log_message[] = 'Running match_ip for IP: ' . $details->ip;
-            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND system.status != 'deleted' LIMIT 1";
+            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.ip = ? AND ip.ip NOT LIKE '127%' AND ip.ip NOT LIKE '1::%' AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
             $data = array(ip_address_to_db($details->ip));
             $query = $this->db->query($sql, $data);
@@ -512,7 +503,7 @@ class M_device extends MY_Model
 
             # next check the system table for a ip match
             if (empty($details->id)) {
-                $sql = "SELECT system.id FROM system WHERE system.ip = ? and system.status != 'deleted'";
+                $sql = "SELECT system.id FROM system WHERE system.ip = ? AND system.ip NOT LIKE '127%' AND system.ip NOT LIKE '1::%' AND system.status != 'deleted'";
                 $sql = $this->clean_sql($sql);
                 $data = array(ip_address_to_db($details->ip));
                 $query = $this->db->query($sql, $data);
