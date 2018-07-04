@@ -29,6 +29,24 @@
 
 $this->log_db('Upgrade database to 2.2.6 commenced');
 
+# image
+$this->drop_table('image');
+$sql = "CREATE TABLE `image` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `filename` text NOT NULL,
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `image_orientation` enum ('front','rear','left','right','top','bottom','other','') NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `image_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # locations tables
 $this->drop_table('rows');
 $this->drop_table('rooms');
