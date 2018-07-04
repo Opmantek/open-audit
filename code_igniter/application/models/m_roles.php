@@ -235,7 +235,7 @@ class M_roles extends MY_Model
     }
 
     # pass this a collection and permission and it will update the role->permissions if that collection exists
-    # and insert it if it doescn't exist
+    # and insert it if it doesn't exist
     public function update_permissions($role, $collection, $permissions)
     {
         $this->log->function = strtolower(__METHOD__);
