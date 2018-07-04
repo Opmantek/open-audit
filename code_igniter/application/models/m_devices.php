@@ -576,11 +576,11 @@ class M_devices extends MY_Model
             }
             $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->id . "_" . basename($_FILES['attachment']['name']);
             if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
-                $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, 'image', ?, ?, NOW())";
+                $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
                 $data = array(intval($CI->response->meta->id),
                         $CI->response->meta->received_data->attributes->name,
                         $CI->response->meta->id . "_" . basename($_FILES['attachment']['name']),
-                        $CI->response->meta->received_data->attributes->image_orientation,
+                        $CI->response->meta->received_data->attributes->orientation,
                         $CI->user->full_name);
                 $this->db->query($sql, $data);
                 return true;
