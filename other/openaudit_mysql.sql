@@ -400,35 +400,6 @@ LOCK TABLES `bios` WRITE;
 /*!40000 ALTER TABLE `bios` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `buildings`
---
-
-DROP TABLE IF EXISTS `buildings`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `buildings` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `location_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `notes` text NOT NULL,
-  `tags` varchar(250) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `location_id` (`location_id`),
-  KEY `org_id` (`org_id`),
-  CONSTRAINT `buildings_location_id` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `buildings_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `buildings`
---
-
 LOCK TABLES `buildings` WRITE;
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
 INSERT INTO `buildings` VALUES (1,'Default',1,1,'The default entry for a building at this location.','','','system','2000-01-01 00:00:00');
@@ -1102,41 +1073,6 @@ CREATE TABLE `files` (
 LOCK TABLES `files` WRITE;
 /*!40000 ALTER TABLE `files` DISABLE KEYS */;
 /*!40000 ALTER TABLE `files` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `floors`
---
-
-DROP TABLE IF EXISTS `floors`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `floors` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `building_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `notes` text NOT NULL,
-  `tags` varchar(250) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `building_id` (`building_id`),
-  KEY `org_id` (`org_id`),
-  CONSTRAINT `floors_building_id` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `floors_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `floors`
---
-
-LOCK TABLES `floors` WRITE;
-/*!40000 ALTER TABLE `floors` DISABLE KEYS */;
-INSERT INTO `floors` VALUES (1,'Ground Floor',1,1,'The default entry for a floor at this location.','','','system','2001-01-01 00:00:00');
-/*!40000 ALTER TABLE `floors` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2317,41 +2253,6 @@ INSERT INTO `roles` VALUES (6,'agent','The agent specific role.','{\"configurati
 UNLOCK TABLES;
 
 --
--- Table structure for table `rooms`
---
-
-DROP TABLE IF EXISTS `rooms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rooms` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `floor_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `notes` text NOT NULL,
-  `tags` varchar(250) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `floor_id` (`floor_id`),
-  KEY `org_id` (`org_id`),
-  CONSTRAINT `rooms_floor_id` FOREIGN KEY (`floor_id`) REFERENCES `floors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rooms_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rooms`
---
-
-LOCK TABLES `rooms` WRITE;
-/*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (1,'Default',1,1,'The default entry for a room at this location.','','','system','2001-01-01 00:00:00');
-/*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `route`
 --
 
@@ -2383,41 +2284,6 @@ CREATE TABLE `route` (
 LOCK TABLES `route` WRITE;
 /*!40000 ALTER TABLE `route` DISABLE KEYS */;
 /*!40000 ALTER TABLE `route` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `rows`
---
-
-DROP TABLE IF EXISTS `rows`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rows` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `room_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `description` text NOT NULL,
-  `notes` text NOT NULL,
-  `tags` varchar(250) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `room_id` (`room_id`),
-  KEY `org_id` (`org_id`),
-  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rows`
---
-
-LOCK TABLES `rows` WRITE;
-/*!40000 ALTER TABLE `rows` DISABLE KEYS */;
-INSERT INTO `rows` VALUES (1,'Default',1,1,'The default entry for a row at this location.','','','system','2001-01-01 00:00:00');
-/*!40000 ALTER TABLE `rows` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
