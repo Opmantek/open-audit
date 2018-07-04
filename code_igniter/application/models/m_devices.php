@@ -436,6 +436,17 @@ class M_devices extends MY_Model
                 return false;
             }
         }
+        if ($sub_resource == 'image') {
+            $sql = "SELECT * FROM image WHERE id = " . intval($sub_resource_id);
+            $image = $this->run_sql($sql, array());
+            if (unlink($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $image[0]->filename)) {
+                // good
+            } else {
+                // TODO - log an error here
+                echo "Could not delete " . $image[0]->filename . ".";
+                return false;
+            }
+        }
         $sql = "/* m_devices::sub_resource_delete */ " . "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
         $data = array(intval($id), intval($sub_resource_id));
         $this->run_sql($sql, $data);
@@ -550,6 +561,32 @@ class M_devices extends MY_Model
             } else {
                 $log->severity = 5;
                 $log->summary = "Unable to move uploaded file.";
+                $log->status = 'error';
+                $log->detail = error_get_last();
+                stdlog($log);
+                return false;
+            }
+        } else if ($sub_resource == 'image') {
+            if (empty($_FILES['attachment'])) {
+                $log->severity = 5;
+                $log->summary = "No image file provided to PHP for sub_resource_create.";
+                $log->status = 'error';
+                stdlog($log);
+                return false;
+            }
+            $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->id . "_" . basename($_FILES['attachment']['name']);
+            if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, 'image', ?, ?, NOW())";
+                $data = array(intval($CI->response->meta->id),
+                        $CI->response->meta->received_data->attributes->name,
+                        $CI->response->meta->id . "_" . basename($_FILES['attachment']['name']),
+                        $CI->response->meta->received_data->attributes->image_orientation,
+                        $CI->user->full_name);
+                $this->db->query($sql, $data);
+                return true;
+            } else {
+                $log->severity = 5;
+                $log->summary = "Unable to move uploaded file to $target";
                 $log->status = 'error';
                 $log->detail = error_get_last();
                 stdlog($log);
