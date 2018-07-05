@@ -62,7 +62,10 @@ class M_logon extends MY_Model
         // get $username from $_POST
         $username = @$this->input->post('username');
         // get $password from $_POST
-        $password = @$this->input->post('password');
+        // $password = @$this->input->post('password');
+        // Do NOT use input->post as this will append a ; if the password contains an &
+        // Changed on 2018-07-05, MU, OMK-5103
+        $password = @$_POST['password'];
 
         // make sure we have a supplied username and password
         if (empty($username) or empty($password)) {
