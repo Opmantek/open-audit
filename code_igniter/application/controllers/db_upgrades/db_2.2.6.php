@@ -54,6 +54,11 @@ $sql = "CREATE TABLE `image` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# widgets
+$sql = "UPDATE `widgets` SET `sql` = \"SELECT if ( system.warranty_expires = '2000-01-01', 'unknown', ( if ( system.warranty_expires < DATE(NOW()), 'expired', ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 730 day), '2 Years or more', ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 365 day), '1-2 years', ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 270 day), '270-365 days', ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 180 day), '180-270 days', ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 90 day), '90-180 days', 'Less than 90 Days' ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, if ( system.warranty_expires = '2000-01-01', 'system.warranty_expires=2000-01-01', ( if ( system.warranty_expires < DATE(NOW()), CONCAT('system.warranty_expires=<', DATE(NOW())), ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 730 day), CONCAT('system.warranty_expires=>', DATE(NOW() + INTERVAL 730 day)), ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 365 day), CONCAT('system.warranty_expires=<', DATE(NOW() + INTERVAL 730 day), '&system.warranty_expires=>', DATE(NOW() + INTERVAL 365 day)), ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 270 day), CONCAT('system.warranty_expires=<', DATE(NOW() + INTERVAL 365 day), '&system.warranty_expires=>', DATE(NOW() + INTERVAL 270 day)), ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 180 day), CONCAT('system.warranty_expires=<', DATE(NOW() + INTERVAL 270 day), '&system.warranty_expires=>', DATE(NOW() + INTERVAL 180 day)), ( if ( system.warranty_expires > DATE(NOW() + INTERVAL 90 day), CONCAT('system.warranty_expires=<', DATE(NOW() + INTERVAL 180 day), '&system.warranty_expires=>', DATE(NOW() + INTERVAL 90 day)), CONCAT('system.warranty_expires=<', DATE(NOW() + INTERVAL 90 day), '&system.warranty_expires=>', DATE(NOW()) ) ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.warranty_expires\" WHERE `name` = 'End of Warranty (0-2+ Years)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180710' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
