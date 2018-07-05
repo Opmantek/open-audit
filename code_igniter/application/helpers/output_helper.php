@@ -107,6 +107,17 @@ if (! function_exists('output')) {
                         }
                     }
                 }
+                if (!empty($CI->config->item('decrypt_credentials')) and $CI->config->item('decrypt_credentials') != 'y') {
+                    for ($i=0; $i < count($CI->response->data); $i++) {
+                        $fields = array('community', 'security_name', 'authentication_passphrase', 'privacy_passphrase', 'password', 'ssh_key');
+                        foreach ($fields as $field) {
+                            if (!empty($CI->response->data[$i]->attributes->credentials->{$field})) {
+                                $CI->response->data[$i]->attributes->credentials->{$field} = '';
+                                $CI->response->data[$i]->attributes->{"credentials.$field"} = '';
+                            }
+                        }
+                    }
+                }
             }
 
             if ($CI->response->meta->collection == 'discoveries') {
@@ -783,7 +794,7 @@ if (! function_exists('output')) {
             $table .= "<tr>";
             foreach ($item->attributes as $key => $value) {
                 if (stripos($key, '_padded') === false) {
-                    $table .= "<td>" . htmlspecialchars($value) . "</td>";
+                    $table .= "<td>" . @htmlspecialchars($value) . "</td>";
                 }
             }
             $table .= "</tr>";
