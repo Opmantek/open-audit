@@ -213,7 +213,8 @@ class M_widgets extends MY_Model
                                 $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
                                 " COUNT(" . $this->sql_esc($widget->primary) . ") AS " . $this->sql_esc('count') . 
                                 " FROM " .  $this->sql_esc('system') . " LEFT JOIN " . $this->sql_esc($primary_table) . 
-                                " ON (" . $this->sql_esc('system.id') . ' = ' . $this->sql_esc($primary_table . '.system_id') . ") " . 
+                                " ON (" . $this->sql_esc('system.id') . ' = ' . $this->sql_esc($primary_table . '.system_id') . 
+                                " AND " . $this->sql_esc($primary_table.'.current') . " = 'y' ) " . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
             if (!empty($widget->where)) {
                 $sql = str_replace('@filter',$this->sql_esc('system.org_id') . " IN (" . $org_list . ") AND " . $widget->where, $sql);
