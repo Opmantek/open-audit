@@ -618,7 +618,7 @@ INSERT INTO `configuration` VALUES (58,'gui_trim_characters','25','number','y','
 INSERT INTO `configuration` VALUES (59,'access_token_count','20','number','y','system','2000-01-01 00:00:00','Allow this many access tokens to be stored in the cookie.');
 INSERT INTO `configuration` VALUES (60,'access_token_enable','y','bool','y','system','2000-01-01 00:00:00','Should we enable access tokens for CSRF mitigation.');
 INSERT INTO `configuration` VALUES (61,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
-INSERT INTO `configuration` VALUES (62,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we export credentials, should we decrypt them.');
+INSERT INTO `configuration` VALUES (62,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -33,7 +33,7 @@ $this->log_db('Upgrade database to 2.2.6 commenced');
 $sql = "DELETE FROM `configuration` WHERE `name` = 'decrypt_credentials'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
-$sql = "INSERT INTO `configuration` VALUES (NULL,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we export credentials, should we decrypt them.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
