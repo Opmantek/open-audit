@@ -609,18 +609,25 @@ class M_collection extends MY_Model
 
         if ($collection === 'roles') {
             $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
-            $permissions = new stdClass();
             if (empty($data->permissions)) {
-                $data->permissions = '';
-            } else {
-                // foreach ($data->permissions as $endpoint => $object) {
-                    // $permissions->{$endpoint} = '';
-                    // foreach ($object as $key => $value) {
-                    //     $permissions->{$endpoint} .= $key;
-                    // }
-                // }
-                // $data->permissions = json_encode($permissions);
+                # No permissions
+                $data->permissions = new stdClass();
                 $data->permissions = json_encode($data->permissions);
+            } else if (!empty($data->permissions) and gettype($data->permissions) === 'string') {
+                # We have a CSV submitted item
+                # Replace quotes as it should already be stringified JSON
+                $item->permissions = str_replace("'", '"', $item->permissions);
+            } else if (!empty($data->permissions) and gettype($data->permissions) === 'object') {
+                # We have a submitted form
+                # Build up our permissions
+                $permissions = new stdClass();
+                foreach ($data->permissions as $endpoint => $object) {
+                    $permissions->{$endpoint} = '';
+                    foreach ($object as $key => $value) {
+                        $permissions->{$endpoint} .= $key;
+                    }
+                }
+                $data->permissions = json_encode($permissions);
             }
         }
 
