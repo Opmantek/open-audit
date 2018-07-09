@@ -47,6 +47,7 @@ class M_logon extends MY_Model
     {
         # order of authenticating is against ldap_server(s) (if set), then against a local account with sha256.
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
         $CI->user = new stdClass();
@@ -54,7 +55,7 @@ class M_logon extends MY_Model
         $log = new stdClass();
         $log->file = 'system';
         $log->controller = 'm_logon';
-        $log->function = 'logon';
+        $log->function = strtolower(__METHOD__);
         $log->collection = 'logon';
         $log->severity = 7;
 
@@ -484,11 +485,13 @@ class M_logon extends MY_Model
                             $user_result = $user_query->result();
                             if (count($user_result) == 0) {
                                 // The user does not exist, insert
-                                $log->message = "New user $username logged on (AD account).";
-                                $log->detail = json_encode($user);
+                                $log->summary = 'New user created';
+                                $log->detail = "New user $username logged on (AD account), " . json_encode($user);
+                                $log->status = 'success';
                                 $log->severity = 5;
+                                stdlog($log);
                                 if ($this->db->table_exists('users')) {
-                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+                                    $user_sql = "/* m_logon::logon */" . "INSERT INTO users VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, '', NOW())";
                                 } else {
                                     $user_sql = "/* m_logon::logon */" . "INSERT INTO oa_user VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
                                 }
