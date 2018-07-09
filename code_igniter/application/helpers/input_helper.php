@@ -68,10 +68,9 @@ if (! function_exists('set_collection')) {
         $collection = @$CI->uri->segment(1);
         $collections = array('agents','applications','attributes','charts','collectors','configuration','connections','credentials','dashboards','database','devices','discovery','discoveries','errors','fields','files','groups','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','racks','reports','roles','scripts','search','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
-            #$log->summary = 'Set collection to ' . $collection . ', according to URI.';
+            # a valid collection
         } else {
             $collection = 'summaries';
-            #$log->summary = 'Set collection to summaries as a default.';
         }
         return $collection;
     }
@@ -117,7 +116,7 @@ if (! function_exists('inputRead')) {
         $log->function = 'input_helper::' . strtolower(__METHOD__);
         $log->status = 'parsing input';
         $log->summary = '';
-        stdlog($log);
+        // stdlog($log);
 
         error_reporting(E_ALL);
         $CI = & get_instance();
@@ -200,55 +199,53 @@ if (! function_exists('inputRead')) {
         # version={version} in the accept header
         # get the version
         if (!empty($CI->uri->segments[1]) and ($CI->uri->segments[1] == 'api' or $CI->uri->segments[1] == 'v1' or $CI->uri->segments[1] == 'v2')) {
+            $log->summary = 'set version';
             if ($CI->uri->segments[1] == 'api') {
                 $CI->response->meta->version = intval($CI->uri->segment(2));
+                $log->detail = 'Set version to ' . intval($CI->uri->segment(2)) . ', according to URI segment.';
                 unset($CI->uri->segments[1]);
                 unset($CI->uri->segments[2]);
-                $log->summary = 'Set version to ' . intval($CI->uri->segment(2)) . ', according to URI segment.';
-                stdlog($log);
+
             } else if ($CI->uri->segments[1] == 'v1') {
                 $CI->response->meta->version = 1;
-                $log->summary = 'Set version to v1, according to URI segment.';
-                stdlog($log);
+                $log->detail = 'Set version to v1, according to URI segment.';
                 unset($CI->uri->segments[1]);
+
             } else if ($CI->uri->segments[1] == 'v2') {
                 $CI->response->meta->version = 2;
-                $log->summary = 'Set version to v2, according to URI segment.';
-                stdlog($log);
+                $log->detail = 'Set version to v2, according to URI segment.';
                 unset($CI->uri->segments[1]);
             }
+            stdlog($log);
             array_unshift($CI->uri->segments, '');
             $CI->uri->segments = array_values($CI->uri->segments);
         } else if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json;version=') !== false) {
             $CI->response->meta->version = intval(str_replace('application/json;version=', '', $_SERVER['HTTP_ACCEPT']));
-            $log->summary = 'Set version to ' . $CI->response->meta->version . ', according to headers.';
+            $log->summary = 'set version';
+            $log->detail = 'Set version to ' . $CI->response->meta->version . ', according to headers.';
             stdlog($log);
         }
         
         # get our collection - usually devices, groups, reports, etc
-        // $temp = $CI->uri->segment(1);
-        // if (isset($temp) and $temp != '' and stripos($collections, ' '.$temp. ' ') !== false) {
-        //     $CI->response->meta->collection = (string)$temp;
-        //     $log->summary = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
-        //     stdlog($log);
-        // } else {
-        //     $CI->response->meta->collection = 'summaries';
-        //     $log->summary = 'Set collection to summaries as a default.';
-        //     stdlog($log);
-        // }
         $CI->response->meta->collection = set_collection();
+        $log->summary = 'set collection';
+        $log->detail = 'Set collection to ' . $CI->response->meta->collection . ', according to URI.';
+        stdlog($log);
+
         $CI->response->meta->heading = ucfirst($CI->response->meta->collection);
         unset($temp);
 
         # get debug
         if ($CI->input->get('debug')) {
             $CI->response->meta->debug = $CI->input->get('debug');
-            $log->summary = 'Set debug to ' . $CI->response->meta->debug . ', according to URI.';
+            $log->summary = 'set debug';
+            $log->detail = 'Set debug to ' . $CI->response->meta->debug . ', according to URI.';
             stdlog($log);
         }
         if ($CI->input->post('debug')) {
             $CI->response->meta->debug = $CI->input->post('debug');
-            $log->summary = 'Set debug to ' . $CI->response->meta->debug . ', according to POST.';
+            $log->summary = 'set debug';
+            $log->detail = 'Set debug to ' . $CI->response->meta->debug . ', according to POST.';
             stdlog($log);
         }
         if (strtolower($CI->response->meta->debug) == 'true') {
@@ -263,7 +260,8 @@ if (! function_exists('inputRead')) {
         # if we have an integer
         if ($CI->uri->segment(2) != '' and is_numeric($CI->uri->segment(2))) {
             $CI->response->meta->id = intval($CI->uri->segment(2));
-            $log->summary = 'Set ID to ' . $CI->response->meta->id . ', according to URI.';
+            $log->summary = 'set id';
+            $log->detail = 'Set ID to ' . $CI->response->meta->id . ', according to URI.';
             stdlog($log);
         }
 
@@ -271,19 +269,22 @@ if (! function_exists('inputRead')) {
         if ($CI->uri->segment(2) and stripos($actions, ' '.$CI->uri->segment(2).' ') !== false) {
             $CI->response->meta->action = $CI->uri->segment(2);
             $action = $CI->uri->segment(2);
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
+            $log->summary = 'set action';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
         }
         if ($CI->uri->segment(3) and stripos($actions, ' '.$CI->uri->segment(3).' ') !== false) {
             $CI->response->meta->action = $CI->uri->segment(3);
             $action = $CI->uri->segment(3);
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
+            $log->summary = 'set action';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
         }
         
         # if we have an item name (ie, not it's ID)
         if (is_null($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($actions, ' '.$CI->uri->segment(2).' ') === false) {
-            $log->summary = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
+            $log->summary = 'Search ID';
+            $log->detail = 'Searching for ID, using ' . $CI->uri->segment(2) . ' on the ' . $CI->response->meta->collection . ' collection.';
             stdlog($log);
             $sql = '';
             switch ($CI->response->meta->collection) {
@@ -344,16 +345,19 @@ if (! function_exists('inputRead')) {
                 $result = $query->result();
                 if (count($result) > 0) {
                     $CI->response->meta->id = intval($result[0]->id);
-                    $log->summary = 'Set id to ' . $CI->response->meta->id . ', after searching.';
+                    $log->summary = 'set id';
+                    $log->detail = 'Set id to ' . $CI->response->meta->id . ', after searching.';
                     stdlog($log);
                 } else {
                     // should throw an error as we were given a name, but nothing matched
                     $CI->response->meta->id = 888888888888;
-                    $log->summary = 'Set id to NULL, after searching - no match found.';
+                    $log->summary = 'set id';
+                    $log->detail = 'Set id to NULL, after searching - no match found.';
                     stdlog($log);
                 }
             } else {
-                $log->summary = "Set id to " . $CI->response->meta->id . ", based on the URL.";
+                $log->summary = 'set id';
+                $log->detail = "Set id to " . $CI->response->meta->id . ", based on the URL.";
                 stdlog($log);
             }
         }
@@ -361,12 +365,14 @@ if (! function_exists('inputRead')) {
         # get the include
         if ($CI->input->get('include')) {
             $CI->response->meta->include = $CI->input->get('include');
-            $log->summary = 'Set include to ' . $CI->response->meta->include . ', according to GET.';
+            $log->summary = 'set include';
+            $log->detail = 'Set include to ' . $CI->response->meta->include . ', according to GET.';
             stdlog($log);
         }
         if ($CI->input->post('include')) {
             $CI->response->meta->include = $CI->input->post('include');
-            $log->summary = 'Set include to ' . $CI->response->meta->include . ', according to POST.';
+            $log->summary = 'set include';
+            $log->detail = 'Set include to ' . $CI->response->meta->include . ', according to POST.';
             stdlog($log);
         }
 
@@ -375,18 +381,21 @@ if (! function_exists('inputRead')) {
             $temp = @(string)$CI->uri->segment(3, '');
             if (stripos($actions, ' '.$temp. ' ') === false and $temp != '') {
                 $CI->response->meta->sub_resource = $temp;
-                $log->summary = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to URI.';
+                $log->summary = 'set sub_resource';
+                $log->detail = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to URI.';
                 stdlog($log);
             }
         }
         if ($CI->input->get('sub_resource')) {
             $CI->response->meta->sub_resource = $CI->input->get('sub_resource');
-            $log->summary = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to GET.';
+            $log->summary = 'set sub_resource';
+            $log->detail = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to GET.';
             stdlog($log);
         }
         if ($CI->input->post('sub_resource')) {
             $CI->response->meta->sub_resource = $CI->input->post('sub_resource');
-            $log->summary = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to POST.';
+            $log->summary = 'set sub_resource';
+            $log->detail = 'Set sub_resource to ' . $CI->response->meta->sub_resource . ', according to POST.';
             stdlog($log);
         }
         $CI->response->meta->sub_resource = str_replace(array(',', '.', '\'', '"', '(', ')'), '', $CI->response->meta->sub_resource);
@@ -396,18 +405,21 @@ if (! function_exists('inputRead')) {
         if (empty($CI->response->meta->sub_resource_id)) {
             if (!empty($CI->response->meta->sub_resource)) {
                 $CI->response->meta->sub_resource_id = (string)$CI->uri->segment(4, '');
-                $log->summary = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
+                $log->summary = 'set sub_resource_id';
+                $log->detail = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to URI.';
                 stdlog($log);
             }
         }
         if ($CI->input->get('sub_resource_id')) {
             $CI->response->meta->sub_resource_id = $CI->input->get('sub_resource_id');
-            $log->summary = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to GET.';
+            $log->summary = 'set sub_resource_id';
+            $log->detail = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to GET.';
             stdlog($log);
         }
         if ($CI->input->post('sub_resource_id')) {
             $CI->response->meta->sub_resource_id = $CI->input->post('sub_resource_id');
-            $log->summary = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to POST.';
+            $log->summary = 'set sub_resource_id';
+            $log->detail = 'Set sub_resource_id to ' . $CI->response->meta->sub_resource_id . ', according to POST.';
             stdlog($log);
         }
         $CI->response->meta->sub_resource_id = intval($CI->response->meta->sub_resource_id);
@@ -430,12 +442,14 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->received_data = $_POST{'data'};
                 $CI->response->meta->received_data = json_encode($CI->response->meta->received_data);
                 $CI->response->meta->received_data = json_decode($CI->response->meta->received_data);
-                $log->summary = "data supplied via form.";
+                $log->summary = "Receiving data";
+                $log->detail = "Data has been supplied via POST HTML form.";
                 $data_supplied_by = 'form';
             } else {
                 # This is straight JSON submitted data in a string
                 $CI->response->meta->received_data = @json_decode($_POST{'data'});
-                $log->summary = "data supplied via json.";
+                $log->summary = "Receiving data";
+                $log->detail = "Data has been supplied via POST json.";
                 $data_supplied_by = 'json';
             }
             $log->detail = json_encode($CI->response->meta->received_data);
@@ -451,8 +465,11 @@ if (! function_exists('inputRead')) {
             $data_object = json_decode($data_json);
             $options = @$data_object->data->attributes->options;
             if (empty($data_object)) {
-                $log->summary = 'Request method is PATCH but no data supplied.';
+                $log->summary = 'Parsing patch request';
+                $log->detail = 'Request method is PATCH but no data supplied.';
+                $log->severity = 5;
                 stdlog($log);
+                $log->severity = 7;
             } else {
                 $CI->response->meta->received_data = new stdClass();
                 $CI->response->meta->received_data = $data_object->data;
@@ -473,61 +490,64 @@ if (! function_exists('inputRead')) {
         # TODO - request_method == post and body contains system.id, then update, not create
         if ($CI->input->get('action')) {
             $action = $CI->input->get('action');
-            $log->summary = 'Set action to ' . $action . ', according to GET.';
+            $log->summary = 'set action';
+            $log->detail = 'Set action to ' . $action . ', according to GET.';
             stdlog($log);
         }
         if ($CI->input->post('action')) {
             $action = $CI->input->post('action');
-            $log->summary = 'Set action to ' . $action . ', according to POST.';
+            $log->summary = 'set action';
+            $log->detail = 'Set action to ' . $action . ', according to POST.';
             stdlog($log);
         }
 
 
 
+        $log->summary = 'set action';
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == '') {
             // return a list of items
             $CI->response->meta->action = 'collection';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id, no action.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, no id, no action.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'reset') {
             $CI->response->meta->action = 'reset';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, action = reset.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, action = reset.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'export') {
             $CI->response->meta->action = 'export';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, action = reset.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, action = reset.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'create') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'create_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = create.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and $action == 'create' and $CI->response->meta->sub_resource != '' and empty($CI->response->meta->sub_resource_id)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, not sub_resource_id and action = create.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, not sub_resource_id and action = create.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and $action == 'sub_resource_read' and $CI->response->meta->sub_resource != '') {
             // return the sub_resource
             $CI->response->meta->action = 'sub_resource_read';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource and action = sub_resource_read.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource and action = sub_resource_read.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and $action == 'download' and $CI->response->meta->sub_resource != '' and !empty($CI->response->meta->sub_resource_id)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_download';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, sub_resource_id and action = download.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, sub_resource, sub_resource_id and action = download.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id) and $action == 'import') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'import_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = import.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, no id and action = import.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == '') {
@@ -536,81 +556,81 @@ if (! function_exists('inputRead')) {
             if ($CI->response->meta->collection != 'database' and $CI->response->meta->collection != 'errors') {
                 $CI->response->meta->id = intval($CI->response->meta->id);
             }
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and no action.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'test') {
             // test a single item
             $CI->response->meta->action = 'test';
             $CI->response->meta->id = intval($CI->response->meta->id);
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = test.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = test.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'update' and empty($CI->response->meta->ids)) {
             // show a HTML form for updating an existing item
             $CI->response->meta->action = 'update_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
         // Special case for the database endpoint
         if ($REQUEST_METHOD == 'GET' and $action == 'update' and $CI->response->meta->collection == 'database') {
             // show a HTML form for updating an existing item
             $CI->response->meta->action = 'update_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and $action == 'execute' and $CI->response->meta->collection == 'database' and $CI->response->meta->sub_resource != '') {
             // show a HTML form for updating an existing item
             $CI->response->meta->action = 'execute';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, collection = database and action = ' . $action . '.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'execute') {
             // Execute the discovery / report / etc
             $CI->response->meta->action = 'execute';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = ' . $action . '.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and is_null($CI->response->meta->id)  and $action == 'update' and !empty($CI->response->meta->ids)) {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'bulk_update_form';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, ids, no id and action = update.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, ids, no id and action = update.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'GET' and !is_null($CI->response->meta->id) and $action == 'download' and empty($CI->response->meta->sub_resource)) {
             // mainly used for running a report and displaying the output
             $CI->response->meta->action = 'download';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = download.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because GET, id and action = download.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == '' and $CI->response->meta->received_data != '') {
             // insert an item
             $CI->response->meta->action = 'create';
             $CI->response->meta->header = 'HTTP/1.1 201 Created';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, data, no id and no action.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, data, no id and no action.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == '' and $CI->response->meta->received_data == '') {
             // insert an item
             $CI->response->meta->action = 'collection';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, no data and no action.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, no data and no action.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'import') {
             // insert an item
             $CI->response->meta->action = 'import';
             $CI->response->meta->header = 'HTTP/1.1 201 Created';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and action = import.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, no id and action = import.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'update' and !empty($CI->response->meta->ids)) {
             $CI->response->meta->action = 'update';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, ids, no id and action = update.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, ids, no id and action = update.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and is_null($CI->response->meta->id) and $action == 'update' and $CI->response->meta->collection == 'database') {
             $CI->response->meta->action = 'update';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, collection is database and action = update.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, no id, collection is database and action = update.';
             stdlog($log);
         }
         #if (($REQUEST_METHOD == 'POST' or $REQUEST_METHOD == 'PUT' or$REQUEST_METHOD == 'PATCH') and !is_null($CI->response->meta->id) and $action == '') {
@@ -619,7 +639,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->action = 'update';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
             $CI->response->meta->id = intval($CI->response->meta->id);
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST/PATCH/PUT, id and no action.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST/PATCH/PUT, id and no action.';
             stdlog($log);
         }
 
@@ -628,13 +648,13 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->action = 'update';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
             $CI->response->meta->id = intval($CI->response->meta->id);
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because PATCH, ids and no id.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because PATCH, ids and no id.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'POST' and (!is_null($CI->response->meta->id) or $CI->response->meta->ids != '') and $CI->response->meta->sub_resource != '') {
             // show a HTML form for entering a new item
             $CI->response->meta->action = 'sub_resource_create';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because POST, id, sub_resource.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because POST, id, sub_resource.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'DELETE' and !is_null($CI->response->meta->id) and $CI->response->meta->sub_resource == '') {
@@ -644,7 +664,7 @@ if (! function_exists('inputRead')) {
             if ($CI->response->meta->collection != 'database') {
                 $CI->response->meta->id = intval($CI->response->meta->id);
             }
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id.';
             stdlog($log);
         }
         if ($REQUEST_METHOD == 'DELETE' and !is_null($CI->response->meta->id) and $CI->response->meta->sub_resource != '' and $CI->response->meta->sub_resource_id != '') {
@@ -652,17 +672,17 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->action = 'sub_resource_delete';
             $CI->response->meta->header = 'HTTP/1.1 200 OK';
             $CI->response->meta->id = intval($CI->response->meta->id);
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id, sub_resource, sub_resource_id.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because DELETE, id, sub_resource, sub_resource_id.';
             stdlog($log);
         }
         if ($CI->response->meta->action == '') {
             $CI->response->meta->action = 'collection';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', no action.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', no action.';
             stdlog($log);
         }
         if (stripos($actions, ' '.$CI->response->meta->action.' ') === false) {
             $CI->response->meta->action = 'collection';
-            $log->summary = 'Set action to ' . $CI->response->meta->action . ', because not in reserved words.';
+            $log->detail = 'Set action to ' . $CI->response->meta->action . ', because not in reserved words.';
             stdlog($log);
         }
 
@@ -670,7 +690,8 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sort = $CI->input->get('sort');
         if ($CI->input->post('sort')) {
             $CI->response->meta->sort = $CI->input->post('sort');
-            $log->summary = 'Set sort to ' . $CI->response->meta->sort . ', according to POST.';
+            $log->summary = 'set sort';
+            $log->detail = 'Set sort to ' . $CI->response->meta->sort . ', according to POST.';
             stdlog($log);
         }
         $CI->response->meta->sort = str_replace('+', '', $CI->response->meta->sort);
@@ -692,36 +713,35 @@ if (! function_exists('inputRead')) {
         }
 
         # get current
+        $log->summary = 'set current';
+        $log->detail = 'Set current to y, because default.';
         if ($CI->input->get('current')) {
             $CI->response->meta->current = $CI->input->get('current');
-            $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to GET.';
-            stdlog($log);
+            $log->detail = 'Set current to ' . $CI->response->meta->current . ', according to GET.';
         }
         if ($CI->input->post('current')) {
             $CI->response->meta->current = $CI->input->post('current');
-            $log->summary = 'Set current to ' . $CI->response->meta->current . ', according to POST.';
-            stdlog($log);
+            $log->detail = 'Set current to ' . $CI->response->meta->current . ', according to POST.';
         }
+        stdlog($log);
         $current_words = ' y n all delta full ';
         if (stripos($current_words, ' '.$CI->response->meta->current.' ') === false) {
             $CI->response->meta->current = 'y';
-            $log->summary = 'Set current to ' . $CI->response->meta->current . ', because not in reserved words or blank.';
-            stdlog($log);
-        } else {
-            $log->summary = 'Set current to ' . $CI->response->meta->current . ', because in reserved words.';
+            $log->detail = 'Set current to ' . $CI->response->meta->current . ', because not in reserved words or blank.';
             stdlog($log);
         }
         unset($current_words);
 
         # get the group by
+        $log->summary = 'set groupby';
         if ($CI->input->get('groupby')) {
             $CI->response->meta->groupby = $_GET['groupby'];
-            $log->summary = 'Set groupby to ' . $CI->response->meta->groupby . ', according to GET.';
+            $log->detail = 'Set groupby to ' . $CI->response->meta->groupby . ', according to GET.';
             stdlog($log);
         }
         if ($CI->input->post('groupby')) {
             $CI->response->meta->groupby = $_POST['groupby'];
-            $log->summary = 'Set groupby to ' . $CI->response->meta->groupby . ', according to POST.';
+            $log->detail = 'Set groupby to ' . $CI->response->meta->groupby . ', according to POST.';
             stdlog($log);
         }
         if ($CI->response->meta->groupby) {
@@ -732,67 +752,74 @@ if (! function_exists('inputRead')) {
 
         # get the output format
         $CI->response->meta->format = '';
+        $log->summary = 'set format';
+        $log->detail = '';
         if (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
             $CI->response->meta->format = 'json';
-            $log->summary = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], 'html') !== false) {
             $CI->response->meta->format = 'screen';
-            $log->summary = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to HEADERS.';
         }
         if (isset($_GET['format'])) {
             $CI->response->meta->format = $_GET['format'];
-            $log->summary = 'Set format to ' . $CI->response->meta->format . ', according to GET.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to GET.';
         }
         if (isset($_POST['format'])) {
             $CI->response->meta->format = $_POST['format'];
-            $log->summary = 'Set format to ' . $CI->response->meta->format . ', according to POST.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', according to POST.';
         }
         if ($CI->response->meta->format == '') {
             $CI->response->meta->format = 'json';
-            $log->summary = 'Set format to ' . $CI->response->meta->format . ', because default.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $CI->response->meta->format . ', because default.';
         }
         $reserved_words = ' json json_data html screen xml csv sql table ';
         if (stripos($reserved_words, ' '.$CI->response->meta->format.' ') === false) {
-            $log->summary = 'Set format to json, because unknown format provided.';
+            $log->detail = 'Set format to json, because unknown format provided.';
+            $log->status = 'warning';
             $CI->response->meta->format = 'json';
         }
+        if (empty($log->detail)) {
+            $log->status = 'fail';
+            $log->detail = 'Could not set format';
+            $log->severity = 4;
+        }
+        stdlog($log);
+        $log->severity = 7;
 
         # get the offset
+        $log->summary = 'set offset';
         if (isset($_GET['offset'])) {
             $CI->response->meta->offset = intval($_GET['offset']);
-            $log->summary = 'Set offset to ' . $CI->response->meta->offset . ', according to GET.';
+            $log->detail = 'Set offset to ' . $CI->response->meta->offset . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['offset'])) {
             $CI->response->meta->offset = intval($_POST['offset']);
-            $log->summary = 'Set offset to ' . $CI->response->meta->offset . ', according to POST.';
+            $log->detail = 'Set offset to ' . $CI->response->meta->offset . ', according to POST.';
             stdlog($log);
         }
 
         # get and set the limit
+        $log->summary = 'set limit';
         $CI->config->config['page_size'] = @intval($CI->config->config['page_size']);
         if (empty($CI->config->config['page_size'])) {
             $CI->config->config['page_size'] = 1000;
         }
         if (isset($_GET['limit'])) {
             $CI->response->meta->limit = intval($_GET['limit']);
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', according to GET.';
+            $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['limit'])) {
             $CI->response->meta->limit = intval($_POST['limit']);
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', according to POST.';
+            $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', according to POST.';
             stdlog($log);
         }
         if ($CI->response->meta->format == 'screen' and empty($CI->response->meta->limit)) {
             $CI->response->meta->limit = intval($CI->config->config['page_size']);
-            $log->summary = 'Set limit to ' . $CI->response->meta->limit . ', because screen format and no limit requested, so default (page_size).';
+            $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', because screen format and no limit requested, so default (page_size).';
             stdlog($log);
         }
         if (!empty($CI->response->meta->limit)) {
@@ -802,26 +829,28 @@ if (! function_exists('inputRead')) {
         }
 
         # get the group
+        $log->summary = 'set group';
         if (isset($_GET['group'])) {
             $CI->response->meta->group = intval($_GET['group']);
-            $log->summary = 'Set group to ' . $CI->response->meta->group . ', according to GET.';
+            $log->detail = 'Set group to ' . $CI->response->meta->group . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['group'])) {
             $CI->response->meta->group = intval($_POST['group']);
-            $log->summary = 'Set group to ' . $CI->response->meta->group . ', according to POST.';
+            $log->detail = 'Set group to ' . $CI->response->meta->group . ', according to POST.';
             stdlog($log);
         }
 
         # get the list of requested properties (usually) properties=id,name,status
+        $log->summary = 'set properties';
         if (isset($_GET['properties'])) {
             $CI->response->meta->properties = $_GET['properties'];
-            $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', according to GET.';
+            $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', according to GET.';
             stdlog($log);
         }
         if (isset($_POST['properties'])) {
             $CI->response->meta->properties = $_POST['properties'];
-            $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', according to POST.';
+            $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', according to POST.';
             stdlog($log);
         }
 
@@ -834,7 +863,7 @@ if (! function_exists('inputRead')) {
                 $CI->response->meta->properties .= $property . ',';
             }
             $CI->response->meta->properties = substr($CI->response->meta->properties, 0, -1);
-            $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', secondary format.';
+            $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', secondary format.';
             stdlog($log);
         }
 
@@ -845,18 +874,18 @@ if (! function_exists('inputRead')) {
                 if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
                     $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.manufacturer, system.os_family, system.status';
                     $CI->response->meta->properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.description,system.manufacturer,system.os_family,system.status';
-                    $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
+                    $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
                     stdlog($log);
                 } else {
                     # we're requesting a subresource - return all the subresource's properties
                     $CI->response->meta->properties = $CI->response->meta->sub_resource . '.*';
-                    $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', because devices sub_resource default.';
+                    $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because devices sub_resource default.';
                     stdlog($log);
                 }
             } else {
                 # we're requesting something that isn't a device (or a list of devices) - return everything
                 $CI->response->meta->properties = '*';
-                $log->summary = 'Set properties to ' . $CI->response->meta->properties . ', because non-devices default.';
+                $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because non-devices default.';
                 stdlog($log);
             }
         }
@@ -887,11 +916,10 @@ if (! function_exists('inputRead')) {
         }
 
         if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form' and !empty($CI->config->config['access_token_enable']) and $CI->config->config['access_token_enable'] == 'y') {
-            $log->status = 'checking access token';
-            $log->summary = 'POSTed access token: ' . @$CI->response->meta->received_data->access_token;
-            $log->detail = 'Cookie access_tokens: ' . implode(', ', $CI->user->access_token);
             if (empty($CI->response->meta->received_data->access_token)) {
-                $log->status = 'access token check failed (empty)';
+                $log->summary = 'Access token not supplied';
+                $log->detail = 'No access token was supplied with a POST data request';
+                $log->status = 'fail';
                 $log->severity = 4;
                 stdlog($log);
                 $log->severity = 7;
@@ -907,7 +935,9 @@ if (! function_exists('inputRead')) {
                 }
             }
             if (!in_array($CI->response->meta->received_data->access_token, $CI->user->access_token)) {
-                $log->status = 'access token check failed (not in array)';
+                $log->summary = 'Access token invalid';
+                $log->detail = 'An invalid access token was supplied with a POST data request. POSTed access token: ' . @$CI->response->meta->received_data->access_token . ' Cookie access_tokens: ' . implode(', ', $CI->user->access_token);;
+                $log->status = 'fail';
                 $log->severity = 4;
                 stdlog($log);
                 $log->severity = 7;
@@ -922,13 +952,14 @@ if (! function_exists('inputRead')) {
                     exit();
                 }
             }
-            $log->status = 'access token check passed';
+            $log->summary = 'Check access token';
+            $log->detail = 'A valid access token was supplied with a POST data request';
             stdlog($log);
-            $log->status = 'parsing input';
         }
 
         # get the filter
         $filter = array();
+        $log->summary = 'set filter';
         $CI->response->meta->query_string = urldecode($_SERVER['QUERY_STRING']);
         $CI->response->meta->query_string = str_replace('&amp;', '&', $CI->response->meta->query_string);
         if ($CI->response->meta->query_string != '') {
@@ -942,7 +973,7 @@ if (! function_exists('inputRead')) {
                 if (strtolower($query->name) == 'as_at') {
                     $CI->response->meta->internal->as_at = $query->value;
                     $CI->response->meta->current = 'all';
-                    $log->summary = 'Set current to all because as_at specified.';
+                    $log->detail = 'Set current to all because as_at specified.';
                     stdlog($log);
                 }
 
@@ -1082,16 +1113,20 @@ if (! function_exists('inputRead')) {
         $permission['unknown'] = 'unknown action';
 
         if (empty($CI->response->meta->action)) {
-            $log->severity = 5;
-            $log->summary = 'No action determined, setting to collection.';
+            $log->summary = 'set action';
+            $log->detail = 'No action determined, setting to default (collection).';
+            $log->severity = 6;
             stdlog($log);
+            $log->severity = 7;
             $CI->response->meta->action = 'collection';
         }
 
         if (empty($permission[$CI->response->meta->action])) {
+            $log->summary = 'set action';
+            $log->detail = 'No permission determined for '  . $CI->response->meta->action . ', setting to unknown.';
             $log->severity = 5;
-            $log->summary = 'No permission determined for '  . $CI->response->meta->action;
             stdlog($log);
+            $log->severity = 7;
             $CI->response->meta->action = 'unknown';
         }
 

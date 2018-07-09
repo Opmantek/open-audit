@@ -46,6 +46,7 @@ class M_attributes extends MY_Model
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $id = intval($id);
         if ($id === 0) {
@@ -56,6 +57,8 @@ class M_attributes extends MY_Model
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'attributes');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($result);
     }
 
@@ -63,6 +66,7 @@ class M_attributes extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
+        $this->log->summary = 'start';
         stdlog($this->log);
         $id = intval($id);
         if ($id === 0) {
@@ -74,18 +78,25 @@ class M_attributes extends MY_Model
             $sql = "DELETE FROM `attributes` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return true;
         }
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return false;
     }
 
     public function collection()
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $sql = $this->collection_sql('attributes', 'sql');
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'attributes');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($result);
     }
 }

@@ -49,6 +49,7 @@ class M_summaries extends MY_Model
             $this->log = new stdClass();
         }
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
@@ -60,6 +61,8 @@ class M_summaries extends MY_Model
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'summaries');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($result);
     }
 
@@ -67,6 +70,7 @@ class M_summaries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
+        $this->log->summary = 'start';
         stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
@@ -79,8 +83,12 @@ class M_summaries extends MY_Model
             $sql = "DELETE FROM `summaries` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return true;
         } else {
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return false;
         }
     }
@@ -91,6 +99,7 @@ class M_summaries extends MY_Model
             $this->log = new stdClass();
         }
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
         if (empty($CI->response->meta->sort)) {
@@ -120,6 +129,8 @@ class M_summaries extends MY_Model
             }
             $result[$i]->attributes->link_execute = $result[$i]->links->self . '?action=execute&format=json&debug=true';
         }
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         unset($this->log);
         return ($result);
     }
@@ -127,6 +138,7 @@ class M_summaries extends MY_Model
     public function execute($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
         if ($id == '') {
@@ -232,12 +244,15 @@ class M_summaries extends MY_Model
             $result[] = $item;
             unset($item);
         }
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($result);
     }
 
     public function read_sub_resource()
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $this->load->model('m_users');
         $data = array();
@@ -273,6 +288,8 @@ class M_summaries extends MY_Model
             }
         }
 
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return $data;
     }
 }

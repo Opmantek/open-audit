@@ -47,6 +47,7 @@ class M_queries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'creating data';
+        $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
         $data_array = array();
@@ -93,12 +94,15 @@ class M_queries extends MY_Model
         $data_array[] = $CI->user->full_name;    // the user.name
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($id);
     }
 
     public function read($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
@@ -110,6 +114,8 @@ class M_queries extends MY_Model
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'queries');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($result);
     }
 
@@ -117,6 +123,7 @@ class M_queries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'updating data';
+        $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
         $sql = '';
@@ -153,6 +160,8 @@ class M_queries extends MY_Model
         }
         $sql = "UPDATE `queries` " . $sql . " WHERE id = " . intval($CI->response->meta->id);
         $this->run_sql($sql, $data_items);
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return;
     }
 
@@ -160,6 +169,7 @@ class M_queries extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
+        $this->log->summary = 'start';
         stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
@@ -172,9 +182,13 @@ class M_queries extends MY_Model
             $sql = "DELETE FROM `queries` WHERE id = ?";
             $data = array(intval($id));
             $this->run_sql($sql, $data);
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return true;
         } else {
             log_error('ERR-0013', 'm_queries::delete');
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return false;
         }
     }
@@ -182,17 +196,21 @@ class M_queries extends MY_Model
     public function collection()
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         $CI = & get_instance();
         $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) WHERE queries.org_id IN (" . $CI->user->org_list . ") GROUP BY queries.name";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'queries');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return ($result);
     }
 
     public function execute($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
@@ -222,12 +240,15 @@ class M_queries extends MY_Model
         $sql .= ' ' . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'queries');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return $result;
     }
 
     public function sub_resource($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
         stdlog($this->log);
         if ($id == '') {
             $CI = & get_instance();
@@ -239,6 +260,8 @@ class M_queries extends MY_Model
         $data = array((string)$id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'devices');
+        $this->log->summary = 'finish';
+        stdlog($this->log);
         return $result;
     }
 

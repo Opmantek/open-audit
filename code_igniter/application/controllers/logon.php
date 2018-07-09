@@ -71,31 +71,36 @@ class Logon extends CI_Controller
         # get the output format
         $format = '';
         $http_accept = @$_SERVER['HTTP_ACCEPT'];
+        $log->function = 'logon';
+        $log->summary = 'set format';
+        $log->status = 'success';
+        $log->detail = '';
         if (strpos($http_accept, 'application/json') !== false) {
             $format = 'json';
-            $log->message = 'Set format to ' . $format . ', according to HEADERS.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $format . ', according to HEADERS.';
         }
         if (strpos($http_accept, 'html') !== false) {
             $format = 'screen';
-            $log->message = 'Set format to ' . $format . ', according to HEADERS.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $format . ', according to HEADERS.';
         }
         if (isset($_GET['format'])) {
             $format = $_GET['format'];
-            $log->message = 'Set format to ' . $format . ', according to GET.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $format . ', according to GET.';
         }
         if (isset($_POST['format'])) {
             $format = $_POST['format'];
-            $log->message = 'Set format to ' . $format . ', according to POST.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $format . ', according to POST.';
         }
         if ($format == '') {
             $format = 'json';
-            $log->message = 'Set format to ' . $format . ', because default.';
-            stdlog($log);
+            $log->detail = 'Set format to ' . $format . ', because default.';
         }
+        if (empty($log->detail)) {
+            $log->status = 'fail';
+            $log->detail = 'Could not set format';
+        }
+        stdlog($log);
+        $log->summary = 'reading data';
 
         # initialise our properties
         $this->response = new stdClass();

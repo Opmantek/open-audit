@@ -56,7 +56,7 @@ class M_logon extends MY_Model
         $log->controller = 'm_logon';
         $log->function = 'logon';
         $log->collection = 'logon';
-        $log->severity = 6;
+        $log->severity = 7;
 
 
         // get $username from $_POST
@@ -87,7 +87,10 @@ class M_logon extends MY_Model
             $user['password'] = $password;
             $username = $user['username'];
             $domain = $user['domain'];
-            $log->summary = 'username@domain supplied, splitting.';
+            $log->summary = 'Splitting username';
+            $log->detail = 'username@domain supplied, splitting';
+            $log->status = 'reading data';
+            $log->severity = 7;
             stdlog($log);
         } else {
             $user['username'] = $username;
@@ -102,8 +105,9 @@ class M_logon extends MY_Model
             $roles = $roles_query->result();
         }
         if (empty($roles)) {
-            $log->summary = 'No Roles retrieved from database.';
-            $log->detail = '';
+            $log->summary = 'Error retrieving roles';
+            $log->detail = 'No Roles retrieved from database';
+            $log->status = 'fail';
             $log->severity = 3;
             stdlog($log);
             $CI->session->set_flashdata('error', 'No Roles retrieved from database.');
@@ -117,8 +121,9 @@ class M_logon extends MY_Model
             $orgs = $orgs_query->result();
         }
         if (empty($orgs)) {
-            $log->summary = 'No Orgs retrieved from database.';
-            $log->detail = '';
+            $log->summary = 'Error retrieving Orgs';
+            $log->detail = 'No Orgs retrieved from database.';
+            $log->status = 'fail';
             $log->severity = 3;
             stdlog($log);
             $CI->session->set_flashdata('error', 'No Orgs retrieved from database.');
@@ -137,15 +142,18 @@ class M_logon extends MY_Model
             }
             $ldap_servers = $query->result();
             if (!empty($ldap_servers)) {
-                $log->summary = 'LDAP Servers table exists and is not empty.';
+                $log->summary = 'Retrieved LDAP Servers';
                 $log->detail = count($ldap_servers) . ' LDAP servers retrieved from database.';
+                $log->status = 'reading data';
                 $log->severity = 7;
                 stdlog($log);
                 // We have configured ldap_servers - validate
                 foreach ($ldap_servers as $ldap) {
                     if ($ldap->type != 'active directory' and $ldap->type != 'openldap') {
-                        $log->summary = 'Invalid LDAP server type supplied (' . $ldap->type . '), skipping.';
-                        $log->detail = '';
+                        $log->summary = 'Invalid LDAP server type';
+                        $log->detail = 'An invalid LDAP server type was supplied (' . $ldap->type . '), skipping.';
+                        $log->status = 'fail';
+                        $log->severity = 3;
                         stdlog($log);
                         $CI->session->set_flashdata('error', 'Invalid LDAP server type supplied (' . $ldap->type . '), skipping.');
                         continue;
@@ -157,8 +165,9 @@ class M_logon extends MY_Model
                         ldap_set_option(null, LDAP_OPT_PROTOCOL_VERSION, $ldap->version);
                     } else {
                         $CI->session->set_flashdata('error', 'Invalid LDAP version (' . $ldap->version . ')');
-                        $log->summary = 'Invalid LDAP version (' . $ldap->version . ')';
-                        $log->detail = '';
+                        $log->summary = 'An invalid LDAP version was supplied (' . $ldap->version . '), skipping.';
+                        $log->detail = 'Invalid LDAP version';
+                        $log->status = 'fail';
                         $log->severity = 3;
                         stdlog($log);
                         continue;
@@ -191,15 +200,26 @@ class M_logon extends MY_Model
                             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
                         }
                         if (empty($bind)) {
-                            $log->summary = 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ' or the LDAP server could not be reached, skipping.';
-                            $log->detail = (string)ldap_error($ldap_connection);
+                            $error = (string)ldap_error($ldap_connection);
+                            if ($error == 'Invalid credentials') {
+                                $log->detail = 'Invalid user supplied credentials for LDAP server at ' . $ldap->host . ', skipping.';
+                            } else if ($error == 'Can\'t contact LDAP server') {
+                                $log->detail = 'LDAP server could not be reached at ' . $ldap->host . ', skipping.';
+                            } else {
+                                $log->detail = 'Could not bind to LDAP server at ' . $ldap->host . ', skipping.';
+                            }
+                            $log->summary = (string)ldap_error($ldap_connection);
+                            $log->status = 'fail';
+                            $log->severity = 6;
                             stdlog($log);
                             $CI->session->set_flashdata('error', $log->detail . '.');
                             $CI->user->id = '';
                             continue;
                         } else {
-                            $log->summary = 'Successful bind using credentials for LDAP server at ' . $ldap->host;
-                            $log->detail = (string)ldap_error($ldap_connection);
+                            $log->summary = 'Successful LDAP bind';
+                            $log->detail = 'Successful bind using credentials for LDAP server at ' . $ldap->host . ': ' . (string)ldap_error($ldap_connection);
+                            $log->status = 'success';
+                            $log->severity = 7;
                             stdlog($log);
                         }
                         $ldap->dn_password = (string)$this->encrypt->decode($ldap->dn_password);
@@ -211,13 +231,17 @@ class M_logon extends MY_Model
                             $bind_password = $ldap->dn_password;
                             $bind = @ldap_bind($ldap_connection, $bind_string, $bind_password);
                             if (empty($bind)) {
-                                $log->summary = 'Invalid DN supplied credentials for LDAP server at ' . $ldap->host . ', skipping';
-                                $log->detail = (string)ldap_error($ldap_connection);
+                                $log->summary = 'Invalid LDAP DN';
+                                $log->detail = 'Invalid DN supplied credentials for LDAP server at ' . $ldap->host . ', skipping: ' . (string)ldap_error($ldap_connection);
+                                $log->status = 'fail';
+                                $log->severity = 6;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', 'Invalid DN supplied credentials for LDAP server at ' . $ldap->host . ', skipping');
                             } else {
-                                $log->summary = 'Bound to LDAP using supplied dn details';
-                                $log->detail = $ldap->dn_account;
+                                $log->summary = 'Bound to LDAP';
+                                $log->detail = 'Bound to LDAP using supplied dn details: ' . $ldap->dn_account;
+                                $log->status = 'success';
+                                $log->severity = 7;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', 'Bound to LDAP using supplied dn details');
                             }
@@ -248,8 +272,10 @@ class M_logon extends MY_Model
                                 $CI->user = $users[0];
                                 return $users[0];
                             } else {
-                                $log->severity = 5;
-                                $log->message = "User $username in LDAP " . $ldap->name . " but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.";
+                                $log->summary = 'Cannot authorise user';
+                                $log->detail = "User $username in LDAP " . $ldap->name . " but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.";
+                                $log->status = 'fail';
+                                $log->severity = 6;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', "User $username in LDAP " . $ldap->name . " but not in Open-AudIT and not using LDAP for roles. Trying next LDAP Server.");
                                 // Skip the rest of this ldap server.
@@ -259,23 +285,29 @@ class M_logon extends MY_Model
                         }
 
 
-                        $log->summary = 'ldap filter';
+                        $log->summary = 'LDAP filter';
                         $log->detail = (string)$ldap->filter;
+                        $log->status = 'reading data';
+                        $log->severity = 7;
                         stdlog($log);
                         # Get the user details
                         if ($result = @ldap_search($ldap_connection, $ldap->base_dn, $ldap->filter)) {
-                            $log->summary = "LDAP search successful for user " . $user['username'] . " at " . $ldap->host;
-                            $log->detail = "ldap_search(\$ldap_connection, '" . $ldap->base_dn . "', '" . $ldap->filter . "')";
+                            $log->summary = 'LDAP found user';
+                            $log->detail = "LDAP search successful for user " . $user['username'] . " at " . $ldap->host . ", ldap_search(\$ldap_connection, '" . $ldap->base_dn . "', '" . $ldap->filter . "')";
+                            $log->status = 'success';
+                            $log->severity = 7;
                             stdlog($log);
-                            $CI->session->set_flashdata('error', "LDAP search successful for user " . $user['username'] . " at " . $ldap->host);
+                            //$CI->session->set_flashdata('error', "LDAP search successful for user " . $user['username'] . " at " . $ldap->host);
                             unset($user);
                             $user = new stdClass();
                             $user->name = $username;
                             $user_ldap_groups = '';
                             if ($entries = @ldap_get_entries($ldap_connection, $result)) {
                                 $CI->session->set_flashdata('error', "LDAP entries retrieval successful for user " . $username . " at " . $ldap->host);
-                                $log->summary = "LDAP entries retrieval successful for user " . $username . " at " . $ldap->host;
-                                $log->detail = '';
+                                $log->summary = 'LDAP retrieved entries';
+                                $log->detail = 'LDAP entries retrieval successful for user ' . $username . ' at ' . $ldap->host;
+                                $log->status = 'success';
+                                $log->severity = 7;
                                 stdlog($log);
                                 # NOTE - attribute order must match SQL schema order
                                 $user->name = $username;
@@ -299,15 +331,19 @@ class M_logon extends MY_Model
                                 $user->edited_by = 'system';
                                 $user->uid = @(string)$entries[0]['uid'][0];
                             } else {
-                                $log->summary = "LDAP entries retrieval failed for user " . $user->name . " at " . $ldap->host;
-                                $log->detail = (string)ldap_error($ldap_connection);
+                                $log->summary = 'LDAP retrieve entries failed';
+                                $log->detail = 'LDAP entries retrieval failed for user ' . $user->name . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection);
+                                $log->status = 'fail';
+                                $log->severity = 6;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', "LDAP entries retrieval failed for user " . $user->name . " at " . $ldap->host . '. ' . $log->detail . '.');
                                 continue;
                             }
                         } else {
-                            $log->summary = "LDAP search failed for user " . $user->name . " at " . $ldap->host;
-                            $log->detail = (string)ldap_error($ldap_connection);
+                            $log->summary = 'LDAP search failed';
+                            $log->detail = 'LDAP search failed for user ' . $user->name . ' at ' . $ldap->host . ', ' . (string)ldap_error($ldap_connection);
+                            $log->status = 'fail';
+                            $log->severity = 6;
                             stdlog($log);
                             $CI->session->set_flashdata('error', "LDAP search failed for user " . $user->name . " at " . $ldap->host . '. ' . $log->detail . '.');
                             continue;
@@ -316,8 +352,10 @@ class M_logon extends MY_Model
                         # get the roles groups and match
                         $ad_users_groups = array();
                         if ($ldap->type == 'active directory') {
-                            $log->summary = 'Checking AD group membership for ' . $user->name;
-                            $log->detail = '';
+                            $log->summary = 'LDAP authorising user';
+                            $log->detail = 'Checking AD group membership for ' . $user->name;
+                            $log->status = 'reading data';
+                            $log->severity = 7;
                             stdlog($log);
                             foreach ($roles as $role) {
                                 if (!empty($role->ad_group)) {
@@ -326,15 +364,19 @@ class M_logon extends MY_Model
                                             $ad_users_groups[] = '<br />"' . $group . '"';
                                             if (strpos($group, $role->ad_group) !== false) {
                                                 $user->roles[] = $role->name;
-                                                $log->summary = 'User ' . $user->name . ' is a member of LDAP group for Role ' . $role->ad_group;
-                                                $log->detail = $ldap->filter;
+                                                $log->summary = 'LDAP group for Role hit';
+                                                $log->detail = 'User ' . $user->name . ' is a member of LDAP group for Role ' . $role->ad_group;
+                                                $log->status = 'reading data';
+                                                $log->severity = 7;
                                                 stdlog($log);
                                             }
                                         }
                                     }
                                 } else {
-                                    $log->summary = 'No AD group associated with role ' . $role->name . ', skipping.';
-                                    $log->details = 'Role: ' . $role->name;
+                                    $log->summary = 'LDAP group for Role miss';
+                                    $log->details = 'No AD group associated with role ' . $role->name . ', skipping.';
+                                    $log->status = 'reading data';
+                                    $log->severity = 7;
                                     stdlog($log);
                                 }
                             }
@@ -344,15 +386,19 @@ class M_logon extends MY_Model
                                         if (is_integer($key)) {
                                             if (strpos($group, $org->ad_group) !== false) {
                                                 $user->orgs[] = intval($org->id);
-                                                $log->summary = 'User ' . $user->name . ' is a member of LDAP group for Org ' . $org->ad_group;
-                                                $log->detail = $ldap->filter;
+                                                $log->summary = 'LDAP group for Org hit';
+                                                $log->detail = 'User ' . $user->name . ' is a member of LDAP group for Org ' . $org->ad_group;
+                                                $log->status = 'reading data';
+                                                $log->severity = 7;
                                                 stdlog($log);
                                             }
                                         }
                                     }
                                 } else {
-                                    $log->summary = 'No AD group associated with org ' . $org->name . ', skipping.';
-                                    $log->details = 'Org: ' . $org->name;
+                                    $log->summary = 'LDAP group for Org miss';
+                                    $log->details = 'No AD group associated with org ' . $org->name . ', skipping.';
+                                    $log->status = 'reading data';
+                                    $log->severity = 7;
                                     stdlog($log);
                                 }
                             }
@@ -370,15 +416,21 @@ class M_logon extends MY_Model
                                             $user->roles[] = $role->name;
                                             $log->summary = 'LDAP search for role ' . $role->ad_group . ' succeeded, ' . $user->name . ' is in group.';
                                             $log->detail = $ldap->filter;
+                                            $log->status = 'reading data';
+                                            $log->severity = 7;
                                             stdlog($log);
                                         } else {
                                             $log->summary = 'LDAP search for role ' . $role->ad_group . ' succeeded, ' . $user->name . ' is NOT in group.';
                                             $log->detail = $ldap->filter;
+                                            $log->status = 'reading data';
+                                            $log->severity = 7;
                                             stdlog($log);
                                         }
                                     } else {
                                         $log->summary = "LDAP search failed for groups (roles) " . $user->name . " at " . $ldap->host;
                                         $log->detail = (string)ldap_error($ldap_connection);
+                                        $log->status = 'fail';
+                                        $log->severity = 7;
                                         stdlog($log);
                                     }
                                 }
@@ -392,20 +444,28 @@ class M_logon extends MY_Model
                                             $user->orgs[] = intval($org->id);
                                             $log->summary = 'LDAP search for org ' . $org->ad_group . ' succeeded, ' . $user->name . ' is in group.';
                                             $log->detail = $ldap->filter;
+                                            $log->status = 'reading data';
+                                            $log->severity = 7;
                                             stdlog($log);
                                         } else {
                                             $log->summary = 'LDAP search for org ' . $org->ad_group . ' succeeded, ' . $user->name . ' is NOT in group.';
                                             $log->detail = $ldap->filter;
+                                            $log->status = 'reading data';
+                                            $log->severity = 7;
                                             stdlog($log);
                                         }
                                     } else {
                                         $log->summary = "LDAP search failed for groups (orgs) " . $user->name . " at " . $ldap->host;
                                         $log->detail = (string)ldap_error($ldap_connection);
+                                        $log->status = 'fail';
+                                        $log->severity = 7;
                                         stdlog($log);
                                     }
                                 } else {
                                     $log->summary = 'No AD group associated with org ' . $org->name . ', skipping.';
                                     $log->details = 'Org: ' . $org->name;
+                                    $log->status = 'reading data';
+                                    $log->severity = 7;
                                     stdlog($log);
                                 }
                             }
@@ -436,9 +496,11 @@ class M_logon extends MY_Model
                                 $user->id = $this->db->insert_id();
                             } else {
                                 // The user exists, update
-                                $log->message = "Existing user $username logged on (AD account).";
-                                $log->detail = json_encode($user);
-                                $log->severity = 6;
+                                $log->summary = 'User logged on';
+                                $log->detail = "Existing user $username logged on (AD account).";
+                                $log->status = 'success';
+                                $log->severity = 7;
+                                stdlog($log);
                                 if ($this->db->table_exists('users')) {
                                     $user_sql = "/* m_logon::logon */" . "UPDATE users SET full_name = ?, email = ?, orgs = ?, roles = ?, ldap = ? WHERE id = ?";
                                 } else {
@@ -458,37 +520,47 @@ class M_logon extends MY_Model
                             $this->session->set_userdata($userdata);
                             return $user;
                         } else {
-                            $log->severity = 5;
                             if (empty($user->roles) and empty($user->orgs)) {
                                 // The user exists in AD, but has no Open-AudIT roles or Organisations
-                                $log->message = "User $username exists in LDAP (" . $ldap->name . ") and attempted to logon, but does not belong to any OA groups for Roles or Organisations.";
+                                $log->summary = 'User has no roles and no orgs';
+                                $log->detail = "User $username exists in LDAP (" . $ldap->name . ") and attempted to logon, but does not belong to any OA groups for Roles or Organisations.";
                                 if ($ldap->type == 'active directory') {
-                                    $log->message .= " Users AD groups are: " . $user_ldap_groups;
+                                    $log->detail .= " Users AD groups are: " . $user_ldap_groups;
                                 }
+                                $log->status = 'fail';
+                                $log->severity = 6;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', $log->message);
                             } else if (empty($user->orgs)) {
                                 // The user exists in AD, but has no Open-AudIT Organisations
-                                $log->message = "User $username exists in LDAP (" . $ldap->name . ") and attempted to logon, but does not belong to any OA groups for Organisations.";
+                                $log->summary = 'User has no orgs';
+                                $log->detail = "User $username exists in LDAP (" . $ldap->name . ") and attempted to logon, but does not belong to any OA groups for Organisations.";
                                 if ($ldap->type == 'active directory') {
-                                    $log->message .= " Users AD groups are: " . $user_ldap_groups;
+                                    $log->detail .= " Users AD groups are: " . $user_ldap_groups;
                                 }
+                                $log->status = 'fail';
+                                $log->severity = 6;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', $log->message);
                             } else if (empty($user->roles)) {
                                 // The user exists in AD, but has no Open-AudIT roles
-                                $log->message = "User $username exists in LDAP (" . $ldap->name . ") and attempted to logon, but does not belong to any OA groups for Roles.";
+                                $log->summary = 'User has no roles';
+                                $log->detail = "User $username exists in LDAP (" . $ldap->name . ") and attempted to logon, but does not belong to any OA groups for Roles.";
                                 if ($ldap->type == 'active directory') {
-                                    $log->message .= " Users AD groups are: " . $user_ldap_groups;
+                                    $log->detail .= " Users AD groups are: " . $user_ldap_groups;
                                 }
+                                $log->status = 'fail';
+                                $log->severity = 6;
                                 stdlog($log);
                                 $CI->session->set_flashdata('error', $log->message);
                             }
                         }
                     } else {
                         # ERROR - could not connect to LDAP / AD server
-                        $log->summary = "LDAP connect failed for LDAP server at " . $ldap->host . '. Check your host, port and secure settings. Attempted to use ' . $ldap_connect_string;
-                        $log->detail = (string)ldap_error($ldap_connection);
+                        $log->summary = 'LDAP connect failed';
+                        $log->detail = "LDAP connect failed for LDAP server at " . $ldap->host . '. Check your host, port and secure settings. Attempted to use ' . $ldap_connect_string . ', ' . (string)ldap_error($ldap_connection);
+                        $log->status = 'fail';
+                        $log->severity = 5;
                         stdlog($log);
                         $CI->session->set_flashdata('error', "LDAP connect failed for LDAP server at " . $ldap->host . '. Check your host, port and secure settings. Attempted to use ' . $ldap_connect_string);
                         continue;
@@ -519,6 +591,8 @@ class M_logon extends MY_Model
                 # if the hashes are exactly the same, the password is valid
                 if ($test_hash == $valid_hash) {
                     $log->message = "User $username logged on (local account).";
+                    $log->status = 'success';
+                    $log->severity = 6;
                     stdlog($log);
                     $CI->user = $db_user;
                     $userdata = array('user_id' => $CI->user->id, 'user_debug' => '');
@@ -527,10 +601,10 @@ class M_logon extends MY_Model
                 }
             }
         }
-        $log->status = 'HTTP/1.1 401 Unauthorized';
         $log->summary = 'Invalid logon attempt.';
+        $log->detail = "Could not authenticate and/or authorise user $username from IP " . $_SERVER['REMOTE_ADDR'];
+        $log->status = 'HTTP/1.1 401 Unauthorized';
         $log->severity = 5;
-        $log->message = "User $username attempted to log on with invalid credentials. IP " . $_SERVER['REMOTE_ADDR'];
         stdlog($log);
         $CI->session->set_flashdata('error', "Invalid credentials.");
         return false;
