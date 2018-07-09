@@ -47,7 +47,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         foreach ($temp as $line) {
             if (stripos($line, 'UniFi-Gateway') !== false) {
                 $details->model = 'Unifi Security Gateway';
-                $details->manufacturer = 'Ubiquiti';
+                $details->manufacturer = 'Ubiquiti Networks Inc.';
                 $details->type = 'gateway';
                 $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
                 if (stripos($details->os_name, 'edgeos') !== false) {

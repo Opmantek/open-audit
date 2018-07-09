@@ -408,7 +408,7 @@ foreach ($xml->children() as $input) {
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
-    if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false) {
+    if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and $device->manufacturer != 'Ubiquiti Networks Inc.') {
         $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
@@ -435,6 +435,10 @@ foreach ($xml->children() as $input) {
             }
         }
     }
+    if ($ssh_details->manufacturer = 'Ubiquiti Networks Inc.' and empty($device->type)) {
+        $device->type = 'router';
+    }
+
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
@@ -517,7 +521,7 @@ foreach ($xml->children() as $input) {
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
 
-    if (empty($device->model)) {
+    if (empty($device->model) or stripos($device->manufacturer, 'Ubiquiti') !== false) {
         $device = $this->m_devices->model_guess($device);
         if (!empty($device->model)) {
             $log->message = 'Best guess at model to be ' . $device->model;

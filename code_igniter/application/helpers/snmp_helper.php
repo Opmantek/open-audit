@@ -631,7 +631,7 @@ if (!function_exists('snmp_audit')) {
         $i = my_snmp_walk($ip, $credentials, "1.3.6.1.2.1.1.9.1.3");
         foreach ($i as $line) {
             if (strpos($line, 'Ubiquiti') !== false) {
-                $details->manufacturer = 'Ubiquiti';
+                $details->manufacturer = 'Ubiquiti Networks Inc.';
                 $log->message = 'Manufacturer set to Ubiquiti '.$ip . ', because in services list.';
                 $log->command = 'snmpwalk 1.3.6.1.2.1.1.9.1.3';
                 $log->command_output = (string)$line;
@@ -697,7 +697,7 @@ if (!function_exists('snmp_audit')) {
         }
 
         if (!empty($details->model) and strpos($details->model, 'UBNT ') !== false) {
-            $details->manufacturer = 'Ubiquiti';
+            $details->manufacturer = 'Ubiquiti Networks Inc.';
             $details->os_group = 'Linux';
         }
 

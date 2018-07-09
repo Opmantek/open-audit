@@ -572,6 +572,7 @@ if (! function_exists('ssh_audit')) {
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
             'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
+            'ubiquiti_serial' => 'grep serialno /proc/ubnthal/system.info | cut -d= -f2',
 
             'dbus_identifier' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}"',
@@ -648,19 +649,20 @@ if (! function_exists('ssh_audit')) {
         if (empty($device->fqdn) and !empty($device->hostname) and !empty($device->domain)) {
             $device->fqdn = $device->hostname . '.' . $device->domain;
         }
-        if (!empty($device->os_group) and $device->os_group == 'Linux') {
-            $device->type = 'computer';
-        }
 
         if (!empty($device->ubiquiti_os)) {
             $device->os_family = 'Ubiquiti';
-            $device->type = 'router';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
         }
         unset($device->ubiquiti_os);
+        if (!empty($device->ubiquiti_serial)) {
+            $device->os_family = 'Ubiquiti';
+            $device->manufacturer = 'Ubiquiti Networks Inc.';
+            $device->serial = $device->ubiquiti_serial;
+        }
+        unset($device->ubiquiti_serial);
         if (!empty($device->ubiquiti_os_version)) {
             $device->os_family = 'Ubiquiti';
-            $device->type = 'router';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
             $device->description = $device->ubiquiti_os_version;
             $device->os_version = $device->ubiquiti_os_version;
@@ -668,11 +670,14 @@ if (! function_exists('ssh_audit')) {
         unset($device->ubiquiti_os_version);
         if (!empty($device->ubiquiti_model)) {
             $device->os_family = 'Ubiquiti';
-            $device->type = 'router';
             $device->manufacturer = 'Ubiquiti Networks Inc.';
             $device->model = $device->ubiquiti_model;
         }
         unset($device->ubiquiti_model);
+
+        if (!empty($device->os_group) and $device->os_group == 'Linux' and $device->manufacturer != 'Ubiquiti Networks Inc.') {
+            $device->type = 'computer';
+        }
 
         if (!empty($device->ubuntu_os_codename)) {
             $device->os_name = $device->os_name . ' (' . $device->ubuntu_os_codename . ')';

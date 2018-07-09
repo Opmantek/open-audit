@@ -1516,7 +1516,6 @@ class M_devices extends MY_Model
             if (stripos($device->sysDescr, 'UAP-Pro') !== false) {
                 $device->model = 'UniFi AP-Pro';
             }
-
             if (stripos($device->sysDescr, 'UAP-AC') !== false) {
                 $device->model = 'UniFi AP-AC';
             }
@@ -1541,11 +1540,9 @@ class M_devices extends MY_Model
             if (stripos($device->sysDescr, 'UAP-AC-SHD') !== false) {
                 $device->model = 'UniFi AP-AC-SHD';
             }
-
             if (stripos($device->sysDescr, 'UAP-AC-Mesh-Pro') !== false) {
                 $device->model = 'UniFi AP-AC-Mesh-Pro';
             }
-
             if (stripos($device->sysDescr, 'UAP-Outdoor') !== false) {
                 $device->model = 'UniFi AP-Outdoor';
             }
