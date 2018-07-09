@@ -382,7 +382,7 @@ for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan 
 		fi
 
 		if [[ "$submit_online" == "y" ]]; then
-			db_log "IP $host responding, submitting online." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)"
+			db_log "IP $host responding, submitting online." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url"
 			# curl options
 			# -k = ignore invalid (self signed) certs
 			# -s = Silent mode. Don’t show progress meter or error messages.
