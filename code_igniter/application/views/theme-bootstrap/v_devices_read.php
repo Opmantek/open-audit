@@ -569,6 +569,18 @@ if (empty($data['mount_point'])) {
                                 </span>
                             <?php } ?></div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="os_name" class="col-sm-4 control-label"><?php echo __('OS Version')?></label>
+                            <div class="col-sm-8 input-group">
+                                <input disabled type="text" class="form-control"  id="os_version" name="os_version" value="<?php echo $data['system']->os_version; ?>">
+                                <?php if ($edit) { ?><span class="input-group-btn">
+                                    <button id="edit_os_version" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="os_version">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                    </button>
+                                </span>
+                            <?php } ?></div>
+                        </div>
                     </div>
 
                     <div class="col-md-5">
