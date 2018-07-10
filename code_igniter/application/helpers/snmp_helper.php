@@ -551,7 +551,6 @@ if (!function_exists('snmp_audit')) {
             unset($new_details);
         } else {
             $log->message = 'No snmp helper for '.$vendor_oid.' when scanning '.$ip;
-            $log->severity = 6;
             discovery_log($log);
             $log->severity = 7;
         }
