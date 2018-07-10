@@ -10,6 +10,7 @@ other/log_access.log
 other/log_debug.log
 other/log_system.log
 code_igniter/application/controllers/admin_test_private.php
-www/open-audit/custom_images/*
+www/open-audit/custom_images/*.jpg
+www/open-audit/custom_images/*.png
 ._*
 .idea
