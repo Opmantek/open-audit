@@ -107,7 +107,8 @@ if (! function_exists('output')) {
                         }
                     }
                 }
-                if (!empty($CI->config->item('decrypt_credentials')) and $CI->config->item('decrypt_credentials') != 'y') {
+                $test = @$CI->config->item('decrypt_credentials');
+                if (!empty($test) and $test != 'y') {
                     for ($i=0; $i < count($CI->response->data); $i++) {
                         $fields = array('community', 'security_name', 'authentication_passphrase', 'privacy_passphrase', 'password', 'ssh_key');
                         foreach ($fields as $field) {
