@@ -38,6 +38,7 @@ class M_collection extends MY_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('log');
         $this->log = new stdClass();
         $this->log->status = 'reading data';
         $this->log->type = 'system';
@@ -46,32 +47,38 @@ class M_collection extends MY_Model
 
     public function reset($collection = '')
     {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->summary = 'start';
+        stdlog($this->log);
+
         if ($collection === '') {
             log_error('ERR-0010', 'm_collection::collection (no collection)');
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return false;
         }
 
         $temp_debug = $this->db->db_debug;
         $this->db->db_debug = false;
 
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->function =  strtolower('m_collection::reset');
-        $log->status = 'success';
-        $log->summary = 'Reset ' . $collection . ' table';
-        $log->type = 'system';
-
         $sql = "SELECT count(*) AS `count` FROM `$collection`";
         $query = $this->db->query($sql);
         $result = @$query->result();
         if ($this->db->_error_message()) {
-            $log->severity = 3;
-            $log->status = 'failure';
-            $log->summary = $this->db->last_query();
-            $log->detail = 'Query fail - ' . @$this->db->_error_message();
-            stdlog($log);
+            $this->log->severity = 3;
+            $this->log->status = 'fail';
+            $this->log->summary = 'Query fail';
+            $db_error = @$this->db->_error_message();
+            $error = '';
+            if (!empty($db_error)) {
+                $error = 'Error: ' . $db_error . ', ';
+            }
+            $this->log->detail = $error . 'Query: ' . $this->db->last_query();
+            stdlog($this->log);
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
             $this->db->db_debug = $temp_debug;
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return false;
         }
 
@@ -79,12 +86,18 @@ class M_collection extends MY_Model
         $count = intval($result[0]->count);
         #if ($count === 0) {
         if ($count !== 0) {
-            $log->severity = 3;
-            $log->status = 'failure';
-            $log->summary = 'Table not empty';
-            $log->detail = 'Cannot run reset on ' . $collection . ' as the table still has data.';
-            stdlog($log);
+            $this->log->severity = 3;
+            $this->log->status = 'fail';
+            $this->log->summary = 'Table not empty';
+            $this->log->detail = 'Cannot run reset on ' . $collection . ' as the table still has data.';
+            stdlog($this->log);
             $this->db->db_debug = $temp_debug;
+
+            $this->log->severity = 7;
+            $this->log->status = '';
+            $this->log->detail = '';
+            $this->log->summary = 'finish';
+            stdlog($this->log);
             return false;
         }
 
