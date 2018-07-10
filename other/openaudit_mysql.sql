@@ -89,7 +89,6 @@ CREATE TABLE `applications` (
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `description` text NOT NULL,
-  `notes` text NOT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -427,12 +426,6 @@ CREATE TABLE `bios` (
 LOCK TABLES `bios` WRITE;
 /*!40000 ALTER TABLE `bios` DISABLE KEYS */;
 /*!40000 ALTER TABLE `bios` ENABLE KEYS */;
-UNLOCK TABLES;
-
-LOCK TABLES `buildings` WRITE;
-/*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
-INSERT INTO `buildings` VALUES (1,'Default',1,1,'The default entry for a building at this location.','','','system','2000-01-01 00:00:00');
-/*!40000 ALTER TABLE `buildings` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
