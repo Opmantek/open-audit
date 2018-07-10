@@ -52,7 +52,7 @@ system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 force_ping="n"
 consider_161_enough="n"
-version="2.2"
+version="2.2.6"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then
