@@ -596,9 +596,10 @@ class M_devices extends MY_Model
                 return false;
             }
             $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
+            $filename = intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
             if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                 $sql = "UPDATE `image` SET `filename` = ? WHERE `id` = ?";
-                $data = array($target, $dbid);
+                $data = array($filename, $dbid);
                 $this->db->query($sql, $data);
                 return true;
             } else {
