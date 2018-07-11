@@ -577,7 +577,7 @@ class M_devices extends MY_Model
             $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
             $data = array(intval($CI->response->meta->id),
                     $CI->response->meta->received_data->attributes->name,
-                    $CI->response->meta->id . "_" . basename($_FILES['attachment']['name']),
+                    '',
                     $CI->response->meta->received_data->attributes->orientation,
                     $CI->user->full_name);
             $this->db->query($sql, $data);
@@ -591,10 +591,15 @@ class M_devices extends MY_Model
                 $log->detail = 'The custom_images directory does not exist and cannot be created. Error: ' . error_get_last();
                 $log->status = 'error';
                 stdlog($log);
+                $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
+                $this->db->query($sql, array());
                 return false;
             }
-            $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $CI->response->meta->id . "_" . $dbid . "_" . basename($_FILES['attachment']['name']);
+            $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
             if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                $sql = "UPDATE `image` SET `filename` = ? WHERE `id` = ?";
+                $data = array($target, $dbid);
+                $this->db->query($sql, $data);
                 return true;
             } else {
                 $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
