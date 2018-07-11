@@ -54,8 +54,7 @@ $this->response->included = array_merge($this->response->included, $this->m_orgs
 if ($this->response->meta->collection == 'applications') {
     $this->load->model('m_applications');
     # Associated devices
-    $this->response->included = array_merge($this->response->included, $this->m_applications->application_components($this->response->meta->id));
-    $this->response->included = array_merge($this->response->included, $this->m_applications->application_fields($this->response->meta->id));
+    $this->response->included = array_merge($this->response->included, $this->m_applications->read_sub_resource($this->response->meta->id));
 }
 
 # attributes
