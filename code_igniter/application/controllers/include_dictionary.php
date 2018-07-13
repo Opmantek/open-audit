@@ -427,7 +427,7 @@ if ($table == 'ldap_servers') {
     $dictionary->columns->version = 'Default of <code>3</code>';
     $dictionary->columns->base_dn = 'The base path from which to search for Users.';
     $dictionary->columns->user_dn = 'Used by OpenLDAP only.';
-    $dictionary->columns->user_membership_attribute = 'Used when searching OpenLDAP to match a user\'s uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
+    $dictionary->columns->user_membership_attribute = 'Used when searching OpenLDAP to match a users uid to a groups members. Default of <code>memberUid</code>. Used by OpenLDAP only.';
     $dictionary->columns->use_roles = 'Should we use this LDAP server to populate a users roles. Set to <code>y</code> or <code>n</code>.';
     $dictionary->columns->dn_account = 'If the user logging on to Open-AudIT does not have the access to search LDAP, you can use another account which does have this access.';
     $dictionary->columns->dn_password = 'The password for the dn_account attribute.';
