@@ -707,10 +707,12 @@ system_uptime=$(cut -d. -f1 < /proc/uptime)
 # Get the System Form factor
 system_form_factor=""
 if [ "$system_model" = "Bochs" -o \
+	 "$system_model" = "Google Compute Engine" -o \
 	 "$system_model" = "KVM" -o \
 	 "$system_model" = "Virtual Machine" -o \
 	 "$system_model" = "VMware Virtual Platform" -o \
 	 "$system_model" = "OpenVZ" -o \
+	 "$system_model" = "HVM domU" -o \
 	 "$system_model" = "VirtualBox" ]; then
 	system_form_factor="Virtual"
 else
@@ -833,7 +835,6 @@ echo "		<dns_hostname>$(escape_xml "$dns_hostname")</dns_hostname>"
 echo "		<dns_domain>$(escape_xml "$dns_domain")</dns_domain>"
 echo "		<dns_fqdn>$(escape_xml "$dns_fqdn")</dns_fqdn>"
 echo "		<ip>$(escape_xml "$system_ip_address")</ip>"
-echo "		<description></description>"
 echo "		<type>$(escape_xml "$system_type")</type>"
 echo "		<os_icon>$(escape_xml "$system_os_icon")</os_icon>"
 echo "		<os_group>$(escape_xml "$system_os_group")</os_group>"
