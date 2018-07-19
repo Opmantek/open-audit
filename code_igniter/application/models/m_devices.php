@@ -1374,6 +1374,9 @@ class M_devices extends MY_Model
                 if (strripos($details->os_name, "novell") !== false) {
                     $details->icon = 'novell';
                 }
+                if (strripos($details->os_name, "oracle") !== false) {
+                    $details->icon = 'oracle';
+                }
                 if (strripos($details->os_name, "slackware") !== false) {
                     $details->icon = 'slackware';
                 }
@@ -1493,6 +1496,9 @@ class M_devices extends MY_Model
                 }
                 if (strripos($details->os_name, "novell") !== false) {
                     $details->icon = 'novell';
+                }
+                if (strripos($details->os_name, "oracle") !== false) {
+                    $details->icon = 'oracle';
                 }
                 if (strripos($details->os_name, "slackware") !== false) {
                     $details->icon = 'slackware';
