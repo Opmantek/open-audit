@@ -612,7 +612,7 @@ INSERT INTO `configuration` VALUES (30,'match_hostname_serial','y','bool','y','s
 INSERT INTO `configuration` VALUES (31,'match_hostname_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its hostname and UUID.');
 INSERT INTO `configuration` VALUES (32,'match_ip','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its ip.');
 INSERT INTO `configuration` VALUES (33,'match_mac','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its mac address.');
-INSERT INTO `configuration` VALUES (34,'match_mac_vmware','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if it\'s a known likely duplicate from VMware.');
+INSERT INTO `configuration` VALUES (34,'match_mac_vmware','n','bool','y','system','2000-01-01 00:00:00','Should we match a device based mac address even if its a known likely duplicate from VMware.');
 INSERT INTO `configuration` VALUES (35,'match_serial','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial number.');
 INSERT INTO `configuration` VALUES (36,'match_serial_type','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its serial and type.');
 INSERT INTO `configuration` VALUES (37,'match_uuid','y','bool','y','system','2000-01-01 00:00:00','Should we match a device based on its UUID.');
@@ -1420,6 +1420,7 @@ CREATE TABLE `locations` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
   `type` varchar(100) NOT NULL DEFAULT '',
   `room` varchar(100) NOT NULL DEFAULT '',
   `suite` varchar(100) NOT NULL DEFAULT '',
@@ -2718,7 +2719,7 @@ INSERT INTO `summaries` VALUES (8,'Server Types','Change','',0,'server','type','
 INSERT INTO `summaries` VALUES (9,'Services','Change','',0,'service','name','service.name,service.state','system','2000-01-01 00:00:00');
 INSERT INTO `summaries` VALUES (10,'Software','Change','',0,'software','name','software.name,software.version','system','2000-01-01 00:00:00');
 INSERT INTO `summaries` VALUES (11,'Software Keys','Change','',0,'software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (12,'Active Directory OU\'s','Change','',0,'windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (12,'Active Directory OUs','Change','',0,'windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00');
 INSERT INTO `summaries` VALUES (13,'Operating System Names','Change','',0,'system','os_name','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `summaries` ENABLE KEYS */;
 UNLOCK TABLES;
