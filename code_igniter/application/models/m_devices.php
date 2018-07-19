@@ -1326,6 +1326,9 @@ class M_devices extends MY_Model
                 if (strripos($details->manufacturer, "xen") !== false) {
                     $details->icon = 'xen';
                 }
+                if (strripos($details->manufacturer, "google") !== false) {
+                    $details->icon = 'google_kvm';
+                }
 
                 // os_group based
                 if (strripos($details->os_group, "linux") !== false) {
