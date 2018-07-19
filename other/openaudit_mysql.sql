@@ -624,7 +624,7 @@ INSERT INTO `configuration` VALUES (42,'oae_prompt','2015-06-01','date','n','sys
 INSERT INTO `configuration` VALUES (43,'oae_url','/omk/open-audit','text','y','system','2000-01-01 00:00:00','The web server address of Open-AudIT Enterprise.');
 INSERT INTO `configuration` VALUES (44,'rss_enable','y','bool','y','system','2000-01-01 00:00:00','Enable the RSS feed.');
 INSERT INTO `configuration` VALUES (45,'rss_url','https://community.opmantek.com/rss/OA.xml','text','y','system','2000-01-01 00:00:00','The RSS feed URL.');
-INSERT INTO `configuration` VALUES (46,'uuid','007c02d5-783e-11e8-8831-c4cdb41d77fb','text','n','system','2018-06-25 06:07:12','The unique identfier of this Open-AudIT server.');
+INSERT INTO `configuration` VALUES (46,'uuid',UUID(),'text','n','system',NOW(),'The unique identfier of this Open-AudIT server.');
 INSERT INTO `configuration` VALUES (47,'modules','','text','n','system','2000-01-01 00:00:00','The list of installed Opmantek modules.');
 INSERT INTO `configuration` VALUES (48,'oae_product','Open-AudIT Community','text','n','system','2000-01-01 00:00:00','The name of the installed commercial application.');
 INSERT INTO `configuration` VALUES (49,'servers','','text','n','system','2000-01-01 00:00:00','The servers to report to when using Agent / Collector / Server.');
