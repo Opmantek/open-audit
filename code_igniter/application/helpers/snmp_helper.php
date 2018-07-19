@@ -1095,7 +1095,7 @@ if (!function_exists('snmp_audit')) {
         $log->command_output = 'Count is ' . @count($modules_list);
         $log->command_status = '';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
         if (isset($modules_list) and is_array($modules_list) and count($modules_list) > 0) {
             $log->message = 'Object_id retrieval for '.$ip;
@@ -1108,7 +1108,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_object_id);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Contained_in retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.4';
@@ -1120,7 +1120,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_contained_in);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Class retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.5';
@@ -1132,7 +1132,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_class);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Hardware_revision retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.8';
@@ -1144,7 +1144,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_hardware_revision);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Firmware_revision retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.9';
@@ -1156,7 +1156,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_firmware_revision);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Software_revision retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.10';
@@ -1168,7 +1168,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_software_revision);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Serial_number retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.11';
@@ -1180,7 +1180,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_serial_number);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Asset_id retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.15';
@@ -1192,7 +1192,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($temp_asset_id);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Is_fru retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.47.1.1.1.1.16';
