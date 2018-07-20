@@ -161,6 +161,23 @@ if ($table == 'changes') {
     $dictionary->notes = '';
 }
 
+if ($table == 'clouds') {
+    $dictionary->sentence = 'Audit your cloud infrastructure.';
+    $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br />
+    ' . $link . '<br /><br /></p>';
+    $dictionary->notes = '';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->credentials = 'Your access credentials, as per that clouds native API.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id');
+    $dictionary->attributes->update = array('name','org_id','description','type','credentials','options');
+}
+
 if ($table == 'cmdb') {
     $dictionary->sentence = 'Open-AudIT enables a CMDB - import to another or use Open-AudIT directly, the choice is yours. It\'s your data, afterall.';
     $dictionary->marketing = '<p>Open-AudIT can be used as your CMDB or as the data source for another application.<br /><br />
