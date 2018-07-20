@@ -34,6 +34,26 @@ $sql = "UPDATE `configuration` SET `description` = 'Should we match a device bas
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# Clouds
+$sql = "DROP TABLE IF EXISTS `clouds`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `clouds` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `type` enum('amazon','microsoft','google','digitalocean','') NOT NULL DEFAULT '',
+  `credentials` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # Locations
 $this->alter_table('locations', 'description', "ADD `description` text NOT NULL AFTER `org_id`", 'add');
 

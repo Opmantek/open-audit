@@ -491,6 +491,37 @@ LOCK TABLES `chart` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `clouds`
+--
+
+DROP TABLE IF EXISTS `clouds`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE `clouds` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `type` enum('amazon','microsoft','google','digitalocean','') NOT NULL DEFAULT '',
+  `credentials` text NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `clouds`
+--
+
+LOCK TABLES `clouds` WRITE;
+/*!40000 ALTER TABLE `clouds` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clouds` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `cluster`
 --
 
