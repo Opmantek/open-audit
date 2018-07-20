@@ -64,7 +64,7 @@ $this->m_roles->update_permissions('reporter', 'clouds', 'r');
 $this->m_roles->update_permissions('user', 'clouds', 'r');
 
 # Summaries
-$sql = "UPDATE `summaries SET `name = 'Active Directory OUs' WHERE `name` = 'Active Directory OU\'s'";
+$sql = "UPDATE `summaries` SET `name` = 'Active Directory OUs' WHERE `name` = 'Active Directory OU\'s'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class agents extends MY_Controller
+class clouds extends MY_Controller
 {
     public function __construct()
     {
