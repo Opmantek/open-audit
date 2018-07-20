@@ -57,6 +57,12 @@ $this->log_db($this->db->last_query());
 # Locations
 $this->alter_table('locations', 'description', "ADD `description` text NOT NULL AFTER `org_id`", 'add');
 
+# Roles
+$this->load->model('m_roles');
+$this->m_roles->update_permissions('org_admin', 'clouds', 'crud');
+$this->m_roles->update_permissions('reporter', 'clouds', 'r');
+$this->m_roles->update_permissions('user', 'clouds', 'r');
+
 # Summaries
 $sql = "UPDATE `summaries SET `name = 'Active Directory OUs' WHERE `name` = 'Active Directory OU\'s'";
 $this->db->query($sql);
