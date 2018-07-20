@@ -63,6 +63,64 @@ class M_clouds extends MY_Model
         return ($result);
     }
 
+    public function update()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'updating data';
+        stdlog($this->log);
+        $log = new stdClass();
+        $log->severity = 7;
+        $log->file = 'system';
+        $CI = & get_instance();
+
+        $sql = 'UPDATE `clouds` SET ';
+        $data = array();
+
+        if (!empty($CI->response->meta->received_data->attributes->credentials)) {
+            $received_credentials = new stdClass();
+            foreach ($CI->response->meta->received_data->attributes->credentials as $key => $value) {
+                    $received_credentials->$key = $value;
+            }
+            $select = "SELECT * FROM clouds WHERE id = ?";
+            $existing_credentials = $this->run_sql($select, array($CI->response->meta->id));
+            $existing_credentials = json_decode($this->encrypt->decode($existing_credentials[0]->credentials));
+            $new_credentials = new stdClass();
+            foreach ($existing_credentials as $existing_key => $existing_value) {
+                if (!empty($received_credentials->$existing_key)) {
+                    $new_credentials->$existing_key = $received_credentials->$existing_key;
+                } else {
+                    $new_credentials->$existing_key = $existing_credentials->$existing_key;
+                }
+            }
+            $sql .= "`credentials` = ?, ";
+            $data[] = (string)$this->encrypt->encode(json_encode($new_credentials));
+        }
+        
+        if (!empty($CI->response->meta->received_data->attributes->name)) {
+            $sql .= "`name` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->name;
+        }
+
+        if (!empty($CI->response->meta->received_data->attributes->description)) {
+            $sql .= "`description` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->description;
+        }
+
+        if (!empty($CI->response->meta->received_data->attributes->org_id)) {
+            $sql .= "`org_id` = ?, ";
+            $data[] = $CI->response->meta->received_data->attributes->org_id;
+        }
+
+        if ($sql == 'UPDATE `credentials` SET ') {
+            # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
+        }
+        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
+        $data[] = (string)$CI->user->full_name;
+        $data[] = intval($CI->response->meta->id);
+        $this->run_sql($sql, $data);
+        return;
+    }
+
     public function delete($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
