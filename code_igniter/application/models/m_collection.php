@@ -462,6 +462,10 @@ class M_collection extends MY_Model
         $this->log->status = 'creating data (' . $collection . ')';
         stdlog($this->log);
 
+        if ($collection === 'clouds') {
+            $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
+        }
+
         if ($collection === 'credentials') {
             $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
         }
@@ -493,7 +497,6 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'discoveries') {
-
             if(substr($data->network_address, -1) !== '/'){
                 $data->network_address = $data->network_address.'/';
             }
@@ -564,47 +567,6 @@ class M_collection extends MY_Model
                 }
                 $this->session->set_flashdata('warning', $warning);
             }
-
-            // if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false) {
-            //     # We have either an IP address or a subnet
-
-            //     if (strpos($data->other->subnet, '/') === false and filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
-            //         # We only have an IP address - see if it already is covered by an existing networks entry
-            //         $test = $this->m_networks->check_ip($data->other->subnet);
-            //         if (!$test) {
-            //             # Not an any existing - need to insert.
-            //         }
-            //     }
-            //     $temp = network_details($data->other->subnet);
-            //     if (!empty($temp->error) and filter_var($data->other->subnet, FILTER_VALIDATE_IP) === false) {
-            //         $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - invalid subnet attribute supplied.');
-            //         log_error('ERR-0010', 'm_collections::create (networks) invalid subnet supplied');
-            //         return;
-            //     } elseif (strpos($data->other->subnet, '/') !== false) {
-            //         $network = new stdClass();
-            //         $network->name = $data->other->subnet;
-            //         $network->network = $data->other->subnet;
-            //         $network->org_id = $data->org_id;
-            //         $network->description = $data->name;
-            //         $this->m_networks->upsert($network);
-            //     } elseif (filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
-            //         $temp = network_details($data->other->subnet.'/30');
-            //         $network = new stdClass();
-            //         $network->name = $temp->network.'/'.$temp->network_slash;
-            //         $network->network = $temp->network.'/'.$temp->network_slash;
-            //         $network->org_id = $data->org_id;
-            //         $network->description = $data->name;
-            //         $this->m_networks->upsert($network);
-            //     }
-            // } else {
-            //     if ($data->type == 'subnet') {
-            //         $warning = 'IP range, instead of subnet supplied. No network entry created.';
-            //         if ($this->config->config['blessed_subnets_use'] != 'n') {
-            //             $warning .= '<br />Because you are using blessed subnets, please ensure a valid network for this range exists.';
-            //         }
-            //         $this->session->set_flashdata('warning', $warning);
-            //     }
-            // }
             $data->other = json_encode($data->other);
         }
 
@@ -1003,6 +965,10 @@ class M_collection extends MY_Model
                 return(' name org_id resource type value ');
                 break;
 
+            case "clouds":
+                return(' name org_id description type credentials ');
+                break;
+
             case "collectors":
                 return(' name org_id description ip status check_minutes user_id uuid network_address options ');
                 break;
@@ -1105,6 +1071,10 @@ class M_collection extends MY_Model
 
             case "attributes":
                 return(array('name','org_id','type','resource','value'));
+                break;
+
+            case "clouds":
+                return(array('name','org_id','type'));
                 break;
 
             case "collectors":

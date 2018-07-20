@@ -49,7 +49,7 @@ class clouds extends MY_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('m_agents');
+        $this->load->model('m_clouds');
         inputRead();
         $this->output->url = $this->config->item('oa_web_index');
     }

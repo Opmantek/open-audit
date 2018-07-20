@@ -165,7 +165,7 @@ if ($table == 'clouds') {
     $dictionary->sentence = 'Audit your cloud infrastructure.';
     $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br />
+    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><b>NOTE</b> - To use this feature, we <i>must</i> enable the configuration item match_mac. This will be done automatically.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
     $dictionary->columns->id = $id;

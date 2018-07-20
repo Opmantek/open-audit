@@ -182,8 +182,8 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <?php
-                    $collections = array('applications','attributes','baselines','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','queries','orgs','roles','summaries','users','widgets');
-                    $commercial_collections = array('applications','baselines','dashboards','maps','roles','widgets');
+                    $collections = array('applications','attributes','baselines','clouds','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','queries','orgs','roles','summaries','users','widgets');
+                    $commercial_collections = array('applications','baselines','clouds','dashboards','maps','roles','widgets');
                     ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Manage'); ?> <span class="caret"></span></a>
