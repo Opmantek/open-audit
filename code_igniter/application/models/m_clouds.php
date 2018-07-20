@@ -57,6 +57,9 @@ class M_clouds extends MY_Model
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'clouds');
+        if (!empty($result[0]->attributes->credentials)) {
+            $result[0]->attributes->credentials = json_decode($this->encrypt->decode($result[0]->attributes->credentials));
+        }
         return ($result);
     }
 

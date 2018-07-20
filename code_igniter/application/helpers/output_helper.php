@@ -98,6 +98,29 @@ if (! function_exists('output')) {
                 }
             }
 
+            if ($CI->response->meta->collection == 'clouds') {
+                foreach ($CI->response->meta->data_order as $item) {
+                    if ($item === 'credentials') {
+                        $fields = array('key', 'secret_key');
+                        foreach ($fields as $field) {
+                            $CI->response->meta->data_order[] = 'credentials.' . $field;
+                        }
+                    }
+                }
+                $test = @$CI->config->item('decrypt_credentials');
+                if (!empty($test) and $test != 'y') {
+                    for ($i=0; $i < count($CI->response->data); $i++) {
+                        $fields = array('key','secret_key');
+                        foreach ($fields as $field) {
+                            if (!empty($CI->response->data[$i]->attributes->credentials->{$field})) {
+                                $CI->response->data[$i]->attributes->credentials->{$field} = '';
+                                $CI->response->data[$i]->attributes->{"credentials.$field"} = '';
+                            }
+                        }
+                    }
+                }
+            }
+
             if ($CI->response->meta->collection == 'credentials') {
                 foreach ($CI->response->meta->data_order as $item) {
                     if ($item === 'credentials') {
