@@ -1678,6 +1678,7 @@ foreach ($list as $item) {
                                 </tr>
                             </thead>
                             <tbody>
+                                <?php if (!empty($data['server_item'])) { ?>
                                 <?php foreach ($data['server_item'] as $item) { ?>
                                     <tr>
                                         <?php foreach ($item_keys as $key) { ?>
@@ -1686,6 +1687,7 @@ foreach ($list as $item) {
                                             <?php } ?>
                                         <?php } ?>
                                     </tr>
+                                <?php } ?>
                                 <?php } ?>
                             </tbody>
                         </table>
