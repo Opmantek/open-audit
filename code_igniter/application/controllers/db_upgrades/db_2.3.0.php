@@ -49,7 +49,7 @@ $sql = "CREATE TABLE `clouds` (
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
