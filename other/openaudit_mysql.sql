@@ -1796,7 +1796,7 @@ CREATE TABLE `network` (
   `type` varchar(100) NOT NULL DEFAULT '',
   `connection` varchar(255) NOT NULL DEFAULT '',
   `connection_status` varchar(30) NOT NULL DEFAULT '',
-  `speed` int(10) unsigned NOT NULL DEFAULT '0',
+  `speed` bigint(20) unsigned NOT NULL DEFAULT '0',
   `slaves` varchar(100) NOT NULL DEFAULT '',
   `ifadminstatus` varchar(100) NOT NULL DEFAULT '',
   `iflastchange` bigint(20) NOT NULL DEFAULT '0',
