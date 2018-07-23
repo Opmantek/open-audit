@@ -54,6 +54,9 @@ $sql = "CREATE TABLE `clouds` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# Discoveries
+$this->alter_table('discoveries', 'options', "ADD `options` text NOT NULL AFTER `other`", 'add');
+
 # Locations
 $this->alter_table('locations', 'description', "ADD `description` text NOT NULL AFTER `org_id`", 'add');
 

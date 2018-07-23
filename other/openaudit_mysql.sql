@@ -833,6 +833,7 @@ CREATE TABLE `discoveries` (
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `system_id` int(10) unsigned NOT NULL DEFAULT '0',
   `other` text NOT NULL,
+  `options` text NOT NULL,
   `device_count` int(10) unsigned NOT NULL DEFAULT '0',
   `limit` int(10) unsigned NOT NULL DEFAULT '0',
   `discard` enum('y','n') NOT NULL DEFAULT 'n',
