@@ -583,7 +583,7 @@ if (! function_exists('ssh_audit')) {
             'hpux_hostname' => 'hostname 2>/dev/null',
             'hpux_domain' => 'domainname 2>/dev/null',
             'hpux_os_name' => 'machinfo 2>/dev/null | grep -i "Release:" | cut -d: -f2',
-            'hpux_os_group' => 'uname -s',
+            'hpux_os_group' => 'uname -s 2>/dev/null',
             'hpux_model' => 'model 2>/dev/null',
             'hpux_serial' => 'machinfo 2>/dev/null | grep "Machine serial number:" | cut -d: -f2',
             'hpux_uuid' => 'machinfo 2>/dev/null | grep -i "Machine ID number:" | cut -d: -f2',
