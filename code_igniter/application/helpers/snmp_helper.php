@@ -1291,7 +1291,7 @@ if (!function_exists('snmp_audit')) {
         $log->command_output = 'Count is ' . @count($interfaces);
         $log->command_status = '';
         discovery_log($log);
-        unset($log->id, $log->command, $log->command_time_to_execute);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
         if (is_array($interfaces) and count($interfaces) > 0) {
             $log->message = 'Models retrieval for '.$ip;
@@ -1304,7 +1304,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($models);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Types retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.3';
@@ -1316,7 +1316,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($types);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Speeds retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.5';
@@ -1328,7 +1328,37 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($speeds);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+
+            # Check if we have any speeds greater than a 32bit int.
+            $temp = false;
+            foreach ($speeds as $key => $value) {
+                if ($value == 4294967295) {
+                    $temp = true;
+                }
+            }
+            if ($temp) {
+                $log->message = 'HighSpeeds retrieval for '.$ip;
+                $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.15';
+                $log->command_status = 'fail';
+                $log->id = discovery_log($log);
+                $item_start = microtime(true);
+                $high_speeds = my_snmp_real_walk($ip, $credentials, '1.3.6.1.2.1.31.1.1.1.15');
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->command_output = 'Count is ' . @count($high_speeds);
+                $log->command_status = '';
+                discovery_log($log);
+                unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+                foreach ($speeds as $key => $value) {
+                    if ($value == 4294967295) {
+                        $temp = explode('.', $key);
+                        $temp_id = end($temp);
+                        if (intval($high_speeds['.1.3.6.1.2.1.31.1.1.1.15.'.$temp_id]) > 0) {
+                            $speeds[$key] = intval($high_speeds['.1.3.6.1.2.1.31.1.1.1.15.'.$temp_id]) * 1000000;
+                        }
+                    }
+                }
+            }
 
             $log->message = 'Mac_addresses retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.6';
@@ -1340,7 +1370,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($mac_addresses);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Ip_enableds retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.8';
@@ -1352,7 +1382,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($ip_enableds);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Ip_addresses retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.4.20.1.2';
@@ -1364,7 +1394,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($ip_addresses);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'IfAdminStatus retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.7';
@@ -1376,7 +1406,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($ifAdminStatus);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'IfLastChange retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.2.2.1.9';
@@ -1388,7 +1418,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($ifLastChange);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             if (isset($details->os_group) and $details->os_group == "VMware") {
                 $log->message = 'Ip_addresses_2 retrieval for '.$ip;
@@ -1401,7 +1431,7 @@ if (!function_exists('snmp_audit')) {
                 $log->command_output = 'Count is ' . @count($ip_addresses_2);
                 $log->command_status = '';
                 discovery_log($log);
-                unset($log->id, $log->command, $log->command_time_to_execute);
+                unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
             }
 
             $log->message = 'Subnets retrieval for '.$ip;
@@ -1414,7 +1444,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($subnets);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Connection_ids retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.1';
@@ -1426,7 +1456,7 @@ if (!function_exists('snmp_audit')) {
             $log->command_output = 'Count is ' . @count($connection_ids);
             $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
             $log->message = 'Aliases retrieval for '.$ip;
             $log->command = 'snmpwalk 1.3.6.1.2.1.31.1.1.1.18';
