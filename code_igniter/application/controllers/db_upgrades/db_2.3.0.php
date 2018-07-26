@@ -60,6 +60,9 @@ $this->alter_table('discoveries', 'options', "ADD `options` text NOT NULL AFTER 
 # Locations
 $this->alter_table('locations', 'description', "ADD `description` text NOT NULL AFTER `org_id`", 'add');
 
+# Network
+$this->alter_table('network', 'speed', "`speed` bigint(20) unsigned NOT NULL DEFAULT '0' AFTER `connection_status`");
+
 # Roles
 $this->load->model('m_roles');
 $this->m_roles->update_permissions('org_admin', 'clouds', 'crud');

@@ -57,7 +57,7 @@ if (!empty($this->response->meta->sub_resource_name)) {
 } else {
     $title = '';
 }
-$title = htmlspecialchars($title, REPLACE_FLAGS, CHARSET);
+#$title = htmlspecialchars($title, REPLACE_FLAGS, CHARSET);
 
 $export_link = $this->response->links->first;
 if (strpos($this->response->links->first, '?') !== false) {

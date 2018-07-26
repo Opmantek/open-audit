@@ -572,7 +572,7 @@ if (! function_exists('ssh_audit')) {
 
             'ddwrt_model' => 'nvram get DD_BOARD 2>/dev/null',
             'ubiquiti_model' => 'cat /etc/board.info 2>/dev/null | grep "board.name" | cut -d= -f2',
-            'ubiquiti_serial' => 'grep serialno /proc/ubnthal/system.info | cut -d= -f2',
+            'ubiquiti_serial' => 'grep serialno /proc/ubnthal/system.info 2>/dev/null | cut -d= -f2',
 
             'dbus_identifier' => 'cat /var/lib/dbus/machine-id 2>/dev/null',
             'solaris_uuid' => 'smbios -t SMB_TYPE_SYSTEM 2>/dev/null | grep UUID | awk "{print $2}"',
@@ -583,7 +583,7 @@ if (! function_exists('ssh_audit')) {
             'hpux_hostname' => 'hostname 2>/dev/null',
             'hpux_domain' => 'domainname 2>/dev/null',
             'hpux_os_name' => 'machinfo 2>/dev/null | grep -i "Release:" | cut -d: -f2',
-            'hpux_os_group' => 'uname -s',
+            'hpux_os_group' => 'uname -s 2>/dev/null',
             'hpux_model' => 'model 2>/dev/null',
             'hpux_serial' => 'machinfo 2>/dev/null | grep "Machine serial number:" | cut -d: -f2',
             'hpux_uuid' => 'machinfo 2>/dev/null | grep -i "Machine ID number:" | cut -d: -f2',
