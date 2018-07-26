@@ -369,8 +369,8 @@ if (! function_exists('copy_to_windows')) {
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-            $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -m SMB2 -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -m SMB2 -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
@@ -382,7 +382,7 @@ if (! function_exists('copy_to_windows')) {
                 $log->severity = 5;
                 stdlog($log);
                 $temp = explode('@', $credentials->credentials->username);
-                $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -m SMB2 -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                 exec($command, $output, $return_var);
                 if ($display == 'y') {
                     echo 'DEBUG - Windows Copy Command: ' . str_replace($password, '******', $command) . "\n";
