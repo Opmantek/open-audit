@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
     <?php include('include_read_panel_header.php'); ?>
 
@@ -65,7 +65,7 @@ $item = $this->response->data[0];
                             $item->attributes->type = 'text';
                         }
                         if ($item->attributes->type != 'bool') { ?>
-                            <input type="<?php echo $item->attributes->type ?>" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="<?php echo htmlspecialchars( $item->attributes->type , REPLACE_FLAGS, CHARSET) ?>" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         <?php } else { ?>
                             <select class="form-control" id="value" name="value" disabled>
                                 <option value="y" <?php if ($item->attributes->value == 'y') { echo "selected"; } ?>>y</option>

@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -148,12 +148,12 @@ $item = $this->response->data[0];
                 foreach ($attributes as $attribute) {
                 ?>
                 <div class="form-group">
-                    <label for="<?php echo $attribute; ?>" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
+                    <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
                     <div class="col-sm-8 input-group">
-                        <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                        <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         <?php if (!empty($edit)) { ?>
                         <span class="input-group-btn">
-                            <button id="edit_<?php echo $attribute; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $attribute; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            <button id="edit_<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                         </span>
                         <?php } ?>
                     </div>
@@ -166,13 +166,13 @@ $item = $this->response->data[0];
                 foreach ($attributes as $attribute) {
                 ?>
                 <div class="form-group">
-                    <label for="<?php echo $attribute; ?>" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
+                    <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
                     <div class="col-sm-6">
                         <div class="col-sm-12 input-group">
-                            <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->{$attribute}, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
-                                <button id="edit_<?php echo $attribute; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $attribute; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                <button id="edit_<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                             </span>
                             <?php } ?>
                         </div>

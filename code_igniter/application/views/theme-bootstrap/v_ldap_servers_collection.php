@@ -59,7 +59,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="ldap_servers/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="ldap_servers/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('ldap_servers.name', $item->attributes->name); ?>
                     <?php refine('ldap_servers.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('ldap_servers.description', $item->attributes->description); ?>

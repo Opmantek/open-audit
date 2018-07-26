@@ -35,12 +35,12 @@
  */
 $item = $this->response->data[0];
 ?>
-<form action="<?php echo $this->response->meta->collection; ?>/import" method="post" enctype="multipart/form-data">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form action="<?php echo htmlspecialchars( $this->response->meta->collection, REPLACE_FLAGS, CHARSET); ?>/import" method="post" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">
-                <span class="text-left"><?php echo __('Import ') . $this->response->meta->collection; ?></span>
+                <span class="text-left"><?php echo __('Import ') . htmlspecialchars( $this->response->meta->collection, REPLACE_FLAGS, CHARSET); ?></span>
                 <span class="pull-right"></span>
             </h3>
         </div>

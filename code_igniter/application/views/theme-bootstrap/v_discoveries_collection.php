@@ -105,14 +105,14 @@ if ($nmap_warning != '') {
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'u')) { ?>
                     <td class="text-center"><a class="btn btn-sm btn-success" href="discoveries/<?php echo intval($item->id); ?>?action=execute"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></a></td>
                     <?php } ?>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                    <?php refine('discoveries.name', $item->attributes->name); ?>
-                    <?php refine('discoveries.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
-                    <?php refine('discoveries.type', $item->attributes->type); ?>
-                    <?php refine('discoveries.description', $item->attributes->description); ?>
-                    <?php refine('discoveries.last_run', $item->attributes->last_run); ?>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->status, REPLACE_FLAGS, CHARSET)?></td>
-                    <td class="text-center"><?php echo htmlspecialchars($item->attributes->discovered, REPLACE_FLAGS, CHARSET)?></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="discoveries/<?php echo intval($item->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <?php refine('discoveries.name',$item->attributes->name); ?>
+                    <?php refine('discoveries.org_id',$item->attributes->org_id,$item->attributes->org_name); ?>
+                    <?php refine('discoveries.type',$item->attributes->type); ?>
+                    <?php refine('discoveries.description',$item->attributes->description); ?>
+                    <?php refine('discoveries.last_run',$item->attributes->last_run); ?>
+                    <td class="text-center"><?php $item->attributes->status?></td>
+                    <td class="text-center"><?php $item->attributes->discovered?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>

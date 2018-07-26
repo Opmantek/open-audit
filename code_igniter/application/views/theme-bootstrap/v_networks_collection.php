@@ -61,7 +61,7 @@
                 <?php foreach ($this->response->data as $item) : ?>
                 <tr>
                     <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices?ip.network=<?php echo $item->attributes->network; ?>&properties=system.id,system.icon,system.type,system.name,system.domain,ip.ip,system.description,system.manufacturer,system.os_family,system.status"><?php echo htmlspecialchars($item->attributes->device_count, REPLACE_FLAGS, CHARSET)?></a></td>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars($item->links->self, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->links->self; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
                     <?php refine('networks.name', $item->attributes->name); ?>
                     <?php refine('networks.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
                     <?php refine('networks.network', $item->attributes->network); ?>

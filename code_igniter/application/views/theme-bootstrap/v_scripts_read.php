@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -144,7 +144,7 @@ $item = $this->response->data[0];
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <span class="text-left"><?php echo __('Configuration Options for').' '; ?> <?php echo $item->attributes->name; ?></span>
+                        <span class="text-left"><?php echo __('Configuration Options for').' '; ?> <?php echo htmlspecialchars( $item->attributes->name, REPLACE_FLAGS, CHARSET); ?></span>
                         <span class="pull-right"></span>
                     </h3>
                 </div>
@@ -184,7 +184,7 @@ $item = $this->response->data[0];
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        <span class="text-left">Files Tracked for <?php echo $item->attributes->name; ?></span>
+                        <span class="text-left">Files Tracked for <?php echo htmlspecialchars( $item->attributes->name, REPLACE_FLAGS, CHARSET); ?></span>
                         <span class="pull-right"></span>
                     </h3>
                 </div>
@@ -213,7 +213,7 @@ $item = $this->response->data[0];
                                             }
                                         }
                                         ?>
-                                        <input type="checkbox" name="options.files.<?php echo $included->attributes->id; ?>" id="options.files.<?php echo $included->attributes->id; ?>" <?php echo $checked; ?> <?php if (empty($edit)) { echo " disabled"; } ?>/>
+                                        <input type="checkbox" name="options.files.<?php echo htmlspecialchars( $included->attributes->id, REPLACE_FLAGS, CHARSET); ?>" id="options.files.<?php echo htmlspecialchars( $included->attributes->id, REPLACE_FLAGS, CHARSET); ?>" <?php echo $checked; ?> <?php if (empty($edit)) { echo " disabled"; } ?>/>
                                         </td>
                                     <td><?php echo htmlspecialchars($included->attributes->name, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($included->attributes->path, REPLACE_FLAGS, CHARSET); ?></td>

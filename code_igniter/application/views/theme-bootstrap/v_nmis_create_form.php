@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>" accept-charset="utf-8" enctype="multipart/form-data">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>" accept-charset="utf-8" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">

@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -44,9 +44,9 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
                     <?php foreach (array('id', 'timestamp', 'type', 'severity', 'pid', 'user', 'server') as $attribute) { ?>
                     <div class="form-group">
-                        <label for="<?php echo $attribute; ?>" class="col-sm-3 control-label"><?php echo __(ucwords(str_replace('_', ' ', $attribute))); ?></label>
+                        <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(htmlspecialchars(ucwords(str_replace('_', ' ', $attribute)), REPLACE_FLAGS, CHARSET)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                     <?php } ?>
@@ -55,9 +55,9 @@ $item = $this->response->data[0];
                 <div class="col-md-6">
                     <?php foreach (array('ip', 'collection', 'action', 'function', 'status', 'summary') as $attribute) { ?>
                     <div class="form-group">
-                        <label for="<?php echo $attribute; ?>" class="col-sm-3 control-label"><?php echo __(ucwords(str_replace('_', ' ', $attribute))); ?></label>
+                        <label for="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __(ucwords(htmlspecialchars(str_replace('_', ' ', $attribute)), REPLACE_FLAGS, CHARSET)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="<?php echo $attribute; ?>" name="<?php echo $attribute; ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" name="<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($item->attributes->$attribute, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
                     <?php } ?>

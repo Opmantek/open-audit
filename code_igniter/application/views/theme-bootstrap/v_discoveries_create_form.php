@@ -93,8 +93,8 @@ if ($nmap_warning != '') {
     echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $nmap_warning . '</div>';
 }
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -146,7 +146,7 @@ if ($nmap_warning != '') {
                                 <?php
                                 foreach ($network_address_array as $key => $value) {
                                     if ($value != '') {
-                                        echo $value;
+                                        echo htmlspecialchars( $value, REPLACE_FLAGS, CHARSET);
                                     }
                                 }
                                 ?>

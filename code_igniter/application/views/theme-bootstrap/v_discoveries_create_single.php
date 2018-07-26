@@ -52,8 +52,8 @@ foreach ($address_array as $key => $value) {
     }
 }
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -199,7 +199,7 @@ $(document).ready(function(){
 
     $("form").submit(function(e){
         if ($("#network_address_select").val() == '') {
-            alert("Please provde a network address.");
+            alert("Please provide a network address.");
             e.preventDefault();
         } else if ($("#network_address_select").val() == 'other') {
             var other = $('#network_address_other').val();

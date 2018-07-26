@@ -42,8 +42,8 @@
     </h3>
   </div>
   <div class="panel-body">
-    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo $this->response->meta->ids; ?>">
-        <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+    <form class="form-horizontal" id="form_update" method="post" action="?action=update&sub_resource=credential&ids=<?php echo htmlspecialchars( $this->response->meta->ids, REPLACE_FLAGS, CHARSET); ?>">
+        <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
         <div class="form-group">
             <label for="id" class="col-sm-2 control-label"><?php echo __('ID'); ?></label>
             <div class="col-sm-4">
@@ -117,7 +117,7 @@
                 <div class="col-sm-8 input-group">
                     <input type="hidden" value="credential" id="data[type]" name="data[type]" />
                     <?php if (!empty($this->response->meta->ids)) { ?>
-                    <input type="hidden" value="<?php echo $this->response->meta->ids; ?>" id="data[ids]" name="data[ids]" />
+                    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->ids, REPLACE_FLAGS, CHARSET); ?>" id="data[ids]" name="data[ids]" />
                     <?php } else { ?>
                     <input type="hidden" value="<?php echo intval($this->response->meta->id); ?>" id="data[system_id]" name="data[system_id]" />
                     <?php } ?>

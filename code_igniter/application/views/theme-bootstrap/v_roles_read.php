@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -118,7 +118,7 @@ $item_permissions = json_decode($item->{'attributes'}->{'permissions'});
             </thead>
             <tbody>
             <?php foreach ($endpoints as $endpoint) { ?>
-                <tr><td><strong><?php echo $endpoint ?></strong></td>
+                <tr><td><strong><?php echo htmlspecialchars( $endpoint, REPLACE_FLAGS, CHARSET) ?></strong></td>
                 <?php
                 foreach ($permissions as $permission) {
                     $checked = '';
@@ -128,7 +128,7 @@ $item_permissions = json_decode($item->{'attributes'}->{'permissions'});
                         $checked = '';
                     }
                     ?>
-                    <td style="text-align:center;"><input data-permission="<?php echo $permission ?>" name="permission.<?php echo $endpoint ?>" type="checkbox" value="<?php echo $permission ?>" <?php echo $checked ?> disabled></td>
+                    <td style="text-align:center;"><input data-permission="<?php echo htmlspecialchars( $permission, REPLACE_FLAGS, CHARSET); ?>" name="permission.<?php echo $endpoint ?>" type="checkbox" value="<?php echo htmlspecialchars( $permission, REPLACE_FLAGS, CHARSET); ?>" <?php echo $checked ?> disabled></td>
                 <?php } ?>
                 </tr>
             <?php } ?>

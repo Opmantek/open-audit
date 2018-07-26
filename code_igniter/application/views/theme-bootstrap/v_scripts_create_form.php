@@ -41,8 +41,8 @@ foreach ($this->response->included as $item) {
     }
 }
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -164,7 +164,7 @@ foreach ($this->response->included as $item) {
                             <?php # TODO - enable per script file retrieval ?>
                             <?php # TODO - Maybe only display files per based_on ?>
                                 <tr>
-                                    <td class="text-center"><input type="checkbox" value="<?php echo $file->path; ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked></td>
+                                    <td class="text-center"><input type="checkbox" value="<?php echo htmlspecialchars( $file->path, REPLACE_FLAGS, CHARSET); ?>" id="data[options][files][<?php echo intval($file->id); ?>]" title="data[options][files][<?php echo intval($file->id); ?>]" name="data[options][files][<?php echo intval($file->id); ?>]" checked></td>
                                     <td><?php echo htmlspecialchars($file->name, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->description, REPLACE_FLAGS, CHARSET); ?></td>
                                     <td><?php echo htmlspecialchars($file->path, REPLACE_FLAGS, CHARSET); ?></td>
@@ -195,8 +195,8 @@ function based_on(){
     switch(document.getElementById("data[attributes][based_on]").value)
     {
         <?php foreach ($script_options as $key => $value) { ?>
-        case "<?php echo $key; ?>":
-            based_on_text = '<?php echo $value; ?>';
+        case "<?php echo htmlspecialchars( $key, REPLACE_FLAGS, CHARSET); ?>":
+            based_on_text = '<?php echo htmlspecialchars( $value, REPLACE_FLAGS, CHARSET); ?>';
         break;
         <?php } ?>
     }
@@ -212,7 +212,7 @@ function generate_options($option_list, $options, $files, $orgs) {
         foreach ($option_list as $list_item) {
             if ($list_item == $option->name) {
                 $return .= '        <div class="form-group">\
-                <label for="data[edited_date]" class="col-md-3 control-label">' . $option->name . '</label>\
+                <label for="data[edited_date]" class="col-md-3 control-label">' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '</label>\
                 <div class="col-md-9">\
                 <div class="col-md-12 input-group">';
 
@@ -222,29 +222,29 @@ function generate_options($option_list, $options, $files, $orgs) {
                     case 'url';
                     case 'date':
                         if ($option->name != 'org_id') {
-                            $return .= '<input type="' . $option->type . '" class="form-control" id="data[options][' . $option->name . ']" name="data[options][' . $option->name . ']" value="' . $option->default . '" aria-describedby="option_' . $option->name . '"><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
+                            $return .= '<input type="' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '" class="form-control" id="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" name="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" value="' . htmlspecialchars( $option->default, REPLACE_FLAGS, CHARSET) . '" aria-describedby="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '"><span id="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '" class="help-block">' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '</span>';
 
                         } else {
                             $return .= '<select name="data[options][org_id]" id="data[options][org_id]" class="form-control" aria-describedby="option_org_id">';
                             $return .= '<option value="" label=" "></option>';
                             foreach ($orgs as $org) {
-                                $return .= '<option value="' . $org->id . '">' . htmlentities($org->name, ENT_QUOTES) . '</option>';
+                                $return .= '<option value="' . htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET) . '">' . htmlentities($org->name, ENT_QUOTES) . '</option>';
                             }
-                            $return .= '</select><span id="option_org_id" class="help-block">' . $option->help . '</span>';
+                            $return .= '</select><span id="option_org_id" class="help-block">' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '</span>';
                         }
                         break;
 
                     case 'select':
-                        $return .= '<select id="data[options][' . $option->name . ']" name="data[options][' . $option->name . ']" class="form-control" aria-describedby="option_' . $option->name . '">';
+                        $return .= '<select id="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" name="data[options][' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . ']" class="form-control" aria-describedby="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '">';
                         foreach (explode(',', $option->values) as $value) {
                             if ($value == $option->default) {
                                 $selected = 'selected';
                             } else {
                                 $selected = '';
                             }
-                            $return .= '<option value="' . $value . '" ' . $selected . '>' . htmlentities($value, ENT_QUOTES) . '</option>';
+                            $return .= '<option value="' . htmlspecialchars( $value, REPLACE_FLAGS, CHARSET) . '" ' . $selected . '>' . htmlentities($value, ENT_QUOTES) . '</option>';
                         }
-                        $return .= '</select><span id="option_' . $option->name . '" class="help-block">' . $option->help . '</span>';
+                        $return .= '</select><span id="option_' . htmlspecialchars( $option->name, REPLACE_FLAGS, CHARSET) . '" class="help-block">' . htmlspecialchars( $option->type, REPLACE_FLAGS, CHARSET) . '</span>';
                         break;
                 }
                 $return .= '</div></div></div>\n';

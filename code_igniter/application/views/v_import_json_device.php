@@ -44,7 +44,7 @@ header("X-Frame-Options: DENY");
 <body>
 <?php
 $attributes = array('accept-charset' => 'UTF-8');
-echo form_open_multipart('test/import_json_device', $attributes)."\n";
+echo form_open_multipart('test/import_json_device', htmlspecialchars( $attributes, REPLACE_FLAGS, CHARSET))."\n";
 echo form_fieldset('Paste the JSON')."\n";
 echo '<p>'.form_textarea(array('name' => 'data', 'id' => 'data', 'rows' => '15', 'cols' => '100'))."</p>\n";
 echo form_fieldset_close();

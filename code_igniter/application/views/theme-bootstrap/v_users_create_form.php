@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -186,15 +186,15 @@ foreach ($this->response->included as $org) {
         ?>
         <tr>
             <td>
-        <?php echo $org->id; ?>
+        <?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>
             </td>
             <td>
-        <?php echo $org->attributes->name; ?>
+        <?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?>
             </td>
             <td>
-        <?php echo $org->attributes->parent_name; ?>
+        <?php echo htmlspecialchars( $org->attributes->parent_name, REPLACE_FLAGS, CHARSET); ?>
             </td>
-            <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo $org->id; ?>"></td>
+            <td style="text-align:center;"><input name="data[attributes][orgs][]" title="data[attributes][orgs][]" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>"></td>
         </tr>
         <?php
     }

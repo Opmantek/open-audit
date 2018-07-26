@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -85,7 +85,7 @@
                                         if (empty($label)) {
                                             $label = ' ';
                                         }
-                                        echo "                                <option $selected label=\"$label\" value=\"" . $item->attributes->name . "\">" . $item->attributes->value . "</option>\n";
+                                        echo "                                <option $selected label=\"$label\" value=\"" . htmlspecialchars( $item->attributes->name, REPLACE_FLAGS, CHARSET) . "\">" . htmlspecialchars( $item->attributes->value, REPLACE_FLAGS, CHARSET) . "</option>\n";
                                     }
                                 }
                                 ?>
@@ -99,7 +99,7 @@
                             <select class="form-control" id="data[attributes][table]" name="data[attributes][table]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'table') { ?>    <option value="<?php echo $item->attributes->name; ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                if ($item->type == 'table') { ?>    <option value="<?php echo htmlspecialchars( $item->attributes->name, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                             <?php
                                 }
                             } ?></select>
