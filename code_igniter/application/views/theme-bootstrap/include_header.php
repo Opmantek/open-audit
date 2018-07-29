@@ -182,7 +182,7 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <?php
-                    $collections = array('applications','attributes','baselines','clouds','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','queries','orgs','roles','summaries','users','widgets');
+                    $collections = array('applications','attributes','baselines','clouds','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','orgs','queries','roles','summaries','users','widgets');
                     $commercial_collections = array('applications','baselines','clouds','dashboards','maps','roles','widgets');
                     ?>
                     <li class="dropdown">

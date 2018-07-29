@@ -212,9 +212,9 @@ INSERT INTO `attributes` VALUES (49,1,'devices','device_type','Keyboard, Video, 
 INSERT INTO `attributes` VALUES (50,1,'devices','device_type','Load Balancer','load balancer','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (51,1,'devices','device_type','Media Device','media device','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (52,1,'devices','device_type','Mobile Modem','mobile modem','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (53,1,'devices','device_type','NAS (,Network Attached Storage)','nas','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (53,1,'devices','device_type','NAS (Network Attached Storage)','nas','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (54,1,'devices','device_type','Network Device','network device','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (55,1,'devices','device_type','Network IDS (,Intrusion Detection)','network ids','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (55,1,'devices','device_type','Network IDS (Intrusion Detection)','network ids','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (56,1,'devices','device_type','Network Printer','network printer','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (57,1,'devices','device_type','Network Scanner','network scanner','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (58,1,'devices','device_type','PBX','pbx','system','2000-01-01 00:00:00');
@@ -228,10 +228,10 @@ INSERT INTO `attributes` VALUES (65,1,'devices','device_type','Print Server','pr
 INSERT INTO `attributes` VALUES (66,1,'devices','device_type','Projector','projector','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (67,1,'devices','device_type','Proxy','proxy','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (68,1,'devices','device_type','Proxy Server','proxy server','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (69,1,'devices','device_type','Remote Access Controller (,ILO / RSA)','remote access controller','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (69,1,'devices','device_type','Remote Access Controller (ILO / RSA)','remote access controller','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (70,1,'devices','device_type','Remote Management','remote management','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (71,1,'devices','device_type','Router','router','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (72,1,'devices','device_type','SAN (,Storage Area Network)','san','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (72,1,'devices','device_type','SAN (Storage Area Network)','san','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (73,1,'devices','device_type','Satellite Phone','satellite phone','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (74,1,'devices','device_type','Satellite Receiver','satellite receiver','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (75,1,'devices','device_type','Scanner','scanner','system','2000-01-01 00:00:00');
@@ -249,15 +249,15 @@ INSERT INTO `attributes` VALUES (86,1,'devices','device_type','Terminal','termin
 INSERT INTO `attributes` VALUES (87,1,'devices','device_type','Terminal Server','terminal server','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (88,1,'devices','device_type','Time Clock','time clock','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (89,1,'devices','device_type','Unknown','unknown','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (90,1,'devices','device_type','UPS (,Uninterruptible Power Supply)','ups','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (90,1,'devices','device_type','UPS (Uninterruptible Power Supply)','ups','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (91,1,'devices','device_type','Video Conference','video conference','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (92,1,'devices','device_type','VoIP Adapter','voip adapter','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (93,1,'devices','device_type','VoIP Gateway','voip gateway','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (94,1,'devices','device_type','VoIP Phone','voip phone','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (95,1,'devices','device_type','VPN Terminator','vpn terminator','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (96,1,'devices','device_type','WAN Accelerator','wan accelerator','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (97,1,'devices','device_type','WAP (,Wireless Access Point)','wap','system','2000-01-01 00:00:00');
-INSERT INTO `attributes` VALUES (98,1,'devices','device_type','WDM (,Wavelength Division Multiplexer)','wdm','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (97,1,'devices','device_type','WAP (Wireless Access Point)','wap','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (98,1,'devices','device_type','WDM (Wavelength Division Multiplexer)','wdm','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (99,1,'devices','device_type','Web Cache','web cache','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (100,1,'devices','device_type','Web Camera','webcam','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (101,1,'devices','device_type','Wireless Link','wireless link','system','2000-01-01 00:00:00');
@@ -357,6 +357,7 @@ INSERT INTO `attributes` VALUES (194,1,'devices','device_type','iPhone','iphone'
 INSERT INTO `attributes` VALUES (195,1,'devices','device_type','iPad','ipad','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (196,1,'devices','device_type','iPod','ipod','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (197,1,'devices','device_type','Android','android','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (198,1,'devices','device_type','Application Accelerator','application accelerator','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
