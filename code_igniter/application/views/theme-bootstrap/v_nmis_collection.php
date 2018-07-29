@@ -68,8 +68,8 @@ if (strpos($refine_link, '?') === false) {
                     <?php foreach ($this->response->data as $item): ?>
                         <tr>
                             <td class="text-center"><a role="button" class="btn btn-sm btn-success" href="devices/<?php echo intval($item->id); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET)?></a></td>
-                            <td><?php echo htmlspecialchars($item->attributes->name); ?></td>
-                            <td><?php echo htmlspecialchars($item->attributes->host); ?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?></td>
+                            <td><?php echo htmlspecialchars($item->attributes->host, REPLACE_FLAGS, CHARSET); ?></td>
                             <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>system.nmis_manage=!=<?php echo urlencode($item->attributes->nmis_manage); ?>'><?php echo __('Exclude'); ?></a><br /><a href='<?php echo $refine_link; ?>system.nmis_manage=<?php echo urlencode($item->attributes->nmis_manage); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->nmis_manage; ?></td>
 
                             <td><span class="small glyphicon glyphicon-filter" aria-hidden="true" data-html="true" data-toggle="popover" title="Refine" data-content="<a href='<?php echo $refine_link; ?>system.nmis_group=!=<?php echo urlencode($item->attributes->group); ?>'><?php echo __('Exclude'); ?></a><br /><a href='<?php echo $refine_link; ?>system.nmis_group=<?php echo urlencode($item->attributes->group); ?>'>Include</a><br />"></span>&nbsp;<?php echo $item->attributes->group; ?></td>

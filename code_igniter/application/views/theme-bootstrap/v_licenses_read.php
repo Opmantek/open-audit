@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -182,9 +182,9 @@ $item = $this->response->data[0];
                             if ($item->type == 'licenses') {
                                 echo "<tr>\n";
                                 echo '    <td class="text-center"><a class="btn btn-sm btn-success" href="../devices/' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '">' . htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET) . '</a></td>';
-                                echo "    <td>" . $item->{'attributes'}->{'system.name'} . "</td>\n";
-                                echo "    <td>" . $item->{'attributes'}->{'software.name'} . "</td>\n";
-                                echo "    <td>" . $item->{'attributes'}->{'software.version'} . "</td>\n";
+                                echo "    <td>" . htmlspecialchars( $item->{'attributes'}->{'system.name'}, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                echo "    <td>" . htmlspecialchars( $item->{'attributes'}->{'software.name'}, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                echo "    <td>" . htmlspecialchars( $item->{'attributes'}->{'software.version'}, REPLACE_FLAGS, CHARSET) . "</td>\n";
                                 echo "</tr>\n";
                             }
                         }

@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -83,12 +83,12 @@ $item = $this->response->data[0];
                     <?php if ($item->attributes->name == 'system') { ?>
                         <?php foreach ($item->attributes->status as $status) { ?>
                             <div class="form-group">
-                                <label for="status_<?php echo $status->status; ?>" class="col-sm-3 control-label"><?php echo __('Device Status: ' . $status->status); ?></label>
+                                <label for="status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-3 control-label"><?php echo __('Device Status: ' . $status->status); ?></label>
                                 <div class="col-sm-8 input-group">
-                                    <input type="text" class="form-control" id="status_<?php echo $status->status; ?>" name="status_<?php echo $status->status; ?>" value="<?php echo htmlspecialchars($status->count, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                                    <input type="text" class="form-control" id="status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" name="status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" value="<?php echo htmlspecialchars($status->count, REPLACE_FLAGS, CHARSET); ?>" disabled>
                                     <?php if ($this->m_users->get_user_permission('', 'database', 'd') and $status->status != 'production') { ?>
                                     <span class="input-group-btn">
-                                        <button id="delete_status_<?php echo $status->status; ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?status=<?php echo $status->status; ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                                        <button id="delete_status_<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>" class="btn btn-danger delete_link" type="button" data-id="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>?status=<?php echo htmlspecialchars( $status->status, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                                     </span>
                                     <?php } ?>
                                 </div>
@@ -174,7 +174,7 @@ $item = $this->response->data[0];
                                 echo "<td>";
                                 foreach ($this->response->dictionary->columns as $dict_name => $dict_column) {
                                     if ($column->name == $dict_name) {
-                                        echo $dict_column;
+                                        echo htmlspecialchars($dict_column, REPLACE_FLAGS, CHARSET);
                                     }
                                 }
                                 echo "</td>";

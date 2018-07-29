@@ -60,7 +60,7 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-success" href="logs/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
+                    <td class="text-center"><a class="btn btn-sm btn-success" href="logs/<?php echo $item->id; ?>"><?php echo $item->id; ?></a></td>
                     <?php refine('logs.timestamp', $item->attributes->timestamp); ?>
                     <?php refine('logs.type', $item->attributes->type); ?>
                     <?php refine('logs.severity_text', $item->attributes->severity_text); ?>

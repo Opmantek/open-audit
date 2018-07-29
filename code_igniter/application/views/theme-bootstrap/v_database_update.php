@@ -34,7 +34,7 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<div class="alert alert-success" role="alert"><?php echo $success; ?></div>
+<div class="alert alert-success" role="alert"><?php echo htmlspecialchars( $success, REPLACE_FLAGS, CHARSET); ?></div>
 <form class="form-horizontal" id="form_update" method="post" action="database">
     <div class="panel panel-default">
         <div class="panel-heading clearfix">
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="panel-body">
-            <pre style="white-space: pre-wrap;"><?php echo $output; ?></pre>
+            <pre style="white-space: pre-wrap;"><?php echo htmlspecialchars( $output, REPLACE_FLAGS, CHARSET); ?></pre>
         </div>
     </div>
 </form>

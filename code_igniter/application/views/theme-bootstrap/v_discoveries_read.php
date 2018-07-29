@@ -75,7 +75,7 @@ if ($nmap_warning != '') {
     echo '<div class="alert alert-danger alert-dismissible" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . $nmap_warning . '</div>';
 }
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -341,7 +341,7 @@ if ($nmap_warning != '') {
                         <td><?php echo htmlspecialchars($item->attributes->file, REPLACE_FLAGS, CHARSET)?></td>
                         <td><?php echo htmlspecialchars($item->attributes->function, REPLACE_FLAGS, CHARSET)?></td>
                         <?php if (strpos($item->attributes->message, 'Error when submitting discovery result') !== false) { ?>
-                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo $item->attributes->message; ?></td>
+                        <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars( $item->attributes->message, REPLACE_FLAGS, CHARSET); ?></td>
                         <?php } else { ?>
                         <td style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->attributes->message, REPLACE_FLAGS, CHARSET)?></td>
                         <?php } ?>

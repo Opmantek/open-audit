@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -131,9 +131,9 @@
                     foreach ($attributes as $attribute) {
                     ?>
                     <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo __(ucfirst($attribute)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" value="" >
+                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" value="" >
                         </div>
                     </div>
                     <?php } ?>
@@ -146,10 +146,10 @@
                     foreach ($attributes as $attribute) {
                     ?>
                     <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-2 control-label"><?php echo __(ucfirst($attribute)); ?></label>
                         <div class="col-sm-6">
                             <div class="col-sm-12 input-group">
-                                <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]" value="">
+                                <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" value="">
                             </div>
                         </div>
                         <?php if ($attribute == 'geo') { ?>

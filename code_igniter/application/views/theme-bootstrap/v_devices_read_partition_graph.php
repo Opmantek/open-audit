@@ -70,8 +70,8 @@ $labels = '[' . $labels . ']';
 <script type="text/javascript" language="javascript">
 $(document).ready(function(){
     new Chartist.Line('.ct-chart', {
-        labels: <?php echo $labels; ?>,
-        series: <?php echo $series; ?>
+        labels: <?php echo htmlspecialchars( $labels, REPLACE_FLAGS, CHARSET); ?>,
+        series: <?php echo htmlspecialchars( $series, REPLACE_FLAGS, CHARSET); ?>
         }, {
             axisX: {
                 type: Chartist.AutoScaleAxis,

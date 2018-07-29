@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -97,7 +97,7 @@ $item = $this->response->data[0];
                                         if (empty($label)) {
                                             $label = ' ';
                                         }
-                                        echo "                                <option $selected label=\"$label\" value=\"" . $attribute->attributes->name . "\">" . $attribute->attributes->value . "</option>\n";
+                                        echo "                                <option $selected label=\"$label\" value=\"" . htmlspecialchars( $attribute->attributes->name, REPLACE_FLAGS, CHARSET) . "\">" . htmlspecialchars( $attribute->attributes->value, REPLACE_FLAGS, CHARSET) . "</option>\n";
                                     }
                                 }
                                 ?>
@@ -117,7 +117,7 @@ $item = $this->response->data[0];
                             <?php
                             foreach ($this->response->included as $table) {
                                 if ($table->type == 'table') { ?>
-                                    <option value="<?php echo $table->attributes->name; ?>"<?php if ($item->attributes->table === $table->attributes->name) { echo ' selected'; } ?>><?php echo htmlspecialchars($table->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
+                                    <option value="<?php echo htmlspecialchars( $table->attributes->name, REPLACE_FLAGS, CHARSET); ?>"<?php if ($item->attributes->table === $table->attributes->name) { echo ' selected'; } ?>><?php echo htmlspecialchars($table->attributes->name, REPLACE_FLAGS, CHARSET); ?></option>
                                 <?php
                                 }
                             } ?></select>

@@ -36,7 +36,7 @@
 ?>
 <!--<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->meta->collection; ?>">-->
 <form class="form-horizontal" id="form_update" method="post">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -86,7 +86,7 @@
                                         if (empty($label)) {
                                             $label = ' ';
                                         }
-                                        echo "                                <option $selected label=\"$label\" value=\"" . $item->attributes->name . "\">" . $item->attributes->value . "</option>\n";
+                                        echo "                                <option $selected label=\"$label\" value=\"" . htmlspecialchars( $item->attributes->name, REPLACE_FLAGS, CHARSET) . "\">" . htmlspecialchars( $item->attributes->value, REPLACE_FLAGS, CHARSET) . "</option>\n";
                                     }
                                 }
                                 ?>

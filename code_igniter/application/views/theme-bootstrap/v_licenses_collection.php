@@ -58,11 +58,11 @@
             <tbody>
                 <?php foreach ($this->response->data as $item): ?>
                 <tr>
-                    <td class="text-center"><a class="btn btn-sm btn-primary" href="licenses/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                    <?php refine('licenses.name', $item->attributes->name); ?>
-                    <?php refine('licenses.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
-                    <?php refine('licenses.org_descendants', $item->attributes->org_descendants, '', 'center'); ?>
-                    <?php refine('licenses.purchase_count', $item->attributes->purchase_count, '', 'center'); ?>
+                    <td class="text-center"><a class="btn btn-sm btn-primary" href="licenses/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                    <?php refine('licenses.name',  $item->attributes->name); ?>
+                    <?php refine('licenses.org_id',  $item->attributes->org_id, $item->attributes->org_name); ?>
+                    <?php refine('licenses.org_descendants',  $item->attributes->org_descendants, '', 'center'); ?>
+                    <?php refine('licenses.purchase_count',  $item->attributes->purchase_count, '', 'center'); ?>
 
                     <td class="text-center">
                     <?php
@@ -71,7 +71,7 @@
                     } else {
                         echo '<span class="btn btn-sm btn-success">';
                     }
-                    echo htmlspecialchars($item->attributes->used_count, REPLACE_FLAGS, CHARSET)
+                        echo $item->attributes->used_count;
                     ?>
                     </span>
                     </td>

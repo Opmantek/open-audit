@@ -53,7 +53,7 @@
                     if ($endpoint->attributes->name == 'Logs') {
                         $endpoint->attributes->collection = $endpoint->attributes->collection . "?logs.type=system";
                     }
-                    echo '<div class="col-sm-1 text-center">' . __($endpoint->attributes->name) . '<br /><a class="btn btn-app" href="' . $endpoint->attributes->collection . '"><span class="badge">' . $endpoint->attributes->count . '</span><i class="fa fa-' . $endpoint->attributes->icon  . ' fa-3x fa-fw" style="font-size: 2vw;"></i></a></div>';
+                    echo '<div class="col-sm-1 text-center">' . __($endpoint->attributes->name) . '<br /><a class="btn btn-app" href="' . htmlspecialchars( $endpoint->attributes->collection, REPLACE_FLAGS, CHARSET) . '"><span class="badge">' . htmlspecialchars( $endpoint->attributes->count, REPLACE_FLAGS, CHARSET) . '</span><i class="fa fa-' . htmlspecialchars( $endpoint->attributes->icon, REPLACE_FLAGS, CHARSET) . ' fa-3x fa-fw" style="font-size: 2vw;"></i></a></div>';
                     if ($i == 12) {
                         echo "</div><br /><br /><div class=\"row\">";
                     }
@@ -85,9 +85,9 @@
                 <tbody>
                 <?php foreach ($this->response->data as $item) : ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->id); ?>?action=execute"><?php echo ucwords($item->attributes->count)?></a></td>
+                        <td class="text-center"><a class="btn btn-sm btn-success" href="summaries/<?php echo intval($item->id); ?>?action=execute"><?php echo ucwords(htmlspecialchars($item->attributes->count, REPLACE_FLAGS, CHARSET))?></a></td>
                         <td class="text-center"><a class="btn btn-sm btn-primary" href="summaries/<?php echo intval($item->attributes->id); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                        <td><?php echo ucwords($item->attributes->name)?></td>
+                        <td><?php echo ucwords(htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET))?></td>
                         <?php if ($this->m_users->get_user_permission('', 'summaries', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link"  data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>

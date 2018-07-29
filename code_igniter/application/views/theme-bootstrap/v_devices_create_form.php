@@ -44,8 +44,8 @@
     </div>
 
   <div class="panel-body">
-    <form action="<?php echo $this->response->links->self; ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+    <form action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+    <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <fieldset>
         <div class="form-group">
             <div class="row">
@@ -77,7 +77,7 @@
                                 <?php
                                 foreach ($this->response->included as $item) {
                                     if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
-                                        echo "<option value='" . $item->attributes->value . "'>".__($item->attributes->name)."</option>\n";
+                                        echo "<option value='" . htmlspecialchars( $item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>".__($item->attributes->name)."</option>\n";
                                     }
                                 }
                                 ?>

@@ -144,9 +144,9 @@ if (!empty($this->config->config['servers'])) {
                             ?>
                             <li class="dropdown-submenu">
                                 <?php if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') { ?>
-                                    <a><?php echo $category ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
+                                    <a><?php echo htmlspecialchars($category, REPLACE_FLAGS, CHARSET) ?> <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
                                 <?php } else { ?>
-                                    <a><?php echo $category ?></a>
+                                    <a><?php echo htmlspecialchars($category, REPLACE_FLAGS, CHARSET) ?></a>
                                 <?php } ?>
                                 <ul class="dropdown-menu" style="min-width:250px;">
                                 <?php
@@ -161,7 +161,7 @@ if (!empty($this->config->config['servers'])) {
                                         } else {
                                             $link = '<li><a href="' . $this->config->config['oa_web_index'] . '/' . $item->{'type'} . '/' . $item->{'id'} . '/execute">';
                                         }
-                                        echo $link . $item->{'attributes'}->{'name'} . "</a></li>\n";
+                                        echo $link . htmlspecialchars($item->{'attributes'}->{'name'}, REPLACE_FLAGS, CHARSET) . "</a></li>\n";
                                     }
                                 }
                                 if ($this->config->config['oae_license'] == 'none' and $category == 'Discovery') {

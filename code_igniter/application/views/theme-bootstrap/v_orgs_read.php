@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -83,7 +83,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="ad_group" class="col-sm-3 control-label"><?php echo __('AD Group'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="ad_group" name="ad_group" value="<?php echo $item->attributes->ad_group; ?>" disabled>
+                            <input type="text" class="form-control" id="ad_group" name="ad_group" value="<?php echo htmlspecialchars( $item->attributes->ad_group, REPLACE_FLAGS, CHARSET); ?>" disabled>
                         </div>
                     </div>
 

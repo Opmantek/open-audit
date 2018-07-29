@@ -58,12 +58,12 @@
                 <tbody>
                     <?php foreach ($this->response->data as $item): ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="fields/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                        <?php refine('fields.name', $item->attributes->name); ?>
-                        <?php refine('fields.org_id', $item->attributes->org_id, $item->attributes->org_name); ?>
-                        <?php refine('fields.type', $item->attributes->type); ?>
-                        <?php refine('fields.placement', $item->attributes->placement); ?>
-                        <td><?php echo htmlspecialchars($item->attributes->{'groups.name'}, REPLACE_FLAGS, CHARSET)?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="fields/<?php echo $item->id; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                        <?php refine('fields.name',$item->attributes->name); ?>
+                        <?php refine('fields.org_id',$item->attributes->org_id,$item->attributes->org_name); ?>
+                        <?php refine('fields.type',$item->attributes->type); ?>
+                        <?php refine('fields.placement',$item->attributes->placement); ?>
+                        <td><?php echo htmlspecialchars( $item->attributes->{'groups.name'}, REPLACE_FLAGS, CHARSET)?></td>
                         <?php if ($this->m_users->get_user_permission('', 'fields', 'd')) { ?>
                         <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                         <?php } ?>

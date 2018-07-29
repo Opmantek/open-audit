@@ -50,10 +50,10 @@
 
                 <?php foreach ($this->response->data as $item) { ?>
                 <tr>
-                    <td><?php echo __($item->name); ?></td>
-                    <td><?php echo __($item->description); ?></td>
-                    <td><?php echo __($item->ad_group); ?></td>
-                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo __($item->permissions); ?></pre></td>
+                    <td><?php echo __(htmlspecialchars( $item->name), REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo __(htmlspecialchars( $item->description), REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo __(htmlspecialchars( $item->ad_group), REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo __(htmlspecialchars( $item->permissions), REPLACE_FLAGS, CHARSET); ?></pre></td>
                 </tr>
                 <?php } ?>
 <!--
