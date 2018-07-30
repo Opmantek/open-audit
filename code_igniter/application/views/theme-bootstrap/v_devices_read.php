@@ -438,7 +438,7 @@ if (empty($data['mount_point'])) {
                                         if (empty($item->name)) {
                                             $item->name = '&nbsp;';
                                         }
-                                        echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">".__("$item->name")."</option>\n";
+                                        echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">". htmlspecialchars(__($item->name))."</option>\n";
                                     }
                                 }
                                 ?>
