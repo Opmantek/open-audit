@@ -80,7 +80,7 @@ if ($this->config->item('display_version') != $this->config->item('web_display_v
                 <div class="col-md-6">
 
 
-                    <?php echo htmlspecialchars($upgrade_message, REPLACE_FLAGS, CHARSET); ?>
+                    <?php echo $upgrade_message ?>
 
 
                     <div class="form-group">
