@@ -3721,7 +3721,9 @@ if (audit_software = "y") then
             if (not isNull(message_retrieved)) then
                 if (InStr(message_retrieved, package_name) = 1) then
                     package_installed_by = objItem.User
-                if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
+                    if details_to_lower = "y" then
+                        package_installed_by = lcase(package_installed_by)
+                    end if
                     package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
                     package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
                     exit for
@@ -3800,23 +3802,25 @@ if (audit_software = "y") then
     end if
 
     for each objItem in colItems
-    if objItem.Message <> "" then
-    colonPos = InStr(objItem.Message,":")
-    dashPos = InStr(objItem.Message,"--")
-    message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-    if (not isNull(message_retrieved)) then
-    if (InStr(message_retrieved, package_name) = 1) then
-    package_installed_by = objItem.User
-    if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-    exit for
-    else
-    package_installed_by = ""
-    package_installed_on = ""
-    end if
-    end if
-    end if
+        if objItem.Message <> "" then
+            colonPos = InStr(objItem.Message,":")
+            dashPos = InStr(objItem.Message,"--")
+            message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+            if (not isNull(message_retrieved)) then
+                if (InStr(message_retrieved, package_name) = 1) then
+                    package_installed_by = objItem.User
+                    if details_to_lower = "y" then
+                        package_installed_by = lcase(package_installed_by)
+                    end if
+                    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+                    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+                    exit for
+                else
+                    package_installed_by = ""
+                    package_installed_on = ""
+                end if
+            end if
+        end if
     next
 
     result.WriteText "      <item>" & vbcrlf
@@ -3924,23 +3928,25 @@ if (reg_node = "y") then
 
     on error resume next
     for each objItem in colItems
-    if objItem.Message <> "" then
-    colonPos = InStr(objItem.Message,":")
-    dashPos = InStr(objItem.Message,"--")
-    message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-    if (not isNull(message_retrieved)) then
-    if (InStr(message_retrieved, package_name) = 1) then
-    package_installed_by = objItem.User
-    if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-    exit for
-    else
-    package_installed_by = ""
-    package_installed_on = ""
-    end if
-    end if
-    end if
+        if objItem.Message <> "" then
+            colonPos = InStr(objItem.Message,":")
+            dashPos = InStr(objItem.Message,"--")
+            message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+            if (not isNull(message_retrieved)) then
+                if (InStr(message_retrieved, package_name) = 1) then
+                    package_installed_by = objItem.User
+                    if details_to_lower = "y" then
+                        package_installed_by = lcase(package_installed_by)
+                    end if
+                    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+                    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+                    exit for
+                else
+                    package_installed_by = ""
+                    package_installed_on = ""
+                end if
+            end if
+        end if
     next
     On Error Goto 0
 
@@ -4069,23 +4075,25 @@ if address_width = "64" then
 
     on error resume next
     for each objItem in colItems
-    if objItem.Message <> "" then
-    colonPos = InStr(objItem.Message,":")
-    dashPos = InStr(objItem.Message,"--")
-    message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-    if (not isNull(message_retrieved)) then
-    if (InStr(message_retrieved, package_name) = 1) then
-    package_installed_by = objItem.User
-    if details_to_lower = "y" then package_installed_by = lcase(package_installed_by) end if
-    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-    exit for
-    else
-    package_installed_by = ""
-    package_installed_on = ""
-    end if
-    end if
-    end if
+        if objItem.Message <> "" then
+            colonPos = InStr(objItem.Message,":")
+            dashPos = InStr(objItem.Message,"--")
+            message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+            if (not isNull(message_retrieved)) then
+                if (InStr(message_retrieved, package_name) = 1) then
+                    package_installed_by = objItem.User
+                    if details_to_lower = "y" then
+                        package_installed_by = lcase(package_installed_by)
+                    end if
+                    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+                    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+                    exit for
+                else
+                    package_installed_by = ""
+                    package_installed_on = ""
+                end if
+            end if
+        end if
     next
     on error goto 0
 
