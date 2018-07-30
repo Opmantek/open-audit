@@ -185,11 +185,12 @@ if (! function_exists('execute_windows')) {
             if ($domain != '') {
                 $domain .= '/';
             }
-            $command_string = "screen -D -m timeout 5m ${filepath}/winexe-static -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
+            $command_string = "screen -D -m timeout 5m ${filepath}/winexe-static-2 -U \"${domain}${username}%******\" --uninstall //" . str_replace("'", "", escapeshellarg($ip))." \"$command\" ";
             $log->message = 'Attempting to execute command';
             $log->command = $command_string;
             $command_string = str_replace('******', $password, $command_string);
             exec($command_string, $output, $return_var);
+            $log->command_output = json_encode($output);
         }
 
         if (php_uname('s') == 'Windows NT') {
@@ -281,7 +282,6 @@ if (! function_exists('copy_to_windows')) {
             return false;
         }
 
-
         if (php_uname('s') == 'Darwin') {
             $ts = date('Y_m_d_H_i_s');
             $temp = explode('@', $credentials->credentials->username);
@@ -350,7 +350,6 @@ if (! function_exists('copy_to_windows')) {
                 discovery_log($log);
             }
             $log->command = '';
-
         }
 
         if (php_uname('s') == 'Linux') {
@@ -365,12 +364,11 @@ if (! function_exists('copy_to_windows')) {
                 return false;
             }
             $log->command = '';
-
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
-            $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             exec($command, $output, $return_var);
             if ($return_var == 0) {
                 $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
@@ -382,7 +380,7 @@ if (! function_exists('copy_to_windows')) {
                 $log->severity = 5;
                 stdlog($log);
                 $temp = explode('@', $credentials->credentials->username);
-                $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                 exec($command, $output, $return_var);
                 if ($display == 'y') {
                     echo 'DEBUG - Windows Copy Command: ' . str_replace($password, '******', $command) . "\n";
@@ -396,7 +394,33 @@ if (! function_exists('copy_to_windows')) {
                     $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
                     $log->severity = 5;
                     stdlog($log);
-                    return false;
+                    $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                    $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                    exec($command, $output, $return_var);
+                    if ($return_var == 0) {
+                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                        $log->severity = 7;
+                        stdlog($log);
+                        return true;
+                    } else {
+                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                        $log->severity = 5;
+                        stdlog($log);
+                        $temp = explode('@', $credentials->credentials->username);
+                        $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+                        exec($command, $output, $return_var);
+                        if ($return_var == 0) {
+                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                            $log->severity = 7;
+                            stdlog($log);
+                            return true;
+                        } else {
+                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                            $log->severity = 5;
+                            stdlog($log);
+                            return false;
+                        }
+                    }
                 }
             }
         }
@@ -532,11 +556,6 @@ if (! function_exists('wmi_command')) {
         }
         if (php_uname('s') == 'Darwin') {
             $command_string = "/usr/local/bin/winexe";
-        }
-        if (php_uname('s') == 'Linux') {
-            $command_string = "timeout 5m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static";
-        }
-        if (php_uname('s') == 'Darwin' or php_uname('s') == 'Linux') {
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
             $domain = $temp[1];
@@ -553,6 +572,41 @@ if (! function_exists('wmi_command')) {
             $item_start = microtime(true);
             $command_string = str_replace("******", $password, $command_string);
             exec($command_string, $return['output'], $return['status']);
+        }
+
+        if (php_uname('s') == 'Linux') {
+            $command_string = "timeout 5m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static-2";
+            $temp = explode('@', $credentials->credentials->username);
+            $username = $temp[0];
+            $domain = $temp[1];
+            if ($domain != '') {
+                $domain .= '/';
+            }
+            unset($temp);
+            $password = escapeshellarg($credentials->credentials->password);
+            $username = escapeshellarg(str_replace("'", "", $username));
+            $command_string .= " -U ".$domain.$username."%****** --uninstall //".$ip." \"wmic $command\" ";
+            $log->command   = $command_string;
+            $log->message = "Attempting to execute command using winexe for SMB2";
+            $log->id = discovery_log($log);
+            $item_start = microtime(true);
+            $command_string = str_replace("******", $password, $command_string);
+            exec($command_string, $return['output'], $return['status']);
+            if ($return['status'] != '0') {
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->command_status = 'fail';
+                $log->command_output = @$return['output'][0];
+                $log->id = discovery_log($log);
+                unset($log->id, $log->command_status, $log->command_time_to_execute, $log->command_output);
+
+                $log->command   = str_replace('winexe-static-2', 'winexe-static', $log->command);
+                $log->message = "Attempting to execute command using winexe for SMB1";
+                $log->id = discovery_log($log);
+
+                $command_string = str_replace('winexe-static-2', 'winexe-static', $command_string);
+                $item_start = microtime(true);
+                exec($command_string, $return['output'], $return['status']);
+            }
         }
 
         if (php_uname('s') == 'Windows NT') {
