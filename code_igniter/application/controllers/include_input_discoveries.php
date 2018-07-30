@@ -933,16 +933,20 @@ foreach ($xml->children() as $input) {
             $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
             if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
                 # delete our no longer required local copy of the script
-                $log->message = 'Attempt to copy audit script to ' . $device->ip . ' succeeded';
-                discovery_log($log);
+                $log->file = 'include_input_discoveries';
+                $log->function = 'discoveries';
+                $log->command = '';
+                $log->message = '';
+                $log->severity = 7;
                 if ($source_name != 'audit_windows.vbs') {
-                    $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
+                    $log->message = 'Attempt to delete temp audit script succeeded';
                     $log->command = 'unlink(' . $this->config->config['base_path'] . '/other/' . $source_name .')';
                     try {
                         unlink($this->config->config['base_path'] . '/other/' . $source_name);
                     } catch (Exception $e) {
                         $log->severity = 4;
-                        $log->message = 'Could not delete audit script ' . $source_name;
+                        $log->status = 'fail';
+                        $log->message = 'Could not delete temp audit script';
                     }
                     discovery_log($log);
                     $log->severity = 7;
@@ -952,6 +956,7 @@ foreach ($xml->children() as $input) {
                 } else {
                     # run audit script failed
                     $log->severity = 4;
+                    $log->status = 'fail';
                     $log->message = 'Could not execute audit script on ' . $device->ip;
                     discovery_log($log);
                     $log->severity = 7;
@@ -959,6 +964,7 @@ foreach ($xml->children() as $input) {
             } else {
                 # copy audit script to Windows failed
                 $log->severity = 4;
+                $log->status = 'fail';
                 $log->message = 'Could not copy audit script to ' . $device->ip;
                 discovery_log($log);
                 $log->severity = 7;
@@ -1021,7 +1027,9 @@ foreach ($xml->children() as $input) {
                     $log->command_time_to_execute = $command_end - $command_start;
                     $log->command = '';
                     $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                    $log->status = 'success';
                     if ($return_var != '0') {
+                        $log->status = 'fail';
                         $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         $log->severity = 4;
                     }
@@ -1073,11 +1081,14 @@ foreach ($xml->children() as $input) {
                         # All complete!
                         $log->message = 'Run audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         $log->file = 'include_input_discoveries';
+
+                        $log->status = 'success';
                         discovery_log($log);
                     } else {
                         # run audit script failed
                         $log->message = 'Run audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
                         $log->severity = 4;
+                        $log->status = 'fail';
                         $log->file = 'include_input_discoveries';
                         discovery_log($log);
                         $log->severity = 7;
@@ -1086,6 +1097,7 @@ foreach ($xml->children() as $input) {
                     # copy audit script to Windows failed
                     $log->message = 'Copy audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
                     $log->severity = 4;
+                    $log->status = 'fail';
                     $log->file = 'include_input_discoveries';
                     discovery_log($log);
                     $log->severity = 7;
@@ -1096,6 +1108,7 @@ foreach ($xml->children() as $input) {
                         unlink('c:\\windows\\audit_windows_' . $ts . '.vbs');
                     } catch (Exception $e) {
                         $log->severity = 4;
+                        $log->status = 'fail';
                         $log->message = 'Attempt to delete audit script c:\\windows\\audit_windows_' . $ts . '.vbs failed';
                     }
                     $log->file = 'include_input_discoveries';
