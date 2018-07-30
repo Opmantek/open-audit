@@ -35,7 +35,7 @@
  */
 $item = $this->response->data[0];
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -234,8 +234,8 @@ $item = $this->response->data[0];
                 }
                 ?>
                 <tr>
-                    <td><?php echo $org->id; ?></td><td><?php echo $org->attributes->name; ?></td><td><?php echo $org->attributes->parent_name; ?></td>
-                    <td style="text-align:center;"><input name="orgs" title="orgs" type="checkbox" value="<?php echo $org->id; ?>" <?php echo $checked; ?> disabled></td>
+                    <td><?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?></td><td><?php echo htmlspecialchars( $org->attributes->name, REPLACE_FLAGS, CHARSET); ?></td><td><?php echo htmlspecialchars( $org->attributes->parent_name, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td style="text-align:center;"><input name="orgs" title="orgs" type="checkbox" value="<?php echo htmlspecialchars( $org->id, REPLACE_FLAGS, CHARSET); ?>" <?php echo $checked; ?> disabled></td>
                 </tr>
         <?php
             }

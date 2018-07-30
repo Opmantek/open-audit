@@ -43,7 +43,7 @@
   </div>
   <div class="panel-body">
     <form class="form-horizontal" id="form_update" method="post" action="?action=create&sub_resource=attachment" enctype="multipart/form-data">
-        <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+        <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
         <div class="form-group">
             <label for="id" class="col-sm-2 control-label"><?php echo __('ID'); ?></label>
             <div class="col-sm-4">

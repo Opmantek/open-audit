@@ -57,7 +57,7 @@ if (!empty($this->response->meta->sub_resource_name)) {
 } else {
     $title = '';
 }
-#$title = htmlspecialchars($title, REPLACE_FLAGS, CHARSET);
+$title = htmlspecialchars($title, REPLACE_FLAGS, CHARSET);
 
 $export_link = $this->response->links->first;
 if (strpos($this->response->links->first, '?') !== false) {
@@ -89,11 +89,11 @@ if ($this->response->meta->sub_resource !== 'group') {
                 foreach ($this->response->included as $item) {
                     if ($item->type == 'queries') {
                         if (strpos($this->response->links->first, '?') !== false) {
-                            $link = $this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id;
+                            $link = htmlspecialchars($this->response->links->first . '&sub_resource=query&sub_resource_id=' . $item->attributes->id, REPLACE_FLAGS, CHARSET);
                         } else {
-                            $link = $this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id;
+                            $link = htmlspecialchars($this->response->links->first . '?sub_resource=query&sub_resource_id=' . $item->attributes->id, REPLACE_FLAGS, CHARSET);
                         }
-                        echo "<tr><td><a href=\"" . $link . "\">" . $item->attributes->name . "</a></td><td>" . $item->attributes->description . "</td></tr>";
+                        echo "<tr><td><a href=\"" . $link . "\">" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</a></td><td>" . htmlspecialchars($item->attributes->description, REPLACE_FLAGS, CHARSET) . "</td></tr>";
                     }
                 }
                 ?>
@@ -108,7 +108,7 @@ if ($this->response->meta->sub_resource !== 'group') {
 <div class="panel panel-default">
     <div class="panel-heading clearfix">
         <div class="panel-title">
-            <div class="pull-left"><?php echo __('Devices'). ' '; ?> <?php echo $title ?></div>
+            <div class="pull-left"><?php echo __('Devices'). ' '; ?> <?php echo htmlspecialchars($title, REPLACE_FLAGS, CHARSET) ?></div>
 
             <div class="nav navbar-nav navbar-center">
                 <form id="search_form" name="search_form" class="navbar-form" style="margin-top:0px; margin-bottom:0px;" action="<?php echo $this->config->config['oa_web_folder']; ?>/index.php/search" method="post">
@@ -116,7 +116,7 @@ if ($this->response->meta->sub_resource !== 'group') {
                         <input type="text"   id="data[attributes][value]"   name="data[attributes][value]"   class="form-control input-sm" placeholder="Device Name or full IP">
                         <input type="hidden" id="data[attributes][tables]"  name="data[attributes][tables]" value='["system"]' />
                         <input type="hidden" id="data[attributes][columns]" name="data[attributes][columns]" value='["name","ip","hostname","dns_hostname","sysName","domain","dns_domain"]' />
-                        <input type="hidden" id="data[access_token]" name="data[access_token]" value='<?php echo $this->response->meta->access_token; ?>' />
+                        <input type="hidden" id="data[access_token]" name="data[access_token]" value='<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>' />
                     </div>
                     <button type="submit" class="btn btn-default btn-sm"><?php echo __('Submit'); ?></button>
                     <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" data-container="body" data-toggle="popover" data-placement="left" title="Device Search" data-content="Search the following fields: name, hostname, dns_hostname, sysName, domain, dns_domain, ip.">
@@ -288,9 +288,9 @@ if (!empty($this->response->data)) { ?>
 
                 } elseif ((strrpos($property, 'ip') === strlen($property)-2)) {
                     if (!empty($item->attributes->{$property . '_padded'})) {
-                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . $item->attributes->$property . "</td>\n";
+                        echo "            <td><span style='display:none;'>" . str_replace('.', '', $item->attributes->{$property . '_padded'}) . "</span>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
                     } else {
-                        echo "            <td>" . $item->attributes->$property . "</td>\n";
+                        echo "            <td>" . htmlspecialchars($item->attributes->$property, REPLACE_FLAGS, CHARSET) . "</td>\n";
                     }
 
                 } elseif (strrpos($property, 'icon') === strlen($property)-4) {

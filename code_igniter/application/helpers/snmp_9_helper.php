@@ -5653,6 +5653,26 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Cisco ISR 4300 series';
         $details->type = 'router';
     }
+    if ($oid == '1.3.6.1.4.1.9.1.2134') {
+        $details->model = 'Cisco WS-C3560CX-12PC-S';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2135') {
+        $details->model = 'Cisco Catalyst 3560CX-8TC-S';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2136') {
+        $details->model = 'Cisco Catalyst 3560CX-8PC-S';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2143') {
+        $details->model = 'Cisco ASR 1006-X';
+        $details->type = 'router';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2191') {
+        $details->model = 'Cisco Catalyst 2960CX-8PC-L';
+        $details->type = 'switch';
+    }
 
     if ($oid == '1.3.6.1.4.1.9.5.5') {
         $details->model = 'Cisco Catalyst 1200';
@@ -5774,6 +5794,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     if ($oid == '1.3.6.1.4.1.9.6.1.83.10.3') {
         $details->model = 'Cisco SG300-10MP 10-Port Gigabit PoE Managed Switch';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.9.6.1.83.10.5') {
+        $details->model = 'Cisco SG300-10SFP';
         $details->type = 'switch';
     }
     if ($oid == '1.3.6.1.4.1.9.6.1.83.20.1') {

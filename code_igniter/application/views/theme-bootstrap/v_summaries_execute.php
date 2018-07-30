@@ -54,8 +54,8 @@
                     <?php foreach ($this->response->data as $item): ?>
                         <?php if (empty($item->attributes->name)) { $item->attributes->name = '-'; } ?>
                     <tr>
-                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo $item->attributes->link; ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
-                        <td><?php echo ucwords($item->attributes->name)?></td>
+                        <td class="text-center"><a class="btn btn-sm btn-primary" href="<?php echo htmlspecialchars( $item->attributes->link, REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>
+                        <td><?php echo htmlspecialchars(ucwords($item->attributes->name), REPLACE_FLAGS, CHARSET)?></td>
                         <td class="text-center"><?php echo intval($item->attributes->count); ?></td>
                     </tr>
                     <?php endforeach; ?>

@@ -47,7 +47,7 @@ $special = array();
 $special['class'] = '<div class="form-group"><label for="class" class="col-sm-4 control-label">Class</label><div class="col-sm-8 input-group"><select id="class" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
     if ($item->type == 'attributes' and $item->attributes->type == 'device_class') {
-        $special['class'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+        $special['class'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
 $special['class'] .= '</select><span class="input-group-btn"><button id="edit_class" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="class"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
@@ -56,7 +56,7 @@ $special['class'] .= '</select><span class="input-group-btn"><button id="edit_cl
 $special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
     if ($item->type == 'attributes' and $item->attributes->type == 'device_environment') {
-        $special['environment'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+        $special['environment'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
 $special['environment'] .= '</select><span class="input-group-btn"><button id="edit_environment" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="environment"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
@@ -65,7 +65,7 @@ $special['environment'] .= '</select><span class="input-group-btn"><button id="e
 $special['locations'] = '<div class="form-group"><label for="location_id" class="col-sm-4 control-label">Location</label><div class="col-sm-8 input-group"><select id="location_id" class="form-control" disabled><option value="" label=" "> </option>';
 if (!empty($data['locations'])) {
     foreach ($data['locations'] as $item) {
-        $special['locations'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
+        $special['locations'] .= "<option value='" . intval($item->id) . "'>". htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET) ."</option>";
     }
 }
 $special['locations'] .= '</select><span class="input-group-btn"><button id="edit_location_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="location_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
@@ -73,7 +73,7 @@ $special['locations'] .= '</select><span class="input-group-btn"><button id="edi
 
 $special['orgs'] = '<div class="form-group"><label for="org_id" class="col-sm-4 control-label">Organisation</label><div class="col-sm-8 input-group"><select id="org_id" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($data['orgs'] as $item) {
-    $special['orgs'] .= "<option value='" . $item->id . "'>".$item->name."</option>";
+    $special['orgs'] .= "<option value='" . intval($item->id) . "'>". htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET) ."</option>";
 }
 $special['orgs'] .= '</select><span class="input-group-btn"><button id="edit_org_id" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="org_id"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
@@ -81,7 +81,7 @@ $special['orgs'] .= '</select><span class="input-group-btn"><button id="edit_org
 $special['status'] = '<div class="form-group"><label for="status" class="col-sm-4 control-label">Status</label><div class="col-sm-8 input-group"><select id="status" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
     if ($item->type == 'attributes' and $item->attributes->type == 'device_status') {
-        $special['status'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+        $special['status'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
 $special['status'] .= '</select><span class="input-group-btn"><button id="edit_status" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="status"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
@@ -90,7 +90,7 @@ $special['status'] .= '</select><span class="input-group-btn"><button id="edit_s
 $special['types'] = '<div class="form-group"><label for="type" class="col-sm-4 control-label">Type</label><div class="col-sm-8 input-group"><select id="type" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
     if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
-        $special['types'] .= "<option value='" . $item->attributes->value . "'>" . $item->attributes->name . "</option>";
+        $special['types'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
 $special['types'] .= '</select><span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
@@ -125,13 +125,13 @@ var id = 0;
                     <div class="panel-body">
                     <?php for ($i=0; $i < $field_count; $i++) { ?>
                         <?php if (!empty($special[$fields[$i]])) { ?>
-                            <?php echo $special[$fields[$i]]; } else { ?>
+                            <?php echo $special[htmlspecialchars($fields[$i], REPLACE_FLAGS, CHARSET)]; } else { ?>
                                 <div class="form-group">
-                                    <label for="form_factor" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', __($fields[$i]))); ?></label>
+                                    <label for="form_factor" class="col-sm-4 control-label"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', __($fields[$i]))), REPLACE_FLAGS, CHARSET); ?></label>
                                     <div class="col-sm-8 input-group">
-                                        <input type="text" class="form-control" id="<?php echo $fields[$i]; ?>" title="<?php echo $fields[$i]; ?>" value="" disabled>
+                                        <input type="text" class="form-control" id="<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>" title="<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>" value="" disabled>
                                       <span class="input-group-btn">
-                                        <button id="edit_<?php echo $fields[$i]; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $fields[$i]; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                        <button id="edit_<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                                       </span>
                                     </div>
                                 </div>
@@ -147,11 +147,11 @@ var id = 0;
                         <?php if (!empty($special[$fields[$i]])) { ?>
                             <?php echo $special[$fields[$i]]; } else { ?>
                                 <div class="form-group">
-                                    <label for="form_factor" class="col-sm-4 control-label"><?php echo ucwords(str_replace('_', ' ', __($fields[$i]))); ?></label>
+                                    <label for="form_factor" class="col-sm-4 control-label"><?php echo htmlspecialchars(ucwords(str_replace('_', ' ', __($fields[$i]))), REPLACE_FLAGS, CHARSET); ?></label>
                                     <div class="col-sm-8 input-group">
-                                        <input type="text" class="form-control" id="<?php echo $fields[$i]; ?>" title="<?php echo $fields[$i]; ?>" value="" disabled>
+                                        <input type="text" class="form-control" id="<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>" title="<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>" value="" disabled>
                                       <span class="input-group-btn">
-                                        <button id="edit_<?php echo $fields[$i]; ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo $fields[$i]; ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                                        <button id="edit_<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="<?php echo htmlspecialchars( $fields[$i], REPLACE_FLAGS, CHARSET); ?>"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                                       </span>
                                     </div>
                                 </div>
@@ -179,20 +179,20 @@ if (!empty($data['fields'])) {
     foreach ($data['fields'] as $field) {
         if ($field->{'type'} == 'varchar') {
             echo '                    <div class="form-group">
-                <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                <label for="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" class="col-sm-4 control-label">' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '</label>
                 <div class="input-group">
-                  <input disabled type="text" class="form-control"  id="' . $field->{'name'} . '" name="' . $field->{'name'} . '" value="">
+                  <input disabled type="text" class="form-control"  id="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" name="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" value="">
                   <span class="input-group-btn">
-                    <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                    <button id="edit_' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
                   </span>
                 </div>
             </div>' . "\n";
         }
         if ($field->{'type'} == 'list') {
             echo '                    <div class="form-group">
-                <label for="' . $field->{'name'} . '" class="col-sm-4 control-label">' . $field->{'name'} . '</label>
+                <label for="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" class="col-sm-4 control-label">' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '</label>
                 <div class="col-sm-8 input-group">
-                    <select id="' . $field->{'name'} . '" class="form-control" disabled>' . "\n";
+                    <select id="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" class="form-control" disabled>' . "\n";
                       echo "                          <option value='' > </option>\n";
             foreach (explode(',', $field->{'values'}) as $key => $value) {
                         echo "                          <option value='$value'>".__("$value")."</option>\n";
@@ -200,7 +200,7 @@ if (!empty($data['fields'])) {
 
                     echo '                        </select>
                     <span class="input-group-btn">
-                      <button id="edit_' . $field->{'name'} . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . $field->{'name'} . '">
+                      <button id="edit_' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="' . htmlspecialchars( $field->{'name'}, REPLACE_FLAGS, CHARSET) . '">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                       </button>
                     </span>
@@ -234,7 +234,7 @@ if (!empty($data['fields'])) {
         <div class="form-group">
             <label for="form_factor" class="col-sm-4 control-label"><?php echo __('Run Discovery'); ?></label>
             <div class="col-sm-4 input-group">
-                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=discovery&action=create&ids=<?php echo $this->response->meta->ids; ?>"><?php echo __('Submit'); ?></a>
+                <a role="button" class="btn btn-sm btn-success" href="devices?sub_resource=discovery&action=create&ids=<?php echo htmlspecialchars($this->response->meta->ids, REPLACE_FLAGS, CHARSET); ?>"><?php echo __('Submit'); ?></a>
             </div>
         </div>
     <!--
@@ -275,13 +275,13 @@ if (!empty($data['fields'])) {
                 <tr>
                     <td style="text-align: center;"><a role="button" class="btn btn-sm btn-success" href="devices/<?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?>"><?php echo htmlspecialchars($item->id, REPLACE_FLAGS, CHARSET); ?></a></td>
                     <td style="text-align: center;"><img src="<?php echo str_replace("index.php", "", site_url()); ?>device_images/<?php echo strtolower(str_replace(" ", "_", htmlspecialchars($item->icon, REPLACE_FLAGS, CHARSET))); ?>.svg" style="border-width:0; width:24px;" title="icon" alt="icon"/></td>
-                    <td><?php echo $item->type; ?></td>
-                    <td><?php echo $item->name; ?></td>
-                    <td><?php echo $item->domain; ?></td>
-                    <td><span style="display:none;"><?php echo $item->ip; ?></span><?php echo ip_address_from_db($item->ip); ?></td>
-                    <td><?php echo $item->description; ?></td>
-                    <td><?php echo $item->os_family; ?></td>
-                    <td><?php echo $item->status; ?></td>
+                    <td><?php echo htmlspecialchars( $item->type, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars( $item->name, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars( $item->domain, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><span style="display:none;"><?php echo htmlspecialchars( $item->ip, REPLACE_FLAGS, CHARSET); ?></span><?php echo ip_address_from_db(htmlspecialchars( $item->ip, REPLACE_FLAGS, CHARSET)); ?></td>
+                    <td><?php echo htmlspecialchars( $item->description, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars( $item->os_family, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars( $item->status, REPLACE_FLAGS, CHARSET); ?></td>
                 </tr>
                 <?php } ?>
             </tbody>

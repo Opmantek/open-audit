@@ -368,11 +368,15 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     if ($oid == '1.3.6.1.4.1.2636.1.1.1.2.90') {
         $details->model = 'MX5';
-        $details->type = 'unknown';
+        $details->type = 'router';
+    }
+    if ($oid == '1.3.6.1.4.1.2636.1.1.1.4.132.6') {
+        $details->model = 'EX2300-C-12P';
+        $details->type = 'switch';
     }
     if ($oid == '1.3.6.1.4.1.2636.3.41.1.1.5.5') {
         $details->model = 'WXC-2600';
-        $details->type = 'unknown';
+        $details->type = 'application accelerator';
     }
 
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2636.3.1.3.0");

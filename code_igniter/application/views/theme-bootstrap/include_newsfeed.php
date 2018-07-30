@@ -45,8 +45,8 @@
         }
     })(jQuery)
 
-var rssurl = "<?php echo $this->config->item('rss_url'); ?>"
-var rssfeed = $.ajax({ url: "<?php echo $this->config->item('rss_url'); ?>", ifModified: true})
+var rssurl = "<?php echo htmlspecialchars( $this->config->item('rss_url') , REPLACE_FLAGS, CHARSET); ?>"
+var rssfeed = $.ajax({ url: "<?php echo htmlspecialchars( $this->config->item('rss_url') , REPLACE_FLAGS, CHARSET); ?>", ifModified: true})
 .done(function(data) {
     var $xml = $(data);
     $xml.find("entry").each(function() {

@@ -67,6 +67,40 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+    public function iana()
+    {
+        echo "<pre>\n";
+        $file = file('/usr/local/open-audit/other/imports/enterprise-numbers');
+        $oids = array();
+        for ($i=0; $i < count($file); $i++) { 
+            if (preg_match('/^\d./', $file[$i])) {
+                $oid = trim($file[$i]);
+                $manufacturer = $file[$i+1];
+                $oids[$oid] = $manufacturer;
+            }
+        }
+        print_r($oids);
+    }
+
+    public function oui()
+    {
+        echo "<pre>\n";
+        $file = file('/usr/local/open-audit/other/imports/oui.txt');
+        $ouis = array();
+        for ($i=0; $i < count($file); $i++) { 
+            if (strpos($file[$i], "   (hex)\t\t")) {
+                $oui = str_replace('-', ':',strtolower(trim(substr($file[$i], 0, 8))));
+                $manufacturer = trim(substr($file[$i], 17));
+                $ouis[$oui] = $manufacturer;
+            }
+        }
+        foreach ($ouis as $mac => $manufacturer) {
+            $sql = "INSERT IGNORE INTO `manufacturers_mac` VALUES (NULL, ?, ?, 'system', NOW())";
+            $data = array($mac, $manufacturer);
+            $query = @$this->db->query($sql, $data);
+        }
+    }
+     
     public function manufacturers_oid()
     {
         echo "<pre>\n";

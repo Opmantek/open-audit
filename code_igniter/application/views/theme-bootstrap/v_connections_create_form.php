@@ -34,8 +34,8 @@
 * @link      http://www.open-audit.org
  */
 ?>
-<form class="form-horizontal" id="form_update" method="post" action="<?php echo $this->response->links->self; ?>">
-    <input type="hidden" value="<?php echo $this->response->meta->access_token; ?>" id="data[access_token]" name="data[access_token]" />
+<form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
+    <input type="hidden" value="<?php echo htmlspecialchars($this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
         <?php include('include_read_panel_header.php'); ?>
 
@@ -98,9 +98,9 @@
 
                     <?php $attributes = array('provider', 'service_type', 'product_name', 'service_identifier', 'speed');
                     foreach ($attributes as $attribute) { ?>    <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]">
                         </div>
                     </div>
                 <?php
@@ -109,9 +109,9 @@
                 <div class="col-md-6">
                     <?php $attributes = array('system_id_a', 'system_id_b', 'line_number_a', 'line_number_b', 'ip_address_external_a', 'ip_address_external_b', 'ip_address_internal_a', 'ip_address_internal_b');
                     foreach ($attributes as $attribute) { ?>    <div class="form-group">
-                        <label for="data[attributes][<?php echo $attribute; ?>]" class="col-sm-3 control-label"><?php echo ucwords(str_replace('_', ' ', $attribute)); ?></label>
+                        <label for="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" class="col-sm-3 control-label"><?php echo ucwords(htmlspecialchars(str_replace('_', ' ', $attribute), REPLACE_FLAGS, CHARSET)); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="data[attributes][<?php echo $attribute; ?>]" name="data[attributes][<?php echo $attribute; ?>]">
+                            <input type="text" class="form-control" id="data[attributes][<?php echo htmlspecialchars( $attribute, REPLACE_FLAGS, CHARSET); ?>]" name="data[attributes][<?php echo htmlspecialchars($attribute, REPLACE_FLAGS, CHARSET); ?>]">
                         </div>
                     </div>
                 <?php

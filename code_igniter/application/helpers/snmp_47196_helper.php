@@ -1,4 +1,8 @@
 <?php
+if (!defined('BASEPATH')) {
+     exit('No direct script access allowed');
+}
+#
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
 #  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
@@ -24,8 +28,8 @@
 #
 # *****************************************************************************
 
-/**
-* @category  View
+/*
+* @category  Helper
 * @package   Open-AudIT
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
@@ -33,27 +37,14 @@
 * @version   2.2.6
 * @link      http://www.open-audit.org
  */
-?>
-<div class="panel panel-default">
-    <div class="panel-heading"><h3 class="panel-title"><?php echo __("Default Queries"); ?></h3></div>
-    <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th><?php echo __('Name'); ?></th>
-                    <th><?php echo __('Description'); ?></th>
-                    <th><?php echo __('SQL'); ?></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($this->response->data as $item) { ?>
-                <tr>
-                    <td><?php echo __(htmlspecialchars( $item->name), REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><?php echo __(htmlspecialchars( $item->description), REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo __(htmlspecialchars( $item->sql), REPLACE_FLAGS, CHARSET); ?></pre></td>
-                </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+
+# Vendor HP
+
+$get_oid_details = function ($ip, $credentials, $oid) {
+    $details = new stdClass();
+    if ($oid == '1.3.6.1.4.1.47196.4.1.1.1.2') {
+        $details->model = 'Aruba HPE-2930M';
+        $details->type = 'switch';
+    }
+    return($details);
+};

@@ -154,6 +154,14 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'ProCurve Wireless Edge Redundant xl';
         $details->type = 'switch';
     }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.11.174.3') {
+        $details->model = 'Aruba JL073A 3810M-24G-PoE+-1-slot';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.11.174.4') {
+        $details->model = 'Aruba JL074A 3810M-48G-PoE+-1-slot';
+        $details->type = 'switch';
+    }
     if ($oid == '1.3.6.1.4.1.11.2.3.7.11.18') {
         $details->model = 'ProCurve Switch 2512';
         $details->type = 'switch';
@@ -467,8 +475,20 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->type = 'switch';
     }
 
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.11.152') {
+        $details->model = 'J9726A 2920-24G';
+        $details->type = 'switch';
+    }
     if ($oid == '1.3.6.1.4.1.11.2.3.7.11.158') {
         $details->model = 'ProCurve Switch 1810-8G';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.11.160') {
+        $details->model = 'Aruba HPE-5406R';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.11.161') {
+        $details->model = 'Aruba HPE-5412R';
         $details->type = 'switch';
     }
 
@@ -498,6 +518,18 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     if ($oid == '1.3.6.1.4.1.11.2.3.7.8.2.5') {
         $details->model = 'AdvanceStack 10BT Switching Hub';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.8.5.2') {
+        $details->model = '3800 Switch Stack';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.8.5.6') {
+        $details->model = '5412Rzl2 VSF VC';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.11.2.3.7.8.5.7') {
+        $details->model = 'Aruba HPE-2930M';
         $details->type = 'switch';
     }
     if ($oid == '1.3.6.1.4.1.11.2.3.9.1') {

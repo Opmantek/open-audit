@@ -1631,6 +1631,7 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Hard Disk Info"
 fi
 
+# FIX ME - no bc on RH (even 7.5)
 old="no"
 if [[ "$system_os_name" == "CentOS release 4"* ]]; then
 	old="yes"
