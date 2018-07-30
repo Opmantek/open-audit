@@ -1635,7 +1635,7 @@ foreach ($list as $item) {
 }
 ?>
 
-
+        <?php if (!empty($data['server'])) { ?>
         <div id="server" class="section">
             <div class="panel panel-default">
 <?php
@@ -1699,6 +1699,7 @@ foreach ($list as $item) {
                 ?>
             </div>
         </div>
+    <?php } ?>
 
 
 
