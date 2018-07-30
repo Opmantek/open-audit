@@ -18503,6 +18503,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.22137') { $new->manufacturer = 'Ivosh'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.22154') { $new->manufacturer = 'Jotron Electronics'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.22360') { $new->manufacturer = 'Exprit'; }
+		if (substr($oid, 0, 17) == '1.3.6.1.4.1.22610') { $new->manufacturer = 'A10 Networks'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.22703') { $new->manufacturer = 'Ask IT\'s Done Ltd'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.23094') { $new->manufacturer = 'Kuehne + Nagel (AG&Co) KG'; }
 		if (substr($oid, 0, 17) == '1.3.6.1.4.1.23139') { $new->manufacturer = 'SEAC Software Engineering, Inc.'; }
