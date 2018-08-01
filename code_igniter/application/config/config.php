@@ -346,7 +346,8 @@ $config['rewrite_short_tags'] = false;
 */
 $config['proxy_ips'] = '';
 
-function __autoload($class)
+#function __autoload($class)
+function __spl_autoload_register($class)
 {
     if (strpos($class, 'CI_') !== 0) {
         @include_once(APPPATH . 'core/'. $class . EXT);
