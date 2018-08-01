@@ -70,7 +70,55 @@ $this->m_roles->update_permissions('reporter', 'clouds', 'r');
 $this->m_roles->update_permissions('user', 'clouds', 'r');
 
 # Summaries
-$sql = "UPDATE `summaries` SET `name` = 'Active Directory OUs' WHERE `name` = 'Active Directory OU\'s'";
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Device Classes' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Device Status' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Device Types' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Network', menu_display = 'y' WHERE name = 'DNS Domains' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Form Factors' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Manufacturers' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Operating System Families' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Server', menu_display = 'y' WHERE name = 'Server Types' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Software', menu_display = 'y' WHERE name = 'Services' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Software', menu_display = 'y' WHERE name = 'Software Keys' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Network', menu_display = 'y', name = 'Active Directory OUs' WHERE (name = 'Active Directory OU\'s' or name = 'Active Directory OUs') AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1, menu_category = 'Device', menu_display = 'y' WHERE name = 'Operating System Names' AND org_id = 0";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `summaries` SET org_id = 1 WHERE org_id = 0";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

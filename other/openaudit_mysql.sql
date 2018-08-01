@@ -2732,7 +2732,7 @@ CREATE TABLE `summaries` (
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2741,19 +2741,19 @@ CREATE TABLE `summaries` (
 
 LOCK TABLES `summaries` WRITE;
 /*!40000 ALTER TABLE `summaries` DISABLE KEYS */;
-INSERT INTO `summaries` VALUES (1,'Device Classes','Change','',0,'system','class','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (2,'Device Status','Change','',0,'system','status','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (3,'Device Types','Change','',0,'system','type','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (4,'DNS Domains','Change','',0,'system','dns_domain','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (5,'Form Factors','Change','',0,'system','form_factor','system.form_factor,system.class','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (6,'Manufacturers','Change','',0,'system','manufacturer','system.model','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (7,'Operating System Families','Change','',0,'system','os_family','','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (8,'Server Types','Change','',0,'server','type','server.name,server.full_name,server.version,server.status','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (9,'Services','Change','',0,'service','name','service.name,service.state','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (10,'Software','Change','',0,'software','name','software.name,software.version','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (11,'Software Keys','Change','',0,'software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (12,'Active Directory OUs','Change','',0,'windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00');
-INSERT INTO `summaries` VALUES (13,'Operating System Names','Change','',0,'system','os_name','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (1,'Device Classes',1,'Device','y','system','class','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (2,'Device Status',1,'Device','y','system','status','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (3,'Device Types',1,'Device','y','system','type','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (4,'DNS Domains',1,'Network','y','system','dns_domain','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (5,'Form Factors',1,'Device','y','system','form_factor','system.form_factor,system.class','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (6,'Manufacturers',1,'Device','y','system','manufacturer','system.model','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (7,'Operating System Families',1,'Device','y','system','os_family','','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (8,'Server Types',1,'Server','y','server','type','server.name,server.full_name,server.version,server.status','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (9,'Services',1,'Software','y','service','name','service.name,service.state','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (10,'Software',1,'Software','y','software','name','software.name,software.version','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (11,'Software Keys',1,'Software','y','software_key','name','software_key.name,software_key.string,software_key.rel,software_key.edition','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (12,'Active Directory OUs',1,'Network','y','windows','active_directory_ou','windows.active_directory_ou,windows.client_site_name','system','2000-01-01 00:00:00');
+INSERT INTO `summaries` VALUES (13,'Operating System Names',1,'Device','y','system','os_name','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `summaries` ENABLE KEYS */;
 UNLOCK TABLES;
 
