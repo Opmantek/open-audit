@@ -27431,6 +27431,14 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Cisco Midplane UMG 9820';
         $details->type = 'cisco module';
     }
+    if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1824') {
+        $details->model = 'Cisco Nexus N9K-C93108TC-EX';
+        $details->type = 'switch';
+    }
+    if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1843') {
+        $details->model = 'Cisco Nexus N9K-C93180LC-EX';
+        $details->type = 'switch';
+    }
 
     $details->os_version = '';
     $i = explode("$", my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.25.1.1.1.2.5"));
