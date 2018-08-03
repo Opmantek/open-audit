@@ -95,7 +95,11 @@ if (! function_exists('scp')) {
             define('NET_SSH2_LOGGING', 2);
         }
         $ssh = new Net_SFTP($ip);
-        $ssh->setTimeout(10);
+        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        } else {
+            $ssh->setTimeout(10);
+        }
         $key = new Crypt_RSA();
         if ($credentials->type == 'ssh_key') {
             $log->message = 'Using SSH Key to copy file.';
@@ -226,7 +230,11 @@ if (! function_exists('ssh_command')) {
         }
         if ($credentials->type == 'ssh_key') {
             $ssh = new Net_SSH2($ip);
-            $ssh->setTimeout(10);
+            if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+                $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+            } else {
+                $ssh->setTimeout(10);
+            }
             $key = new Crypt_RSA();
             if (!empty($credentials->credentials->password)) {
                 $key->setPassword($credentials->credentials->password);
@@ -244,7 +252,11 @@ if (! function_exists('ssh_command')) {
             }
         } else if ($credentials->type == 'ssh') {
             $ssh = new Net_SSH2($ip);
-            $ssh->setTimeout(10);
+            if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+                $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+            } else {
+                $ssh->setTimeout(10);
+            }
             $key = new Crypt_RSA();
             if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
                 #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
@@ -264,7 +276,11 @@ if (! function_exists('ssh_command')) {
             return false;
         }
 
-        $ssh->setTimeout(300);
+        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        } else {
+            $ssh->setTimeout(300);
+        }
 
         if ($sudo == 'n' or $sudo == '' or $credentials->credentials->username == 'root') {
             $result = $ssh->exec($command);
@@ -359,7 +375,11 @@ if (! function_exists('ssh_audit')) {
         foreach ($credentials as $credential) {
             if ($credential->type == 'ssh_key') {
                 $ssh = new Net_SSH2($ip);
-                $ssh->setTimeout(10);
+                if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+                    $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+                } else {
+                    $ssh->setTimeout(10);
+                }
                 $key = new Crypt_RSA();
                 if (!empty($credential->credentials->password)) {
                     $key->setPassword($credential->credentials->password);
@@ -380,7 +400,11 @@ if (! function_exists('ssh_audit')) {
                 }
             } else if ($credential->type == 'ssh') {
                 $ssh = new Net_SSH2($ip);
-                $ssh->setTimeout(10);
+                if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+                    $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+                } else {
+                    $ssh->setTimeout(10);
+                }
                 if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
                     $log->message = "Success, credentials named " . $credential->name . " used to log in to $ip.";
                     discovery_log($log);

@@ -34,6 +34,14 @@ $sql = "UPDATE `configuration` SET `description` = 'Should we match a device bas
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE name = 'discovery_ssh_timeout'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # Clouds
 $sql = "DROP TABLE IF EXISTS `clouds`";
 $this->db->query($sql);
