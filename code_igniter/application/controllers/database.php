@@ -149,6 +149,10 @@ class Database extends MY_Controller
         $this->data = $this->m_database->execute();
         $this->response->meta->action = 'read';
         $this->response->meta->format = 'screen';
+        if (!empty($this->response->meta->groupby)) {
+            $this->response->meta->format = 'json';
+            $this->response->special = $this->data;
+        }
         $this->response->errors = array();
         include 'include_read.php';
         #output($this->response);
