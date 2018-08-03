@@ -850,7 +850,7 @@ foreach ($list as $item) {
         <?php
         if (!empty($data[$item])) {
             foreach ($data[$item][0] as $key => $value) {
-                if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen') {
+                if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'system.id') {
                     $label = htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET);
                     if ($item == 'purchase') { ?>
                         <div class="form-group">
@@ -1425,7 +1425,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
                 <tr>
                     <?php
                     foreach ($data[$item][0] as $key => $value) {
-                        if ($key != 'system_id' and $key != 'ip_padded') {
+                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'system.id') {
                             if (is_int($value)) {
                                 echo "                    <th class=\"text-right\">" . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET)  . "</th>\n";
                             } else {
@@ -1441,7 +1441,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
                 foreach ($data[$item] as $row) {
                     echo '                <tr>';
                     foreach ($row as $key => $value) {
-                        if ($key != 'system_id' and $key != 'ip_padded') {
+                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'system.id') {
                             if (is_int($value)) {
                                 echo "                    <td class=\"text-right\">" . number_format($value) . "</td>\n";
                             } else if ($key == 'command' and !empty($value)) {
@@ -1482,7 +1482,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
                 <tr>
                     <?php
                     foreach ($data['ip'][0] as $key => $value) {
-                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'net_index' and $key != 'set_by') {
+                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'net_index' and $key != 'set_by' and $key != 'system.id') {
                             echo "                    <th>" . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET)  . "</th>\n";
                         }
                     }
@@ -1494,7 +1494,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
                 foreach ($data['ip'] as $row) {
                     echo '                <tr>';
                     foreach ($row as $key => $value) {
-                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'net_index' and $key != 'set_by') {
+                        if ($key != 'system_id' and $key != 'ip_padded' and $key != 'id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'net_index' and $key != 'set_by' and $key != 'system.id') {
                             echo "                    <td>" . htmlentities($value) . "</td>\n";
                         }
                     }
@@ -1539,7 +1539,7 @@ foreach ($list as $item) {
                                 }
                             } else {
                                 foreach ($data[$item][0] as $key => $value) {
-                                    if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded') {
+                                    if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
                                         # some special cases for cisco modules
                                         if ($item == 'module') {
                                             if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
@@ -1581,7 +1581,7 @@ foreach ($list as $item) {
                             foreach ($data[$item] as $row) {
                                 echo "                        <tr>\n";
                                 foreach ($row as $key => $value) {
-                                    if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded') {
+                                    if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
                                         # some special cases for cisco modules
                                         if ($item == 'module') {
                                             if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
@@ -1728,7 +1728,7 @@ if ($data['system']->type == 'computer') {
                         $count = 0;
                         echo '<div class="col-md-6">';
                         foreach ($item_row as $key => $value) {
-                            if ($key != 'id' and $key != 'server_id' and $key != 'parent_id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded') {
+                            if ($key != 'id' and $key != 'server_id' and $key != 'parent_id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip' and $key != 'ip_padded' and $key != 'system.id') {
                                 $count++;
                                 $show_key = htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET);
                                 if ($count == $row_attribute_count) {
