@@ -231,7 +231,7 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0020'] = new stdClass();
         $error_array['ERR-0020']->code = 'ERR-0020';
         $error_array['ERR-0020']->status = 'HTTP/1.1 401 Unauthorized';
-        $error_array['ERR-0020']->severity = 5;
+        $error_array['ERR-0020']->severity = 6;
         $error_array['ERR-0020']->title = "User not authorised, credentials required";
         $error_array['ERR-0020']->detail = 'When attempting to access a resource, credentials are required.';
 
