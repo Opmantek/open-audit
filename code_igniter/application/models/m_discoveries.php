@@ -138,7 +138,7 @@ class M_discoveries extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id`";
+        $sql = "SELECT * FROM discovery_log WHERE discovery_id = ? ORDER BY `id` LIMIT " . $this->config->config['database_show_row_limit'];
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
         return ($result);
