@@ -111,6 +111,7 @@ foreach ($xml->children() as $input) {
         $syslog->severity = 7;
         $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
         $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
+        $syslog->discovery_id = intval($input->discovery_id);
         discovery_log($syslog);
         $log->discovery_id = intval($input->discovery_id);
         $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
@@ -157,6 +158,7 @@ foreach ($xml->children() as $input) {
         $syslog->summary = 'Set discovery entry status to complete';
         $syslog->message = $this->db->last_query();
         stdlog($syslog);
+        $syslog->discovery_id = $log->discovery_id;
         discovery_log($syslog);
         if ($discovery->discard == 'y') {
             $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
