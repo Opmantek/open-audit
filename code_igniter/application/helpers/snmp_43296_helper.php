@@ -37,7 +37,7 @@
 * @link      http://www.open-audit.org
  */
 
-# Vendor Mimosa
+# Vendor Exablaze
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
