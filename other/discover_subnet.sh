@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   2.2.6
+# @version   2.2.7
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -52,7 +52,7 @@ system_hostname=$(hostname 2>/dev/null)
 timing="-T4"
 force_ping="n"
 consider_161_enough="n"
-version="2.2.6"
+version="2.2.7"
 
 # OSX - nmap not in _www user's path
 if [[ $(uname) == "Darwin" ]]; then

@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com>
 ' 
-' @version   2.2.6
+' @version   2.2.7
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -72,7 +72,7 @@ dim temp
 dim port
 dim program
 dim script_timer : script_timer = Timer
-dim version: version = "2.2.6"
+dim version: version = "2.2.7"
 
 dim hosts_scanned : hosts_scanned = 0
 dim host_timer : host_timer = 0

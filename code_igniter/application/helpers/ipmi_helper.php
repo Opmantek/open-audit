@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.6
+* @version   2.2.7
 * @link      http://www.open-audit.org
  */
 if (!defined('BASEPATH')) {
