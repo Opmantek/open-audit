@@ -27,7 +27,7 @@
 *
 **/
 
-$this->log_db('Upgrade database to 2.3.0 commenced');
+$this->log_db('Upgrade database to 2.2.7 commenced');
 
 # Configuration
 $sql = "UPDATE `configuration` SET `description` = 'Should we match a device based mac address even if its a known likely duplicate from VMware.' WHERE `name` = 'match_mac_vmware'";
@@ -135,10 +135,10 @@ $sql = "UPDATE `configuration` SET `value` = '20180810' WHERE `name` = 'internal
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `configuration` SET `value` = '2.3.0' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '2.2.7' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->log_db("Upgrade database to 2.3.0 completed");
+$this->log_db("Upgrade database to 2.2.7completed");
 $this->config->config['internal_version'] = '20180810';
-$this->config->config['display_version'] = '2.3.0';
+$this->config->config['display_version'] = '2.2.7';
