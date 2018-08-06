@@ -139,6 +139,6 @@ $sql = "UPDATE `configuration` SET `value` = '2.2.7' WHERE `name` = 'display_ver
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->log_db("Upgrade database to 2.2.7completed");
+$this->log_db("Upgrade database to 2.2.7 completed");
 $this->config->config['internal_version'] = '20180810';
 $this->config->config['display_version'] = '2.2.7';
