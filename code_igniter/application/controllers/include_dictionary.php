@@ -171,7 +171,11 @@ if ($table == 'clouds') {
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = $description;
     $dictionary->columns->credentials = 'Your access credentials, as per that clouds native API.';
+    $dictionary->columns->type = 'At the moment, only Amazon AWS is supported.';
+    $dictionary->columns->key = 'Your API key.';
+    $dictionary->columns->secret_key = 'The secret key used in conjunction with your API key.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id');
