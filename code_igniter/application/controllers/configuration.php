@@ -166,5 +166,5 @@ class Configuration extends MY_Controller
         return;
     }
 }
-// End of file roles.php
-// Location: ./controllers/roles.php
+// End of file configuration.php
+// Location: ./controllers/configuration.php

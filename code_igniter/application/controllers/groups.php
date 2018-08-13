@@ -226,5 +226,5 @@ class Groups extends MY_Controller
     }
 
 }
-// End of file locations.php
-// Location: ./controllers/locations.php
+// End of file groups.php
+// Location: ./controllers/groups.php

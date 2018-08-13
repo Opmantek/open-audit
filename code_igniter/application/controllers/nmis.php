@@ -471,5 +471,5 @@ class Nmis extends MY_Controller
         include 'include_create_form.php';
     }
 }
-// End of file name.php
-// Location: ./controllers/name.php
+// End of file nmis.php
+// Location: ./controllers/nmis.php

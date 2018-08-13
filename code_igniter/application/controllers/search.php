@@ -106,5 +106,5 @@ class Search extends MY_Controller
         include 'include_create_form.php';
     }
 }
-// End of file fields.php
-// Location: ./controllers/fields.php
+// End of file search.php
+// Location: ./controllers/search.php
