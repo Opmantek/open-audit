@@ -347,6 +347,27 @@ if (! function_exists('getErrors')) {
         $error_array['ERR-0036']->title = "Invalid user supplied.";
         $error_array['ERR-0036']->detail = 'A user was supplied int he request header that does not exist within Open-AudIT. Please specify a valid user.';
 
+        $error_array['ERR-0037'] = new stdClass();
+        $error_array['ERR-0037']->code = 'ERR-0037';
+        $error_array['ERR-0037']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0037']->severity = 4;
+        $error_array['ERR-0037']->title = "Directory does not exist and could not be created";
+        $error_array['ERR-0037']->detail = 'A required directory does not exist and could not be created.';
+
+        $error_array['ERR-0038'] = new stdClass();
+        $error_array['ERR-0038']->code = 'ERR-0038';
+        $error_array['ERR-0038']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0038']->severity = 4;
+        $error_array['ERR-0038']->title = "Permissions do not allow writing file.";
+        $error_array['ERR-0038']->detail = 'Attempting to write to a file has been denied because of filesystem permissions.';
+
+        $error_array['ERR-0039'] = new stdClass();
+        $error_array['ERR-0039']->code = 'ERR-0039';
+        $error_array['ERR-0039']->status = 'HTTP/1.1 500 Internal Server Error';
+        $error_array['ERR-0039']->severity = 4;
+        $error_array['ERR-0039']->title = "Permissions do not allow deleting file.";
+        $error_array['ERR-0039']->detail = 'Attempting to delete a file has been denied because of filesystem permissions.';
+
         foreach ($error_array as $error_each) {
             $temp = explode(' ', $error_each->status);
             $error_each->status_code = intval($temp[1]);
