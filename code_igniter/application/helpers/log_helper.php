@@ -75,16 +75,14 @@ if (! function_exists('log_error')) {
         if (empty($error->status)) {
             $error->status = '';
         }
-        // if the error is severe enough, set the error in the response object
-        #if (isset($error->severity) and $error->severity <= 3) {
-            error_reporting(E_ALL);
-            unset($error->file); # we don't care about where this was logged (into which file)
-            $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
-            if (!empty($CI->response)) {
-                $CI->response->errors[] = $error;
-                $CI->response->meta->header = $error->status;
-            }
-        #}
+
+        error_reporting(E_ALL);
+        unset($error->file); # we don't care about where this was logged (into which file)
+        $error->link = $CI->config->config['oa_web_folder'] . '/index.php/errors/' . $error->code;
+        if (!empty($CI->response)) {
+            $CI->response->errors[] = $error;
+            $CI->response->meta->header = $error->status;
+        }
     }
 
 }
