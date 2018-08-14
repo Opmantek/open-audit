@@ -476,6 +476,7 @@ class M_devices extends MY_Model
             $log->level = 5;
             $log->message = "No ID, nor list of IDs supplied to sub_resource_create.";
             stdlog($log);
+            log_error('ERR-0021', "m_devices::sub_resource_create", "No ID, nor list of IDs supplied to sub_resource_create.");
             return false;
         }
 
@@ -495,6 +496,7 @@ class M_devices extends MY_Model
                     $log->level = 5;
                     $log->message = "No credentials supplied to sub_resource_create.";
                     stdlog($log);
+                    log_error('ERR-0021', "m_devices::sub_resource_create", "No credentials supplied to sub_resource_create.");
                     return false;
                 }
 
@@ -506,6 +508,7 @@ class M_devices extends MY_Model
                     $log->level = 5;
                     $log->message = "No credential type supplied to sub_resource_create.";
                     stdlog($log);
+                    log_error('ERR-0021', "m_devices::sub_resource_create", "No credential type supplied to sub_resource_create.");
                     return false;
                 }
 
@@ -544,9 +547,10 @@ class M_devices extends MY_Model
         } else if ($sub_resource == 'attachment') {
             if (empty($_FILES['attachment'])) {
                 $log->severity = 5;
-                $log->summary = "No file provided to PHP for sub_resource_create.";
+                $log->summary = "No file provided for sub_resource_create.";
                 $log->status = 'error';
                 stdlog($log);
+                log_error('ERR-0024', "m_devices::sub_resource_create", "No image file provided for sub_resource_create.");
                 return false;
             }
             $target = BASEPATH."../application/attachments/".$CI->response->meta->id."_".basename($_FILES['attachment']['name']);
@@ -564,14 +568,16 @@ class M_devices extends MY_Model
                 $log->status = 'error';
                 $log->detail = error_get_last();
                 stdlog($log);
+                log_error('ERR-0038', "m_devices::sub_resource_create", "Cannot move the uploaded attachment to $target.");
                 return false;
             }
         } else if ($sub_resource == 'image') {
             if (empty($_FILES['attachment'])) {
                 $log->severity = 5;
-                $log->summary = "No image file provided to PHP for sub_resource_create.";
+                $log->summary = "No image file provided for sub_resource_create.";
                 $log->status = 'error';
                 stdlog($log);
+                log_error('ERR-0024', "m_devices::sub_resource_create", "No image file provided for sub_resource_create.");
                 return false;
             }
             $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
@@ -591,13 +597,14 @@ class M_devices extends MY_Model
                 $log->detail = 'The custom_images directory does not exist and cannot be created. Error: ' . error_get_last();
                 $log->status = 'error';
                 stdlog($log);
+                log_error('ERR-0037', "m_devices::sub_resource_create", "The custom_images directory does not exist and cannot be created.");
                 $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
                 $this->db->query($sql, array());
                 return false;
             }
             $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
             $filename = intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
-            if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
                 $sql = "UPDATE `image` SET `filename` = ? WHERE `id` = ?";
                 $data = array($filename, $dbid);
                 $this->db->query($sql, $data);
@@ -607,9 +614,10 @@ class M_devices extends MY_Model
                 $this->db->query($sql, array());
                 $log->severity = 5;
                 $log->summary = 'Unable to move uploaded file';
-                $log->detail = 'Cannot move the uploaded image file to $target. Error: ' . error_get_last();
+                $log->detail = "Cannot move the uploaded image file to $target. Error: " . error_get_last();
                 $log->status = 'error';
                 stdlog($log);
+                log_error('ERR-0038', "m_devices::sub_resource_create", "Cannot move the uploaded image file to $target.");
                 return false;
             }
             unset($dbid);
@@ -621,8 +629,9 @@ class M_devices extends MY_Model
             $this->db->query($sql, $data);
             return true;
         } else {
-            $log->summary = "sub_resource not equal to credential or attachment - exiting.";
+            $log->summary = "sub_resource not equal to attachment, credential or image - exiting.";
             stdlog($log);
+                log_error('ERR-0021', "m_devices::sub_resource_create", "sub_resource not equal to attachment, credential or image.");
             return false;
         }
     }
