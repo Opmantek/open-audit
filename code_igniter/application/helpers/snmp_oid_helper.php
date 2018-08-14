@@ -9716,7 +9716,7 @@ if (!function_exists('get_oid')) {
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9691') { $new->manufacturer = 'The Children\'s Hospital of Denver'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9692') { $new->manufacturer = 'Tool Object'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9693') { $new->manufacturer = 'UND School of Medicine and Health Sciences'; }
-		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9694') { $new->manufacturer = 'arbor networks'; }
+		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9694') { $new->manufacturer = 'Arbor Networks'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9695') { $new->manufacturer = 'Encotone Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9696') { $new->manufacturer = 'Uffizio India Software Consultants Pvt. Ltd.'; }
 		if (substr($oid, 0, 16) == '1.3.6.1.4.1.9697') { $new->manufacturer = 'Accelance'; }
