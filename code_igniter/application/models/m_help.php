@@ -315,13 +315,13 @@ class M_help extends MY_Model
         $result = $query->result();
         $data->database->timestamp = $result[0]->timestamp;
 
-        $data->webserver->document_root = $_SERVER['DOCUMENT_ROOT'];
-        $data->webserver->forwarded_proto = $_SERVER['HTTP_X_FORWARDED_PROTO'];
+        $data->webserver->document_root = @$_SERVER['DOCUMENT_ROOT'];
+        $data->webserver->forwarded_proto = @$_SERVER['HTTP_X_FORWARDED_PROTO'];
         $data->webserver->name = getenv("SERVER_SOFTWARE");
-        $data->webserver->port = $_SERVER['SERVER_PORT'];
-        $data->webserver->script_filename = $_SERVER['SCRIPT_FILENAME'];
-        $data->webserver->script_name = $_SERVER['SCRIPT_NAME'];
-        $data->webserver->server_name = $_SERVER['SERVER_NAME'];
+        $data->webserver->port = @$_SERVER['SERVER_PORT'];
+        $data->webserver->script_filename = @$_SERVER['SCRIPT_FILENAME'];
+        $data->webserver->script_name = @$_SERVER['SCRIPT_NAME'];
+        $data->webserver->server_name = @$_SERVER['SERVER_NAME'];
         $data->webserver->current_url = current_url();
 
 
@@ -541,6 +541,16 @@ class M_help extends MY_Model
                 $data->permissions->uploads = $output[1];
             } else {
                 $data->permissions->uploads = 'Error - missing directory';
+            }
+            unset($output);
+            unset($command_string);
+            # custom images - should be -rwxrwxrwx
+            $command_string = 'ls -l /usr/local/open-audit/www/open-audit/custom_images | cut -d" " -f1';
+            exec($command_string, $output, $return_var);
+            if (!empty($output[1])) {
+                $data->permissions->custom_images = $output[1];
+            } else {
+                $data->permissions->custom_images = 'Error - missing directory';
             }
             unset($output);
             unset($command_string);
