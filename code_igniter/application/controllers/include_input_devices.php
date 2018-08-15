@@ -254,6 +254,14 @@ if (!isset($details->type)) {
     $ids[] = discovery_log($log);
 }
 
+# Mac Model
+if (!empty($details->os_family) and $details->os_family == 'Apple OSX') {
+    $this->load->helper('mac_model');
+    $details->description = mac_model($details->serial);
+    $details->class = mac_class($details->model);
+    $details->form_factor = mac_form_factor($details->model);
+}
+
 # todo - finding device
 $log->message = "Running devices::match function.";
 $ids[] = discovery_log($log);

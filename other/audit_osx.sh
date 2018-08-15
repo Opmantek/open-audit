@@ -147,15 +147,6 @@ system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d'
 system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
 processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
 system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
-man_class=""
-if [[ "$system_model" == *"MacBook"* ]]; then
-    system_form_factor="laptop"
-    man_class="laptop"
-fi
-if [[ "$system_model" == *"Macmini"* ]]; then
-    system_form_factor="desktop"
-    man_class="desktop"
-fi
 xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
@@ -167,7 +158,7 @@ echo  "     <uuid>$system_uuid</uuid>" >> $xml_file
 echo  "     <hostname>$system_hostname</hostname>" >> $xml_file
 echo  "     <domain>$system_domain</domain>" >> $xml_file
 echo  "     <description></description>" >> $xml_file
-echo  "     <class>$man_class</class>" >> $xml_file
+echo  "     <class></class>" >> $xml_file
 echo  "     <type>computer</type>" >> $xml_file
 echo  "     <os_group>Apple</os_group>" >> $xml_file
 echo  "     <os_family>Apple OSX</os_family>" >> $xml_file
@@ -177,7 +168,7 @@ echo  "     <serial>$system_serial</serial>" >> $xml_file
 echo  "     <model>$system_model</model>" >> $xml_file
 echo  "     <manufacturer>Apple Inc</manufacturer>" >> $xml_file
 echo  "     <uptime>$system_uptime</uptime>" >> $xml_file
-echo  "     <form_factor>$system_form_factor</form_factor>" >> $xml_file
+echo  "     <form_factor></form_factor>" >> $xml_file
 echo  "     <os_bit>$system_pc_os_bit</os_bit>" >> $xml_file
 echo  "     <memory_count>$system_pc_memory</memory_count>" >> $xml_file
 echo  "     <processor_count>$processor_count</processor_count>" >> $xml_file
