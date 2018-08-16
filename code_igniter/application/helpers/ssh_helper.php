@@ -288,7 +288,7 @@ if (! function_exists('ssh_command')) {
             $which_sudo = $ssh->exec('which sudo');
             if (!empty($which_sudo)) {
                 $output = '';
-                $command = $which_sudo . ' ' . $command;
+                $command = 'sudo ' . $command;
                 $item_start = microtime(true);
                 $ssh->write($command . "\n");
                 $output = $ssh->read('assword');
