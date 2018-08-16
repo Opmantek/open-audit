@@ -41,7 +41,7 @@ if ($this->config->config['is_ssl'] === true) {
 $network_address = '';
 $network_address_array = array();
 if (!empty($this->config->config['default_network_address'])) {
-    $network_address = "<option data-id=\"default\" selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>\n";
+    $network_address = "<option data-id=\"default\" selected value='" . $proto . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "/open-audit/'>" . $proto . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "/open-audit/</option>\n";
     $network_address_array[] =  $network_address;
 }
 $address_array = explode(",", $this->config->config['ip']);
@@ -146,7 +146,7 @@ if ($nmap_warning != '') {
                                 <?php
                                 foreach ($network_address_array as $key => $value) {
                                     if ($value != '') {
-                                        echo htmlspecialchars( $value, REPLACE_FLAGS, CHARSET);
+                                        echo $value;
                                     }
                                 }
                                 ?>
