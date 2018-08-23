@@ -617,7 +617,19 @@ done
 if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
 	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
-	system_os_family=$(grep ID /etc/os-release | cut -d= -f2)
+	system_os_family=$(grep ^ID /etc/os-release | grep -v LIKE | cut -d= -f2)
+fi
+
+if [ "$system_os_family" == "debian" ]; then
+	system_os_family="Debian"
+fi
+
+if [ "$system_os_family" == "ubuntu" ]; then
+	system_os_family="Ubuntu"
+fi
+
+if [ "$system_os_family" == "centos" ]; then
+	system_os_family="CentOS"
 fi
 
 if [[ "$system_os_family" == *"suse"* ]] || [[ "$system_os_family" == *"SUSE"* ]] || [[ "$system_os_family" == *"SuSE"* ]] || [[ "$system_os_family" == *"SuSe"* ]]; then
