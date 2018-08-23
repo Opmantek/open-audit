@@ -67,9 +67,15 @@ $this->alter_table('discoveries', 'options', "ADD `options` text NOT NULL AFTER 
 
 # Locations
 $this->alter_table('locations', 'description', "ADD `description` text NOT NULL AFTER `org_id`", 'add');
+$this->alter_table('locations', 'external_ident', "ADD `external_ident` varchar(200) NOT NULL DEFAULT '' AFTER `picture`", 'add');
+$this->alter_table('locations', 'options', "ADD `options` text NOT NULL AFTER `external_ident`", 'add');
 
 # Network
 $this->alter_table('network', 'speed', "`speed` bigint(20) unsigned NOT NULL DEFAULT '0' AFTER `connection_status`");
+
+# Networks
+$this->alter_table('networks', 'external_ident', "ADD `external_ident` varchar(200) NOT NULL DEFAULT '' AFTER `description`", 'add');
+$this->alter_table('networks', 'options', "ADD `options` text NOT NULL AFTER `external_ident`", 'add');
 
 # Roles
 $this->load->model('m_roles');

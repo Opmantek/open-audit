@@ -1471,6 +1471,8 @@ CREATE TABLE `locations` (
   `tags` varchar(250) NOT NULL DEFAULT '',
   `phone` varchar(20) NOT NULL DEFAULT '',
   `picture` varchar(100) NOT NULL DEFAULT '',
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `options` text NOT NULL,
   `latitude` float(10,6) NOT NULL,
   `longitude` float(10,6) NOT NULL,
   `geo` varchar(200) NOT NULL DEFAULT '',
@@ -1834,6 +1836,8 @@ CREATE TABLE `networks` (
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
   `type` enum('Personal Area Network','Home Area Network','Local Area Network','Wireless Local Area Network','Campus Area Network','Metropolitan Area Network','Wide Area Network','Storage-Area Network','System-Area Network','Passive Optical Local Area Network','Enterprise Private Network','Virtual Private Network') NOT NULL DEFAULT 'Local Area Network',
   `description` text NOT NULL,
+  `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
