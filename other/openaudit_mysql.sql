@@ -506,6 +506,7 @@ CREATE TABLE `clouds` (
   `description` text NOT NULL,
   `type` enum('amazon','microsoft','google','digitalocean','') NOT NULL DEFAULT '',
   `credentials` text NOT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'created',
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
