@@ -466,9 +466,22 @@ class M_devices_components extends MY_Model
                     $this->m_networks->upsert($network);
                 }
             }
-            if ($details->type == 'computer' and !empty($details->os_group) and $details->os_group == 'VMware') {
+            if ($details->type == 'computer' and 
+                !empty($details->os_group) and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
+                $sql = "DELETE FROM `ip` WHERE `ip`.`system_id` = ?";
+                $sql = $this->clean_sql($sql);
+                $data = array($details->id);
+                $query = $this->db->query($sql, $data);
+                # set the below so we don't generate alerts for this
+                $create_alerts = 'n';
+            }
+            if ($details->type == 'computer' and 
+                !empty($details->manufacturer) and $details->manufacturer == 'Xen' and 
+                !empty($details->model) and $details->model == 'HVM domU') {
+                # TODO - fix the below somewhow ?!??
+                # the issue is that AWS provides no IPv6 information via the API
                 $sql = "DELETE FROM `ip` WHERE `ip`.`system_id` = ?";
                 $sql = $this->clean_sql($sql);
                 $data = array($details->id);
