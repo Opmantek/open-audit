@@ -498,7 +498,7 @@ if ($table == 'locations') {
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id');
-    $dictionary->attributes->update = array('name','org_id','type','room','suite','level','address','suburb','city','district','region','area','state','postcode','country','tags','phone','picture','latitude','longitude','geo');
+    $dictionary->attributes->update = array('name','org_id','type','description','room','suite','level','address','suburb','city','district','region','area','state','postcode','country','tags','phone','picture','external_ident','options','latitude','longitude','geo');
 }
 
 if ($table == 'maps') {
@@ -527,7 +527,7 @@ if ($table == 'networks') {
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','network');
-    $dictionary->attributes->update = array('name','org_id','description','network','type');
+    $dictionary->attributes->update = array('name','org_id','description','network','type','external_ident','options');
 }
 
 if ($table == 'orgs') {
