@@ -105,6 +105,7 @@ if (!empty($_POST['data'])) {
 //     fclose($myfile);
 }
 
+# NOTE - $input may also be set by $POSTing to /devices the attribute upload_input.
 if (empty($input)) {
     log_error('ERR-0021');
     print_r($this->response->errors);
@@ -194,6 +195,14 @@ if (!empty($json->network->item) and count($json->network->item) > 0) {
         }
     }
 }
+if (!empty($json->ip->item) and count($json->ip->item) > 0) {
+    foreach ($json->ip->item as $ip) {
+        if (!empty($ip->mac)) {
+            $json->system->mac_addresses[] = $ip->mac;
+        }
+    }
+}
+array_unique($json->system->mac_addresses);
 
 if (empty($details->last_seen)) {
     $details->last_seen = $this->config->config['timestamp'];
