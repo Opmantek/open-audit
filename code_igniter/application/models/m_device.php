@@ -276,7 +276,7 @@ class M_device extends MY_Model
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (is_array($row) and count($row) > 0) {
+            if (count($row) > 0) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $log_message[] = 'HIT on fqdn: ' . $details->fqdn . ' (System ID ' . $details->id . ')';
@@ -435,31 +435,29 @@ class M_device extends MY_Model
 
         if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_addresses)) {
             # check all MAC addresses - this caters for an actual audit script result
-            foreach ($details->mac_addresses as $mac_address) {
-                foreach ($mac_address as $mac) {
-                    if (!empty($mac) and (string)$mac != '00:00:00:00:00:00') {
-                        # check the ip table
-                        if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
-                            $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' excluding VMware MACs';
-                            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
-                        } else {
-                            $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' including VMware MACs';
-                            $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
+            foreach ($details->mac_addresses as $mac) {
+                if (!empty($mac) and (string)$mac != '00:00:00:00:00:00') {
+                    # check the ip table
+                    if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                        $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' excluding VMware MACs';
+                        $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+                    } else {
+                        $log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' including VMware MACs';
+                        $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
+                    }
+                    $sql = $this->clean_sql($sql);
+                    $data = array("$mac");
+                    $query = $this->db->query($sql, $data);
+                    $row = $query->row();
+                    if (count($row) > 0) {
+                        $details->id = $row->id;
+                        $log->system_id = $details->id;
+                        $log_message[] = 'HIT on Mac Address (addresses): ' . $mac . ' (System ID ' . $details->id . ')';
+                        foreach ($log_message as $message) {
+                            $log->message = $message;
+                            discovery_log($log);
                         }
-                        $sql = $this->clean_sql($sql);
-                        $data = array("$mac");
-                        $query = $this->db->query($sql, $data);
-                        $row = $query->row();
-                        if (count($row) > 0) {
-                            $details->id = $row->id;
-                            $log->system_id = $details->id;
-                            $log_message[] = 'HIT on Mac Address (addresses): ' . $mac . ' (System ID ' . $details->id . ')';
-                            foreach ($log_message as $message) {
-                                $log->message = $message;
-                                discovery_log($log);
-                            }
-                            return $details->id;
-                        }
+                        return $details->id;
                     }
                 }
             }
@@ -657,6 +655,9 @@ class M_device extends MY_Model
         }
         $details->first_timestamp = $details->timestamp;
 
+        if (empty($details->hostname)) {
+            $details->hostname = '';
+        }
         if (!empty($details->hostname)) {
             $details->name = $details->hostname;
         }
