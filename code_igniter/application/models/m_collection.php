@@ -1014,11 +1014,11 @@ class M_collection extends MY_Model
                 break;
 
             case "locations":
-                return(' name org_id type room suite level address suburb city district region area state postcode country tags phone picture latitude longitude geo ');
+                return(' name org_id type description room suite level address suburb city district region area state postcode country tags phone picture external_ident options latitude longitude geo ');
                 break;
 
             case "networks":
-                return(' name org_id description type network ');
+                return(' name org_id description type network external_ident options ');
                 break;
 
             case "orgs":
