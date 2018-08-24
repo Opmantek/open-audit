@@ -302,6 +302,17 @@ fi
 # STARTING
 start_time=$(timer)
 system_timestamp=`date +'%F %T'`
+system_hostname=""
+system_hostname=`hostname -s 2>/dev/null`
+if [ "$system_hostname" = "" ]; then
+	system_hostname=`hostname 2>/dev/null`
+	system_domain=""
+else
+	system_domain=`hostname -d 2>/dev/null`
+fi
+xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
+xml_file_full_path=`pwd`"/$xml_file"
+
 if [ $debugging -gt 0 ]; then 
 	echo "----------------------------"
 	echo "Open-AudIT ESXi audit script"
@@ -313,6 +324,7 @@ if [ $debugging -gt 0 ]; then
 	echo "Debugging Level     $debugging"
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
+	echo "File                $xml_file_full_path"
 	echo "----------------------------"
 fi
 
@@ -326,20 +338,8 @@ smbiosDump=$(smbiosDump)
 storageDeviceList=$(esxcli storage core device list)
 
 
-
-
-
-
 system_uuid=""
 system_uuid=$(trim `echo "$hostsummaryHardware" | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\"//g'`)
-system_hostname=""
-system_hostname=`hostname -s 2>/dev/null`
-if [ "$system_hostname" = "" ]; then
-	system_hostname=`hostname 2>/dev/null`
-	system_domain=""
-else
-	system_domain=`hostname -d 2>/dev/null`
-fi 
 system_description=""
 system_type="computer"
 man_class="hypervisor"
@@ -372,7 +372,7 @@ system_pc_threads=$(trim `echo "$hostsummaryHardware" | grep numCpuThreads | cut
 system_pc_cores=$(trim `echo "$hostsummaryHardware" | grep numCpuCores | cut -d= -f2 | sed 's/,//g'`)
 system_pc_processors=$(trim `echo "$hostsummaryHardware" | grep numCpuPkgs | cut -d= -f2 | sed 's/,//g'`)
 system_pc_date_os_installation=`esxcli software profile get | grep '^   Creation Time:' | sed 's/Creation Time://g' | sed 's/^ *//g' | sed 's/T/ /g'`
-xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
+
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file

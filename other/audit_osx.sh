@@ -63,21 +63,6 @@ for arg in "$@"; do
     eval "$parameter"=\""$value\""
 done
 
-if [  "$debugging" -gt 0 ]; then
-    echo "----------------------------"
-    echo "Open-AudIT OSX audit script"
-    echo "Version: $version"
-    echo "----------------------------"
-    echo "My PID is           $$"
-    echo "Audit Start Time    $system_timestamp"
-    echo "Create File         $create_file"
-    echo "Submit Online       $submit_online"
-    echo "Debugging Level     $debugging"
-    echo "Discovery ID        $discovery_id"
-    echo "Org Id              $org_id"
-    echo "----------------------------"
-fi
-
 if [ "$help" = "y" ]; then
     echo ""
     echo "---------------------------"
@@ -120,13 +105,32 @@ if [ "$help" = "y" ]; then
     exit
 fi
 
+system_hostname=$(hostname | cut -d. -f1)
+xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
+xml_file_full_path=`pwd`"/$xml_file"
+
+if [  "$debugging" -gt 0 ]; then
+    echo "----------------------------"
+    echo "Open-AudIT OSX audit script"
+    echo "Version: $version"
+    echo "----------------------------"
+    echo "My PID is           $$"
+    echo "Audit Start Time    $system_timestamp"
+    echo "Create File         $create_file"
+    echo "Submit Online       $submit_online"
+    echo "Debugging Level     $debugging"
+    echo "Discovery ID        $discovery_id"
+    echo "Org Id              $org_id"
+    echo "File                $xml_file_full_path"
+    echo "----------------------------"
+fi
 
 if [ "$debugging" -gt "0" ]; then
     echo "System Info"
 fi
 system_timestamp=$(date +'%F %T')
 system_uuid=$(system_profiler SPHardwareDataType | grep "Hardware UUID:" | cut -d":" -f2 | sed 's/^ *//g')
-system_hostname=$(hostname | cut -d. -f1)
+
 if [[ $system_hostname == *"."* ]]; then
     system_domain=$(hostname | cut -d. -f2-)
 else
@@ -147,7 +151,7 @@ system_pc_memory=$(system_profiler SPHardwareDataType | grep 'Memory:' | cut -d'
 system_pc_memory=$(expr "$system_pc_memory" \* 1024 \* 1024)
 processor_count=$(system_profiler SPHardwareDataType | grep 'Number of Processors' | cut -d: -f2)
 system_pc_date_os_installation=$(date -r $(stat -f "%B" /private/var/db/.AppleSetupDone) "+%Y-%m-%d %H:%M:%S")
-xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
+
 echo  "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo  "<system>" >> $xml_file
 echo  " <sys>" >> $xml_file

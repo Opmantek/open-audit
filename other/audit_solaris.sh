@@ -318,6 +318,14 @@ system_timestamp=`date +'%F %T'`
 # Set the Process ID
 nPID="$$"
 
+system_hostname=""
+system_hostname=`uname -n 2>/dev/null`
+if [ "$system_hostname" = "" ]; then
+        system_hostname=`hostname 2>/dev/null`
+fi
+xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
+xml_file_full_path=`pwd`"/$xml_file"
+
 if [ $debugging -gt 0 ]; then
     echo "----------------------------"
     echo "Open-AudIT Solaris audit script"
@@ -330,6 +338,7 @@ if [ $debugging -gt 0 ]; then
     echo "Debugging Level     $debugging"
     echo "Discovery ID        $discovery_id"
     echo "Org Id              $org_id"
+    echo "File                $xml_file_full_path"
     echo "----------------------------"
 fi
 
@@ -345,12 +354,6 @@ fi
 system_uuid=""
 system_uuid=`smbios -t SMB_TYPE_SYSTEM | grep UUID | awk '{print $2}'`
 
-# Get the hostname & DNS domain
-system_hostname=""
-system_hostname=`uname -n 2>/dev/null`
-if [ "$system_hostname" = "" ]; then
-        system_hostname=`hostname 2>/dev/null`    
-fi
 system_domain=""
 system_domain=`domainname 2>/dev/null`
 if [ "$system_domain" = "" ]; then
@@ -421,8 +424,6 @@ system_pc_date_os_installation=`grep "**** START ****" /var/sadm/system/logs/ins
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
 #'''''''''''''''''''''''''''''''''
-
-xml_file="$system_hostname"-`date +%Y%m%d%H%M%S`.xml
 
 echo "data=<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file

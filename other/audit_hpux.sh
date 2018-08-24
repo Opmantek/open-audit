@@ -145,6 +145,8 @@ if [ -z "$machinfo" ]; then
 fi
 system_timestamp=$(date +"%Y-%m-%d %T" 2>/dev/null)
 system_hostname=$(hostname 2>/dev/null)
+xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
+xml_file_full_path=`pwd`"/$xml_file"
 
 if [[ "$debugging" -gt 0 ]]; then
 	echo "----------------------------"
@@ -159,6 +161,7 @@ if [[ "$debugging" -gt 0 ]]; then
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
 	echo "URL                 $url"
+	echo "File                $xml_file_full_path"
 	echo "----------------------------"
 fi
 
@@ -171,7 +174,6 @@ system_model=$(model)
 #system_uptime=$(uptime 2>/dev/null)
 memory_count=$(echo "$machinfo" | grep -i "Memory:" |  awk '{ print $2 }')
 processor_count=$(echo "$print_manifest" | grep "Processors:" | awk '{ print $2 }')
-xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 os_bit=$(getconf KERNEL_BITS)
 form_factor=$(echo "model" | grep -i virtual)
 if [ -n "form_factor" ]; then

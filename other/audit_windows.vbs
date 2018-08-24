@@ -6697,8 +6697,9 @@ if create_file = "y" then
     if debugging > "0" then wscript.echo "Creating output File" end if
     ' Write the results to a file
     file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
-    OutputFile = system_hostname & "-" & file_timestamp & ".txt"
+    OutputFile = system_hostname & "-" & file_timestamp & ".xml"
     if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
+    if debugging > "0" then wscript.echo "File                " & WScript.ScriptFullName & "\" & OutputFile end if
     Err.clear
     on error resume next
     result.position = 0
@@ -6707,11 +6708,11 @@ if create_file = "y" then
     error_description = Err.Description
     on error goto 0
     if (error_returned <> 0) then
-    if debugging > "0" then wscript.echo "Problem writing to file." end if
-    if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
-    if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+        if debugging > "0" then wscript.echo "Problem writing to file." end if
+        if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+        if debugging > "0" then wscript.echo "Error Description:" & error_description end if
     else
-    if debugging > "0" then wscript.echo "Output file created." end if
+        if debugging > "0" then wscript.echo "Output file created." end if
     end if
 end if
 

@@ -187,6 +187,8 @@ function timeout {
 
 system_timestamp=$(eval "date +\"%Y-%m-%d %T\" $safety")
 system_hostname=$(eval "uname -n $safety")
+xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
+xml_file_full_path=`pwd`"/$xml_file"
 
 if [[ "$debugging" -gt 0 ]]; then
 	echo "----------------------------"
@@ -200,6 +202,7 @@ if [[ "$debugging" -gt 0 ]]; then
 	echo "Debugging Level     $debugging"
 	echo "Discovery ID        $discovery_id"
 	echo "Org Id              $org_id"
+	echo "File                $xml_file_full_path"
 	echo "----------------------------"
 fi
 
@@ -236,7 +239,6 @@ i_month=$(eval "ls -l /etc/3270.keys | sed -e 's/^[ \t]*//' | sed 's/  */\ /g' |
 i_year=$(eval "ls -l /etc/3270.keys | sed -e 's/^[ \t]*//' | sed 's/  */\ /g' | cut -d\" \" -f8 $safety")
 system_pc_date_os_installation="$i_day $i_month $i_year"
 
-xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
 cat >"$xml_file" <<EndOfFile
 <?xml version="1.0" encoding="UTF-8"?> 
 <system>

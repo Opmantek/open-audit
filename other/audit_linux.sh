@@ -397,6 +397,9 @@ fi
 # Set the TimeSamp
 system_timestamp=$(date +'%F %T')
 script_name=$(basename $0)
+system_hostname=$(hostname | cut -d. -f1)
+xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
+xml_file_full_path=`pwd`"/$xml_file"
 
 if [ "$debugging" -gt 0 ]; then
 	echo "----------------------------"
@@ -412,6 +415,7 @@ if [ "$debugging" -gt 0 ]; then
 	echo "Org Id              $org_id"
 	echo "Script Name         $script_name"
 	echo "URL                 $url"
+	echo "File                $xml_file_full_path"
 	echo "----------------------------"
 fi
 
@@ -513,7 +517,6 @@ if [ -z "$system_uuid" ] && [ -f "/sys/devices/virtual/dmi/id/product_uuid" ]; t
 fi
 
 # Get the hostname & DNS domain
-system_hostname=$(hostname | cut -d. -f1)
 system_domain=$(hostname -d | grep -v \(none\))
 system_fqdn=$(hostname -f | grep -v \(none\))
 
@@ -831,9 +834,6 @@ fi
 #'''''''''''''''''''''''''''''''''
 #' Write to the audit file       '
 #'''''''''''''''''''''''''''''''''
-
-xml_file="$system_hostname"-$(date +%Y%m%d%H%M%S).xml
-
 {
 echo "data=<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 echo "<system>"
