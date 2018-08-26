@@ -1489,7 +1489,7 @@ CREATE TABLE `locations` (
 
 LOCK TABLES `locations` WRITE;
 /*!40000 ALTER TABLE `locations` DISABLE KEYS */;
-INSERT INTO `locations` VALUES (1,'Default Location',1,'Our default location','Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','',-28.017260,153.425705,'','','2000-01-01 00:00:00');
+INSERT INTO `locations` VALUES (1,'Default Location',1,'Our default location','Office','','','','','','Gold Coast','','','','Queensland','','Australia','','','','','',-28.017260,153.425705,'','','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `locations` ENABLE KEYS */;
 UNLOCK TABLES;
 
