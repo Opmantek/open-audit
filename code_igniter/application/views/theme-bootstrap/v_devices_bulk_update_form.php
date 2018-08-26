@@ -33,7 +33,7 @@
 * @version   2.2.7
 * @link      http://www.open-audit.org
  */
-$fields = explode(' ', 'asset_number attached_system_id class cluster_name cluster_type comments contact_name description dns_domain dns_hostname domain environment form_factor fqdn function hostname ip lease_expiry_date locations location_latitude location_level location_longitude location_rack location_rack_position location_rack_size location_room location_suite manufacturer model name nmis_export nmis_group nmis_name nmis_role oae_manage orgs os_bit os_family os_group os_installation_date os_name os_version owner patch_panel patch_panel_port printer_color purchase_amount purchase_cost_center purchase_date purchase_invoice purchase_order_number purchase_service_contract_number purchase_vendor serial serial_imei serial_sim service_network service_number service_plan service_provider service_type status switch_port switch_system_id types unlock_pin uuid vm_group vm_server_name wall_port warranty_duration warranty_expires warranty_type');
+$fields = explode(' ', 'asset_number attached_system_id class cluster_name cluster_type comments contact_name description dns_domain dns_hostname domain environment form_factor fqdn function hostname ip lease_expiry_date locations location_latitude location_level location_longitude location_rack location_rack_position location_rack_size location_room location_suite manufacturer model name nmis_manage nmis_group nmis_name nmis_role oae_manage orgs os_bit os_family os_group os_installation_date os_name os_version owner patch_panel patch_panel_port printer_color purchase_amount purchase_cost_center purchase_date purchase_invoice purchase_order_number purchase_service_contract_number purchase_vendor serial serial_imei serial_sim service_network service_number service_plan service_provider service_type status switch_port switch_system_id types unlock_pin uuid vm_group vm_server_name wall_port warranty_duration warranty_expires warranty_type');
 $field_count = intval(count($fields) / 2) + 1;
 # class   nmis_export oae_manage
 #if ( ! empty($this->response->included)) {
@@ -96,10 +96,10 @@ foreach ($this->response->included as $item) {
 $special['types'] .= '</select><span class="input-group-btn"><button id="edit_type" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="type"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
-$special['nmis_export'] = '<div class="form-group"><label for="nmis_export" class="col-sm-4 control-label">NMIS Export</label><div class="col-sm-8 input-group"><select id="nmis_export" class="form-control" disabled><option value="" label=" "> </option>';
-$special['nmis_export'] .= "<option value='y'>" . __('Yes') . "</option>";
-$special['nmis_export'] .= "<option value='n'>" . __('No') . "</option>";
-$special['nmis_export'] .= '</select><span class="input-group-btn"><button id="edit_nmis_export" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_export"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
+$special['nmis_manage'] = '<div class="form-group"><label for="nmis_manage" class="col-sm-4 control-label">NMIS Manage</label><div class="col-sm-8 input-group"><select id="nmis_manage" class="form-control" disabled><option value="" label=" "> </option>';
+$special['nmis_manage'] .= "<option value='y'>" . __('Yes') . "</option>";
+$special['nmis_manage'] .= "<option value='n'>" . __('No') . "</option>";
+$special['nmis_manage'] .= '</select><span class="input-group-btn"><button id="edit_nmis_manage" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="nmis_manage"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button></span></div></div>';
 
 
 $special['oae_manage'] = '<div class="form-group"><label for="oae_manage" class="col-sm-4 control-label">Manage in Open-AudIT Enterprise</label><div class="col-sm-8 input-group"><select id="oae_manage" class="form-control" disabled><option value="" label=" "> </option>';
