@@ -59,7 +59,7 @@ if (strpos($refine_link, '?') === false) {
                         <th><?php echo __('Notes')?></th>
                         <th><?php echo __('Business Service')?></th>
                         <th class="text-center">
-                            <button type="button" class="btn btn-primary btn-xs nmis_export_button" id="nmis_export_button"><?php echo __('Export'); ?></button>&nbsp;
+                            <button type="button" class="btn btn-primary btn-xs nmis_manage_button" id="nmis_manage_button"><?php echo __('Export'); ?></button>&nbsp;
                             <input type="checkbox" name="select_all" id="select_all" onclick="select_all_click();"/>
                         </th>
                     </tr>

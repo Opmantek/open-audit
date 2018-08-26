@@ -47,7 +47,7 @@ $(document).ready(function () {
 
 /* Send to nmis export */
 $(document).ready(function () {
-    $(document).on('click', '.nmis_export_button', function (e) {
+    $(document).on('click', '.nmis_manage_button', function (e) {
         var ids = "";
         $("input:checked").each(function () {
             if ($(this).attr("value")) {
