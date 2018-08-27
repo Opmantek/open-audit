@@ -48,9 +48,13 @@ if (! function_exists('scp')) {
      *
      * @param     ip        The target device's ip address
      *
-     * @param     crdentials  The credentials used to connect
+     * @param     credentials  The credentials used to connect
      *
-     * @param     command   The command to be run using SSH
+     * @param     source   The source file
+     *
+     * @param     destination   The destination file
+     *
+     * @param     log   The log object
      *
      * @return    false || $return array containing the output and status flag
      */
@@ -167,6 +171,145 @@ if (! function_exists('scp')) {
         discovery_log($log);
         unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
         return($status);
+    }
+}
+
+
+if (! function_exists('scp_get')) {
+    /**
+     * The SSH credentials test.
+     *
+     * @access    public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param     ip        The target device's ip address
+     *
+     * @param     credentials  The credentials used to connect
+     *
+     * @param     source   The source file
+     *
+     * @param     destination   The destination file
+     *
+     * @param     log   The log object
+     *
+     * @return    false || $return array containing the output and status flag
+     */
+    function scp_get($ip = '', $credentials = '', $source = '', $destination = false, $log)
+    {
+
+        $log->severity = 7;
+        $log->file = 'ssh_helper';
+        $log->function = 'scp';
+        $log->command = '';
+        $log->command_output = '';
+        $item_start = microtime(true);
+        if (empty($ip)) {
+            $log->message = 'No IP supplied to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'No valid IP supplied to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (!is_object($credentials)) {
+            $log->message = 'No credentials supplied to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (php_uname('s') != 'Windows NT') {
+            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
+        } else {
+            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
+        }
+        require_once 'Crypt/RSA.php';
+        require_once 'Net/SFTP.php';
+        if (!defined('NET_SSH2_LOGGING')) {
+            define('NET_SSH2_LOGGING', 2);
+        }
+        $ssh = new Net_SFTP($ip);
+        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        } else {
+            $ssh->setTimeout(10);
+        }
+        $key = new Crypt_RSA();
+        if ($credentials->type == 'ssh_key') {
+            $log->message = 'Using SSH Key to copy file.';
+            discovery_log($log);
+            if (!empty($credentials->credentials->password)) {
+                $key->setPassword($credentials->credentials->password);
+            }
+            $key->loadKey($credentials->credentials->ssh_key);
+            if ($ssh->login($credentials->credentials->username, $key)) {
+                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
+                #discovery_log($log);
+                $username = $credentials->credentials->username;
+                $password = @$credentials->credentials->password;
+            } else {
+                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                #$log->command =  $ssh->getLog();
+                discovery_log($log);
+            }
+        } else if ($credentials->type == 'ssh') {
+            $log->message = 'Using SSH to copy file.';
+            discovery_log($log);
+
+            $username = $credentials->credentials->username;
+            $password = $credentials->credentials->password;
+            $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
+            try {
+                $ssh->login($credentials->credentials->username, $credentials->credentials->password);
+            } catch (Exception $e) {
+                $log->message = "Failure, credentials named " . $username . " not used to log in to $ip.";
+                $log->severity = 3;
+                discovery_log($log);
+                return false;
+            }
+            discovery_log($log);
+        } else {
+            $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+
+        $status = true;
+        $log->command = 'sftp ' . $source . ' to ' . $destination;
+        $log->command_status = '';
+        $log->command_output = '';
+        $log->message = 'Attempt to copy file to ' . $ip;
+        discovery_log($log);
+        try {
+            $output = $ssh->get($source, $destination);
+            $log->command_output = $output;
+        } catch (Exception $e) {
+            $log->command = $ssh->getLog();
+            $log->command_output = $output;
+            $log->command_status = 'fail';
+            discovery_log($log);
+            $output = false;
+            return false;
+        }
+        $log->message = 'Copy file from ' . $ip;
+        $log->command_status = 'success';
+        $ssh->disconnect();
+        unset($ssh);
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        discovery_log($log);
+        unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
+        return($output);
     }
 }
 
