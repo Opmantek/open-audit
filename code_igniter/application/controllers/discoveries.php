@@ -230,6 +230,17 @@ class Discoveries extends MY_Controller
     */
     public function create_form()
     {
+        $this->load->model('m_help');
+        $this->m_help->support();
+        $os = $this->response->data[0]->os->name;
+        if ((stripos($os, 'redhat') !== false or stripos($os, 'centos') !== false) and stripos($os, '6') !== false) {
+            # we have a RH/Centos 6 machine. Insert an attribute for showing the Samba warning
+            $this->response->meta->warning = 'y';
+        } else {
+            $this->response->meta->warning = 'n';
+        }
+        unset($this->response->data);
+        $this->response->data = array();
         $temp = @$this->input->get('single');
         if (!empty($temp)) {
             # this is the form for a single device discovery

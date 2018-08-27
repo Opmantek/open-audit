@@ -52,6 +52,18 @@ foreach ($address_array as $key => $value) {
     }
 }
 ?>
+
+<?php if ($this->response->{'meta'}->{'warning'} == 'y') { ?>
+<div class="container-fluid">
+    <div class="alert alert-danger alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>WARNING</strong> - Redhat and Centos 6 servers require the Samba4 libraries to be installed.
+        Please see <a href="https://community.opmantek.com/display/OA/Auditing+Windows+machines+from+Linux+using+SMB2">this wiki page</a> for more information.<br />
+        We very much recommend upgrading to Centos / RedHat 7.<br />
+    </div>
+</div>
+<?php } ?>
+
 <form class="form-horizontal" id="form_update" method="post" action="<?php echo htmlspecialchars( $this->response->links->self , REPLACE_FLAGS, CHARSET); ?>">
     <input type="hidden" value="<?php echo htmlspecialchars( $this->response->meta->access_token, REPLACE_FLAGS, CHARSET); ?>" id="data[access_token]" name="data[access_token]" />
     <div class="panel panel-default">
