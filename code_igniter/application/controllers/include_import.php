@@ -38,7 +38,8 @@ $this->response->meta->flash = new stdClass();
 $this->response->meta->flash->status = '';
 $this->response->meta->flash->message = '';
 
-$csv = @array_map('str_getcsv', file($_FILES['file_import']['tmp_name']));
+ini_set("auto_detect_line_endings", true);
+$csv = @array_map('str_getcsv', file($_FILES['file_import']['tmp_name'], FILE_IGNORE_NEW_LINES));
 if (!$csv) {
     log_error('ERR-0011');
     if ($this->response->meta->format === 'json') {
