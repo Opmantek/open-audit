@@ -4,12 +4,12 @@
         NewsFeed
     </div>
     <div class="panel-body">
-        <ul class="fade" name="newsfeed" id="newsfeed" style="list-style-type: none; opacity: 1;"><li>&nbsp;&nbsp;&nbsp;<img src="../images/oae_sml.png" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul>
+        <ul class="fade" id="newsfeed" style="list-style-type: none; opacity: 1;"><li>&nbsp;&nbsp;&nbsp;<img src="../images/oae_sml.png" alt="" />&nbsp;&nbsp;Open-AudIT Community: from the <a target="_blank" href="https://community.opmantek.com/display/OA/Home">Open-AudIT wiki</a>.</li></ul>
     </div>
 </div>
 
 
-<script type="text/javascript">
+<script>
     (function (e) {
         e.fn.inewsticker = function (t) {
             var n = {
