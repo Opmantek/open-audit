@@ -79,8 +79,7 @@
                     <div class="form-group">
                         <label for="data[attributes][type]" class="col-sm-3 control-label"><?php echo __('Type'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <select class="form-control" id="data[attributes][type]" name="data[attributes][type]">
-                            </select>
+                             <input type="text" class="form-control" id="data[attributes][type]" name="data[attributes][type]">
                         </div>
                     </div>
 
