@@ -43,7 +43,7 @@ $special = array();
 
 $special['class'] = '<div class="form-group"><label for="class" class="col-sm-4 control-label">Class</label><div class="col-sm-8 input-group"><select id="class" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
-    if ($item->type == 'attributes' and $item->attributes->type == 'device_class') {
+    if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'class') {
         $special['class'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
@@ -52,7 +52,7 @@ $special['class'] .= '</select><span class="input-group-btn"><button id="edit_cl
 
 $special['environment'] = '<div class="form-group"><label for="environment" class="col-sm-4 control-label">Environment</label><div class="col-sm-8 input-group"><select id="environment" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
-    if ($item->type == 'attributes' and $item->attributes->type == 'device_environment') {
+    if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'environment') {
         $special['environment'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
@@ -77,7 +77,7 @@ $special['orgs'] .= '</select><span class="input-group-btn"><button id="edit_org
 
 $special['status'] = '<div class="form-group"><label for="status" class="col-sm-4 control-label">Status</label><div class="col-sm-8 input-group"><select id="status" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
-    if ($item->type == 'attributes' and $item->attributes->type == 'device_status') {
+    if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'status') {
         $special['status'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }
@@ -86,7 +86,7 @@ $special['status'] .= '</select><span class="input-group-btn"><button id="edit_s
 
 $special['types'] = '<div class="form-group"><label for="type" class="col-sm-4 control-label">Type</label><div class="col-sm-8 input-group"><select id="type" class="form-control" disabled><option value="" label=" "> </option>';
 foreach ($this->response->included as $item) {
-    if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
+    if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'type') {
         $special['types'] .= "<option value='" . htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . "</option>";
     }
 }

@@ -398,14 +398,14 @@ if (empty($data['mount_point'])) {
                                 <select id="type" class="form-control" disabled><?php
                                 echo "\n";
                                 foreach ($data['attributes'] as $item) {
-                                    if ($item->type == 'device_type') {
+                                    if ($item->resource == 'devices' and $item->type == 'type') {
                                         if ($item->value == $data['system']->type) {
                                             $selected = " selected";
                                         } else {
                                             $selected = "";
                                         }
                                         if ($item->value != '') {
-                                            echo "                                <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">".__("$item->name")."</option>\n";
+                                            echo "                                <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">" . htmlspecialchars(__($item->name), REPLACE_FLAGS, CHARSET) . "</option>\n";
                                         }
                                     }
                                 }
@@ -429,7 +429,7 @@ if (empty($data['mount_point'])) {
                                 <select id="class" class="form-control" disabled><?php
                                 echo "\n";
                                 foreach ($data['attributes'] as $item) {
-                                    if ($item->type == 'device_class') {
+                                    if ($item->resource == 'devices' and $item->type == 'class') {
                                         if ($item->value == $data['system']->class) {
                                             $selected = " selected";
                                         } else {
@@ -438,7 +438,7 @@ if (empty($data['mount_point'])) {
                                         if (empty($item->name)) {
                                             $item->name = '';
                                         }
-                                        echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">". htmlspecialchars(__($item->name))."</option>\n";
+                                        echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">" . htmlspecialchars(__($item->name), REPLACE_FLAGS, CHARSET) . "</option>\n";
                                     }
                                 }
                                 ?>
@@ -474,14 +474,14 @@ if (empty($data['mount_point'])) {
                                 <select id="environment" class="form-control" disabled><?php
                                 echo "\n";
                                 foreach ($data['attributes'] as $item) {
-                                    if ($item->type == 'device_environment') {
+                                    if ($item->resource == 'devices' and $item->type == 'environment') {
                                         if ($item->value == $data['system']->environment) {
                                             $selected = " selected";
                                         } else {
                                             $selected = "";
                                         }
                                         if ($item->value != '') {
-                                            echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">".__("$item->name")."</option>\n";
+                                            echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">" . htmlspecialchars(__($item->name), REPLACE_FLAGS, CHARSET) . "</option>\n";
                                         }
                                     }
                                 }
@@ -501,14 +501,14 @@ if (empty($data['mount_point'])) {
                                 <select id="status" class="form-control" disabled><?php
                                 echo "\n";
                                 foreach ($data['attributes'] as $item) {
-                                    if ($item->type == 'device_status') {
+                                    if ($item->resource == 'devices' and $item->type == 'status') {
                                         if ($item->value == $data['system']->status) {
                                             $selected = " selected";
                                         } else {
                                             $selected = "";
                                         }
                                         if ($item->value != '') {
-                                            echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">".__("$item->name")."</option>";
+                                            echo "                                    <option value=\"" . htmlspecialchars($item->value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">" . htmlspecialchars(__($item->name), REPLACE_FLAGS, CHARSET) . "</option>";
                                         }
                                     }
                                 }
