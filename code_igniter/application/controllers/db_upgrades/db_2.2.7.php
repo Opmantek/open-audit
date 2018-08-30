@@ -29,6 +29,23 @@
 
 $this->log_db('Upgrade database to 2.2.7 commenced');
 
+# attributes
+$sql = "UPDATE `attributes` SET `type` = 'class' WHERE `type` = 'device_class'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET `type` = 'environment' WHERE `type` = 'device_environment'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET `type` = 'status' WHERE `type` = 'device_status'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET `type` = 'type' WHERE `type` = 'device_type'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # Configuration
 $sql = "UPDATE `configuration` SET `description` = 'Should we match a device based mac address even if its a known likely duplicate from VMware.' WHERE `name` = 'match_mac_vmware'";
 $this->db->query($sql);
