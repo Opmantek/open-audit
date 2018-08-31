@@ -43,16 +43,16 @@
                     <th><?php echo __('Name'); ?></th>
                     <th><?php echo __('Table'); ?></th>
                     <th><?php echo __('Column'); ?></th>
-                    <th><?php echo __('Extra Columns'); ?></th>
+                    <th><?php echo __('SQL'); ?></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($this->response->data as $item) { ?>
                 <tr>
-                    <td><?php echo __($item->name); ?></td>
-                    <td><?php echo __($item->table); ?></td>
-                    <td><?php echo __($item->column); ?></td>
-                    <td><?php echo __($item->extra); ?></td>
+                    <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars($item->table, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars($item->column, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->sql, REPLACE_FLAGS, CHARSET); ?></pre></td>
                 </tr>
                 <?php } ?>
             </tbody>

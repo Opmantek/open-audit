@@ -48,9 +48,9 @@
             <tbody>
                 <?php foreach ($this->response->data as $item) { ?>
                 <tr>
-                    <td><?php echo __(htmlspecialchars( $item->name), REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><?php echo __(htmlspecialchars( $item->description), REPLACE_FLAGS, CHARSET); ?></td>
-                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo __(htmlspecialchars( $item->sql), REPLACE_FLAGS, CHARSET); ?></pre></td>
+                    <td><?php echo htmlspecialchars($item->name, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><?php echo htmlspecialchars($item->description, REPLACE_FLAGS, CHARSET); ?></td>
+                    <td><pre style="word-wrap: break-word; white-space: pre-wrap;"><?php echo htmlspecialchars($item->sql, REPLACE_FLAGS, CHARSET); ?></pre></td>
                 </tr>
                 <?php } ?>
             </tbody>
