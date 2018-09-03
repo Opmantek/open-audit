@@ -187,7 +187,7 @@ class M_discoveries extends MY_Model
 
         // reset our device counter
         $limit = intval($CI->response->meta->limit);
-        $sql = "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', `last_run` = NOW(), `limit` = ? WHERE id = ?";
+        $sql = "UPDATE `discoveries` SET `status` = 'starting', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
         $data = array(intval($limit), intval($id));
         $this->run_sql($sql, $data);
 
