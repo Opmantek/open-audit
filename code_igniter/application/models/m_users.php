@@ -115,7 +115,7 @@ class M_users extends MY_Model
         }
 
         do {
-            $sql = "SELECT a.id AS id FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";
+            $sql = "/* M_users::get_parent_orgs */ SELECT a.id AS id FROM orgs a, orgs b WHERE b.id = ? AND a.id = b.parent_id";
             $query = $this->db->query($sql, array($org_id));
             $result = $query->result();
             if (!empty($result[0]->id)) {
