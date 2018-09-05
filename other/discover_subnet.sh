@@ -184,17 +184,16 @@ function timer ()
 script_start=$(timer)
 db_log "Starting discovery for $subnet_range" "" "start"
 
-nmap_full_version=""
-nmap_major_version=""
-nmap_path=$(which nmap 2>/dev/null)
-if [[ "$nmap_path" == *"nmap"* ]]; then
-	nmap_full_version=$(nmap -V | grep -i version | cut -d" " -f3)
-	nmap_major_version=$(echo "$nmap_full_version" | cut -d. -f1)
-	db_log "Discovery for $subnet_range using Nmap version $nmap_full_version at $nmap_path" "" "" "7"
-else
+nmap_full_version=$(nmap -V 2>/dev/null | grep -i version | cut -d" " -f3)
+nmap_major_version=$(echo "$nmap_full_version" | cut -d. -f1)
+nmap_path=$(type nmap 2>/dev/null | cut-d" " -f3)
+if [ -z "$nmap_full_version" ]; then
 	db_log "Nmap binary not on path, aborting." "" "finish" "5"
 	exit 1
+else
+	db_log "Discovery for $subnet_range using Nmap version $nmap_full_version at $nmap_path" "" "" "7"
 fi
+
 
 if [ "$debugging" -gt 0 ]; then
 	echo "----------------------------"
@@ -222,13 +221,13 @@ fi
 # -sP == ping scan
 # -sn == ping scan only
 # -v  == verbose
-hosts_in_subnet=$("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-db_log "Scanning $hosts_in_subnet IP addresses" "" "" "" "" "" "$nmap_path -n -sL $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
+hosts_in_subnet=$(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
+db_log "Scanning $hosts_in_subnet IP addresses" "" "" "" "" "" "nmap -n -sL $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
 result_file=""
 result=""
 hosts_scanned=0
 
-for host in $("$nmap_path" -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
+for host in $(nmap -n -sL "$subnet_range" 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5); do
 
 	let "hosts_scanned = hosts_scanned + 1"
 	start=$(timer)
