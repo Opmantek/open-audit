@@ -7850,6 +7850,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Cisco Chassis Cat 6006';
         $details->type = 'cisco module';
     }
+    if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1410') {
+        $details->model = 'Cisco Nexus 5672UP';
+        $details->type = 'switch';
+    }
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.142') {
         $details->model = 'Cisco Chassis Cat 6009';
         $details->type = 'cisco module';
