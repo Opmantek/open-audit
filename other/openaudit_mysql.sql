@@ -675,6 +675,8 @@ INSERT INTO `configuration` VALUES (60,'access_token_enable','y','bool','y','sys
 INSERT INTO `configuration` VALUES (61,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
 INSERT INTO `configuration` VALUES (62,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
 INSERT INTO `configuration` VALUES (63,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
+INSERT INTO `configuration` VALUES (64,'discoveries_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
+INSERT INTO `configuration` VALUES (65,'audits_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent audits we should process.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -848,6 +850,7 @@ CREATE TABLE `discoveries` (
   `discovered` varchar(20) NOT NULL DEFAULT '',
   `last_log` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `duration` time NOT NULL DEFAULT '00:00:00',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2283,6 +2286,31 @@ INSERT INTO `queries` VALUES (NULL,1,'Settings','Change','y','Any changes in the
 INSERT INTO `queries` VALUES (NULL,1,'Software','Change','y','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'AD Controllers','Server','y','Active Directory Domain Controllers','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = \'y\') WHERE @filter AND windows.domain_role LIKE \'%Domain Controller\' AND system.status = \'production\'','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `queue`
+--
+
+DROP TABLE IF EXISTS `queue`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `queue` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(20) NOT NULL DEFAULT '',
+  `details` text NOT NULL,
+  `date_added` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `queue`
+--
+
+LOCK TABLES `queue` WRITE;
+/*!40000 ALTER TABLE `queue` DISABLE KEYS */;
+/*!40000 ALTER TABLE `queue` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
