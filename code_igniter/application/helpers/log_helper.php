@@ -381,8 +381,12 @@ if (! function_exists('stdlog')) {
             $log['collection'] = $CI->response->meta->collection;
         }
 
-        if (!empty($CI->response->meta->action)) {
+        if (empty($log_details->action) and !empty($CI->response->meta->action)) {
             $log['action'] = $CI->response->meta->action;
+        }
+
+        if (!empty($log_details->action)) {
+            $log['action'] = $log_details->action;
         }
 
         if (!empty($log_details->function)) {
