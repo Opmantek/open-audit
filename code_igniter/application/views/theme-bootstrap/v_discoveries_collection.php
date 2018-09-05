@@ -111,8 +111,8 @@ if ($nmap_warning != '') {
                     <?php refine('discoveries.type',$item->attributes->type); ?>
                     <?php refine('discoveries.description',$item->attributes->description); ?>
                     <?php refine('discoveries.last_run',$item->attributes->last_run); ?>
-                    <td class="text-center"><?php $item->attributes->status?></td>
-                    <td class="text-center"><?php $item->attributes->discovered?></td>
+                    <?php refine('discoveries.status',$item->attributes->status); ?>
+                    <td class="text-center"><?php echo $item->attributes->discovered ?></td>
                     <?php if ($this->m_users->get_user_permission('', 'discoveries', 'd')) { ?>
                     <td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="<?php echo intval($item->id); ?>" data-name="<?php echo htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET); ?>" aria-label="Left Align" ><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>
                     <?php } ?>
