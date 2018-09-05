@@ -437,7 +437,7 @@ foreach ($xml->children() as $input) {
             }
         }
     }
-    if ($ssh_details->manufacturer = 'Ubiquiti Networks Inc.' and empty($device->type)) {
+    if ($ssh_details->manufacturer == 'Ubiquiti Networks Inc.' and empty($device->type)) {
         $device->type = 'router';
     }
 
