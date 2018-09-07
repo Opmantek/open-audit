@@ -53,79 +53,128 @@ if ($queue == 'discoveries') {
     ob_flush();
     flush();
 
-    do {
-        $log->status = '';
-        $log->summary = '';
-        $log->detail = '';
-        $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE count(*) AS `count` FROM `discoveries` WHERE `status` = 'running'";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        $running_count = intval($result[0]->count);
-        if ($running_count < $this->config->config['discoveries_limit']) {
-            $log->status = 'Processing Queue';
-            $log->summary = 'Processing - discovery processes are available.';
-            $log->detail = 'The number of running discoveries (' . $running_count . ') is less than the config item (' . $this->config->config['discoveries_limit'] . ').';
-            stdlog($log);
-            $sql = '/* input::queue */ ' . "LOCK TABLES queue WRITE";
-            $query = $this->db->query($sql);
-            $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'discoveries' ORDER BY `id` LIMIT 1";
+/*
+
+PID + running = terminate
+PID + no running = wait 30s, check again and overwrite PID and proceed
+No PID + running = start
+No PID + no running = start
+*/
+
+
+    $sql = '/* input::queue */ ' . "LOCK TABLES discoveries WRITE, configuration WRITE";
+    $query = $this->db->query($sql);
+    $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE count(*) AS `count` FROM `discoveries` WHERE `status` = 'running'";
+    $query = $this->db->query($sql);
+    $result = $query->result();
+    $running_count = intval($result[0]->count);
+    $start = false;
+    if (!empty($this->config->config['discovery_pid']) and !empty($running_count)) {
+        $start = false;
+    }
+    if (!empty($this->config->config['discovery_pid']) and empty($running_count)) {
+        $start = true;
+    }
+    if (empty($this->config->config['discovery_pid']) and !empty($running_count)) {
+        $start = true;
+    }
+    if (empty($this->config->config['discovery_pid']) and empty($running_count)) {
+        $start = true;
+    }
+    if ($start) {
+        $sql = 'UPDATE `configuration` SET `value` = ? WHERE `name` = "discovery_pid"';
+        $data = array(intval(getmypid()));
+        $query = $this->db->query($sql, $data);
+    }
+    $sql = '/* input::queue */ ' . "UNLOCK TABLES";
+    $query = $this->db->query($sql);
+
+    if ($start) {
+        do {
+            $log->status = '';
+            $log->summary = '';
+            $log->detail = '';
+            $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE count(*) AS `count` FROM `discoveries` WHERE `status` = 'running'";
             $query = $this->db->query($sql);
             $result = $query->result();
-            if (!empty($result[0])) {
-                $execute = true;
-                $discovery = json_decode($result[0]->details);
-                // $log->status = 'Selecting';
-                // $log->summary = 'Selecting - discovery #' . $discovery->id;
-                // $log->detail = 'Selecting and deleting discovery #' . $discovery->id . ' from queue.';
-                // stdlog($log);
-                $sql = '/* input::queue */ ' . "DELETE FROM `queue` WHERE `id` = ?";
-                $data = array($result[0]->id);
-                $query = $this->db->query($sql, $data);
-                $sql = '/* input::queue */ ' . "UNLOCK TABLES";
-                $query = $this->db->query($sql);
-                $log->status = 'Executing';
-                $log->summary = 'Executing - discovery #' . $discovery->id;
-                $log->detail = 'Discovery #' . $discovery->id . ' has been removed from the queue and will now be executed.';
+            $running_count = intval($result[0]->count);
+            $count = 0;
+            $start = false;
+            if (!empty($running_count) and !empty($this->config->config['discovery_pid'])) {
+                $start = true;
+            }
+
+            if ($running_count < $this->config->config['discoveries_limit']) {
+                $log->status = 'Processing Queue';
+                $log->summary = 'Processing - discovery processes are available.';
+                $log->detail = 'The number of running discoveries (' . $running_count . ') is less than the config item (' . $this->config->config['discoveries_limit'] . ').';
                 stdlog($log);
-                $sql = '/* input::queue */ ' . "UPDATE `discoveries` SET `status` = 'running', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', pid = ? WHERE id = ?";
-                $data = array(intval(getmypid()), intval($discovery->id));
-                $query = $this->db->query($sql, $data);
-                $this->m_discoveries->run($discovery->id);
+                $sql = '/* input::queue */ ' . "LOCK TABLES queue WRITE";
+                $query = $this->db->query($sql);
+                $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'discoveries' ORDER BY `id` LIMIT 1";
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if (!empty($result[0])) {
+                    $count = 0;
+                    $execute = true;
+                    $discovery = json_decode($result[0]->details);
+                    $sql = '/* input::queue */ ' . "DELETE FROM `queue` WHERE `id` = ?";
+                    $data = array($result[0]->id);
+                    $query = $this->db->query($sql, $data);
+                    $sql = '/* input::queue */ ' . "UNLOCK TABLES";
+                    $query = $this->db->query($sql);
+                    $log->status = 'Executing';
+                    $log->summary = 'Executing - discovery #' . $discovery->id;
+                    $log->detail = 'Discovery #' . $discovery->id . ' has been removed from the queue and will now be executed.';
+                    stdlog($log);
+                    $sql = '/* input::queue */ ' . "UPDATE `discoveries` SET `status` = 'running', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', pid = ? WHERE id = ?";
+                    $data = array(intval(getmypid()), intval($discovery->id));
+                    $query = $this->db->query($sql, $data);
+                    $this->m_discoveries->run($discovery->id);
+                } else {
+                    $count++;
+                    if ($count > 1) {
+                        $sql = '/* input::queue */ ' . "UNLOCK TABLES";
+                        $query = $this->db->query($sql);
+                        $log->status = 'Stopping';
+                        $log->summary = 'Stopping - no jobs in queue to process.';
+                        $log->detail = 'There are no discoveries left in the queue to run.';
+                        stdlog($log);
+                        $execute = false;
+                        $discovery = false;
+                    } else {
+                        # first time through. Sleep for X seconds before checking again
+                        $execute = true;
+                        $sleep = 30;
+                        sleep($sleep);
+                    }
+                }
             } else {
-                $sql = '/* input::queue */ ' . "UNLOCK TABLES";
-                $query = $this->db->query($sql);
-                $log->status = 'Stopping';
-                $log->summary = 'Stopping - no jobs in queue to process.';
-                $log->detail = 'There are no discoveries left in the queue to run.';
-                stdlog($log);
-                $execute = false;
                 $discovery = false;
+                # check if any of the running processes match MY pid
+                $sql = "SELECT count(*) AS `count` FROM `discoveries` WHERE `status` = 'running' AND `pid` != ?";
+                $data = array(intval(getmypid()));
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+                # If there are runniing discoveries AND none have my PID, I am useless, so stop running this thread.
+                if (!empty($result[0]->count)) {
+                    # Terminate
+                    $execute = false;
+                    $log->status = 'Terminating';
+                    $log->summary = 'Terminating - discovery processes are running.';
+                    $log->detail = 'There are other discovery processes running the discovery queue.';
+                    stdlog($log);
+                } else {
+                    $sleep = 30;
+                    $log->status = 'Sleeping';
+                    $log->summary = 'Sleeping - discovery processes to complete.';
+                    $log->detail = 'The number of running discoveries (' . $running_count . ') is not less than the config item (' . $this->config->config['discoveries_limit'] . '). Sleeping for ' . $sleep . ' seconds.';
+                    stdlog($log);
+                    sleep($sleep);
+                }
             }
-        } else {
-            $discovery = false;
-            # check if any of the running processes match MY pid
-            $sql = "SELECT count(*) AS `count` FROM `discoveries` WHERE `status` = 'running' AND `pid` != ?";
-            $data = array(intval(getmypid()));
-            $query = $this->db->query($sql, $data);
-            $result = $query->result();
-            # If there are runniing discoveries AND none have my PID, I am useless, so stop running this thread.
-            if (!empty($result[0]->count)) {
-                # Terminate
-                $execute = false;
-                $log->status = 'Terminating';
-                $log->summary = 'Terminating - discovery processes are running.';
-                $log->detail = 'There are other discovery processes running the discovery queue.';
-                stdlog($log);
-            } else {
-                $sleep = 30;
-                $log->status = 'Sleeping';
-                $log->summary = 'Sleeping - discovery processes to complete.';
-                $log->detail = 'The number of running discoveries (' . $running_count . ') is not less than the config item (' . $this->config->config['discoveries_limit'] . '). Sleeping for ' . $sleep . ' seconds.';
-                stdlog($log);
-                sleep($sleep);
-            }
-        }
-    } while ($execute);
+        } while ($execute);
+    }
 }
 
 # Reset the autoInc if there is nothing in the table
