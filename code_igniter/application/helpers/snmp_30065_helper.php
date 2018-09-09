@@ -186,6 +186,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->type = 'switch';
         $details->model = 'DCS-7250Q-X64SSD';
     }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7280.3735.48.2878.6') {
+        $details->type = 'switch';
+        $details->model = 'DCS-7280-SR48C6';
+    }
     if ($oid == '1.3.6.1.4.1.30065.1.3011.7304') {
         $details->type = 'switch';
         $details->model = 'DCS-7304';
