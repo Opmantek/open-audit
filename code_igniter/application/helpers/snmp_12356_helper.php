@@ -42,6 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
+    $details->type = 'firewall';
     if ($oid == '1.3.6.1.4.1.12356.101.1.302') {
         $details->model = 'Fortigate 30B';
         $details->type = 'firewall';
@@ -92,6 +93,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     if ($oid == '1.3.6.1.4.1.12356.101.1.613') {
         $details->model = 'Fortigate 60B';
+        $details->type = 'firewall';
+    }
+    if ($oid == '1.3.6.1.4.1.12356.101.1.624') {
+        $details->model = 'Fortinet 60D';
         $details->type = 'firewall';
     }
     if ($oid == '1.3.6.1.4.1.12356.101.1.1000') {
@@ -150,6 +155,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Fortigate 800F';
         $details->type = 'firewall';
     }
+    if ($oid == '1.3.6.1.4.1.12356.102.1.8002') {
+        $details->model = 'Analyzer 800B';
+        $details->type = 'firewall';
+    }
     if ($oid == '1.3.6.1.4.1.12356.101.1.10000') {
         $details->model = 'Fortigate 1000';
         $details->type = 'firewall';
@@ -190,8 +199,20 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Fortigate 3810A';
         $details->type = 'firewall';
     }
+    if ($oid == '1.3.6.1.4.1.12356.101.1.39500') {
+        $details->model = '3950B';
+        $details->type = 'firewall';
+    }
     if ($oid == '1.3.6.1.4.1.12356.101.1.40000') {
         $details->model = 'Fortigate 4000';
+        $details->type = 'firewall';
+    }
+    if ($oid == '1.3.6.1.4.1.12356.103.3.40002') {
+        $details->model = 'Analyser 4000B';
+        $details->type = 'firewall';
+    }
+    if ($oid == '1.3.6.1.4.1.12356.103.1.40005') {
+        $details->model = 'Manager-4000E';
         $details->type = 'firewall';
     }
     if ($oid == '1.3.6.1.4.1.12356.101.1.50000') {
@@ -239,15 +260,15 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->type = 'firewall';
     }
     if ($oid == '1.3.6.1.4.1.12356.101.1.15000') {
-        $details->model = 'FortiGate-1500D';
+        $details->model = 'FortiGate 1500D';
         $details->type = 'firewall';
     }
     if ($oid == '1.3.6.1.4.1.12356.101.1.1004') {
-        $details->model = 'FortiGate-100D';
+        $details->model = 'FortiGate 100D';
         $details->type = 'firewall';
     }
     if ($oid == '1.3.6.1.4.1.12356.101.1.2005') {
-        $details->model = 'FortiGate-200D';
+        $details->model = 'FortiGate 200D';
         $details->type = 'firewall';
     }
 
@@ -255,5 +276,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($details->serial == '') {
         $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12356.100.1.1.1.0");
     }
+
+    $details->os_version = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.12356.101.4.1.1.0");
+    $details->os_family = 'Linux';
+    $details->os_group = 'FortiOS';
+    $details->os_name = 'FortiOS ' . $details->os_version;
+
     return($details);
 };
