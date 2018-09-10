@@ -1941,7 +1941,7 @@ function insert_additional_fields($section = '', $additional_fields = array(), $
                     } else {
                         $selected = "";
                     }
-                    echo "                          <option value=\"" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">".__("$value")."</option>\n";
+                    echo "                          <option value=\"" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "\"" . $selected . ">". htmlspecialchars(__("$value"), REPLACE_FLAGS, CHARSET)."</option>\n";
                 }
                 echo '                        </select>';
                 if ($edit) {
