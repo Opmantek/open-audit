@@ -46,6 +46,15 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'audits_limit','20','number','y
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_pid'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
 # Discoveries
 $this->alter_table('discoveries', 'status', "ADD `status` varchar(20) NOT NULL DEFAULT '' AFTER `complete`", 'add');
 
