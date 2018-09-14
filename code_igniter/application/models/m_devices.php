@@ -320,7 +320,7 @@ class M_devices extends MY_Model
             $sql = "/* m_devices::read_sub_resource */ " . "SELECT `id`, `timestamp`, `file`, `function`, `message`, `command_status`, `command_output`, `command_time_to_execute`, `command` FROM discovery_log WHERE system_id = ? " . $limit;
             $data = array($id);
         } elseif ($sub_resource == 'edit_log') {
-            $sql = "/* m_devices::read_sub_resource */ " . "SELECT edit_log.*, users.full_name FROM edit_log JOIN users ON edit_log.user_id = users.id WHERE system_id = ? " . $limit;
+            $sql = "/* m_devices::read_sub_resource */ " . "SELECT edit_log.*, users.full_name FROM edit_log LEFT JOIN users ON edit_log.user_id = users.id WHERE system_id = ? " . $limit;
             $data = array($id);
         #} elseif ($sub_resource == 'network') {
             #$sql = "SELECT ip.ip,  network.*, floor((system.sysuptime - network.iflastchange) /60/60/24/100) as days_since_changed, IF((network.ifadminstatus = 'down') OR (network.ifadminstatus = 'up' AND (network.ip_enabled != 'up' AND network.ip_enabled != 'dormant') AND (((system.sysuptime - network.iflastchange) > 60480000) OR (system.sysuptime < network.iflastchange))), 'available', 'used') AS available  FROM network LEFT JOIN system ON (network.system_id = system.id AND network.current = 'y') LEFT JOIN ip ON (ip.system_id = network.system_id and ip.net_index = network.net_index and ip.current = 'y') WHERE system.id = ? ";
