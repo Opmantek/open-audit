@@ -2310,7 +2310,8 @@ if hash systemctl 2>/dev/null; then
 fi
 
 if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; then
-	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	#INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf 2>/dev/null)
 	# upstart services
 	if [ -n `which initctl 2>/dev/null` ]; then
 		if [ "$debugging" -gt "1" ]; then
