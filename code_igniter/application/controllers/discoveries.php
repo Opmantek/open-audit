@@ -294,6 +294,7 @@ class Discoveries extends MY_Controller
     {
         #$this->response->data = $this->m_discoveries->read();
         $this->m_discoveries->execute($this->response->meta->id);
+        sleep(2);
         if ($this->response->meta->format === 'json') {
             output($this->response);
         } else {
