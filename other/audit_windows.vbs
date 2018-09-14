@@ -3647,110 +3647,110 @@ if (audit_software = "y") then
     strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
     oReg.EnumKey HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
     if (not Isnull(arrSubKeys)) then
-    for each subkey In arrSubKeys
-    newpath = strKeyPath & "\" & subkey
-    newkey = "DisplayName"
-    on error resume next
-    strValue = ""
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    on error goto 0
-    if strValue <> "" then
-    version = ""
-    uninstall_string = ""
-    install_date = ""
-    publisher = ""
-    install_source = ""
-    install_location = ""
-    system_component = ""
-    package_name = strValue
+        for each subkey In arrSubKeys
+            newpath = strKeyPath & "\" & subkey
+            newkey = "DisplayName"
+            on error resume next
+            strValue = ""
+            oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+            on error goto 0
+            if strValue <> "" then
+                version = ""
+                uninstall_string = ""
+                install_date = ""
+                publisher = ""
+                install_source = ""
+                install_location = ""
+                system_component = ""
+                package_name = strValue
 
-    newkey = "DisplayVersion"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_version = strValue
-    if (isnull(package_version)) then package_version = "" end if
+                newkey = "DisplayVersion"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_version = strValue
+                if (isnull(package_version)) then package_version = "" end if
 
-    newkey = "UninstallString"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_uninstall = strValue
-    if (isnull(package_uninstall)) then package_uninstall = "" end if
+                newkey = "UninstallString"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_uninstall = strValue
+                if (isnull(package_uninstall)) then package_uninstall = "" end if
 
-    newkey = "InstallDate"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_install_date = strValue
-    if (isnull(package_install_date)) then package_install_date = "" end if
+                newkey = "InstallDate"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_install_date = strValue
+                if (isnull(package_install_date)) then package_install_date = "" end if
 
-    newkey = "Publisher"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_publisher = strValue
-    if (isnull(package_publisher)) then package_publisher = "" end if
+                newkey = "Publisher"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_publisher = strValue
+                if (isnull(package_publisher)) then package_publisher = "" end if
 
-    newkey = "InstallSource"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_install_source = strValue
-    if (isnull(package_install_source)) then package_install_source = "" end if
+                newkey = "InstallSource"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_install_source = strValue
+                if (isnull(package_install_source)) then package_install_source = "" end if
 
-    newkey = "InstallLocation"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_location = strValue
-    if (isnull(package_location)) then package_location = "" end if
+                newkey = "InstallLocation"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_location = strValue
+                if (isnull(package_location)) then package_location = "" end if
 
-    newkey = "SystemComponent"
-    oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_system_component = strValue
-    if (isnull(package_system_component)) then package_system_component = "" end if
+                newkey = "SystemComponent"
+                oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_system_component = strValue
+                if (isnull(package_system_component)) then package_system_component = "" end if
 
-    newkey = "URLInfoAbout"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_url = strValue
-    if (isnull(package_url)) then package_url = "" end if
+                newkey = "URLInfoAbout"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_url = strValue
+                if (isnull(package_url)) then package_url = "" end if
 
-    newkey = "Comments"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_comments = strValue
-    if (isnull(package_comments)) then package_comments = " " end if
+                newkey = "Comments"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_comments = strValue
+                if (isnull(package_comments)) then package_comments = " " end if
 
-    package_installed_by = ""
-    package_installed_on = ""
+                package_installed_by = ""
+                package_installed_on = ""
 
-    on error resume next
-    for each objItem in colItems
-        if objItem.Message <> "" then
-            colonPos = InStr(objItem.Message,":")
-            dashPos = InStr(objItem.Message,"--")
-            message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-            if (not isNull(message_retrieved)) then
-                if (InStr(message_retrieved, package_name) = 1) then
-                    package_installed_by = objItem.User
-                    if details_to_lower = "y" then
-                        package_installed_by = lcase(package_installed_by)
+                on error resume next
+                for each objItem in colItems
+                    if objItem.Message <> "" then
+                        colonPos = InStr(objItem.Message,":")
+                        dashPos = InStr(objItem.Message,"--")
+                        message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+                        if (not isNull(message_retrieved)) then
+                            if (InStr(message_retrieved, package_name) = 1) then
+                                package_installed_by = objItem.User
+                                if details_to_lower = "y" then
+                                    package_installed_by = lcase(package_installed_by)
+                                end if
+                                package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+                                package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+                                exit for
+                            else
+                                package_installed_by = ""
+                                package_installed_on = ""
+                            end if
+                        end if
                     end if
-                    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-                    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-                    exit for
-                else
-                    package_installed_by = ""
-                    package_installed_on = ""
-                end if
-            end if
-        end if
-    next
-    on error goto 0
+                next
+                on error goto 0
 
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(package_name) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(package_version) & "</version>" & vbcrlf
-    result.WriteText "          <location>" & escape_xml(package_location) & "</location>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
-    result.WriteText "          <uninstall>" & escape_xml(package_uninstall) & "</uninstall>" & vbcrlf
-    result.WriteText "          <publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
-    result.WriteText "          <install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
-    result.WriteText "          <system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
-    result.WriteText "          <url>" & escape_xml(package_url) & "</url>" & vbcrlf
-    result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-    result.WriteText "          <installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    end if
-    next
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(package_name) & "</name>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(package_version) & "</version>" & vbcrlf
+                result.WriteText "          <location>" & escape_xml(package_location) & "</location>" & vbcrlf
+                result.WriteText "          <install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+                result.WriteText "          <uninstall>" & escape_xml(package_uninstall) & "</uninstall>" & vbcrlf
+                result.WriteText "          <publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
+                result.WriteText "          <install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
+                result.WriteText "          <system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
+                result.WriteText "          <url>" & escape_xml(package_url) & "</url>" & vbcrlf
+                result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+                result.WriteText "          <installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+            end if
+        next
     end if
     result.WriteText "      <!-- end of normal -->" & vbcrlf
 
