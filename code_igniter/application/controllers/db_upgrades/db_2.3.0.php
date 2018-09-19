@@ -81,6 +81,9 @@ $sql = "CREATE TABLE `queue` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# IP
+$this->alter_table('ip', 'interface', "ADD `interface` varchar(200) NOT NULL DEFAULT '' AFTER `set_by`", 'add');
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180830' WHERE `name` = 'internal_version'";
 $this->db->query($sql);

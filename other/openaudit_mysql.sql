@@ -1333,6 +1333,7 @@ CREATE TABLE `ip` (
   `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
   `network` varchar(40) NOT NULL DEFAULT '',
   `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
+  `interface` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `mac` (`mac`),
