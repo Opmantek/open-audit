@@ -152,7 +152,7 @@ if (empty($data['mount_point'])) {
                 <?php } ?>
                 <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/images/logo-nmis.png"/><a href="#" data-menuitem="opmantek"><?php echo __('Opmantek Details'); ?></a></li>
 
-                <?php if (!empty($data['ip']) and empty($data['network'])) { ?>
+                <?php if (!empty($data['ip'])) { ?>
                     <li class="list-group-item"><img alt="" src="<?php echo $this->config->config['oa_web_folder']; ?>/icons/ip_address.svg"/><a href="#" data-menuitem="ip_address">IP Addresses</a></li>
                 <?php } ?>
 
@@ -1467,7 +1467,7 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
 }
 ?>
 
-<?php if (!empty($data['ip']) and empty($data['network'])) { ?>
+<?php if (!empty($data['ip'])) { ?>
 <div id="ip_address" class="section">
     <div class="panel panel-default">
   <div class="panel-heading">
@@ -1706,8 +1706,7 @@ foreach ($list as $item) {
 <?php
 // combo style displays
 if ($data['system']->type == 'computer') {
-    #$list = array ('disk' => 'partition', 'network' => 'ip', 'server' => 'server_item');
-    $list = array ('disk' => 'partition', 'network' => 'ip');
+    $list = array ('disk' => 'partition');
     foreach ($list as $item => $sub_item) {
         if (isset($data[$item]) and count($data[$item]) > 0) {
         ?>
@@ -1809,100 +1808,98 @@ if ($data['system']->type == 'computer') {
         }
     }
 }
-if ($data['system']->type != 'computer') {
-    // just do the network interfaces
-    $item = 'network';
-    if (isset($data[$item]) and count($data[$item]) > 0) {
-        ?>
-        <div id="<?php echo htmlspecialchars($item, REPLACE_FLAGS, CHARSET); ?>" class="section">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title pull-left"><?php echo __('Network Interfaces'); ?></h3>
-                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo htmlspecialchars($item, REPLACE_FLAGS, CHARSET); ?>"></span>
-                <div class="clearfix"></div>
-              </div>
-              <div class="panel-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><?php echo __('Index'); ?></th>
-                            <th><?php echo __('MAC Address'); ?></th>
-                            <th><?php echo __('Connection ID'); ?></th>
-                            <th><?php echo __('Description'); ?></th>
-                            <th><?php echo __('Alias'); ?></th>
-                            <th><?php echo __('Type'); ?></th>
-                            <th><?php echo __('Operational Status'); ?></th>
-                            <th><?php echo __('Admin Status'); ?></th>
-                            <th><?php echo __('Speed'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        foreach ($data[$item] as $row) {
-                            if (intval($row->speed) < 1000) {
-                                $speed = number_format(intval($row->speed))." b/s";
-                            }
-                            if (intval($row->speed) >= 1000 and intval($row->speed) < 1000000) {
-                                $speed = number_format(intval($row->speed / 1000))." Kb/s";
-                            }
-                            if (intval($row->speed) >= 1000000 and intval($row->speed) < 1000000000) {
-                                $speed = number_format(intval($row->speed / 1000 / 1000))." Mb/s";
-                            }
-                            if (intval($row->speed) >= 1000000000) {
-                                $speed = number_format(intval($row->speed / 1000 / 1000 / 1000))." Gb/s";
-                            }
 
-                            echo '<tr>';
-                            echo '<td>' . htmlspecialchars($row->net_index, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->mac, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->connection, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->description, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->alias, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->type, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->ip_enabled, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->ifadminstatus, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($speed, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '</tr>';
+$item = 'network';
+if (isset($data[$item]) and count($data[$item]) > 0) {
+    ?>
+    <div id="<?php echo htmlspecialchars($item, REPLACE_FLAGS, CHARSET); ?>" class="section">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title pull-left"><?php echo __('Network Interfaces'); ?></h3>
+            <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="<?php echo htmlspecialchars($item, REPLACE_FLAGS, CHARSET); ?>"></span>
+            <div class="clearfix"></div>
+          </div>
+          <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><?php echo __('Index'); ?></th>
+                        <th><?php echo __('MAC Address'); ?></th>
+                        <th><?php echo __('Connection ID'); ?></th>
+                        <th><?php echo __('Description'); ?></th>
+                        <th><?php echo __('Alias'); ?></th>
+                        <th><?php echo __('Type'); ?></th>
+                        <th><?php echo __('Operational Status'); ?></th>
+                        <th><?php echo __('Admin Status'); ?></th>
+                        <th><?php echo __('Speed'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($data[$item] as $row) {
+                        if (intval($row->speed) < 1000) {
+                            $speed = number_format(intval($row->speed))." b/s";
                         }
-                        ?>
-                    </tbody>
-                </table>
-              </div>
-            <?php
-            if (isset($data['ip']) and count($data['ip']) > 0) {
-                ?>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th><?php echo __('Index'); ?></th>
-                            <th><?php echo __('MAC Address'); ?></th>
-                            <th><?php echo __('IP Address'); ?></th>
-                            <th><?php echo __('Net Mask'); ?></th>
-                            <th><?php echo __('CIDR'); ?></th>
-                            <th><?php echo __('Network'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        foreach ($data['ip'] as $row) {
-                            echo '<tr>';
-                            echo '<td>' . htmlspecialchars($row->net_index, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->mac, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->ip, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->netmask, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->cidr, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '<td>' . htmlspecialchars($row->network, REPLACE_FLAGS, CHARSET) . '</td>';
-                            echo '</tr>';
+                        if (intval($row->speed) >= 1000 and intval($row->speed) < 1000000) {
+                            $speed = number_format(intval($row->speed / 1000))." Kb/s";
                         }
-                        ?>
-                    </tbody>
-                </table>
-            <?php
-            } ?>
-            </div>
+                        if (intval($row->speed) >= 1000000 and intval($row->speed) < 1000000000) {
+                            $speed = number_format(intval($row->speed / 1000 / 1000))." Mb/s";
+                        }
+                        if (intval($row->speed) >= 1000000000) {
+                            $speed = number_format(intval($row->speed / 1000 / 1000 / 1000))." Gb/s";
+                        }
+
+                        echo '<tr>';
+                        echo '<td>' . htmlspecialchars($row->net_index, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->mac, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->connection, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->description, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->alias, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->type, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->ip_enabled, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->ifadminstatus, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($speed, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '</tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
+          </div>
+        <?php
+        if (isset($data['ip']) and count($data['ip']) > 0) {
+            ?>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><?php echo __('Index'); ?></th>
+                        <th><?php echo __('MAC Address'); ?></th>
+                        <th><?php echo __('IP Address'); ?></th>
+                        <th><?php echo __('Net Mask'); ?></th>
+                        <th><?php echo __('CIDR'); ?></th>
+                        <th><?php echo __('Network'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($data['ip'] as $row) {
+                        echo '<tr>';
+                        echo '<td>' . htmlspecialchars($row->net_index, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->mac, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->ip, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->netmask, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->cidr, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '<td>' . htmlspecialchars($row->network, REPLACE_FLAGS, CHARSET) . '</td>';
+                        echo '</tr>';
+                    }
+                    ?>
+                </tbody>
+            </table>
+        <?php
+        } ?>
         </div>
-    <?php
-    }
+    </div>
+<?php
 }
 ?>
 
