@@ -1545,6 +1545,7 @@ if (!function_exists('snmp_audit')) {
                             $new_ip->mac = $interface->mac;
                             $new_ip->netmask = @$subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip];
                             $new_ip->version = '4';
+                            $new_ip->interface = $interface->connection;
                             if ($new_ip->ip != '127.0.0.1' and $new_ip->ip != '127.0.1.1') {
                                 $return_ips[] = $new_ip;
                             }
@@ -1560,8 +1561,10 @@ if (!function_exists('snmp_audit')) {
                         $new_ip->ip = str_replace(".1.3.6.1.2.1.4.34.1.3.1.4.", "", $each_key);
                         $new_ip->netmask = '';
                         $new_ip->version = '4';
+                        $new_ip->interface = '';
                         if ($new_ip->net_index == $interface->net_index) {
                             $new_ip->mac = $interface->mac;
+                            $new_ip->interface = $interface->connection;
                             if ($new_ip->ip != '127.0.0.1' and $new_ip->ip != '127.0.1.1') {
                                 $return_ips[] = $new_ip;
                             }
