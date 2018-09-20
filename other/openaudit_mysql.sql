@@ -601,8 +601,8 @@ CREATE TABLE `collectors` (
   `description` text NOT NULL,
   `ip` varchar(45) NOT NULL DEFAULT '',
   `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
-  `check_minutes` int unsigned NOT NULL DEFAULT '0',
-  `user_id` int(10) unsigned,
+  `check_minutes` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned DEFAULT NULL,
   `uuid` text NOT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `options` text NOT NULL,
@@ -1303,7 +1303,7 @@ CREATE TABLE `image` (
   `system_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(200) NOT NULL DEFAULT '',
   `filename` text NOT NULL,
-  `orientation` enum ('front','rear','left','right','top','bottom','other','') NOT NULL DEFAULT 'front',
+  `orientation` enum('front','rear','left','right','top','bottom','other','') NOT NULL DEFAULT 'front',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -2599,8 +2599,8 @@ CREATE TABLE `rows` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `room_id` (`room_id`),
-  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

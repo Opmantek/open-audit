@@ -265,7 +265,9 @@ class Test extends CI_Controller
     public function db_compare()
     {
         $this->load->helper('diff');
-        $tables = array('attachment','attributes','audit_log','bios','change_log','chart','cluster','configuration','connections','credential','credentials','discoveries','discovery_log','disk','dns','edit_log','field','fields','file','files','graph','groups','invoice','invoice_item','ip','ldap_groups','ldap_servers','licenses','locations','log','logs','maps','memory','module','monitor','motherboard','netstat','network','networks','nmap','notes','oa_change','oa_temp','oa_user_sessions','optical','orgs','pagefile','partition','print_queue','processor','queries','roles','route','san','scripts','scsi','server','server_item','service','share','software','software_key','sound','summaries','system','task','tasks','user','user_group','users','variable','video','vm','warranty','windows');
+        #$tables = array('attachment','attributes','audit_log','bios','change_log','chart','cluster','configuration','connections','credential','credentials','discoveries','discovery_log','disk','dns','edit_log','field','fields','file','files','graph','groups','invoice','invoice_item','ip','ldap_groups','ldap_servers','licenses','locations','log','logs','maps','memory','module','monitor','motherboard','netstat','network','networks','nmap','notes','oa_change','oa_temp','oa_user_sessions','optical','orgs','pagefile','partition','print_queue','processor','queries','roles','route','san','scripts','scsi','server','server_item','service','share','software','software_key','sound','summaries','system','task','tasks','user','user_group','users','variable','video','vm','warranty','windows');
+
+        $tables = $this->db->list_tables();
 
         if ((string) php_uname('s') === 'Windows NT') {
             $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
@@ -283,9 +285,14 @@ class Test extends CI_Controller
             # From the DB
             $query = $this->db->query("SHOW CREATE TABLE `$table`");
             $result = $query->result();
-            $db_schema = preg_replace('/AUTO_INCREMENT=\d+ /', '', $result[0]->{'Create Table'});
+            if (!empty($result[0]->{'Create Table'})) {
+                $db_schema = preg_replace('/AUTO_INCREMENT=\d+ /', '', $result[0]->{'Create Table'});
+            } else {
+                $db_schema = '';
+            }
 
             # From the file
+            $file_schema = '';
             for ($i=0; $i < count($sql_file); $i++) { 
                 if (strpos($sql_file[$i], "CREATE TABLE `$table`") !== false) {
                     $file_schema = $sql_file[$i];
@@ -316,9 +323,13 @@ class Test extends CI_Controller
             }
             # Output
             echo "<h2>$table (file -> database)</h2>";
-            echo "<strong>Del: $count_del Ins: $count_ins</strong>\n";
-            $table_output = Diff::toTable(Diff::compare($file_schema, $db_schema));
-            echo str_replace('<table class="diff">', '<table class="diff" style="width:100%">', $table_output);
+            if (empty($file_schema)) {
+                echo "<span style=\"color:red;\"><strong>" . $table . " does not exist in the file.</strong></span><br />";
+            } else {
+                echo "<strong>Del: $count_del Ins: $count_ins</strong>\n";
+                $table_output = Diff::toTable(Diff::compare($file_schema, $db_schema));
+                echo str_replace('<table class="diff">', '<table class="diff" style="width:100%">', $table_output);
+            }
             echo "=======================================\n";
         }
 
