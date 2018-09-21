@@ -687,8 +687,32 @@ class M_collection extends MY_Model
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
 
+        if (!empty($id) and $collection == 'locations') {
+            # Need to insert default entries for buildings, floors, rooms and rows
+            $org_id = 1;
+            if (!empty($data->attributes->org_id)) {
+                $org_id = intval($data->attributes->org_id);
+            }
+            $location_id = $id;
+            $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', ?, NOW())";
+            $data_array = array($org_id, $location_id, $CI->user->full_name);
+            $building_id = intval($this->run_sql($sql, $data_array));
+
+            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', ?, NOW())";
+            $data_array = array($org_id, $building_id, $CI->user->full_name);
+            $floor_id = intval($this->run_sql($sql, $data_array));
+
+            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', ?, NOW())";
+            $data_array = array($org_id, $floor_id, $CI->user->full_name);
+            $room_id = intval($this->run_sql($sql, $data_array));
+
+            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', ?, NOW())";
+            $data_array = array($org_id, $room_id, $CI->user->full_name);
+            $this->run_sql($sql, $data_array);
+        }
+
         if (!empty($id)) {
-            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . htmlentities($data->name) . '".');
+            $CI->session->set_flashdata('success', 'New object in ' . $collection . ' created "' . htmlentities($data->name) . '".');
             return ($id);
         } else {
             # TODO - log a better error
