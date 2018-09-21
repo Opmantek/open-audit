@@ -244,7 +244,35 @@ $this->m_roles->update_permissions('user', 'rack_devices', 'r');
 $this->m_roles->update_permissions('user', 'rooms', 'r');
 $this->m_roles->update_permissions('user', 'rows', 'r');
 
-# TODO - default buildings, floors, rooms and rows for each location
+# Default buildings, floors, rooms and rows for each location
+$sql = "SELECT id, org_id FROM locations";
+$query = $this->db->query($select);
+$this->log_db($this->db->last_query());
+$result = $query->result();
+foreach ($result as $location) {
+    $location_id = intval($location->id);
+    $org_id = intval($location->org_id);
+
+    $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', 'system', NOW())";
+    $data_array = array($org_id, $location_id);
+    $building_id = intval($this->run_sql($sql, $data_array));
+    $this->log_db($this->db->last_query());
+
+    $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', 'system', NOW())";
+    $data_array = array($org_id, $building_id);
+    $floor_id = intval($this->run_sql($sql, $data_array));
+    $this->log_db($this->db->last_query());
+
+    $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', 'system', NOW())";
+    $data_array = array($org_id, $floor_id);
+    $room_id = intval($this->run_sql($sql, $data_array));
+    $this->log_db($this->db->last_query());
+
+    $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', 'system', NOW())";
+    $data_array = array($org_id, $room_id);
+    $this->run_sql($sql, $data_array);
+    $this->log_db($this->db->last_query());
+}
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180901' WHERE `name` = 'internal_version'";
