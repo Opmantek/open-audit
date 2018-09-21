@@ -48,7 +48,16 @@ $collection = $this->response->meta->collection;
 
 # All
 $this->load->model('m_orgs');
-$this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+$org_id = 1;
+if ($this->response->meta->format != 'screen') {
+    if (!empty($this->response->data[0]->attributes->org_id)) {
+        $org_id = $this->response->data[0]->attributes->org_id;
+    }
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->read($org_id));
+} else {
+    $this->response->included = array_merge($this->response->included, $this->m_orgs->collection());
+}
+
 
 # applications
 if ($this->response->meta->collection == 'applications') {
