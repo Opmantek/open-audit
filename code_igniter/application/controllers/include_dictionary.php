@@ -111,6 +111,25 @@ if ($table == 'attributes') {
     $dictionary->attributes->update = array('name','org_id','resource','type','value');
 }
 
+if ($table == 'buildings') {
+    $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
+    $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->location_id = 'The location of the building.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','location_id');
+    $dictionary->attributes->update = array('name','org_id','location_id','description','options','notes','tags');
+}
+
 if ($table == 'audit_log') {
     $dictionary->about = '<p>A log of all the audit processing attempts.</p>';
     $dictionary->columns->id = $id;
@@ -403,6 +422,25 @@ Supported clients are Windows and Linux.<br /><br />
     $dictionary->attributes->update = array('name','org_id','description','path');
 }
 
+if ($table == 'floors') {
+    $dictionary->sentence = 'Define your floors and assign them to a building of your choosing.';
+    $dictionary->marketing = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->building_id = 'The building the floor is located in.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','building_id');
+    $dictionary->attributes->update = array('name','org_id','building_id','description','options','notes','tags');
+}
+
 if ($table == 'groups') {
     $dictionary->sentence = 'Easily group together devices for simple reporting. Open-AudIT provides more than a dozen groups out of the box and makes it simple to create more.';
     $dictionary->marketing = '<p>Groups are used as simple lists of devices that match the required conditions. If requested using JSON they return a list of system.id\'s only. If requested using the web interface, they return the standard column attribute list.<br /><br />
@@ -576,6 +614,74 @@ An example query SQL showing attributes on devices that have an <code>os_group</
     $dictionary->attributes->update = array('name','org_id','description','sql','menu_category','menu_display');
 }
 
+if ($table == 'racks') {
+    $dictionary->sentence = 'Define your racks and assign devices them in a row of your choosing.';
+    $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->row_id = 'The row the rack is located in.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->row_position = 'The height of this rack in rack units.';
+    $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
+    $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';
+    $dictionary->columns->physical_width = 'The physical width (in CMs) of the rack.';
+    $dictionary->columns->physical_depth = 'The physical depth (in CMs) of the rack.';
+    $dictionary->columns->weight_empty = 'The physical weight (in KGs) of the rack when empty.';
+    $dictionary->columns->weight_current = 'The physical weight (in KGs) of the rack at present.';
+    $dictionary->columns->weight_max = 'The maximum physical weight (in KGs) this rack can hold.';
+    $dictionary->columns->ru_start = 'TBD';
+    $dictionary->columns->ru_height = 'How many rack units in height is this rack.';
+    $dictionary->columns->type = 'The type of rack (compute, power, network, etc).';
+    $dictionary->columns->purpose = 'What is the purpose of this rack.';
+    $dictionary->columns->manufacturer = 'Who made this rack.';
+    $dictionary->columns->model = 'The rack model.';
+    $dictionary->columns->series = 'The rack series.';
+    $dictionary->columns->serial = 'The rack serial.';
+    $dictionary->columns->asset_number = 'The rack asset number.';
+    $dictionary->columns->asset_tag = 'The rack asset tag.';
+    $dictionary->columns->bar_code = 'The rack bar code.';
+    $dictionary->columns->power_circuit = 'The power circut this rack attaches to.';
+    $dictionary->columns->power_sockets = 'How many power sockets in this rack.';
+    $dictionary->columns->circut_count = 'How many circuts feed to this rack.';
+    $dictionary->columns->btu_total = 'The total BTU output by this rack.';
+    $dictionary->columns->btu_max = 'The maximum total BTUs this rack is rated for.';
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','row_id');
+    $dictionary->attributes->update = array('name','org_id','description','row_id','row_position','pod','physical_height','physical_width','physical_depth','weight_empty','weight_current','weight_max','ru_start','ru_height','type','purpose','manufacturer','model','series','serial','asset_number','asset_tag','bar_code','power_circuit','power_sockets','circut_count','btu_total','btu_max','options','notes','tags');
+}
+
+if ($table == 'rack_devices') {
+    $dictionary->sentence = 'Place your devices into racks.';
+    $dictionary->marketing = '<p>These are the devices that live within a rack.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->rack_id = 'The rack this device is located in.';
+    $dictionary->columns->system_id = 'The device within Open-AudIT.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->position = 'The RU positon of the top of this device.';
+    $dictionary->columns->height = 'The number of RUs this device occupies.';
+    $dictionary->columns->width = 'The width of this device.';
+    $dictionary->columns->orientation = 'The orientation of this device.';
+    $dictionary->columns->type = 'The type of device.';
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','row_id');
+    $dictionary->attributes->update = array('name','org_id','rack_id','system_id','position','height','width','orientation','type','options','notes','tags');
+}
+
 if ($table == 'reports') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.';
     $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen "over time". All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>"over time\</i>.<br /><br />
@@ -605,6 +711,45 @@ if ($table == 'roles') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','permissions');
     $dictionary->attributes->update = array('name','description','permissions','ad_group');
+}
+
+
+if ($table == 'rooms') {
+    $dictionary->sentence = 'Define your rooms and assign them to a floor of your choosing.';
+    $dictionary->marketing = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->floor_id = 'The floor the room is located on.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','floor_id');
+    $dictionary->attributes->update = array('name','org_id','floor_id','description','options','notes','tags');
+}
+
+if ($table == 'rows') {
+    $dictionary->sentence = 'Define your rows and assign them to a room of your choosing.';
+    $dictionary->marketing = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->room_id = 'The room the rack is located in.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','room_id');
+    $dictionary->attributes->update = array('name','org_id','room_id','description','options','notes','tags');
 }
 
 if ($table == 'servers') {

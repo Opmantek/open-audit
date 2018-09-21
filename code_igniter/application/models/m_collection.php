@@ -989,6 +989,10 @@ class M_collection extends MY_Model
                 return(' name org_id resource type value ');
                 break;
 
+            case "buildings":
+                return(' name org_id location_id description notes tags ');
+                break;
+
             case "clouds":
                 return(' name org_id description type credentials ');
                 break;
@@ -1025,6 +1029,10 @@ class M_collection extends MY_Model
                 return(' name org_id description path ');
                 break;
 
+            case "floors":
+                return(' name org_id building_id description notes tags ');
+                break;
+
             case "groups":
                 return(' name org_id description sql ');
                 break;
@@ -1053,8 +1061,24 @@ class M_collection extends MY_Model
                 return(' name org_id description sql menu_category menu_display ');
                 break;
 
+            case "racks":
+                return(' name org_id description row_id row_position pod physical_height physical_width physical_depth weight_empty weight_current weight_max ru_start ru_height type purpose manufacturer model series serial asset_number asset_tag bar_code power_circuit power_sockets circut_count btu_total btu_max options notes ');
+                break;
+
+            case "rack_devices":
+                return(' name org_id rack_id system_id position height width orientation type options ');
+                break;
+
             case "roles":
                 return(' name description permissions ad_group ');
+                break;
+
+            case "rooms":
+                return(' name org_id floor_id description notes tags ');
+                break;
+
+            case "rows":
+                return(' name org_id room_id description notes tags ');
                 break;
 
             case "scripts":
@@ -1097,6 +1121,10 @@ class M_collection extends MY_Model
                 return(array('name','org_id','type','resource','value'));
                 break;
 
+            case "buildings":
+                return(array('name','org_id','location_id'));
+                break;
+
             case "clouds":
                 return(array('name','org_id','type'));
                 break;
@@ -1133,6 +1161,10 @@ class M_collection extends MY_Model
                 return(array('name','org_id','path'));
                 break;
 
+            case "floors":
+                return(array('name','org_id','building_id'));
+                break;
+
             case "groups":
                 return(array('name','org_id','sql'));
                 break;
@@ -1161,8 +1193,24 @@ class M_collection extends MY_Model
                 return(array('name','org_id','sql','menu_category','menu_display'));
                 break;
 
+            case "racks":
+                return(array('name','org_id','row_id'));
+                break;
+
+            case "rack_devices":
+                return(array('name','org_id','rack_id'));
+                break;
+
             case "roles":
                 return(array('name','permissions'));
+                break;
+
+            case "rooms":
+                return(array('name','org_id','floor_id'));
+                break;
+
+            case "rows":
+                return(array('name','org_id','room_id'));
                 break;
 
             case "scripts":
