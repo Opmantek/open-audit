@@ -128,7 +128,8 @@ $sql = "CREATE TABLE `racks` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
-  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -156,6 +157,7 @@ $sql = "CREATE TABLE `rack_devices` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `rack_id` (`rack_id`),
+  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
   CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
@@ -218,6 +220,31 @@ $this->log_db($this->db->last_query());
 $sql = "INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', 'system', '2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
+
+# Roles
+$this->load->model('m_roles');
+$this->m_roles->update_permissions('org_admin', 'buildings', 'crud');
+$this->m_roles->update_permissions('org_admin', 'floors', 'crud');
+$this->m_roles->update_permissions('org_admin', 'racks', 'crud');
+$this->m_roles->update_permissions('org_admin', 'rack_devices', 'crud');
+$this->m_roles->update_permissions('org_admin', 'rooms', 'crud');
+$this->m_roles->update_permissions('org_admin', 'rows', 'crud');
+
+$this->m_roles->update_permissions('reporter', 'buildings', 'crud');
+$this->m_roles->update_permissions('reporter', 'floors', 'crud');
+$this->m_roles->update_permissions('reporter', 'racks', 'crud');
+$this->m_roles->update_permissions('reporter', 'rack_devices', 'crud');
+$this->m_roles->update_permissions('reporter', 'rooms', 'crud');
+$this->m_roles->update_permissions('reporter', 'rows', 'crud');
+
+$this->m_roles->update_permissions('user', 'buildings', 'r');
+$this->m_roles->update_permissions('user', 'floors', 'r');
+$this->m_roles->update_permissions('user', 'racks', 'r');
+$this->m_roles->update_permissions('user', 'rack_devices', 'r');
+$this->m_roles->update_permissions('user', 'rooms', 'r');
+$this->m_roles->update_permissions('user', 'rows', 'r');
+
+# TODO - default buildings, floors, rooms and rows for each location
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180901' WHERE `name` = 'internal_version'";
