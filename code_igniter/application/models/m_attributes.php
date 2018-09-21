@@ -87,12 +87,15 @@ class M_attributes extends MY_Model
         return false;
     }
 
-    public function collection()
+    public function collection($resource = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
         $sql = $this->collection_sql('attributes', 'sql');
+        if (!empty($resource)) {
+            $sql .= ' AND attributes.resource = \'' . $resource . '\'';
+        }
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'attributes');
         $this->log->summary = 'finish';
