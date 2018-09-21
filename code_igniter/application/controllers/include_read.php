@@ -24,7 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-$this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+$this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
 $this->response->meta->filtered = count($this->response->data);
 
 if (count($this->response->data) == 0) {
