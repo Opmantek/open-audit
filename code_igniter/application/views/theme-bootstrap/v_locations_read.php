@@ -208,3 +208,101 @@ $item = $this->response->data[0];
       </div> <!-- /panel body -->
     </div>
 </form>
+
+<?php $objects = array('buildings', 'floors', 'rooms', 'rows', 'racks'); ?>
+
+<?php foreach ($objects as $object) {
+switch ($object) {
+    case 'buildings':
+        $parent = 'locations';
+        $child = 'floors';
+        break;
+    
+    case 'floors':
+        $parent = 'buildings';
+        $child = 'rooms';
+        break;
+    
+    case 'rooms':
+        $parent = 'floors';
+        $child = 'rows';
+        break;
+    
+    case 'rows':
+        $parent = 'rooms';
+        $child = 'racks';
+        break;
+    
+    case 'racks':
+        $parent = 'rows';
+        $child = 'rack_devices';
+        break;
+    
+    case 'rack_devices':
+        $parent = 'racks';
+        $child = '_count';
+        break;
+    
+    default:
+        $parent = '';
+        $child = 'count';
+        break;
+}
+
+?>
+<div class="panel panel-default">
+    <div class="panel-heading clearfix">
+        <div class="panel-title clearfix">
+            <div class="pull-left">
+                <?php echo ucfirst($object); ?>
+            </div>
+            <div class="pull-right">
+                <div class="btn-group" role="group" aria-label="...">
+                    <div class="btn-group" role="group">
+                    <a class="btn btn-default btn-sm" href="/open-audit/index.php/locations" role="button">Add <?php echo ucfirst($object); ?></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">ID</th>
+                            <th><?php echo ucfirst(substr($parent, 0, -1)); ?></th>
+                            <th>Name</th>
+                            <th><?php echo ucfirst($child); ?></th>
+                            <th>Description</th>
+                            <?php if ($this->m_users->get_user_permission('', $object, 'd')) { ?>
+                            <th class="text-center"><?php echo __('Delete')?></th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($this->response->included as $item) {
+                            if ($item->type == $object) {
+                                echo "<tr>\n";
+                                echo '<td class="text-center"><a class="btn btn-sm btn-primary" href="../' . $object . '/' . $item->id . '?format=json"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a></td>';
+                                echo "  <td>" . $item->attributes->{$parent.'.name'} . "</td>\n";
+                                echo "  <td>" . $item->attributes->name . "</td>\n";
+                                echo "  <td>" . intval(@$item->attributes->{$child.'_count'}) . "</td>\n";
+                                echo "  <td>" . $item->attributes->description . "</td>\n";
+                                if ($this->m_users->get_user_permission('', $object, 'd')) {
+                                    echo '<td class="text-center"><button type="button" class="btn btn-sm btn-danger delete_link" data-id="' . intval($item->id) . '" data-name="' . htmlspecialchars($item->attributes->name, REPLACE_FLAGS, CHARSET) . '"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td>';
+                                }
+                                echo "</tr>\n";
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>

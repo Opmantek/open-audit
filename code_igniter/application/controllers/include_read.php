@@ -143,7 +143,60 @@ if ($this->response->meta->collection == 'licenses') {
 # locations
 if ($this->response->meta->collection == 'locations') {
     $this->load->model('m_attributes');
-    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection('locations'));
+    $this->load->model('m_buildings');
+    $this->load->model('m_floors');
+    $this->load->model('m_rooms');
+    $this->load->model('m_rows');
+    $this->load->model('m_racks');
+    $buildings = $this->m_buildings->collection($this->response->meta->id);
+    $this->response->included = array_merge($this->response->included, $buildings);
+
+    if (!empty($buildings)) {
+        $temp = array();
+        foreach ($buildings as $building) {
+            $temp[] = $building->id;
+        }
+        $temp = implode(',', $temp);
+        $floors = $this->m_floors->collection($temp);
+        $this->response->included = array_merge($this->response->included, $floors);
+        unset($temp);
+    }
+
+
+    if (!empty($floors)) {
+        $temp = array();
+        foreach ($floors as $floor) {
+            $temp[] = $building->id;
+        }
+        $temp = implode(',', $temp);
+        $rooms = $this->m_rooms->collection($temp);
+        $this->response->included = array_merge($this->response->included, $rooms);
+        unset($temp);
+    }
+
+
+    if (!empty($rooms)) {
+        $temp = array();
+        foreach ($rooms as $room) {
+            $temp[] = $room->id;
+        }
+        $temp = implode(',', $temp);
+        $rows = $this->m_rows->collection($temp);
+        $this->response->included = array_merge($this->response->included, $rows);
+        unset($temp);
+    }
+
+    if (!empty($rows)) {
+        $temp = array();
+        foreach ($rows as $row) {
+            $temp[] = $row->id;
+        }
+        $temp = implode(',', $temp);
+        $racks = $this->m_racks->collection($temp);
+        $this->response->included = array_merge($this->response->included, $racks);
+        unset($temp);
+    }
 }
 
 # logs
