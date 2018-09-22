@@ -461,7 +461,7 @@ CREATE TABLE `buildings` (
 
 LOCK TABLES `buildings` WRITE;
 /*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
-INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', 'system', '2000-01-01 00:00:00');
+INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `buildings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1187,7 +1187,7 @@ CREATE TABLE `floors` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `building_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `building_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -1208,7 +1208,7 @@ CREATE TABLE `floors` (
 
 LOCK TABLES `floors` WRITE;
 /*!40000 ALTER TABLE `floors` DISABLE KEYS */;
-INSERT INTO `floors` VALUES (1, 'Ground Floor', 1, 1, 'The default entry for a floor at this location.', '', '', 'system', '2000-01-01 00:00:00');
+INSERT INTO `floors` VALUES (1, 'Ground Floor', 1, 1, 'The default entry for a floor at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `floors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2396,8 +2396,8 @@ CREATE TABLE `racks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `row_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
-  `row_id` varchar(200) NOT NULL DEFAULT '',
   `row_position` varchar(200) NOT NULL DEFAULT '',
   `pod` varchar(200) NOT NULL DEFAULT '',
   `physical_height` int(10) unsigned NOT NULL DEFAULT '1',
@@ -2429,8 +2429,8 @@ CREATE TABLE `racks` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
-  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE
+  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2469,8 +2469,8 @@ CREATE TABLE `rack_devices` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `rack_id` (`rack_id`),
-  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE
+  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2528,7 +2528,7 @@ CREATE TABLE `rooms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `floor_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `floor_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -2549,7 +2549,7 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (1, 'Default', 1, 1, 'The default entry for a room at this location.', '', '', 'system', '2000-01-01 00:00:00');
+INSERT INTO `rooms` VALUES (1, 'Default', 1, 1, 'The default entry for a room at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2598,7 +2598,7 @@ CREATE TABLE `rows` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `room_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `room_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -2608,8 +2608,8 @@ CREATE TABLE `rows` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `room_id` (`room_id`),
-  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
+  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -2619,7 +2619,7 @@ CREATE TABLE `rows` (
 
 LOCK TABLES `rows` WRITE;
 /*!40000 ALTER TABLE `rows` DISABLE KEYS */;
-INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', 'system', '2000-01-01 00:00:00');
+INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rows` ENABLE KEYS */;
 UNLOCK TABLES;
 

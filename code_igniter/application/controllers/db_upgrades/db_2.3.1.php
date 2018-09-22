@@ -54,9 +54,9 @@ $sql = "CREATE TABLE `buildings` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', 'system', '2000-01-01 00:00:00')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
+// $sql = "INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
+// $this->db->query($sql);
+// $this->log_db($this->db->last_query());
 
 
 # floors
@@ -68,7 +68,7 @@ $sql = "CREATE TABLE `floors` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `building_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `building_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -84,9 +84,9 @@ $sql = "CREATE TABLE `floors` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `floors` VALUES (1, 'Ground Floor', 1, 1, 'The default entry for a floor at this location.', '', '', 'system', '2000-01-01 00:00:00')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
+// $sql = "INSERT INTO `floors` VALUES (1, 'Ground Floor', 1, 1, 'The default entry for a floor at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
+// $this->db->query($sql);
+// $this->log_db($this->db->last_query());
 
 
 # racks
@@ -98,8 +98,8 @@ $sql = "CREATE TABLE `racks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `row_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
-  `row_id` varchar(200) NOT NULL DEFAULT '',
   `row_position` varchar(200) NOT NULL DEFAULT '',
   `pod` varchar(200) NOT NULL DEFAULT '',
   `physical_height` int(10) unsigned NOT NULL DEFAULT '1',
@@ -131,8 +131,8 @@ $sql = "CREATE TABLE `racks` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
-  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE
+  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -162,8 +162,8 @@ $sql = "CREATE TABLE `rack_devices` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `rack_id` (`rack_id`),
-  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE
+  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -178,7 +178,7 @@ $sql = "CREATE TABLE `rooms` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `floor_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `floor_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -194,9 +194,9 @@ $sql = "CREATE TABLE `rooms` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `rooms` VALUES (1, 'Default', 1, 1, 'The default entry for a room at this location.', '', '', 'system', '2000-01-01 00:00:00')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
+// $sql = "INSERT INTO `rooms` VALUES (1, 'Default', 1, 1, 'The default entry for a room at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
+// $this->db->query($sql);
+// $this->log_db($this->db->last_query());
 
 
 # rows
@@ -208,7 +208,7 @@ $sql = "CREATE TABLE `rows` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
   `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `room_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `room_id` int(10) unsigned DEFAULT NULL,
   `description` text NOT NULL,
   `options` text NOT NULL,
   `notes` text NOT NULL,
@@ -218,15 +218,15 @@ $sql = "CREATE TABLE `rows` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `room_id` (`room_id`),
-  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', 'system', '2000-01-01 00:00:00')";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
+// $sql = "INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
+// $this->db->query($sql);
+// $this->log_db($this->db->last_query());
 
 # Roles
 $this->load->model('m_roles');
@@ -260,22 +260,22 @@ foreach ($result as $location) {
     $location_id = intval($location->id);
     $org_id = intval($location->org_id);
 
-    $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', 'system', NOW())";
+    $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $location_id);
     $building_id = intval($this->run_sql($sql, $data_array));
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', 'system', NOW())";
+    $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $building_id);
     $floor_id = intval($this->run_sql($sql, $data_array));
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', 'system', NOW())";
+    $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $floor_id);
     $room_id = intval($this->run_sql($sql, $data_array));
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', 'system', NOW())";
+    $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $room_id);
     $this->run_sql($sql, $data_array);
     $this->log_db($this->db->last_query());
