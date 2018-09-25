@@ -97,17 +97,33 @@ class M_racks extends MY_Model
         return ($result)    ;
     }
 
-    public function collection($row = '')
+    public function collection($parent = '')
     {
-        $CI = & get_instance();
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
-        $sql = 'SELECT racks.*, orgs.name AS `orgs.name`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rack_devices.id) as `rack_devices_count` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
-        if (!empty($row)) {
-            $sql .= ' AND racks.row_id IN (' . $row . ')';
+
+        $CI = & get_instance();
+        if ($CI->response->meta->collection == 'racks') {
+            $properties = $CI->response->meta->internal->properties;
+            $filter = $CI->response->meta->internal->filter;
+            $sort = $CI->response->meta->internal->sort;
+            $limit = $CI->response->meta->internal->limit;
+        } else {
+            $properties = 'racks.*';
+            $filter = 'WHERE orgs.id IN (' . $CI->user->org_list . ')';
+            $sort = 'ORDER BY racks.name';
+            $limit = 'LIMIT 0,' . $CI->config->item('page_size');
         }
-        $sql .= ' GROUP BY racks.id';
+        $group_by = 'GROUP BY racks.id';
+        if (!empty($parent)) {
+            $filter .= ' AND racks.row_id IN (' . $parent . ')';
+        }
+
+        #$sql = 'SELECT racks.*, orgs.name AS `orgs.name`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rack_devices.id) as `rack_devices_count` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
+
+        $sql = 'SELECT ' . $properties . ', orgs.name AS `orgs.name`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rack_devices.id) as `rack_devices_count` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) ' . $filter . ' ' . $group_by . ' ' . $sort . ' ' . $limit;
+
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'racks');
         $this->log->summary = 'finish';
