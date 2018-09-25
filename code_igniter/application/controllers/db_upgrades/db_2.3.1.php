@@ -29,6 +29,47 @@
 
 $this->log_db('Upgrade database to 2.3.1 commenced');
 
+# attributes
+$sql = "UPDATE `attributes` SET name = 'NAS (Network Attached Storage)' WHERE name = 'NAS (,Network Attached Storage)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET name = 'Network IDS (Intrusion Detection)' WHERE name = 'Network IDS (,Intrusion Detection)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET name = 'Remote Access Controller (ILO / RSA)' WHERE name = 'Remote Access Controller (,ILO / RSA)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET name = 'SAN (Storage Area Network)' WHERE name = 'SAN (,Storage Area Network)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET name = 'UPS (Uninterruptible Power Supply)' WHERE name = 'UPS (,Uninterruptible Power Supply)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET name = 'WAP (Wireless Access Point)' WHERE name = 'WAP (,Wireless Access Point)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "UPDATE `attributes` SET name = 'WDM (Wavelength Division Multiplexer)' WHERE name = 'WDM (,Wavelength Division Multiplexer)'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # buildings
 $sql = "DROP TABLE IF EXISTS `buildings`";
 $this->db->query($sql);
@@ -121,7 +162,7 @@ $sql = "CREATE TABLE `racks` (
   `bar_code` varchar(200) NOT NULL DEFAULT '',
   `power_circuit` varchar(200) NOT NULL DEFAULT '',
   `power_sockets` varchar(200) NOT NULL DEFAULT '',
-  `circut_count` int(10) unsigned NOT NULL DEFAULT '1',
+  `circuit_count` int(10) unsigned NOT NULL DEFAULT '1',
   `btu_total` int(10) unsigned NOT NULL DEFAULT '1',
   `btu_max` int(10) unsigned NOT NULL DEFAULT '1',
   `options` text NOT NULL,
@@ -153,7 +194,7 @@ $sql = "CREATE TABLE `rack_devices` (
   `height` int(10) unsigned NOT NULL DEFAULT '1',
   `width` int(10) unsigned NOT NULL DEFAULT '1',
   `orientation` enum('front','front-right','front-left','rear','rear-left','rear-right') NOT NULL DEFAULT 'front',
-  `type` enum('device','fan','keyboard','kvm','monitor','other','patch panel','pdu','shelf','ups','') NOT NULL DEFAULT '',
+  `type` varchar(50) NOT NULL DEFAULT 'unknown',
   `options` text NOT NULL,
   `notes` text NOT NULL,
   `tags` varchar(250) NOT NULL DEFAULT '',

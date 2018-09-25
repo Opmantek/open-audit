@@ -358,6 +358,9 @@ INSERT INTO `attributes` VALUES (195,1,'devices','type','iPad','ipad','system','
 INSERT INTO `attributes` VALUES (196,1,'devices','type','iPod','ipod','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (197,1,'devices','type','Android','android','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (198,1,'devices','type','Application Accelerator','application accelerator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (199,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (200,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (201,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2419,7 +2422,7 @@ CREATE TABLE `racks` (
   `bar_code` varchar(200) NOT NULL DEFAULT '',
   `power_circuit` varchar(200) NOT NULL DEFAULT '',
   `power_sockets` varchar(200) NOT NULL DEFAULT '',
-  `circut_count` int(10) unsigned NOT NULL DEFAULT '1',
+  `circuit_count` int(10) unsigned NOT NULL DEFAULT '1',
   `btu_total` int(10) unsigned NOT NULL DEFAULT '1',
   `btu_max` int(10) unsigned NOT NULL DEFAULT '1',
   `options` text NOT NULL,
@@ -2460,7 +2463,7 @@ CREATE TABLE `rack_devices` (
   `height` int(10) unsigned NOT NULL DEFAULT '1',
   `width` int(10) unsigned NOT NULL DEFAULT '1',
   `orientation` enum('front','front-right','front-left','rear','rear-left','rear-right') NOT NULL DEFAULT 'front',
-  `type` enum('device','fan','keyboard','kvm','monitor','other','patch panel','pdu','shelf','ups','') NOT NULL DEFAULT '',
+  `type` varchar(50) NOT NULL DEFAULT 'unknown',
   `options` text NOT NULL,
   `notes` text NOT NULL,
   `tags` varchar(250) NOT NULL DEFAULT '',
