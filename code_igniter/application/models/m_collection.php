@@ -661,7 +661,7 @@ class M_collection extends MY_Model
         foreach ($mandatory_fields as $mandatory_field) {
             if (!isset($data->{$mandatory_field}) or $data->{$mandatory_field} == '') {
                 $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
-                log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $mandatory_field);
+                log_error('ERR-0021', 'm_collection::create (' . $collection . ' ' . $mandatory_field . ')', 'Missing field: ' . $mandatory_field);
                 return false;
             }
         }
@@ -1062,7 +1062,7 @@ class M_collection extends MY_Model
                 break;
 
             case "racks":
-                return(' name org_id description row_id row_position pod physical_height physical_width physical_depth weight_empty weight_current weight_max ru_start ru_height type purpose manufacturer model series serial asset_number asset_tag bar_code power_circuit power_sockets circut_count btu_total btu_max options notes ');
+                return(' name org_id description row_id row_position pod physical_height physical_width physical_depth weight_empty weight_current weight_max ru_start ru_height type purpose manufacturer model series serial asset_number asset_tag bar_code power_circuit power_sockets circuit_count btu_total btu_max options notes ');
                 break;
 
             case "rack_devices":

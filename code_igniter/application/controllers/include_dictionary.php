@@ -119,7 +119,9 @@ if ($table == 'buildings') {
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
-    $dictionary->columns->location_id = 'The location of the building.';
+    $dictionary->columns->organisation = $org_id;
+    $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
+    $dictionary->columns->location = 'The location of the building. Links to <code>locations.id</code>.';
     $dictionary->columns->description = $description;
     $dictionary->columns->options = 'Not implemented as yet.';
     $dictionary->columns->notes = 'Not implemented as yet.';
@@ -618,7 +620,7 @@ if ($table == 'racks') {
     $dictionary->sentence = 'Define your racks and assign devices them in a row of your choosing.';
     $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
-    $dictionary->notes = '<p></p>';
+    $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -643,9 +645,9 @@ if ($table == 'racks') {
     $dictionary->columns->asset_number = 'The rack asset number.';
     $dictionary->columns->asset_tag = 'The rack asset tag.';
     $dictionary->columns->bar_code = 'The rack bar code.';
-    $dictionary->columns->power_circuit = 'The power circut this rack attaches to.';
+    $dictionary->columns->power_circuit = 'The power circuit this rack attaches to.';
     $dictionary->columns->power_sockets = 'How many power sockets in this rack.';
-    $dictionary->columns->circut_count = 'How many circuts feed to this rack.';
+    $dictionary->columns->circuit_count = 'How many circuit feed to this rack.';
     $dictionary->columns->btu_total = 'The total BTU output by this rack.';
     $dictionary->columns->btu_max = 'The maximum total BTUs this rack is rated for.';
     $dictionary->columns->options = 'Not implemented as yet.';
@@ -654,7 +656,7 @@ if ($table == 'racks') {
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','row_id');
-    $dictionary->attributes->update = array('name','org_id','description','row_id','row_position','pod','physical_height','physical_width','physical_depth','weight_empty','weight_current','weight_max','ru_start','ru_height','type','purpose','manufacturer','model','series','serial','asset_number','asset_tag','bar_code','power_circuit','power_sockets','circut_count','btu_total','btu_max','options','notes','tags');
+    $dictionary->attributes->update = array('name','org_id','description','row_id','row_position','pod','physical_height','physical_width','physical_depth','weight_empty','weight_current','weight_max','ru_start','ru_height','type','purpose','manufacturer','model','series','serial','asset_number','asset_tag','bar_code','power_circuit','power_sockets','circuit_count','btu_total','btu_max','options','notes','tags');
 }
 
 if ($table == 'rack_devices') {
