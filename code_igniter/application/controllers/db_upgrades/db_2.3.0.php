@@ -59,11 +59,23 @@ $sql = "UPDATE `attributes` SET name = 'WDM (Wavelength Division Multiplexer)' W
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM attributes WHERE `resource` = 'devices' AND `type` = 'type' AND `name` = 'Patch Panel'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM attributes WHERE `resource` = 'devices' AND `type` = 'type' AND `name` = 'Monitor'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "DELETE FROM attributes WHERE `resource` = 'devices' AND `type` = 'type' AND `name` = 'Shelf'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -126,8 +138,6 @@ $this->log_db($this->db->last_query());
 # IP
 $this->alter_table('ip', 'interface', "ADD `interface` varchar(200) NOT NULL DEFAULT '' AFTER `set_by`", 'add');
 
-
-
 # buildings
 $sql = "DROP TABLE IF EXISTS `buildings`";
 $this->db->query($sql);
@@ -153,11 +163,6 @@ $sql = "CREATE TABLE `buildings` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-// $sql = "INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
-// $this->db->query($sql);
-// $this->log_db($this->db->last_query());
-
-
 # floors
 $sql = "DROP TABLE IF EXISTS `floors`";
 $this->db->query($sql);
@@ -182,11 +187,6 @@ $sql = "CREATE TABLE `floors` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
-
-// $sql = "INSERT INTO `floors` VALUES (1, 'Ground Floor', 1, 1, 'The default entry for a floor at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
-// $this->db->query($sql);
-// $this->log_db($this->db->last_query());
-
 
 # racks
 $sql = "DROP TABLE IF EXISTS `racks`";
@@ -236,7 +236,6 @@ $sql = "CREATE TABLE `racks` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
 # rack devices
 $sql = "DROP TABLE IF EXISTS `rack_devices`";
 $this->db->query($sql);
@@ -267,7 +266,6 @@ $sql = "CREATE TABLE `rack_devices` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-
 # rooms
 $sql = "DROP TABLE IF EXISTS `rooms`";
 $this->db->query($sql);
@@ -293,11 +291,6 @@ $sql = "CREATE TABLE `rooms` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-// $sql = "INSERT INTO `rooms` VALUES (1, 'Default', 1, 1, 'The default entry for a room at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
-// $this->db->query($sql);
-// $this->log_db($this->db->last_query());
-
-
 # rows
 $sql = "DROP TABLE IF EXISTS `rows`";
 $this->db->query($sql);
@@ -322,10 +315,6 @@ $sql = "CREATE TABLE `rows` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
-
-// $sql = "INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00')";
-// $this->db->query($sql);
-// $this->log_db($this->db->last_query());
 
 # Roles
 $this->load->model('m_roles');
