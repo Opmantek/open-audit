@@ -50,6 +50,12 @@ if ($collection == 'applications') {
 if ($this->response->meta->collection == 'attributes') {
 }
 
+# buildings
+if ($this->response->meta->collection == 'buildings') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+}
+
 # connections
 if ($collection == 'connections') {
     $this->load->model('m_locations');
@@ -82,6 +88,12 @@ if ($collection == 'discoveries') {
 if ($collection == 'fields') {
         $this->load->model('m_groups');
         $this->response->included = array_merge($this->response->included, $this->m_groups->collection());
+}
+
+# floors
+if ($this->response->meta->collection == 'floors') {
+    $this->load->model('m_buildings');
+    $this->response->included = array_merge($this->response->included, $this->m_buildings->collection());
 }
 
 # groups
@@ -126,6 +138,32 @@ if ($collection == 'queries') {
 
 # roles
 if ($collection == 'roles') {
+}
+
+# racks
+if ($this->response->meta->collection == 'racks') {
+    $this->load->model('m_rows');
+    $this->response->included = array_merge($this->response->included, $this->m_rows->collection());
+}
+
+# rack_devices
+if ($this->response->meta->collection == 'rack_devices') {
+    $this->load->model('m_racks');
+    $this->response->included = array_merge($this->response->included, $this->m_racks->collection());
+    $this->load->model('m_attributes');
+    $this->response->included = array_merge($this->response->included, $this->m_attributes->collection());
+}
+
+# rooms
+if ($this->response->meta->collection == 'rooms') {
+    $this->load->model('m_floors');
+    $this->response->included = array_merge($this->response->included, $this->m_floors->collection());
+}
+
+# rows
+if ($this->response->meta->collection == 'rows') {
+    $this->load->model('m_rooms');
+    $this->response->included = array_merge($this->response->included, $this->m_rooms->collection());
 }
 
 # scripts
