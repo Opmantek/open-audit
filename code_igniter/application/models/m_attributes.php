@@ -96,6 +96,7 @@ class M_attributes extends MY_Model
         if (!empty($resource)) {
             $sql .= ' AND attributes.resource = \'' . $resource . '\'';
         }
+        $sql .= " ORDER BY `resource`, `type`, `name`";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'attributes');
         $this->log->summary = 'finish';
