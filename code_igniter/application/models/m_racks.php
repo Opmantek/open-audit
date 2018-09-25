@@ -103,7 +103,7 @@ class M_racks extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
-        $sql = 'SELECT racks.*, orgs.name AS `orgs.name`, rows.name as `rows.name`, count(rack_devices.id) as `rack_devices_count` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
+        $sql = 'SELECT racks.*, orgs.name AS `orgs.name`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rack_devices.id) as `rack_devices_count` FROM `racks` LEFT JOIN orgs ON (racks.org_id = orgs.id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN rack_devices ON (rack_devices.rack_id = racks.id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
         if (!empty($row)) {
             $sql .= ' AND racks.row_id IN (' . $row . ')';
         }

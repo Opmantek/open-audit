@@ -103,7 +103,7 @@ class M_rooms extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
-        $sql = 'SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN rows ON (rows.room_id = rooms.id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
+        $sql = 'SELECT rooms.*, orgs.name AS `orgs.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, count(rows.id) as `rows_count` FROM `rooms` LEFT JOIN orgs ON (rooms.org_id = orgs.id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (floors.building_id = buildings.id)  LEFT JOIN locations ON (buildings.location_id = locations.id) LEFT JOIN rows ON (rows.room_id = rooms.id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
         if (!empty($location)) {
             $sql .= ' AND rooms.floor_id IN (' . $floor . ')';
         }

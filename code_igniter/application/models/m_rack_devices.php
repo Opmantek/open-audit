@@ -90,7 +90,7 @@ class M_rack_devices extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
-        $sql = 'SELECT rack_devices.*, orgs.name AS `orgs.name`, racks.name as `racks.name`, 0 as `system_count` FROM `rack_devices` LEFT JOIN orgs ON (rack_devices.org_id = orgs.id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
+        $sql = 'SELECT rack_devices.*, orgs.name AS `orgs.name`, racks.name as `racks.name`, racks.id as `racks.id`, 0 as `system_count`, rows.name as `rows.name`, rooms.name as `rooms.name`, floors.name as `floors.name`, buildings.name as `buildings.name`, locations.name as `locations.name`, image.filename as `image.filename`, system.name as `system.name`, system.ip as `system.ip`, system.type as `system.type`, system.id as `system.id`, system.icon as `system.icon` FROM `rack_devices` LEFT JOIN orgs ON (orgs.id = rack_devices.org_id) LEFT JOIN racks ON (racks.id = rack_devices.rack_id) LEFT JOIN rows ON (rows.id = racks.row_id) LEFT JOIN rooms ON (rooms.id = rows.room_id) LEFT JOIN floors ON (floors.id = rooms.floor_id) LEFT JOIN buildings ON (buildings.id = floors.building_id) LEFT JOIN locations ON (locations.id = buildings.location_id) LEFT JOIN image ON (image.system_id = rack_devices.system_id and image.orientation = "front") LEFT JOIN system ON (system.id = rack_devices.system_id) WHERE orgs.id IN (' . $CI->user->org_list . ')';
         if (!empty($rack)) {
             $sql .= ' AND rack_devices.rack_id IN (' . $rack . ')';
         }
@@ -101,4 +101,5 @@ class M_rack_devices extends MY_Model
         stdlog($this->log);
         return ($result);
     }
+
 }
