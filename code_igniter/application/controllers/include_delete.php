@@ -24,7 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
-if ($this->{'m_'.$this->response->meta->collection}->delete()) {
+if ($this->{'m_'.$this->response->meta->collection}->delete($this->response->meta->id)) {
     $this->response->data = array();
     $temp = new stdClass();
     $temp->type = $this->response->meta->collection;
