@@ -337,6 +337,13 @@ if ($this->response->meta->collection == 'rooms') {
     }
 }
 
+# rows
+if ($this->response->meta->collection == 'rows') {
+    $this->load->model('m_racks');
+    $rows = $this->m_racks->collection($this->response->meta->id);
+    $this->response->included = array_merge($this->response->included, $rows);
+}
+
 # scripts
 if ($this->response->meta->collection == 'scripts') {
     $this->load->model('m_files');
