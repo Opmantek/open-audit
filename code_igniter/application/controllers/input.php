@@ -72,9 +72,8 @@ class input extends CI_Controller
         $log = new stdClass();
         $log->type = 'system';
         $log->object = 'input';
-        $log->severity = 6;
-        stdlog($log);
         $log->severity = 7;
+        stdlog($log);
 
         if ($_SERVER['REMOTE_ADDR'] == '::1') {
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
@@ -192,6 +191,12 @@ class input extends CI_Controller
             return;
         }
         include "include_input_logs.php";
+    }
+
+    public function queue()
+    {
+        # Our processing queue's
+        include "include_input_queue.php";
     }
 }
 // End of file input.php

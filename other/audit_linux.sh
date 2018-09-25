@@ -1540,6 +1540,10 @@ if [ -n "$net_cards" ]; then
 			set_by="static"
 			net_card_dhcp_server=""
 			net_card_dhcp_lease_expire=""
+			net_card_dhcp_lease_time=""
+			net_card_dhcp_lease_days=""
+			net_card_dhcp_serverp_lease_obtained=""
+
 		else
 			net_card_dhcp_enab="True"
 			set_by="dhcp"
@@ -1628,13 +1632,48 @@ echo "	</network>" >> "$xml_file"
 # ADDRESSES SECTION              #
 ##################################
 
-if [ -n "$addr_info" ]; then
+# if [ -n "$addr_info" ]; then
+# 	{
+# 	echo "	<ip>$addr_info"
+# 	echo "	</ip>"
+# 	} >> "$xml_file"
+# fi
+IFS="$NEWLINEIFS"
+echo "	<ip>" >> "$xml_file"
+for line in $(ip -o a | grep -v "^1: lo"); do
+	interface=$(echo "$line" | awk '{print $2}')
+	mac=$(ip a show "$interface" | grep ether | awk '{print $2}')
+	net_index=$(echo "$line" | cut -d: -f1)
+	ip=$(echo "$line" | awk '{print $4}' | cut -d/ -f1)
+	netmask=""
+	cidr=$(echo "$line" | awk '{print $4}' | cut -d/ -f2)
+	if [[ "$ip" = *":"* ]]; then
+		version="6"
+	else
+		version="4"
+	fi
+	network=""
+	lease_file=$(ps -ef 2>/dev/null | grep dhclient | grep "$interface" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+	if [ ! -e "$lease_file" ]; then
+		set_by="static"
+	else
+		set_by="dhcp"
+	fi
 	{
-	echo "	<ip>$addr_info"
-	echo "	</ip>"
+	echo "		<item>"
+	echo "			<mac>$(escape_xml "$mac")</mac>"
+	echo "			<net_index>$(escape_xml "$net_index")</net_index>"
+	echo "			<ip>$(escape_xml "$ip")</ip>"
+	echo "			<netmask>$(escape_xml "$netmask")</netmask>"
+	echo "			<cidr>$(escape_xml "$cidr")</cidr>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<network>$(escape_xml "$network")</network>"
+	echo "			<set_by>$(escape_xml "$set_by")</set_by>"
+	echo "			<interface>$(escape_xml "$interface")</interface>"
+	echo "		</item>"
 	} >> "$xml_file"
-fi
-
+done
+echo "	</ip>" >> "$xml_file"
 
 ##################################
 # DISK SECTION                   #
@@ -2310,7 +2349,8 @@ if hash systemctl 2>/dev/null; then
 fi
 
 if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; then
-	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	#INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf 2>/dev/null)
 	# upstart services
 	if [ -n `which initctl 2>/dev/null` ]; then
 		if [ "$debugging" -gt "1" ]; then

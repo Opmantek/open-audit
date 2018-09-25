@@ -716,6 +716,7 @@ INSERT INTO `configuration` VALUES (62,'decrypt_credentials','y','bool','y','sys
 INSERT INTO `configuration` VALUES (63,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
 INSERT INTO `configuration` VALUES (64,'discoveries_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
 INSERT INTO `configuration` VALUES (65,'audits_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent audits we should process.');
+INSERT INTO `configuration` VALUES (66,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1407,6 +1408,7 @@ CREATE TABLE `ip` (
   `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
   `network` varchar(40) NOT NULL DEFAULT '',
   `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
+  `interface` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `mac` (`mac`),
