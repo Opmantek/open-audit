@@ -914,6 +914,13 @@ if (! function_exists('inputRead')) {
         } else {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
+        if ($CI->response->meta->properties == '*') {
+            $temp = $CI->response->meta->collection;
+            if ($temp == 'devices') {
+                $temp = 'system';
+            }
+            $CI->response->meta->internal->properties = $temp . '.*';
+        }
 
         if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form' and !empty($CI->config->config['access_token_enable']) and $CI->config->config['access_token_enable'] == 'y') {
             if (empty($CI->response->meta->received_data->access_token)) {
@@ -1036,6 +1043,8 @@ if (! function_exists('inputRead')) {
                 unset($query);
             }
         }
+
+        $CI->response->meta->internal->filter = filter($CI->response->meta->filter, $CI->response->meta->collection, $CI->user);
 
         # Accept first_seen, last_seen, edited_date and timestamp as numeric unix_timestamp's and convert them to a local timestamp string
         foreach ($CI->response->meta->filter as $filter) {
@@ -1234,6 +1243,57 @@ if (! function_exists('inputRead')) {
             }
         }
         #echo "<pre>\n"; print_r(json_encode($CI->response)); exit();
+    }
+}
+
+if (! function_exists('filter')) {
+    function filter($response_filter, $collection, $user)
+    {
+        $reserved = ' properties limit resource action sort current offset format ';
+        $filter = '';
+        foreach ($response_filter as $item) {
+            if (empty($item->operator)) {
+                $item->operator = '=';
+            }
+            if (strpos(' '.$item->name.' ', $reserved) === false) {
+                // We MUST have a name like 'connections.name', not just 'name'
+                if (strpos($item->name, '.') !== false) {
+                    if ($item->operator != 'in') {
+                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . str_replace('"', '\"', $item->value) . '"';
+                    } else {
+                        $filter .= ' AND ' . $item->name . ' in ' . str_replace('"', '\"', $item->value);
+                    }
+                }
+            }
+        }
+        if ($filter != '') {
+            if ($collection == 'configuration' or $collection == 'logs' ) {
+                $filter = ' WHERE ' . substr($filter, 4);
+            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+                $filter = substr($filter, 5);
+                if (!empty($user->org_parents)) {
+                    $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . ')) AND ' . $filter;
+                } else {
+                    $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+                }
+            } else {
+                $filter = substr($filter, 5);
+                $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+            }
+        } else {
+            if ($collection == 'configuration' or $collection == 'logs' ) {
+                $filter = '';
+            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+                if (!empty($user->org_parents)) {
+                    $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . '))';
+                } else {
+                    $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+                }
+            } else {
+                $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+            }
+        }
+        return $filter;
     }
 }
 /* End of file input_helper.php */
