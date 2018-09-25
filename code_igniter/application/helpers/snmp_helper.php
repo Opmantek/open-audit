@@ -29,7 +29,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.2.7
+ * @version   2.3.0
 
  *
  * @copyright Copyright (c) 2014, Opmantek
