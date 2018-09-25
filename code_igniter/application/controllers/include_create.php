@@ -27,9 +27,9 @@
 $this->load->model('m_collection');
 $this->response->meta->id = $this->{'m_collection'}->create();
 
-if (! empty($this->response->meta->id)) {
+if (!empty($this->response->meta->id)) {
     if ($this->response->meta->format === 'json') {
-        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+        $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
         output($this->response);
     } else {
         redirect($this->response->meta->collection);
