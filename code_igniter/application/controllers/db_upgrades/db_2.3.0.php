@@ -373,6 +373,18 @@ foreach ($result as $location) {
     $this->log_db($this->db->last_query());
 }
 
+# system
+
+$this->alter_table('system', 'instance_ident', "ADD `instance_ident` varchar(200) NOT NULL DEFAULT '' AFTER `credentials`", 'add');
+
+$this->alter_table('system', 'instance_type', "ADD `instance_type` varchar(200) NOT NULL DEFAULT '' AFTER `instance_ident`", 'add');
+
+$this->alter_table('system', 'instance_state', "ADD `instance_state` varchar(200) NOT NULL DEFAULT '' AFTER `instance_type`", 'add');
+
+$this->alter_table('system', 'instance_reservation_ident', "ADD `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '' AFTER `instance_state`", 'add');
+
+$this->alter_table('system', 'instance_tags', "ADD `instance_tags` TEXT NOT NULL AFTER `instance_reservation_ident`", 'add');
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180925' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
