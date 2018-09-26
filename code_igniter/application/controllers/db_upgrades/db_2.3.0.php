@@ -374,7 +374,7 @@ foreach ($result as $location) {
 }
 
 # set our versions
-$sql = "UPDATE `configuration` SET `value` = '20180830' WHERE `name` = 'internal_version'";
+$sql = "UPDATE `configuration` SET `value` = '20180925' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -383,5 +383,5 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $this->log_db("Upgrade database to 2.3.0 completed");
-$this->config->config['internal_version'] = '20180830';
+$this->config->config['internal_version'] = '20180925';
 $this->config->config['display_version'] = '2.3.0';
