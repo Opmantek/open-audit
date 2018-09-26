@@ -138,6 +138,31 @@ $this->log_db($this->db->last_query());
 # IP
 $this->alter_table('ip', 'interface', "ADD `interface` varchar(200) NOT NULL DEFAULT '' AFTER `set_by`", 'add');
 
+# rack devices
+$sql = "DROP TABLE IF EXISTS `rack_devices`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# racks
+$sql = "DROP TABLE IF EXISTS `racks`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# rows
+$sql = "DROP TABLE IF EXISTS `rows`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# rooms
+$sql = "DROP TABLE IF EXISTS `rooms`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+# floors
+$sql = "DROP TABLE IF EXISTS `floors`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # buildings
 $sql = "DROP TABLE IF EXISTS `buildings`";
 $this->db->query($sql);
@@ -163,11 +188,6 @@ $sql = "CREATE TABLE `buildings` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-# floors
-$sql = "DROP TABLE IF EXISTS `floors`";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
 $sql = "CREATE TABLE `floors` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL DEFAULT '',
@@ -188,8 +208,43 @@ $sql = "CREATE TABLE `floors` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-# racks
-$sql = "DROP TABLE IF EXISTS `racks`";
+$sql = "CREATE TABLE `rooms` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `floor_id` int(10) unsigned DEFAULT NULL,
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `floor_id` (`floor_id`),
+  CONSTRAINT `rooms_floor_id` FOREIGN KEY (`floor_id`) REFERENCES `floors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rooms_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `rows` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `room_id` int(10) unsigned DEFAULT NULL,
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `room_id` (`room_id`),
+  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -230,14 +285,10 @@ $sql = "CREATE TABLE `racks` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
-  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+  KEY `row_id` (`row_id`),
+  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-# rack devices
-$sql = "DROP TABLE IF EXISTS `rack_devices`";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -260,58 +311,8 @@ $sql = "CREATE TABLE `rack_devices` (
   PRIMARY KEY (`id`),
   KEY `org_id` (`org_id`),
   KEY `rack_id` (`rack_id`),
-  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-# rooms
-$sql = "DROP TABLE IF EXISTS `rooms`";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-$sql = "CREATE TABLE `rooms` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `floor_id` int(10) unsigned DEFAULT NULL,
-  `description` text NOT NULL,
-  `options` text NOT NULL,
-  `notes` text NOT NULL,
-  `tags` varchar(250) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `org_id` (`org_id`),
-  KEY `floor_id` (`floor_id`),
-  CONSTRAINT `rooms_floor_id` FOREIGN KEY (`floor_id`) REFERENCES `floors` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rooms_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-# rows
-$sql = "DROP TABLE IF EXISTS `rows`";
-$this->db->query($sql);
-$this->log_db($this->db->last_query());
-
-$sql = "CREATE TABLE `rows` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(200) NOT NULL DEFAULT '',
-  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `room_id` int(10) unsigned DEFAULT NULL,
-  `description` text NOT NULL,
-  `options` text NOT NULL,
-  `notes` text NOT NULL,
-  `tags` varchar(250) NOT NULL DEFAULT '',
-  `edited_by` varchar(200) NOT NULL DEFAULT '',
-  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
-  PRIMARY KEY (`id`),
-  KEY `org_id` (`org_id`),
-  KEY `room_id` (`room_id`),
-  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
@@ -341,7 +342,7 @@ $this->m_roles->update_permissions('user', 'rows', 'r');
 
 # Default buildings, floors, rooms and rows for each location
 $sql = "SELECT id, org_id FROM locations";
-$query = $this->db->query($select);
+$query = $this->db->query($sql);
 $this->log_db($this->db->last_query());
 $result = $query->result();
 foreach ($result as $location) {
@@ -350,22 +351,25 @@ foreach ($result as $location) {
 
     $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $location_id);
-    $building_id = intval($this->run_sql($sql, $data_array));
+    $query = $this->db->query($sql, $data_array);
+    $building_id = $this->db->insert_id();
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $building_id);
-    $floor_id = intval($this->run_sql($sql, $data_array));
+    $query = $this->db->query($sql, $data_array);
+    $floor_id = $this->db->insert_id();
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $floor_id);
-    $room_id = intval($this->run_sql($sql, $data_array));
+    $query = $this->db->query($sql, $data_array);
+    $room_id = $this->db->insert_id();
     $this->log_db($this->db->last_query());
 
     $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $room_id);
-    $this->run_sql($sql, $data_array);
+    $query = $this->db->query($sql, $data_array);
     $this->log_db($this->db->last_query());
 }
 
