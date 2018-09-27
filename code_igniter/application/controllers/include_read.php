@@ -116,6 +116,12 @@ if ($this->response->meta->collection == 'buildings') {
     }
 }
 
+# clouds
+if ($this->response->meta->collection == 'clouds') {
+    # get the cloud_log
+    $this->response->included = array_merge($this->response->included, $this->m_clouds->read_sub_resource($this->response->meta->id));
+}
+
 # collectors
 if ($this->response->meta->collection == 'collectors') {
 }
