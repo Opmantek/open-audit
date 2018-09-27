@@ -29,8 +29,13 @@ if (empty($this->response->meta->received_data)) {
     output($this->response);
     exit();
 }
-$this->load->model('m_collection');
-$this->{'m_collection'}->update();
+if ($this->response->meta->collection == 'clouds') {
+	$this->load->model('m_clouds');
+	$this->m_clouds->update();
+} else {
+	$this->load->model('m_collection');
+	$this->{'m_collection'}->update();
+}
 
 if ($this->response->meta->format === 'json') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
