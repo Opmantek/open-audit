@@ -142,7 +142,6 @@ class M_discoveries extends MY_Model
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
         return ($result);
-        #return(array());
     }
 
     public function execute($id = 0)
