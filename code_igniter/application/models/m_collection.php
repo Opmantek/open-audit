@@ -694,19 +694,19 @@ class M_collection extends MY_Model
                 $org_id = intval($data->attributes->org_id);
             }
             $location_id = $id;
-            $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', ?, NOW())";
+            $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', '', ?, NOW())";
             $data_array = array($org_id, $location_id, $CI->user->full_name);
             $building_id = intval($this->run_sql($sql, $data_array));
 
-            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', ?, NOW())";
+            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', ?, NOW())";
             $data_array = array($org_id, $building_id, $CI->user->full_name);
             $floor_id = intval($this->run_sql($sql, $data_array));
 
-            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', ?, NOW())";
+            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
             $data_array = array($org_id, $floor_id, $CI->user->full_name);
             $room_id = intval($this->run_sql($sql, $data_array));
 
-            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', ?, NOW())";
+            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
             $data_array = array($org_id, $room_id, $CI->user->full_name);
             $this->run_sql($sql, $data_array);
         }
