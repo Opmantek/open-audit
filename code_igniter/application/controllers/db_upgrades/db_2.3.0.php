@@ -108,6 +108,25 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_pid','','number','n'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# cloud_log
+$sql = "DROP TABLE IF EXISTS `cloud_log`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `cloud_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cloud_id` int(10) unsigned DEFAULT NULL,
+  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`),
+  KEY `cloud_id` (`cloud_id`),
+  CONSTRAINT `cloud_log_cloud_id` FOREIGN KEY (`cloud_id`) REFERENCES `clouds` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # Discoveries
 $this->alter_table('discoveries', 'status', "ADD `status` varchar(20) NOT NULL DEFAULT '' AFTER `complete`", 'add');
@@ -374,7 +393,6 @@ foreach ($result as $location) {
 }
 
 # system
-
 $this->alter_table('system', 'instance_ident', "ADD `instance_ident` varchar(200) NOT NULL DEFAULT '' AFTER `credentials`", 'add');
 
 $this->alter_table('system', 'instance_type', "ADD `instance_type` varchar(200) NOT NULL DEFAULT '' AFTER `instance_ident`", 'add');
@@ -384,6 +402,17 @@ $this->alter_table('system', 'instance_state', "ADD `instance_state` varchar(200
 $this->alter_table('system', 'instance_reservation_ident', "ADD `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '' AFTER `instance_state`", 'add');
 
 $this->alter_table('system', 'instance_tags', "ADD `instance_tags` TEXT NOT NULL AFTER `instance_reservation_ident`", 'add');
+
+$this->alter_table('system', 'instance_options', "ADD `instance_options` TEXT NOT NULL AFTER `instance_tags`", 'add');
+
+# widgets
+$sql = "DELETE FROM widgets WHERE name = 'Hardware Additions by Day'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Hardware Additions by Day',1,'Any items in the following tables that are new - bios, disk, memory, module, monitor, motherboard, network, optical, partition, processor, san, scsi, sound, video.','line','','system','create','','Devices','','',30,'','SELECT DATE(`change_log`.`timestamp`) AS `date`, count(DATE(`change_log`.`timestamp` )) AS `count` FROM `change_log` LEFT JOIN `system` ON (`system`.`id` = `change_log`.`system_id`) WHERE @filter AND `change_log`.`timestamp` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND `change_log`.`db_table` IN (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'network\', \'optical\', \'partition\', \'processor\', \'san\', \'scsi\', \'sound\', \'video\') AND `change_log`.`db_action` = \'create\' GROUP BY DATE(`change_log`.`timestamp`)','devices?sub_resource=change_log&change_log.db_table=inbios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video&change_log.timestamp=like@date&change_log.db_action=create','system','2000-01-01 00:00:00');";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180925' WHERE `name` = 'internal_version'";
