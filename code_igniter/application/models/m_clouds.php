@@ -85,11 +85,11 @@ class M_clouds extends MY_Model
             $existing_credentials = $this->run_sql($select, array($CI->response->meta->id));
             $existing_credentials = json_decode($this->encrypt->decode($existing_credentials[0]->credentials));
             $new_credentials = new stdClass();
-            foreach ($existing_credentials as $existing_key => $existing_value) {
-                if (!empty($received_credentials->$existing_key)) {
-                    $new_credentials->$existing_key = $received_credentials->$existing_key;
+            foreach ($existing_credentials as $key => $value) {
+                if (!empty($received_credentials->$key)) {
+                    $new_credentials->$key = $received_credentials->$key;
                 } else {
-                    $new_credentials->$existing_key = $existing_credentials->$existing_key;
+                    $new_credentials->$key = $existing_credentials->$key;
                 }
             }
             $sql .= "`credentials` = ?, ";
@@ -119,6 +119,18 @@ class M_clouds extends MY_Model
         $data[] = intval($CI->response->meta->id);
         $this->run_sql($sql, $data);
         return;
+    }
+
+    public function read_sub_resource($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        $CI = & get_instance();
+        $id = intval($id);
+        $sql = "SELECT * FROM cloud_log WHERE cloud_id = ? ORDER BY `id` LIMIT " . $this->config->config['database_show_row_limit'];
+        $result = $this->run_sql($sql, array(intval($id)));
+        $result = $this->format_data($result, 'cloud_log');
+        return ($result);
     }
 
     public function delete($id = '')
