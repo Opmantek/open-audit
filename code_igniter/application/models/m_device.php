@@ -1262,7 +1262,7 @@ class M_device extends MY_Model
         $query = $this->db->query($sql, $data);
         $edit_log = $query->result();
         $fields = $this->db->list_fields('system');
-        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen');
+        $disallowed_fields = array('id', 'icon', 'sysUpTime', 'uptime', 'last_seen', 'last_seen_by', 'first_seen', 'instance_options');
         $update_device = array();
         foreach ($details as $key => $value) {
             if (($key != '') and ($value != '')) {
