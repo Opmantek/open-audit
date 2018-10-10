@@ -90,10 +90,10 @@ class M_racks extends MY_Model
         $this->log->status = 'reading children data';
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT racks_devices.* from racks_devices WHERE racks_devices.rack_id = ?";
+        $sql = "SELECT rack_devices.* from rack_devices WHERE rack_devices.rack_id = ?";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'racks_devices');
+        $result = $this->format_data($result, 'rack_devices');
         return ($result)    ;
     }
 
