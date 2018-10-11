@@ -652,6 +652,7 @@ if (! function_exists('output')) {
                         if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                             $row->attributes->$key = intval($value);
                         } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                    (strrpos($key, '.id') === strlen($key)-3) or
                                     (strrpos($key, '_count') === strlen($key)-6) or
                                     (strrpos($key, '_percent') === strlen($key)-8) or
                                     (strrpos($key, '_size') === strlen($key)-5)) {
