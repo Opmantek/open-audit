@@ -106,7 +106,7 @@ class devices extends MY_Controller
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,print_queue,processor,purchase,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource != '') {
             if ($this->response->meta->sub_resource == 'partition_graph') {
@@ -129,7 +129,7 @@ class devices extends MY_Controller
             if (!empty($this->response->meta->include) and !empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
-                    if ($table != 'fields' and $table != 'application') {
+                    if ($table != 'fields' and $table != 'application' and $table != 'rack_devices') {
                         $result = false;
                         $result = $this->m_devices->read_sub_resource(
                             $this->response->meta->id, #id
@@ -150,6 +150,10 @@ class devices extends MY_Controller
                     } else if ($table == 'application') {
                         $result = false;
                         $result = $this->m_devices->get_device_applications($this->response->meta->id);
+                        $this->response->included = array_merge($this->response->included, $result);
+                    } else if ($table == 'rack_devices') {
+                        $result = false;
+                        $result = $this->m_devices->get_device_rack($this->response->meta->id);
                         $this->response->included = array_merge($this->response->included, $result);
                     }
                 }
