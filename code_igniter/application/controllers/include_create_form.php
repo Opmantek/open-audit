@@ -92,6 +92,8 @@ if ($collection == 'fields') {
 
 # floors
 if ($this->response->meta->collection == 'floors') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
     $this->load->model('m_buildings');
     $this->response->included = array_merge($this->response->included, $this->m_buildings->collection());
 }
@@ -144,16 +146,12 @@ if ($collection == 'roles') {
 if ($this->response->meta->collection == 'racks') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
-
     $this->load->model('m_buildings');
     $this->response->included = array_merge($this->response->included, $this->m_buildings->collection());
-
     $this->load->model('m_floors');
     $this->response->included = array_merge($this->response->included, $this->m_floors->collection());
-
     $this->load->model('m_rooms');
     $this->response->included = array_merge($this->response->included, $this->m_rooms->collection());
-
     $this->load->model('m_rows');
     $this->response->included = array_merge($this->response->included, $this->m_rows->collection());
 }
@@ -168,12 +166,22 @@ if ($this->response->meta->collection == 'rack_devices') {
 
 # rooms
 if ($this->response->meta->collection == 'rooms') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+    $this->load->model('m_buildings');
+    $this->response->included = array_merge($this->response->included, $this->m_buildings->collection());
     $this->load->model('m_floors');
     $this->response->included = array_merge($this->response->included, $this->m_floors->collection());
 }
 
 # rows
 if ($this->response->meta->collection == 'rows') {
+    $this->load->model('m_locations');
+    $this->response->included = array_merge($this->response->included, $this->m_locations->collection());
+    $this->load->model('m_buildings');
+    $this->response->included = array_merge($this->response->included, $this->m_buildings->collection());
+    $this->load->model('m_floors');
+    $this->response->included = array_merge($this->response->included, $this->m_floors->collection());
     $this->load->model('m_rooms');
     $this->response->included = array_merge($this->response->included, $this->m_rooms->collection());
 }

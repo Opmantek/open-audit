@@ -48,7 +48,7 @@ class M_floors extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT * FROM `floors` WHERE `id` = ?";
+        $sql = "SELECT floors.*, orgs.id AS `orgs.id`, locations.id AS `locations.id`, buildings.id AS `buildings.id` FROM `floors` LEFT JOIN `buildings` ON (buildings.id = floors.building_id) LEFT JOIN `locations` ON (locations.id = buildings.location_id) LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE floors.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'floors');

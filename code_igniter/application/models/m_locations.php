@@ -43,7 +43,7 @@ class M_locations extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function read($id = '')
+    public function read($id = 0)
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
@@ -53,7 +53,7 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM locations WHERE id = ?";
+        $sql = "SELECT locations.*, orgs.id AS `orgs.id` FROM `locations` LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE locations.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'locations');
