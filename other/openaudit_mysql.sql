@@ -2584,7 +2584,7 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (1, 'Default', 1, 1, 'The default entry for a room at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
+INSERT INTO `rooms` VALUES (1, 'Default Room', 1, 1, 'The default entry for a room at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2654,7 +2654,7 @@ CREATE TABLE `rows` (
 
 LOCK TABLES `rows` WRITE;
 /*!40000 ALTER TABLE `rows` DISABLE KEYS */;
-INSERT INTO `rows` VALUES (1, 'Default', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
+INSERT INTO `rows` VALUES (1, 'Default Row', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `rows` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3186,7 +3186,7 @@ CREATE TABLE `system` (
   `credentials` text NOT NULL,
   `instance_ident` varchar(200) NOT NULL DEFAULT '',
   `instance_type` varchar(200) NOT NULL DEFAULT '',
-  `instance_state` varchar(200) NOT NULL DEFAULT '';
+  `instance_state` varchar(200) NOT NULL DEFAULT '',
   `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '',
   `instance_tags` TEXT NOT NULL,
   `instance_options` TEXT NOT NULL,

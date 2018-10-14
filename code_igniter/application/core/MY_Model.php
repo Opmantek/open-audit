@@ -445,7 +445,7 @@ class MY_Model extends CI_Model
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'locations') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name`, orgs.name AS `orgs.name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'logs') {
                 $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];

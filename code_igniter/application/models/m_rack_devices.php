@@ -84,7 +84,7 @@ class M_rack_devices extends MY_Model
         return ($result);
     }
 
-    public function collection($rack = '')
+    public function collection($parent = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';

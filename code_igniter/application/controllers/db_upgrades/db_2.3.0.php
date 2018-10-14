@@ -380,13 +380,13 @@ foreach ($result as $location) {
     $floor_id = $this->db->insert_id();
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', '', 'system', NOW())";
+    $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default Room', ?, ?, 'The default entry for a room at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $floor_id);
     $query = $this->db->query($sql, $data_array);
     $room_id = $this->db->insert_id();
     $this->log_db($this->db->last_query());
 
-    $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', '', 'system', NOW())";
+    $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', 'system', NOW())";
     $data_array = array($org_id, $room_id);
     $query = $this->db->query($sql, $data_array);
     $this->log_db($this->db->last_query());

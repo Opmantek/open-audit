@@ -48,7 +48,7 @@ class M_racks extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT * FROM `racks` WHERE `id` = ?";
+        $sql = "SELECT racks.*, orgs.id AS `orgs.id`, locations.id AS `locations.id`, buildings.id AS `buildings.id`, floors.id AS `floors.id`, rooms.id AS `rooms.id` FROM `racks` LEFT JOIN `rows` ON (rows.id = racks.row_id) LEFT JOIN `rooms` ON (rooms.id = rows.room_id) LEFT JOIN `floors` ON (floors.id = rooms.floor_id) LEFT JOIN `buildings` ON (buildings.id = floors.building_id) LEFT JOIN `locations` ON (locations.id = buildings.location_id) LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE racks.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'racks');
@@ -90,10 +90,10 @@ class M_racks extends MY_Model
         $this->log->status = 'reading children data';
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT racks_devices.* from racks_devices WHERE racks_devices.rack_id = ?";
+        $sql = "SELECT rack_devices.* from rack_devices WHERE rack_devices.rack_id = ?";
         $data = array(intval($id));
         $result = $this->run_sql($sql, $data);
-        $result = $this->format_data($result, 'racks_devices');
+        $result = $this->format_data($result, 'rack_devices');
         return ($result)    ;
     }
 

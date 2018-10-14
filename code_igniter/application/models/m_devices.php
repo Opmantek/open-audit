@@ -252,6 +252,14 @@ class M_devices extends MY_Model
         return($result);
     }
 
+    public function get_device_rack($id = 0)
+    {
+        $sql = "SELECT rack_devices.*, racks.name AS `racks.name`, racks.id AS `racks.id` FROM rack_devices LEFT JOIN `racks` ON (racks.id = rack_devices.rack_id) WHERE system_id = ?";
+        $query = $this->run_sql($sql, array(intval($id)));
+        $result = $this->format_data($query, 'rack_devices');
+        return($result);
+    }
+
     public function read_sub_resource($id = '', $sub_resource = '', $sub_resource_id = '', $properties = '', $sort = '', $current = 'y', $limit = '')
     {
         $CI = & get_instance();

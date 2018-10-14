@@ -48,7 +48,7 @@ class M_buildings extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $id = intval($id);
-        $sql = "SELECT * FROM `buildings` WHERE `id` = ?";
+        $sql = "SELECT buildings.*, orgs.id AS `orgs.id`, locations.id AS `locations.id` FROM `buildings` LEFT JOIN `locations` ON (locations.id = buildings.location_id) LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE buildings.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'buildings');

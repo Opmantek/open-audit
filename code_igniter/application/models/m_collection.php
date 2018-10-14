@@ -702,11 +702,11 @@ class M_collection extends MY_Model
             $data_array = array($org_id, $building_id, $CI->user->full_name);
             $floor_id = intval($this->run_sql($sql, $data_array));
 
-            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
+            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default Room', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
             $data_array = array($org_id, $floor_id, $CI->user->full_name);
             $room_id = intval($this->run_sql($sql, $data_array));
 
-            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
+            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
             $data_array = array($org_id, $room_id, $CI->user->full_name);
             $this->run_sql($sql, $data_array);
         }
