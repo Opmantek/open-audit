@@ -471,4 +471,19 @@ class MY_Model extends CI_Model
             return($return);
         }
     }
+
+    public function get_all_columns($table = '')
+    {
+        if ($table == '') {
+            return;
+        }
+        $return = '';
+        $fields = $this->db->list_fields($table);
+        foreach ($fields as $field)
+        {
+            $return .= ', ' . $table . '.' . $field . ' AS `' . $table . '.' . $field . '`';
+        }
+        $return = substr($return, 1);
+        return $return;
+    }
 }

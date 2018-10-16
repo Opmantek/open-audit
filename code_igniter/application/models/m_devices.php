@@ -729,7 +729,12 @@ class M_devices extends MY_Model
                 $CI->response->meta->total = intval($result[0]->count);
             }
         }
-        $sql = "/* m_devices::collection_sub_resource */ " . "SELECT " . $CI->response->meta->internal->properties . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
+        if ($CI->response->meta->internal->properties == '*' or $CI->response->meta->internal->properties == $CI->response->meta->sub_resource.'.*') {
+            $columns = $this->get_all_columns($CI->response->meta->sub_resource);
+        } else {
+            $columns = $CI->response->meta->internal->properties;
+        }
+        $sql = "/* m_devices::collection_sub_resource */ " . "SELECT " . $columns . " FROM `" . $CI->response->meta->sub_resource . "` LEFT JOIN system ON (system.id = `" . $CI->response->meta->sub_resource . "`.system_id) WHERE system.org_id IN (" . $CI->user->org_list . ") " . $filter . " " . $CI->response->meta->internal->groupby . " " . $CI->response->meta->internal->sort . " " . $CI->response->meta->internal->limit;
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, $CI->response->meta->sub_resource);
         if ($CI->response->meta->sub_resource == 'credential' and count($result) > 0) {
