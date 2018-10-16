@@ -100,7 +100,7 @@ if (! function_exists('output')) {
 
             if (!empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'help') {
+                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
                         $CI->response->meta->data_order[] = $key;
                     } else {
                         $table = $CI->response->meta->collection;
