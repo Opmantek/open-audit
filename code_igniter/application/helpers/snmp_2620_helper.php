@@ -42,6 +42,14 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
+    
+    # serial
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2620.1.6.16.3");
+
+    #Memory
+    #1.3.6.1.4.1.2620.1.6.7.4.3 in Bytes so divide by 1,048,576
+    $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2620.1.6.7.4.3") / 1048576);
+    
     if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.1') {
         $details->type = 'firewall';
         $details->model = 'UTM-1450';
