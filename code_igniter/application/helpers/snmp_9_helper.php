@@ -41,6 +41,16 @@
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
+    
+    #Memory
+    # the only MIB providing overall RAM is 1.3.6.1.4.1.9.3.6.6.0 which is deprecated
+    $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1048576);
+    
+    #Disk 1.3.6.1.4.1.2620.1.6.7.3.6 may require /1048576 for MB sizing
+    $details->disk_model = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1") / 1048576);  
+    
+    
+    
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
     if ($oid == '1.3.6.1.4.1.9.1.1') {
         $details->model = 'Cisco Gateway Server';
