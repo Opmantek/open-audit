@@ -313,7 +313,10 @@ class M_devices_components extends MY_Model
         $log->severity = 7;
         $log->severity_text = '';
         $log->pid = getmypid();
-        $log->ip = (string)$details->ip;
+        $log->ip = '127.0.0.1';
+        if (!empty($details->ip)) {
+            $log->ip = (string)$details->ip;
+        }
         $log->file = 'm_devices_componenets';
         $log->function = 'process_component';
         $log->command = 'process audit';
