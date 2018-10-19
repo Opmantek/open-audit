@@ -1196,6 +1196,11 @@ class M_device extends MY_Model
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
 
+
+        if(!isset($details->ip) or empty($details->ip)){
+            $details->ip = "N/A";
+        }
+
         $log->message = 'System insert end for '.ip_address_from_db($details->ip).' ('.$details->hostname.')';
         $log->command_status = 'finish';
         discovery_log($log);
