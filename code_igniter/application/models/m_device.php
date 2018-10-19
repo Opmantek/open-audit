@@ -1064,6 +1064,9 @@ class M_device extends MY_Model
             }
         }
 
+        if (empty($details->ip)) {
+            $details->ip = '';
+        }
         if (empty($details->status)) {
             $details->status = 'production';
         }
