@@ -407,10 +407,20 @@ class devices extends MY_Controller
             output($this->response);
         } elseif ($this->response->meta->sub_resource == 'discovery') {
             if ($this->config->config['default_network_address'] == '') {
-                $message = 'Network Address must be set in the configuration before calling Bulk Edit -> Discover.';
+                $message = 'Network Address must be set in the configuration before calling Discovery.';
                 $this->session->set_flashdata('error', $message);
                 # toto - add a JSON error here for OAE
-                redirect('devices');
+                if ($this->response->meta->format == 'screen') {
+                    redirect('devices');
+                } else {
+                    $error = new stdClass();
+                    $error->title = 'Discovery cannot execute without a default network address being set in the configuration.';
+                    $error->summary = 'Discovery cannot execute without a default network address being set in the configuration.';
+                    $error->detail = 'Discovery cannot execute without a default network address being set in the configuration.';
+                    $this->response->errors[] = $error;
+                    output($this->response);
+                    exit();
+                }
             }
             $ids = array();
             if (!empty($this->response->meta->id)) {
