@@ -321,7 +321,6 @@ $sql = "CREATE TABLE `rack_devices` (
   `height` int(10) unsigned NOT NULL DEFAULT '1',
   `width` int(10) unsigned NOT NULL DEFAULT '1',
   `orientation` enum('front','front-right','front-left','rear','rear-left','rear-right') NOT NULL DEFAULT 'front',
-  `type` varchar(50) NOT NULL DEFAULT 'unknown',
   `options` text NOT NULL,
   `notes` text NOT NULL,
   `tags` varchar(250) NOT NULL DEFAULT '',

@@ -1090,7 +1090,7 @@ class M_collection extends MY_Model
                 break;
 
             case "rack_devices":
-                return(' name org_id rack_id system_id position height width orientation type options ');
+                return(' name org_id rack_id system_id position height width orientation options ');
                 break;
 
             case "roles":
