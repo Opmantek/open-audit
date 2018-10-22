@@ -502,6 +502,17 @@ class M_collection extends MY_Model
             }
 
             if ($data->type == 'subnet') {
+                if (!preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
                 if (empty($data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
                    // $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
@@ -817,6 +828,19 @@ class M_collection extends MY_Model
                 foreach ($data->other as $key => $value) {
                         $received_other->$key = $value;
                 }
+
+                if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
                 $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
                 $result = $query->result();
                 $existing_other = json_decode($result[0]->other);
