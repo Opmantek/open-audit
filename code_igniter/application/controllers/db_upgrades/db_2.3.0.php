@@ -275,14 +275,14 @@ $sql = "CREATE TABLE `racks` (
   `description` text NOT NULL,
   `row_position` varchar(200) NOT NULL DEFAULT '',
   `pod` varchar(200) NOT NULL DEFAULT '',
-  `physical_height` int(10) unsigned NOT NULL DEFAULT '1',
-  `physical_width` int(10) unsigned NOT NULL DEFAULT '1',
-  `physical_depth` int(10) unsigned NOT NULL DEFAULT '1',
+  `physical_height` int(10) unsigned NOT NULL DEFAULT '2000',
+  `physical_width` int(10) unsigned NOT NULL DEFAULT '600',
+  `physical_depth` int(10) unsigned NOT NULL DEFAULT '1050',
   `weight_empty` int(10) unsigned NOT NULL DEFAULT '1',
   `weight_current` int(10) unsigned NOT NULL DEFAULT '1',
   `weight_max` int(10) unsigned NOT NULL DEFAULT '1',
   `ru_start` int(10) unsigned NOT NULL DEFAULT '1',
-  `ru_height` int(10) unsigned NOT NULL DEFAULT '1',
+  `ru_height` int(10) unsigned NOT NULL DEFAULT '42',
   `type` varchar(200) NOT NULL DEFAULT '',
   `purpose` varchar(200) NOT NULL DEFAULT '',
   `manufacturer` varchar(200) NOT NULL DEFAULT '',
@@ -393,7 +393,11 @@ foreach ($result as $location) {
 }
 
 # system
-$this->alter_table('system', 'instance_ident', "ADD `instance_ident` varchar(200) NOT NULL DEFAULT '' AFTER `credentials`", 'add');
+$this->alter_table('system', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFAULT NULL AFTER `credentials`", 'add');
+
+$this->alter_table('system', 'instance_provider', "ADD `instance_provider` varchar(200) NOT NULL DEFAULT '' AFTER `cloud_id`", 'add');
+
+$this->alter_table('system', 'instance_ident', "ADD `instance_ident` varchar(200) NOT NULL DEFAULT '' AFTER `instance_provider`", 'add');
 
 $this->alter_table('system', 'instance_type', "ADD `instance_type` varchar(200) NOT NULL DEFAULT '' AFTER `instance_ident`", 'add');
 
