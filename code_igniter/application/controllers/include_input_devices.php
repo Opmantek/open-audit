@@ -47,6 +47,12 @@ if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
     $log->status = 'Checking for valid network submission.';
     $log->summary = 'Audit supplied from ineligible network.';
     $log->detail = 'An audit result was submitted from ' . $_SERVER['REMOTE_ADDR'] . ' which is not in the list of allowed networks.';
+    if ($this->response->meta->format == 'screen') {
+        $this->session->set_flashdata('error', 'An audit result was submitted from ' . $_SERVER['REMOTE_ADDR'] . ' which is not in the list of allowed networks.');
+        redirect('summaries');
+    } else {
+        print_r(json_encode($log));
+    }
     stdlog($log);
     unset($log);
     exit;
