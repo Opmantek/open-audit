@@ -409,7 +409,6 @@ class devices extends MY_Controller
             if ($this->config->config['default_network_address'] == '') {
                 $message = 'Network Address must be set in the configuration before calling Discovery.';
                 $this->session->set_flashdata('error', $message);
-                # toto - add a JSON error here for OAE
                 if ($this->response->meta->format == 'screen') {
                     redirect('devices');
                 } else {
@@ -430,6 +429,8 @@ class devices extends MY_Controller
                 $ids = array_merge($ids, explode(',', $this->response->meta->ids));
             }
             $device_names = array();
+            $this->load->model('m_discoveries');
+            $this->load->model('m_collection');
             foreach ($ids as $id) {
                 $this->response->data = $this->m_devices->read($id);
                 $data = new stdClass();
@@ -445,8 +446,6 @@ class devices extends MY_Controller
                 $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
                 $data->other = new stdClass();
                 $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
-                $this->load->model('m_discoveries');
-                $this->load->model('m_collection');
                 $discovery_id = $this->m_collection->create($data, 'discoveries');
                 $this->m_discoveries->execute($discovery_id);
             }
@@ -458,6 +457,7 @@ class devices extends MY_Controller
                 #redirect('devices/'.$this->response->data[0]->attributes->id);
                 redirect('devices');
             } else {
+                $this->response->data = $this->m_discoveries->read($discovery_id);
                 output($this->response);
             }
         } elseif ($this->response->meta->sub_resource == 'attachment') {
