@@ -361,6 +361,7 @@ INSERT INTO `attributes` VALUES (198,1,'devices','type','Application Accelerator
 INSERT INTO `attributes` VALUES (199,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (200,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (201,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (202,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 

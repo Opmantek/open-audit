@@ -83,6 +83,10 @@ $sql = "INSERT INTO `attributes` VALUES (NULL,1,'devices','type','Shelf','shelf'
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "INSERT INTO `attributes` VALUES (NULL,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # Configuration
 $sql = "DELETE FROM `configuration` WHERE `name` = 'discoveries_limit'";
 $this->db->query($sql);
