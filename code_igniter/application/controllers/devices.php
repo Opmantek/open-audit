@@ -155,6 +155,11 @@ class devices extends MY_Controller
                         $result = false;
                         $result = $this->m_devices->get_device_rack($this->response->meta->id);
                         $this->response->included = array_merge($this->response->included, $result);
+                        if (!empty($result[0]->attributes->rack_id)) {
+                            $this->load->model('m_racks');
+                            $rack = $this->m_racks->read($result[0]->attributes->rack_id);
+                            $this->response->included = array_merge($this->response->included, $rack);
+                        }
                     }
                 }
             }
