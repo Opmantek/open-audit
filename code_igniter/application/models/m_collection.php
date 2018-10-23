@@ -593,6 +593,18 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection === 'rack_devices') {
+            $sql = "SELECT name, org_id, type FROM system WHERE id = " . intval($data->system_id);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result)) {
+                $data->name = $result[0]->name;
+                $data->org_id = $result[0]->org_id;
+                $data->type = $result[0]->type;
+            }
+        }
+
         if ($collection === 'roles') {
             $data->ad_group = 'open-audit_roles_' . strtolower(str_replace(' ', '_', $data->name));
             if (empty($data->permissions)) {
@@ -1090,7 +1102,7 @@ class M_collection extends MY_Model
                 break;
 
             case "rack_devices":
-                return(' name org_id rack_id system_id position height width orientation options ');
+                return(' name org_id rack_id system_id position height width orientation options type ');
                 break;
 
             case "roles":
@@ -1222,7 +1234,7 @@ class M_collection extends MY_Model
                 break;
 
             case "rack_devices":
-                return(array('name','org_id','rack_id'));
+                return(array('rack_id','system_id','position','height'));
                 break;
 
             case "roles":
