@@ -417,6 +417,44 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Hardware Additions by Day',1,'Any it
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Type',1,'','pie','','system.instance_provider','','','Devices','','system.instance_provider != \'\'',0,'','','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$widget_1 = $this->db->insert_id();
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices per Cloud',1,'','pie','','','','','Devices','','',0,'','SELECT clouds.name as `name`, clouds.id AS `description`, count(system.id) AS `count` FROM clouds LEFT JOIN system ON (clouds.id = system.cloud_id) WHERE @filter AND system.cloud_id IS NOT NULL GROUP BY clouds.name','devices?cloud_id=@description&properties=system.id,system.icon,system.name,system.domain,system.ip,system.description,system.instance_type,system.os_family,system.status','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$widget_2 = $this->db->insert_id();
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Network',1,'','pie','','','','','Devices','','',0,'','SELECT IF(networks.name = networks.network, networks.network, CONCAT(networks.network, \' (\', networks.name, \')\')) as `name`, networks.id AS `description`, count(system.id) AS `count` FROM networks LEFT JOIN ip ON (ip.network = networks.network and ip.current = \'y\') LEFT JOIN system ON (ip.system_id = system.id) WHERE @filter AND networks.options != \'\' GROUP BY networks.network ORDER BY networks.network','networks/@description','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$widget_3 = $this->db->insert_id();
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Region',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', locations.name) as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.cloud_id IS NOT NULL AND locations.type = \'Cloud\' GROUP BY system.location_id','locations/@description','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$widget_4 = $this->db->insert_id();
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Instance Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', system.instance_type) as `name`, system.instance_type AS `description`, count(system.id) AS `count` FROM system LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.instance_type != \'\' GROUP BY system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.name,system.domain,system.ip,system.description,system.instance_type,system.os_family,system.status','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$widget_5 = $this->db->insert_id();
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Cloud Devices Audited per Day',1,'','line','','','','','Devices','','',0,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE @filter AND DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND system.cloud_id != \'\' GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date%','system','2000-01-01 00:00:00');";
+$this->db->query($sql);
+$widget_6 = $this->db->insert_id();
+$this->log_db($this->db->last_query());
+
+# New Dashboard
+$dashboards_options = '{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"' . $widget_1 . '"},{"position":"2","size":"1","widget_id":"' . $widget_2 . '"},{"position":"3","size":"1","widget_id":"' . $widget_3 . '"},{"position":"4","size":"1","widget_id":"' . $widget_4 . '"},{"position":"5","size":"1","widget_id":"' . $widget_5 . '"},{"position":"6","size":"1","widget_id":"' . $widget_6 . '"}]}';
+$sql = "INSERT INTO `dashboards` VALUES (NULL, 'Cloud Dashboard', 1, 'org', 0, 'The details of your cloud infrastructure', y, '$options', 'system', '2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20180925' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
