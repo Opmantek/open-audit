@@ -484,6 +484,13 @@ $this->db->query($sql);
 $widget_6 = $this->db->insert_id();
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM widgets WHERE name = 'Cloud Instances by Org and Type' and `edited_by` = 'system'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Cloud Instances by Org and Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(orgs.name, \' - \', system.instance_type) as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM system LEFT JOIN orgs ON (orgs.id = system.org_id) WHERE @filter AND system.cloud_id != \'\' GROUP BY system.org_id, system.instance_type','devices?system.org_id=@description&properties=system.id,system.icon,system.name,system.domain,system.ip,system.description,system.instance_type,system.os_family,system.status','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # dashboards
 $sql = "DELETE FROM dashboards WHERE name = 'Cloud Dashboard' and `edited_by` = 'system'";
