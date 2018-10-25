@@ -133,7 +133,7 @@ if (! function_exists('inputRead')) {
                 define('REPLACE_FLAGS', ENT_COMPAT);
             }
         }
-        
+
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
         unset($_GET['user']);
@@ -225,7 +225,7 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set version to ' . $CI->response->meta->version . ', according to headers.';
             stdlog($log);
         }
-        
+
         # get our collection - usually devices, groups, reports, etc
         $CI->response->meta->collection = set_collection();
         $log->summary = 'set collection';
@@ -280,7 +280,7 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
         }
-        
+
         # if we have an item name (ie, not it's ID)
         if (is_null($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($actions, ' '.$CI->uri->segment(2).' ') === false) {
             $log->summary = 'Search ID';
@@ -1009,7 +1009,7 @@ if (! function_exists('inputRead')) {
                 //     $query->operator = $operator;
                 // }
 
-                $operator = substr($query->value, 0, 2);
+                $operator = strtolower(substr($query->value, 0, 2));
                 $test = substr($query->value, 0, 4);
                 $test2 = substr($query->value, 0, 4);
                 if ($operator == 'in' and strtolower($test) != 'info' and strtolower($test2) != 'innotek') {
