@@ -144,7 +144,17 @@ if (!function_exists('audit_convert')) {
             }
             $xml = iconv('UTF-8', 'UTF-8//TRANSLIT', $xml);
             $xml = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $xml);
+            libxml_use_internal_errors(true);
             $xml = @simplexml_load_string($xml);
+            if ($xml === false) {
+                foreach (libxml_get_errors() as $error) {
+                    $log->message = 'Could not convert string to XML';
+                    $log->command_status = 'fail';
+                    $log->command_output = $error;
+                    discovery_log($log);
+                }
+                return false;
+            }
             if ($xml) {
                 $newxml = json_encode($xml);
                 $newxml = json_decode($newxml);
