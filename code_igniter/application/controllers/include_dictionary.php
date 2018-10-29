@@ -290,6 +290,7 @@ if ($table == 'dashboards') {
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
+                                            <td rowspan="2">Sidebar</td>
                                             <td>Widget #1</td>
                                             <td>Widget #2</td>
                                             <td>Widget #3</td>
