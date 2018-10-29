@@ -53,7 +53,7 @@ class M_collectors extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM `collectors` WHERE `id` = ?";
+        $sql = "SELECT collectors.*, users.name AS `users.name` FROM `collectors` LEFT JOIN `users` ON (collectors.user_id = users.id) WHERE collectors.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'collectors');
