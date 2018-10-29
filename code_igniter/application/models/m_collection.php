@@ -1070,7 +1070,7 @@ class M_collection extends MY_Model
                 break;
 
             case "groups":
-                return(' name org_id description sql ');
+                return(' name org_id description expose sql ');
                 break;
 
             case "ldap_servers":
