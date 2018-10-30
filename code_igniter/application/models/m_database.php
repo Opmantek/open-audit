@@ -128,8 +128,8 @@ class M_database extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
+        $CI = & get_instance();
         if ($table == '') {
-            $CI = & get_instance();
             $table = $CI->response->meta->id;
         }
         if ($current == '') {
