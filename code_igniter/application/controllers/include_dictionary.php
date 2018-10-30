@@ -86,11 +86,9 @@ if ($table == 'applications') {
 
 if ($table == 'attributes') {
     $dictionary->sentence = 'Open-AudIT enables you to create and use your own values for certain stored fields. For example, if you have another status than those provided, just add it and use it. Simple.';
-    $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />Currently, the attributes you can edit are associated with the following columns: Class, Environment, Status &amp; Type.<br /><br />
+    $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />
-    At present all fields are based on the devices (system) table.<br /><br />
-    The attributes you can edit are associated with the following columns: Class, Environment, Status &amp; Type.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br />
     <em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br />
@@ -186,7 +184,7 @@ if ($table == 'clouds') {
     $dictionary->sentence = 'Audit your cloud infrastructure.';
     $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><b>NOTE</b> - To use this feature, we <i>must</i> enable the configuration item match_mac. This will be done automatically.<br /><br />
+    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><b>NOTE</b> - To use this feature, we <i>must</i> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
     $dictionary->columns->id = $id;
