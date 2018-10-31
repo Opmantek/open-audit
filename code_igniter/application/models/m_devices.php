@@ -445,15 +445,15 @@ class M_devices extends MY_Model
             }
         }
         if ($sub_resource == 'image') {
-            $sql = "SELECT * FROM image WHERE id = " . intval($sub_resource_id);
-            $image = $this->run_sql($sql, array());
-            if (unlink($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $image[0]->filename)) {
-                // good
-            } else {
-                // TODO - log an error here
-                echo "Could not delete " . $image[0]->filename . ".";
-                return false;
-            }
+            // $sql = "SELECT * FROM image WHERE id = " . intval($sub_resource_id);
+            // $image = $this->run_sql($sql, array());
+            // if (unlink($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $image[0]->filename)) {
+            //     // good
+            // } else {
+            //     // TODO - log an error here
+            //     echo "Could not delete " . $image[0]->filename . ".";
+            //     return false;
+            // }
         }
         $sql = "/* m_devices::sub_resource_delete */ " . "DELETE FROM `" . (string)$sub_resource . "` WHERE `system_id` = ? AND id = ?";
         $data = array(intval($id), intval($sub_resource_id));
@@ -580,7 +580,7 @@ class M_devices extends MY_Model
                 return false;
             }
         } else if ($sub_resource == 'image') {
-            if (empty($_FILES['attachment'])) {
+            if (empty($_FILES['attachment']) and empty($CI->response->meta->received_data->attributes->filename)) {
                 $log->severity = 5;
                 $log->summary = "No image file provided for sub_resource_create.";
                 $log->status = 'error';
@@ -588,14 +588,6 @@ class M_devices extends MY_Model
                 log_error('ERR-0024', "m_devices::sub_resource_create", "No image file provided for sub_resource_create.");
                 return false;
             }
-            $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
-            $data = array(intval($CI->response->meta->id),
-                    $CI->response->meta->received_data->attributes->name,
-                    '',
-                    $CI->response->meta->received_data->attributes->orientation,
-                    $CI->user->full_name);
-            $this->db->query($sql, $data);
-            $dbid = $this->db->insert_id();
             if (!file_exists($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images')) {
                 mkdir($_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images');
             }
@@ -610,25 +602,45 @@ class M_devices extends MY_Model
                 $this->db->query($sql, array());
                 return false;
             }
-            $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
-            $filename = intval($CI->response->meta->id) . "_" . intval($dbid) . "_" . basename($_FILES['attachment']['name']);
-            if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
-                $sql = "UPDATE `image` SET `filename` = ? WHERE `id` = ?";
-                $data = array($filename, $dbid);
+            $filename = @(string)basename($_FILES['attachment']['name']);
+            if (!empty($filename)) {
+                $target = $_SERVER['DOCUMENT_ROOT'] . '/open-audit/custom_images/' . $filename;
+                if (@move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
+                    $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+                    $data = array(intval($CI->response->meta->id),
+                            $CI->response->meta->received_data->attributes->name,
+                            $filename,
+                            $CI->response->meta->received_data->attributes->orientation,
+                            $CI->user->full_name);
+                    $this->db->query($sql, $data);
+                    return true;
+                } else {
+                    $log->severity = 5;
+                    $log->summary = 'Unable to move uploaded file';
+                    $log->detail = "Cannot move the uploaded image file to $target. Error: " . error_get_last();
+                    $log->status = 'error';
+                    stdlog($log);
+                    log_error('ERR-0038', "m_devices::sub_resource_create", "Cannot move the uploaded image file to $target.");
+                    return false;
+                }
+            } else if (!empty($CI->response->meta->received_data->attributes->filename)) {
+                $sql = "INSERT INTO `image` VALUES (NULL, ?, ?, ?, ?, ?, NOW())";
+                $data = array(intval($CI->response->meta->id),
+                        $CI->response->meta->received_data->attributes->name,
+                        $CI->response->meta->received_data->attributes->filename,
+                        $CI->response->meta->received_data->attributes->orientation,
+                        $CI->user->full_name);
                 $this->db->query($sql, $data);
                 return true;
             } else {
-                $sql = "DELETE FROM `image` WHERE `id` = " . $dbid;
-                $this->db->query($sql, array());
                 $log->severity = 5;
-                $log->summary = 'Unable to move uploaded file';
-                $log->detail = "Cannot move the uploaded image file to $target. Error: " . error_get_last();
+                $log->summary = 'No file uploaded, nor selected';
+                $log->detail = "No file was uploaded, nor selected from the existing files.";
                 $log->status = 'error';
                 stdlog($log);
-                log_error('ERR-0038', "m_devices::sub_resource_create", "Cannot move the uploaded image file to $target.");
+                log_error('ERR-0038', "m_devices::sub_resource_create", "No file uploaded, nor selected.");
                 return false;
             }
-            unset($dbid);
         } else if ($sub_resource == 'application') {
             $sql = "INSERT INTO application VALUES (NULL, ?, ?, 'y', ?, NOW())";
             $data = array(intval($CI->response->meta->id),
