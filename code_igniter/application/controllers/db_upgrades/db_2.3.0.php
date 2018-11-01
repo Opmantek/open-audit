@@ -443,7 +443,7 @@ $sql = "DELETE FROM widgets WHERE name = 'Devices per Cloud' and `edited_by` = '
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices per Cloud',1,'','pie','','','','','Devices','','',0,'','SELECT clouds.name as `name`, clouds.id AS `description`, count(system.id) AS `count` FROM clouds LEFT JOIN system ON (clouds.id = system.cloud_id) WHERE @filter AND system.cloud_id IS NOT NULL GROUP BY clouds.name','devices?cloud_id=@description&properties=system.id,system.icon,system.name,system.domain,system.ip,system.description,system.instance_type,system.os_family,system.status','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices per Cloud',1,'','pie','','','','','Devices','','',0,'','SELECT clouds.name as `name`, clouds.id AS `description`, count(system.id) AS `count` FROM clouds LEFT JOIN system ON (clouds.id = system.cloud_id) WHERE @filter AND system.cloud_id IS NOT NULL GROUP BY clouds.name','devices?system.cloud_id=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $widget_2 = $this->db->insert_id();
 $this->log_db($this->db->last_query());
@@ -452,7 +452,7 @@ $sql = "DELETE FROM widgets WHERE name = 'Devices by Cloud Network' and `edited_
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Network',1,'','pie','','','','','Devices','','',0,'','SELECT IF(networks.name = networks.network, networks.network, CONCAT(networks.network, \' (\', networks.name, \')\')) as `name`, networks.id AS `description`, count(system.id) AS `count` FROM networks LEFT JOIN ip ON (ip.network = networks.network and ip.current = \'y\') LEFT JOIN system ON (ip.system_id = system.id) WHERE @filter AND networks.options != \'\' GROUP BY networks.network ORDER BY networks.network','networks/@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Network',1,'','pie','','','','','Devices','','',0,'','SELECT IF(networks.name = networks.network, networks.network, CONCAT(networks.network, \' (\', networks.name, \')\')) as `name`, networks.id AS `description`, count(system.id) AS `count` FROM networks LEFT JOIN ip ON (ip.network = networks.network and ip.current = \'y\') LEFT JOIN system ON (ip.system_id = system.id) WHERE @filter AND networks.options != \'\' GROUP BY networks.network ORDER BY networks.network','devices?ip.network=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $widget_3 = $this->db->insert_id();
 $this->log_db($this->db->last_query());
@@ -461,7 +461,7 @@ $sql = "DELETE FROM widgets WHERE name = 'Devices by Cloud Region' and `edited_b
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Region',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', locations.name) as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.cloud_id IS NOT NULL AND locations.type = \'Cloud\' GROUP BY system.location_id','locations/@description','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Cloud Region',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', locations.name) as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.cloud_id IS NOT NULL AND locations.type = \'Cloud\' GROUP BY system.location_id','devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $widget_4 = $this->db->insert_id();
 $this->log_db($this->db->last_query());
@@ -470,7 +470,7 @@ $sql = "DELETE FROM widgets WHERE name = 'Devices by Instance Type' and `edited_
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Instance Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', system.instance_type) as `name`, system.instance_type AS `description`, count(system.id) AS `count` FROM system LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.instance_type != \'\' GROUP BY system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.name,system.domain,system.ip,system.description,system.instance_type,system.os_family,system.status','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Devices by Instance Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', system.instance_type) as `name`, system.instance_type AS `description`, count(system.id) AS `count` FROM system LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.instance_type != \'\' GROUP BY system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $widget_5 = $this->db->insert_id();
 $this->log_db($this->db->last_query());
@@ -488,7 +488,7 @@ $sql = "DELETE FROM widgets WHERE name = 'Cloud Instances by Org and Type' and `
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `widgets` VALUES (NULL,'Cloud Instances by Org and Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(orgs.name, \' - \', system.instance_type) as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM system LEFT JOIN orgs ON (orgs.id = system.org_id) WHERE @filter AND system.cloud_id != \'\' GROUP BY system.org_id, system.instance_type','devices?system.org_id=@description&properties=system.id,system.icon,system.name,system.domain,system.ip,system.description,system.instance_type,system.os_family,system.status','system','2000-01-01 00:00:00')";
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Cloud Instances by Org and Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(orgs.name, \' - \', system.instance_type) as `name`, CONCAT(system.instance_type, \'&system.org_id=\', orgs.id) AS `description`, count(system.id) AS `count` FROM system LEFT JOIN orgs ON (orgs.id = system.org_id) WHERE @filter AND system.cloud_id != \'\' GROUP BY system.org_id, system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
