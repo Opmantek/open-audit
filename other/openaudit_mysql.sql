@@ -3192,8 +3192,8 @@ CREATE TABLE `system` (
   `instance_type` varchar(200) NOT NULL DEFAULT '',
   `instance_state` varchar(200) NOT NULL DEFAULT '',
   `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '',
-  `instance_tags` TEXT NOT NULL,
-  `instance_options` TEXT NOT NULL,
+  `instance_tags` text NOT NULL,
+  `instance_options` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
