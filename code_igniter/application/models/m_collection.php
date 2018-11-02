@@ -594,14 +594,13 @@ class M_collection extends MY_Model
         }
 
         if ($collection === 'rack_devices') {
-            $sql = "SELECT name, org_id, type FROM system WHERE id = " . intval($data->system_id);
+            $sql = "SELECT name, org_id FROM system WHERE id = " . intval($data->system_id);
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql);
             $result = $query->result();
             if (!empty($result)) {
                 $data->name = $result[0]->name;
                 $data->org_id = $result[0]->org_id;
-                $data->type = $result[0]->type;
             }
         }
 
