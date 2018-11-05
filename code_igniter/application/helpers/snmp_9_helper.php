@@ -39,7 +39,9 @@
 
 # Vendor Cisco
 
-$get_oid_details = function ($ip, $credentials, $oid) {
+
+$get_oid_details = function ($ip, $credentials, $oid) {  
+     
     $details = new stdClass();
     
     $log->message = 'memory_count retrieval via SNMP for '.$ip;
@@ -71,9 +73,11 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         discovery_log($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output); 
     
-    
-    
+ 
+
+     
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    
     if ($oid == '1.3.6.1.4.1.9.1.1') {
         $details->model = 'Cisco Gateway Server';
         $details->type = 'network device';
