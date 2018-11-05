@@ -42,12 +42,34 @@
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     
+    $log->message = 'memory_count retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.9.3.6.6.0';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
     #Memory
     # the only MIB providing overall RAM is 1.3.6.1.4.1.9.3.6.6.0 which is deprecated
-    $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1048576);
+        $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1048576);
+
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->memory_count;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
     
+    
+    $log->message = 'disk_model retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.9.2.10.1';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
     #Disk 1.3.6.1.4.1.2620.1.6.7.3.6 may require /1048576 for MB sizing
-    $details->disk_model = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1") / 1048576);  
+        $details->disk_model = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1") / 1048576); 
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->disk_model;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output); 
     
     
     
