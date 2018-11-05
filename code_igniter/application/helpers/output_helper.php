@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 if (! function_exists('output')) {
@@ -92,9 +92,27 @@ if (! function_exists('output')) {
             unset($CI->response->meta->data_order);
             $CI->response->meta->data_order = array();
 
+            // if (!empty($CI->response->data[0]->attributes)) {
+            //     foreach ($CI->response->data[0]->attributes as $key => $value) {
+            //         $CI->response->meta->data_order[] = $key;
+            //     }
+            // }
+
             if (!empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    $CI->response->meta->data_order[] = $key;
+                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
+                        $CI->response->meta->data_order[] = $key;
+                    } else {
+                        $table = $CI->response->meta->collection;
+                        if ($table == 'devices') {
+                            $table = 'system';
+                        }
+                        if ($CI->db->field_exists($key, $table)) {
+                            $CI->response->meta->data_order[] = $table . '.' . $key;
+                        } else {
+                            $CI->response->meta->data_order[] = $key;
+                        }
+                    }
                 }
             }
 
@@ -652,6 +670,7 @@ if (! function_exists('output')) {
                         if (isset($key) and ($key == 'id' or $key == 'free' or $key == 'used' or $key == 'size' or $key == 'speed' or $key == 'total' or $key == 'col_order' or $key == 'access_level' or $key == 'count')) {
                             $row->attributes->$key = intval($value);
                         } elseif ((strrpos($key, '_id') === strlen($key)-3) or
+                                    (strrpos($key, '.id') === strlen($key)-3) or
                                     (strrpos($key, '_count') === strlen($key)-6) or
                                     (strrpos($key, '_percent') === strlen($key)-8) or
                                     (strrpos($key, '_size') === strlen($key)-5)) {

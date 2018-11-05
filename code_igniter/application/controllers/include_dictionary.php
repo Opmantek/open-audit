@@ -86,11 +86,9 @@ if ($table == 'applications') {
 
 if ($table == 'attributes') {
     $dictionary->sentence = 'Open-AudIT enables you to create and use your own values for certain stored fields. For example, if you have another status than those provided, just add it and use it. Simple.';
-    $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />Currently, the attributes you can edit are associated with the following columns: Class, Environment, Status &amp; Type.<br /><br />
+    $dictionary->marketing = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Attributes are stored for Open-AudIT to use for particular fields.<br /><br />
-    At present all fields are based on the devices (system) table.<br /><br />
-    The attributes you can edit are associated with the following columns: Class, Environment, Status &amp; Type.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>If you add a device type, to display the associated icon you will have to manually copy the .svg formatted file to the directory:<br />
     <em>Linux</em>: /usr/local/open-audit/www/open-audit/device_images<br />
@@ -109,6 +107,27 @@ if ($table == 'attributes') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','type','resource','value');
     $dictionary->attributes->update = array('name','org_id','resource','type','value');
+}
+
+if ($table == 'buildings') {
+    $dictionary->sentence = 'Define your buildings and assign them to a location of your choosing.';
+    $dictionary->marketing = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your buildings help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->organisation = $org_id;
+    $dictionary->columns->location_id = 'The location of the building. Links to <code>locations.id</code>.';
+    $dictionary->columns->location = 'The location of the building. Links to <code>locations.id</code>.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','location_id');
+    $dictionary->attributes->update = array('name','org_id','location_id','description','options','notes','tags');
 }
 
 if ($table == 'audit_log') {
@@ -165,7 +184,7 @@ if ($table == 'clouds') {
     $dictionary->sentence = 'Audit your cloud infrastructure.';
     $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><b>NOTE</b> - To use this feature, we <i>must</i> enable the configuration item match_mac. This will be done automatically.<br /><br />
+    $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><b>NOTE</b> - To use this feature, we <i>must</i> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '';
     $dictionary->columns->id = $id;
@@ -269,6 +288,7 @@ if ($table == 'dashboards') {
                                 <table class="table table-bordered">
                                     <tbody>
                                         <tr>
+                                            <td rowspan="2">Sidebar</td>
                                             <td>Widget #1</td>
                                             <td>Widget #2</td>
                                             <td>Widget #3</td>
@@ -401,6 +421,25 @@ Supported clients are Windows and Linux.<br /><br />
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','org_id','path');
     $dictionary->attributes->update = array('name','org_id','description','path');
+}
+
+if ($table == 'floors') {
+    $dictionary->sentence = 'Define your floors and assign them to a building of your choosing.';
+    $dictionary->marketing = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your floors help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->building_id = 'The building the floor is located in.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','building_id');
+    $dictionary->attributes->update = array('name','org_id','building_id','description','options','notes','tags');
 }
 
 if ($table == 'groups') {
@@ -576,6 +615,74 @@ An example query SQL showing attributes on devices that have an <code>os_group</
     $dictionary->attributes->update = array('name','org_id','description','sql','menu_category','menu_display');
 }
 
+if ($table == 'racks') {
+    $dictionary->sentence = 'Define your racks and assign devices them in a row of your choosing.';
+    $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->row_id = 'The row the rack is located in.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->row_position = 'The height of this rack in rack units.';
+    $dictionary->columns->pod = 'The pod (if any) that this rack is part of.';
+    $dictionary->columns->physical_height = 'The physical height (in CMs) of the rack.';
+    $dictionary->columns->physical_width = 'The physical width (in CMs) of the rack.';
+    $dictionary->columns->physical_depth = 'The physical depth (in CMs) of the rack.';
+    $dictionary->columns->weight_empty = 'The physical weight (in KGs) of the rack when empty.';
+    $dictionary->columns->weight_current = 'The physical weight (in KGs) of the rack at present.';
+    $dictionary->columns->weight_max = 'The maximum physical weight (in KGs) this rack can hold.';
+    $dictionary->columns->ru_start = 'TBD';
+    $dictionary->columns->ru_height = 'How many rack units in height is this rack.';
+    $dictionary->columns->type = 'The type of rack (compute, power, network, etc).';
+    $dictionary->columns->purpose = 'What is the purpose of this rack.';
+    $dictionary->columns->manufacturer = 'Who made this rack.';
+    $dictionary->columns->model = 'The rack model.';
+    $dictionary->columns->series = 'The rack series.';
+    $dictionary->columns->serial = 'The rack serial.';
+    $dictionary->columns->asset_number = 'The rack asset number.';
+    $dictionary->columns->asset_tag = 'The rack asset tag.';
+    $dictionary->columns->bar_code = 'The rack bar code.';
+    $dictionary->columns->power_circuit = 'The power circuit this rack attaches to.';
+    $dictionary->columns->power_sockets = 'How many power sockets in this rack.';
+    $dictionary->columns->circuit_count = 'How many circuit feed to this rack.';
+    $dictionary->columns->btu_total = 'The total BTU output by this rack.';
+    $dictionary->columns->btu_max = 'The maximum total BTUs this rack is rated for.';
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','row_id');
+    $dictionary->attributes->update = array('name','org_id','description','row_id','row_position','pod','physical_height','physical_width','physical_depth','weight_empty','weight_current','weight_max','ru_start','ru_height','type','purpose','manufacturer','model','series','serial','asset_number','asset_tag','bar_code','power_circuit','power_sockets','circuit_count','btu_total','btu_max','options','notes','tags');
+}
+
+if ($table == 'rack_devices') {
+    $dictionary->sentence = 'Place your devices into racks.';
+    $dictionary->marketing = '<p>These are the devices that live within a rack.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>These are the devices that live within a rack.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->rack_id = 'The rack this device is located in.';
+    $dictionary->columns->system_id = 'The device within Open-AudIT.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->position = 'The RU positon of the top of this device.';
+    $dictionary->columns->height = 'The number of RUs this device occupies.';
+    $dictionary->columns->width = 'The width of this device.';
+    $dictionary->columns->orientation = 'The orientation of this device.';
+    $dictionary->columns->type = 'The type of device.';
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','row_id');
+    $dictionary->attributes->update = array('name','org_id','rack_id','system_id','position','height','width','orientation','type','options','notes','tags');
+}
+
 if ($table == 'reports') {
     $dictionary->sentence = 'Open-AudIT Professional and Enterprise include Enhanced Reporting features, including time-based, historical, and muti-query based reporting features in multiple formats.';
     $dictionary->about = '<p>It\'s easy to see reports over time are extremely useful. Not only can you see the Open-AudIT data, but now what it has seen "over time". All the devices discovered last week, last month or any other period. New software found. What about devices that <i>haven\'t</i> been seen - where are they? How useful to be able to specify these items <i>"over time\</i>.<br /><br />
@@ -605,6 +712,45 @@ if ($table == 'roles') {
     $dictionary->columns->edited_date = $edited_date;
     $dictionary->attributes->create = array('name','permissions');
     $dictionary->attributes->update = array('name','description','permissions','ad_group');
+}
+
+
+if ($table == 'rooms') {
+    $dictionary->sentence = 'Define your rooms and assign them to a floor of your choosing.';
+    $dictionary->marketing = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your rooms help refine exactly where your assets are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->floor_id = 'The floor the room is located on.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','floor_id');
+    $dictionary->attributes->update = array('name','org_id','floor_id','description','options','notes','tags');
+}
+
+if ($table == 'rows') {
+    $dictionary->sentence = 'Define your rows and assign them to a room of your choosing.';
+    $dictionary->marketing = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->about = '<p>Your rows help refine exactly where your racks are located.<br /><br />' . $link . '<br /><br /></p>';
+    $dictionary->notes = '<p></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->room_id = 'The room the rack is located in.';
+    $dictionary->columns->description = $description;
+    $dictionary->columns->options = 'Not implemented as yet.';
+    $dictionary->columns->notes = 'Not implemented as yet.';
+    $dictionary->columns->tags = 'Not implemented as yet.';
+    $dictionary->columns->edited_by = $edited_by;
+    $dictionary->columns->edited_date = $edited_date;
+    $dictionary->attributes->create = array('name','org_id','room_id');
+    $dictionary->attributes->update = array('name','org_id','room_id','description','options','notes','tags');
 }
 
 if ($table == 'servers') {
@@ -784,7 +930,7 @@ if ($table == 'widgets') {
     $dictionary->columns->sql = 'For advanced entry of a raw SQL query. As per "queries", you must include "WHERE @filter AND" in your SQL.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
-    $dictionary->valid_columns = array('bios.current','bios.description','bios.manufacturer','bios.version','disk.current','disk.description','disk.interface_type','disk.manufacturer','disk.model','disk.model_family','disk.partition_count','disk.status','disk.version','ip.cidr','ip.current','ip.netmask','ip.network','ip.version','log.current','log.file_name','log.name','memory.current','memory.detail','memory.form_factor','memory.size','memory.speed','memory.type','module.class_text','module.current','module.description','monitor.aspect_ratio','monitor.current','monitor.description','monitor.manufacturer','monitor.model','monitor.size','motherboard.current','motherboard.manufacturer','motherboard.memory_slot_count','motherboard.model','motherboard.processor_slot_count','network.connection_status','network.current','network.dhcp_enabled','network.dhcp_server','network.dns_domain','network.dns_server','network.manufacturer','network.model','network.type','optical.current','optical.model','optical.mount_point','pagefile.current','pagefile.max_size','pagefile.name','pagefile_initial_size','partition.bootable','partition.current','partition.description','partition.format','partition.mount_point','partition.mount_type','partition.name','partition.type','print_queue.color','print_queue.current','print_queue.duplex','print_queue.location','print_queue.manufacturer','print_queue.model','print_queue.port_name','print_queue.shared','print_queue.status','print_queue.type','processor.architecture','processor.core_count','processor.current','processor.description','processor.logical_count','processor.manufacturer','processor.physical_count','processor.socket','route.current','route.destination','route.mask','route.next_hop','route.type','server.current','server.description','server.edition','server.full_name','server.name','server.status','server.type','server.version','server.version_string','server_item.current','server_item.type','service.current','service.executable','service.name','service.start_mode','service.state','service.user','share.current','share.name','share.path','software.current','software.install_source','software.name','software_key.current','software_key.edition','software_key.name','software_key.rel','software_key.string','sound.current','sound.manufacturer','sound.model','system.class','system.contact_name','system.environment','system.form_factor','system.function','system.icon','system.invoice_id','system.lease_expiry_date','system.location_id','system.location_latitude','system.location_level','system.location_longitude','system.location_rack','system.location_rack_position','system.location_rack_size','system.location_room','system.location_suite','system.manufacturer','system.memory_count','system.model','system.oae_manage','system.org_id','system.os_bit','system.os_family','system.os_group','system.os_installation_date','system.os_name','system.os_version','system.owner','system.patch_panel','system.printer_color','system.printer_duplex','system.printer_port_name','system.printer_shared','system.printer_shared_name','system.processor_count','system.purchase_amount','system.purchase_cost_center','system.purchase_date','system.purchase_invoice','system.purchase_order_number','system.purchase_service_contract_number','system.purchase_vendor','system.service_network','system.service_number','system.service_plan','system.service_provider','system.service_type','system.snmp_oid','system.status','system.sysContact','system.sysDescr','system.sysLocation','system.sysObjectID','system.type','system.wall_port','system.warranty_duration','system.warranty_expires','system.warranty_type','user.current','user.domain','user.password_changeable','user.password_required','user.status','user.type','user_group.current','user_group.name','video.current','video.manufacturer','video.model','video.size','vm.current','vm.cpu_count','vm.memory_count','vm.status','windows.active_directory_ou','windows.boot_device','windows.build_number','windows.client_site_name','windows.country_code','windows.current','windows.domain_controller_address','windows.domain_controller_name','windows.domain_role','windows.domain_short','windows.id_number','windows.install_directory','windows.language','windows.organisation','windows.part_of_domain','windows.registered_user','windows.servicce_pack','windows.time_caption','windows.time_daylight','windows.version','windows.workgroup');
+    $dictionary->valid_columns = array('bios.current','bios.description','bios.manufacturer','bios.version','disk.current','disk.description','disk.interface_type','disk.manufacturer','disk.model','disk.model_family','disk.partition_count','disk.status','disk.version','ip.cidr','ip.current','ip.netmask','ip.network','ip.version','log.current','log.file_name','log.name','memory.current','memory.detail','memory.form_factor','memory.size','memory.speed','memory.type','module.class_text','module.current','module.description','monitor.aspect_ratio','monitor.current','monitor.description','monitor.manufacturer','monitor.model','monitor.size','motherboard.current','motherboard.manufacturer','motherboard.memory_slot_count','motherboard.model','motherboard.processor_slot_count','network.connection_status','network.current','network.dhcp_enabled','network.dhcp_server','network.dns_domain','network.dns_server','network.manufacturer','network.model','network.type','optical.current','optical.model','optical.mount_point','pagefile.current','pagefile.max_size','pagefile.name','pagefile_initial_size','partition.bootable','partition.current','partition.description','partition.format','partition.mount_point','partition.mount_type','partition.name','partition.type','print_queue.color','print_queue.current','print_queue.duplex','print_queue.location','print_queue.manufacturer','print_queue.model','print_queue.port_name','print_queue.shared','print_queue.status','print_queue.type','processor.architecture','processor.core_count','processor.current','processor.description','processor.logical_count','processor.manufacturer','processor.physical_count','processor.socket','route.current','route.destination','route.mask','route.next_hop','route.type','server.current','server.description','server.edition','server.full_name','server.name','server.status','server.type','server.version','server.version_string','server_item.current','server_item.type','service.current','service.executable','service.name','service.start_mode','service.state','service.user','share.current','share.name','share.path','software.current','software.install_source','software.name','software_key.current','software_key.edition','software_key.name','software_key.rel','software_key.string','sound.current','sound.manufacturer','sound.model','system.class','system.cloud_id','system.contact_name','system.environment','system.form_factor','system.function','system.icon','system.instance_provider', 'system.instance_state', 'system.instance_type','system.invoice_id','system.lease_expiry_date','system.location_id','system.location_latitude','system.location_level','system.location_longitude','system.location_rack','system.location_rack_position','system.location_rack_size','system.location_room','system.location_suite','system.manufacturer','system.memory_count','system.model','system.oae_manage','system.org_id','system.os_bit','system.os_family','system.os_group','system.os_installation_date','system.os_name','system.os_version','system.owner','system.patch_panel','system.printer_color','system.printer_duplex','system.printer_port_name','system.printer_shared','system.printer_shared_name','system.processor_count','system.purchase_amount','system.purchase_cost_center','system.purchase_date','system.purchase_invoice','system.purchase_order_number','system.purchase_service_contract_number','system.purchase_vendor','system.service_network','system.service_number','system.service_plan','system.service_provider','system.service_type','system.snmp_oid','system.status','system.sysContact','system.sysDescr','system.sysLocation','system.sysObjectID','system.type','system.wall_port','system.warranty_duration','system.warranty_expires','system.warranty_type','user.current','user.domain','user.password_changeable','user.password_required','user.status','user.type','user_group.current','user_group.name','video.current','video.manufacturer','video.model','video.size','vm.current','vm.cpu_count','vm.memory_count','vm.status','windows.active_directory_ou','windows.boot_device','windows.build_number','windows.client_site_name','windows.country_code','windows.current','windows.domain_controller_address','windows.domain_controller_name','windows.domain_role','windows.domain_short','windows.id_number','windows.install_directory','windows.language','windows.organisation','windows.part_of_domain','windows.registered_user','windows.servicce_pack','windows.time_caption','windows.time_daylight','windows.version','windows.workgroup');
     $dictionary->valid_tables = array('bios','disk','dns','ip','log','memory','module','monitor','motherboard','netstat','network','nmap','optical','pagefile','partition','print_queue','processor','route','san','scsi','server','server_item','service','share','software','software_key','sound','system','task','user','user_group','variable','video','vm','warranty','windows');
     $dictionary->attributes->create = array('name','org_id','type');
     $dictionary->attributes->update = array('name','org_id','description','type','table','primary','secondary','ternary','dataset_title','where','limit','group_by','options','sql','link');

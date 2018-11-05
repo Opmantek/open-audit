@@ -31,7 +31,7 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.2.7
+ * @version   2.3.0
 
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -7849,6 +7849,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.141') {
         $details->model = 'Cisco Chassis Cat 6006';
         $details->type = 'cisco module';
+    }
+    if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1410') {
+        $details->model = 'Cisco Nexus 5672UP';
+        $details->type = 'switch';
     }
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.142') {
         $details->model = 'Cisco Chassis Cat 6009';

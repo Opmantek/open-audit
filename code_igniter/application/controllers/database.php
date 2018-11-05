@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -744,6 +744,11 @@ class Database extends MY_Controller
         if (($db_internal_version < '20180810') and ($this->db->platform() == 'mysql')) {
             # upgrade for 2.2.7
             include "db_upgrades/db_2.2.7.php";
+        }
+
+        if (($db_internal_version < '20180925') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 2.3.0
+            include "db_upgrades/db_2.3.0.php";
         }
 
         $this->data['include'] = 'v_database_update';

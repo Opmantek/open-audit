@@ -31,6 +31,8 @@ if ($this->response->meta->collection === 'database' or $this->response->meta->c
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else if ($this->response->meta->collection === 'summaries' and $this->response->meta->format == 'screen') {
     $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
+} else if ($this->response->meta->collection === 'buildings' or $this->response->meta->collection === 'floors' or $this->response->meta->collection === 'rooms' or $this->response->meta->collection === 'rows' or $this->response->meta->collection === 'racks' or $this->response->meta->collection === 'rack_devices') {
+    $this->response->data = $this->{'m_'.$this->response->meta->collection}->collection();
 } else {
     $this->response->data = $this->m_collection->collection($this->response->meta->collection);
 }

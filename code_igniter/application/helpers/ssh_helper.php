@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.2.7
+ * @version   2.3.0
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
@@ -68,21 +68,21 @@ if (! function_exists('scp')) {
         $log->command_output = '';
         $item_start = microtime(true);
         if (empty($ip)) {
-            $log->message = 'No IP supplied to ssh_command function.';
+            $log->message = 'No IP supplied to scp function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
             return false;
         }
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to ssh_command function.';
+            $log->message = 'No valid IP supplied to scp function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
             return false;
         }
         if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to ssh_command function.';
+            $log->message = 'No credentials supplied to scp function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
@@ -101,31 +101,26 @@ if (! function_exists('scp')) {
         $ssh = new Net_SFTP($ip);
         if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
             $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-        } else {
-            $ssh->setTimeout(10);
         }
         $key = new Crypt_RSA();
         if ($credentials->type == 'ssh_key') {
-            $log->message = 'Using SSH Key to copy file.';
-            discovery_log($log);
+            // $log->message = 'Using SSH Key to copy file.';
+            // discovery_log($log);
             if (!empty($credentials->credentials->password)) {
                 $key->setPassword($credentials->credentials->password);
             }
             $key->loadKey($credentials->credentials->ssh_key);
             if ($ssh->login($credentials->credentials->username, $key)) {
-                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
-                #discovery_log($log);
                 $username = $credentials->credentials->username;
                 $password = @$credentials->credentials->password;
             } else {
                 $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                #$log->command =  $ssh->getLog();
+                $log->command =  $ssh->getLog();
                 discovery_log($log);
             }
         } else if ($credentials->type == 'ssh') {
-            $log->message = 'Using SSH to copy file.';
-            discovery_log($log);
-
+            // $log->message = 'Using SSH to copy file.';
+            // discovery_log($log);
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
             $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
@@ -137,9 +132,8 @@ if (! function_exists('scp')) {
                 discovery_log($log);
                 return false;
             }
-            discovery_log($log);
         } else {
-            $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
+            $log->message = 'No credentials of ssh or ssh_key passed to scp function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
@@ -148,10 +142,8 @@ if (! function_exists('scp')) {
 
         $status = true;
         $log->command = 'sftp ' . $source . ' to ' . $destination;
-        $log->command_status = '';
-        $log->command_output = '';
-        $log->message = 'Attempt to copy file to ' . $ip;
-        discovery_log($log);
+        $log->command_status = 'success';
+        $log->message = 'Copy file to ' . $ip;
         try {
             $output = $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
             $log->command_output = $output;
@@ -159,12 +151,8 @@ if (! function_exists('scp')) {
             $log->command = $ssh->getLog();
             $log->command_output = $output;
             $log->command_status = 'fail';
-            discovery_log($log);
             $status = false;
-            return false;
         }
-        $log->message = 'Copy file to ' . $ip;
-        $log->command_status = 'success';
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -207,21 +195,21 @@ if (! function_exists('scp_get')) {
         $log->command_output = '';
         $item_start = microtime(true);
         if (empty($ip)) {
-            $log->message = 'No IP supplied to ssh_command function.';
+            $log->message = 'No IP supplied to scp_get function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
             return false;
         }
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to ssh_command function.';
+            $log->message = 'No valid IP supplied to scp_get function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
             return false;
         }
         if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to ssh_command function.';
+            $log->message = 'No credentials supplied to scp_get function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
@@ -240,13 +228,11 @@ if (! function_exists('scp_get')) {
         $ssh = new Net_SFTP($ip);
         if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
             $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-        } else {
-            $ssh->setTimeout(10);
         }
         $key = new Crypt_RSA();
         if ($credentials->type == 'ssh_key') {
-            $log->message = 'Using SSH Key to copy file.';
-            discovery_log($log);
+            // $log->message = 'Using SSH Key to copy file.';
+            // discovery_log($log);
             if (!empty($credentials->credentials->password)) {
                 $key->setPassword($credentials->credentials->password);
             }
@@ -258,27 +244,26 @@ if (! function_exists('scp_get')) {
                 $password = @$credentials->credentials->password;
             } else {
                 $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                #$log->command =  $ssh->getLog();
+                $log->command =  $ssh->getLog();
                 discovery_log($log);
             }
         } else if ($credentials->type == 'ssh') {
-            $log->message = 'Using SSH to copy file.';
-            discovery_log($log);
-
+            // $log->message = 'Using SSH to copy file.';
+            // discovery_log($log);
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
-            $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
+            # $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
             try {
                 $ssh->login($credentials->credentials->username, $credentials->credentials->password);
             } catch (Exception $e) {
                 $log->message = "Failure, credentials named " . $username . " not used to log in to $ip.";
                 $log->severity = 3;
                 discovery_log($log);
+                $log->severity = 7;
                 return false;
             }
-            discovery_log($log);
         } else {
-            $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
+            $log->message = 'No credentials of ssh or ssh_key passed to scp_get function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
@@ -287,10 +272,8 @@ if (! function_exists('scp_get')) {
 
         $status = true;
         $log->command = 'sftp ' . $source . ' to ' . $destination;
-        $log->command_status = '';
-        $log->command_output = '';
-        $log->message = 'Attempt to copy file to ' . $ip;
-        discovery_log($log);
+        $log->command_status = 'success';
+        $log->message = 'Copy file from ' . $ip;
         try {
             $output = $ssh->get($source, $destination);
             $log->command_output = $output;
@@ -298,12 +281,9 @@ if (! function_exists('scp_get')) {
             $log->command = $ssh->getLog();
             $log->command_output = $output;
             $log->command_status = 'fail';
-            discovery_log($log);
+            $log->message = 'Attempt to copy file from ' . $ip;
             $output = false;
-            return false;
         }
-        $log->message = 'Copy file from ' . $ip;
-        $log->command_status = 'success';
         $ssh->disconnect();
         unset($ssh);
         $log->command_time_to_execute = (microtime(true) - $item_start);
@@ -331,9 +311,11 @@ if (! function_exists('ssh_command')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-    function ssh_command($ip = '', $credentials = '', $command = '', $log, $sudo = '')
+    function ssh_command($ip = '', $credentials = '', $command = '', $discovery_id = '')
     {
 
+        $log = new stdClass();
+        $log->discovery_id = $discovery_id;
         $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'ssh_command';
@@ -344,21 +326,18 @@ if (! function_exists('ssh_command')) {
             $log->message = 'No IP supplied to ssh_command function.';
             $log->severity = 5;
             discovery_log($log);
-            $log->severity = 7;
             return false;
         }
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'No valid IP supplied to ssh_command function.';
             $log->severity = 5;
             discovery_log($log);
-            $log->severity = 7;
             return false;
         }
         if (!is_object($credentials)) {
             $log->message = 'No credentials supplied to ssh_command function.';
             $log->severity = 5;
             discovery_log($log);
-            $log->severity = 7;
             return false;
         }
         if (php_uname('s') != 'Windows NT') {
@@ -375,8 +354,6 @@ if (! function_exists('ssh_command')) {
             $ssh = new Net_SSH2($ip);
             if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
                 $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-            } else {
-                $ssh->setTimeout(10);
             }
             $key = new Crypt_RSA();
             if (!empty($credentials->credentials->password)) {
@@ -384,116 +361,112 @@ if (! function_exists('ssh_command')) {
             }
             $key->loadKey($credentials->credentials->ssh_key);
             if ($ssh->login($credentials->credentials->username, $key)) {
-                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
-                #discovery_log($log);
                 $username = $credentials->credentials->username;
                 $password = @$credentials->credentials->password;
             } else {
                 $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                #$log->command =  $ssh->getLog();
+                $log->command = 'ssh login attempt';
+                $log->command_output = $ssh->getLastError();
+                $log->command_status = 'fail';
+                $log->severity = 5;
                 discovery_log($log);
+                return false;
             }
         } else if ($credentials->type == 'ssh') {
             $ssh = new Net_SSH2($ip);
             if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
                 $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-            } else {
-                $ssh->setTimeout(10);
             }
             $key = new Crypt_RSA();
             if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
-                #$log->message = "Success, credentials named " . $credentials->name . " used to log in to $ip.";
-                #discovery_log($log);
                 $username = $credentials->credentials->username;
                 $password = $credentials->credentials->password;
             } else {
                 $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                #$log->command =  $ssh->getLog();
+                $log->command = 'ssh login attempt';
+                $log->command_output = $ssh->getLastError();
+                $log->command_status = 'fail';
+                $log->severity = 5;
                 discovery_log($log);
+                return false;
             }
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to ssh_command function.';
-            $log->severity = 3;
+            $log->severity = 4;
             discovery_log($log);
-            $log->severity = 7;
             return false;
         }
 
-        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-        } else {
-            $ssh->setTimeout(300);
-        }
-
-        if ($sudo == 'n' or $sudo == '' or $credentials->credentials->username == 'root') {
-            $result = $ssh->exec($command);
-        } else {
-            $which_sudo = $ssh->exec('which sudo');
-            if (!empty($which_sudo)) {
-                $output = '';
-                $command = 'sudo ' . $command;
-                $item_start = microtime(true);
-                $ssh->write($command . "\n");
-                $output = $ssh->read('assword');
-                if (stripos($output, 'assword') !== false) {
-                    $ssh->write($password."\n");
-                    $output = $ssh->read('[prompt]');
-                }
-                $lines = explode("\n", $output);
-                $result = trim($lines[count($lines)-2]);
+        if (strpos($command, 'audit_') !== false and strpos($command, 'submit_online') !== false) {
+            if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+                $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
             } else {
-                $log->message = 'No sudo on target but requested from ssh_command.';
-                $log->status = 'fail';
-                $log->severity = 5;
-                discovery_log($log);
-                $log->severity = 7;
-                return false;
+                $ssh->setTimeout(60);
             }
-        }
-        $ssh->disconnect();
-        unset($ssh);
-
-        $log->command_time_to_execute = (microtime(true) - $item_start);
-        $log->command_output = '';
-        if (!empty($result) and strpos($command, 'audit_esxi') === false) {
-            $log->command_output = trim($result);
         }
 
         $log->command = $command;
-        $log->command_status = 'success';
-        $log->message = 'SSH command';
+        $log->command_status = '';
+        $log->message = 'Executing SSH command';
+        $log->command_status = '';
+        $item_start = microtime(true);
+        if (strpos($command, 'sudo') === false) {
+            # Not using sudo, so no password prompt
+            $result = $ssh->exec($command);
+            $result = explode("\n", $result);
+            # remove the last line as it's always blank
+            unset($result[count($result)-1]);
+        } else {
+            # Using sudo - need to input in response to password prompt
+            $ssh->write($command . "\n");
+            $output = $ssh->read('assword');
+            if (stripos($output, 'assword') !== false) {
+                $ssh->write($password."\n");
+                $output = $ssh->read('[prompt]');
+            }
+            # required (as opposed to using root as above) because multiple
+            # lines will be returned when asking for the password for sudo
+            #$lines = explode("\n", $output);
+            #$result = trim($lines[count($lines)-2]);
+            $result = explode("\n", $output);
+        }
+        $ssh->disconnect();
+        unset($ssh);
+        for ($i=0; $i < count($result); $i++) {
+            $result[$i] = trim($result[$i]);
+        }
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        if (stripos($command, 'audit_') !== false and stripos($command, 'submit_online') !== false) {
+            $log->command_output = 'Audit console output removed.';
+        } else {
+            $log->command_output = json_encode($result);
+        }
         discovery_log($log);
-        unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
-        $return['output'][0] = $result;
-        $return['status'] = 0;
-        return($return);
+        unset($log);
+        return($result);
     }
 }
 
-
-
-
-
-
-
-
-
-
 if (! function_exists('ssh_audit')) {
-    function ssh_audit($ip = '', $credentials = '', $log)
+    function ssh_audit($ip = '', $credentials = '')
     {
+        $log = new stdClass();
+        $log->discovery_id = '';
+        if (!empty($GLOBALS['discovery_id'])) {
+            $log->discovery_id = intval($GLOBALS['discovery_id']);
+        }
         $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'ssh_audit';
         $log->command = '';
         $log->message = 'SSH audit starting';
         discovery_log($log);
+        $CI = & get_instance();
 
         if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'Invalid or blank IP supplied to ssh_audit function.';
             $log->severity = 5;
             discovery_log($log);
-            $log->severity = 7;
             return false;
         }
 
@@ -502,7 +475,6 @@ if (! function_exists('ssh_audit')) {
             $log->message = 'No credentials supplied to ssh_audit function.';
             $log->severity = 5;
             discovery_log($log);
-            $log->severity = 7;
             return false;
         }
 
@@ -520,8 +492,6 @@ if (! function_exists('ssh_audit')) {
                 $ssh = new Net_SSH2($ip);
                 if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
                     $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-                } else {
-                    $ssh->setTimeout(10);
                 }
                 $key = new Crypt_RSA();
                 if (!empty($credential->credentials->password)) {
@@ -529,13 +499,15 @@ if (! function_exists('ssh_audit')) {
                 }
                 $key->loadKey($credential->credentials->ssh_key);
                 if ($ssh->login($credential->credentials->username, $key)) {
-                    $log->message = "Success, credentials named " . $credential->name . " used to log in to $ip.";
+                    $log->message = "Valid credentials named " . $credential->name . " used to log in to $ip.";
+                    $log->command_status = 'success';
                     discovery_log($log);
                     $username = $credential->credentials->username;
                     $password = @$credential->credentials->password;
                     break;
                 } else {
-                    $log->message = "Failure, credentials named " . $credential->name . " not used to log in to $ip.";
+                    $log->message = "Invalid credentials named " . $credential->name . " not used to log in to $ip.";
+                    $log->command_status = 'fail';
                     #$log->command =  $ssh->getLog();
                     discovery_log($log);
                     $ssh->disconnect();
@@ -545,17 +517,17 @@ if (! function_exists('ssh_audit')) {
                 $ssh = new Net_SSH2($ip);
                 if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
                     $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-                } else {
-                    $ssh->setTimeout(10);
                 }
                 if ($ssh->login($credential->credentials->username, $credential->credentials->password)) {
-                    $log->message = "Success, credentials named " . $credential->name . " used to log in to $ip.";
+                    $log->message = "Valid credentials named " . $credential->name . " used to log in to $ip.";
+                    $log->command_status = 'success';
                     discovery_log($log);
                     $username = $credential->credentials->username;
                     $password = @$credential->credentials->password;
                     break;
                 } else {
-                    $log->message = "Failure, credentials named " . $credential->name . " not used to log in to $ip.";
+                    $log->message = "Invalid credentials named " . $credential->name . " not used to log in to $ip.";
+                    $log->command_status = 'fail';
                     #$log->command =  $ssh->getLog();
                     discovery_log($log);
                     $ssh->disconnect();
@@ -567,7 +539,7 @@ if (! function_exists('ssh_audit')) {
         if (empty($username)) {
             $log->command = '';
             $log->command_output = '';
-            $log->status = 'fail';
+            $log->command_status = 'fail';
             $log->message = "No credentials valid for $ip.";
             discovery_log($log);
             return false;
@@ -673,17 +645,18 @@ if (! function_exists('ssh_audit')) {
         $log->command = 'echo $SHELL';
         $log->command_output = $device->shell;
         $log->command_time_to_execute = (microtime(true) - $item_start);
-        $log->command_status = '';
+        $log->command_status = 'success';
         $log->message = 'The default shell for ' . $username . ' is ' . $device->shell;
 
         if (strpos($device->shell, 'bash') === false) {
-            $log->message = 'Warning - ' . $log->message;
-            $log->severity = 5;
+            $log->command_status = 'warning';
+            $log->message = 'The default shell for ' . $username . ' is ' . $device->shell . ' (not bash)';
+            $log->severity = 6;
             discovery_log($log);
-            $log->severity = 7;
         } else {
             discovery_log($log);
         }
+        $log->severity = 7;
 
         if (strpos($device->shell, 'bash') === false) {
             $item_start = microtime(true);
@@ -691,31 +664,33 @@ if (! function_exists('ssh_audit')) {
             $log->command = 'which bash';
             $log->command_output = $device->bash;
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_status = '';
+            $log->command_status = 'success';
             if ($device->bash != '') {
-                $log->message = 'Testing for bash - installed';
-                discovery_log($log);
+                $log->message = 'Bash installed';
             } else {
-                $log->message = 'Warning - bash not installed';
-                discovery_log($log);
+                $log->message = 'Bash not installed';
+                $log->command_status = 'warning';
+                $log->severity = 6;
             }
+            discovery_log($log);
         }
+        $log->severity = 7;
 
         if (strpos($device->shell, 'bash') === false) {
-            if ($device->bash === '') {
-                $log->severity = 4;
-                $log->message = 'Warning - Running commands in a shell other than bash may fail.';
-            } else {
-                $log->severity = 5;
-                $log->message = 'Notice - Will use ' . $device->bash . ' to run commands.';
-            }
             $log->command = '';
-            $log->command_output = '';
+            $log->command_output = $device->shell;
             $log->command_time_to_execute = '';
-            $log->command_status = '';
+            $log->severity = 6;
+            $log->message = 'Will use ' . $device->bash . ' to run commands.';
+            $log->command_status = 'notice';
+            if ($device->bash === '') {
+                $log->severity = 6;
+                $log->message = 'Running commands in a shell other than bash may fail.';
+                $log->command_status = 'warning';
+            }
             discovery_log($log);
-            $log->severity = 7;
         }
+        $log->severity = 7;
 
         $commands = array(
             'hostname' => 'hostname -s 2>/dev/null',
@@ -935,6 +910,48 @@ if (! function_exists('ssh_audit')) {
             unset($device->$attribute);
         }
 
+        $device->use_sudo = false;
+        $command = '';
+        if ($username != 'root') {
+            if (($CI->config->config['discovery_linux_use_sudo'] == 'y' and strtolower($device->os_group) == 'linux') or
+                ($CI->config->config['discovery_sunos_use_sudo'] == 'y' and strtolower($device->os_group) == 'sunos') or
+                (strtolower($device->os_group) != 'linux' and strtolower($device->os_group) != 'sunos')) {
+                if (!empty($device->which_sudo)) {
+                    $item_start = microtime(true);
+                    $command = $device->which_sudo . " hostname 2>/dev/null";
+                    if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                        $command = $device->bash . " -c '" . $command . "'\n";
+                    } else {
+                        $command .= "\n";
+                    }
+                    $ssh->write($command);
+                    $output = $ssh->read('assword');
+                    if (stripos($output, 'assword') !== false) {
+                        $ssh->write($password."\n");
+                        $output = $ssh->read('[prompt]');
+                    }
+                    $lines = explode("\n", $output);
+                    $hostname = trim($lines[count($lines)-2]);
+                    $sudo_temp_hostname = explode('.', $hostname);
+                    $ssh_hostname = explode('.', $device->hostname);
+                    if ($sudo_temp_hostname[0] == $ssh_hostname[0]) {
+                        $device->use_sudo = true;
+                    }
+                }
+                $log->command = $command . '; # hostname test using sudo';
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
+                $log->message = 'SSH command';
+                if ($device->use_sudo) {
+                    $log->command_status = 'success';
+                } else {
+                    $log->command_status = 'fail';
+                }
+                discovery_log($log);
+                unset($sudo_temp_hostname, $ssh_hostname, $hostname);
+            }
+        }
+
         unset($array);
         if (empty($device->dbus_identifier) and empty($device->uuid) and $username != 'root') {
             if (($CI->config->config['discovery_linux_use_sudo'] == 'y' and strtolower($device->os_group) == 'linux') or
@@ -1011,54 +1028,55 @@ if (! function_exists('ssh_audit')) {
                     unset($device->uuid);
                 }
             }
+        }
 
-            if (empty($device->uuid) and $username == 'root') {
+        if (empty($device->uuid) and $username == 'root') {
+            $item_start = microtime(true);
+            $command = 'dmidecode -s system-uuid 2>/dev/null';
+            if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                $command = $device->bash . " -c '" . $command . "'";
+            }
+            $device->uuid = trim($ssh->exec($command));
+            $log->command_output = json_encode(explode($device->uuid, "\n"));
+            if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
+                $device->uuid = '';
+            }
+
+            $log->command = $command .'; # uuid';
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'SSH command';
+            if (empty($device->uuid)) {
+                $log->command_output = $ssh->getErrors();
+                $log->command_status = 'fail';
+                discovery_log($log);
+
                 $item_start = microtime(true);
-                $command = 'dmidecode -s system-uuid 2>/dev/null';
+                $command = 'cat /sys/class/dmi/id/product_uuid 2>/dev/null';
                 if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
                     $command = $device->bash . " -c '" . $command . "'";
                 }
-                $device->uuid = trim($ssh->exec($command));
-                $log->command_output = json_encode(explode($device->uuid, "\n"));
-                if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
-                    $device->uuid = '';
-                }
 
-                $log->command = $command .'; # uuid';
-                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $device->uuid = trim($ssh->exec($command));
+                $log->command = $command . '; # uuid';
                 $log->message = 'SSH command';
+                $log->command_time_to_execute = (microtime(true) - $item_start);
                 if (empty($device->uuid)) {
                     $log->command_output = $ssh->getErrors();
                     $log->command_status = 'fail';
                     discovery_log($log);
-
-                    $item_start = microtime(true);
-                    $command = 'cat /sys/class/dmi/id/product_uuid 2>/dev/null';
-                    if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
-                        $command = $device->bash . " -c '" . $command . "'";
-                    }
-
-                    $device->uuid = trim($ssh->exec($command));
-                    $log->command = $command . '; # uuid';
-                    $log->message = 'SSH command';
-                    $log->command_time_to_execute = (microtime(true) - $item_start);
-                    if (empty($device->uuid)) {
-                        $log->command_output = $ssh->getErrors();
-                        $log->command_status = 'fail';
-                        discovery_log($log);
-                    } else {
-                        $log->command_output = $device->uuid;
-                        $log->command_status = 'success';
-                        discovery_log($log);
-                    }
                 } else {
                     $log->command_output = $device->uuid;
                     $log->command_status = 'success';
                     discovery_log($log);
                 }
+            } else {
+                $log->command_output = $device->uuid;
+                $log->command_status = 'success';
+                discovery_log($log);
             }
         }
-        unset($device->which_sudo);
+
+        #unset($device->which_sudo);
         $log->command = '';
         $log->command_time_to_execute = '';
         $log->command_output = '';
@@ -1070,9 +1088,6 @@ if (! function_exists('ssh_audit')) {
         return $device;
     }
 }
-
-
-
 
 if (! function_exists('ssh_create_keyfile')) {
     function ssh_create_keyfile($key_string, $display = 'n', $log = null)
@@ -1153,859 +1168,6 @@ if (! function_exists('ssh_create_keyfile')) {
             return false;
         }
         return($ssh_keyfile);
-    }
-}
-
-if (! function_exists('ssh_credentials')) {
-    /**
-     * The SSH credentials test.
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @param     ip          The target device's ip address
-     *
-     * @param     credentials An array of credentials objects
-     *
-     * @return    false || credentials object with an additional flag for 'sudo' and root
-     */
-    function ssh_credentials($ip = '', $credentials = array(), $log = null)
-    {
-        if (is_null($log)) {
-            $log = new stdClass();
-        }
-        $log->file = 'ssh_helper';
-        $log->function = 'ssh_credentials';
-        $log->command = '';
-        $log->status = '';
-        $log->message = 'SSH credentials starting';
-        discovery_log($log);
-
-        if (empty($credentials)) {
-            $log->message = 'No credentials array passed to ssh_credentials.';
-            $log->severity = 6;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No IP passed or bad IP to ssh_credentials.';
-            $log->severity = 6;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        $connected = array();
-
-        $CI = & get_instance();
-        if (php_uname('s') != 'Windows NT') {
-            $filepath = $CI->config->config['base_path'] . '/other';
-        } else {
-            $filepath = $CI->config->config['base_path'] . '\\other';
-        }
-
-        foreach ($credentials as $credential) {
-            if (!empty($credential->type) and $credential->type == 'ssh_key') {
-                # TODO - SSH Keys not supported in OA 1.12.8 under Windows
-                if (php_uname('s') != 'Windows NT') {
-                    # try to connect
-                    $result = false;
-                    $result = ssh_command($ip, $credential, 'uname', $log);
-                    if ($result['status'] == 0) {
-                        $log->message = "Credential set for SSH Key " . $credential->name . " working on " . $ip;
-                        discovery_log($log);
-                        return($credential);
-                    } else {
-                        $log->message = "Credential set for SSH Key " . $credential->name . " not working on " . $ip;
-                        discovery_log($log);
-                    }
-                }
-            }
-        }
-        unset($credential);
-        foreach ($credentials as $credential) {
-            if (!empty($credential->type) and $credential->type == 'ssh') {
-                $from = ' ';
-                if (!empty($credential->source)) {
-                    $from = ' from ' . $credential->source . ' ';
-                }
-                if (!empty($credential->name)) {
-                    $from = ' named ' . $credential->name . ' ';
-                }
-                $credential->sudo = false;
-                if ($credential->credentials->username == 'root') {
-                    $credential->root = true;
-                } else {
-                    $credential->root = false;
-                }
-                # initial attempt to connect
-                if ($result = ssh_command($ip, $credential, 'uname', $log)) {
-                    # Successful connect
-                    if ($result['status'] == 0) {
-                            # Did we use root?
-                        if ($credential->root) {
-                            # yes we did use root
-                            $log->message = "SSH credentials complete. Credential set (using root)" . $from . "working on " . $ip;
-                            discovery_log($log);
-                            return $credential;
-                        } else {
-                            # no we didn't use root - is sudo on the box?
-                            $result = ssh_command($ip, $credential, 'which sudo', $log);
-                            if ($result['status'] == 0) {
-                                # yes, sudo is present
-                                $sudo_binary = $result['output'][0];
-                                $command = 'echo ' . $credential->credentials->password . ' | sudo -S whoami';
-                                # can we use sudo?
-                                if ($result = ssh_command($ip, $credential, $command, $log)) {
-                                    # yes, we can use sudo
-                                    if ($result['status'] == 0) {
-                                        # the command ran AND we got no returned error status - we can use sudo
-                                        $log->message = "SSH credentials complete. Credential set (using sudo)" . $from . "working on " . $ip;
-                                        discovery_log($log);
-                                        $credential->sudo = $sudo_binary;
-                                        return $credential;
-                                    } else {
-                                        # the command ran BUT we got a returned error status - we cannot use sudo
-                                        $connected[] = $credential;
-                                    }
-                                } else {
-                                    # the commadn failed - we cannot use sudo
-                                    $connected[] = $credential;
-                                }
-                            } else {
-                                # sudo is not on the box
-                                $connected[] = $credential;
-                            }
-                        }
-                    }
-                } else {
-                    $log->message = "Credential set for SSH" . $from . " not working on " . $ip;
-                    discovery_log($log);
-                }
-            }
-        }
-        if (!empty($connected[0])) {
-            $from = ' ';
-            if (!empty($connected[0]->source)) {
-                $from = ' from ' . $connected[0]->source . ' ';
-            }
-            if (!empty($connected[0]->name)) {
-                $from = ' named ' . $connected[0]->name . ' ';
-            }
-            $log->message = "SSH credentials complete. Credential set from" . $from . "working on " . $ip;
-            discovery_log($log);
-            return $connected[0];
-        } else {
-            $log->message = "SSH credentials complete. No credentials found for " . $ip;
-            discovery_log($log);
-            return false;
-        }
-    }
-}
-
-if (! function_exists('ssh_command_old')) {
-    /**
-     * The SSH credentials test.
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @param     ip        The target device's ip address
-     *
-     * @param     crdentials  The credentials used to connect
-     *
-     * @param     command   The command to be run using SSH
-     *
-     * @return    false || $return array containing the output and status flag
-     */
-    function ssh_command_old($ip = '', $credentials = '', $command = '', $log)
-    {
-
-        $log->severity = 7;
-        $log->file = 'ssh_helper';
-        $log->function = 'ssh_command';
-        $item_start = microtime(true);
-
-        if (empty($ip)) {
-            $log->message = 'No IP supplied to ssh_command function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to ssh_command function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to ssh_command function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        } else {
-            if ($credentials->type == 'ssh') {
-                $username = escapeshellarg($credentials->credentials->username);
-                $password = $credentials->credentials->password;
-            } elseif ($credentials->type == 'ssh_key') {
-                $username = escapeshellarg($credentials->credentials->username);
-                if (!empty($credentials->credentials->password)) {
-                    $password = escapeshellarg($credentials->credentials->password);
-                } else {
-                    $password = '';
-                }
-                $keyfile = @ssh_create_keyfile($credentials->credentials->ssh_key);
-                if (empty($keyfile)) {
-                    return false;
-                } else {
-                    $log->message = 'Created SSH keyfile for ' . $ip . ' named ' . $keyfile;
-                    discovery_log($log);
-                }
-            } else {
-                $log->message = 'No username / password combo or keyfile supplied to ssh_command function.';
-                $log->severity = 5;
-                discovery_log($log);
-                $log->severity = 7;
-                return false;
-            }
-        }
-        if (empty($command)) {
-            $log->message = 'No command supplied to ssh_command function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        } else {
-            $command = escapeshellarg($command);
-        }
-        $return = array('output' => '', 'status' => '');
-
-        if (php_uname('s') == 'Linux') {
-            $descriptorspec = array(
-                0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-            );
-            $cwd = '/tmp';
-            $env = array();
-            if ($credentials->type == 'ssh') {
-                $command_string = 'timeout 5m sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
-                $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
-                if (is_resource($process)) {
-                    fwrite($pipes[0], $password);
-                    fclose($pipes[0]);
-                    // stdOut
-                    $temp = stream_get_contents($pipes[1]);
-                    $return['output'] = explode("\n", $temp);
-                    if (end($return['output']) == '') {
-                        unset($return['output'][count($return['output'])-1]);
-                    }
-                    fclose($pipes[1]);
-                    $return['status'] = proc_close($process);
-                }
-            } elseif ($credentials->type == 'ssh_key') {
-                if ($password != '') {
-                    $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
-                    $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
-                    if (is_resource($process)) {
-                        fwrite($pipes[0], $password);
-                        fclose($pipes[0]);
-                        // stdOut
-                        $temp = stream_get_contents($pipes[1]);
-                        $return['output'] = explode("\n", $temp);
-                        if (end($return['output']) == '') {
-                            unset($return['output'][count($return['output'])-1]);
-                        }
-                        fclose($pipes[1]);
-                        $return['status'] = proc_close($process);
-                    }
-                } else {
-                    $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
-                    exec($command_string, $return['output'], $return['status']);
-                }
-                unlink($keyfile);
-            }
-        }
-
-        // NOTE - requires the command "brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb" for the sshpass command
-        if (php_uname('s') == 'Darwin') {
-            if ($credentials->type == 'ssh') {
-                # test we have sshpass installed
-                if (!file_exists('/usr/local/bin/sshpass')) {
-                    $log->message = 'SSHPass not installed on OSX, cannot run ssh_command.';
-                    $log->severity = 5;
-                    discovery_log($log);
-                    $log->severity = 7;
-                    return false;
-                }
-                $descriptorspec = array(
-                    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                    2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-                );
-                $cwd = '/usr/local/open-audit/other';
-                $env = array();
-                $command_string = 'sshpass ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $username . '@' . $ip . ' ' . $command;
-                $process = proc_open($command_string, $descriptorspec, $pipes, $cwd, $env);
-                if (is_resource($process)) {
-                    fwrite($pipes[0], $password);
-                    fclose($pipes[0]);
-                    // stdOut
-                    $temp = stream_get_contents($pipes[1]);
-                    $return['output'] = explode("\n", $temp);
-                    if (end($return['output']) == '') {
-                        unset($return['output'][count($return['output'])-1]);
-                    }
-                    fclose($pipes[1]);
-                    $return['status'] = proc_close($process);
-                }
-            } elseif ($credentials->type = 'ssh_key') {
-                if ($password != '') {
-                    # NOT SUPPORTED YET
-                } else {
-                    $command_string = 'ssh -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $username . '@' . $ip . ' ' . $command;
-                    exec($command_string, $return['output'], $return['status']);
-                }
-                unlink($keyfile);
-            }
-        }
-
-
-        if (php_uname('s') == 'Windows NT') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
-            if ($credentials->type == 'ssh') {
-                #$command_string = $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . str_replace('"', '\"', $password) . ' ' . $command;
-                #$command_string = $filepath . '\\plink.exe -pw ' . $this->escape_plink_command($details->ssh_password).' '.$username.'@'.$details->ip." \"".$this->config->item('discovery_linux_script_directory').$audit_script." submit_online=y create_file=n url=".$url."index.php/input/devices debugging=1 system_id=".$details->id." self_delete=y\"";
-                $command_string = 'echo y | ' . $filepath . '\plink.exe -ssh ' . $username . "@" . $ip . ' -pw ' . $password . ' ' . $command;
-                exec($command_string, $return['output'], $return['status']);
-                if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
-                    (isset($return['output'][0]) and stripos($return['output'][0], 'using keyboard-interactive authentication') !== false) or
-                    (isset($return['output'][1]) and stripos($return['output'][1], 'password') !== false) ) {
-                    $return['output'][0] = '';
-                    $return['status'] = 5;
-                }
-            } elseif ($credentials->type == 'ssh_key') {
-                $command_string = $filepath . '\plink.exe -ssh -i ' . $keyfile . ' ' . $username . "@" . $ip . ' ' . $command;
-                exec($command_string, $return['output'], $return['status']);
-                if ((isset($return['output'][0]) and stripos($return['output'][0], 'password') !== false) or
-                    (isset($return['output'][0]) and stripos($return['output'][0], 'using keyboard-interactive authentication') !== false) or
-                    (isset($return['output'][1]) and stripos($return['output'][1], 'password') !== false) ) {
-                    $return['output'][0] = '';
-                    $return['status'] = 5;
-                }
-                try {
-                    unlink($keyfile);
-                    $log->command = 'unlink($keyfile)';
-                    $log->command_output = '';
-                    $log->message = 'SSH Keyfile ' . $keyfile . ' removed.';
-                    discovery_log($log);
-                } catch (Exception $e) {
-                    $log->command = '';
-                    $log->command_output = $e->getMessage();
-                    $log->message = 'SSH Keyfile ' . $keyfile . ' could not be removed.';
-                    $log->status = 'fail';
-                    $log->severity = 3;
-                    discovery_log($log);
-                }
-            }
-        }
-
-        $command_string = str_replace($password, '******', $command_string);
-        $command_string = str_replace(str_replace('"', '\"', $password), '******', $command_string);
-        $command_string = str_replace(escapeshellarg($password), '******', $command_string);
-        $log->command = $command_string;
-        $log->command_time_to_execute = (microtime(true) - $item_start);
-        if (!empty($return['output'][0])) {
-            $log->command_output = trim($return['output'][0]);
-        }
-        if ($return['status'] != '0') {
-            $log->command_status = 'fail';
-        } else {
-            $log->command_status = 'success';
-        }
-        $log->message = 'SSH command';
-        discovery_log($log);
-        unset($log->command, $log->command_status, $log->command_time_to_execute, $log->command_output);
-
-        // if ($return['status'] != '0') {
-        //     return false;
-        // } else {
-        //     return($return);
-        // }
-        return($return);
-    }
-}
-
-if (! function_exists('ssh_audit_old')) {
-    function ssh_audit_old($ip = '', $credentials = '', $log)
-    {
-        $log->severity = 7;
-        $log->file = 'ssh_helper';
-        $log->function = 'ssh_audit';
-        $log->command = '';
-        $log->message = 'SSH audit starting';
-        discovery_log($log);
-
-        if (empty($ip)) {
-            $log->message = 'No IP supplied to ssh_audit function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to ssh_audit function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to ssh_audit function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-
-        $details = new stdClass();
-        $details->os_group = '';
-
-        $command = 'uname';
-        $ssh_result = ssh_command($ip, $credentials, $command, $log);
-        $log->function = 'ssh_audit';
-        if ($ssh_result['status'] == 0) {
-            if (!empty($ssh_result['output'][0])) {
-                $details->os_group = $ssh_result['output'][0];
-                if ($details->os_group == 'WindowsNT') {
-                    $details->os_group = 'Windows';
-                }
-            }
-        } else {
-            # Windows doesn't have a uname so the above may fail (it might have unix tools installed)
-            $command = 'wmic os get name';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            $log->function = 'ssh_audit';
-            foreach ($ssh_result['output'] as $line) {
-                if (stripos($line, 'Windows') !== false) {
-                    $details->os_group = 'Windows';
-                }
-            }
-        }
-        unset($ssh_result);
-
-        if ($details->os_group == 'Windows') {
-            # We don't support SSH auditing to Windows at the moment
-            $log->severity = 5;
-            $log->message = 'Windows audit via SSH not supported at this time';
-            discovery_log($log);
-            $log->severity = 7;
-            return($details);
-        }
-
-        if ($details->os_group == '') {
-            $log->function = 'ssh_audit';
-            $log->severity = 5;
-            $log->message = 'uname command failed for ' . $ip;
-            discovery_log($log);
-            $log->severity = 7;
-        }
-
-        # DD-WRT specific test
-        $command = 'cat /etc/motd | grep -i DD-WRT';
-        $ssh_result = ssh_command($ip, $credentials, $command, $log);
-        if ($ssh_result['status'] == 0) {
-            if (stripos($ssh_result['output'][0], 'dd-wrt') !== false) {
-                $details->os_family = 'DD-WRT';
-                $details->os_name = trim($ssh_result['output'][0]);
-                $details->type = 'router';
-            }
-        }
-
-        # Ubiquiti specific test
-        $command = 'cat /etc/motd | grep -i EdgeOS';
-        $ssh_result = ssh_command($ip, $credentials, $command, $log);
-        if ($ssh_result['status'] == 0) {
-            if (stripos($ssh_result['output'][0], 'EdgeOS') !== false) {
-                $details->os_family = 'Ubiquiti';
-                #$details->os_name = trim($ssh_result['output'][0]);
-                $details->type = 'router';
-                $command = 'cat /etc/os-release | grep -i "^PRETTY_NAME" | cut -d\" -f2';
-                $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
-                    $details->os_name = trim($ssh_result['output'][0]);
-                }
-                $command = 'cat /etc/version';
-                $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
-                    $details->description = trim($ssh_result['output'][0]);
-                }
-                $command = 'hostname';
-                $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
-                    $details->hostname = trim($ssh_result['output'][0]);
-                }
-                // NOTE - will not work beacuse needs to be run in an actual session
-                // $command = 'info | grep "^Mac Address" | cut -d: -f2';
-                // $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                // if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
-                //     $details->mac = trim($ssh_result['output'][0]);
-                // }
-                // $command = 'show version';
-                // $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                // if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
-                //     foreach ($ssh_result['output'] as $line) {
-                //         if (strpos($line, 'Version:') === 0) {
-                //             $details->os_version = trim(str_replace('Version:', '', $line));
-                //         }
-                //         if (strpos($line, 'HW model:') === 0) {
-                //             $details->model = trim(str_replace('HW model:', '', $line));
-                //         }
-                //         if (strpos($line, 'HW S/N:') === 0) {
-                //             $details->serial = trim(str_replace('HW S/N:', '', $line));
-                //         }
-                //     }
-                // }
-            }
-        }
-        $command = 'cat /etc/board.info | grep "board.name';
-        $ssh_result = ssh_command($ip, $credentials, $command, $log);
-        if ($ssh_result['status'] == 0 and count($ssh_result['output']) != 0) {
-            $device->model = $ssh_result['output'][0];
-            $device->type = 'router';
-            $device->manufacturer = 'Ubiquiti Networks Inc.';
-        }
-
-
-        # Solaris specific tests
-        if ($details->os_group == 'SunOS') {
-            $command = 'hostname';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                $details->hostname = $ssh_result['output'][0];
-            }
-            $command = 'domainname';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                $details->domain = $ssh_result['output'][0];
-            }
-            if (empty($details->domain)) {
-                $command = 'grep domain /etc/resolv.conf | awk \'{print $2}\'';
-                $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                if ($ssh_result['status'] == 0) {
-                    $details->domain = $ssh_result['output'][0];
-                }
-            }
-            if (!empty($details->hostname) and !empty($details->domain)) {
-                $details->fqdn = $details->hostname . '.' . $details->domain;
-            }
-            $command = 'smbios -t SMB_TYPE_SYSTEM | grep UUID | awk \'{print $2}\'';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                if (!empty($ssh_result['output'][0])) {
-                    $details->uuid = $ssh_result['output'][0];
-                }
-            }
-            return($details);
-        }
-
-        # Hostname
-        $command = 'hostname -s';
-        $ssh_result = ssh_command($ip, $credentials, $command, $log);
-        if ($ssh_result['status'] == 0) {
-            $details->hostname = $ssh_result['output'][0];
-        }
-
-        # FQDN
-        $command = 'hostname -f | grep -F .';
-        $ssh_result = ssh_command($ip, $credentials, $command, $log);
-        if ($ssh_result['status'] == 0) {
-            $details->fqdn = $ssh_result['output'][0];
-        }
-
-        if (empty($details->hostname) and !empty($details->fqdn)) {
-            $temp = explode('.', $details->fqdn);
-            $details->hostname = $temp[0];
-            unset($temp);
-        }
-
-        # UUID on Linux
-        if ($details->os_group == 'Linux') {
-            if ($credentials->credentials->username == 'root') {
-                $command = 'dmidecode -s system-uuid';
-            } elseif (!empty($credentials->sudo) and $credentials->sudo) {
-                $command = 'echo ' . $credentials->credentials->password . ' | sudo -S dmidecode -s system-uuid';
-            } else {
-                $command = '';
-            }
-            if ($command != '') {
-                $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                if ($ssh_result['status'] == 0) {
-                    $details->uuid = $ssh_result['output'][0];
-                }
-            } else {
-                $details->uuid = '';
-            }
-
-            if (empty($details->uuid)) {
-                if ($credentials->credentials->username == 'root') {
-                    $command = 'cat /sys/class/dmi/id/product_uuid';
-                } elseif (!empty($credentials->sudo) and $credentials->sudo) {
-                    $command = 'echo ' . $credentials->credentials->password . ' | sudo -S cat /sys/class/dmi/id/product_uuid';
-                } else {
-                    $command = '';
-                }
-                if ($command != '') {
-                    $ssh_result = ssh_command($ip, $credentials, $command, $log);
-                    if ($ssh_result['status'] == 0) {
-                        $details->uuid = $ssh_result['output'][0];
-                    }
-                }
-            }
-        }
-
-        # DBUS identifier on Linux (no need for sudo/root)
-        if ($details->os_group == 'Linux') {
-            $command = 'cat /var/lib/dbus/machine-id';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                $details->dbus_identifier = $ssh_result['output'][0];
-            }
-        }
-
-        # UUID on ESX
-        if ($details->os_group == 'VMkernel') {
-            $command = "vim-cmd hostsvc/hostsummary | sed -n '/^   hardware = (vim.host.Summary.HardwareSummary) {/,/^   \},/p' | grep uuid | cut -d= -f2 | sed 's/,//g' | sed 's/\\\"//g'";
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                $details->uuid = $ssh_result['output'][0];
-            }
-        }
-
-        # UUID on OSX
-        if ($details->os_group == 'Darwin') {
-            $command = 'system_profiler SPHardwareDataType | grep UUID | cut -d: -f2';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                $details->uuid = $ssh_result['output'][0];
-            }
-        }
-
-        # Model and Manufuacturer (maybe) on DD-WRT
-        if (isset($details->os_family) and $details->os_family == 'DD-WRT') {
-            $command = 'nvram get DD_BOARD';
-            $ssh_result = ssh_command($ip, $credentials, $command, $log);
-            if ($ssh_result['status'] == 0) {
-                $details->model = $ssh_result['output'][0];
-            }
-            if (stripos($details->model, "tplink") !== false) {
-                $details->manufacturer = "TP-Link Technology";
-            }
-        }
-        $log->function = 'ssh_audit';
-        $log->message = 'SSH audit complete';
-        discovery_log($log);
-        return $details;
-    }
-}
-
-if (! function_exists('scp_old')) {
-    /**
-     * The SSH connection attempt using specific, supplied and default credentials
-     *
-     * @access    public
-     *
-     * @category  Function
-     *
-     * @author    Mark Unwin <marku@opmantek.com>
-     *
-     * @param     ip
-     *
-     * @param     credentials
-     *
-     * @param     source
-     *
-     * @param     destination
-     *
-     * @return    true || false [depending on if the file could be copied]
-     */
-    function scp_old($ip = '', $credentials = '', $source = '', $destination = '', $log)
-    {
-        $log->severity = 7;
-        $log->file = 'ssh_helper';
-        $log->function = 'scp';
-        $log->command = '';
-        $log->message = 'SCP starting';
-        $item_start = microtime(true);
-        discovery_log($log);
-
-        if (empty($ip)) {
-            $log->message = 'No IP supplied to ssh_helper::scp function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to ssh_helper::scp function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to ssh_helper::scp function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        } else {
-            if ($credentials->type == 'ssh') {
-                $username = $credentials->credentials->username;
-                $password = $credentials->credentials->password;
-            } elseif ($credentials->type == 'ssh_key') {
-                $username = $credentials->credentials->username;
-                $keyfile = ssh_create_keyfile($credentials->credentials->ssh_key);
-            }
-        }
-
-        if (empty($source)) {
-            $log->message = 'No source supplied to ssh_helper::scp function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-
-        if (empty($destination)) {
-            $log->message = 'No destination supplied to ssh_helper::scp function.';
-            $log->severity = 5;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-
-        $return = array('output' => '', 'status' => '');
-
-        if (php_uname('s') == 'Linux') {
-            if ($credentials->type == 'ssh') {
-                $descriptorspec = array(
-                    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                    2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-                );
-                $cwd = '/tmp';
-                $env = array();
-                $command = 'timeout 5m sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
-                $echo = $command;
-                $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
-                if (is_resource($process)) {
-                    fwrite($pipes[0], $password);
-                    fclose($pipes[0]);
-                    // stdOut
-                    $temp = stream_get_contents($pipes[1]);
-                    $return['output'] = explode("\n", $temp);
-                    if (end($return['output']) == '') {
-                        unset($return['output'][count($return['output'])-1]);
-                    }
-                    fclose($pipes[1]);
-                    $return['status'] = proc_close($process);
-                }
-            } elseif ($credentials->type == 'ssh_key') {
-                $command = 'scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
-                $echo = $command;
-                exec($command, $return['output'], $return['status']);
-                unlink($keyfile);
-            }
-        }
-
-        if (php_uname('s') == 'Darwin') {
-            if ($credentials->type == 'ssh') {
-                $descriptorspec = array(
-                    0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-                    1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-                    2 => array("file", "/dev/null", "a"), // stderr is a file to write to
-                );
-                $cwd = '/tmp';
-                $env = array();
-                $command = 'sshpass scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null ' . $source . ' ' . escapeshellarg($username) . '@' . $ip . ':' . $destination;
-                $echo = $command;
-                $process = proc_open($command, $descriptorspec, $pipes, $cwd, $env);
-                if (is_resource($process)) {
-                    fwrite($pipes[0], $password);
-                    fclose($pipes[0]);
-                    // stdOut
-                    $temp = stream_get_contents($pipes[1]);
-                    $return['output'] = explode("\n", $temp);
-                    if (end($return['output']) == '') {
-                        unset($return['output'][count($return['output'])-1]);
-                    }
-                    fclose($pipes[1]);
-                    $return['status'] = proc_close($process);
-                }
-            } elseif ($credentials->type == 'ssh_key') {
-                $command = 'scp -oStrictHostKeyChecking=no -oConnectTimeout=10 -oUserKnownHostsFile=/dev/null -i ' . $keyfile . ' ' . $source . ' ' . escapeshellarg($username) . '@' . escapeshellarg($ip) . ':' . $destination;
-                $echo = $command;
-                exec($command, $return['output'], $return['status']);
-                unlink($keyfile);
-            }
-        }
-
-        if (php_uname('s') == 'Windows NT') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."\open-audit\other";
-            if ($credentials->type == 'ssh') {
-                $password = str_replace('"', '\"', $password);
-                $command = $filepath . '\pscp.exe -pw "' . $password . '" ' . $source . ' ' . $username . '@' . $ip . ':' . $destination;
-                $echo = str_replace($password, '******', $command);
-                exec($command, $return['output'], $return['status']);
-            } elseif ($credentials->type == 'ssh_key') {
-                $command = $filepath . '\pscp.exe -i "' . $keyfile . '" ' . $source . ' ' . $username . '@' . $ip . ':' . $destination;
-                $echo = $command;
-                exec($command, $return['output'], $return['status']);
-            }
-        }
-
-        // if ($display == 'y') {
-        //     echo 'DEBUG - Command Executed: '.$echo."\n";
-        //     echo 'DEBUG - Return Value: '.$return['status']."\n";
-        //     echo "DEBUG - Command Output:\n";
-        //     $formatted_output = implode("\n", $return['output']);
-        //     $formatted_output = htmlentities($formatted_output);
-        //     $formatted_output = explode("\n", $formatted_output);
-        //     if (end($formatted_output) == '') {
-        //         unset($formatted_output[count($formatted_output)-1]);
-        //     }
-        //     print_r($formatted_output);
-        //     echo "\nDEBUG ---------------\n";
-        // }
-
-        $log->command = $command;
-        $log->command_time_to_execute = (microtime(true) - $item_start);
-        $log->message = 'SCP command';
-        if ($return['status'] != '0') {
-            $log->command_status = 'fail';
-            $log->severity = 4;
-            discovery_log($log);
-            $log->severity = 7;
-            unset($log->command);
-            return false;
-        } else {
-            $log->command_status = 'success';
-            discovery_log($log);
-            unset($log->command, $log->command_time_to_execute);
-            return true;
-        }
     }
 }
 

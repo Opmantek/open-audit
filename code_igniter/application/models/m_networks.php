@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_networks extends MY_Model
@@ -48,8 +48,8 @@ class M_networks extends MY_Model
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
+        $CI = & get_instance();
         if ($id == '') {
-            $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
@@ -189,28 +189,7 @@ class M_networks extends MY_Model
         if ($ip_address == '::1') {
             return true;
         }
-        if (stripos($ip_address, ':') !== false) {
-            // We have an IPv6 address. Try to convert it to a v4.
-            // Known prefix
-            $v4mapped_prefix_hex = '00000000000000000000ffff';
-            $v4mapped_prefix_bin = pack("H*", $v4mapped_prefix_hex);
-            // Or more readable when using PHP >= 5.4
-            # $v4mapped_prefix_bin = hex2bin($v4mapped_prefix_hex);
-            // Parse
-            $addr = $ip_address;
-            $addr_bin = inet_pton($addr);
-            if ($addr_bin === false) {
-              // Unparsable? How did they connect?!?
-            } else {
-                // Check prefix
-                if (substr($addr_bin, 0, strlen($v4mapped_prefix_bin)) == $v4mapped_prefix_bin) {
-                    // Strip prefix
-                    $addr_bin = substr($addr_bin, strlen($v4mapped_prefix_bin));
-                }
-                // Convert back to printable address in canonical form
-                $ip_address = inet_ntop($addr_bin);
-            }
-        }
+        # TODO - IPv6 support
         if (stripos($ip_address, ':') !== false) {
             return true;
         }

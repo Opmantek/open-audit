@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -72,23 +72,22 @@ class input extends CI_Controller
         $log = new stdClass();
         $log->type = 'system';
         $log->object = 'input';
-        $log->severity = 6;
-        stdlog($log);
         $log->severity = 7;
+        stdlog($log);
 
         if ($_SERVER['REMOTE_ADDR'] == '::1') {
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
 
-        if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '') and $_SERVER['REMOTE_ADDR'] != '127.0.0.1' and $_SERVER['REMOTE_ADDR'] != '127.0.1.1' and stripos($this->config->config['ip'], $_SERVER['REMOTE_ADDR']) === false) {
+        if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR']) and stripos($this->config->config['ip'], $_SERVER['REMOTE_ADDR']) === false) {
             $log->severity = 3;
             $log->summary = 'Unauthorized';
-            $log->message = 'Unauthorized XML input for ' . $this->uri->segment(2, 0) . ' from ' . $_SERVER['REMOTE_ADDR'] . '. Not in list of blessed subnets.';
+            $log->message = 'Unauthorized input for ' . $this->uri->segment(2, 0) . ' from ' . $_SERVER['REMOTE_ADDR'] . '. Not in list of blessed subnets.';
             if ($this->uri->segment(2, 0) == 'discoveries' and !empty($_POST['data'])) {
                 $xml_input = $_POST['data'];
                 $xml = new SimpleXMLElement($xml_input);
                 if (!empty($xml->device->discovery_id)) {
-                    $log->message = 'Unauthorized XML input for discoveries from ' . $_SERVER['REMOTE_ADDR'] . ' for discovery #' . intval($xml->device->discovery_id) . '. Not in list of blessed subnets.';
+                    $log->message = 'Unauthorized input for discoveries from ' . $_SERVER['REMOTE_ADDR'] . ' for discovery #' . intval($xml->device->discovery_id) . '. Not in list of blessed subnets.';
                     $log->discovery_id = intval($xml->device->discovery_id);
                     echo "=====================\n" . $log->message . "\n======================\n";
                     discovery_log($log);
@@ -192,6 +191,12 @@ class input extends CI_Controller
             return;
         }
         include "include_input_logs.php";
+    }
+
+    public function queue()
+    {
+        # Our processing queue's
+        include "include_input_queue.php";
     }
 }
 // End of file input.php

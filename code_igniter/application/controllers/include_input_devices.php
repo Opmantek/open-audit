@@ -26,6 +26,7 @@
 # *****************************************************************************
 $this->benchmark->mark('code_start');
 // load our required helpers
+$this->load->helper('audit');
 $this->load->helper('log');
 $this->load->helper('error');
 // our required models
@@ -46,6 +47,12 @@ if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
     $log->status = 'Checking for valid network submission.';
     $log->summary = 'Audit supplied from ineligible network.';
     $log->detail = 'An audit result was submitted from ' . $_SERVER['REMOTE_ADDR'] . ' which is not in the list of allowed networks.';
+    if ($this->response->meta->format == 'screen') {
+        $this->session->set_flashdata('error', 'An audit result was submitted from ' . $_SERVER['REMOTE_ADDR'] . ' which is not in the list of allowed networks.');
+        redirect('summaries');
+    } else {
+        print_r(json_encode($log));
+    }
     stdlog($log);
     unset($log);
     exit;
@@ -91,6 +98,7 @@ $log->file = 'include_input_devices';
 $log->function = '';
 $log->message = '';
 $log->command = 'process audit';
+$log->display = 'y';
 
 # we will store our message until we get a system.id, then wrtie them to the log
 $log_message = array();
@@ -98,363 +106,240 @@ $log_message = array();
 # We will use this array to hold a list of ID's in the discovery log
 # that we will later update with our system_id
 $ids = array();
-if (!empty($_POST['data'])) {
-    $input = html_entity_decode($_POST['data']);
-//     $myfile = fopen("/tmp/audit.txt", "w");
-//     fwrite($myfile, $input);
-//     fclose($myfile);
-}
+
 
 # NOTE - $input may also be set by $POSTing to /devices the attribute upload_input.
+if (!empty($_POST['data'])) {
+    $input = html_entity_decode($_POST['data']);
+}
 if (empty($input)) {
     log_error('ERR-0021');
     print_r($this->response->errors);
     exit();
 }
 
-// convert to UTF8 (if required)
-if (mb_detect_encoding($input) !== 'UTF-8') {
-    $input = utf8_encode($input);
-}
+$json = audit_convert($input);
 
-$input = iconv('UTF-8', 'UTF-8//TRANSLIT', $input);
-$input = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $input);
-libxml_use_internal_errors(true);
-$error = false;
-$xml = false;
-$json = false;
-
-try {
-    $xml = new SimpleXMLElement($input, LIBXML_NOCDATA);
-} catch (Exception $error) {
-    $errors = libxml_get_errors();
-    $error = true;
-}
-
-if ($error) {
-    try {
-        $json = json_decode($input);
-    } catch (Exception $error) {
-        log_error('ERR-0012');
-        print_r($this->response);
-        exit;
+if(!empty($json)){
+    if (empty($json->system->discovery_id)) {
+        $json->system->discovery_id = '';
+    } else {
+        $log->discovery_id = $json->system->discovery_id;
+        $GLOBALS['discovery_id'] = $json->system->discovery_id;
     }
-    $log->message = "Valid JSON result received.";
-    $ids[] = discovery_log($log);
-} else {
-    $log->message = "Valid XML result received.";
-    $ids[] = discovery_log($log);
-}
-
-
-if (!$error and $xml) {
-    $json = json_encode($xml);
-    $json = json_decode($json);
-    $json->system = $json->sys;
-    unset($json->sys);
-    foreach ($json->system as $key => $value) {
-        if (gettype($value) === 'object') {
-            unset($json->system->{$key});
-        }
+    if (!empty($json->system->id)) {
+        $log->system_id = $json->system->id;
     }
-    foreach ($json as $section => $section_item) {
-        if ($section !== 'system') {
-            if (!empty($json->{$section}->item)) {
-                if (is_array($json->{$section}->item) and count($json->{$section}->item) > 0) {
-                    for ($i=0; $i < count($json->{$section}->item); $i++) {
-                        foreach ($json->$section->item[$i] as $key => $value) {
-                            if (gettype($value) === 'object') {
-                                $json->$section->item[$i]->{$key} = (string)'';
-                            }
-                        }
-                    }
-                } else {
-                    $item = $json->{$section}->item;
-                    unset($json->{$section}->item);
-                    $json->{$section}->item = array();
-                    $json->{$section}->item[] = $item;
-                    foreach ($json->{$section}->item[0] as $key => $value) {
-                        if (gettype($value) === 'object') {
-                            $json->$section->item[0]->{$key} = (string)'';
-                        }
-                    }
-                }
-            } else {
-                #unset($json->{$section});
+
+    $json->system = audit_format_system($json->system);
+    $details = $json->system;
+
+    $json->system->mac_addresses = array();
+    if (!empty($json->network) and count($json->network) > 0) {
+        foreach ($json->network as $card) {
+            if (!empty($card->mac)) {
+                $json->system->mac_addresses[] = $card->mac;
             }
         }
     }
-}
-
-$details = $json->system;
-$json->system->mac_addresses = array();
-if (!empty($json->network->item) and count($json->network->item) > 0) {
-    foreach ($json->network->item as $card) {
-        if (!empty($card->mac)) {
-            $json->system->mac_addresses[] = $card->mac;
+    if (!empty($json->ip) and count($json->ip) > 0) {
+        foreach ($json->ip as $ip) {
+            if (!empty($ip->mac)) {
+                $json->system->mac_addresses[] = $ip->mac;
+            }
         }
     }
-}
-if (!empty($json->ip->item) and count($json->ip->item) > 0) {
-    foreach ($json->ip->item as $ip) {
-        if (!empty($ip->mac)) {
-            $json->system->mac_addresses[] = $ip->mac;
-        }
+    array_unique($json->system->mac_addresses);
+
+    if (empty($details->id) and empty($details->ip) and empty($details->hostname)) {
+        $log->summary = "Invalid audit result submitted";
+        $log->detail = "Audit result submitted, but no device id, ip or hostname received from " . $_SERVER['REMOTE_ADDR'] . " - NOT inserting or updating.";
+        $log->type = 'system';
+        $log->collection = 'input';
+        $log->action = 'create';
+        $log->function = 'devices';
+        $log->function = 'fail';
+        $log->severity = 4;
+        stdlog($log);
+        exit;
     }
-}
-array_unique($json->system->mac_addresses);
 
-if (empty($details->last_seen)) {
-    $details->last_seen = $this->config->config['timestamp'];
-}
+    if (!isset($details->type)) {
+        # As this routine is processing an audit script result, set the type if not already set
+        $details->type = 'computer';
+    }
+    if (empty($details->last_seen_by)) {
+        $details->last_seen_by = 'audit';
+    }
 
-$received_system_id = '';
-$received_status = "";
+    $i = $this->m_device->match($details, 'process audit');
 
-if (empty($details->id) and empty($details->ip) and empty($details->hostname)) {
-    $sql = "DELETE FROM discovery_log WHERE id IN (" . implode(',', $ids) . ")";
-    $query = $this->db->query($sql);
-    $log->summary = "Invalid audit result submitted";
-    $log->detail = "Audit result submitted, but no device id, ip or name received from " . $_SERVER['REMOTE_ADDR'] . " - NOT inserting or updating.";
-    $log->type = 'system';
-    $log->collection = 'input';
-    $log->action = 'create';
-    $log->function = 'devices';
-    $log->function = 'fail';
-    $log->severity = 3;
-    stdlog($log);
-    exit;
-}
+    if (empty($i) and !empty($details->id)) {
+        $i = intval($details->id);
+    }
 
-if (empty($details->id)) {
-    $details->id = '';
-    $log->message = "No system_id provided.";
-    $ids[] = discovery_log($log);
-} else {
-    $received_system_id = (string)$details->id;
-    $log->message = "System_id provided - " . $received_system_id . ".";
-    $ids[] = discovery_log($log);
-    $received_status = @$this->m_devices_components->read($received_system_id, 'y', 'system', '', 'status');
-    if ($received_status !== 'production') {
-        $received_system_id = '';
-        $log->message = "No device in database with supplied system_id. Remove attribute.";
+    if (!empty($i) and !empty($details->id) and $i != $details->id) {
+        // We delete this original system as likely with limited data (from
+        // nmap and/or snmp) we couldn't match an existing system
+        // Now we have an actual audit result with plenty of data
+        // we have found a match and it's not the original
+        $sql = "/* include_input_devices */ DELETE FROM system WHERE id = ?";
+        $query = $this->db->query($sql, array($details->id));
+        $log->system_id = $i;
+        $log->message = 'System Id provided differs from System Id found for ' . $details->hostname;
         $ids[] = discovery_log($log);
     }
-}
+    $details->id = $i;
 
-if (empty($details->discovery_id)) {
-    $details->discovery_id = '';
-} else {
-    $log->discovery_id = $details->discovery_id;
-}
-
-// $log->message = json_encode($details);
-// $ids[] = discovery_log($log);
-
-if (empty($details->fqdn) and !empty($details->hostname) and !empty($details->domain)) {
-    $details->fqdn = $details->hostname . "." . $details->domain;
-    $log->message = "No FQDN, but hostname and domain provided. Setting FQDN.";
-    $ids[] = discovery_log($log);
-}
-
-if (!isset($details->type)) {
-    $details->type = 'computer';
-    $log->message = "No type provided, setting to 'computer'.";
-    $ids[] = discovery_log($log);
-}
-
-# Mac Model
-if (!empty($details->os_family) and $details->os_family == 'Apple OSX') {
-    $this->load->helper('mac_model');
-    $details->description = mac_model($details->serial);
-    $details->class = mac_class($details->model);
-    $details->form_factor = mac_form_factor($details->model);
-}
-
-# todo - finding device
-$log->message = "Running devices::match function.";
-$ids[] = discovery_log($log);
-
-$i = $this->m_device->match($details, 'process audit');
-
-if ($i == '' and $received_system_id > '') {
-    $i = $received_system_id;
-}
-
-if ($i != '' and $received_system_id != '' and $i != $received_system_id) {
-    // We delete this original system as likely with limited data (from
-    // nmap and/or snmp) we couldn't match an existing system
-    // Now we have an actual audit result with plenty of data
-    // we have found a match and it's not the original
-    $sql = "/* system::add_system */ DELETE FROM system WHERE id = ?";
-    $query = $this->db->query($sql, array($received_system_id));
-    $log->system_id = $i;
-    $log->message = 'System Id provided differs from System Id found for ' . $details->hostname;
-    $ids[] = discovery_log($log);
-}
-$details->id = $i;
-
-if (empty($details->last_seen_by)) {
-    $details->last_seen_by = 'audit';
-}
-
-$details->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
-
-if ((string) $i === '') {
-    // insert a new system
-    $details->id = $this->m_device->insert($details);
-    $log->system_id = $details->id;
-    $log->ip = @$details->ip;
-    $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
-    discovery_log($log);
-    # In the case where we inserted a new device, find_system will add a log entry, but have no
-    # associated system_id. Update this one row.
-    $sql = "/* include_input_devices */" . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
-    $data = array($log->system_id, $log->pid);
-    $query = $this->db->query($sql, $data);
-    $details->original_last_seen = "";
-    if ($this->response->meta->format == 'screen') {
-        echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+    if (empty($i)) {
+        // insert a new system
+        $details->id = $this->m_device->insert($details);
+        $log->system_id = $details->id;
+        $log->ip = @$details->ip;
+        $log->message = 'CREATE entry for ' . $details->hostname . ', System ID ' . $details->id;
+        discovery_log($log);
+        # In the case where we inserted a new device, m_device::match will add a log entry, but have no
+        # associated system_id. Update this one row.
+        $sql = "/* include_input_devices */" . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
+        $data = array($log->system_id, $log->pid);
+        $query = $this->db->query($sql, $data);
+        $details->original_last_seen = "";
+        if ($this->response->meta->format == 'screen') {
+            echo "SystemID (new): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        }
+    } else {
+        // update an existing system
+        $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
+        $log->system_id = $details->id;
+        $log->ip = @$details->ip;
+        discovery_log($log);
+        // $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
+        // $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
+        $this->m_device->update($details);
+        if ($this->response->meta->format == 'screen') {
+            echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+        }
     }
-} else {
-    // update an existing system
-    $log->message = 'UPDATE entry for ' . $details->hostname . ', System ID ' . $details->id;
-    $log->system_id = $details->id;
-    $log->ip = @$details->ip;
-    discovery_log($log);
-    $details->original_last_seen_by = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen_by');
-    $details->original_last_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'last_seen');
-    $this->m_device->update($details);
-    if ($this->response->meta->format == 'screen') {
-        echo "SystemID (updated): <a href='" . base_url() . "index.php/devices/" . $details->id . "'>" . $details->id . "</a>.<br />\n";
+
+    if (!empty($ids)) {
+        $sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
+        $query = $this->db->query($sql, array($details->id, (string)$log->ip));
     }
-}
 
-$sql = "UPDATE discovery_log SET system_id = ?, ip = ? WHERE id IN (" . implode(',', $ids) . ")";
-$query = $this->db->query($sql, array($details->id, (string)$log->ip));
+    # We now have a system.id - either supplied, found or created.
+    if (!empty($details->discovery_id)) {
+        # we have a discovery_id, insert our $log_message's and delete anything where log.pid != our pid
+        $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
+        $data = array(intval($details->id), intval(getmypid()));
+        $query = $this->db->query($sql, $data);
+    } else {
+        # we were supplied an audit result, but no discovery_id
+        # delete all dicovery logs where system_id = our ID and log.pid != our pid
+        $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `pid` != ?";
+        $data = array(intval($details->id), intval(getmypid()));
+        $query = $this->db->query($sql, $data);
+    }
 
-# We now have a system.id - either supplied, found or created.
-if (!empty($details->discovery_id)) {
-    # we have a discovery_id, insert our $log_message's and delete anything where log.pid != our pid
-    $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `command` = 'process audit' AND pid != ?";
-    $data = array(intval($details->id), intval(getmypid()));
-    $query = $this->db->query($sql, $data);
-} else {
-    # we were supplied an audit result, but no discovery_id
-    # delete all dicovery logs where system_id = our ID and log.pid != our pid
-    $sql = "/* include_input_device */" . " DELETE FROM `discovery_log` WHERE `system_id` = ? AND `pid` != ?";
-    $data = array(intval($details->id), intval(getmypid()));
-    $query = $this->db->query($sql, $data);
-}
+    $details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
 
-$details->first_seen = $this->m_devices_components->read($details->id, 'y', 'system', '', 'first_seen');
+    $script_version = '';
+    if (!empty($details->script_version)) {
+        $script_version = $details->script_version;
+    }
+    $this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen, $script_version);
 
-$script_version = '';
-if (!empty($details->script_version)) {
-    $script_version = $details->script_version;
-}
-$this->m_audit_log->create($details->id, @$this->user->full_name, $details->last_seen_by, $details->audits_ip, '', '', $details->last_seen, $script_version);
-
-foreach ($json as $key => $value) {
-    if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
-        if (!empty($json->{$key}->item) or $key == 'netstat') {
+    foreach ($json as $key => $value) {
+        if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
             $this->m_devices_components->process_component($key, $details, $json->{$key});
         }
     }
-}
 
-if (!empty($json->audit_wmi_fail)) {
-    $this->m_audit_log->update('debug', 'audit_wmi_fail', $details->id, $details->last_seen);
-    $this->m_audit_log->update('wmi_fails', $json->audit_wmi_fail, $details->id, $details->last_seen);
-}
+    if (!empty($json->audit_wmi_fail)) {
+        $this->m_audit_log->update('debug', 'audit_wmi_fail', $details->id, $details->last_seen);
+        $this->m_audit_log->update('wmi_fails', $json->audit_wmi_fail, $details->id, $details->last_seen);
+    }
 
-// Generate any DNS entries required - only if a collector or the audit is NOT from a collector
-if (!empty($this->config->config['servers']) or empty($details->collector_uuid)) {
-    $dns = new stdClass();
-    $dns->item = array();
-    $dns->item = $this->m_devices_components->create_dns_entries((int)$details->id);
-    if (!empty($json->dns->item) and count($json->dns->item) > 0) {
-        foreach ($json->dns->item as $item) {
-            # likely not required, but turn it into an array and back to a standard object
-            # so we have consistency inside the dns->item array of all objects versus some standard objects
-            # and some simpleXML objects
-            $item = (array) $item;
-            $item = (object) $item;
-            if (isset($item->ip) and $item->ip != '' and isset($item->name) and $item->name != '' and isset($item->fqdn)) {
-                $dns->item[] = $item;
+    // Generate any DNS entries required - only if a collector or the audit is NOT from a collector
+    if (!empty($this->config->config['servers']) or empty($details->collector_uuid)) {
+        $dns = $this->m_devices_components->create_dns_entries((int)$details->id);
+        if (!empty($json->dns) and count($json->dns) > 0) {
+            foreach ($json->dns as $item) {
+                if (!empty($item->ip) and !empty($item->name) and !empty($item->fqdn)) {
+                    $dns[] = $item;
+                }
             }
         }
+        unset($item);
+        if (count($dns) > 0) {
+            $this->m_devices_components->process_component('dns', $details, $dns);
+        }
+        unset($dns);
     }
-    if (count($dns->item) > 0) {
-        $this->m_devices_components->process_component('dns', $details, $dns);
-    }
-    unset($item);
-    unset($dns);
-}
 
-$this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
-$log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
-discovery_log($log);
-
-// set the ip (if not already set)
-$this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
-$this->m_devices_components->set_initial_address($details->id);
-
-$this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
-$this->benchmark->mark('code_end');
-if ($this->response->meta->format == 'screen') {
-    echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
-}
-$i = (string) $json->system->hostname;
-
-
-$log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
-$log->status = 'complete';
-stdlog($log);
-if ($this->response->meta->format == 'screen') {
-    echo '</body></html>';
-}
-
-
-# If we are configured as a collector, forward the information to the server
-if ($this->config->config['servers'] !== '') {
-    $server = json_decode($this->config->config['servers']);
-    $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
+    $this->m_audit_log->update('debug', 'finished processing', $details->id, $details->last_seen);
+    $log->message = 'Completed processing audit result for ' . $details->hostname . ' (System ID ' . $details->id . ')';
     discovery_log($log);
 
-    unset($json->device_id);
-    unset($json->system->id);
-    unset($json->system->discovery_id);
-    unset($json->system->original_last_seen_by);
-    unset($json->system->original_last_seen);
-    unset($json->system->first_seen);
-    unset($json->system->org_id);
-    $json->system->collector_uuid = $this->config->config['uuid'];
+    // set the ip (if not already set)
+    $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
+    $this->m_devices_components->set_initial_address($details->id);
 
-    $device_json = json_encode($json);
-    $url = $server->host . $server->community . '/index.php/input/devices';
+    $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
+    $this->benchmark->mark('code_end');
+    if ($this->response->meta->format == 'screen') {
+        echo '<br />Time: ' . $this->benchmark->elapsed_time('code_start', 'code_end') . " seconds.<br />\n";
+    }
+    $i = (string) $json->system->hostname;
 
-    $data = array('data' => $device_json);
-    # use key 'http' even if we send the request to https://...
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($data)
-        )
-    );
-    $context  = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    if ($result === false) {
-        # error
-        $log->severity = 4;
-        $log->message = 'Could not send result to ' . $server->host . $server->community . '/index.php/input/devices - please check with your server administrator.';
+
+    $log->summary = 'Processing completed for ' . $i . ' (System ID ' . $details->id . '), took ' . $this->benchmark->elapsed_time('code_start', 'code_end') . ' seconds';
+    $log->status = 'complete';
+    stdlog($log);
+    if ($this->response->meta->format == 'screen') {
+        echo '</body></html>';
+    }
+
+
+    # If we are configured as a collector, forward the information to the server
+    if ($this->config->config['servers'] !== '') {
+        $server = json_decode($this->config->config['servers']);
+        $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
         discovery_log($log);
-        $log->severity = 7;
-    } else {
-        # success
-        $log->severity = 7;
-        $log->message = 'Result sent to ' . $server->host . '.';
-        discovery_log($log);
+
+        unset($json->device_id);
+        unset($json->system->id);
+        unset($json->system->discovery_id);
+        unset($json->system->original_last_seen_by);
+        unset($json->system->original_last_seen);
+        unset($json->system->first_seen);
+        unset($json->system->org_id);
+        $json->system->collector_uuid = $this->config->config['uuid'];
+
+        $device_json = json_encode($json);
+        $url = $server->host . $server->community . '/index.php/input/devices';
+
+        $data = array('data' => $device_json);
+        # use key 'http' even if we send the request to https://...
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        if ($result === false) {
+            # error
+            $log->severity = 4;
+            $log->message = 'Could not send result to ' . $server->host . $server->community . '/index.php/input/devices - please check with your server administrator.';
+            discovery_log($log);
+            $log->severity = 7;
+        } else {
+            # success
+            $log->severity = 7;
+            $log->message = 'Result sent to ' . $server->host . '.';
+            discovery_log($log);
+        }
     }
 }

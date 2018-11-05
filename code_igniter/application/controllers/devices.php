@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -106,7 +106,7 @@ class devices extends MY_Controller
         $this->load->model('m_devices_components');
         // if we're displaying a web page, get ALL the data
         if (($this->response->meta->format == 'screen' and $this->response->meta->include == '') or $this->response->meta->include == '*' or $this->response->meta->include == 'all') {
-            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,print_queue,processor,purchase,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
+            $this->response->meta->include = 'application,attachment,audit_log,bios,change_log,credential,discovery_log,disk,dns,edit_log,fields,file,image,ip,location,log,memory,module,monitor,motherboard,netstat,network,nmap,optical,pagefile,partition,print_queue,processor,purchase,rack_devices,route,san,scsi,server,server_item,service,share,software,software_key,sound,task,user,user_group,variable,video,vm,windows';
         }
         if ($this->response->meta->sub_resource != '') {
             if ($this->response->meta->sub_resource == 'partition_graph') {
@@ -129,7 +129,7 @@ class devices extends MY_Controller
             if (!empty($this->response->meta->include) and !empty($this->response->data)) {
                 $temp = explode(',', $this->response->meta->include);
                 foreach ($temp as $table) {
-                    if ($table != 'fields' and $table != 'application') {
+                    if ($table != 'fields' and $table != 'application' and $table != 'rack_devices') {
                         $result = false;
                         $result = $this->m_devices->read_sub_resource(
                             $this->response->meta->id, #id
@@ -151,6 +151,15 @@ class devices extends MY_Controller
                         $result = false;
                         $result = $this->m_devices->get_device_applications($this->response->meta->id);
                         $this->response->included = array_merge($this->response->included, $result);
+                    } else if ($table == 'rack_devices') {
+                        $result = false;
+                        $result = $this->m_devices->get_device_rack($this->response->meta->id);
+                        $this->response->included = array_merge($this->response->included, $result);
+                        if (!empty($result[0]->attributes->rack_id)) {
+                            $this->load->model('m_racks');
+                            $rack = $this->m_racks->read($result[0]->attributes->rack_id);
+                            $this->response->included = array_merge($this->response->included, $rack);
+                        }
                     }
                 }
             }
@@ -403,10 +412,19 @@ class devices extends MY_Controller
             output($this->response);
         } elseif ($this->response->meta->sub_resource == 'discovery') {
             if ($this->config->config['default_network_address'] == '') {
-                $message = 'Network Address must be set in the configuration before calling Bulk Edit -> Discover.';
+                $message = 'Network Address must be set in the configuration before calling Discovery.';
                 $this->session->set_flashdata('error', $message);
-                # toto - add a JSON error here for OAE
-                redirect('devices');
+                if ($this->response->meta->format == 'screen') {
+                    redirect('devices');
+                } else {
+                    $error = new stdClass();
+                    $error->title = 'Discovery cannot execute without a default network address being set in the configuration.';
+                    $error->summary = 'Discovery cannot execute without a default network address being set in the configuration.';
+                    $error->detail = 'Discovery cannot execute without a default network address being set in the configuration.';
+                    $this->response->errors[] = $error;
+                    output($this->response);
+                    exit();
+                }
             }
             $ids = array();
             if (!empty($this->response->meta->id)) {
@@ -416,6 +434,8 @@ class devices extends MY_Controller
                 $ids = array_merge($ids, explode(',', $this->response->meta->ids));
             }
             $device_names = array();
+            $this->load->model('m_discoveries');
+            $this->load->model('m_collection');
             foreach ($ids as $id) {
                 $this->response->data = $this->m_devices->read($id);
                 $data = new stdClass();
@@ -431,8 +451,6 @@ class devices extends MY_Controller
                 $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
                 $data->other = new stdClass();
                 $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
-                $this->load->model('m_discoveries');
-                $this->load->model('m_collection');
                 $discovery_id = $this->m_collection->create($data, 'discoveries');
                 $this->m_discoveries->execute($discovery_id);
             }
@@ -444,6 +462,7 @@ class devices extends MY_Controller
                 #redirect('devices/'.$this->response->data[0]->attributes->id);
                 redirect('devices');
             } else {
+                $this->response->data = $this->m_discoveries->read($discovery_id);
                 output($this->response);
             }
         } elseif ($this->response->meta->sub_resource == 'attachment') {

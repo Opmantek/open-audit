@@ -358,6 +358,10 @@ INSERT INTO `attributes` VALUES (195,1,'devices','type','iPad','ipad','system','
 INSERT INTO `attributes` VALUES (196,1,'devices','type','iPod','ipod','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (197,1,'devices','type','Android','android','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (198,1,'devices','type','Application Accelerator','application accelerator','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (199,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (200,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (201,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (202,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -430,6 +434,42 @@ LOCK TABLES `bios` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `buildings`
+--
+
+DROP TABLE IF EXISTS `buildings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `buildings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `location_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `location_id` (`location_id`),
+  CONSTRAINT `buildings_location_id` FOREIGN KEY (`location_id`) REFERENCES `locations` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `buildings_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `buildings`
+--
+
+LOCK TABLES `buildings` WRITE;
+/*!40000 ALTER TABLE `buildings` DISABLE KEYS */;
+INSERT INTO `buildings` VALUES (1, 'Default Building', 1, 1, 'The default entry for a building at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `buildings` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `change_log`
 --
 
@@ -492,13 +532,42 @@ LOCK TABLES `chart` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `cloud_log`
+--
+
+DROP TABLE IF EXISTS `cloud_log`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cloud_log` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `cloud_id` int(10) unsigned DEFAULT NULL,
+  `timestamp` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `severity_text` enum('debug','info','notice','warning','error','critical','alert','emergency') NOT NULL DEFAULT 'notice',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
+  `message` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `pid` (`pid`),
+  KEY `cloud_id` (`cloud_id`),
+  CONSTRAINT `cloud_log_cloud_id` FOREIGN KEY (`cloud_id`) REFERENCES `clouds` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cloud_log`
+--
+
+LOCK TABLES `cloud_log` WRITE;
+/*!40000 ALTER TABLE `cloud_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cloud_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `clouds`
 --
 
 DROP TABLE IF EXISTS `clouds`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-
 CREATE TABLE `clouds` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '',
@@ -566,8 +635,8 @@ CREATE TABLE `collectors` (
   `description` text NOT NULL,
   `ip` varchar(45) NOT NULL DEFAULT '',
   `status` enum('created','pending','approved','denied','deleted','') NOT NULL DEFAULT '',
-  `check_minutes` int unsigned NOT NULL DEFAULT '0',
-  `user_id` int(10) unsigned,
+  `check_minutes` int(10) unsigned NOT NULL DEFAULT '0',
+  `user_id` int(10) unsigned DEFAULT NULL,
   `uuid` text NOT NULL,
   `network_address` varchar(100) NOT NULL DEFAULT '',
   `options` text NOT NULL,
@@ -621,11 +690,11 @@ INSERT INTO `configuration` VALUES (6,'discovery_linux_script_directory','/tmp/'
 INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
 INSERT INTO `configuration` VALUES (8,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (9,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (10,'display_version','2.2.7','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (10,'display_version','2.3.0','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (11,'download_reports','download','text','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (12,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (13,'homepage','groups','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (14,'internal_version','20180810','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (14,'internal_version','20180925','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (15,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (16,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
 INSERT INTO `configuration` VALUES (17,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
@@ -675,6 +744,9 @@ INSERT INTO `configuration` VALUES (60,'access_token_enable','y','bool','y','sys
 INSERT INTO `configuration` VALUES (61,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
 INSERT INTO `configuration` VALUES (62,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
 INSERT INTO `configuration` VALUES (63,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
+INSERT INTO `configuration` VALUES (64,'discoveries_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
+INSERT INTO `configuration` VALUES (65,'audits_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent audits we should process.');
+INSERT INTO `configuration` VALUES (66,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -815,6 +887,7 @@ INSERT INTO `dashboards` VALUES (2,'Purchasing Dashboard',1,'org',0,'Purchase Ma
 INSERT INTO `dashboards` VALUES (3,'Network Dashboard',1,'org',0,'Networks and Locations','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"20\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"19\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"16\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"21\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"22\"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (4,'Discovery Dashboard',1,'org',0,'Discovered Devices','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"1\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"2\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"22\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"27\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"28\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"29\"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (5,'Devices Dashboard',1,'org',0,'Devices Information','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"30\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"22\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"27\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"29\"}]}','system','2000-01-01 00:00:00');
+INSERT INTO `dashboards` VALUES (6,'Clouds Dashboard',1,'org',0,'The details of your cloud infrastructure','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"33\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"34\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"35\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"36\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"37\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"38\"}]}','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -844,6 +917,11 @@ CREATE TABLE `discoveries` (
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `last_run` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   `complete` enum('y','n') NOT NULL DEFAULT 'y',
+  `status` varchar(20) NOT NULL DEFAULT '',
+  `discovered` varchar(20) NOT NULL DEFAULT '',
+  `last_log` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `duration` time NOT NULL DEFAULT '00:00:00',
+  `pid` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1134,6 +1212,42 @@ LOCK TABLES `files` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `floors`
+--
+
+DROP TABLE IF EXISTS `floors`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `floors` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `building_id` int(10) unsigned DEFAULT NULL,
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `building_id` (`building_id`),
+  CONSTRAINT `floors_building_id` FOREIGN KEY (`building_id`) REFERENCES `buildings` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `floors_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `floors`
+--
+
+LOCK TABLES `floors` WRITE;
+/*!40000 ALTER TABLE `floors` DISABLE KEYS */;
+INSERT INTO `floors` VALUES (1, 'Ground Floor', 1, 1, 'The default entry for a floor at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `floors` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `graph`
 --
 
@@ -1226,7 +1340,7 @@ CREATE TABLE `image` (
   `system_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(200) NOT NULL DEFAULT '',
   `filename` text NOT NULL,
-  `orientation` enum ('front','rear','left','right','top','bottom','other','') NOT NULL DEFAULT 'front',
+  `orientation` enum('front','rear','left','right','top','bottom','other','') NOT NULL DEFAULT 'front',
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`),
@@ -1325,6 +1439,7 @@ CREATE TABLE `ip` (
   `version` tinyint(3) unsigned NOT NULL DEFAULT '4',
   `network` varchar(40) NOT NULL DEFAULT '',
   `set_by` enum('','dhcp','static','auto','local') NOT NULL DEFAULT '',
+  `interface` varchar(200) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `system_id` (`system_id`),
   KEY `mac` (`mac`),
@@ -2278,7 +2393,131 @@ INSERT INTO `queries` VALUES (NULL,1,'New Devices','Change','y','Any changes in 
 INSERT INTO `queries` VALUES (NULL,1,'Settings','Change','y','Any changes in the tables \'dns\', \'ip\', \'log\', netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\' and \'variable\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'dns\', \'ip\', \'log\', \'netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\', \'variable\')','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'Software','Change','y','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'AD Controllers','Server','y','Active Directory Domain Controllers','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = \'y\') WHERE @filter AND windows.domain_role LIKE \'%Domain Controller\' AND system.status = \'production\'','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Cloud Device Details','Device','y','Details about your cloud based devices','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.name AS `system.name`, system.ip AS `system.ip`, system.instance_type AS `system.instance.type`, clouds.type AS `clouds.type`, clouds.name AS `clouds.name`, locations.name AS `locations.name` FROM system LEFT JOIN clouds ON (clouds.id = system.cloud_id) LEFT JOIN locations ON (locations.id = system.location_id) WHERE @filter AND system.cloud_id != \'\';','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `queue`
+--
+
+DROP TABLE IF EXISTS `queue`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `queue` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `type` varchar(20) NOT NULL DEFAULT '',
+  `details` text NOT NULL,
+  `date_added` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `queue`
+--
+
+LOCK TABLES `queue` WRITE;
+/*!40000 ALTER TABLE `queue` DISABLE KEYS */;
+/*!40000 ALTER TABLE `queue` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `racks`
+--
+
+DROP TABLE IF EXISTS `racks`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `racks` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `row_id` int(10) unsigned DEFAULT NULL,
+  `description` text NOT NULL,
+  `row_position` varchar(200) NOT NULL DEFAULT '',
+  `pod` varchar(200) NOT NULL DEFAULT '',
+  `physical_height` int(10) unsigned NOT NULL DEFAULT '2000',
+  `physical_width` int(10) unsigned NOT NULL DEFAULT '600',
+  `physical_depth` int(10) unsigned NOT NULL DEFAULT '1050',
+  `weight_empty` int(10) unsigned NOT NULL DEFAULT '1',
+  `weight_current` int(10) unsigned NOT NULL DEFAULT '1',
+  `weight_max` int(10) unsigned NOT NULL DEFAULT '1',
+  `ru_start` int(10) unsigned NOT NULL DEFAULT '1',
+  `ru_height` int(10) unsigned NOT NULL DEFAULT '42',
+  `type` varchar(200) NOT NULL DEFAULT '',
+  `purpose` varchar(200) NOT NULL DEFAULT '',
+  `manufacturer` varchar(200) NOT NULL DEFAULT '',
+  `model` varchar(200) NOT NULL DEFAULT '',
+  `series` varchar(200) NOT NULL DEFAULT '',
+  `serial` varchar(200) NOT NULL DEFAULT '',
+  `asset_number` varchar(200) NOT NULL DEFAULT '',
+  `asset_tag` varchar(200) NOT NULL DEFAULT '',
+  `bar_code` varchar(200) NOT NULL DEFAULT '',
+  `power_circuit` varchar(200) NOT NULL DEFAULT '',
+  `power_sockets` varchar(200) NOT NULL DEFAULT '',
+  `circuit_count` int(10) unsigned NOT NULL DEFAULT '1',
+  `btu_total` int(10) unsigned NOT NULL DEFAULT '1',
+  `btu_max` int(10) unsigned NOT NULL DEFAULT '1',
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `row_id` (`row_id`),
+  CONSTRAINT `racks_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `racks_row_id` FOREIGN KEY (`row_id`) REFERENCES `rows` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `racks`
+--
+
+LOCK TABLES `racks` WRITE;
+/*!40000 ALTER TABLE `racks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `racks` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rack_devices`
+--
+
+DROP TABLE IF EXISTS `rack_devices`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rack_devices` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `rack_id` int(10) unsigned DEFAULT NULL,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `position` int(10) unsigned NOT NULL DEFAULT '1',
+  `height` int(10) unsigned NOT NULL DEFAULT '1',
+  `width` int(10) unsigned NOT NULL DEFAULT '1',
+  `orientation` enum('front','front-right','front-left','rear','rear-left','rear-right') NOT NULL DEFAULT 'front',
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `rack_id` (`rack_id`),
+  CONSTRAINT `rack_devices_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rack_devices_rack_id` FOREIGN KEY (`rack_id`) REFERENCES `racks` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rack_devices`
+--
+
+LOCK TABLES `rack_devices` WRITE;
+/*!40000 ALTER TABLE `rack_devices` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rack_devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2307,12 +2546,48 @@ CREATE TABLE `roles` (
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
 INSERT INTO `roles` VALUES (1,'admin','This role can change global options.','{\"agents\":\"crud\",\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"collectors\":\"crud\",\"configuration\":\"crud\",\"dashboards\":\"crud\",\"database\":\"crud\",\"errors\":\"r\",\"groups\":\"crud\",\"ldap_servers\":\"crud\",\"logs\":\"crud\",\"nmis\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"roles\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"summaries\":\"crud\",\"tasks\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"reports\":\"r\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"applications\":\"r\",\"baselines\":\"crud\",\"charts\":\"r\",\"clouds\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"crud\",\"errors\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"reports\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00');
-INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"reports\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (2,'org_admin','This role is used for administration of endpoints that contain an org_id.','{\"applications\":\"crud\",\"attributes\":\"crud\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"crud\",\"clouds\":\"crud\",\"connections\":\"crud\",\"credentials\":\"crud\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"summaries\":\"crud\",\"devices\":\"crud\",\"discoveries\":\"crud\",\"fields\":\"crud\",\"files\":\"crud\",\"graph\":\"crud\",\"groups\":\"crud\",\"invoice\":\"crud\",\"licenses\":\"crud\",\"locations\":\"crud\",\"networks\":\"crud\",\"orgs\":\"crud\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"scripts\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_org_admin','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (3,'reporter','The role used for reading endpoints and creating reports above to the user role.','{\"applications\":\"r\",\"baselines\":\"crud\",\"buildings\":\"crud\",\"charts\":\"r\",\"clouds\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"crud\",\"errors\":\"r\",\"floors\":\"crud\",\"summaries\":\"r\",\"devices\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"crud\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"crud\",\"racks\":\"crud\",\"rack_devices\":\"crud\",\"reports\":\"r\",\"rooms\":\"crud\",\"rows\":\"crud\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"crud\"}','open-audit_roles_reporter','system','2000-01-01 00:00:00');
+INSERT INTO `roles` VALUES (4,'user','A standard role that can read all endpoints that contain an org_id.','{\"applications\":\"r\",\"baselines\":\"r\",\"buildings\":\"r\",\"charts\":\"r\",\"clouds\":\"r\",\"connections\":\"r\",\"credentials\":\"r\",\"dashboards\":\"r\",\"summaries\":\"r\",\"devices\":\"r\",\"errors\":\"r\",\"floors\":\"r\",\"fields\":\"r\",\"files\":\"r\",\"graph\":\"r\",\"groups\":\"r\",\"invoice\":\"r\",\"licenses\":\"r\",\"locations\":\"r\",\"networks\":\"r\",\"orgs\":\"r\",\"queries\":\"r\",\"racks\":\"r\",\"rack_devices\":\"r\",\"reports\":\"r\",\"rooms\":\"r\",\"rows\":\"r\",\"search\":\"crud\",\"sessions\":\"crud\",\"widgets\":\"r\"}','open-audit_roles_user','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (5,'collector','The collector specific role.','{\"collectors\":\"crud\",\"configuration\":\"r\",\"credentials\":\"r\",\"dashboards\":\"\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\",\"tasks\":\"crud\",\"users\":\"r\",\"widgets\":\"\"}','open-audit_roles_collector','system','2000-01-01 00:00:00');
 INSERT INTO `roles` VALUES (6,'agent','The agent specific role.','{\"configuration\":\"r\",\"credentials\":\"r\",\"dashboards\":\"\",\"devices\":\"cr\",\"discoveries\":\"r\",\"locations\":\"r\",\"networks\":\"cr\",\"orgs\":\"r\",\"sessions\":\"crud\",\"widgets\":\"\"}','open-audit_roles_agent','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rooms`
+--
+
+DROP TABLE IF EXISTS `rooms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rooms` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `floor_id` int(10) unsigned DEFAULT NULL,
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `floor_id` (`floor_id`),
+  CONSTRAINT `rooms_floor_id` FOREIGN KEY (`floor_id`) REFERENCES `floors` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rooms_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rooms`
+--
+
+LOCK TABLES `rooms` WRITE;
+/*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
+INSERT INTO `rooms` VALUES (1, 'Default Room', 1, 1, 'The default entry for a room at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2347,6 +2622,42 @@ CREATE TABLE `route` (
 LOCK TABLES `route` WRITE;
 /*!40000 ALTER TABLE `route` DISABLE KEYS */;
 /*!40000 ALTER TABLE `route` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rows`
+--
+
+DROP TABLE IF EXISTS `rows`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rows` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `room_id` int(10) unsigned DEFAULT NULL,
+  `description` text NOT NULL,
+  `options` text NOT NULL,
+  `notes` text NOT NULL,
+  `tags` varchar(250) NOT NULL DEFAULT '',
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`),
+  KEY `org_id` (`org_id`),
+  KEY `room_id` (`room_id`),
+  CONSTRAINT `rows_org_id` FOREIGN KEY (`org_id`) REFERENCES `orgs` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `rows_room_id` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rows`
+--
+
+LOCK TABLES `rows` WRITE;
+/*!40000 ALTER TABLE `rows` DISABLE KEYS */;
+INSERT INTO `rows` VALUES (1, 'Default Row', 1, 1, 'The default entry for a row at this location.', '', '', '', 'system', '2000-01-01 00:00:00');
+/*!40000 ALTER TABLE `rows` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2875,6 +3186,14 @@ CREATE TABLE `system` (
   `omk_uuid` text NOT NULL,
   `collector_uuid` text NOT NULL,
   `credentials` text NOT NULL,
+  `cloud_id` int(10) unsigned DEFAULT NULL,
+  `instance_provider` varchar(200) NOT NULL DEFAULT '',
+  `instance_ident` varchar(200) NOT NULL DEFAULT '',
+  `instance_type` varchar(200) NOT NULL DEFAULT '',
+  `instance_state` varchar(200) NOT NULL DEFAULT '',
+  `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '',
+  `instance_tags` text NOT NULL,
+  `instance_options` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
@@ -3278,12 +3597,19 @@ INSERT INTO `widgets` VALUES (23,'End Of Life (0-90+ Days)',1,'','pie','','','',
 INSERT INTO `widgets` VALUES (24,'End of Service (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.end_of_service = \'2000-01-01\', \'unknown\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 90 day), \'90+ Days\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 60 day), \'60-90 Days\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 30 day), \'30-60 Days\', ( IF ( system.end_of_service > DATE(NOW()), \'0-30 days\', \'Less than 30 Days\' ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( system.end_of_service = \'2000-01-01\', \'system.end_of_service=2000-01-01\', ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 90 day), CONCAT(\'system.end_of_service=>\', DATE(NOW() + INTERVAL 90 day)), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 60 day), CONCAT(\'system.end_of_service=<\', DATE(NOW() + INTERVAL 90 day), \'&system.end_of_service=>\', DATE(NOW() + INTERVAL 60 day)), ( IF ( system.end_of_service > DATE(NOW() + INTERVAL 30 day), CONCAT(\'system.end_of_service=<\', DATE(NOW() + INTERVAL 60 day), \'&system.end_of_service=>\', DATE(NOW() + INTERVAL 30 day)), ( CONCAT(\'system.end_of_service=<\', DATE(NOW() + INTERVAL 30 day), \'&system.end_of_service=>\', DATE(NOW())) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.end_of_service','devices?@description','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (25,'Device Age (0-3+ Years)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.purchase_date = \'2000-01-01\', \'unknown\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), \'3+ Years\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), \'2-3 Years\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), \'1-2 Years\', \'Less Than 1 Year\' ) ) ) ) ) ) ) AS `my_name`, IF ( system.purchase_date = \'2000-01-01\', \'system.purchase_date=2000-01-01\', ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 3 year), CONCAT(\'system.purchase_date=<\', DATE(NOW() - INTERVAL 3 year), \"&system.purchase_date=>2000-01-01\"), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 2 year), CONCAT(\'system.purchase_date=>\', DATE(NOW() - INTERVAL 3 year), \'&system.purchase_date=<\', DATE(NOW() - INTERVAL 2 year)), ( IF ( system.purchase_date < DATE(NOW() - INTERVAL 1 year), CONCAT(\'system.purchase_date=>\', DATE(NOW() - INTERVAL 2 year), \'&system.purchase_date=<\', DATE(NOW() - INTERVAL 1 year)), CONCAT(\'system.purchase_date=>\', DATE(NOW() - INTERVAL 1 year)) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.purchase_date','devices?@description','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (26,'End of Lease (0-90+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( system.lease_expiry_date = \'2000-01-01\' OR system.lease_expiry_date = \'0000-00-00\', \'unknown\', ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 90 day), \'90+ Days\', ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 60 day), \'60-90 Days\', ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 30 day), \'30-60 Days\', \'Less than 30 Days\' ) ) ) ) ) ) ) AS `my_name`, IF ( system.lease_expiry_date = \'2000-01-01\' OR system.lease_expiry_date = \'0000-00-00\', \'system.lease_expiry_date=2000-01-01\', ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 90 day), CONCAT(\'system.lease_expiry_date=>\', DATE(NOW() + INTERVAL 90 day)), ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 60 day), CONCAT(\'system.lease_expiry_date=<\', DATE(NOW() + INTERVAL 90 day), \'&system.lease_expiry_date=>\', DATE(NOW() + INTERVAL 60 day)), ( IF ( system.lease_expiry_date > DATE(NOW() + INTERVAL 30 day), CONCAT(\'system.lease_expiry_date=<\', DATE(NOW() + INTERVAL 60 day), \'&system.lease_expiry_date=>\', DATE(NOW() + INTERVAL 30 day)), ( CONCAT(\'system.lease_expiry_date=<\', DATE(NOW() + INTERVAL 30 day), \'&system.lease_expiry_date=>\', DATE(NOW())) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.lease_expiry_date','devices?@description','system','2000-01-01 00:00:00');
-INSERT INTO `widgets` VALUES (27,'Hardware Additions by Day',1,'Any items in the following tables that are new - bios, disk, memory, module, monitor, motherbaord, network, optical, partition, processor, san, scsi, sound, video.','line','','system','create','','Devices','','',30,'','SELECT DATE(`change_log`.`timestamp`) AS `date`, count(DATE(`change_log`.`timestamp` )) AS `count` FROM `change_log` LEFT JOIN `system` ON (`system`.`id` = `change_log`.`system_id`) WHERE @filter AND `change_log`.`timestamp` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND `change_log`.`db_table` IN (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherbaord\', \'network\', \'optical\', \'partition\', \'processor\', \'san\', \'scsi\', \'sound\', \'video\') AND `change_log`.`db_action` = \'create\' GROUP BY DATE(`change_log`.`timestamp`)','devices?sub_resource=change_log&change_log.db_table=inbios,disk,memory,module,monitor,motherbaord,network,optical,partition,processor,san,scsi,sound,video&change_log.timestamp=like@date&change_log.db_action=create','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (27,'Hardware Additions by Day',1,'Any items in the following tables that are new - bios, disk, memory, module, monitor, motherboard, network, optical, partition, processor, san, scsi, sound, video.','line','','system','create','','Devices','','',30,'','SELECT DATE(`change_log`.`timestamp`) AS `date`, count(DATE(`change_log`.`timestamp` )) AS `count` FROM `change_log` LEFT JOIN `system` ON (`system`.`id` = `change_log`.`system_id`) WHERE @filter AND `change_log`.`timestamp` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND `change_log`.`db_table` IN (\'bios\', \'disk\', \'memory\', \'module\', \'monitor\', \'motherboard\', \'network\', \'optical\', \'partition\', \'processor\', \'san\', \'scsi\', \'sound\', \'video\') AND `change_log`.`db_action` = \'create\' GROUP BY DATE(`change_log`.`timestamp`)','devices?sub_resource=change_log&change_log.db_table=inbios,disk,memory,module,monitor,motherboard,network,optical,partition,processor,san,scsi,sound,video&change_log.timestamp=like@date&change_log.db_action=create','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (28,'Settings Additions by Day',1,'Any items in the following tables that are new - dns, file, ip, log, pagefile, print_queue, route, share, task, user, user_group, variable, vm, windows.','line','','system','create','','Devices','','',30,'','SELECT DATE(`change_log`.`timestamp`) AS `date`, count(DATE(`change_log`.`timestamp` )) AS `count` FROM `change_log` LEFT JOIN `system` ON (`system`.`id` = `change_log`.`system_id`) WHERE @filter AND `change_log`.`timestamp` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND `change_log`.`db_table` IN (\'dns\', \'file\', \'ip\', \'log\', \'pagefile\', \'print_queue\', \'route\', \'share\', \'task\', \'user\', \'user_group\', \'variable\', \'vm\', \'windows\') AND `change_log`.`db_action` = \'create\' GROUP BY DATE(`change_log`.`timestamp`)','devices?sub_resource=change_log&change_log.db_table=indns,file,ip,log,pagefile,print_queue,route,share,task,user,user_group,variable,vm,windows&change_log.timestamp=like@date&change_log.db_action=create','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (29,'Software Additions by Day',1,'Any items in the following tables that are new - server, server_item, service, software, software_key.','line','','system','create','','Devices','','',30,'','SELECT DATE(`change_log`.`timestamp`) AS `date`, count(DATE(`change_log`.`timestamp` )) AS `count` FROM `change_log` LEFT JOIN `system` ON (`system`.`id` = `change_log`.`system_id`) WHERE @filter AND `change_log`.`timestamp` >= DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND `change_log`.`db_table` IN (\'server\', \'server_item\', \'service\', \'software\', \'software_key\') AND `change_log`.`db_action` = \'create\' GROUP BY DATE(`change_log`.`timestamp`)','devices?sub_resource=change_log&change_log.db_table=inserver,server_item,service,software,software_key&change_log.timestamp=like@date&change_log.db_action=create','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (30,'Devices by Org',1,'Devies assigned by Org','pie','','','','','Devices','','',0,'','SELECT orgs.name as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE @filter GROUP BY orgs.name','devices?system.org_id=@description','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (31,'Application Services',1,'Devices by defined Application','pie','','','','','Devices','','',0,'','SELECT applications.name AS `my_name`, COUNT(application.system_id) AS `count`, applications.id AS `my_description` FROM applications LEFT JOIN application ON (applications.id = application.applications_id) LEFT JOIN `system` ON (application.system_id = system.id) WHERE @filter GROUP BY `my_name`','devices?application.applications_id=@description','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (32,'Devices Not Seen (1-7+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( DATE(system.last_seen) = "2000-01-01", "unknown", ( IF ( DATE(system.last_seen) < DATE(NOW() - INTERVAL 6 day), "More than 7 Days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 6 day), "7 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 5 day), "6 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 4 day), "5 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 3 day), "4 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 2 day), "3 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 1 day), "2 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 0 day), "1 day", "") ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( DATE(system.last_seen) = "2000-01-01", "system.last_seen=2000-01-01", ( IF ( DATE(system.last_seen) < DATE(NOW() - INTERVAL 6 day), CONCAT("system.last_seen=<", DATE(NOW() - INTERVAL 6 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 6 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 6 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 5 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 5 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 4 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 4 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 3 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 3 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 2 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 2 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 1 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 1 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 0 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 0 day)), "" ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.last_seen','devices?@description','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (33,'Devices by Cloud Type',1,'','pie','','system.instance_provider','','','Devices','','system.instance_provider != \'\'',0,'','','','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (34,'Devices per Cloud',1,'','pie','','','','','Devices','','',0,'','SELECT clouds.name as `name`, clouds.id AS `description`, count(system.id) AS `count` FROM clouds LEFT JOIN system ON (clouds.id = system.cloud_id) WHERE @filter AND system.cloud_id IS NOT NULL GROUP BY clouds.name','devices?system.cloud_id=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (35,'Devices by Cloud Network',1,'','pie','','','','','Devices','','',0,'','SELECT IF(networks.name = networks.network, networks.network, CONCAT(networks.network, \' (\', networks.name, \')\')) as `name`, networks.network AS `description`, count(system.id) AS `count` FROM networks LEFT JOIN ip ON (ip.network = networks.network and ip.current = \'y\') LEFT JOIN system ON (ip.system_id = system.id) WHERE @filter AND networks.options != \'\' GROUP BY networks.network ORDER BY networks.network','devices?ip.network=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (36,'Devices by Cloud Region',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', locations.name) as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.cloud_id IS NOT NULL AND locations.type = \'Cloud\' GROUP BY system.location_id','devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (37,'Devices by Instance Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', system.instance_type) as `name`, system.instance_type AS `description`, count(system.id) AS `count` FROM system LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.instance_type != \'\' GROUP BY system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (38,'Cloud Devices Audited per Day',1,'','line','','','','','Devices','','',0,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE @filter AND DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND system.cloud_id != \'\' GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date%','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (39,'Cloud Instances by Org and Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(orgs.name, \' - \', system.instance_type) as `name`, CONCAT(system.instance_type, \'&system.org_id=\', orgs.id) AS `description`, count(system.id) AS `count` FROM system LEFT JOIN orgs ON (orgs.id = system.org_id) WHERE @filter AND system.cloud_id != \'\' GROUP BY system.org_id, system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `widgets` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.2.7
+ * @version   2.3.0
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 if (! function_exists('ssh_create_keyfile')) {

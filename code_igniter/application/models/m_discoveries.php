@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_discoveries extends MY_Model
@@ -142,10 +142,43 @@ class M_discoveries extends MY_Model
         $result = $this->run_sql($sql, array(intval($id)));
         $result = $this->format_data($result, 'discovery_log');
         return ($result);
-        #return(array());
     }
 
-    public function execute($id = '')
+    public function execute($id = 0)
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $sql = "SELECT * FROM `discoveries` WHERE `id` = ?";
+        $data = array(intval($id));
+        $discovery = $this->run_sql($sql, $data);
+        if (!empty($discovery)) {
+            $sql = "INSERT INTO `queue` VALUES (null, 'discoveries', ?, NOW())";
+            $data = array(json_encode($discovery[0]));
+            $this->run_sql($sql, $data);
+            $sql = 'UPDATE `discoveries` SET `status` = "queued" WHERE `id` = ?';
+            $data = array(intval($discovery[0]->id));
+            $this->run_sql($sql, $data);
+            $proto = 'http';
+            if ($this->config->config['is_ssl'] === true) {
+                $proto = 'https';
+            }
+            # run the script and continue (do not wait for result)
+            if (php_uname('s') != 'Windows NT') {
+                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
+                if (php_uname('s') == 'Linux') {
+                    $command_string = 'nohup ' . $command_string;
+                }
+                @exec($command_string, $output, $return_var);
+            } else {
+                $filepath = $this->config->config['base_path'] . '\\other';
+                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=" . $proto . "://localhost/open-audit/index.php/input/queue/discoveries method=post";
+                pclose(popen($command_string, "r"));
+            }
+            $this->log->detail = $command_string;
+            stdlog($this->log);
+        }
+    }
+
+    public function run($id = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'executing discovery';
@@ -186,12 +219,15 @@ class M_discoveries extends MY_Model
         $this->run_sql($sql, array(intval($id)));
 
         // reset our device counter
-        $limit = intval($CI->response->meta->limit);
-        $sql = "UPDATE `discoveries` SET `device_count` = 0, `complete` = 'n', `last_run` = NOW(), `limit` = ? WHERE id = ?";
-        $data = array(intval($limit), intval($id));
+        $limit = 0;
+        if (!empty($CI->response->meta->limit)) {
+            $limit = intval($CI->response->meta->limit);
+        }
+        $sql = "UPDATE `discoveries` SET `status` = 'starting', `device_count` = 0, `complete` = 'n', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00', `limit` = ? WHERE id = ?";
+        $data = array($limit, intval($id));
         $this->run_sql($sql, $data);
 
-        if ($CI->response->meta->debug) {
+        if (!empty($CI->response->meta->debug)) {
             $debugging = 1;
         } else {
             $debugging = 0;

@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_attributes extends MY_Model
@@ -87,12 +87,16 @@ class M_attributes extends MY_Model
         return false;
     }
 
-    public function collection()
+    public function collection($resource = '')
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
         $sql = $this->collection_sql('attributes', 'sql');
+        if (!empty($resource)) {
+            $sql .= ' AND attributes.resource = \'' . $resource . '\'';
+        }
+        $sql .= " ORDER BY `resource`, `type`, `name`";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'attributes');
         $this->log->summary = 'finish';

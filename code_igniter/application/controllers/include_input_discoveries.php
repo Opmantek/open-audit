@@ -52,6 +52,7 @@ $this->load->model('m_devices_components');
 $this->load->model('m_orgs');
 $this->load->model('m_scripts');
 // our required helpers
+$this->load->helper('audit');
 $this->load->helper('mac');
 $this->load->helper('network');
 $this->load->helper('snmp');
@@ -112,12 +113,15 @@ foreach ($xml->children() as $input) {
         $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
         $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
         $syslog->discovery_id = intval($input->discovery_id);
+        $GLOBALS['discovery_id'] = intval($input->discovery_id);
         discovery_log($syslog);
+
         $log->discovery_id = intval($input->discovery_id);
         $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
         $data = array($log->discovery_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
+
         if (!empty($result[0])) {
             $discovery = $result[0];
             $discovery->other = json_decode($discovery->other);
@@ -150,13 +154,13 @@ foreach ($xml->children() as $input) {
     $log->ip = $input->ip;
 
     // The end submit from the script that indicates there are no more items to be submitted
-    if (isset($input->complete) and $input->complete == 'y') {
+    if (!empty($input->complete) and $input->complete == 'y') {
         $sql = "/* input::discoveries */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
         $data = array($log->discovery_id);
         $query = $this->db->query($sql, $data);
         $syslog->severity = 7;
         $syslog->summary = 'Set discovery entry status to complete';
-        $syslog->message = $this->db->last_query();
+        $syslog->detail = $this->db->last_query();
         stdlog($syslog);
         $syslog->discovery_id = $log->discovery_id;
         discovery_log($syslog);
@@ -384,7 +388,7 @@ foreach ($xml->children() as $input) {
     }
     # run SNMP audit commands
     if ($credentials_snmp) {
-        $temp_array = snmp_audit($device->ip, $credentials_snmp, $log);
+        $temp_array = snmp_audit($device->ip, $credentials_snmp);
         if (!empty($temp_array['details'])) {
             foreach ($temp_array['details'] as $key => $value) {
                 if (!empty($value)) {
@@ -410,7 +414,7 @@ foreach ($xml->children() as $input) {
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
-    if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and $device->manufacturer != 'Ubiquiti Networks Inc.') {
+    if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and stripos($device->manufacturer, 'Ubiquiti') === false ) {
         $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
@@ -421,7 +425,7 @@ foreach ($xml->children() as $input) {
 
     # run SSH audit commands
     if ($input->ssh_status == 'true') {
-        $ssh_details = ssh_audit($device->ip, $credentials, $log);
+        $ssh_details = ssh_audit($device->ip, $credentials);
         if (!empty($ssh_details)) {
 
             if (!empty($ssh_details->credentials)) {
@@ -437,7 +441,7 @@ foreach ($xml->children() as $input) {
             }
         }
     }
-    if ($ssh_details->manufacturer == 'Ubiquiti Networks Inc.' and empty($device->type)) {
+    if (stripos($ssh_details->manufacturer, 'Ubiquiti') !== false and empty($device->type)) {
         $device->type = 'router';
     }
 
@@ -532,10 +536,6 @@ foreach ($xml->children() as $input) {
         }
     }
 
-    // $log->command_output = json_encode($device->system);
-    // $log->message = 'System Data';
-    // discovery_log($log);
-
     $device->id = $this->m_device->match($device);
 
     if (empty($discovery->org_id)) {
@@ -598,9 +598,9 @@ foreach ($xml->children() as $input) {
         $log->severity = 7;
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $device->original_last_seen = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen');
-        $device->original_last_seen_by = $this->m_devices_components->read($device->id, 'y', 'system', '', 'last_seen_by');
+
         $this->m_device->update($device);
+        $device->ip = ip_address_from_db($device->ip);
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
@@ -612,6 +612,7 @@ foreach ($xml->children() as $input) {
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         discovery_log($log);
         $device->id = $this->m_device->insert($device);
+        $device->ip = ip_address_from_db($device->ip);
         $log->system_id = $device->id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
@@ -658,30 +659,28 @@ foreach ($xml->children() as $input) {
     // update any network interfaces retrieved by SNMP
     if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
         $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        #$log->command = json_encode($network_interfaces);
+        $log->command_output = '';
         discovery_log($log);
-        $found = new stdClass();
-        $found->item = array();
-        $found->item = $network_interfaces;
-        $this->m_devices_components->process_component('network', $device, $found);
-        unset($found);
+        $this->m_devices_components->process_component('network', $device, $network_interfaces);
     }
 
     // update any ip addresses retrieved by SNMP
-    if (!empty($ip->item)) {
-        $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        discovery_log($log);
+    if (!empty($ip) and is_array($ip) and count($ip) > 0) {
         $log->ip = $device->ip;
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        #$log->command = json_encode($ip);
+        $log->command_output = '';
         discovery_log($log);
         $this->m_devices_components->process_component('ip', $device, $ip);
     }
 
     // create or update the entry in the ip table from non-SNMP data
     //     so our 'networks' endpoint and functions can find the device
-    if (empty($ip->item)) {
+    if (empty($ip)) {
         $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
         $item = new stdClass();
@@ -712,22 +711,18 @@ foreach ($xml->children() as $input) {
     // finish off with updating any network IPs that don't have a matching interface
     $this->m_devices_components->update_missing_interfaces($device->id);
 
-    // insert any modules
-    if (isset($modules) and count($modules) > 0) {
+    // insert any modules from SNMP
+    if (isset($modules) and is_array($guests) and count($modules) > 0) {
         $log->ip = $device->ip;
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing found modules for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $found = new stdClass();
-        $found->item = array();
-        $found->item = $modules;
-        $this->m_devices_components->process_component('module', $device, $found);
-        unset($found);
+        $this->m_devices_components->process_component('module', $device, $modules);
     }
 
-    // insert any found virtual machines
+    // insert any found virtual machines from SNMP
     if (isset($guests) and is_array($guests) and count($guests) > 0) {
         $log->ip = $device->ip;
         $log->discovery_id = $device->discovery_id;
@@ -735,10 +730,7 @@ foreach ($xml->children() as $input) {
         $log->function = 'discoveries';
         $log->message = 'Processing found VMs for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $found = new stdClass();
-        $found->item = array();
-        $found->item = $guests;
-        $this->m_devices_components->process_component('vm', $device, $found);
+        $this->m_devices_components->process_component('vm', $device, $guests);
         unset($found);
     }
 
@@ -769,10 +761,7 @@ foreach ($xml->children() as $input) {
         $log->function = 'discoveries';
         $log->message = 'Processing Nmap ports for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $found = new stdClass();
-        $found->item = array();
-        $found->item = $nmap_result;
-        $this->m_devices_components->process_component('nmap', $device, $found);
+        $this->m_devices_components->process_component('nmap', $device, $nmap_result);
     }
 
     // insert a blank to indicate we're finished this part of the discovery
@@ -784,11 +773,6 @@ foreach ($xml->children() as $input) {
     $log->severity = 5;
     $individual_ip_end = microtime(true);
     $log->command_time_to_execute = $individual_ip_end - $individual_ip_start;
-    // if (!empty($device->type)) {
-    //     $log->message = "Discovery found a device of type '$device->type' at IP address $device->ip.";
-    // } else {
-    //     $log->message = "Discovery found an unknown device at IP address $device->ip.";
-    // }
     if (!empty($device->type)) {
         $log->message = "At IP $device->ip, discovery found a device of type '$device->type'.";
     } else {
@@ -813,37 +797,37 @@ foreach ($xml->children() as $input) {
         $device_json->system->collector_uuid = $this->config->config['uuid'];
         if (count($nmap_result) > 0) {
             $device_json->nmap = new stdClass();
-            $device_json->nmap->item = array();
+            $device_json->nmap = array();
             foreach ($nmap_result as $item) {
-                $device_json->nmap->item[] = $item;
+                $device_json->nmap[] = $item;
             }
         }
         if (isset($guests) and count($guests) > 0) {
             $device_json->vm = new stdClass();
-            $device_json->vm->item = array();
+            $device_json->vm = array();
             foreach ($guests as $item) {
-                $device_json->vm->item[] = $item;
+                $device_json->vm[] = $item;
             }
         }
         if (isset($modules) and count($modules) > 0) {
             $device_json->module = new stdClass();
-            $device_json->module->item = array();
+            $device_json->module = array();
             foreach ($modules as $item) {
-                $device_json->module->item[] = $item;
+                $device_json->module[] = $item;
             }
         }
         if (isset($ip) and count($ip) > 0) {
             $device_json->ip = new stdClass();
-            $device_json->ip->item = array();
+            $device_json->ip = array();
             foreach ($ip->item as $item) {
-                $device_json->ip->item[] = $item;
+                $device_json->ip[] = $item;
             }
         }
         if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
             $device_json->network = new stdClass();
-            $device_json->network->item = array();
+            $device_json->network = array();
             foreach ($network_interfaces as $item) {
-                $device_json->network->item[] = $item;
+                $device_json->network[] = $item;
             }
         }
         unset($device_json->system->id);
@@ -877,553 +861,500 @@ foreach ($xml->children() as $input) {
         }
     }
     
+    $audit_result = false;
 
-    # Audit via Windows
-    if ($input->wmi_status == "true" and $credentials_windows) {
-        $log->file = 'include_input_discoveries';
-        $log->function = 'discoveries';
-        $log->command_time_to_execute = '';
-        $log->message = 'Starting windows audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        discovery_log($log);
-
-        $share = '\\admin$';
-        $destination = 'audit_windows.vbs';
-        if ($display == 'y') {
-            $debugging = 3;
-        } else {
-            $debugging = 0;
-        }
-        # TODO - org_id ?, maybe get the collection and run through testing matching org children
-
-        // Get and make the audit script
-        $sql = "/* discovery::process_subnet */ SELECT * FROM `scripts` WHERE `name` = 'audit_windows.vbs' AND `based_on` = 'audit_windows.vbs' ORDER BY `id` LIMIT 1";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        if (!empty($result[0])) {
-            $script_details = $result[0];
-            # Just ensure we delete any audit scripts that might exist.
-            # Shouldn't be required because we're creating based on the timestamp
-            # Then open the file for writing
-            $ts = date('y_m_d_H_i_s');
-            if (php_uname('s') == 'Windows NT') {
-                $source_name = 'scripts\\audit_windows_' . $ts . '.vbs';
-                @unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
-                try {
-                    $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
-                } catch (Exception $e) {
-                    print_r($e);
-                }
-            } else {
-                $source_name = 'scripts/audit_windows_' . $ts . '.vbs';
-                @unlink($this->config->config['base_path'] . '/other/' . $source_name);
-                try {
-                    $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
-                } catch (Exception $e) {
-                    print_r($e);
-                }
-            }
-            $script = $this->m_scripts->download($script_details->id);
-            fwrite($fp, $script);
-            fclose($fp);
-        } else {
-            $source_name = 'audit_windows.vbs';
-        }
-
-        // *nix Open-AudIT server auditing a Windows target
-        if (php_uname('s') != 'Windows NT') {
-            $source = $this->config->config['base_path'] . '/other/' . $source_name;
-            $command = "cscript c:\\windows\\audit_windows.vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
-            if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
-                # delete our no longer required local copy of the script
-                $log->file = 'include_input_discoveries';
-                $log->function = 'discoveries';
-                $log->command = '';
-                $log->message = '';
-                $log->severity = 7;
-                if ($source_name != 'audit_windows.vbs') {
-                    $log->message = 'Attempt to delete temp audit script succeeded';
-                    $log->command = 'unlink(' . $this->config->config['base_path'] . '/other/' . $source_name .')';
-                    try {
-                        unlink($this->config->config['base_path'] . '/other/' . $source_name);
-                    } catch (Exception $e) {
-                        $log->severity = 4;
-                        $log->status = 'fail';
-                        $log->message = 'Could not delete temp audit script';
-                    }
-                    discovery_log($log);
-                    $log->severity = 7;
-                }
-                if (execute_windows($device->ip, $credentials_windows, $command, $log)) {
-                    # All complete!
-                } else {
-                    # run audit script failed
-                    $log->severity = 4;
-                    $log->status = 'fail';
-                    $log->message = 'Could not execute audit script on ' . $device->ip;
-                    discovery_log($log);
-                    $log->severity = 7;
-                }
-            } else {
-                # copy audit script to Windows failed
-                $log->severity = 4;
-                $log->status = 'fail';
-                $log->message = 'Could not copy audit script to ' . $device->ip;
-                discovery_log($log);
-                $log->severity = 7;
-            }
-        }
-
-        // Windows Open-AudIT server auditing a Windows target
-        if (php_uname('s') == 'Windows NT') {
-            if (exec('whoami') == 'nt authority\system') {
-                # We're running on the LocalSystem account.
-                # We cannot copy the audit script to the target and then run it,
-                # We _must_ run the script locally and use $device->ip as the script target
-                # We will loose the ability to retrieve certain items like files, netstat, tasks, etc
-                $log->duration = '';
-                $log->file = 'include_input_discoveries';
-                $log->function = 'discoveries';
-                $log->message = 'Windows audit is running as LocalSystem, not ideal for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                $log->severity = 4;
-                discovery_log($log);
-                $log->severity = 7;
-
-                # cscript cannot parse an arguement containing a "
-                if (strpos($credentials_windows->credentials->password, '"') !== false or 
-                    strpos($credentials_windows->credentials->username, '"') !== false) {
-                    $log->message = 'Incompatible credentials for audit script. Cannot use " (double quotes) in a wscript command line attribute.';
-                    $log->command_time_to_execute = '';
-                    $log->command_status = 'fail';
-                    $log->severity = 4;
-                    discovery_log($log);
-                    $log->command_status = '';
-                    $log->severity = 7;
-                } else {
-
-                    $username = $credentials_windows->credentials->username;
-                    $temp = explode('@', $username);
-                    $username = $temp[0];
-                    if (count($temp) > 1) {
-                        $domain = $temp[1] . '\\';
-                    } else {
-                        $domain = '';
-                    }
-                    unset($temp);
-
-                    $command_string = "%comspec% /c start /b cscript //nologo " . "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
-
-                    $log->command = str_replace($credentials_windows->credentials->password, '******', $command_string);
-                    $log->message = 'Attempting to run audit command (locally).';
-                    discovery_log($log);
-
-                    $command_start = microtime(true);
-                    exec($command_string, $output, $return_var);
-                    $command_end = microtime(true);
-
-                    if ($display == 'y') {
-                        echo 'DEBUG - Command Executed: '.$command_string."\n";
-                        echo 'DEBUG - Return Value: '.$return_var."\n";
-                        echo "DEBUG - Command Output:\n";
-                        print_r($output);
-                    }
-                    $log->command_time_to_execute = $command_end - $command_start;
-                    $log->command = '';
-                    $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                    $log->status = 'success';
-                    if ($return_var != '0') {
-                        $log->status = 'fail';
-                        $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                        $log->severity = 4;
-                    }
-                    discovery_log($log);
-                    $log->command = '';
-                    $log->severity = 7;
-                    $output = null;
-                    $return_var = null;
-                    $command_string = null;
-
-                    if ($source_name != 'audit_windows.vbs') {
-                        $log->message = 'Attempt to delete audit script ' . $source_name . ' succeeded';
-                        $command_start = microtime(true);
-                        try {
-                            unlink($this->config->config['base_path'] . '\\other\\' . $source_name);
-                        } catch (Exception $e) {
-                            $log->severity = 4;
-                            $log->message = 'Attempt to delete audit script ' . $source_name . ' failed';
-                        }
-                        $command_end = microtime(true);
-                        $log->command_time_to_execute = $command_end - $command_start;
-                        $log->command = 'unlink(\'' . $this->config->config['base_path'] . '\\other\\' . $source_name . '\');';
-                        discovery_log($log);
-                        $log->severity = 7;
-                        $log->command = '';
-                    }
-                }
-            } else {
-                # We are running as something other than the LocalSystem account.
-                # Therefore we _should_ be able to copy the audit script to the target and start it there
-                # and therefore retrieve ALL information
-                $log->duration = '';
-                $log->file = 'include_input_discoveries';
-                $log->function = 'discoveries';
-                $log->severity = 7;
-                $log->message = 'Windows audit is not running as LocalSystem (good), for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                discovery_log($log);
-                $source = $this->config->config['base_path'] . '\\other\\' . $source_name;
-                rename($source, 'c:\\windows\\audit_windows_' . $ts . '.vbs');
-                $source = 'audit_windows_' . $ts . '.vbs';
-                $command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows_" . $ts . ".vbs submit_online=y create_file=n strcomputer=. url=".$discovery->network_address."index.php/input/devices debugging=" . $debugging . " system_id=".$device->id . " self_delete=y last_seen_by=audit_wmi discovery_id=".$discovery->id;
-
-                if (copy_to_windows($device->ip, $credentials_windows, $share, $source, $destination, $log)) {
-                        $log->message = 'Copy audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                        $log->command = '';
-                        $log->file = 'include_input_discoveries';
-                        discovery_log($log);
-                    if (execute_windows($device->ip, $credentials_windows, $command, $log)) {
-                        # All complete!
-                        $log->message = 'Run audit_windows.vbs successful for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                        $log->file = 'include_input_discoveries';
-
-                        $log->status = 'success';
-                        discovery_log($log);
-                    } else {
-                        # run audit script failed
-                        $log->message = 'Run audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                        $log->severity = 4;
-                        $log->status = 'fail';
-                        $log->file = 'include_input_discoveries';
-                        discovery_log($log);
-                        $log->severity = 7;
-                    }
-                } else {
-                    # copy audit script to Windows failed
-                    $log->message = 'Copy audit_windows.vbs failed for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                    $log->severity = 4;
-                    $log->status = 'fail';
-                    $log->file = 'include_input_discoveries';
-                    discovery_log($log);
-                    $log->severity = 7;
-                }
-                if ($source_name != 'audit_windows.vbs') {
-                    $log->message = 'Attempt to delete audit script c:\\windows\\audit_windows_' . $ts . '.vbs succeeded';
-                    try {
-                        unlink('c:\\windows\\audit_windows_' . $ts . '.vbs');
-                    } catch (Exception $e) {
-                        $log->severity = 4;
-                        $log->status = 'fail';
-                        $log->message = 'Attempt to delete audit script c:\\windows\\audit_windows_' . $ts . '.vbs failed';
-                    }
-                    $log->file = 'include_input_discoveries';
-                    discovery_log($log);
-                    $log->severity = 7;
-                }
-            }
-        }
-    }
-
-    # Audit via SSH
-    if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh)) {
-        $log->message = 'Starting SSH audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        $log->file = 'include_input_discoveries';
-        discovery_log($log);
-        // switch (strtolower($remote_os)) {
+    // Get and make the audit script
+        if (!empty($credentials_windows) or !empty($credentials_ssh)) {
+        $ts = date('y_m_d_H_i_s');
         switch (strtolower($device->os_group)) {
             case 'aix':
                 $audit_script = 'audit_aix.sh';
+                $source_name = 'audit_aix_' . $ts . '.sh';
                 break;
             
             case 'vmkernel':
             case 'vmware':
                 $audit_script = 'audit_esxi.sh';
+                $source_name = 'audit_esxi_' . $ts . '.sh';
                 break;
             
             case 'linux':
                 $audit_script = 'audit_linux.sh';
+                $source_name = 'audit_linux_' . $ts . '.sh';
                 break;
             
             case 'darwin':
                 $audit_script = 'audit_osx.sh';
+                $source_name = 'audit_osx_' . $ts . '.sh';
                 break;
             
             case 'windows':
-                $audit_script = '';
+                $audit_script = 'audit_windows.vbs';
+                $source_name = 'audit_windows_' . $ts . '.vbs';
                 break;
             
             case 'sunos':
                 $audit_script = 'audit_solaris.sh';
+                $source_name = 'audit_solaris_' . $ts . '.sh';
                 break;
             
             default:
                 $audit_script = '';
+                $source_name = '';
+                $source = '';
                 break;
         }
-
-        $destination = $audit_script;
-        if ($display == 'y') {
-            $debugging = 3;
-        } else {
-            $debugging = 0;
-        }
-
-        // TODO - org_id?
-        $sql = "/* discovery::process_subnet */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
-        $query = $this->db->query($sql);
-        $result = $query->result();
-        #$log->command = $sql;
-        #$log->message = "Retrieve appropriate script";
-        #discovery_log($log);
-        unset($log->command, $log->message);
-        if (!empty($result[0])) {
-            $log->file = 'include_input_discoveries';
-            $log->message = 'Script details retrieved.';
-            $log->command = $sql;
-            $log->status = 'success';
-            discovery_log($log);
-            $script_details = $result[0];
-            # Just ensure we delete any audit scripts that might exist.
-            # Shouldn't be required because we're creating based on the timestamp
-            # Then open the file for writing
-            $ts = date('y_m_d_H_i_s');
-            $log->message = 'Creating temporary script';
+        if ($audit_script != '') {
             if (php_uname('s') == 'Windows NT') {
-                $source_name = 'scripts\\' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
-                $unlink = $this->config->config['base_path'] . '\\other\\' . $source_name;
-                @unlink($unlink);
-                try {
-                    $fp = fopen($this->config->config['base_path'] . '\\other\\' . $source_name, 'w');
-                    $log->message = 'Created temporary script (windows)';
-                    $log->command = '';
-                    $log->status = 'success';
-                    discovery_log($log);
-                } catch (Exception $e) {
-                    $log->message = 'Could not create temporary script (windows)';
-                    $log->command = $e;
-                    $log->status = 'fail';
-                    discovery_log($log);
-                    unset($log->command, $log->message, $log->status);
-                }
-                $log->command = $this->config->config['base_path'] . '\\other\\' . $source_name;
+                $source = $filepath . '\\scripts\\' . $source_name;
             } else {
-                $source_name = 'scripts/' . str_replace('.sh', '_'.$ts.'.sh', $audit_script);
-                $unlink = $this->config->config['base_path'] . '/other/' . $source_name;
-                @unlink($unlink);
-                $log->message = 'Created temporary script';
-                $log->command = $this->config->config['base_path'] . '/other/' . $source_name;
-                $log->status = 'success';
+                $source = $filepath . '/scripts/' . $source_name;
+            }
+            $sql = "/* discovery::process_subnet */ " . "SELECT * FROM `scripts` WHERE `name` = '$audit_script' AND `based_on` = '$audit_script' ORDER BY `id` LIMIT 1";
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result[0])) {
+                $log->file = 'include_input_discoveries';
+                $log->message = 'Script details retrieved';
+                $log->command = $sql;
+                $log->command_status = 'success';
+                discovery_log($log);
+                $script_details = $result[0];
+                # Just ensure we delete any audit scripts that might exist.
+                # Shouldn't be required because we're creating based on the timestamp
+                # Then open the file for writing
+                @unlink($source);
                 try {
-                    $fp = fopen($this->config->config['base_path'] . '/other/' . $source_name, 'w');
+                    $fp = fopen($source, 'w');
                 } catch (Exception $e) {
-                    $log->message = 'Could not create temporary script (unix)';
+                    $log->message = 'Could not create temporary script';
                     $log->command = $e;
-                    $log->status = 'fail';
+                    $log->command_status = 'fail';
+                    discovery_log($log);
+                    unset($log->command, $log->message, $log->command_status);
+                    $audit_script = '';
                 }
+                $script = $this->m_scripts->download($script_details->id);
+                if (!empty($audit_script) and empty($script)) {
+                    $log->message = 'Could not retrieve script using configured options';
+                    $log->command = "\$this->m_scripts->download($script_details->id)";
+                    $log->command_status = 'fail';
+                    discovery_log($log);
+                    unset($log->command, $log->message, $log->command_status);
+                    $audit_script = '';
+                } else {
+                    try {
+                        fwrite($fp, $script);
+                    } catch (Exception $e) {
+                        $log->message = 'Could not write to temporary script';
+                        $log->command = $e;
+                        $log->command_status = 'fail';
+                        discovery_log($log);
+                        unset($log->command, $log->message, $log->command_status);
+                        $audit_script = '';
+                    }
+                }
+                fclose($fp);
+            } else {
+                $log->severity = 4;
+                $log->message = 'Could not retrieve script from database for ' . $device->os_group . ', exiting';
+                $log->command = $sql;
+                $log->command_status = 'fail';
                 discovery_log($log);
                 unset($log->command, $log->message, $log->status);
+                $audit_script = '';
             }
-            $script = $this->m_scripts->download($script_details->id);
-            fwrite($fp, $script);
-            fclose($fp);
+        }
+    }
+
+
+
+    # Audit Windows using script
+    if ($input->wmi_status == "true" and !empty($credentials_windows) and !empty($audit_script)) {
+        # We do not support auditing windows using the script over SSH at this time
+        $input->ssh_status = "false";
+        $log->file = 'include_input_discoveries';
+        $log->function = 'discoveries';
+        $log->command_time_to_execute = '';
+        $log->command = '';
+        $log->message = 'Starting windows script audit for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        discovery_log($log);
+        $share = '\\admin$';
+        $destination = 'audit_windows.vbs';
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system') {
+            # Windows Server running on the LocalSystem account.
+            # We cannot copy the audit script to the target and then run it,
+            # We _must_ run the script locally and use $device->ip as the script target
+            # We will loose the ability to retrieve certain items like files, netstat, tasks, etc
+            if (strpos($credentials_windows->credentials->password, '"') !== false or 
+                strpos($credentials_windows->credentials->username, '"') !== false) {
+                # cscript cannot parse an arguement containing a "
+                $log->message = 'Incompatible credentials for audit script. Cannot use " (double quotes) in a wscript command line attribute.';
+                $log->command_time_to_execute = '';
+                $log->command_status = 'fail';
+                $log->severity = 4;
+                discovery_log($log);
+                $log->command_status = '';
+                $log->severity = 7;
+            } else {
+                $username = $credentials_windows->credentials->username;
+                $temp = explode('@', $username);
+                $username = $temp[0];
+                if (count($temp) > 1) {
+                    $domain = $temp[1] . '\\';
+                } else {
+                    $domain = '';
+                }
+                unset($temp);
+
+                $command_string = "%comspec% /c start /b cscript //nologo " . "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=".$credentials_windows->credentials->password." url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
+
+                $log->command = "%comspec% /c start /b cscript //nologo " . "$filepath\\" . $source_name . " strcomputer=".$device->ip." submit_online=y create_file=n struser=".$domain.$username." strpass=****** url=".$discovery->network_address."index.php/input/devices debugging=3 system_id=".$device->id." last_seen_by=audit_wmi discovery_id=".$discovery->id;
+
+                $command_start = microtime(true);
+                exec($command_string, $output, $return_var);
+                $command_end = microtime(true);
+
+                $log->severity = 7;
+                $log->command_time_to_execute = $command_end - $command_start;
+                $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->status = 'success';
+                if ($return_var != '0') {
+                    $log->status = 'fail';
+                    $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+                    $log->severity = 4;
+                }
+                discovery_log($log);
+            }
         } else {
-            $unlink = '';
-            $source_name = $audit_script;
-            $log->message = 'Could not retrieve script from database for ' . $device->os_group;
-            $log->command = $sql;
+            # Unix or Windows Server and non default apache user on Windows
+            # Remotely run script ON target device
+            #$command = "cscript \\\\" . $device->ip . "\\admin\$\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
+            $command = "cscript " . $device->install_dir . "\\audit_windows.vbs submit_online=n create_file=w debugging=0 self_delete=y last_seen_by=audit_wmi system_id=".$device->id." discovery_id=".$discovery->id;
+            # Copy the audit script to admin$
+            $copy = false;
+            $copy = copy_to_windows($device->ip, $credentials_windows, '\\admin$', $source, 'audit_windows.vbs', $log);
+            $output = false;
+            if ($copy) {
+                # We managed to copy the file, so now run it
+                # As at 2.3.0, we now wait for this to complete and parse the
+                # output looking for 'File    ' so we can retrieve the file
+                $output = execute_windows($device->ip, $credentials_windows, $command, $log);
+            }
+            $audit_file = false;
+            if (!empty($output)) {
+                foreach ($output as $line) {
+                    if (strpos($line, 'File    ') !== false) {
+                        $audit_file = trim(str_replace('File    ', '', $line));
+                    }
+                }
+            }
+            $copy = false;
+            if ($audit_file) {
+                $temp = explode('\\', $audit_file);
+                if (php_uname('s') == 'Windows NT') {
+                    $destination = $filepath . '\\scripts\\' . end($temp);
+                } else {
+                    $destination = $filepath . '/scripts/' . end($temp);
+                }
+                $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $log);
+            }
+            if ($copy) {
+                $audit_result = file_get_contents($destination);
+                unlink($destination);
+            }
+        }
+    }
+
+    # Audit via SSH
+    if ($input->ssh_status == "true" and $device->os_family != 'DD-WRT' and !empty($credentials_ssh) and !empty($audit_script)) {
+        $log->message = 'Starting SSH audit script for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->file = 'include_input_discoveries';
+        $log->command_time_to_execute = '';
+        $log->command = '';
+        discovery_log($log);
+
+        # copy the audit script to the target ip
+        $destination = $this->config->item('discovery_linux_script_directory');
+        if (substr($destination, -1) != '/') {
+            $destination .= '/';
+        }
+        $destination .= $audit_script;
+        $temp = scp($device->ip, $credentials_ssh, $source, $destination, $log);
+        if (!$temp) {
+            $audit_script = '';
+            $log->message = 'Could not SCP audit script to ' . $device->ip . ' ' . $destination .')';
             $log->status = 'fail';
             discovery_log($log);
-            unset($log->command, $log->message, $log->status);
-            break;
         }
-
-        unset($temp);
-        #if ($audit_script != '') {
-        # TODO - Cannot copy audit_esxi.sh - more work required to fix
-        if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
-            # copy the audit script to the target ip
-            $log->message = 'Copying audit script to target.';
-            $log->status = '';
-            discovery_log($log);
-
-            if (php_uname('s') == 'Windows NT') {
-                $source = $filepath.'\\'.$source_name;
-            } else {
-                $source = $filepath.'/'.$source_name;
-            }
-
-            $destination = $this->config->item('discovery_linux_script_directory');
-            if (substr($destination, -1) != '/') {
-                $destination .= '/';
-            }
-            $destination .= $audit_script;
-
-            if ($ssh_result = scp($device->ip, $credentials_ssh, $source, $destination, $log)) {
-                # Successfully copied the audit script
-                $log->message = 'Copied audit script to target.';
-                $log->status = 'fail';
-                discovery_log($log);
-                $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
-                $temp = ssh_command($device->ip, $credentials_ssh, $command, $log);
-            } else {
-                $log->message = 'Could not copy audit script to target.';
-                $log->status = 'fail';
-                discovery_log($log);
-            }
-        }
+        # Successfully copied the audit script, now chmod it
+        $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
+        # No use testing for a result as a chmod produces no output
+        ssh_command($device->ip, $credentials_ssh, $command, $discovery->id);
 
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
-        $log->status = 'success';
+        $log->command_status = '';
         $log->severity = 7;
 
-        # audit anything that's not ESX
-        if ($audit_script != 'audit_esxi.sh' and $audit_script != '') {
-            $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y create_file=n url='.$discovery->network_address.'index.php/input/devices debugging='.$debugging.' system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
-            if (strtolower($device->os_group) == 'linux') {
-                $test = @$this->config->item('discovery_linux_use_sudo');
-                if (!empty($test) and $this->config->item('discovery_linux_use_sudo') === 'y') {
-                    $log->message = 'Running Linux audit using sudo, as per config.';
-                    discovery_log($log);
-                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
-                } else {
-                    $log->message = 'Running Linux audit without sudo, as per config.';
-                    discovery_log($log);
-                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
-                }
-            } else if (strtolower($device->os_group) == 'sunos') {
-                $test = @$this->config->item('discovery_sunos_use_sudo');
-                if (!empty($test) and $this->config->item('discovery_sunos_use_sudo') === 'y') {
-                    $log->message = 'Running SunOS audit using sudo, as per config.';
-                    discovery_log($log);
-                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
-                } else {
-                    $log->message = 'Running SunOS audit without sudo, as per config.';
-                    discovery_log($log);
-                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
-                }
+        $result = false;
+        if ($audit_script != '') {
+            $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
+            $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
+            if ($credentials_ssh->credentials->username == 'root') {
+                $log->message = 'Running audit using root username.';
+            } else if (!empty($device->which_sudo) and $device->use_sudo) {
+                $command = 'sudo ' . $command;
+                $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
+            } else if (!empty($device->which_sudo) and !$device->use_sudo) {
+                $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' without sudo, as sudo attempt failed.';
+            } else if (empty($device->which_sudo)) {
+                $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
+            }
+            $log->command = $command;
+            $command_start = microtime(true);
+            $result = ssh_command($device->ip, $credentials_ssh, $command, $discovery->id);
+            $command_end = microtime(true);
+            $log->command_time_to_execute = $command_end - $command_start;
+            if (!empty($result)) {
+                $log->command_status = 'success';
             } else {
-                $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'y');
-                if (!$result) {
-                    $log->severity = 5;
-                    $log->message = 'Running audit using sudo failed. Attempting to run without sudo.';
-                    discovery_log($log);
-                    $result = ssh_command($device->ip, $credentials_ssh, $command, $log, 'n');
-                    if (!$result) {
-                        $log->severity = 3;
-                        $log->message = 'Running audit without sudo failed.';
-                        discovery_log($log);
-                    }
-                } else {
-                    $log->message = 'Running audit using sudo succeeded.';
-                    discovery_log($log);
-                }
-            }
-            $log->severity = 7;
-        }
-        # audit ESX
-        # TODO - Cannot copy audit_esxi.sh - more work required to fix
-        if ($audit_script == 'audit_esxi.sh' and 1 == 2) {
-            $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=y last_seen_by=audit_ssh create_file=n debugging=0 echo_output=y system_id='.$device->id.'  discovery_id='.$discovery->id.' 2>/dev/null';
-            if ($result = ssh_command($device->ip, $credentials_ssh, $command, $log)) {
-                if ($result['status'] == 0) {
-                    $script_result = '';
-                    foreach ($result['output'] as $line) {
-                        $script_result .= $line."\n";
-                    }
-                    $script_result = preg_replace('/\s+/', ' ', $script_result);
-                    $script_result = str_replace("> <", "><", $script_result);
-                    $esx_input = trim($script_result);
-                    try {
-                        $esx_xml = new SimpleXMLElement($esx_input);
-                        $log->message = 'Valid XML input for ESX audit script received';
-                        discovery_log($log);
-                    } catch (Exception $error) {
-                        // not a valid XML string
-                        $log->message = 'Invalid XML input for ESX audit script';
-                        discovery_log($log);
-                        exit;
-                    }
-                    $count = 0;
-                    foreach ($esx_xml->children() as $child) {
-                        if ($child->getName() === 'sys') {
-                            $esx_details = (object) $esx_xml->sys;
-                            if (!isset($esx_details->ip) or $esx_details->ip == '') {
-                                $esx_details->ip = $device->ip;
-                            }
-                            $esx_details->system_id = $this->m_device->match($esx_details);
-                            $esx_details->last_seen = $device->last_seen;
-
-                            if (isset($esx_details->system_id) and $esx_details->system_id != '') {
-                                // we have an existing device
-                                $esx_details->original_last_seen_by = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen_by');
-                                $esx_details->original_last_seen = $this->m_devices_components->read($esx_details->system_id, 'y', 'system', '', 'last_seen');
-                                $this->m_device->update($esx_details);
-                                $log->message = "ESX update for $esx_details->ip (System ID $esx_details->system_id)";
-                                discovery_log($log);
-                            } else {
-                                // we have a new system
-                                $esx_details->system_id = $this->m_device->insert($esx_details);
-                                $log->message = "ESX insert for $esx_details->ip (System ID $esx_details->system_id)";
-                                discovery_log($log);
-                            }
-                            if (!isset($esx_details->audits_ip)) {
-                                $esx_details->audits_ip = $device->audits_ip;
-                            }
-
-                            if (isset($this->user->full_name)) {
-                                $temp_user = $this->user->full_name;
-                            } else {
-                                $temp_user = '';
-                            }
-                            $this->m_audit_log->create($esx_details->system_id, $temp_user, $esx_details->last_seen_by, $esx_details->audits_ip, '', '', $esx_details->last_seen);
-                            unset($temp_user);
-                            $log->message = 'Processed " . $child->getName() . " from XML input for ESX audit script';
-                            discovery_log($log);
-                        }
-                    }
-                    # The below are part of the ssh_audit
-                    $this->m_devices_components->process_component('network', $esx_details, $esx_xml->network, $display);
-                    $this->m_devices_components->process_component('vm', $esx_details, $esx_xml->vm, $display);
-                    $this->m_devices_components->process_component('ip', $esx_details, $esx_xml->ip, $display);
-                    # The below only exist in the audit script
-                    $this->m_devices_components->process_component('software', $esx_details, $esx_xml->software, $display);
-                    $this->m_devices_components->process_component('processor', $esx_details, $esx_xml->processor, $display);
-                    $this->m_devices_components->process_component('bios', $esx_details, $esx_xml->bios, $display);
-                    $this->m_devices_components->process_component('memory', $esx_details, $esx_xml->memory, $display);
-                    $this->m_devices_components->process_component('motherboard', $esx_details, $esx_xml->motherboard, $display);
-                    $this->m_devices_components->process_component('video', $esx_details, $esx_xml->video, $display);
-
-                    if ($unlink != '') {
-                        $log->command = 'unlink(\'' . $unlink . '\')';
-                        $log->message = 'Delete local temporary audit script';
-                        $log->status = 'success';
-                        try {
-                            unlink($unlink);
-                        } catch (Exception $e) {
-                            $log->status = 'fail';
-                            $log->severity = 4;
-                        }
-                        discovery_log($log);
-                        unset($log->command, $log->message, $log->status);
-                        $log->severity = 7;
-                    }
-                }
-            }
-        }
-
-        if ($unlink != '') {
-            $log->command = 'unlink(\'' . $unlink . '\')';
-            $log->message = 'Delete local temporary audit script';
-            $log->status = 'success';
-            try {
-                unlink($unlink);
-            } catch (Exception $e) {
-                $log->status = 'fail';
-                $log->severity = 4;
+                $log->command_status = 'fail';
             }
             discovery_log($log);
-            unset($log->command, $log->message, $log->status);
             $log->severity = 7;
         }
-    } // close the 'skip'
+        $log->file = 'include_input_discoveries';
+        $log->function = 'discoveries';
+        $log->command_status = 'success';
+        $log->severity = 7;
+        $log->command = '';
+        $log->command_output = '';
+        $log->message = '';
+
+        if (!empty($result) and gettype($result) == 'array') {
+            foreach ($result as $line) {
+                if (strpos($line, 'File    ') !== false) {
+                    $audit_file = $line;
+                }
+            }
+            $audit_file = str_replace('File                ', '', $audit_file);
+            $temp = explode('/', $audit_file);
+            if (php_uname('s') == 'Windows NT') {
+                $destination = $filepath . '\\scripts\\' . end($temp);
+            } else {
+                $destination = $filepath . '/scripts/' . end($temp);
+            }
+            $temp = scp_get($device->ip, $credentials_ssh, $audit_file, $destination, $log);
+            if ($temp) {
+                $audit_result = file_get_contents($destination);
+                if (empty($audit_result)) {
+                    $log->command_status = 'fail';
+                    $log->message = 'Could not read audit result file.';
+                    $log->command = "file_get_contents('$destination')";
+                    $log->command_output = '';
+                    discovery_log($log);
+                }
+                unlink ($destination);
+            }
+        }
+    }
+
+    # Delete the local audit script if it's not a default script
+    if ($audit_script != '' and $source_name != $audit_script) {
+        $log->file = 'include_input_discoveries';
+        $log->function = 'discoveries';
+        $log->command = 'unlink(\'' . $source .'\')';
+        $log->message = 'Attempt to delete temp audit script succeeded';
+        try {
+            unlink($source);
+        } catch (Exception $e) {
+            $log->severity = 4;
+            $log->status = 'fail';
+            $log->message = 'Could not delete temp audit script';
+        }
+        discovery_log($log);
+        $log->severity = 7;
+        unset($log->command, $log->message);
+    }
+
+
+    $log->file = 'include_input_discoveries';
+    $log->function = 'discoveries';
+    $log->status = 'notice';
+    $log->severity = 7;
+    $log->command = '';
+    if (!empty($audit_result)) {
+        $audit_result = str_replace('data=<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', $audit_result);
+        $audit = audit_convert($audit_result);
+        if (!$audit) {
+            $log->message = 'Could not convert audit result, aborting.';
+            $log->status = 'fail';
+            $log->command = '';
+            $log->command_output = '';
+            discovery_log($log);
+            break;
+        }
+
+        $log->message = 'Formating system section of audit result';
+        discovery_log($log);
+        $audit->system = audit_format_system($audit->system);
+
+        $log->message = 'Matching device from audit result';
+        discovery_log($log);
+        $i = $this->m_device->match($audit->system, 'process audit');
+        if (empty($audit->system->discovery_id)) {
+            $audit->system->discovery_id = '';
+        } else {
+            $log->discovery_id = $audit->system->discovery_id;
+            $GLOBALS['discovery_id'] = $audit->system->discovery_id;
+        }
+        if (!empty($audit->system->id)) {
+            $log->system_id = $audit->system->id;
+        }
+        if (empty($i) and !empty($audit->system->id)) {
+            $i = intval($audit->system->id);
+        }
+        if (!empty($i) and !empty($audit->system->id) and $i != $audit->system->id) {
+            // We delete this original system as likely with limited data (from
+            // nmap and/or snmp) we couldn't match an existing system
+            // Now we have an actual audit result with plenty of data
+            // we have found a match and it's not the original
+            $sql = "/* include_input_devices */ DELETE FROM system WHERE id = ?";
+            $query = $this->db->query($sql, array($audit->system->id));
+            $log->system_id = $i;
+            $log->message = 'System Id provided differs from System Id found for ' . $audit->system->hostname;
+            discovery_log($log);
+        }
+        $audit->system->id = $i;
+        $log->file = 'include_input_discoveries';
+        $log->function = 'discoveries';
+        $log->command_status = 'success';
+        $log->severity = 7;
+        $log->command = '';
+        $log->command_output = '';
+        $log->message = '';
+        if (empty($i)) {
+            // insert a new system
+            $audit->system->id = $this->m_device->insert($audit->system);
+            $log->system_id = $audit->system->id;
+            $log->ip = @$audit->system->ip;
+            $log->message = 'CREATE entry for ' . $audit->system->hostname . ', System ID ' . $audit->system->id;
+            discovery_log($log);
+            $audit->system->original_last_seen = "";
+        } else {
+            // update an existing system
+            $log->message = 'UPDATE entry for ' . $audit->system->hostname . ', System ID ' . $audit->system->id;
+            $log->system_id = $audit->system->id;
+            $log->ip = @$audit->system->ip;
+            discovery_log($log);
+            $this->m_device->update($audit->system);
+        }
+
+        $log->command = 'unlink(\'' . $destination . '\')';
+        $log->command_output = '';
+        $log->message = 'Delete audit result from filesystem.';
+        $log->command_status = 'success';
+        try {
+            unlink($destination);
+        } catch (Exception $e) {
+            $log->command_status = 'fail';
+            $log->severity = 4;
+            $log->command_output = json_encode($e);
+        }
+        discovery_log($log);
+        unset($log->command, $log->message, $log->status);
+        $log->severity = 7;
+
+        $sql = "/* include_input_devices */ " . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
+        $data = array($log->system_id, $log->pid);
+        $query = $this->db->query($sql, $data);
+        $script_version = '';
+        if (!empty($audit->system->script_version)) {
+            $script_version = $audit->system->script_version;
+        }
+        $this->m_audit_log->create($audit->system->id, @$this->user->full_name, $audit->system->last_seen_by, $audit->system->audits_ip, '', '', $audit->system->last_seen, $script_version);
+
+        foreach ($audit as $key => $value) {
+            if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
+                $this->m_devices_components->process_component($key, $audit->system, $value);
+            }
+        }
+
+        if (!empty($audit->audit_wmi_fail)) {
+            $this->m_audit_log->update('debug', 'audit_wmi_fail', $audit->system->id, $audit->system->last_seen);
+            $this->m_audit_log->update('wmi_fails', $json->audit_wmi_fail, $audit->system->id, $audit->system->last_seen);
+        }
+
+        // Generate any DNS entries required - only if a collector or the audit is NOT from a collector
+        if (!empty($this->config->config['servers']) or empty($audit->system->collector_uuid)) {
+            $dns = $this->m_devices_components->create_dns_entries((int)$audit->system->id);
+            if (!empty($audit->dns) and count($audit->dns) > 0) {
+                foreach ($audit->dns as $item) {
+                    if (!empty($item->ip) and !empty($item->name) and !empty($item->fqdn)) {
+                        $dns[] = $item;
+                    }
+                }
+            }
+            unset($item);
+            if (count($dns) > 0) {
+                $this->m_devices_components->process_component('dns', $audit->system, $dns);
+            }
+            unset($dns);
+        }
+
+        $this->m_audit_log->update('debug', 'finished processing', $audit->system->id, $audit->system->last_seen);
+        $log->message = 'Completed processing audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';
+        discovery_log($log);
+
+        // set the ip (if not already set)
+        $this->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
+        $this->m_devices_components->set_initial_address($audit->system->id);
+        $this->m_audit_log->update('debug', '', $audit->system->id, $audit->system->last_seen);
+        # If we are configured as a collector, forward the information to the server
+        if ($this->config->config['servers'] !== '') {
+            $server = json_decode($this->config->config['servers']);
+            $log->message = 'Sending result to ' . $server->host . ' because this server is a collector.';
+            discovery_log($log);
+            unset($audit->system->id);
+            unset($audit->system->discovery_id);
+            unset($audit->system->original_last_seen_by);
+            unset($audit->system->original_last_seen);
+            unset($audit->system->first_seen);
+            unset($audit->system->org_id);
+            $audit->system->collector_uuid = $this->config->config['uuid'];
+
+            $device_json = json_encode($audit);
+            $url = $server->host . $server->community . '/index.php/input/devices';
+
+            $data = array('data' => $device_json);
+            # NOTE - use key 'http' even if we send the request to https://...
+            $options = array(
+                'http' => array(
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($data)
+                )
+            );
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === false) {
+                # error
+                $log->severity = 4;
+                $log->message = 'Could not send result to ' . $server->host . $server->community . '/index.php/input/devices - please check with your server administrator.';
+                discovery_log($log);
+                $log->severity = 7;
+            } else {
+                # success
+                $log->severity = 7;
+                $log->message = 'Result sent to ' . $server->host . '.';
+                discovery_log($log);
+            }
+        }
+    } else {
+        $log->message = 'No audit script result to process';
+        discovery_log($log);
+    }
     $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
     discovery_log($log);
 }

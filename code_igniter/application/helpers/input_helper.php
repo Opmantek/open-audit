@@ -33,7 +33,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 if (! function_exists('from_unix_timestamp')) {
@@ -66,7 +66,7 @@ if (! function_exists('set_collection')) {
     {
         $CI = & get_instance();
         $collection = @$CI->uri->segment(1);
-        $collections = array('agents','applications','attributes','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','errors','fields','files','graphs','groups','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','racks','reports','roles','scripts','search','sessions','summaries','tasks','users','widgets');
+        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','errors','fields','files','floors','graphs','groups','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
             # a valid collection
         } else {
@@ -133,7 +133,7 @@ if (! function_exists('inputRead')) {
                 define('REPLACE_FLAGS', ENT_COMPAT);
             }
         }
-        
+
         # enable the $_GET global
         parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
         unset($_GET['user']);
@@ -225,7 +225,7 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set version to ' . $CI->response->meta->version . ', according to headers.';
             stdlog($log);
         }
-        
+
         # get our collection - usually devices, groups, reports, etc
         $CI->response->meta->collection = set_collection();
         $log->summary = 'set collection';
@@ -280,7 +280,7 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set action to ' . $CI->response->meta->action . ', according to URI.';
             stdlog($log);
         }
-        
+
         # if we have an item name (ie, not it's ID)
         if (is_null($CI->response->meta->id) and $CI->uri->segment(2) != '' and stripos($actions, ' '.$CI->uri->segment(2).' ') === false) {
             $log->summary = 'Search ID';
@@ -914,6 +914,13 @@ if (! function_exists('inputRead')) {
         } else {
             $CI->response->meta->internal->properties = $CI->response->meta->properties;
         }
+        if ($CI->response->meta->properties == '*') {
+            $temp = $CI->response->meta->collection;
+            if ($temp == 'devices') {
+                $temp = 'system';
+            }
+            $CI->response->meta->internal->properties = $temp . '.*';
+        }
 
         if ($REQUEST_METHOD == 'POST' and $data_supplied_by == 'form' and !empty($CI->config->config['access_token_enable']) and $CI->config->config['access_token_enable'] == 'y') {
             if (empty($CI->response->meta->received_data->access_token)) {
@@ -1002,7 +1009,7 @@ if (! function_exists('inputRead')) {
                 //     $query->operator = $operator;
                 // }
 
-                $operator = substr($query->value, 0, 2);
+                $operator = strtolower(substr($query->value, 0, 2));
                 $test = substr($query->value, 0, 4);
                 $test2 = substr($query->value, 0, 4);
                 if ($operator == 'in' and strtolower($test) != 'info' and strtolower($test2) != 'innotek') {
@@ -1036,6 +1043,8 @@ if (! function_exists('inputRead')) {
                 unset($query);
             }
         }
+
+        $CI->response->meta->internal->filter = filter($CI->response->meta->filter, $CI->response->meta->collection, $CI->user);
 
         # Accept first_seen, last_seen, edited_date and timestamp as numeric unix_timestamp's and convert them to a local timestamp string
         foreach ($CI->response->meta->filter as $filter) {
@@ -1234,6 +1243,57 @@ if (! function_exists('inputRead')) {
             }
         }
         #echo "<pre>\n"; print_r(json_encode($CI->response)); exit();
+    }
+}
+
+if (! function_exists('filter')) {
+    function filter($response_filter, $collection, $user)
+    {
+        $reserved = ' properties limit resource action sort current offset format ';
+        $filter = '';
+        foreach ($response_filter as $item) {
+            if (empty($item->operator)) {
+                $item->operator = '=';
+            }
+            if (strpos(' '.$item->name.' ', $reserved) === false) {
+                // We MUST have a name like 'connections.name', not just 'name'
+                if (strpos($item->name, '.') !== false) {
+                    if ($item->operator != 'in') {
+                        $filter .= ' AND ' . $item->name . ' ' . $item->operator . ' ' . '"' . str_replace('"', '\"', $item->value) . '"';
+                    } else {
+                        $filter .= ' AND ' . $item->name . ' in ' . str_replace('"', '\"', $item->value);
+                    }
+                }
+            }
+        }
+        if ($filter != '') {
+            if ($collection == 'configuration' or $collection == 'logs' ) {
+                $filter = ' WHERE ' . substr($filter, 4);
+            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+                $filter = substr($filter, 5);
+                if (!empty($user->org_parents)) {
+                    $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . ')) AND ' . $filter;
+                } else {
+                    $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+                }
+            } else {
+                $filter = substr($filter, 5);
+                $filter = ' WHERE orgs.id IN (' . $user->org_list . ') AND ' . $filter;
+            }
+        } else {
+            if ($collection == 'configuration' or $collection == 'logs' ) {
+                $filter = '';
+            } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
+                if (!empty($user->org_parents)) {
+                    $filter = ' WHERE (orgs.id IN (' . $user->org_list . ') OR orgs.id IN (' . $user->org_parents . '))';
+                } else {
+                    $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+                }
+            } else {
+                $filter = ' WHERE orgs.id IN (' . $user->org_list . ')';
+            }
+        }
+        return $filter;
     }
 }
 /* End of file input_helper.php */
