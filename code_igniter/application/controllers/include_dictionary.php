@@ -181,7 +181,7 @@ if ($table == 'changes') {
 }
 
 if ($table == 'clouds') {
-    $dictionary->sentence = 'Audit your cloud infrastructure.';
+    $dictionary->sentence = 'Open-AudIT can discover and audit your cloud based virtual machines. You provide the credentials and Open-AudIT will query the Amazon or Microsoft APIs to determine what devices you have, their state, any associated networks and locations and then run discovery upon each cloud instance. You get all the regular Open-AudIT details, but now you also get cloud specific details like size.';
     $dictionary->marketing = '<p>You provide the credentials, Open-AudIT does the rest.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>This endpoint enables you to add your cloud infrastructre details. Open-AudIT will then reach out to your clouds using their native API and return your servers, just like any other device in Open-AudIT.<br /><br /><b>NOTE</b> - To use this feature, we <i>must</i> enable the configuration items match_mac (for AWS) and match_hostname (for Azure). This will be done automatically the first time a cloud discovery is executed.<br /><br />
@@ -616,7 +616,7 @@ An example query SQL showing attributes on devices that have an <code>os_group</
 }
 
 if ($table == 'racks') {
-    $dictionary->sentence = 'Define your racks and assign devices them in a row of your choosing.';
+    $dictionary->sentence = 'Define your racks and assign devices them in a position of your choosing. You already have your devices in Open-AudIT. You know your locations. Open-AudIT extends this to allow you to create a rack and assign devices to it. Open-AudIT will even provide a visualisation of the rack and the devices contained within. If you provide a device picture, that picture will be used int he visualisation. You can look at the rack on sxcreen and see the same items you would see if you were standing in front of it.';
     $dictionary->marketing = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->about = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Your racks help refine exactly where your devices are located.<br /><br />' . $link . '<br /><br /></p>';
