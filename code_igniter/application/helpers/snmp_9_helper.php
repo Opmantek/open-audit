@@ -1,6 +1,7 @@
-<?php  if (!defined('BASEPATH')) {
+<?php
+if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
- }
+}
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -28,13 +29,13 @@
 # *****************************************************************************
 
 /*
- * @package Open-AudIT
- * @author Mark Unwin <marku@opmantek.com>
- *
- * @version   2.3.0
-
- * @copyright Copyright (c) 2014, Opmantek
- * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @category  Helper
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   2.3.0
+* @link      http://www.open-audit.org
  */
 
 # Vendor Cisco

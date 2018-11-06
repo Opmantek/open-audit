@@ -29,7 +29,7 @@
  * @author Mark Unwin <marku@opmantek.com>
  *
  *
- * @version   2.3.0
+ * @version   2.2.7
 
  *
  * @copyright Copyright (c) 2014, Opmantek
@@ -343,27 +343,13 @@ if (!function_exists('my_snmp_real_walk')) {
 
 
 if (!function_exists('snmp_audit')) {
-    function snmp_audit($ip, $credentials)
+    function snmp_audit($ip, $credentials, $log)
     {
         error_reporting(E_ALL);
         $CI = & get_instance();
 
-        $log = new stdClass();
-        $log->discovery_id = null;
-        if (!empty($GLOBALS['discovery_id'])) {
-            $log->discovery_id = $GLOBALS['discovery_id'];
-        }
-        $log->system_id = '';
-        $log->severity = 7;
-        $log->pid = getmypid();
-        $log->ip = $_SERVER['REMOTE_ADDR'];
         $log->file = 'snmp_helper';
-        $log->function = 'audit_convert';
-        $log->message = '';
-        $log->command = '';
-        $log->command_status = '';
-        $log->command_time_to_execute = '';
-        $log->command_output = '';
+        $log->function = 'snmp_audit';
 
         if (!extension_loaded('snmp')) {
             $log->message = 'SNMP PHP function not loaded hence not attempting to run snmp_helper::snmp_audit function';
@@ -386,6 +372,9 @@ if (!function_exists('snmp_audit')) {
             $log->severity = 5;
             discovery_log($log);
             return false;
+        } else {
+            $log->message = 'Received ip ' . $ip;
+            discovery_log($log);
         }
 
         if (empty($credentials) or !is_object($credentials)) {
@@ -393,6 +382,9 @@ if (!function_exists('snmp_audit')) {
             $log->severity = 5;
             discovery_log($log);
             return false;
+        } else {
+            $log->message = 'Received credentials for ip ' . $ip;
+            discovery_log($log);
         }
 
         # new in 1.5 - remove the type from the returned SNMP query.
@@ -401,7 +393,9 @@ if (!function_exists('snmp_audit')) {
         snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
 
         $details = new stdClass();
-        $return_ips = array();
+        $module = new stdclass();
+        $return_ips = new stdClass();
+        $return_ips->item = array();
 
         $details->ip = (string)$ip;
         $details->manufacturer = '';
@@ -542,18 +536,21 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($get_oid_details);
             include 'snmp_'.$vendor_oid."_helper.php";
-            $log->message = 'More details based on sysObjectID retrieval for '.$ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
+            $log->message = 'Specific details based on sysObjectID retrieval for '.$ip;
+            $log->command_status = '';
+            #$log->id = discovery_log($log);
             $item_start = microtime(true);
             $new_details = $get_oid_details($ip, $credentials, $details->snmp_oid);
             foreach ($new_details as $key => $value) {
                 $details->$key = $value;
+                $log->command = $key;
+                $log->command_output = $value;
+                discovery_log($log);
             }
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_status = '';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            #discovery_log($log);
+            unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
             unset($new_details);
         } else {
             $log->message = 'No snmp helper for '.$vendor_oid.' when scanning '.$ip;
@@ -717,10 +714,6 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (string)$details->serial;
             $log->command_status = '';
-            if ($details->serial == 'To be filled by O.E.M.') {
-                $log->command_output = (string)$details->serial . ' (removing).';
-                $details->serial = '';
-            }
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
@@ -734,10 +727,6 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (string)$details->serial;
             $log->command_status = '';
-            if ($details->serial == 'To be filled by O.E.M.') {
-                $log->command_output = (string)$details->serial . ' (removing).';
-                $details->serial = '';
-            }
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
@@ -751,10 +740,6 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (string)$details->serial;
             $log->command_status = '';
-            if ($details->serial == 'To be filled by O.E.M.') {
-                $log->command_output = (string)$details->serial . ' (removing).';
-                $details->serial = '';
-            }
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
@@ -769,10 +754,6 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (string)$details->serial;
             $log->command_status = '';
-            if ($details->serial == 'To be filled by O.E.M.') {
-                $log->command_output = (string)$details->serial . ' (removing).';
-                $details->serial = '';
-            }
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
@@ -787,10 +768,6 @@ if (!function_exists('snmp_audit')) {
             $log->command_time_to_execute = (microtime(true) - $item_start);
             $log->command_output = (string)$details->serial;
             $log->command_status = '';
-            if ($details->serial == 'To be filled by O.E.M.') {
-                $log->command_output = (string)$details->serial . ' (removing).';
-                $details->serial = '';
-            }
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
@@ -1545,9 +1522,8 @@ if (!function_exists('snmp_audit')) {
                             $new_ip->mac = $interface->mac;
                             $new_ip->netmask = @$subnets[".1.3.6.1.2.1.4.20.1.3.".$new_ip->ip];
                             $new_ip->version = '4';
-                            $new_ip->interface = $interface->connection;
                             if ($new_ip->ip != '127.0.0.1' and $new_ip->ip != '127.0.1.1') {
-                                $return_ips[] = $new_ip;
+                                $return_ips->item[] = $new_ip;
                             }
                             $new_ip = null;
                         }
@@ -1561,12 +1537,10 @@ if (!function_exists('snmp_audit')) {
                         $new_ip->ip = str_replace(".1.3.6.1.2.1.4.34.1.3.1.4.", "", $each_key);
                         $new_ip->netmask = '';
                         $new_ip->version = '4';
-                        $new_ip->interface = '';
                         if ($new_ip->net_index == $interface->net_index) {
                             $new_ip->mac = $interface->mac;
-                            $new_ip->interface = $interface->connection;
                             if ($new_ip->ip != '127.0.0.1' and $new_ip->ip != '127.0.1.1') {
-                                $return_ips[] = $new_ip;
+                                $return_ips->item[] = $new_ip;
                             }
                         }
                         $new_ip = null;
@@ -1592,9 +1566,9 @@ if (!function_exists('snmp_audit')) {
             }
 
             $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_status = 'success';
+            $log->command_status = '';
             discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_status);
+            unset($log->id, $log->command, $log->command_time_to_execute);
         } // end of network interfaces
 
         if (!isset($modules_list) or !is_array($modules_list) or count($modules_list) === 0) {
@@ -1608,13 +1582,9 @@ if (!function_exists('snmp_audit')) {
         $guests = array();
         if ($vendor_oid == 6876) {
             if (file_exists(BASEPATH.'../application/helpers/snmp_6876_2_helper.php')) {
-                $item_start = microtime(true);
-                include 'snmp_6876_2_helper.php';
-                $log->command_output = 'Count is ' . count($guests);
-                $log->command = 'snmpwalk 1.3.6.1.4.1.6876.2.1.1.2';
                 $log->message = 'snmp_helper::snmp_audit is loading the model helper for VMware virtual guests';
-                $log->command_time_to_execute = (microtime(true) - $item_start);
                 stdlog($log);
+                include 'snmp_6876_2_helper.php';
             }
         }
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->status);
