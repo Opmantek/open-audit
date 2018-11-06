@@ -46,6 +46,7 @@
                     <div class="btn-group" role="group" aria-label="...">
                         <div class="btn-group" role="group">
                         <a class="btn btn-info btn-sm" href="<?php echo $this->config->config['oae_url']; ?>" role="button"><?php echo __('Go to Enterprise');?></a>
+                        <a class="btn btn-info btn-sm" href="https://community.opmantek.com/display/OA/Release+Notes+for+Open-AudIT+v<?php echo $this->config->config['display_version']; ?>" role="button"><?php echo __('Release Notes');?></a>
                         </div>
                     </div>
                 </div>
