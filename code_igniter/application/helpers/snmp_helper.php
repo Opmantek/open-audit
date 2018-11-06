@@ -542,18 +542,18 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($get_oid_details);
             include 'snmp_'.$vendor_oid."_helper.php";
-            $log->message = 'More details based on sysObjectID retrieval for '.$ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
+            $log->message = 'Specific details based on sysObjectID retrieval for '.$ip;
+            $log->command_status = 'success';
             $item_start = microtime(true);
             $new_details = $get_oid_details($ip, $credentials, $details->snmp_oid);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
             foreach ($new_details as $key => $value) {
                 $details->$key = $value;
+                $log->command = $key;
+                $log->command_output = $value;
+                discovery_log($log);
             }
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_status = '';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            unset($log->id, $log->command, $log->command_output, $log->command_time_to_execute);
             unset($new_details);
         } else {
             $log->message = 'No snmp helper for '.$vendor_oid.' when scanning '.$ip;
