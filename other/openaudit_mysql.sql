@@ -3109,6 +3109,7 @@ CREATE TABLE `system` (
   `os_bit` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `memory_count` int(10) unsigned NOT NULL DEFAULT '0',
   `processor_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `storage_count` int(10) unsigned NOT NULL DEFAULT '0',
   `os_installation_date` date NOT NULL DEFAULT '2000-01-01',
   `printer_port_name` varchar(50) NOT NULL DEFAULT '',
   `printer_shared` varchar(50) NOT NULL DEFAULT '',
