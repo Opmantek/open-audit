@@ -1592,6 +1592,7 @@ CREATE TABLE `locations` (
   `latitude` float(10,6) NOT NULL,
   `longitude` float(10,6) NOT NULL,
   `geo` varchar(200) NOT NULL DEFAULT '',
+  `cloud_id` int(10) unsigned DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1936,7 +1937,7 @@ CREATE TABLE `network` (
 LOCK TABLES `network` WRITE;
 /*!40000 ALTER TABLE `network` DISABLE KEYS */;
 /*!40000 ALTER TABLE `network` ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK TABLES; 
 
 --
 -- Table structure for table `networks`
@@ -1953,6 +1954,7 @@ CREATE TABLE `networks` (
   `type` enum('Personal Area Network','Home Area Network','Local Area Network','Wireless Local Area Network','Campus Area Network','Metropolitan Area Network','Wide Area Network','Storage-Area Network','System-Area Network','Passive Optical Local Area Network','Enterprise Private Network','Virtual Private Network') NOT NULL DEFAULT 'Local Area Network',
   `description` text NOT NULL,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `cloud_id` int(10) unsigned DEFAULT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -3195,6 +3197,7 @@ CREATE TABLE `system` (
   `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '',
   `instance_tags` text NOT NULL,
   `instance_options` text NOT NULL,
+  `discovery_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
