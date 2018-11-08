@@ -644,6 +644,20 @@ if (empty($data['mount_point'])) {
                                 <input type="text" class="form-control" id="uptime" value="<?php echo htmlspecialchars($data['system']->uptime_formatted, REPLACE_FLAGS, CHARSET); ?>" readonly>
                             </div>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="storage_count" class="col-sm-4 control-label"><?php echo __('Storage MB')?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="uptime" value="<?php echo htmlspecialchars($data['system']->storage_count, REPLACE_FLAGS, CHARSET); ?>" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="memory_count" class="col-sm-4 control-label"><?php echo __('Memory KB')?></label>
+                            <div class="col-sm-8 input-group">
+                                <input type="text" class="form-control" id="uptime" value="<?php echo htmlspecialchars($data['system']->memory_count, REPLACE_FLAGS, CHARSET); ?>" readonly>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label for="os_installation_date" class="col-sm-4 control-label"><?php echo __('OS Install Date')?></label>
