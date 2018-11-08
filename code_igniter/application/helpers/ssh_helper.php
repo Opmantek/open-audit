@@ -436,7 +436,11 @@ if (! function_exists('ssh_command')) {
             $result[$i] = trim($result[$i]);
         }
         $log->command_time_to_execute = (microtime(true) - $item_start);
-        $log->command_output = json_encode($result);
+        if (stripos($command, 'audit_') !== false and stripos($command, 'submit_online') !== false) {
+            $log->command_output = 'Audit console output removed.';
+        } else {
+            $log->command_output = json_encode($result);
+        }
         discovery_log($log);
         unset($log);
         return($result);
@@ -457,6 +461,7 @@ if (! function_exists('ssh_audit')) {
         $log->command = '';
         $log->message = 'SSH audit starting';
         discovery_log($log);
+        $CI = & get_instance();
 
         if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
             $log->message = 'Invalid or blank IP supplied to ssh_audit function.';
@@ -905,6 +910,48 @@ if (! function_exists('ssh_audit')) {
             unset($device->$attribute);
         }
 
+        $device->use_sudo = false;
+        $command = '';
+        if ($username != 'root') {
+            if (($CI->config->config['discovery_linux_use_sudo'] == 'y' and strtolower($device->os_group) == 'linux') or
+                ($CI->config->config['discovery_sunos_use_sudo'] == 'y' and strtolower($device->os_group) == 'sunos') or
+                (strtolower($device->os_group) != 'linux' and strtolower($device->os_group) != 'sunos')) {
+                if (!empty($device->which_sudo)) {
+                    $item_start = microtime(true);
+                    $command = $device->which_sudo . " hostname 2>/dev/null";
+                    if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                        $command = $device->bash . " -c '" . $command . "'\n";
+                    } else {
+                        $command .= "\n";
+                    }
+                    $ssh->write($command);
+                    $output = $ssh->read('assword');
+                    if (stripos($output, 'assword') !== false) {
+                        $ssh->write($password."\n");
+                        $output = $ssh->read('[prompt]');
+                    }
+                    $lines = explode("\n", $output);
+                    $hostname = trim($lines[count($lines)-2]);
+                    $sudo_temp_hostname = explode('.', $hostname);
+                    $ssh_hostname = explode('.', $device->hostname);
+                    if ($sudo_temp_hostname[0] == $ssh_hostname[0]) {
+                        $device->use_sudo = true;
+                    }
+                }
+                $log->command = $command . '; # hostname test using sudo';
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $log->command_output = 'sudo hostname: ' . $sudo_temp_hostname[0] . ', Device hostname: ' . $ssh_hostname[0];
+                $log->message = 'SSH command';
+                if ($device->use_sudo) {
+                    $log->command_status = 'success';
+                } else {
+                    $log->command_status = 'fail';
+                }
+                discovery_log($log);
+                unset($sudo_temp_hostname, $ssh_hostname, $hostname);
+            }
+        }
+
         unset($array);
         if (empty($device->dbus_identifier) and empty($device->uuid) and $username != 'root') {
             if (($CI->config->config['discovery_linux_use_sudo'] == 'y' and strtolower($device->os_group) == 'linux') or
@@ -981,54 +1028,55 @@ if (! function_exists('ssh_audit')) {
                     unset($device->uuid);
                 }
             }
+        }
 
-            if (empty($device->uuid) and $username == 'root') {
+        if (empty($device->uuid) and $username == 'root') {
+            $item_start = microtime(true);
+            $command = 'dmidecode -s system-uuid 2>/dev/null';
+            if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
+                $command = $device->bash . " -c '" . $command . "'";
+            }
+            $device->uuid = trim($ssh->exec($command));
+            $log->command_output = json_encode(explode($device->uuid, "\n"));
+            if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
+                $device->uuid = '';
+            }
+
+            $log->command = $command .'; # uuid';
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->message = 'SSH command';
+            if (empty($device->uuid)) {
+                $log->command_output = $ssh->getErrors();
+                $log->command_status = 'fail';
+                discovery_log($log);
+
                 $item_start = microtime(true);
-                $command = 'dmidecode -s system-uuid 2>/dev/null';
+                $command = 'cat /sys/class/dmi/id/product_uuid 2>/dev/null';
                 if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
                     $command = $device->bash . " -c '" . $command . "'";
                 }
-                $device->uuid = trim($ssh->exec($command));
-                $log->command_output = json_encode(explode($device->uuid, "\n"));
-                if (strpos($device->uuid, 'dmidecode -s system-uuid 2>/dev/null') !== false) {
-                    $device->uuid = '';
-                }
 
-                $log->command = $command .'; # uuid';
-                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $device->uuid = trim($ssh->exec($command));
+                $log->command = $command . '; # uuid';
                 $log->message = 'SSH command';
+                $log->command_time_to_execute = (microtime(true) - $item_start);
                 if (empty($device->uuid)) {
                     $log->command_output = $ssh->getErrors();
                     $log->command_status = 'fail';
                     discovery_log($log);
-
-                    $item_start = microtime(true);
-                    $command = 'cat /sys/class/dmi/id/product_uuid 2>/dev/null';
-                    if (strpos($device->shell, 'bash') === false and $device->bash !== '') {
-                        $command = $device->bash . " -c '" . $command . "'";
-                    }
-
-                    $device->uuid = trim($ssh->exec($command));
-                    $log->command = $command . '; # uuid';
-                    $log->message = 'SSH command';
-                    $log->command_time_to_execute = (microtime(true) - $item_start);
-                    if (empty($device->uuid)) {
-                        $log->command_output = $ssh->getErrors();
-                        $log->command_status = 'fail';
-                        discovery_log($log);
-                    } else {
-                        $log->command_output = $device->uuid;
-                        $log->command_status = 'success';
-                        discovery_log($log);
-                    }
                 } else {
                     $log->command_output = $device->uuid;
                     $log->command_status = 'success';
                     discovery_log($log);
                 }
+            } else {
+                $log->command_output = $device->uuid;
+                $log->command_status = 'success';
+                discovery_log($log);
             }
         }
-        unset($device->which_sudo);
+
+        #unset($device->which_sudo);
         $log->command = '';
         $log->command_time_to_execute = '';
         $log->command_output = '';

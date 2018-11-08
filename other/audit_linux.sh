@@ -1251,7 +1251,7 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Shares Info"
 fi
 
-echo "	<shares>" >> "$xml_file"
+echo "	<share>" >> "$xml_file"
 
 case $system_os_family in
 		'Ubuntu' | 'Debian' )
@@ -1275,7 +1275,7 @@ case $system_os_family in
 			;;
 esac
 
-echo "	</shares>" >> "$xml_file"
+echo "	</share>" >> "$xml_file"
 
 ##################################
 # NETWORK CARDS SECTION          #

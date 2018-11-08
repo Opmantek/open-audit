@@ -410,7 +410,7 @@ for interface in $(eval "lsdev -Cc if | grep Available | grep 'Standard Ethernet
 			<model>$(escape_xml "$net_card_model")</model>
 			<description>$(escape_xml "$net_card_description")</description>
 			<ip_enabled>$(escape_xml "$net_card_enabled")</ip_enabled>
-			<connectio>$(escape_xml "$net_card_id")</connection>
+			<connection>$(escape_xml "$net_card_id")</connection>
 			<connection_status>$(escape_xml "$net_card_status")</connection_status>
 			<speed>$(escape_xml "$net_card_speed")</speed>
 			<dhcp_enabled>$(escape_xml "$net_dhcp_enabled")</dhcp_enabled>

@@ -541,6 +541,7 @@ if (!function_exists('snmp_audit')) {
             #$log->id = discovery_log($log);
             $item_start = microtime(true);
             $new_details = $get_oid_details($ip, $credentials, $details->snmp_oid);
+            $log->command_time_to_execute = (microtime(true) - $item_start);
             foreach ($new_details as $key => $value) {
                 $details->$key = $value;
                 $log->command = $key;

@@ -254,6 +254,7 @@ if (help = "y") then
     wscript.echo "  create_file"
     wscript.echo "     y - Create an XML file containing the audit result."
     wscript.echo "    *n - Do not create an XML result file."
+    wscript.echo "     w - Create an XML file containing the audit result in admin$ share."
     wscript.echo ""
     wscript.echo "  debugging"
     wscript.echo "     0 - No output."
@@ -357,28 +358,28 @@ if debugging > "0" then
     wscript.echo "Open-AudIT Windows audit script"
     wscript.echo "Version: " & version
     wscript.echo "----------------------------"
-    wscript.echo "audit_dns: " & audit_dns
-    wscript.echo "audit_mount_point: " & audit_mount_point
-    wscript.echo "audit_netstat: " & audit_netstat
-    wscript.echo "audit_software: " & audit_software
-    wscript.echo "create_file: " & create_file
-    wscript.echo "debugging: " & debugging
-    wscript.echo "details_to_lower: " & details_to_lower
-    wscript.echo "discovery_id: " & discovery_id
-    wscript.echo "hide_audit_window: " & hide_audit_window
-    wscript.echo "ldap: " & ldap
-    wscript.echo "org_id: " & org_id
-    wscript.echo "ping_target: " & ping_target
-    wscript.echo "self_delete: " & self_delete
-    wscript.echo "strcomputer: " & strcomputer
-    wscript.echo "strpass: " & strpass
-    wscript.echo "struser: " & struser
-    wscript.echo "submit_online: " & submit_online
-    wscript.echo "system_id: " & system_id
-    wscript.echo "url: " & url
-    wscript.echo "use_proxy: " & use_proxy
-    wscript.echo "windows_user_work_1: " & windows_user_work_1
-    wscript.echo "windows_user_work_2: " & windows_user_work_2
+    wscript.echo "audit_dns           " & audit_dns
+    wscript.echo "audit_mount_point   " & audit_mount_point
+    wscript.echo "audit_netstat       " & audit_netstat
+    wscript.echo "audit_software      " & audit_software
+    wscript.echo "create_file         " & create_file
+    wscript.echo "debugging           " & debugging
+    wscript.echo "details_to_lower    " & details_to_lower
+    wscript.echo "discovery_id        " & discovery_id
+    wscript.echo "hide_audit_window   " & hide_audit_window
+    wscript.echo "ldap                " & ldap
+    wscript.echo "org_id              " & org_id
+    wscript.echo "ping_target         " & ping_target
+    wscript.echo "self_delete         " & self_delete
+    wscript.echo "strcomputer         " & strcomputer
+    wscript.echo "strpass             " & strpass
+    wscript.echo "struser             " & struser
+    wscript.echo "submit_online       " & submit_online
+    wscript.echo "system_id           " & system_id
+    wscript.echo "url                 " & url
+    wscript.echo "use_proxy           " & use_proxy
+    wscript.echo "windows_user_work_1 " & windows_user_work_1
+    wscript.echo "windows_user_work_2 " & windows_user_work_2
     wscript.echo "-------------------"
 end if
 
@@ -918,9 +919,9 @@ if (cint(local_windows_build_number) > 2222 and not local_windows_build_number =
     next
 end if
 
-if debugging > "0" then wscript.echo "My PID is : " & nPID end if
-if debugging > "0" then wscript.echo "Audit Start Time : " & system_timestamp end if
-if debugging > "0" then wscript.echo "Audit Location: " & audit_location end if
+if debugging > "0" then wscript.echo "My PID is           " & nPID end if
+if debugging > "0" then wscript.echo "Audit Start Time    " & system_timestamp end if
+if debugging > "0" then wscript.echo "Audit Location      " & audit_location end if
 if debugging > "0" then wscript.echo "-------------------" end if
 
 if debugging > "0" then wscript.echo "system info" end if
@@ -6698,8 +6699,7 @@ if create_file = "y" then
     ' Write the results to a file
     file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
     OutputFile = system_hostname & "-" & file_timestamp & ".xml"
-    if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
-    if debugging > "0" then wscript.echo "File                " & WScript.ScriptFullName & "\" & OutputFile end if
+    if debugging > "0" then wscript.echo "File                " & OutputFile end if
     Err.clear
     on error resume next
     result.position = 0
@@ -6708,11 +6708,30 @@ if create_file = "y" then
     error_description = Err.Description
     on error goto 0
     if (error_returned <> 0) then
-        if debugging > "0" then wscript.echo "Problem writing to file." end if
+        if debugging > "0" then wscript.echo "Problem writing to file " & OutputFile end if
         if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
         if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-    else
-        if debugging > "0" then wscript.echo "Output file created." end if
+    end if
+end if
+
+if create_file = "w" then
+    if debugging > "0" then wscript.echo "Creating output File in Windows directory" end if
+    ' Write the results to a file
+    file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
+    OutputFile = windows_install_directory & "\" & system_hostname & "-" & file_timestamp & ".xml"
+    ' Output the filepath regardless of debug level so discovery can catch it
+    wscript.echo "File                " & OutputFile
+    Err.clear
+    on error resume next
+    result.position = 0
+    result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
+    error_returned = Err.Number
+    error_description = Err.Description
+    on error goto 0
+    if (error_returned <> 0) then
+        if debugging > "0" then wscript.echo "Problem writing to file " & OutputFile end if
+        if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+        if debugging > "0" then wscript.echo "Error Description:" & error_description end if
     end if
 end if
 

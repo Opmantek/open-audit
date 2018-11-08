@@ -361,6 +361,7 @@ INSERT INTO `attributes` VALUES (198,1,'devices','type','Application Accelerator
 INSERT INTO `attributes` VALUES (199,1,'devices','type','Patch Panel','patch panel','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (200,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (201,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (202,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -886,6 +887,7 @@ INSERT INTO `dashboards` VALUES (2,'Purchasing Dashboard',1,'org',0,'Purchase Ma
 INSERT INTO `dashboards` VALUES (3,'Network Dashboard',1,'org',0,'Networks and Locations','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"20\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"19\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"16\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"21\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"22\"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (4,'Discovery Dashboard',1,'org',0,'Discovered Devices','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"1\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"2\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"22\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"27\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"28\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"29\"}]}','system','2000-01-01 00:00:00');
 INSERT INTO `dashboards` VALUES (5,'Devices Dashboard',1,'org',0,'Devices Information','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"15\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"30\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"8\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"22\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"27\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"29\"}]}','system','2000-01-01 00:00:00');
+INSERT INTO `dashboards` VALUES (6,'Clouds Dashboard',1,'org',0,'The details of your cloud infrastructure','y','{\"layout\":\"3x2\",\"widget_count\":6,\"widgets\":[{\"position\":\"1\",\"size\":\"1\",\"widget_id\":\"33\"},{\"position\":\"2\",\"size\":\"1\",\"widget_id\":\"34\"},{\"position\":\"3\",\"size\":\"1\",\"widget_id\":\"35\"},{\"position\":\"4\",\"size\":\"1\",\"widget_id\":\"36\"},{\"position\":\"5\",\"size\":\"1\",\"widget_id\":\"37\"},{\"position\":\"6\",\"size\":\"1\",\"widget_id\":\"38\"}]}','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `dashboards` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1590,6 +1592,7 @@ CREATE TABLE `locations` (
   `latitude` float(10,6) NOT NULL,
   `longitude` float(10,6) NOT NULL,
   `geo` varchar(200) NOT NULL DEFAULT '',
+  `cloud_id` int(10) unsigned DEFAULT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
@@ -1934,7 +1937,7 @@ CREATE TABLE `network` (
 LOCK TABLES `network` WRITE;
 /*!40000 ALTER TABLE `network` DISABLE KEYS */;
 /*!40000 ALTER TABLE `network` ENABLE KEYS */;
-UNLOCK TABLES;
+UNLOCK TABLES; 
 
 --
 -- Table structure for table `networks`
@@ -1951,6 +1954,7 @@ CREATE TABLE `networks` (
   `type` enum('Personal Area Network','Home Area Network','Local Area Network','Wireless Local Area Network','Campus Area Network','Metropolitan Area Network','Wide Area Network','Storage-Area Network','System-Area Network','Passive Optical Local Area Network','Enterprise Private Network','Virtual Private Network') NOT NULL DEFAULT 'Local Area Network',
   `description` text NOT NULL,
   `external_ident` varchar(200) NOT NULL DEFAULT '',
+  `cloud_id` int(10) unsigned DEFAULT NULL,
   `options` text NOT NULL,
   `edited_by` varchar(200) NOT NULL DEFAULT '',
   `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
@@ -2391,6 +2395,7 @@ INSERT INTO `queries` VALUES (NULL,1,'New Devices','Change','y','Any changes in 
 INSERT INTO `queries` VALUES (NULL,1,'Settings','Change','y','Any changes in the tables \'dns\', \'ip\', \'log\', netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\' and \'variable\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'dns\', \'ip\', \'log\', \'netstat\', \'pagefile\', \'print_queue\', \'route\', \'task\', \'user\', \'user_group\', \'variable\')','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'Software','Change','y','Any changes in the tables \'service\', \'server\', \'server_item\', \'software\' and \'software_key\'.','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, change_log.timestamp AS `change_log.timestamp`, change_log.db_table AS `change_log.db_table`, change_log.db_action AS `change_log.db_action`, change_log.details AS `change_log.details`, change_log.id AS `change_log.id` FROM change_log LEFT JOIN system ON (change_log.system_id = system.id) WHERE @filter AND change_log.ack_time = \'2000-01-01 00:00:00\' AND change_log.db_table in (\'service\', \'server\', \'server_item\', \'software\', \'software_key\')','','system','2000-01-01 00:00:00');
 INSERT INTO `queries` VALUES (NULL,1,'AD Controllers','Server','y','Active Directory Domain Controllers','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.type AS `system.type`, system.name AS `system.name`, system.domain AS `system.domain`, system.ip AS `system.ip`, system.description AS `system.description`, system.os_family AS `system.os_family`, system.status AS `system.status` FROM system LEFT JOIN windows ON (system.id = windows.system_id AND windows.current = \'y\') WHERE @filter AND windows.domain_role LIKE \'%Domain Controller\' AND system.status = \'production\'','','system','2000-01-01 00:00:00');
+INSERT INTO `queries` VALUES (NULL,1,'Cloud Device Details','Device','y','Details about your cloud based devices','SELECT system.id AS `system.id`, system.icon AS `system.icon`, system.name AS `system.name`, system.ip AS `system.ip`, system.instance_type AS `system.instance.type`, clouds.type AS `clouds.type`, clouds.name AS `clouds.name`, locations.name AS `locations.name` FROM system LEFT JOIN clouds ON (clouds.id = system.cloud_id) LEFT JOIN locations ON (locations.id = system.location_id) WHERE @filter AND system.cloud_id != \'\';','','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `queries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2434,14 +2439,14 @@ CREATE TABLE `racks` (
   `description` text NOT NULL,
   `row_position` varchar(200) NOT NULL DEFAULT '',
   `pod` varchar(200) NOT NULL DEFAULT '',
-  `physical_height` int(10) unsigned NOT NULL DEFAULT '1',
-  `physical_width` int(10) unsigned NOT NULL DEFAULT '1',
-  `physical_depth` int(10) unsigned NOT NULL DEFAULT '1',
+  `physical_height` int(10) unsigned NOT NULL DEFAULT '2000',
+  `physical_width` int(10) unsigned NOT NULL DEFAULT '600',
+  `physical_depth` int(10) unsigned NOT NULL DEFAULT '1050',
   `weight_empty` int(10) unsigned NOT NULL DEFAULT '1',
   `weight_current` int(10) unsigned NOT NULL DEFAULT '1',
   `weight_max` int(10) unsigned NOT NULL DEFAULT '1',
   `ru_start` int(10) unsigned NOT NULL DEFAULT '1',
-  `ru_height` int(10) unsigned NOT NULL DEFAULT '1',
+  `ru_height` int(10) unsigned NOT NULL DEFAULT '42',
   `type` varchar(200) NOT NULL DEFAULT '',
   `purpose` varchar(200) NOT NULL DEFAULT '',
   `manufacturer` varchar(200) NOT NULL DEFAULT '',
@@ -2495,7 +2500,6 @@ CREATE TABLE `rack_devices` (
   `height` int(10) unsigned NOT NULL DEFAULT '1',
   `width` int(10) unsigned NOT NULL DEFAULT '1',
   `orientation` enum('front','front-right','front-left','rear','rear-left','rear-right') NOT NULL DEFAULT 'front',
-  `type` varchar(50) NOT NULL DEFAULT 'unknown',
   `options` text NOT NULL,
   `notes` text NOT NULL,
   `tags` varchar(250) NOT NULL DEFAULT '',
@@ -3107,6 +3111,7 @@ CREATE TABLE `system` (
   `os_bit` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `memory_count` int(10) unsigned NOT NULL DEFAULT '0',
   `processor_count` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `storage_count` int(10) unsigned NOT NULL DEFAULT '0',
   `os_installation_date` date NOT NULL DEFAULT '2000-01-01',
   `printer_port_name` varchar(50) NOT NULL DEFAULT '',
   `printer_shared` varchar(50) NOT NULL DEFAULT '',
@@ -3184,12 +3189,15 @@ CREATE TABLE `system` (
   `omk_uuid` text NOT NULL,
   `collector_uuid` text NOT NULL,
   `credentials` text NOT NULL,
+  `cloud_id` int(10) unsigned DEFAULT NULL,
+  `instance_provider` varchar(200) NOT NULL DEFAULT '',
   `instance_ident` varchar(200) NOT NULL DEFAULT '',
   `instance_type` varchar(200) NOT NULL DEFAULT '',
   `instance_state` varchar(200) NOT NULL DEFAULT '',
   `instance_reservation_ident` varchar(200) NOT NULL DEFAULT '',
-  `instance_tags` TEXT NOT NULL,
-  `instance_options` TEXT NOT NULL,
+  `instance_tags` text NOT NULL,
+  `instance_options` text NOT NULL,
+  `discovery_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
@@ -3599,6 +3607,13 @@ INSERT INTO `widgets` VALUES (29,'Software Additions by Day',1,'Any items in the
 INSERT INTO `widgets` VALUES (30,'Devices by Org',1,'Devies assigned by Org','pie','','','','','Devices','','',0,'','SELECT orgs.name as `name`, orgs.id AS `description`, count(system.id) AS `count` FROM orgs LEFT JOIN system ON (orgs.id = system.org_id) WHERE @filter GROUP BY orgs.name','devices?system.org_id=@description','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (31,'Application Services',1,'Devices by defined Application','pie','','','','','Devices','','',0,'','SELECT applications.name AS `my_name`, COUNT(application.system_id) AS `count`, applications.id AS `my_description` FROM applications LEFT JOIN application ON (applications.id = application.applications_id) LEFT JOIN `system` ON (application.system_id = system.id) WHERE @filter GROUP BY `my_name`','devices?application.applications_id=@description','system','2000-01-01 00:00:00');
 INSERT INTO `widgets` VALUES (32,'Devices Not Seen (1-7+ Days)',1,'','pie','','','','','Devices','','',0,'','SELECT IF ( DATE(system.last_seen) = "2000-01-01", "unknown", ( IF ( DATE(system.last_seen) < DATE(NOW() - INTERVAL 6 day), "More than 7 Days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 6 day), "7 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 5 day), "6 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 4 day), "5 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 3 day), "4 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 2 day), "3 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 1 day), "2 days", ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 0 day), "1 day", "") ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_name`, IF ( DATE(system.last_seen) = "2000-01-01", "system.last_seen=2000-01-01", ( IF ( DATE(system.last_seen) < DATE(NOW() - INTERVAL 6 day), CONCAT("system.last_seen=<", DATE(NOW() - INTERVAL 6 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 6 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 6 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 5 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 5 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 4 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 4 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 3 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 3 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 2 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 2 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 1 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 1 day)), ( IF ( DATE(system.last_seen) = DATE(NOW() - INTERVAL 0 day), CONCAT("system.last_seen=LIKE", DATE(NOW() - INTERVAL 0 day)), "" ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) AS `my_description`, count(system.id) AS `count` FROM system WHERE @filter GROUP BY `my_name` ORDER BY system.last_seen','devices?@description','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (33,'Devices by Cloud Type',1,'','pie','','system.instance_provider','','','Devices','','system.instance_provider != \'\'',0,'','','','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (34,'Devices per Cloud',1,'','pie','','','','','Devices','','',0,'','SELECT clouds.name as `name`, clouds.id AS `description`, count(system.id) AS `count` FROM clouds LEFT JOIN system ON (clouds.id = system.cloud_id) WHERE @filter AND system.cloud_id IS NOT NULL GROUP BY clouds.name','devices?system.cloud_id=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (35,'Devices by Cloud Network',1,'','pie','','','','','Devices','','',0,'','SELECT IF(networks.name = networks.network, networks.network, CONCAT(networks.network, \' (\', networks.name, \')\')) as `name`, networks.network AS `description`, count(system.id) AS `count` FROM networks LEFT JOIN ip ON (ip.network = networks.network and ip.current = \'y\') LEFT JOIN system ON (ip.system_id = system.id) WHERE @filter AND networks.options != \'\' GROUP BY networks.network ORDER BY networks.network','devices?ip.network=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (36,'Devices by Cloud Region',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', locations.name) as `name`, locations.id AS `description`, count(system.id) AS `count` FROM locations LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.cloud_id IS NOT NULL AND locations.type = \'Cloud\' GROUP BY system.location_id','devices?system.location_id=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (37,'Devices by Instance Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(clouds.type, \' - \', system.instance_type) as `name`, system.instance_type AS `description`, count(system.id) AS `count` FROM system LEFT JOIN clouds ON (system.cloud_id = clouds.id) WHERE @filter AND system.instance_type != \'\' GROUP BY system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (38,'Cloud Devices Audited per Day',1,'','line','','','','','Devices','','',0,'','SELECT DATE(audit_log.timestamp) AS `date`, COUNT(DISTINCT audit_log.system_id) AS `count` FROM `audit_log` LEFT JOIN `system` ON (audit_log.system_id = system.id) WHERE @filter AND DATE(audit_log.timestamp) >  DATE_SUB(CURDATE(), INTERVAL 30 DAY) AND system.cloud_id != \'\' GROUP BY DATE(audit_log.timestamp)','devices?audit_log.timestamp=like@date%','system','2000-01-01 00:00:00');
+INSERT INTO `widgets` VALUES (39,'Cloud Instances by Org and Type',1,'','pie','','','','','Devices','','',0,'','SELECT CONCAT(orgs.name, \' - \', system.instance_type) as `name`, CONCAT(system.instance_type, \'&system.org_id=\', orgs.id) AS `description`, count(system.id) AS `count` FROM system LEFT JOIN orgs ON (orgs.id = system.org_id) WHERE @filter AND system.cloud_id != \'\' GROUP BY system.org_id, system.instance_type','devices?system.instance_type=@description&properties=system.id,system.icon,system.type,system.name,system.domain,system.ip,system.os_family,system.status,system.instance_type,instance_state','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `widgets` ENABLE KEYS */;
 UNLOCK TABLES;
 

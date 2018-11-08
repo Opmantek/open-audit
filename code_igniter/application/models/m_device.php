@@ -1064,6 +1064,9 @@ class M_device extends MY_Model
             }
         }
 
+        if (empty($details->ip)) {
+            $details->ip = '';
+        }
         if (empty($details->status)) {
             $details->status = 'production';
         }
@@ -1195,6 +1198,11 @@ class M_device extends MY_Model
         $sql = "INSERT INTO chart (`when`, `what`, `org_id`, `count`) VALUES (DATE(NOW()), '" . $details->last_seen_by . "', " . intval($details->org_id) . ", 1) ON DUPLICATE KEY UPDATE `count` = `count` + 1";
         $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql);
+
+
+        if(!isset($details->ip) or empty($details->ip)){
+            $details->ip = "N/A";
+        }
 
         $log->message = 'System insert end for '.ip_address_from_db($details->ip).' ('.$details->hostname.')';
         $log->command_status = 'finish';

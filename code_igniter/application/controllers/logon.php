@@ -342,7 +342,7 @@ class Logon extends CI_Controller
         $sql = "/* logon::check_defaults */ " . "DELETE FROM oa_user_sessions WHERE last_activity < UNIX_TIMESTAMP(NOW() - INTERVAL 7 DAY)";
         $query = $this->db->query($sql);
 
-        // Remove any olds los as per config
+        // Remove any old logs as per config
         if ($this->db->table_exists('logs') and !empty($this->config->config['log_retain_level_0'])) {
             $sql = "/* logon::check_defaults */ " . "DELETE FROM `logs` WHERE 
                 (`severity` = 0 AND `timestamp` < (NOW() - INTERVAL " . intval($this->config->config['log_retain_level_0']) . " DAY)) OR
@@ -356,6 +356,9 @@ class Logon extends CI_Controller
             $query = $this->db->query($sql);
         }
 
+        # Cleanup (delete) any single discoveries older than 1 hour
+        $sql = "DELETE FROM `discoveries` WHERE `discard` = 'y' AND `edited_date` < (NOW() - INTERVAL 1 HOUR)";
+        $query = $this->db->query($sql);
 
         # Get the installed application list from Enterprise
         $url = str_replace('open-audit/', '', $oae_url);

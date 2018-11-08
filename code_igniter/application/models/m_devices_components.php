@@ -313,7 +313,10 @@ class M_devices_components extends MY_Model
         $log->severity = 7;
         $log->severity_text = '';
         $log->pid = getmypid();
-        $log->ip = (string)$details->ip;
+        $log->ip = '127.0.0.1';
+        if (!empty($details->ip)) {
+            $log->ip = (string)$details->ip;
+        }
         $log->file = 'm_devices_componenets';
         $log->function = 'process_component';
         $log->command = 'process audit';
@@ -470,7 +473,7 @@ class M_devices_components extends MY_Model
                     $this->m_networks->upsert($network);
                 }
             }
-            if ($details->type == 'computer' and 
+            if ($details->type == 'computer' and
                 !empty($details->os_group) and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
@@ -481,8 +484,8 @@ class M_devices_components extends MY_Model
                 # set the below so we don't generate alerts for this
                 $create_alerts = 'n';
             }
-            if ($details->type == 'computer' and 
-                !empty($details->manufacturer) and $details->manufacturer == 'Xen' and 
+            if ($details->type == 'computer' and
+                !empty($details->manufacturer) and $details->manufacturer == 'Xen' and
                 !empty($details->model) and $details->model == 'HVM domU') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that AWS provides no IPv6 information via the API
@@ -806,6 +809,12 @@ class M_devices_components extends MY_Model
                 if (empty($details->org_id)) {
                     $details->org_id = 1;
                 }
+                if (!isset($input_item->used) or $input_item->used =='') {
+                    $input_item->used = 0;
+                }
+                if (!isset($input_item->free) or $input_item->free =='') {
+                    $input_item->free = 0;
+                }
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
                 $data = array(intval($details->org_id), intval($details->id), "$table", intval($id), "$table", intval($used_percent),
@@ -899,7 +908,7 @@ class M_devices_components extends MY_Model
         // http://sqlserverbuilds.blogspot.com.au/
         // https://support.microsoft.com/en-au/kb/2936603
         // https://buildnumbers.wordpress.com/sqlserver/
-        
+
         // find the version string, based on the version integer.
         $version_string = '';
 
@@ -1522,7 +1531,7 @@ class M_devices_components extends MY_Model
     {
         $user_id = intval($user_id);
         $resultset = array();
-        $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`, 
+        $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`,
                 `partition`.`id` as partition_id, `partition`.`mount_point`, `partition`.`name` as partition_name
             FROM `system`, `oa_group_sys`, `partition`
             WHERE

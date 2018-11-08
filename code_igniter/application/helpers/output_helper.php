@@ -92,9 +92,27 @@ if (! function_exists('output')) {
             unset($CI->response->meta->data_order);
             $CI->response->meta->data_order = array();
 
+            // if (!empty($CI->response->data[0]->attributes)) {
+            //     foreach ($CI->response->data[0]->attributes as $key => $value) {
+            //         $CI->response->meta->data_order[] = $key;
+            //     }
+            // }
+
             if (!empty($CI->response->data[0]->attributes)) {
                 foreach ($CI->response->data[0]->attributes as $key => $value) {
-                    $CI->response->meta->data_order[] = $key;
+                    if (strpos($key, '.') !== false or $CI->response->meta->collection == 'reports' or $CI->response->meta->collection == 'help' or $CI->response->meta->collection == 'database') {
+                        $CI->response->meta->data_order[] = $key;
+                    } else {
+                        $table = $CI->response->meta->collection;
+                        if ($table == 'devices') {
+                            $table = 'system';
+                        }
+                        if ($CI->db->field_exists($key, $table)) {
+                            $CI->response->meta->data_order[] = $table . '.' . $key;
+                        } else {
+                            $CI->response->meta->data_order[] = $key;
+                        }
+                    }
                 }
             }
 

@@ -502,6 +502,17 @@ class M_collection extends MY_Model
             }
 
             if ($data->type == 'subnet') {
+                if (!preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
                 if (empty($data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
                    // $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
@@ -579,6 +590,17 @@ class M_collection extends MY_Model
         if ($collection === 'orgs') {
             if (!empty($data->name)) {
                 $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+            }
+        }
+
+        if ($collection === 'rack_devices') {
+            $sql = "SELECT name, org_id FROM system WHERE id = " . intval($data->system_id);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result)) {
+                $data->name = $result[0]->name;
+                $data->org_id = $result[0]->org_id;
             }
         }
 
@@ -817,6 +839,19 @@ class M_collection extends MY_Model
                 foreach ($data->other as $key => $value) {
                         $received_other->$key = $value;
                 }
+
+                if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
                 $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
                 $result = $query->result();
                 $existing_other = json_decode($result[0]->other);
@@ -1034,7 +1069,7 @@ class M_collection extends MY_Model
                 break;
 
             case "groups":
-                return(' name org_id description sql ');
+                return(' name org_id description expose sql ');
                 break;
 
             case "ldap_servers":
@@ -1066,7 +1101,7 @@ class M_collection extends MY_Model
                 break;
 
             case "rack_devices":
-                return(' name org_id rack_id system_id position height width orientation type options ');
+                return(' name org_id rack_id system_id position height width orientation options type ');
                 break;
 
             case "roles":
@@ -1090,7 +1125,7 @@ class M_collection extends MY_Model
                 break;
 
             case "tasks":
-                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options last_run ');
+                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options last_run first_run ');
                 break;
 
             case "users":
@@ -1198,7 +1233,7 @@ class M_collection extends MY_Model
                 break;
 
             case "rack_devices":
-                return(array('name','org_id','rack_id'));
+                return(array('rack_id','system_id','position','height'));
                 break;
 
             case "roles":
