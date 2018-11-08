@@ -1,7 +1,6 @@
-<?php
-if (!defined('BASEPATH')) {
+<?php  if (!defined('BASEPATH')) {
      exit('No direct script access allowed');
-}
+ }
 #
 #  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
 #
@@ -29,13 +28,13 @@ if (!defined('BASEPATH')) {
 # *****************************************************************************
 
 /*
-* @category  Helper
-* @package   Open-AudIT
-* @author    Mark Unwin <marku@opmantek.com>
-* @copyright 2014 Opmantek
-* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.3.0
-* @link      http://www.open-audit.org
+ * @package Open-AudIT
+ * @author Mark Unwin <marku@opmantek.com>
+ *
+ * @version   2.3.0
+
+ * @copyright Copyright (c) 2014, Opmantek
+ * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
  */
 
 # Vendor Cisco
@@ -54,7 +53,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $item_start = microtime(true);
     #Memory
     # the only MIB providing overall RAM is 1.3.6.1.4.1.9.3.6.6.0 which is deprecated
-        $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1048576);
+        $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1024);
 
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_output = (string)$details->memory_count;
@@ -63,13 +62,13 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
     
     
-    $log->message = 'disk_model retrieval via SNMP for '.$ip;
-        $log->command = 'snmpget 1.3.6.1.4.1.9.2.10.1';
+    $log->message = 'storage_count retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.9.2.10.1.0';
         $log->command_status = 'fail';
         $log->id = discovery_log($log);
         $item_start = microtime(true);
     #Disk 1.3.6.1.4.1.2620.1.6.7.3.6 may require /1048576 for MB sizing
-        $details->disk_model = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1") / 1048576); 
+        $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1.0") / 1048576); 
         $log->command_time_to_execute = (microtime(true) - $item_start);
         $log->command_output = (string)$details->disk_model;
         $log->command_status = '';
