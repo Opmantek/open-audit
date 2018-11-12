@@ -42,6 +42,53 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
+    $log = new stdClass();
+    $log->summary = "snmp_2620_helper";
+    
+    $log->message = 'checkpoint serial retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.2620.1.6.16.3.0';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
+    # checkpoint serial
+    $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2620.1.6.16.3.0");
+    
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->memory_count;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        
+     $log->message = 'checkpoint Memory retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.2620.1.6.7.4.3.0';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
+    #Memory
+    #1.3.6.1.4.1.2620.1.6.7.4.3 in Bytes so divide by 1024 for KB
+    $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2620.1.6.7.4.3.0") / 1024);
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->memory_count;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        
+        
+     $log->message = 'checkpoint Disk Storage retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.2620.1.6.7.3.6.0';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
+    
+    #Disk 1.3.6.1.4.1.2620.1.6.7.3.6 may require /1048576 for sizing
+    $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.2620.1.6.7.3.6.0"));  
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->memory_count;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+    
+    
     if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.1') {
         $details->type = 'firewall';
         $details->model = 'UTM-1450';
