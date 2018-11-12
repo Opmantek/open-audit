@@ -8437,9 +8437,12 @@ if (! function_exists('mac_model')) {
 		if ($serial == 'HV2H') { $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; }
 		if ($serial == 'HV2J') { $description = 'MacBook Pro (13-inch, 2017, Two Thunderbolt 3 ports)'; }
 		if ($serial == 'HV2L') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
+		if ($serial == 'HV2M') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
 		if ($serial == 'HV2Q') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
+		if ($serial == 'HV2R') { $description = 'MacBook Pro (13-inch, 2017, Four Thunderbolt 3 Ports)'; }
 		if ($serial == 'HV5J') { $description = 'MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)'; }
 		if ($serial == 'HV5K') { $description = 'MacBook Pro (13-inch, 2016, Two Thunderbolt 3 ports)'; }
+		if ($serial == 'J1GG') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J1GN') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J1GP') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J1GQ') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
