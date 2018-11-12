@@ -194,6 +194,14 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
+        // $temp = explode(';', $sql);
+        // if (count($temp) > 1) {
+        //     foreach ($temp as $split_sql) {
+        //         $query = $this->db->query($split_sql, $data);
+        //     }
+        // } else {
+        //    $query = $this->db->query($sql, $data);
+        // }
         // store the query in our response object
         $CI->response->meta->sql[] = $this->db->last_query();
         // log the query
@@ -236,11 +244,11 @@ class MY_Model extends CI_Model
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
             if (!empty($CI->response)) {
                 if (!empty($CI->response->errors)) {
-                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $db_error;
                 } else {
                     $CI->response->errors = array();
                     $item = new stdClass();
-                    $item->detail_specific = $this->db->_error_message();
+                    $item->detail_specific = $db_error;
                     $CI->response->errors[0] = $item;
                 }
             }
