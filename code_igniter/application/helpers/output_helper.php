@@ -116,10 +116,35 @@ if (! function_exists('output')) {
                 }
             }
 
-            if ($CI->response->meta->collection == 'clouds') {
+            $special = array('credentials' => 'credentials', 'discoveries' => 'other', 'tasks' => 'options');
+            foreach ($special as $table => $column) {
+                if ($CI->response->meta->collection == $table) {
+                    $array = array();
+                    foreach ($CI->response->data as $item) {
+                        foreach ($item->attributes->{$column} as $key => $value) {
+                            $array[] = $column.'.'.$key;
+                        }
+                    }
+                    $array = array_unique($array);
+                    $CI->response->meta->data_order = array_merge($CI->response->meta->data_order, $array);
+                    $CI->response->meta->data_order = array_unique($CI->response->meta->data_order);
+                    $position = array_search($table.'.'.$column, $CI->response->meta->data_order);
+                    unset($CI->response->meta->data_order[$position]);
+                }
+            }
+
+            if ($CI->response->meta->collection === 'devices' and $CI->response->meta->action === 'sub_resource_read') {
+                unset($CI->response->meta->data_order);
+                $CI->response->meta->data_order = array();
+                foreach ($CI->response->data[0]->attributes as $key => $value) {
+                    $CI->response->meta->data_order[] = $key;
+                }
+            }
+
+            if ($CI->response->meta->collection === 'clouds') {
                 foreach ($CI->response->meta->data_order as $item) {
                     if ($item === 'credentials') {
-                        $fields = array('key', 'secret_key');
+                        $fields = array('key', 'secret_key', 'subscription_id', 'tenant_id', 'client_id', 'client_secret');
                         foreach ($fields as $field) {
                             $CI->response->meta->data_order[] = 'credentials.' . $field;
                         }
