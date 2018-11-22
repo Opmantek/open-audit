@@ -623,6 +623,10 @@ if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	system_os_family=$(grep ^ID /etc/os-release | grep -v LIKE | cut -d= -f2)
 fi
 
+if [ "$system_os_family" == "\"amzn\"" ]; then
+	system_os_family="Amazon"
+fi
+
 if [ "$system_os_family" == "debian" ]; then
 	system_os_family="Debian"
 fi
@@ -1264,7 +1268,7 @@ case $system_os_family in
 					tail -n +6 >>\
 					"$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
 				service smb status > /dev/null 2>&1 &&\
 					sed -e '/^$/d' -e 's/^[ \t]*//' -e '/^[#;]/d' /etc/samba/smb.conf |\
 					grep -E "^\[|^comment|^path" |\
@@ -2257,7 +2261,7 @@ case $system_os_family in
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -2389,7 +2393,7 @@ if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; the
 	fi
 fi
 
-if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ]; then
+if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ]; then
 	INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
 fi
 
