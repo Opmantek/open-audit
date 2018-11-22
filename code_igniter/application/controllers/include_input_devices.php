@@ -59,33 +59,41 @@ if (!$this->m_networks->check_ip($_SERVER['REMOTE_ADDR'], '')) {
 }
 
 // get the input either from the textfield or the uploaded file
-if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
-    $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
-    try {
-        move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
-    } catch (Exception $e) {
-        $log = new stdClass();
-        $log->type = 'system';
-        $log->severity = 5;
-        $log->user = @$this->user->full_name;
-        $log->collection = @$this->response->meta->collection;
-        $log->action = @$this->response->meta->action;
-        $log->status = 'processing audit submission';
-        $log->summary = 'Could not move uploaded audit file.';
-        $log->detail = $e;
-        stdlog($log);
-        unset($log);
-        $this->data['query'] = $e;
-        $this->data['error'] = "There was an error uploading the file, please try again.";
-        $this->data['include'] = 'v_error';
-        $this->load->view('v_template', $this->data);
+if (!empty($_POST['input_type']) and $_POST['input_type'] === 'file_input') {
+    if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
+        $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
+        try {
+            move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
+        } catch (Exception $e) {
+            $log = new stdClass();
+            $log->type = 'system';
+            $log->severity = 5;
+            $log->user = @$this->user->full_name;
+            $log->collection = @$this->response->meta->collection;
+            $log->action = @$this->response->meta->action;
+            $log->status = 'processing audit submission';
+            $log->summary = 'Could not move uploaded audit file.';
+            $log->detail = $e;
+            stdlog($log);
+            unset($log);
+            $this->data['query'] = $e;
+            $this->data['error'] = "There was an error uploading the file, please try again.";
+            $this->data['include'] = 'v_error';
+            $this->load->view('v_template', $this->data);
+        }
+        $input = file_get_contents($target_path);
+        if (empty($input)) {
+            log_error('ERR-0011');
+            print_r($this->response->errors);
+        }
+        unlink($target_path);
+    } else {
+        if (empty($input)) {
+            log_error('ERR-0011');
+            print_r($this->response->errors);
+            exit();
+        }
     }
-    $input = file_get_contents($target_path);
-    if (empty($input)) {
-        log_error('ERR-0011');
-        print_r($this->response->errors);
-    }
-    unlink($target_path);
 }
 
 $log = new stdClass();
@@ -109,7 +117,7 @@ $ids = array();
 
 
 # NOTE - $input may also be set by $POSTing to /devices the attribute upload_input.
-if (!empty($_POST['data'])) {
+if (!empty($_POST['data']) and empty($input)) {
     $input = html_entity_decode($_POST['data']);
 }
 if (empty($input)) {
