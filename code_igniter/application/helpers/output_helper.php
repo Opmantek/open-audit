@@ -121,8 +121,10 @@ if (! function_exists('output')) {
                 if ($CI->response->meta->collection == $table) {
                     $array = array();
                     foreach ($CI->response->data as $item) {
-                        foreach ($item->attributes->{$column} as $key => $value) {
-                            $array[] = $column.'.'.$key;
+                        if (!empty($item->attributes)) {
+                            foreach ($item->attributes->{$column} as $key => $value) {
+                                $array[] = $column.'.'.$key;
+                            }
                         }
                     }
                     $array = array_unique($array);
