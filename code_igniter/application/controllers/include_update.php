@@ -38,8 +38,8 @@ if ($this->response->meta->collection == 'clouds') {
 }
 
 if ($this->response->meta->format === 'json') {
-    #$this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
-    $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+    #$this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
+    $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
     output($this->response);
 } else {
     redirect($this->response->meta->collection);
