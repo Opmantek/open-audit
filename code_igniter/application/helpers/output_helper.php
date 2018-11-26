@@ -120,10 +120,12 @@ if (! function_exists('output')) {
             foreach ($special as $table => $column) {
                 if ($CI->response->meta->collection == $table) {
                     $array = array();
-                    foreach ($CI->response->data as $item) {
-                        if (!empty($item->attributes)) {
-                            foreach ($item->attributes->{$column} as $key => $value) {
-                                $array[] = $column.'.'.$key;
+                    if (!empty($CI->response->data)) {
+                        foreach ($CI->response->data as $item) {
+                            if (!empty($item->attributes)) {
+                                foreach ($item->attributes->{$column} as $key => $value) {
+                                    $array[] = $column.'.'.$key;
+                                }
                             }
                         }
                     }
