@@ -145,9 +145,9 @@ foreach ($xml->children() as $input) {
         $discovery->id = '';
         $discovery->discard = '';
         if (!empty($this->config->default_network_address)) {
-            $discovery->network_address = 'http://' . $this->config->default_network_address . '/open-audit/';
+            $discovery->network_address = $this->config->default_network_address;
         } else {
-            $discovery->network_address = 'http://localhost/open-audit/';
+            $discovery->network_address = 'http://127.0.0.1/open-audit/';
         }
     }
     $log->system_id = null;

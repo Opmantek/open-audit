@@ -217,7 +217,7 @@ class M_scripts extends MY_Model
             # inject our default network address
             $test = @$CI->config->item('default_network_address');
             if (!empty($test)) {
-                $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/input/devices';
+                $options->url = $CI->config->item('default_network_address') . 'index.php/input/devices';
             } else {
                 unset($options->url);
             }

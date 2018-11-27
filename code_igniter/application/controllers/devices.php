@@ -448,7 +448,7 @@ class devices extends MY_Controller
                 $data->org_id = $this->response->data[0]->attributes->org_id;
                 $data->type = 'subnet';
                 $data->discard = 'y';
-                $data->network_address = 'http://' . $this->config->config['default_network_address'] . '/open-audit/';
+                $data->network_address = $this->config->config['default_network_address'];
                 $data->other = new stdClass();
                 $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
                 $discovery_id = $this->m_collection->create($data, 'discoveries');
