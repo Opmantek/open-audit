@@ -29,11 +29,23 @@
 
 $this->log_db('Upgrade database to 2.3.1 commenced');
 
+# configuration
+$value = $this->config->config['default_network_address'];
+$value = str_replace('https://', '', $value);
+$value = str_replace('http://', '', $value);
+$value = str_replace('/open-audit/', '', $value);
+$value = str_replace('/open-audit', '', $value);
+$value = 'http://' . $value . '/open-audit/';
+$data = array($value);
+$sql = "UPDATE `configuration` SET `value` = ? WHERE `name` = 'default_network_address'";
+$this->db->query($sql, $data);
+$this->log_db($this->db->last_query());
+
 # locations
 $this->alter_table('locations', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFAULT NULL AFTER `geo`", 'add');
 
 # networks
-$this->alter_table('networks', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFAULT NULL AFTER `external_ident`", 'add')
+$this->alter_table('networks', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFAULT NULL AFTER `external_ident`", 'add');
 
 # system
 $this->alter_table('system', 'storage_count', "ADD `storage_count` int(10) unsigned NOT NULL DEFAULT '0' AFTER `processor_count`", 'add');

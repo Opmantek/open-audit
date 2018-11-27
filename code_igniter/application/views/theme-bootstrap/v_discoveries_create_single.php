@@ -34,23 +34,43 @@
 * @link      http://www.open-audit.org
  */
 
-$proto = 'http://';
-if ($this->config->config['is_ssl'] === true) {
-    $proto = 'https://';
-}
-$network_address = '';
+// $proto = 'http://';
+// if ($this->config->config['is_ssl'] === true) {
+//     $proto = 'https://';
+// }
+// $network_address = '';
+// $network_address_array = array();
+// if ($this->config->config['default_network_address'] != '') {
+//     $network_address = "<option selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>";
+//     $network_address_array[] =  $network_address;
+// }
+// $address_array = explode(",", $this->config->config['ip']);
+// foreach ($address_array as $key => $value) {
+//     if ($value != $this->config->config['default_network_address']) {
+//         $network_address = "<option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
+//         $network_address_array[] = $network_address;
+//     }
+// }
 $network_address_array = array();
-if ($this->config->config['default_network_address'] != '') {
-    $network_address = "<option selected value='" . $proto . $this->config->config['default_network_address'] . "/open-audit/'>" . $proto . $this->config->config['default_network_address'] . "/open-audit/</option>";
+$selected = '';
+if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
+    $selected = 'selected';
+}
+$network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
+
+
+$selected = '';
+if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
+    $selected = 'selected';
+}
+$network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
+
+if (!empty($this->config->config['default_network_address'])) {
+    $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
     $network_address_array[] =  $network_address;
 }
-$address_array = explode(",", $this->config->config['ip']);
-foreach ($address_array as $key => $value) {
-    if ($value != $this->config->config['default_network_address']) {
-        $network_address = "<option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>";
-        $network_address_array[] = $network_address;
-    }
-}
+
+$network_address_array[] = "                                <option value='other'>Other</option>";
 ?>
 
 <?php if ($this->response->{'meta'}->{'warning'} == 'y') { ?>
@@ -86,12 +106,10 @@ foreach ($address_array as $key => $value) {
                         <label for="network_address_select" class="col-sm-4 control-label"><?php echo __('Network Address'); ?></label>
                         <div class="col-sm-7 input-group">
                             <select required class="form-control" id="network_address_select" name="network_address_select">
-                                <option value='' label=' '></option>
-                                <option value='other'><?php echo __('Other') ;?></option>
                                 <?php
                                 foreach ($network_address_array as $key => $value) {
-                                    if ($network_address != '') {
-                                        echo $network_address;
+                                    if ($value != '') {
+                                        echo $value;
                                     }
                                 }
                                 ?>
