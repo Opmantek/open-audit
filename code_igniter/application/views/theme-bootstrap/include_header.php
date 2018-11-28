@@ -37,7 +37,7 @@ if (!empty($this->config->config['servers'])) {
                                 <?php if ($this->config->config['oae_license'] == 'none') { ?>
                                 <li class="disabled"><a href='#' title="Enable Professional or Enterprise to use this functionality"><?php echo htmlentities($item->attributes->name); ?></a></li>
                             <?php } else { ?>
-                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/dashboards/<?php echo $item->id ?>/execute"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                                <li><a href="/omk/open-audit/dashboards/<?php echo $item->id ?>/execute"><?php echo htmlentities($item->attributes->name); ?></a></li>
                             <?php } ?>
                         <?php } } ?>
                         </ul>
