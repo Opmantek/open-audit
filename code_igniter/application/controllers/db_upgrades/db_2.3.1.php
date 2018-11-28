@@ -51,6 +51,15 @@ $this->alter_table('networks', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFA
 $this->alter_table('system', 'storage_count', "ADD `storage_count` int(10) unsigned NOT NULL DEFAULT '0' AFTER `processor_count`", 'add');
 $this->alter_table('system', 'discovery_id', "ADD `discovery_id` int(10) unsigned DEFAULT NULL AFTER `instance_options`", 'add');
 
+# widgets
+$sql = "DELETE FROM `widgets` WHERE `name` = 'Last Seen By' AND edited_by = 'system'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `widgets` VALUES (NULL,'Last Seen By',1,'','pie','','system.last_seen_by','','','Devices Last Seen By','','',0,'','','','system','2000-01-01')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20181130' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
