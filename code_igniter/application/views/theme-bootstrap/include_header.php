@@ -30,6 +30,19 @@ if (!empty($this->config->config['servers'])) {
                 <ul class="nav navbar-nav">
                 <?php if (!$collector) { ?>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('View'); ?> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                        <?php foreach ($this->response->included as $item) { ?>
+                            <?php if ($item->type === 'dashboards') { ?>
+                                <?php if ($this->config->config['oae_license'] == 'none') { ?>
+                                <li class="disabled"><a href='#' title="Enable Professional or Enterprise to use this functionality"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                            <?php } else { ?>
+                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/dashboards/<?php echo $item->id ?>/execute"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                            <?php } ?>
+                        <?php } } ?>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Discover'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <?php

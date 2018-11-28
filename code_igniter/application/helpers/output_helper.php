@@ -619,6 +619,11 @@ if (! function_exists('output')) {
             $CI->response->included = array_merge($CI->response->included, $result);
         }
 
+
+        $CI->load->model('m_collection');
+        $result = @$CI->m_collection->collection('dashboards');
+        $CI->response->included = @array_merge($CI->response->included, $result);
+
         $include = true;
         foreach ($CI->response->included as $item) {
             if ($item->type == 'attributes') {
