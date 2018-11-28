@@ -161,6 +161,9 @@ class M_discoveries extends MY_Model
             if ($this->config->config['is_ssl'] === true) {
                 $proto = 'https';
             }
+            if (stripos($this->config->config['default_network_address'], 'https:') !== false) {
+                $proto = 'https';
+            }
             # run the script and continue (do not wait for result)
             if (php_uname('s') != 'Windows NT') {
                 $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/discoveries method=post > /dev/null 2>&1 &';
