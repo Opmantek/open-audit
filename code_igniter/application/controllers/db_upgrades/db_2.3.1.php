@@ -60,6 +60,10 @@ $sql = "INSERT INTO `widgets` VALUES (NULL,'Last Seen By',1,'','pie','','system.
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "UPDATE `widgets` SET `link` = 'devices?@description&properties=system.id,system.type,system.name,system.ip,system.os_family,system.last_seen,system.status' WHERE `name` = 'Devices Not Seen (0-180+ Days)' AND `edited_by` = 'system'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20181130' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
