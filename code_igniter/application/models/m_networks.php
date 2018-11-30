@@ -183,10 +183,10 @@ class M_networks extends MY_Model
         if (empty($ip_address)) {
             return false;
         }
-        if ($ip_address == '127.0.0.1' or $ip_address == '127.0.1.1') {
+        if ($ip_address === '127.0.0.1' or $ip_address === '127.0.1.1') {
             return true;
         }
-        if ($ip_address == '::1') {
+        if ($ip_address === '::1') {
             return true;
         }
         # TODO - IPv6 support
