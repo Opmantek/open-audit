@@ -1053,7 +1053,7 @@ class M_collection extends MY_Model
                 break;
 
             case "discoveries":
-                return(' name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete ');
+                return(' name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete status ');
                 break;
 
             case "fields":
