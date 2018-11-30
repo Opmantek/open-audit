@@ -253,6 +253,11 @@ if (!function_exists('audit_format_system')) {
         $log->command_status = '';
         $log->command_time_to_execute = '';
         $log->command_output = '';
+
+        if (!empty($input->ip)) {
+            $log->ip = (string)$input->ip;
+        }
+
         if (!empty($GLOBALS['discovery_id'])) {
             $log->discovery_id = $GLOBALS['discovery_id'];
         } else if (!empty($input->discovery_id)) {

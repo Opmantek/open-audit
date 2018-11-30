@@ -1583,6 +1583,7 @@ if (!function_exists('snmp_audit')) {
         $guests = array();
         if ($vendor_oid == 6876) {
             if (file_exists(BASEPATH.'../application/helpers/snmp_6876_2_helper.php')) {
+                $log->severity = 7;
                 $log->message = 'snmp_helper::snmp_audit is loading the model helper for VMware virtual guests';
                 stdlog($log);
                 include 'snmp_6876_2_helper.php';
