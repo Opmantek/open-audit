@@ -33,7 +33,7 @@ if (count($this->response->data) == 0) {
     if ($this->response->meta->format === 'json') {
         output($this->response);
     } else {
-        reditect($this->response->meta->collection);
+        redirect($this->response->meta->collection);
     }
 }
 
