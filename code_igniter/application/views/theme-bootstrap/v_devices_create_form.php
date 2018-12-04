@@ -76,7 +76,7 @@
                                 <option value=''><?php echo __('Choose'); ?></option>
                                 <?php
                                 foreach ($this->response->included as $item) {
-                                    if ($item->type == 'attributes' and $item->attributes->type == 'device_type') {
+                                    if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'type') {
                                         echo "<option value='" . htmlspecialchars( $item->attributes->value, REPLACE_FLAGS, CHARSET) . "'>".__($item->attributes->name)."</option>\n";
                                     }
                                 }
@@ -120,7 +120,7 @@
                             <select class="form-control" id="data[attributes][status]" name="data[attributes][status]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'attributes' and $item->attributes->type == 'device_status') {
+                                if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'status') {
                                     $selected = '';
                                     if ($item->attributes->value == 'production') {
                                         $selected = ' selected';
@@ -129,7 +129,7 @@
                                 }
                             }
                             ?>
-                            </select>
+                        </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -138,7 +138,7 @@
                             <select class="form-control" id="data[attributes][environment]" name="data[attributes][environment]">
                             <?php
                             foreach ($this->response->included as $item) {
-                                if ($item->type == 'attributes' and $item->attributes->type == 'device_environment') {
+                                if ($item->type == 'attributes' and $item->attributes->resource == 'devices' and $item->attributes->type == 'environment') {
                                     $selected = '';
                                     if ($item->attributes->value == 'production') {
                                         $selected = ' selected';
