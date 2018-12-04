@@ -419,12 +419,22 @@ foreach ($xml->children() as $input) {
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
         }
+        $log->severity = 5;
         discovery_log($log);
+        $log->severity = 7;
         $input->ssh_status = 'false';
     }
 
+    $log->file = 'include_input_discoveries';
+    $log->function = 'discoveries';
+
     # run SSH audit commands
     if ($input->ssh_status == 'true') {
+        $log->message = 'Testing SSH credentials for '.$device->ip;
+        if (!empty($device->id)) {
+            $log->message .= ' (System ID ' . $device->id . ')';
+        }
+        discovery_log($log);
         $ssh_details = ssh_audit($device->ip, $credentials);
         if (!empty($ssh_details)) {
 
