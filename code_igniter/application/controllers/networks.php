@@ -46,6 +46,12 @@
  */
 class Networks extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+
+    */
     public function __construct()
     {
         parent::__construct();
@@ -54,6 +60,12 @@ class Networks extends MY_Controller
         $this->output->url = $this->config->item('oa_web_index');
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }
@@ -88,7 +100,7 @@ class Networks extends MY_Controller
     */
     public function read()
     {
-        #$this->response->included = $this->m_networks->sub_resource();
+        // $this->response->included = $this->m_networks->sub_resource();
         include 'include_read.php';
     }
 

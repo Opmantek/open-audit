@@ -205,5 +205,5 @@ class Licenses extends MY_Controller
     }
 
 }
-// End of file locations.php
-// Location: ./controllers/locations.php
+// End of file licenses.php
+// Location: ./controllers/licenses.php

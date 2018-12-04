@@ -45,10 +45,8 @@
 * @link     http://www.open-audit.org
  */
 
- /**
- * Everything following is designed to respond with JSON only
- *
- */
+ /** Everything following is designed to respond with JSON only **/
+
 class Charts extends MY_Controller
 {
     /**

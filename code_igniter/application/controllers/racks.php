@@ -44,8 +44,14 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class racks extends MY_Controller
+class Racks extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+
+    */
     public function __construct()
     {
         parent::__construct();
@@ -54,6 +60,12 @@ class racks extends MY_Controller
         $this->output->url = $this->config->item('oa_web_index');
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }

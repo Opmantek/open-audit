@@ -29,7 +29,7 @@ if (empty($this->response->meta->received_data)) {
     output($this->response);
     exit();
 }
-if ($this->response->meta->collection == 'clouds') {
+if ($this->response->meta->collection === 'clouds') {
 	$this->load->model('m_clouds');
 	$this->m_clouds->update();
 } else {

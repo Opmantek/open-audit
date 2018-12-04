@@ -149,13 +149,12 @@ class Database extends MY_Controller
         $this->data = $this->m_database->execute();
         $this->response->meta->action = 'read';
         $this->response->meta->format = 'screen';
-        if (!empty($this->response->meta->groupby)) {
+        if ( ! empty($this->response->meta->groupby)) {
             $this->response->meta->format = 'json';
             $this->response->special = $this->data;
         }
         $this->response->errors = array();
         include 'include_read.php';
-        #output($this->response);
     }
 
     /**
@@ -174,13 +173,13 @@ class Database extends MY_Controller
     * Drop a foreign key on a table
     *
     * @access public
-    * @param  string    table      The table to be altered
-    * @param  string    key        The foreign key to be added
+    * @param  string $table The table to be altered
+    * @param  string $key   The foreign key to be added
     * @return void
     */
     private function drop_foreign_key($table = '', $key = '')
     {
-        if ($table == '' or $key == '') {
+        if (empty($table) or empty($key)) {
             $this->log_db("WARNING - Required attributes not provided to 'drop_foreign_key'");
             return;
         }

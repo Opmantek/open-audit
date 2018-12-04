@@ -197,12 +197,14 @@ class Ldap_servers extends MY_Controller
     * @access public
     * @return NULL
     */
+
     // public function test()
     // {
     //     $ldap_server = $this->m_ldap_servers->read();
     //     header('Content-Type: application/json');
     //     echo json_encode($ldap_server);
     // }
+
 }
 // End of file ldap_servers.php
 // Location: ./controllers/ldap_servers.php

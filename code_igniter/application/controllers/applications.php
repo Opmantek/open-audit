@@ -188,5 +188,5 @@ class Applications extends MY_Controller
         include 'include_import.php';
     }
 }
-// End of file attributes.php
-// Location: ./controllers/attributes.php
+// End of file applications.php
+// Location: ./controllers/applications.php

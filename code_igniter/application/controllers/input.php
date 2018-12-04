@@ -44,7 +44,7 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class input extends CI_Controller
+class Input extends CI_Controller
 {
     /**
     * Constructor
