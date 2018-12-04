@@ -42,6 +42,7 @@ $syslog->action = 'input::discoveries';
 $syslog->severity = 6;
 $syslog->summary = '';
 $syslog->message = '';
+$syslog->ip = '127.0.0.1';
 
 // our required models
 $this->load->model('m_audit_log');
@@ -145,9 +146,9 @@ foreach ($xml->children() as $input) {
         $discovery->id = '';
         $discovery->discard = '';
         if (!empty($this->config->default_network_address)) {
-            $discovery->network_address = 'http://' . $this->config->default_network_address . '/open-audit/';
+            $discovery->network_address = $this->config->default_network_address;
         } else {
-            $discovery->network_address = 'http://localhost/open-audit/';
+            $discovery->network_address = 'http://127.0.0.1/open-audit/';
         }
     }
     $log->system_id = null;
@@ -270,7 +271,8 @@ foreach ($xml->children() as $input) {
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
 
         // remove any old logs for this device
-        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
+        #$sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
+        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and discovery_id != " . $discovery->id;
         $log->message = 'Delete the previous log entries for this device';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -285,7 +287,8 @@ foreach ($xml->children() as $input) {
         unset($log->id, $command_log_id);
         
         // update the previous log entries with our new system_id
-        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
+        #$sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
+        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
         $log->message = 'Update the current log entries with our new device';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -435,7 +438,16 @@ foreach ($xml->children() as $input) {
             $log->message .= ' (System ID ' . $device->id . ')';
         }
         discovery_log($log);
-        $ssh_details = ssh_audit($device->ip, $credentials);
+        #$ssh_details = ssh_audit($device->ip, $credentials);
+        $parameters = new stdClass();
+        $parameters->ip = $device->ip;
+        $parameters->system_id = '';
+        if (!empty($device->id)) {
+            $parameters->system_id = $device->id;
+        }
+        $parameters->log = $log;
+        $parameters->credentials = $credentials;
+        $ssh_details = ssh_audit($parameters);
         if (!empty($ssh_details)) {
 
             if (!empty($ssh_details->credentials)) {
@@ -576,7 +588,8 @@ foreach ($xml->children() as $input) {
         $action = 'update';
 
         // remove any old logs for this device
-        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
+        #$sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
+        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and discovery_id != " . $discovery->id;
         $log->message = 'Delete the previous log entries for this system_id';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -591,7 +604,8 @@ foreach ($xml->children() as $input) {
         unset($log->id, $command_log_id);
         
         // update the previous log entries with our new system_id
-        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
+        #$sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
+        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
         $log->message = 'Update the previous log entries with the system_id';
         $log->command = $sql;
         $command_log_id = discovery_log($log);
@@ -613,12 +627,14 @@ foreach ($xml->children() as $input) {
         $device->ip = ip_address_from_db($device->ip);
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
+        $log->ip = $device->ip;
         $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
     } else {
         // we have a new system - INSERT
         $action = 'insert';
         $log->severity = 7;
+        $log->ip = $device->ip;
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         discovery_log($log);
         $device->id = $this->m_device->insert($device);
@@ -1141,6 +1157,7 @@ foreach ($xml->children() as $input) {
         $log->command = '';
         $log->command_output = '';
         $log->message = '';
+        $log->ip = $device->ip;
 
         if (!empty($result) and gettype($result) == 'array') {
             foreach ($result as $line) {
@@ -1194,6 +1211,7 @@ foreach ($xml->children() as $input) {
     $log->status = 'notice';
     $log->severity = 7;
     $log->command = '';
+    $log->ip = $device->ip;
     if (!empty($audit_result)) {
         $audit_result = str_replace('data=<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', $audit_result);
         $audit = audit_convert($audit_result);

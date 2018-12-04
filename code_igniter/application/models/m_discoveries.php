@@ -154,11 +154,14 @@ class M_discoveries extends MY_Model
             $sql = "INSERT INTO `queue` VALUES (null, 'discoveries', ?, NOW())";
             $data = array(json_encode($discovery[0]));
             $this->run_sql($sql, $data);
-            $sql = 'UPDATE `discoveries` SET `status` = "queued" WHERE `id` = ?';
+            $sql = 'UPDATE `discoveries` SET `status` = "queued", `discovered` = "" WHERE `id` = ?';
             $data = array(intval($discovery[0]->id));
             $this->run_sql($sql, $data);
             $proto = 'http';
             if ($this->config->config['is_ssl'] === true) {
+                $proto = 'https';
+            }
+            if (stripos($this->config->config['default_network_address'], 'https:') !== false) {
                 $proto = 'https';
             }
             # run the script and continue (do not wait for result)

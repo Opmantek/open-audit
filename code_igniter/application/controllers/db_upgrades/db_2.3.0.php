@@ -498,7 +498,7 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 $dashboards_options = '{"layout":"3x2","widget_count":6,"widgets":[{"position":"1","size":"1","widget_id":"' . $widget_1 . '"},{"position":"2","size":"1","widget_id":"' . $widget_2 . '"},{"position":"3","size":"1","widget_id":"' . $widget_3 . '"},{"position":"4","size":"1","widget_id":"' . $widget_4 . '"},{"position":"5","size":"1","widget_id":"' . $widget_5 . '"},{"position":"6","size":"1","widget_id":"' . $widget_6 . '"}]}';
-$sql = "INSERT INTO `dashboards` VALUES (NULL, 'Cloud Dashboard', 1, 'org', 0, 'The details of your cloud infrastructure', 'y', ?, 'system', '2000-01-01 00:00:00')";
+$sql = "INSERT INTO `dashboards` VALUES (NULL, 'Cloud Dashboard', 1, 'org', 0, 'The details of your cloud infrastructure', 'n', ?, 'system', '2000-01-01 00:00:00')";
 $data = array($dashboards_options);
 $this->db->query($sql, $data);
 $this->log_db($this->db->last_query());

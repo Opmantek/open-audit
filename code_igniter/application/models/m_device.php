@@ -1034,6 +1034,9 @@ class M_device extends MY_Model
         $log->severity = 7;
         $log->pid = getmypid();
         $log->ip = $_SERVER['REMOTE_ADDR'];
+        if (!empty($details->ip)) {
+            $log->ip = ip_address_from_db($details->ip);
+        }
         $log->function = 'insert';
         $log->system_id = '';
         $log->file = 'm_device';
@@ -1050,6 +1053,8 @@ class M_device extends MY_Model
         } else {
             $log->discovery_id = '';
         }
+        discovery_log($log);
+
         $details = audit_format_system($details);
 
         if (empty($details->name)) {
@@ -1204,6 +1209,7 @@ class M_device extends MY_Model
             $details->ip = "N/A";
         }
 
+        $log->ip = ip_address_from_db($details->ip);
         $log->message = 'System insert end for '.ip_address_from_db($details->ip).' ('.$details->hostname.')';
         $log->command_status = 'finish';
         discovery_log($log);

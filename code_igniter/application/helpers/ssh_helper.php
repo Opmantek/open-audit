@@ -448,36 +448,59 @@ if (! function_exists('ssh_command')) {
 }
 
 if (! function_exists('ssh_audit')) {
-    function ssh_audit($ip = '', $credentials = '')
+    #function ssh_audit($ip = '', $credentials = '')
+    function ssh_audit($parameters)
     {
-        $log = new stdClass();
-        $log->discovery_id = '';
-        if (!empty($GLOBALS['discovery_id'])) {
-            $log->discovery_id = intval($GLOBALS['discovery_id']);
+        // $log = new stdClass();
+        // $log->discovery_id = '';
+        // if (!empty($GLOBALS['discovery_id'])) {
+        //     $log->discovery_id = intval($GLOBALS['discovery_id']);
+        // }
+        // $log->severity = 7;
+        // $log->file = 'ssh_helper';
+        // $log->function = 'ssh_audit';
+        // $log->command = '';
+        // $log->ip = @$ip;
+        // $log->message = 'SSH audit starting';
+        // discovery_log($log);
+
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else {
+            $log = new stdClass();
+            $log->message = 'No log supplied to ssh_audit function.';
+            $log->severity = 5;
+            stdlog($log);
+            return false;
         }
-        $log->severity = 7;
-        $log->file = 'ssh_helper';
-        $log->function = 'ssh_audit';
-        $log->command = '';
-        $log->message = 'SSH audit starting';
-        discovery_log($log);
+
+        if (!empty($parameters->credentials) and is_array($parameters->credentials)) {
+            $credentials = $parameters->credentials;
+        } else {
+            if (empty($parameters->credentials)) {
+                $log->message = 'No credentials supplied to ssh_audit function.';
+            } else {
+                $log->message = 'No credentials array supplied to ssh_audit function. Supplied credentials are of type: ' . gettype($parameters->credentials);
+            }
+            $log->severity = 5;
+            discovery_log($log);
+            return false;
+        }
+
+        if (!empty($parameters->ip) and filter_var($parameters->ip, FILTER_VALIDATE_IP)) {
+            $ip = $parameters->ip;
+        } else {
+            if (empty($parameters->ip)) {
+                $log->message = 'No IP supplied to ssh_audit function.';
+            } else {
+                $log->message = 'Invalid IP supplied to ssh_audit function. Supplied IP is: ' . (string)$ip;
+            }
+            $log->severity = 5;
+            discovery_log($log);
+            return false;
+        }
+
         $CI = & get_instance();
-
-        if (empty($ip) or !filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'Invalid or blank IP supplied to ssh_audit function.';
-            $log->severity = 5;
-            discovery_log($log);
-            return false;
-        }
-
-        #if (!is_object($credentials)) {
-        if (!is_array($credentials)) {
-            $log->message = 'No credentials supplied to ssh_audit function.';
-            $log->severity = 5;
-            discovery_log($log);
-            return false;
-        }
-
         if (php_uname('s') != 'Windows NT') {
             set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
         } else {
