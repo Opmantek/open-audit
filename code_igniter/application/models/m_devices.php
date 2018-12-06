@@ -1387,7 +1387,7 @@ class M_devices extends MY_Model
                     $details->icon = 'aix';
                 }
                 if (strripos($details->os_name, "amazon") !== false) {
-                    $details->icon = 'amzn';
+                    $details->icon = 'amazon';
                 }
                 if (strripos($details->os_name, "arch") !== false) {
                     $details->icon = 'arch';
@@ -1519,7 +1519,7 @@ class M_devices extends MY_Model
                     $details->icon = 'aix';
                 }
                 if (strripos($details->os_name, "amazon") !== false) {
-                    $details->icon = 'amzn';
+                    $details->icon = 'amazon';
                 }
                 if (strripos($details->os_name, "bsd") !== false) {
                     $details->icon = 'bsd';
