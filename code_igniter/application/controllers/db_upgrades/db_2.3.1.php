@@ -47,6 +47,10 @@ $this->alter_table('locations', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEF
 # networks
 $this->alter_table('networks', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFAULT NULL AFTER `external_ident`", 'add');
 
+# queue
+$this->alter_table('queue', 'pid', "ADD `pid` int(10) NOT NULL DEFAULT '0' AFTER `type`", 'add');
+$this->alter_table('queue', 'started_date', "ADD `started_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00' AFTER `edited_date`", 'add');
+
 # system
 $this->alter_table('system', 'storage_count', "ADD `storage_count` int(10) unsigned NOT NULL DEFAULT '0' AFTER `processor_count`", 'add');
 $this->alter_table('system', 'discovery_id', "ADD `discovery_id` int(10) unsigned DEFAULT NULL AFTER `instance_options`", 'add');

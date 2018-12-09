@@ -2409,8 +2409,10 @@ DROP TABLE IF EXISTS `queue`;
 CREATE TABLE `queue` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` varchar(20) NOT NULL DEFAULT '',
+  `pid` int(10) NOT NULL DEFAULT '0',
   `details` text NOT NULL,
-  `date_added` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `started_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
