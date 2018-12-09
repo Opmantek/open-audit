@@ -235,7 +235,11 @@ class devices extends MY_Controller
                     $input = new stdClass();
                     $input->item = array();
                     $input->item[] = $device_ip;
-                    $error = $this->m_devices_components->process_component('ip', $device, $input);
+                    $parameters = new stdClass();
+                    $parameters->table = 'ip';
+                    $parameters->details = $device;
+                    $parameters->input = $input;
+                    $error = $this->m_devices_components->process_component($parameters);
                 }
             }
 

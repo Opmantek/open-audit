@@ -98,19 +98,21 @@ class Nmis extends MY_Controller
         $flash_message = '';
         $this->load->helper('network');
 
+        $log = new stdClass();
+        $log->type = 'system';
+        $log->severity = 7;
+        $log->user = @$this->user->full_name;
+        $log->collection = @$this->response->meta->collection;
+        $log->action = @$this->response->meta->action;
+        $log->status = 'processing Nodes submission';
+
         # The uploaded file
         if (isset($_FILES['upload_file']['tmp_name']) and $_FILES['upload_file']['tmp_name'] != '') {
             $target_path = BASEPATH . "../application/uploads/" . basename($_FILES['upload_file']['name']);
             try {
                 move_uploaded_file($_FILES['upload_file']['tmp_name'], $target_path);
             } catch (Exception $e) {
-                $log = new stdClass();
-                $log->type = 'system';
                 $log->severity = 5;
-                $log->user = @$this->user->full_name;
-                $log->collection = @$this->response->meta->collection;
-                $log->action = @$this->response->meta->action;
-                $log->status = 'processing Nodes submission';
                 $log->summary = 'Could not move uploaded Nodes file.';
                 $log->detail = $e;
                 stdlog($log);
@@ -234,7 +236,12 @@ class Nmis extends MY_Controller
                 $device->nmis_role = @$node['roleType'];
                 $device->nmis_notes = @$node['notes'];
                 $device->nmis_business_service = @$node['businessService'];
-                $device->id = $this->m_device->match($device);
+
+                $parameters = new stdCLass();
+                $parameters->details = $device;
+                $parameters->log = $log;
+                $device->id = $this->m_device->match($parameters);
+
                 $device->credentials = new stdClass();
                 $device->credentials->description = 'Imported from NMIS';
                 $device->credentials->name = 'Device Specific Credentials';

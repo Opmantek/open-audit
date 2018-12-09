@@ -195,6 +195,10 @@ if (! function_exists('discovery_log')) {
         if (empty($log->command)) {
             $log->command = '';
         }
+        if (!empty($log->status) and empty($log->command_status)) {
+            $log->command_status = $log->status;
+            unset($log->status);
+        }
         if (empty($log->command_status)) {
             $log->command_status = '';
         }

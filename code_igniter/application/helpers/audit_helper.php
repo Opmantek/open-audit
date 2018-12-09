@@ -38,48 +38,67 @@ if (!defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
-if (!function_exists('audit_convert')) {
-    function audit_convert($input = '')
-    {
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->pid = getmypid();
-        $log->ip = $_SERVER['REMOTE_ADDR'];
-        $log->function = 'audit_convert';
-        if (!empty($GLOBALS['discovery_id'])) {
-            # We can log to the discovery log
-            $log->discovery_id = $GLOBALS['discovery_id'];
-            $log->system_id = '';
-            $log->file = 'audit_helper';
-            $log->message = '';
-            $log->command = '';
-            $log->command_status = '';
-            $log->command_time_to_execute = '';
-            $log->command_output = '';
-        } else {
-            # We can log to the standard log
-            $log->type = 'system';
-            $log->server = php_uname('n');
-            $log->collection = '';
-            $log->action = '';
-            $log->status = '';
-            $log->summary = '';
-            $log->detail = '';
-        }
 
+
+if (!function_exists('accept_input')) {
+    function accept_input($input = '')
+    {
         if (empty($input)) {
-            $log->severity = 5;
-            if (!empty($GLOBALS['discovery_id'])) {
-                $log->message = 'No input provided to audit_convert';
-                $log->command_status = 'fail';
-                discovery_log($log);
-            } else {
-                $log->summary = 'No input provided to audit_convert';
-                $log->status = 'fail';
-                stdlog($log);
-            }
             return false;
         }
+        if (is_string($input)) {
+            $json = html_entity_decode($input);
+            if (mb_detect_encoding($json) !== 'UTF-8') {
+                $json = utf8_encode($json);
+            }
+            $json = @json_decode($json);
+            if ($json) {
+                unset($input);
+                return $json;
+            }
+        }
+        if (is_string($input)) {
+            $xml = html_entity_decode($input);
+            if (mb_detect_encoding($xml) !== 'UTF-8') {
+                $xml = utf8_encode($xml);
+            }
+            $xml = iconv('UTF-8', 'UTF-8//TRANSLIT', $xml);
+            $xml = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $xml);
+            libxml_use_internal_errors(true);
+            $xml = @simplexml_load_string($xml);
+            if ($xml !== false) {
+                unset($input);
+                return $xml;
+            }
+        }
+        return false;
+    }
+}
+
+
+
+
+
+
+
+if (!function_exists('audit_convert')) {
+    function audit_convert($parameters)
+    {
+        if (empty($parameters) or empty($parameters->log) or empty($parameters->input)) {
+            $mylog = new stdClass();
+            $mylog->severity = 4;
+            $mylog->status = 'fail';
+            $mylog->message = 'Function audit_convert called without correct params object';
+            $mylog->file = 'audit_helper';
+            $mylog->function = 'audit_convert';
+            stdlog($mylog);
+            return false;
+        }
+
+        $input = $parameters->input;
+        $log = $parameters->log;
+        $log->file = 'audit_helper';
+        $log->function = 'audit_convert';
 
         if (is_string($input)) {
             # See if we have stringified JSON
@@ -150,7 +169,7 @@ if (!function_exists('audit_convert')) {
                 foreach (libxml_get_errors() as $error) {
                     $log->message = 'Could not convert string to XML';
                     $log->command_status = 'fail';
-                    $log->command_output = $error;
+                    $log->command_output = $error->message . ' at ' . $error->line . ', column ' . $error->column . ', with code ' . $error->code;
                     discovery_log($log);
                 }
                 return false;
@@ -223,10 +242,11 @@ if (!function_exists('audit_convert')) {
         }
 
         $log->severity = 7;
-        $log->status = 'success';
         if (!empty($GLOBALS['discovery_id'])) {
+            $log->command_status = 'success';
             discovery_log($log);
         } else {
+            $log->status = 'success';
             stdlog($log);
         }
         return $input;
@@ -238,34 +258,21 @@ if (!function_exists('audit_convert')) {
 
 
 if (!function_exists('audit_format_system')) {
-    function audit_format_system($input = '')
+    function audit_format_system($parameters)
     {
         $CI =& get_instance();
-        $log = new stdClass();
-        $log->severity = 7;
-        $log->pid = getmypid();
-        $log->ip = $_SERVER['REMOTE_ADDR'];
-        $log->function = 'audit_format_system';
-        $log->system_id = '';
-        $log->file = 'audit_helper';
-        $log->message = '';
-        $log->command = '';
-        $log->command_status = '';
-        $log->command_time_to_execute = '';
-        $log->command_output = '';
 
-        if (!empty($input->ip)) {
-            $log->ip = (string)$input->ip;
+        if (empty($parameters) or empty($parameters->log) or empty($parameters->input)) {
+            $log = new stdClass();
+            $log->severity = 4;
+            $log->message = "Function audit_format_system called without parameters object.";
+            $log->status = 'fail';
+            stdlog($log);
+            return false;
         }
 
-        if (!empty($GLOBALS['discovery_id'])) {
-            $log->discovery_id = $GLOBALS['discovery_id'];
-        } else if (!empty($input->discovery_id)) {
-            $log->discovery_id = $input->discovery_id;
-            $GLOBALS['discovery_id'] = $input->discovery_id;
-        } else {
-            $log->discovery_id = '';
-        }
+        $mylog = $parameters->log;
+        $input = $parameters->input;
 
         if (empty($input->id)) {
             $input->id = '';
@@ -274,16 +281,16 @@ if (!function_exists('audit_format_system')) {
             $data = array(intval($input->id));
             $query = $CI->db->query($sql, $data);
             $result = $query->result();
-            $log->system_id = intval($input->id);
+            $mylog->system_id = intval($input->id);
             if (!empty($result[0]->status) and $result[0]->status !== 'production') {
-                $log->message = "Removing supplied system ID (" . intval($input->id) . ") as the device is not in production status.";
-                discovery_log($log);
+                $mylog->message = "Removing supplied system ID (" . intval($input->id) . ") as the device is not in production status.";
+                discovery_log($mylog);
                 $input->id = '';
             }
         }
 
-        $log->message = 'Formatting system details';
-        discovery_log($log);
+        $mylog->message = 'Formatting system details';
+        discovery_log($mylog);
 
         $input->audits_ip = ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
@@ -313,8 +320,8 @@ if (!function_exists('audit_format_system')) {
 
         if (!empty($input->last_seen_by) and $input->last_seen_by == 'nmap') {
             unset($input->type);
-            $log->message = "Last Seen By is nmap - unsetting type attribute.";
-            discovery_log($log);
+            $mylog->message = "Last Seen By is nmap - unsetting type attribute.";
+            discovery_log($mylog);
         }
 
         if (empty($input->timestamp)) {
@@ -339,8 +346,8 @@ if (!function_exists('audit_format_system')) {
         if (!filter_var($input->hostname, FILTER_VALIDATE_IP)) {
             if (strpos($input->hostname, '.') !== false) {
                 # we have a fqdn in the hostname field
-                $log->message = "FQDN supplied in hostname, converting.";
-                discovery_log($log);
+                $mylog->message = "FQDN supplied in hostname, converting.";
+                discovery_log($mylog);
                 if (empty($input->fqdn)) {
                     $input->fqdn = $input->hostname;
                 }
@@ -358,8 +365,8 @@ if (!function_exists('audit_format_system')) {
             # we have an ip address in the hostname field
             if (empty($input->ip)) {
                 $input->ip = $input->hostname;
-                $log->message = "IP supplied in hostname, setting device IP.";
-                discovery_log($log);
+                $mylog->message = "IP supplied in hostname, setting device IP.";
+                discovery_log($mylog);
             }
             $input->hostname = '';
         }
@@ -369,14 +376,14 @@ if (!function_exists('audit_format_system')) {
             (strripos($input->manufacturer, "parallels") !== false) or
             (strripos($input->manufacturer, "virtual") !== false))) {
             $input->form_factor = 'Virtual';
-            $log->message = "Manufacturer match, setting form factor to Virtual.";
-            discovery_log($log);
+            $mylog->message = "Manufacturer match, setting form factor to Virtual.";
+            discovery_log($mylog);
         }
 
         if (empty($input->fqdn) and !empty($input->hostname) and !empty($input->domain)) {
             $input->fqdn = $input->hostname . "." . $input->domain;
-            $log->message = "No FQDN, but hostname and domain supplied, setting FQDN.";
-            discovery_log($log);
+            $mylog->message = "No FQDN, but hostname and domain supplied, setting FQDN.";
+            discovery_log($mylog);
         }
 
         if (isset($input->os_name)) {
@@ -405,14 +412,14 @@ if (!function_exists('audit_format_system')) {
             $input->description = mac_model($input->serial);
             $input->class = mac_class($input->model);
             $input->form_factor = mac_form_factor($input->model);
-            $log->message = "OSX detected, setting description, class and form factor.";
-            discovery_log($log);
+            $mylog->message = "OSX detected, setting description, class and form factor.";
+            discovery_log($mylog);
         }
 
         # because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
         if (!empty($input->uuid) and !empty($input->serial) and stripos($input->serial, 'vmware-') !== false and !empty($input->os_name) and stripos($input->os_name, 'windows') !== false) {
-            $log->message = "Windows VMware style serial detected, creating vm_uuid.";
-            discovery_log($log);
+            $mylog->message = "Windows VMware style serial detected, creating vm_uuid.";
+            discovery_log($mylog);
             # serial is taken from Win32_ComputerSystemProduct.IdentifyingNumber
             # Vmware supplies - 564d3739-b4cb-1a7e-fbb1-b10dcc0335e1
             # audit_windows supples - VMware-56 4d 37 39 b4 cb 1a 7e-fb b1 b1 0d cc 03 35 e1

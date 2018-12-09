@@ -40,29 +40,33 @@ class M_device extends MY_Model
         parent::__construct();
     }
 
-    public function match($details, $command = '')
+    #public function match($details, $command = '')
+    public function match($parameters)
     {
+        if (empty($parameters) or empty($parameters->details) or empty($parameters->log)) {
+            $mylog = new stdClass();
+            $mylog->severity = 4;
+            $mylog->status = 'fail';
+            $mylog->message = 'Function match called without correct params object';
+            $mylog->file = 'm_device';
+            $mylog->function = 'match';
+            stdlog($mylog);
+            return false;
+        }
+
         # we are searching for a system.id.
+        $details = $parameters->details;
         $details = (object) $details;
         $details->id = '';
 
         $CI = & get_instance();
         $CI->load->helper('log');
 
-        $log = new stdClass();
-        if (!empty($details->discovery_id)) {
-            $log->discovery_id = $details->discovery_id;
-        } else {
-            $log->discovery_id = null;
-        }
-        $log->system_id = null;
-        $log->timestamp = null;
-        $log->severity = 7;
-        $log->pid = getmypid();
+        $log = $parameters->log;
         $log->file = 'm_device';
         $log->function = 'match';
-        $log->command = $command;
-        $log->message = '';
+        $log->severity = 7;
+
         $log_message = array(); // we will store our messages until we get a system.id, then wrtie them to the log
 
         $message = new stdClass();
@@ -189,7 +193,7 @@ class M_device extends MY_Model
             } else {
                 $message = new stdClass();
                 $message->message = 'MISS on NMIS uuid';
-                $message->command_status = 'fail';
+                $message->command_status = 'notice';
                 $message->command_output = 'NMIS UUID: ' . $details->omk_uuid;
                 $log_message[] = $message;
             }
@@ -220,7 +224,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on match_hostname_uuid.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'Hostname: ' . $details->hostname . ', UUID: ' . $details->uuid;
             $log_message[] = $message;
         } else {
@@ -282,7 +286,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on match_hostname_dbus.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'Hostname: ' . $details->hostname . ', DbusID: ' . $details->dbus_identifier;
             $log_message[] = $message;
         } else {
@@ -344,7 +348,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on hostname + serial.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'Hostname: ' . $details->hostname . ', Serial: ' . $details->serial;
             $log_message[] = $message;
         } else {
@@ -406,7 +410,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on match_dbus.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'DbusID: ' . $details->dbus_identifier;
             $log_message[] = $message;
         } else {
@@ -462,7 +466,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on fqdn.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'FQDN: ' . $details->fqdn;
             $log_message[] = $message;
         } else {
@@ -518,7 +522,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on serial + type.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type;
             $log_message[] = $message;
         } else {
@@ -642,7 +646,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on Mac Address (ip table).';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'MAC: ' . $details->mac_address;
             $log_message[] = $message;
         } else {
@@ -704,7 +708,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on Mac Address (network table).';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'MAC: ' . $details->mac_address;
             $log_message[] = $message;
         } else {
@@ -771,7 +775,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on Mac Address (addresses).';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'MAC: ' . $mac . ', SystemID : ' . $details->id;
             $log_message[] = $message;
         } else {
@@ -859,7 +863,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on IP Address.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'IP: ' . $details->ip;
             $log_message[] = $message;
         } else {
@@ -949,7 +953,7 @@ class M_device extends MY_Model
             }
             $message = new stdClass();
             $message->message = 'MISS on hostname.';
-            $message->command_status = 'fail';
+            $message->command_status = 'notice';
             $message->command_output = 'Hostname: ' . $details->hostname;
             $log_message[] = $message;
         } else {
@@ -1055,7 +1059,10 @@ class M_device extends MY_Model
         }
         discovery_log($log);
 
-        $details = audit_format_system($details);
+        $parameters = new stdClass();
+        $parameters->log = $log;
+        $parameters->input = $details;
+        $details = audit_format_system($parameters);
 
         if (empty($details->name)) {
             if (!empty($details->hostname)) {
@@ -1269,6 +1276,9 @@ class M_device extends MY_Model
         $details->original_last_seen_by = $db_entry->last_seen_by;
         $details->original_last_seen = $db_entry->last_seen;
         $details->original_timestamp = $db_entry->last_seen;
+        if (empty($details->timestamp)) {
+            $details->timestamp = $details->last_seen;
+        }
 
 
         $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column";

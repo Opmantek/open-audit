@@ -125,8 +125,10 @@ if (empty($input)) {
     print_r($this->response->errors);
     exit();
 }
-
-$json = audit_convert($input);
+$parameters = new stdClass();
+$parameters->input = $input;
+$parameters->log = $log;
+$json = audit_convert($parameters);
 
 if(!empty($json)){
     if (empty($json->system->discovery_id)) {
@@ -139,7 +141,10 @@ if(!empty($json)){
         $log->system_id = $json->system->id;
     }
 
-    $json->system = audit_format_system($json->system);
+    $parameters = new stdClass();
+    $parameters->input = $json->system;
+    $parameters->log = $log;
+    $json->system = audit_format_system($parameters);
     $details = $json->system;
 
     $json->system->mac_addresses = array();
@@ -180,7 +185,10 @@ if(!empty($json)){
         $details->last_seen_by = 'audit';
     }
 
-    $i = $this->m_device->match($details, 'process audit');
+    $parameters = new stdCLass();
+    $parameters->details = $details;
+    $parameters->log = $log;
+    $i = $this->m_device->match($parameters);
 
     if (empty($i) and !empty($details->id)) {
         $i = intval($details->id);
@@ -258,7 +266,12 @@ if(!empty($json)){
 
     foreach ($json as $key => $value) {
         if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
-            $this->m_devices_components->process_component($key, $details, $json->{$key});
+            $parameters = new stdClass();
+            $parameters->table = $key;
+            $parameters->details = $details;
+            $parameters->input = $json->{$key};
+            $parameters->log = $log;
+            $this->m_devices_components->process_component($parameters);
         }
     }
 
@@ -279,7 +292,12 @@ if(!empty($json)){
         }
         unset($item);
         if (count($dns) > 0) {
-            $this->m_devices_components->process_component('dns', $details, $dns);
+            $parameters = new stdClass();
+            $parameters->table = 'dns';
+            $parameters->details = $details;
+            $parameters->input = $dns;
+            $parameters->log = $log;
+            $this->m_devices_components->process_component($parameters);
         }
         unset($dns);
     }

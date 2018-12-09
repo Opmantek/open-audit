@@ -298,89 +298,90 @@ class M_devices_components extends MY_Model
         return($match_columns);
     }
 
-    public function process_component($table = '', $details, $input, $display = 'n', $match_columns = array())
+    /*
+    $parameters is an object that looks as below.
+    $parameters->table
+    $parameters->details
+    $parameters->input
+    $parameters->log
+    **/
+    public function process_component($parameters)
     {
         $create_alerts = $this->config->config['discovery_create_alerts'];
 
-        $log = new stdClass();
-        if (!empty($GLOBALS['discovery_id'])) {
-            $log->discovery_id = intval($GLOBALS['discovery_id']);
-        } else if (!empty($details->discovery_id)) {
-            $log->discovery_id = intval($details->discovery_id);
+        if (empty($parameters) or empty($parameters->table) or empty($parameters->details) or empty($parameters->input)) {
+            $mylog = new stdClass();
+            $mylog->severity = 4;
+            $mylog->status = 'fail';
+            $mylog->message = 'Function process_component called without correct params object';
+            $mylog->file = 'm_devices_components';
+            $mylog->function = 'process_component';
+            stdlog($mylog);
+            return;
         }
-        $log->system_id = (string)$details->id;
-        $log->timestamp = null;
+
+        $table = $parameters->table;
+        if (!$this->db->table_exists($table)) {
+            $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $log->command_status = 'fail';
+            $log->severity = 4;
+            discovery_log($log);
+            return;
+        }
+
+        $details = $parameters->details;
+
+        $input = $parameters->input;
+
+        if (!empty($parameters->match_columns)) {
+            $match_columns = $parameters->match_columns;
+        } else {
+            $match_columns = $this->match_columns($table);
+        }
+
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else {
+            $log = new stdClass();
+            if (!empty($GLOBALS['discovery_id'])) {
+                $log->discovery_id = intval($GLOBALS['discovery_id']);
+            } else if (!empty($details->discovery_id)) {
+                $log->discovery_id = intval($details->discovery_id);
+            }
+            $log->system_id = (string)$details->id;
+            $log->timestamp = null;
+            $log->severity_text = '';
+            $log->pid = getmypid();
+            $log->ip = '127.0.0.1';
+            if (!empty($details->ip)) {
+                $log->ip = (string)$details->ip;
+            }
+            $log->message = 'No log object passed in for ' . $table;
+        }
         $log->severity = 7;
-        $log->severity_text = '';
-        $log->pid = getmypid();
-        $log->ip = '127.0.0.1';
-        if (!empty($details->ip)) {
-            $log->ip = (string)$details->ip;
-        }
         $log->file = 'm_devices_componenets';
         $log->function = 'process_component';
         $log->command = 'process audit';
+        unset($display);
         $log->message = '';
 
-        $log_details = new stdClass();
-        $log_details->message = '';
-        $log_details->severity = 7;
-        $log_details->file = 'system';
-        if ($display != 'y') {
-            $display = 'n';
-        }
-        $log_details->display = $display;
-        unset($display);
-
+        $name = '';
         if (empty($details->name) and !empty($details->hostname)) {
             $name = $details->hostname;
         } else {
             $name = $details->name;
         }
 
-        // ensure we have a valid table name
-        if (!$this->db->table_exists($table)) {
-            $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log->severity = 4;
-            discovery_log($log);
-            return;
-        }
-
-        if (!$input) {
-            $log->message = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log->severity = 7;
-            discovery_log($log);
-            return;
-        }
-
-        if (!isset($match_columns) or count($match_columns) == 0) {
-            $match_columns = $this->match_columns($table);
-        }
-
-        if ($table == '' or count($match_columns) == 0 or !isset($details->id)) {
-            if ($table == '') {
-                $log->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
-                $message = "No table name supplied - failed";
-            }
-            if (count($match_columns) == 0) {
-                $log->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
-                $message = "$table - No columns to match supplied - failed";
-            }
-            if (!isset($details->id)) {
-                $log->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
-                $message = "$table - No id supplied - failed";
-            }
+        if (!isset($details->id)) {
+            $log->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $message = "No device id supplied - failed";
             $this->m_audit_log->update('debug', $message, $details->id, $details->last_seen);
             unset($message);
             $log->severity = 5;
+            $log->message = 'No device id supplied to process component';
+            $log->command_status = 'fail';
             discovery_log($log);
             return;
-        } else {
-            # removed - just way too much log output
-            // $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
-            // $log->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            // $log->severity = 7;
-            // discovery_log($log);
         }
 
         ### NETSTAT ###
@@ -393,10 +394,9 @@ class M_devices_components extends MY_Model
             }
         }
 
-
         foreach ($match_columns as $match_column) {
             for ($i=0; $i<count($input); $i++) {
-                if (isset($input[$i]) and !isset($input[$i]->$match_column)) {
+                if (isset($input[$i]) and !isset($input[$i]->{$match_column})) {
                     $input[$i]->$match_column = '';
                 }
             }
@@ -537,11 +537,15 @@ class M_devices_components extends MY_Model
 
         ### PROCESSOR ###
         if ((string)$table == 'processor') {
-            $input[0]->description = str_ireplace('(R)', '', $input[0]->description);
-            $input[0]->description = str_ireplace('(TM)', '', $input[0]->description);
-            $input[0]->description = str_ireplace('  ', ' ', $input[0]->description);
-            $input[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input[0]->manufacturer);
-            $input[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input[0]->manufacturer);
+            if (!empty($input[0]->description)) {
+                $input[0]->description = str_ireplace('(R)', '', $input[0]->description);
+                $input[0]->description = str_ireplace('(TM)', '', $input[0]->description);
+                $input[0]->description = str_ireplace('  ', ' ', $input[0]->description);
+            }
+            if (!empty($input[0]->manufacturer)) {
+                $input[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input[0]->manufacturer);
+                $input[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input[0]->manufacturer);
+            }
         }
 
         ### SERVER ###
@@ -836,6 +840,7 @@ class M_devices_components extends MY_Model
         if (count($db_result) > 0) {
             $log->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log->severity = 7;
+            $log->command_status = 'notice';
             discovery_log($log);
         }
 
@@ -1641,36 +1646,21 @@ class M_devices_components extends MY_Model
         return ($resultset);
     }
 
-    public function nmap_ip($device = null, $ip = null) {
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->file = 'system';
-        $log->severity = 7;
+    public function nmap_ip($parameters) {
+        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($device->id) or empty($ip->ip)) {
+            $log = new stdClass();
+            $log->severity = 4;
+            $log->message = "Function audit_format_system called without parameters object.";
+            $log->status = 'fail';
+            stdlog($log);
+            return false;
+        }
 
-        if (is_null($device)) {
-            $log->message = 'No device object passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
-        if (is_null($ip)) {
-            $log->message = 'No ip object passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
-        if (empty($device->id)) {
-            $log->message = 'No device id passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
-        if (empty($ip->ip)) {
-            $log->message = 'No ip address passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
+        $log = $parameters->log;
+        $device = $parameters->device;
+        $ip = $parameters->ip;
+
+        $this->load->helper('log');
 
         # We're talking to the DB, so ensure IP is of the correct format
         $ip->ip = ip_address_to_db($ip->ip);

@@ -1599,39 +1599,51 @@ class M_devices extends MY_Model
                 $device->model = 'UniFi AP';
             }
             if (stripos($device->sysDescr, 'UAP-LR') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-LR';
             }
             if (stripos($device->sysDescr, 'UAP-Pro') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-Pro';
             }
             if (stripos($device->sysDescr, 'UAP-AC') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC';
             }
             if (stripos($device->sysDescr, 'UAP-AC-EDU') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-EDU';
             }
             if (stripos($device->sysDescr, 'UAP-AC-HD') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-HD';
             }
             if (stripos($device->sysDescr, 'UAP-AC-Lite') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-Lite';
             }
             if (stripos($device->sysDescr, 'UAP-AC-LR') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-LR';
             }
             if (stripos($device->sysDescr, 'UAP-AC-PRO') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-Pro';
             }
             if (stripos($device->sysDescr, 'UAP-AC-PRO-Gen2') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-Pro gen 2';
             }
             if (stripos($device->sysDescr, 'UAP-AC-SHD') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-SHD';
             }
             if (stripos($device->sysDescr, 'UAP-AC-Mesh-Pro') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-AC-Mesh-Pro';
             }
             if (stripos($device->sysDescr, 'UAP-Outdoor') !== false) {
+                $device->type = 'wap';
                 $device->model = 'UniFi AP-Outdoor';
             }
         }

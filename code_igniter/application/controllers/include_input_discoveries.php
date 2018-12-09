@@ -34,7 +34,7 @@ $log->severity = 7;
 $log->pid = getmypid();
 $log->file = 'input';
 $log->function = 'discoveries';
-$log->message = '';
+$log->message = 'Data accepted';
 
 $syslog = new stdClass();
 $syslog->type = 'system';
@@ -78,7 +78,12 @@ if (empty($_POST['data'])) {
     $log->message = "No 'data' sent to input.";
     $log->severity = 5;
     stdlog($log);
-    echo $log->message;
+    print_r($log);
+    header('Connection: close');
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
+    ob_flush();
+    flush();
     exit();
 }
 
@@ -92,14 +97,22 @@ try {
     $syslog->summary = 'Invalid data';
     $syslog->message = 'Invalid XML input for discovery from '.$_SERVER['REMOTE_ADDR'];
     stdlog($syslog);
-    echo $log->message;
-    unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    exit;
+    #unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+    #exit;
+
+    print_r($syslog);
+    header('Connection: close');
+    header('Content-Length: '.ob_get_length());
+    ob_end_flush();
+    ob_flush();
+    flush();
+    exit();
+
 }
 unset($xml_input);
 
 # So we can output back to the discovery script, and continue processing
-echo "";
+print_r($log);
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
@@ -114,6 +127,7 @@ foreach ($xml->children() as $input) {
         $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
         $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
         $syslog->discovery_id = intval($input->discovery_id);
+        $syslog->command_status = 'notice';
         $GLOBALS['discovery_id'] = intval($input->discovery_id);
         discovery_log($syslog);
 
@@ -126,19 +140,23 @@ foreach ($xml->children() as $input) {
         if (!empty($result[0])) {
             $discovery = $result[0];
             $discovery->other = json_decode($discovery->other);
+            $syslog->command_status = 'success';
             $syslog->summary = 'Discovery ' . $discovery->name . ' staring to process.';
             $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
-            stdlog($syslog);
+            discovery_log($syslog);
         } else {
             $discovery = new stdClass();
             $discovery->id = '';
             $discovery->discard = '';
+            $syslog->severity = 4;
+            $syslog->status = 'fail';
             $syslog->summary = 'Invalid discovery id provided to input::discovery';
             $syslog->message = 'The discovery_id was invalid and could not be used to successfully retrieve information';
             stdlog($syslog);
         }
     } else {
         $syslog->severity = 4;
+        $syslog->status = 'notice';
         $syslog->summary = 'No discovery id provided';
         $syslog->message = 'When processing discover_subnet, no discovery_id was provided in the input.';
         stdlog($syslog);
@@ -220,6 +238,7 @@ foreach ($xml->children() as $input) {
         exit();
     }
 
+    $log->command_status = 'success';
     $log->message = 'Received data for ' . $input->ip . ', now starting to process';
     $individual_log_id_start = discovery_log($log);
     unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
@@ -238,6 +257,7 @@ foreach ($xml->children() as $input) {
     $device->os_group = '';
     $device->sysDescr = '';
     $device->last_seen = $this->config->config['timestamp'];
+    $device->timestamp = $this->config->config['timestamp'];
     $device->ip = (string)$input->ip;
     $device->audits_ip = (string)$input->ip;
     $device->last_seen_by = 'nmap';
@@ -247,23 +267,30 @@ foreach ($xml->children() as $input) {
     if ($this->config->item('discovery_use_dns') == 'y') {
         $device = dns_validate($device);
         if (!empty($device->hostname)) {
+            $log->command_status = 'success';
             $log->message = 'IP ' . $device->ip . ' resolved to hostname ' . $device->hostname;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         if (!empty($device->domain)) {
+            $log->command_status = 'success';
             $log->message = 'IP ' . $device->ip . ' resolved to domain ' . $device->domain;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         if (!empty($device->fqdn)) {
+            $log->command_status = 'success';
             $log->message = 'IP ' . $device->ip . ' resolved to fqdn ' . $device->fqdn;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
     }
 
-    $device->id = $this->m_device->match($device);
+    $parameters = new stdCLass();
+    $parameters->details = $device;
+    $parameters->log = $log;
+    $device->id = $this->m_device->match($parameters);
+
     if (!empty($device->id)) {
         $log->system_id = $device->id;
         $log->message = "Device with ID " . $device->id . " found on initial Nmap result.";
@@ -344,6 +371,7 @@ foreach ($xml->children() as $input) {
     unset($creds);
 
     // output to log file and DEBUG the status of the three main services
+    $log->command_status = 'notice';
     $log->message = 'WMI Status is '.$input->wmi_status.' on '.$device->ip;
     if (!empty($device->id)) {
         $log->message .= ' (System ID ' . $device->id . ')';
@@ -470,6 +498,12 @@ foreach ($xml->children() as $input) {
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
+    # We do not want to attempt to audit using WMI anything that's not a Windows machine
+    if (!empty($device->os_group) and $device->os_group != 'Windows') {
+        $input->wmi_status = 'false';
+        $log->message = 'Setting WMI to false because we have an os_group that is not Windows, it is: ' . $device->os_group;
+        discovery_log($log);
+    }
     # test for working Windows credentials
     if ($input->wmi_status == 'true') {
         $log->message = 'Testing Windows credentials for ' . $device->ip;
@@ -558,7 +592,10 @@ foreach ($xml->children() as $input) {
         }
     }
 
-    $device->id = $this->m_device->match($device);
+    $parameters = new stdCLass();
+    $parameters->details = $device;
+    $parameters->log = $log;
+    $device->id = $this->m_device->match($parameters);
 
     if (empty($discovery->org_id)) {
         $discovery->org_id = 1;
@@ -688,7 +725,12 @@ foreach ($xml->children() as $input) {
         #$log->command = json_encode($network_interfaces);
         $log->command_output = '';
         discovery_log($log);
-        $this->m_devices_components->process_component('network', $device, $network_interfaces);
+        $parameters = new stdClass();
+        $parameters->table = 'network';
+        $parameters->details = $device;
+        $parameters->input = $network_interfaces;
+        $parameters->log = $log;
+        $this->m_devices_components->process_component($parameters);
     }
 
     // update any ip addresses retrieved by SNMP
@@ -701,7 +743,12 @@ foreach ($xml->children() as $input) {
         #$log->command = json_encode($ip);
         $log->command_output = '';
         discovery_log($log);
-        $this->m_devices_components->process_component('ip', $device, $ip);
+        $parameters = new stdClass();
+        $parameters->table = 'ip';
+        $parameters->details = $device;
+        $parameters->input = $ip;
+        $parameters->log = $log;
+        $this->m_devices_components->process_component($parameters);
     }
 
     // create or update the entry in the ip table from non-SNMP data
@@ -730,7 +777,11 @@ foreach ($xml->children() as $input) {
         }
         # new special routine as we may already have IPs (from a real audit) but not this particular
         # discovery run, so we don't want to remove these esiting IPs. Special function for this.
-        $this->m_devices_components->nmap_ip($device, $item);
+        $parameters = new stdClass();
+        $parameters->log = $log;
+        $parameters->device = $device;
+        $parameters->ip = $item;
+        $this->m_devices_components->nmap_ip($parameters);
         unset($item);
     }
 
@@ -745,7 +796,12 @@ foreach ($xml->children() as $input) {
         $log->function = 'discoveries';
         $log->message = 'Processing found modules for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $this->m_devices_components->process_component('module', $device, $modules);
+        $parameters = new stdClass();
+        $parameters->table = 'module';
+        $parameters->details = $device;
+        $parameters->input = $modules;
+        $parameters->log = $log;
+        $this->m_devices_components->process_component($parameters);
     }
 
     // insert any found virtual machines from SNMP
@@ -756,12 +812,17 @@ foreach ($xml->children() as $input) {
         $log->function = 'discoveries';
         $log->message = 'Processing found VMs for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $this->m_devices_components->process_component('vm', $device, $guests);
+        $parameters = new stdClass();
+        $parameters->table = 'vm';
+        $parameters->details = $device;
+        $parameters->input = $guests;
+        $parameters->log = $log;
+        $this->m_devices_components->process_component($parameters);
         unset($found);
     }
 
     // $device->id is now set
-    if ($display == 'y') {
+    if (!empty($display) and $display == 'y') {
         echo '<pre>DEBUG - System ID <a href="' . base_url() . 'index.php/devices/' . $device->id . '">' . $device->id . "</a>\n";
     }
 
@@ -787,7 +848,12 @@ foreach ($xml->children() as $input) {
         $log->function = 'discoveries';
         $log->message = 'Processing Nmap ports for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-        $this->m_devices_components->process_component('nmap', $device, $nmap_result);
+        $parameters = new stdClass();
+        $parameters->table = 'nmap';
+        $parameters->details = $device;
+        $parameters->input = $nmap_result;
+        $parameters->log = $log;
+        $this->m_devices_components->process_component($parameters);
     }
 
     // insert a blank to indicate we're finished this part of the discovery
@@ -890,7 +956,7 @@ foreach ($xml->children() as $input) {
     $audit_result = false;
 
     // Get and make the audit script
-        if (!empty($credentials_windows) or !empty($credentials_ssh)) {
+    if (!empty($credentials_windows) or !empty($credentials_ssh)) {
         $ts = date('y_m_d_H_i_s');
         switch (strtolower($device->os_group)) {
             case 'aix':
@@ -987,7 +1053,7 @@ foreach ($xml->children() as $input) {
                 $log->command = $sql;
                 $log->command_status = 'fail';
                 discovery_log($log);
-                unset($log->command, $log->message, $log->status);
+                unset($log->command, $log->message, $log->command_status);
                 $audit_script = '';
             }
         }
@@ -1044,9 +1110,9 @@ foreach ($xml->children() as $input) {
                 $log->severity = 7;
                 $log->command_time_to_execute = $command_end - $command_start;
                 $log->message = 'Successful attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
-                $log->status = 'success';
+                $log->command_status = 'success';
                 if ($return_var != '0') {
-                    $log->status = 'fail';
+                    $log->command_status = 'fail';
                     $log->message = 'Failed attempt to run audit_windows.vbs for ' . $device->ip . ' (System ID ' . $device->id . ')';
                     $log->severity = 4;
                 }
@@ -1110,13 +1176,18 @@ foreach ($xml->children() as $input) {
         if (!$temp) {
             $audit_script = '';
             $log->message = 'Could not SCP audit script to ' . $device->ip . ' ' . $destination .')';
-            $log->status = 'fail';
+            $log->command_status = 'fail';
             discovery_log($log);
         }
         # Successfully copied the audit script, now chmod it
         $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
         # No use testing for a result as a chmod produces no output
-        ssh_command($device->ip, $credentials_ssh, $command, $discovery->id);
+        $parameters = new stdClass();
+        $parameters->log = $log;
+        $parameters->ip = $device->ip;
+        $parameters->credentials = $credentials_ssh;
+        $parameters->command = $command;
+        ssh_command($parameters);
 
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
@@ -1139,7 +1210,12 @@ foreach ($xml->children() as $input) {
             }
             $log->command = $command;
             $command_start = microtime(true);
-            $result = ssh_command($device->ip, $credentials_ssh, $command, $discovery->id);
+            $parameters = new stdClass();
+            $parameters->log = $log;
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->command = $command;
+            $result = ssh_command($parameters);
             $command_end = microtime(true);
             $log->command_time_to_execute = $command_end - $command_start;
             if (!empty($result)) {
@@ -1197,7 +1273,7 @@ foreach ($xml->children() as $input) {
             unlink($source);
         } catch (Exception $e) {
             $log->severity = 4;
-            $log->status = 'fail';
+            $log->command_status = 'fail';
             $log->message = 'Could not delete temp audit script';
         }
         discovery_log($log);
@@ -1208,16 +1284,19 @@ foreach ($xml->children() as $input) {
 
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
-    $log->status = 'notice';
+    $log->command_status = 'notice';
     $log->severity = 7;
     $log->command = '';
     $log->ip = $device->ip;
     if (!empty($audit_result)) {
         $audit_result = str_replace('data=<?xml version="1.0" encoding="UTF-8"?>', '<?xml version="1.0" encoding="UTF-8"?>', $audit_result);
-        $audit = audit_convert($audit_result);
+        $parameters = new stdClass();
+        $parameters->input = $audit_result;
+        $parameters->log = $log;
+        $audit = audit_convert($parameters);
         if (!$audit) {
             $log->message = 'Could not convert audit result, aborting.';
-            $log->status = 'fail';
+            $log->command_status = 'fail';
             $log->command = '';
             $log->command_output = '';
             discovery_log($log);
@@ -1226,7 +1305,11 @@ foreach ($xml->children() as $input) {
 
         $log->message = 'Formating system section of audit result';
         discovery_log($log);
-        $audit->system = audit_format_system($audit->system);
+
+        $parameters = new stdClass();
+        $parameters->log = $log;
+        $parameters->input = $audit->system;
+        $audit->system = audit_format_system($parameters);
 
         $log->message = 'Matching device from audit result';
         discovery_log($log);
@@ -1291,7 +1374,7 @@ foreach ($xml->children() as $input) {
             $log->command_output = json_encode($e);
         }
         discovery_log($log);
-        unset($log->command, $log->message, $log->status);
+        unset($log->command, $log->message, $log->command_status);
         $log->severity = 7;
 
         $sql = "/* include_input_devices */ " . "UPDATE `discovery_log` SET system_id = ? WHERE system_id IS NULL AND pid = ?";
@@ -1305,7 +1388,12 @@ foreach ($xml->children() as $input) {
 
         foreach ($audit as $key => $value) {
             if ($key != 'system' and $key != 'audit_wmi_fail' and $key != 'dns') {
-                $this->m_devices_components->process_component($key, $audit->system, $value);
+                $parameters = new stdClass();
+                $parameters->table = $key;
+                $parameters->details = $audit->system;
+                $parameters->input = $value;
+                $parameters->log = $log;
+                $this->m_devices_components->process_component($parameters);
             }
         }
 
@@ -1326,7 +1414,12 @@ foreach ($xml->children() as $input) {
             }
             unset($item);
             if (count($dns) > 0) {
-                $this->m_devices_components->process_component('dns', $audit->system, $dns);
+                $parameters = new stdClass();
+                $parameters->table = 'dns';
+                $parameters->details = $audit->system;
+                $parameters->input = $dns;
+                $parameters->log = $log;
+                $this->m_devices_components->process_component($parameters);
             }
             unset($dns);
         }

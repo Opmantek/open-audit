@@ -831,7 +831,7 @@ if (! function_exists('wmi_command')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $command_string = "timeout 5m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static-2";
+            $command_string = "timeout 1m " . dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other/winexe-static-2";
             $temp = explode('@', $credentials->credentials->username);
             $username = $temp[0];
             $domain = $temp[1];

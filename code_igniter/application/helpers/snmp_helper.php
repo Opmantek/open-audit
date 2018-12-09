@@ -102,10 +102,12 @@ if (!function_exists('snmp_credentials')) {
                 if (@snmp3_get($ip, $sec_name, $sec_level, $auth_protocol, $auth_passphrase, $priv_protocol, $priv_passphrase, $oid, $timeout, $retries)) {
                     $credential->credentials->version = 3;
                     $log->message = "Credential set for SNMPv3 " . $from . " working on " . $ip;
+                    $log->command_status = 'success';
                     discovery_log($log);
                     return $credential;
                 } else {
                     $log->message = "Credential set for SNMPv3 " . $from . " not working on " . $ip;
+                    $log->command_status = 'notice';
                     discovery_log($log);
                 }
             }
@@ -123,24 +125,29 @@ if (!function_exists('snmp_credentials')) {
                 if (@snmp2_get($ip, $credential->credentials->community, "1.3.6.1.2.1.1.1.0", $timeout, $retries)) {
                     $credential->credentials->version = 2;
                     $log->message = "Credential set for SNMPv2 " . $from . " working on " . $ip;
+                    $log->command_status = 'success';
                     discovery_log($log);
                     return $credential;
                 } else {
                     $log->message = "Credential set for SNMPv2 " . $from . " not working on " . $ip;
+                    $log->command_status = 'notice';
                     discovery_log($log);
                 }
                 if (@snmpget($ip, $credential->credentials->community, "1.3.6.1.2.1.1.1.0", $timeout, $retries)) {
                     $credential->credentials->version = 1;
                     $log->message = "Credential set for SNMPv1 " . $from . " working on " . $ip;
+                    $log->command_status = 'success';
                     discovery_log($log);
                     return $credential;
                 } else {
                     $log->message = "Credential set for SNMPv1 " . $from . " not working on " . $ip;
+                    $log->command_status = 'notice';
                     discovery_log($log);
                 }
             }
         }
 
+        $log->command_status = 'warning';
         $log->message = "No working SNMP credentials found for " . $ip;
         discovery_log($log);
         return false;
@@ -1589,7 +1596,7 @@ if (!function_exists('snmp_audit')) {
                 include 'snmp_6876_2_helper.php';
             }
         }
-        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->status);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output, $log->command_status);
         $return_array = array('details' => $details, 'interfaces' => $interfaces_filtered, 'guests' => $guests, 'modules' => $modules, 'ip' => $return_ips);
         return($return_array);
     }
