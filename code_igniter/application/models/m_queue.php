@@ -126,7 +126,7 @@ class M_queue extends MY_Model
             $details = json_encode($details);
         }
         $this->log->details = $details;
-        $sql = "INSERT INTO `queue` VALUES (null, ?, 0, ?, '', NOW())";
+        $sql = "INSERT INTO `queue` VALUES (null, ?, 0, ?, NOW(), '')";
         $data = array($type, $details);
         $this->db->query($sql, $data);
         $result = intval($this->db->insert_id());

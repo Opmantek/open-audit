@@ -191,41 +191,58 @@ class Input extends CI_Controller
         }
         # insert this into the queue
         $id = $this->m_queue->insert('scans', $input);
-        $proto = 'http';
-        if ($this->config->config['is_ssl'] === true) {
-            $proto = 'https';
+
+        # Run the scan if requested to execute
+        $execute = true;
+        if (!empty($_POST['execute']) and strtolower($_POST['execute']) === 'n') {
+            $execute = false;
         }
-        if (stripos($this->config->config['default_network_address'], 'https:') !== false) {
-            $proto = 'https';
+        if (!empty($_GET['execute']) and strtolower($_GET['execute']) === 'n') {
+            $execute = false;
         }
-        # run the script and continue (do not wait for result)
-        if (php_uname('s') != 'Windows NT') {
-            $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/scans/ method=post > /dev/null 2>&1 &';
-            if (php_uname('s') == 'Linux') {
-                $command_string = 'nohup ' . $command_string;
+        if ($execute) {
+            $proto = 'http';
+            if ($this->config->config['is_ssl'] === true) {
+                $proto = 'https';
             }
-            @exec($command_string, $output, $return_var);
-        } else {
-            $filepath = $this->config->config['base_path'] . '\\other';
-            $command_string = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=" . $proto . "://localhost/open-audit/index.php/input/queue/scans method=post";
-            pclose(popen($command_string, "r"));
+            if (stripos($this->config->config['default_network_address'], 'https:') !== false) {
+                $proto = 'https';
+            }
+            # run the script and continue (do not wait for result)
+            if (php_uname('s') != 'Windows NT') {
+                $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/scans method=post > /dev/null 2>&1 &';
+                if (php_uname('s') == 'Linux') {
+                    $command_string = 'nohup ' . $command_string;
+                }
+                @exec($command_string, $output, $return_var);
+            } else {
+                $filepath = $this->config->config['base_path'] . '\\other';
+                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\execute.vbs url=" . $proto . "://localhost/open-audit/index.php/input/queue/scans method=post";
+                pclose(popen($command_string, "r"));
+            }
+            $log->detail = $command_string;
+            stdlog($log);
         }
-        $log->detail = $command_string;
-        stdlog($log);
 
         $this->response = new stdClass();
         $this->response->meta = new stdClass();
-        $this->response->meta->collection = 'discoveries';
-        $this->response->meta->query_string = '';
-        $this->response->meta->collection = 'input';
         $this->response->data = array();
-        $this->response->meta->id = $id;
+        $this->response->data[] = $input;
         $this->response->meta->action = '';
-        $this->response->meta->total = 1;
+        $this->response->meta->collection = 'discoveries';
+        $this->response->meta->collection = 'input';
+        $this->response->meta->debug = false;
+        $this->response->meta->filtered = 1;
         $this->response->meta->format = 'json';
         $this->response->meta->header = 'Input';
         $this->response->meta->heading = 'Input';
-        $this->response->links = array();
+        $this->response->meta->id = $id;
+        $this->response->meta->limit = 1;
+        $this->response->meta->offset = '';
+        $this->response->meta->query_parameters = array();
+        $this->response->meta->query_string = '';
+        $this->response->meta->total = 1;
+        $this->response->links = new stdClass();
         output($this->response);
         return;
     }

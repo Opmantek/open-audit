@@ -52,7 +52,7 @@ if ($queue == 'scans' and !empty($id)) {
     if (!empty($result[0])) {
         $queue_item = $result[0];
     } else {
-        $log->message = 'Queue item ' . $id . 'passed in, but noit in database.';
+        $log->message = 'Queue item ' . $id . 'passed in, but not in database.';
         $log->severity = 5;
         stdlog($log);
         $exec = false;
@@ -71,7 +71,7 @@ if ($queue == 'scans' and !empty($id)) {
 
     if ($exec) {
         $input = json_decode($queue_item->details);
-        process_scan($input->device);
+        process_scan($input);
         $sql = "DELETE FROM queue WHERE id = " . intval($id);
         $query = $this->db->query($sql);
     }
@@ -158,19 +158,15 @@ if ($queue == 'scans' and empty($id)) {
                 }
 
                 if (count($result) > 0) {
-
-
-                    $log->status = 'Inside the loop';
-                    $log->summary = 'Processing queue item ' . $id;
-                    $log->detail = '';
-                    stdlog($log);
-
+                    $proto = 'http';
+                    if ($this->config->config['is_ssl'] === true) {
+                        $proto = 'https';
+                    }
+                    if (stripos($this->config->config['default_network_address'], 'https:') !== false) {
+                        $proto = 'https';
+                    }
                     $count = 0;
                     $execute = true;
-
-                    $log->status = 'Executing';
-                    $log->summary = 'Executing - scan';
-
                     # run the script and continue (do not wait for result)
                     if (php_uname('s') != 'Windows NT') {
                         $command_string = $this->config->config['base_path'] . '/other/execute.sh url=' . $proto . '://localhost/open-audit/index.php/input/queue/scans/' . $id . ' method=post > /dev/null 2>&1 &';
