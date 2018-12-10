@@ -85,14 +85,17 @@ if ($queue == 'scans' and empty($id)) {
     $discovery = false;
     $mypid = intval(getmypid());
     $sleep = 30;
+    $this->response->data = array();
     # So we can output back to the execute script, and continue processing
-    echo "";
+    header('Content-type: text/html; charset=utf-8');
+    ob_start();
+    echo json_encode($this->response);
     header('Connection: close');
     header('Content-Length: '.ob_get_length());
     ob_end_flush();
     ob_flush();
     flush();
-    $process_limit = 2;
+    $process_limit = 10;
     /*
     PID +    running    = terminate
     PID +    no running = overwrite PID, wait 30s, check again and terminate or proceed
@@ -143,7 +146,11 @@ if ($queue == 'scans' and empty($id)) {
                 $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'scans' AND `pid` = 0 ORDER BY `id` LIMIT 1";
                 $query = $this->db->query($sql);
                 $result = $query->result();
-                $id = intval($result[0]->id);
+
+                $id = '';
+                if (!empty($result)) {
+                    $id = intval($result[0]->id);
+                }
 
                 if (count($result) > 0) {
                     $log->status = 'queue item';
@@ -220,10 +227,6 @@ if ($queue == 'scans' and empty($id)) {
                 sleep($sleep);
             }
         } while ($execute);
-        // while (pcntl_waitpid(0, $status) != -1) { 
-        //     $status = pcntl_wexitstatus($status); 
-        //     echo "Child $status completed\n"; 
-        // }
     } # end of start
 }
 
