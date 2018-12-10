@@ -178,7 +178,7 @@ class Input extends CI_Controller
         $log->summary = 'processing submitted data';
 
         $this->response->meta->action = 'discoveries';
-        $input = '';
+        $input = false;
         if (!empty($_POST['data'])) {
             $input = $_POST['data'];
         }
@@ -186,11 +186,11 @@ class Input extends CI_Controller
             $input = $_GET['data'];
         }
         $input = accept_input($input);
-        if (empty($input)) {
-            return;
+        $id = '';
+        if (!empty($input)) {
+            # insert this into the queue
+            $id = $this->m_queue->insert('scans', $input);
         }
-        # insert this into the queue
-        $id = $this->m_queue->insert('scans', $input);
 
         # Run the scan if requested to execute
         $execute = true;
@@ -227,7 +227,9 @@ class Input extends CI_Controller
         $this->response = new stdClass();
         $this->response->meta = new stdClass();
         $this->response->data = array();
-        $this->response->data[] = $input;
+        if (!empty($input)) {
+            $this->response->data[] = $input;
+        }
         $this->response->meta->action = '';
         $this->response->meta->collection = 'discoveries';
         $this->response->meta->collection = 'input';
