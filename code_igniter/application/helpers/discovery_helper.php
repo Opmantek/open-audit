@@ -466,13 +466,13 @@ if (!function_exists('process_scan')) {
 
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';
+        $log->command_status = 'notice';
 
 
         # We do not want to attempt to audit using WMI anything that's not a Windows machine
         if (!empty($device->os_group) and $device->os_group != 'Windows') {
             $input->wmi_status = 'false';
             $log->message = 'Setting WMI to false because we have an os_group that is not Windows, it is: ' . $device->os_group;
-            $log->command_status = 'notice';
             discovery_log($log);
         }
 
@@ -551,7 +551,7 @@ if (!function_exists('process_scan')) {
             $device->os_name = 'Android';
         }
         # Ubiquiti guessing
-        if (empty($device->model) or stripos($device->manufacturer, 'Ubiquiti') !== false) {
+        if (empty($device->model) and stripos($device->manufacturer, 'Ubiquiti') !== false) {
             $device = $CI->m_devices->model_guess($device);
             if (!empty($device->model)) {
                 $log->message = 'Best guess at Ubiquiti model to be ' . $device->model . ' for sysDesc: ' . $device->sysDescr;
@@ -930,6 +930,14 @@ if (!function_exists('process_scan')) {
         }
         
         $audit_result = false;
+
+        if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
+            $log->command_status = 'error';
+            $log->severity = 5;
+            $log->message = 'No valid credentials for ' . $device->ip;
+            discovery_log($log);
+            return true;
+        }
 
         // Get and make the audit script
         if (!empty($credentials_windows) or !empty($credentials_ssh)) {
