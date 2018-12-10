@@ -97,9 +97,10 @@ if (! function_exists('windows_credentials')) {
             }
         }
         unset($log->command);
+        $log->command_status = 'warning';
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
-        $log->message = 'Windows credentials complete. No working Windows credentials for ' . $ip . ' found.';
+        $log->message = "No valid Windows credentials for $ip.";
         $log->severity = 7;
         discovery_log($log);
         return false;
