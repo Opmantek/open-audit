@@ -41,6 +41,14 @@ $sql = "UPDATE `configuration` SET `value` = ? WHERE `name` = 'default_network_a
 $this->db->query($sql, $data);
 $this->log_db($this->db->last_query());
 
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_scan_limit','50','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should process.')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # locations
 $this->alter_table('locations', 'cloud_id', "ADD `cloud_id` int(10) unsigned DEFAULT NULL AFTER `geo`", 'add');
 

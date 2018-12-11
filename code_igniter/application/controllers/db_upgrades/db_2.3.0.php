@@ -87,19 +87,19 @@ $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
 # Configuration
-$sql = "DELETE FROM `configuration` WHERE `name` = 'discoveries_limit'";
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_limit'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'discoveries_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "DELETE FROM `configuration` WHERE `name` = 'audits_limit'";
+$sql = "DELETE FROM `configuration` WHERE `name` = 'discovery_scan_limit'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'audits_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent audits we should process.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_scan_limit','50','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should process.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

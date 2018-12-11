@@ -80,13 +80,14 @@ if ($queue == 'scans' and !empty($id)) {
 
 
 if ($queue == 'scans' and empty($id)) {
-    $log->function = 'include_input_queue::discoveries';
+    $log->function = 'include_input_queue::scans';
     $execute = false;
     $discovery = false;
     $mypid = intval(getmypid());
     $sleep = 30;
     $this->response->data = array();
     # So we can output back to the execute script, and continue processing
+    # NOTE - does not seem to wkr for Mojo::UA
     header('Content-type: text/html; charset=utf-8');
     ob_start();
     echo json_encode($this->response);
@@ -95,14 +96,7 @@ if ($queue == 'scans' and empty($id)) {
     ob_end_flush();
     ob_flush();
     flush();
-    $process_limit = 10;
-    /*
-    PID +    running    = terminate
-    PID +    no running = overwrite PID, wait 30s, check again and terminate or proceed
-    No PID + running    = start
-    No PID + no running = start
-    */
-
+    $process_limit = $this->config->config['discovery_scan_limit'];
     $sql = "SELECT SQL_NO_CACHE count(*) AS `count` FROM queue WHERE `type` = 'scans' AND `pid` != 0";
     $query = $this->db->query($sql);
     $result = $query->result();
@@ -242,6 +236,10 @@ if ($queue == 'discoveries') {
     $discovery = false;
     $mypid = intval(getmypid());
     $sleep = 30;
+    $discovery_limit = $this->config->config['discovery_limit'];
+    if (empty($discovery_limit)) {
+        $discovery_limit = 20;
+    }
     # So we can output back to the discovery script, and continue processing
     echo "";
     header('Connection: close');
@@ -321,10 +319,10 @@ if ($queue == 'discoveries') {
             $result = $query->result();
             $running_count = intval($result[0]->count);
 
-            if ($running_count < $this->config->config['discoveries_limit']) {
+            if ($running_count < $discovery_limit) {
                 $log->status = 'Processing Queue';
                 $log->summary = 'Processing - discovery processes are available.';
-                $log->detail = 'The number of running discoveries (' . $running_count . ') is less than the config item (' . $this->config->config['discoveries_limit'] . ').';
+                $log->detail = 'The number of running discoveries (' . $running_count . ') is less than the config item (' . $discovery_limit . ').';
                 stdlog($log);
                 $sql = '/* input::queue */ ' . "LOCK TABLES queue WRITE, logs WRITE";
                 $query = $this->db->query($sql);
@@ -378,7 +376,7 @@ if ($queue == 'discoveries') {
             } else {
                 $log->status = 'Sleeping';
                 $log->summary = 'Sleeping - discovery processes to complete.';
-                $log->detail = 'The number of running discoveries (' . $running_count . ') is not less than the config item (' . $this->config->config['discoveries_limit'] . '). Sleeping for ' . $sleep . ' seconds.';
+                $log->detail = 'The number of running discoveries (' . $running_count . ') is not less than the config item (' . $discovery_limit . '). Sleeping for ' . $sleep . ' seconds.';
                 stdlog($log);
                 sleep($sleep);
             }

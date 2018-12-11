@@ -744,8 +744,8 @@ INSERT INTO `configuration` VALUES (60,'access_token_enable','y','bool','y','sys
 INSERT INTO `configuration` VALUES (61,'discovery_sunos_use_sudo','y','bool','y','system','2000-01-01 00:00:00','When running discovery commands on a SunOS target, should we use sudo.');
 INSERT INTO `configuration` VALUES (62,'decrypt_credentials','y','bool','y','system','2000-01-01 00:00:00','When we display or export credentials, should we decrypt them.');
 INSERT INTO `configuration` VALUES (63,'discovery_ssh_timeout','300','number','y','system','2000-01-01 00:00:00','Timeout duration (in seconds) when discovering a device via SSH.');
-INSERT INTO `configuration` VALUES (64,'discoveries_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
-INSERT INTO `configuration` VALUES (65,'audits_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent audits we should process.');
+INSERT INTO `configuration` VALUES (64,'discovery_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
+INSERT INTO `configuration` VALUES (65,'discovery_scan_limit','50','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should process.');
 INSERT INTO `configuration` VALUES (66,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
