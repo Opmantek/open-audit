@@ -112,7 +112,7 @@ try {
 unset($xml_input);
 
 # So we can output back to the discovery script, and continue processing
-print_r($log);
+echo "";
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
@@ -123,25 +123,19 @@ foreach ($xml->children() as $input) {
     $individual_ip_start = microtime(true);
     $input = (object) $input;
     if (!empty($input->discovery_id)) {
-        $syslog->severity = 7;
-        $syslog->summary = 'Discovery id ' . $input->discovery_id . ' provided';
-        $syslog->message = 'When processing discover_subnet, discovery_id ' . $input->discovery_id . ' was provided in the input.';
         $syslog->discovery_id = intval($input->discovery_id);
-        $syslog->command_status = 'notice';
         $GLOBALS['discovery_id'] = intval($input->discovery_id);
-        discovery_log($syslog);
-
         $log->discovery_id = intval($input->discovery_id);
         $sql = "/* input::discoveries */ " . "SELECT * FROM `discoveries` WHERE id = ?";
         $data = array($log->discovery_id);
         $query = $this->db->query($sql, $data);
         $result = $query->result();
-
         if (!empty($result[0])) {
             $discovery = $result[0];
             $discovery->other = json_decode($discovery->other);
+            $syslog->severity = 7;
             $syslog->command_status = 'success';
-            $syslog->summary = 'Discovery ' . $discovery->name . ' staring to process.';
+            $syslog->summary = 'Discovery ID ' . $input->discovery_id . ', named ' . $discovery->name . ' staring to process.';
             $syslog->message = 'The discovery_id was used to successfully retrieve information for the discovery entry named ' . $discovery->name;
             discovery_log($syslog);
         } else {
@@ -150,7 +144,7 @@ foreach ($xml->children() as $input) {
             $discovery->discard = '';
             $syslog->severity = 4;
             $syslog->status = 'fail';
-            $syslog->summary = 'Invalid discovery id provided to input::discovery';
+            $syslog->summary = 'Invalid discovery id (' . $input->discovery_id . ') provided to input::discovery';
             $syslog->message = 'The discovery_id was invalid and could not be used to successfully retrieve information';
             stdlog($syslog);
         }
@@ -182,6 +176,7 @@ foreach ($xml->children() as $input) {
         $syslog->detail = $this->db->last_query();
         stdlog($syslog);
         $syslog->discovery_id = $log->discovery_id;
+        $syslog->message = 'Set discovery entry status to complete';
         discovery_log($syslog);
         if ($discovery->discard == 'y') {
             $sql = "/* input::discoveries */ " . "DELETE FROM `discoveries` WHERE id = ?";
@@ -459,14 +454,13 @@ foreach ($xml->children() as $input) {
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
-    # run SSH audit commands
+    # SSH
     if ($input->ssh_status == 'true') {
         $log->message = 'Testing SSH credentials for '.$device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
         }
         discovery_log($log);
-        #$ssh_details = ssh_audit($device->ip, $credentials);
         $parameters = new stdClass();
         $parameters->ip = $device->ip;
         $parameters->system_id = '';
@@ -477,7 +471,6 @@ foreach ($xml->children() as $input) {
         $parameters->credentials = $credentials;
         $ssh_details = ssh_audit($parameters);
         if (!empty($ssh_details)) {
-
             if (!empty($ssh_details->credentials)) {
                 $credentials_ssh = $ssh_details->credentials;
             }
@@ -491,12 +484,12 @@ foreach ($xml->children() as $input) {
             }
         }
     }
-    if (stripos($ssh_details->manufacturer, 'Ubiquiti') !== false and empty($device->type)) {
-        $device->type = 'router';
-    }
 
-    $log->file = 'include_input_discoveries';
+
+    $log->file = 'discovery_helper';
     $log->function = 'discoveries';
+    $log->command_status = 'notice';
+
 
     # We do not want to attempt to audit using WMI anything that's not a Windows machine
     if (!empty($device->os_group) and $device->os_group != 'Windows') {
@@ -504,7 +497,9 @@ foreach ($xml->children() as $input) {
         $log->message = 'Setting WMI to false because we have an os_group that is not Windows, it is: ' . $device->os_group;
         discovery_log($log);
     }
-    # test for working Windows credentials
+
+
+    # WMI
     if ($input->wmi_status == 'true') {
         $log->message = 'Testing Windows credentials for ' . $device->ip;
         if (!empty($device->id)) {
@@ -515,7 +510,6 @@ foreach ($xml->children() as $input) {
     } else {
         $credentials_windows = false;
     }
-    # run Windows audit commands
     if ($input->wmi_status == 'true' and $credentials_windows) {
         $windows_details = wmi_audit($device->ip, $credentials_windows, $log);
         if (!empty($windows_details)) {
@@ -531,22 +525,36 @@ foreach ($xml->children() as $input) {
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
+    # Intelligent guesses at various attributes
+
+    # Set manufacturer based on MAC address (if not already set)
+    if (empty($device->manufacturer) and !empty($input->mac_address)) {
+        $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
+            $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+    }
+    if (empty($device->manufacturer) and !empty($device->mac_address)) {
+        $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
+            $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+    }
     # in the case where port 5060 is detected and we have no other information, assign type 'voip phone'
     if (empty($device->type) and empty($device->snmp_oid) and empty($device->uuid) and stripos($input->nmap_ports, '5060/') !== false) {
         $device->type = 'voip phone';
     }
-
     # Port 62078 is used by IOS for iTunes wifi sync
     if (stripos($input->nmap_ports, '62078/tcp/iphone-sync') !== false) {
-        # thie could be an iPad (tablet), iPod (media device) or iPhone (smart phone).
+        # this could be an iPad (tablet), iPod (media device) or iPhone (smart phone).
         $log->message = 'Detected port TCP 62078 open. Assuming an Apple IOS device';
         discovery_log($log);
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         $device->type = 'iphone';
-        if (stripos($device->hostname, 'iphone') !== false) {
-            $device->type = 'iphone';
-            $device->model = 'Apple iPhone';
-        }
+        $device->model = 'Apple iPhone';
+        $device->os_group = 'Apple IOS';
+        $device->os_family = 'Apple IOS';
+        $device->os_name = 'Apple IOS';
         if (stripos($device->hostname, 'ipad') !== false) {
             $device->type = 'ipad';
             $device->model = 'Apple iPad';
@@ -555,60 +563,87 @@ foreach ($xml->children() as $input) {
             $device->type = 'ipod';
             $device->model = 'Apple iPod';
         }
-        $device->os_group = 'Apple IOS';
-        $device->os_family = 'Apple IOS';
-        $device->os_name = 'Apple IOS';
     }
-
-    # Android devices typically jave a hostname of android-***
+    # Android devices typically have a hostname of android-***
     if (stripos($device->hostname, 'android') !== false) {
-        # Could be a table or smart phone. We have no way of knowing so simply guessing it's a smart phone
+        # Could be a table or smart phone or anything else.
+        # We have no way of knowing so simply setting it to android.
         $device->type = 'android';
         $device->os_group = 'Android';
         $device->os_family = 'Android';
         $device->os_name = 'Android';
     }
-
-    if (empty($device->manufacturer) and !empty($input->mac_address)) {
-        $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
-            $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    }
-
-    if (empty($device->manufacturer) and !empty($device->mac_address)) {
-        $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
-            $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-    }
-
-    if (empty($device->model) or stripos($device->manufacturer, 'Ubiquiti') !== false) {
+    # Ubiquiti guessing
+    if (empty($device->model) and stripos($device->manufacturer, 'Ubiquiti') !== false) {
         $device = $this->m_devices->model_guess($device);
         if (!empty($device->model)) {
-            $log->message = 'Best guess at model to be ' . $device->model;
+            $log->message = 'Best guess at Ubiquiti model to be ' . $device->model . ' for sysDesc: ' . $device->sysDescr;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+        }
+        if (empty($device->type)) {
+            $device->type = 'router';
+            $log->message = 'No device type assigned to Ubiquiti device, assigning router.';
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
     }
 
-    $parameters = new stdCLass();
-    $parameters->details = $device;
-    $parameters->log = $log;
-    $device->id = $this->m_device->match($parameters);
-
-    if (empty($discovery->org_id)) {
-        $discovery->org_id = 1;
+    # If we don't have a device.id, check with our updated device attributes (if any)
+    if (empty($device->id)) {
+        $parameters = new stdCLass();
+        $parameters->details = $device;
+        $parameters->log = $log;
+        $device->id = $this->m_device->match($parameters);
+        if (!empty($device->id)) {
+            $log->system_id = $device->id;
+            // remove any old logs for this device
+            $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " AND (discovery_id != " . $discovery->id . " OR pid != " . $log->pid . ")";
+            $log->message = 'Delete the previous log entries for this system_id';
+            $log->command_status = 'notice';
+            $log->command = $sql;
+            $command_log_id = discovery_log($log);
+            $command_start = microtime(true);
+            $query = $this->db->query($sql);
+            $command_end = microtime(true);
+            $log->command = $this->db->last_query();
+            $log->command_time_to_execute = $command_end - $command_start;
+            $log->id = $command_log_id;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+            unset($log->id, $command_log_id);
+            // update the previous log entries with our new system_id
+            $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
+            $log->message = 'Update the previous log entries with the system_id';
+            $log->command_status = 'notice';
+            $log->command = $sql;
+            $command_log_id = discovery_log($log);
+            $command_start = microtime(true);
+            $query = $this->db->query($sql);
+            $command_end = microtime(true);
+            $log->command = $this->db->last_query();
+            $log->command_time_to_execute = $command_end - $command_start;
+            $log->id = $command_log_id;
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+            unset($log->id, $command_log_id);
+        }
     }
 
+    # Set the device org_id based on this discovery
     $device->org_id = $discovery->org_id;
+
+    # If we have specifically assigned another org_id, set it
     if (!empty($discovery->devices_assigned_to_org)) {
         $device->org_id = $discovery->devices_assigned_to_org;
     }
+
+    # If we have specifically assigned a location_id, set it
     if (!empty($discovery->devices_assigned_to_location)) {
         $device->location_id = $discovery->devices_assigned_to_location;
     }
 
+    # See if we have a Mac Address for the device's IP
     if (!empty($network_interfaces) and empty($device->mac_address)) {
         foreach ($network_interfaces as $interface) {
             if ($interface->ip == $device->ip) {
@@ -621,48 +656,14 @@ foreach ($xml->children() as $input) {
     // insert or update the device
     if (!empty($device->id)) {
         // we have a system id - UPDATE
-        $log->system_id = $device->id;
         $action = 'update';
-
-        // remove any old logs for this device
-        #$sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and pid != " . $log->pid;
-        $sql = "/* input::discoveries */ " . "DELETE FROM discovery_log WHERE system_id = " . $device->id . " and discovery_id != " . $discovery->id;
-        $log->message = 'Delete the previous log entries for this system_id';
-        $log->command = $sql;
-        $command_log_id = discovery_log($log);
-        $command_start = microtime(true);
-        $query = $this->db->query($sql);
-        $command_end = microtime(true);
-        $log->command = $this->db->last_query();
-        $log->command_time_to_execute = $command_end - $command_start;
-        $log->id = $command_log_id;
-        discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        unset($log->id, $command_log_id);
-        
-        // update the previous log entries with our new system_id
-        #$sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
-        $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE discovery_id = " . $discovery->id . " and ip = '" . $device->ip . "'";
-        $log->message = 'Update the previous log entries with the system_id';
-        $log->command = $sql;
-        $command_log_id = discovery_log($log);
-        $command_start = microtime(true);
-        $query = $this->db->query($sql);
-        $command_end = microtime(true);
-        $log->command = $this->db->last_query();
-        $log->command_time_to_execute = $command_end - $command_start;
-        $log->id = $command_log_id;
-        discovery_log($log);
-        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        unset($log->id, $command_log_id);
-
         $log->severity = 7;
+        $log->command_status = 'notice';
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-
         $this->m_device->update($device);
         $device->ip = ip_address_from_db($device->ip);
-        $log->file = 'include_input_discoveries';
+        $log->file = 'discovery_helper';
         $log->function = 'discoveries';
         $log->ip = $device->ip;
         $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' update for ' . $device->ip . ' (System ID ' . $device->id . ')';
@@ -672,16 +673,16 @@ foreach ($xml->children() as $input) {
         $action = 'insert';
         $log->severity = 7;
         $log->ip = $device->ip;
+        $log->command_status = 'notice';
         $log->message = 'Start of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip;
         discovery_log($log);
         $device->id = $this->m_device->insert($device);
         $device->ip = ip_address_from_db($device->ip);
         $log->system_id = $device->id;
-        $log->file = 'include_input_discoveries';
+        $log->file = 'discovery_helper';
         $log->function = 'discoveries';
         $log->message = 'End of ' . strtoupper($device->last_seen_by) . ' insert for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
-
         // update the previous log entries with our new system_id
         $sql = "/* input::discoveries */ " . "UPDATE discovery_log SET system_id = " . intval($log->system_id) . " WHERE pid = " . intval($log->pid) . " and ip = '" . $device->ip . "'";
         $log->message = 'Update the previous log entries with our new system_id';
