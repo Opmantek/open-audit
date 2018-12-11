@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -197,12 +197,14 @@ class Ldap_servers extends MY_Controller
     * @access public
     * @return NULL
     */
+
     // public function test()
     // {
     //     $ldap_server = $this->m_ldap_servers->read();
     //     header('Content-Type: application/json');
     //     echo json_encode($ldap_server);
     // }
+
 }
 // End of file ldap_servers.php
 // Location: ./controllers/ldap_servers.php

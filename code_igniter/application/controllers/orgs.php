@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -46,6 +46,12 @@
  */
 class Orgs extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+
+    */
     public function __construct()
     {
         parent::__construct();
@@ -54,6 +60,12 @@ class Orgs extends MY_Controller
         $this->output->url = $this->config->item('oa_web_index');
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }
@@ -75,7 +87,7 @@ class Orgs extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create()
+    public function create()
     {
         $this->response->meta->received_data->attributes->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $this->response->meta->received_data->attributes->name));
         include 'include_create.php';
@@ -87,7 +99,7 @@ class Orgs extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function read()
+    public function read()
     {
         include 'include_read.php';
     }
@@ -131,7 +143,7 @@ class Orgs extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create_form()
+    public function create_form()
     {
         include 'include_create_form.php';
     }
@@ -142,7 +154,7 @@ class Orgs extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function update_form()
+    public function update_form()
     {
         include 'include_update_form.php';
     }

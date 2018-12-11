@@ -26,7 +26,7 @@
 ' @package Open-AudIT
 ' @author Mark Unwin <marku@opmantek.com> and others
 ' 
-' @version   2.2.7
+' @version   2.3.0
 
 ' @copyright Copyright (c) 2014, Opmantek
 ' @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -103,7 +103,7 @@ self_delete = "n"
 debugging = "1"
 
 ' Version - NOTE, special formatted so we match the *nix scripts and can do find/replace
-version="2.2.7"
+version="2.3.0"
 
 ' In normal use, DO NOT SET THIS.
 ' This value is passed in when running the audit_domain script.
@@ -254,6 +254,7 @@ if (help = "y") then
     wscript.echo "  create_file"
     wscript.echo "     y - Create an XML file containing the audit result."
     wscript.echo "    *n - Do not create an XML result file."
+    wscript.echo "     w - Create an XML file containing the audit result in admin$ share."
     wscript.echo ""
     wscript.echo "  debugging"
     wscript.echo "     0 - No output."
@@ -357,28 +358,28 @@ if debugging > "0" then
     wscript.echo "Open-AudIT Windows audit script"
     wscript.echo "Version: " & version
     wscript.echo "----------------------------"
-    wscript.echo "audit_dns: " & audit_dns
-    wscript.echo "audit_mount_point: " & audit_mount_point
-    wscript.echo "audit_netstat: " & audit_netstat
-    wscript.echo "audit_software: " & audit_software
-    wscript.echo "create_file: " & create_file
-    wscript.echo "debugging: " & debugging
-    wscript.echo "details_to_lower: " & details_to_lower
-    wscript.echo "discovery_id: " & discovery_id
-    wscript.echo "hide_audit_window: " & hide_audit_window
-    wscript.echo "ldap: " & ldap
-    wscript.echo "org_id: " & org_id
-    wscript.echo "ping_target: " & ping_target
-    wscript.echo "self_delete: " & self_delete
-    wscript.echo "strcomputer: " & strcomputer
-    wscript.echo "strpass: " & strpass
-    wscript.echo "struser: " & struser
-    wscript.echo "submit_online: " & submit_online
-    wscript.echo "system_id: " & system_id
-    wscript.echo "url: " & url
-    wscript.echo "use_proxy: " & use_proxy
-    wscript.echo "windows_user_work_1: " & windows_user_work_1
-    wscript.echo "windows_user_work_2: " & windows_user_work_2
+    wscript.echo "audit_dns           " & audit_dns
+    wscript.echo "audit_mount_point   " & audit_mount_point
+    wscript.echo "audit_netstat       " & audit_netstat
+    wscript.echo "audit_software      " & audit_software
+    wscript.echo "create_file         " & create_file
+    wscript.echo "debugging           " & debugging
+    wscript.echo "details_to_lower    " & details_to_lower
+    wscript.echo "discovery_id        " & discovery_id
+    wscript.echo "hide_audit_window   " & hide_audit_window
+    wscript.echo "ldap                " & ldap
+    wscript.echo "org_id              " & org_id
+    wscript.echo "ping_target         " & ping_target
+    wscript.echo "self_delete         " & self_delete
+    wscript.echo "strcomputer         " & strcomputer
+    wscript.echo "strpass             " & strpass
+    wscript.echo "struser             " & struser
+    wscript.echo "submit_online       " & submit_online
+    wscript.echo "system_id           " & system_id
+    wscript.echo "url                 " & url
+    wscript.echo "use_proxy           " & use_proxy
+    wscript.echo "windows_user_work_1 " & windows_user_work_1
+    wscript.echo "windows_user_work_2 " & windows_user_work_2
     wscript.echo "-------------------"
 end if
 
@@ -918,9 +919,9 @@ if (cint(local_windows_build_number) > 2222 and not local_windows_build_number =
     next
 end if
 
-if debugging > "0" then wscript.echo "My PID is : " & nPID end if
-if debugging > "0" then wscript.echo "Audit Start Time : " & system_timestamp end if
-if debugging > "0" then wscript.echo "Audit Location: " & audit_location end if
+if debugging > "0" then wscript.echo "My PID is           " & nPID end if
+if debugging > "0" then wscript.echo "Audit Start Time    " & system_timestamp end if
+if debugging > "0" then wscript.echo "Audit Location      " & audit_location end if
 if debugging > "0" then wscript.echo "-------------------" end if
 
 if debugging > "0" then wscript.echo "system info" end if
@@ -3647,110 +3648,110 @@ if (audit_software = "y") then
     strKeyPath = "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
     oReg.EnumKey HKEY_LOCAL_MACHINE,strKeyPath,arrSubKeys
     if (not Isnull(arrSubKeys)) then
-    for each subkey In arrSubKeys
-    newpath = strKeyPath & "\" & subkey
-    newkey = "DisplayName"
-    on error resume next
-    strValue = ""
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    on error goto 0
-    if strValue <> "" then
-    version = ""
-    uninstall_string = ""
-    install_date = ""
-    publisher = ""
-    install_source = ""
-    install_location = ""
-    system_component = ""
-    package_name = strValue
+        for each subkey In arrSubKeys
+            newpath = strKeyPath & "\" & subkey
+            newkey = "DisplayName"
+            on error resume next
+            strValue = ""
+            oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+            on error goto 0
+            if strValue <> "" then
+                version = ""
+                uninstall_string = ""
+                install_date = ""
+                publisher = ""
+                install_source = ""
+                install_location = ""
+                system_component = ""
+                package_name = strValue
 
-    newkey = "DisplayVersion"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_version = strValue
-    if (isnull(package_version)) then package_version = "" end if
+                newkey = "DisplayVersion"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_version = strValue
+                if (isnull(package_version)) then package_version = "" end if
 
-    newkey = "UninstallString"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_uninstall = strValue
-    if (isnull(package_uninstall)) then package_uninstall = "" end if
+                newkey = "UninstallString"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_uninstall = strValue
+                if (isnull(package_uninstall)) then package_uninstall = "" end if
 
-    newkey = "InstallDate"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_install_date = strValue
-    if (isnull(package_install_date)) then package_install_date = "" end if
+                newkey = "InstallDate"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_install_date = strValue
+                if (isnull(package_install_date)) then package_install_date = "" end if
 
-    newkey = "Publisher"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_publisher = strValue
-    if (isnull(package_publisher)) then package_publisher = "" end if
+                newkey = "Publisher"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_publisher = strValue
+                if (isnull(package_publisher)) then package_publisher = "" end if
 
-    newkey = "InstallSource"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_install_source = strValue
-    if (isnull(package_install_source)) then package_install_source = "" end if
+                newkey = "InstallSource"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_install_source = strValue
+                if (isnull(package_install_source)) then package_install_source = "" end if
 
-    newkey = "InstallLocation"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_location = strValue
-    if (isnull(package_location)) then package_location = "" end if
+                newkey = "InstallLocation"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_location = strValue
+                if (isnull(package_location)) then package_location = "" end if
 
-    newkey = "SystemComponent"
-    oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_system_component = strValue
-    if (isnull(package_system_component)) then package_system_component = "" end if
+                newkey = "SystemComponent"
+                oReg.GetDWORDValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_system_component = strValue
+                if (isnull(package_system_component)) then package_system_component = "" end if
 
-    newkey = "URLInfoAbout"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_url = strValue
-    if (isnull(package_url)) then package_url = "" end if
+                newkey = "URLInfoAbout"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_url = strValue
+                if (isnull(package_url)) then package_url = "" end if
 
-    newkey = "Comments"
-    oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
-    package_comments = strValue
-    if (isnull(package_comments)) then package_comments = " " end if
+                newkey = "Comments"
+                oReg.GetStringValue HKEY_LOCAL_MACHINE, newpath, newkey, strValue
+                package_comments = strValue
+                if (isnull(package_comments)) then package_comments = " " end if
 
-    package_installed_by = ""
-    package_installed_on = ""
+                package_installed_by = ""
+                package_installed_on = ""
 
-    on error resume next
-    for each objItem in colItems
-        if objItem.Message <> "" then
-            colonPos = InStr(objItem.Message,":")
-            dashPos = InStr(objItem.Message,"--")
-            message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
-            if (not isNull(message_retrieved)) then
-                if (InStr(message_retrieved, package_name) = 1) then
-                    package_installed_by = objItem.User
-                    if details_to_lower = "y" then
-                        package_installed_by = lcase(package_installed_by)
+                on error resume next
+                for each objItem in colItems
+                    if objItem.Message <> "" then
+                        colonPos = InStr(objItem.Message,":")
+                        dashPos = InStr(objItem.Message,"--")
+                        message_retrieved = trim(Mid(objItem.Message,colonPos+1,dashPos-colonPos-1))
+                        if (not isNull(message_retrieved)) then
+                            if (InStr(message_retrieved, package_name) = 1) then
+                                package_installed_by = objItem.User
+                                if details_to_lower = "y" then
+                                    package_installed_by = lcase(package_installed_by)
+                                end if
+                                package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
+                                package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
+                                exit for
+                            else
+                                package_installed_by = ""
+                                package_installed_on = ""
+                            end if
+                        end if
                     end if
-                    package_installed_on = WMIDateStringToDate(objItem.TimeGenerated)
-                    package_installed_on = datepart("yyyy", package_installed_on) & "-" & datepart("m", package_installed_on) & "-" & datepart("d", package_installed_on) & " " & datepart("h", package_installed_on) & ":" & datepart("n", package_installed_on) & ":" & datepart("s", package_installed_on)
-                    exit for
-                else
-                    package_installed_by = ""
-                    package_installed_on = ""
-                end if
-            end if
-        end if
-    next
-    on error goto 0
+                next
+                on error goto 0
 
-    result.WriteText "      <item>" & vbcrlf
-    result.WriteText "          <name>" & escape_xml(package_name) & "</name>" & vbcrlf
-    result.WriteText "          <version>" & escape_xml(package_version) & "</version>" & vbcrlf
-    result.WriteText "          <location>" & escape_xml(package_location) & "</location>" & vbcrlf
-    result.WriteText "          <install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
-    result.WriteText "          <uninstall>" & escape_xml(package_uninstall) & "</uninstall>" & vbcrlf
-    result.WriteText "          <publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
-    result.WriteText "          <install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
-    result.WriteText "          <system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
-    result.WriteText "          <url>" & escape_xml(package_url) & "</url>" & vbcrlf
-    result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
-    result.WriteText "          <installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
-    result.WriteText "      </item>" & vbcrlf
-    end if
-    next
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(package_name) & "</name>" & vbcrlf
+                result.WriteText "          <version>" & escape_xml(package_version) & "</version>" & vbcrlf
+                result.WriteText "          <location>" & escape_xml(package_location) & "</location>" & vbcrlf
+                result.WriteText "          <install_date>" & escape_xml(package_install_date) & "</install_date>" & vbcrlf
+                result.WriteText "          <uninstall>" & escape_xml(package_uninstall) & "</uninstall>" & vbcrlf
+                result.WriteText "          <publisher>" & escape_xml(package_publisher) & "</publisher>" & vbcrlf
+                result.WriteText "          <install_source>" & escape_xml(package_install_source) & "</install_source>" & vbcrlf
+                result.WriteText "          <system_component>" & escape_xml(package_system_component) & "</system_component>" & vbcrlf
+                result.WriteText "          <url>" & escape_xml(package_url) & "</url>" & vbcrlf
+                result.WriteText "          <installed_by>" & escape_xml(package_installed_by) & "</installed_by>" & vbcrlf
+                result.WriteText "          <installed_on>" & escape_xml(package_installed_on) & "</installed_on>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+            end if
+        next
     end if
     result.WriteText "      <!-- end of normal -->" & vbcrlf
 
@@ -6698,8 +6699,7 @@ if create_file = "y" then
     ' Write the results to a file
     file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
     OutputFile = system_hostname & "-" & file_timestamp & ".xml"
-    if debugging > "0" then wscript.echo "Output file: " & OutputFile end if
-    if debugging > "0" then wscript.echo "File                " & WScript.ScriptFullName & "\" & OutputFile end if
+    if debugging > "0" then wscript.echo "File                " & OutputFile end if
     Err.clear
     on error resume next
     result.position = 0
@@ -6708,11 +6708,30 @@ if create_file = "y" then
     error_description = Err.Description
     on error goto 0
     if (error_returned <> 0) then
-        if debugging > "0" then wscript.echo "Problem writing to file." end if
+        if debugging > "0" then wscript.echo "Problem writing to file " & OutputFile end if
         if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
         if debugging > "0" then wscript.echo "Error Description:" & error_description end if
-    else
-        if debugging > "0" then wscript.echo "Output file created." end if
+    end if
+end if
+
+if create_file = "w" then
+    if debugging > "0" then wscript.echo "Creating output File in Windows directory" end if
+    ' Write the results to a file
+    file_timestamp = Year(dt) & Right("0" & Month(dt),2) & Right("0" & Day(dt),2) & Right("0" & Hour(dt),2) & Right("0" & Minute(dt),2) & Right("0" & Second(dt),2)
+    OutputFile = windows_install_directory & "\" & system_hostname & "-" & file_timestamp & ".xml"
+    ' Output the filepath regardless of debug level so discovery can catch it
+    wscript.echo "File                " & OutputFile
+    Err.clear
+    on error resume next
+    result.position = 0
+    result.SaveToFile OutputFile, 2 ' Overwrites the file with the data from the currently open Stream object, if the file already exists
+    error_returned = Err.Number
+    error_description = Err.Description
+    on error goto 0
+    if (error_returned <> 0) then
+        if debugging > "0" then wscript.echo "Problem writing to file " & OutputFile end if
+        if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+        if debugging > "0" then wscript.echo "Error Description:" & error_description end if
     end if
 end if
 

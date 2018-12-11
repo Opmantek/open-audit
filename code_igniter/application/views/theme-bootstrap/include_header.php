@@ -30,8 +30,49 @@ if (!empty($this->config->config['servers'])) {
                 <ul class="nav navbar-nav">
                 <?php if (!$collector) { ?>
                     <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('View'); ?> <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                        <?php foreach ($this->response->included as $item) { ?>
+                            <?php if ($item->type === 'dashboards') { ?>
+                                <?php if ($this->config->config['oae_license'] == 'none') { ?>
+                                <li class="disabled"><a href='#' title="Enable Professional or Enterprise to use this functionality"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                            <?php } else { ?>
+                                <li><a href="/omk/open-audit/dashboards/<?php echo $item->id ?>/execute"><?php echo htmlentities($item->attributes->name); ?></a></li>
+                            <?php } ?>
+                        <?php } } ?>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Discover'); ?> <span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <?php
+                            if ($this->m_users->get_user_permission('', 'clouds', 'r')) { ?>
+                                <li class="dropdown-submenu">
+                                    <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
+                                    <a href="#"><?php echo __('Clouds'); ?></a>
+                                    <?php } else { ?>
+                                    <a href="#">Clouds <i class="fa fa-lock" aria-hidden="true" style="color: rgba(43, 41, 43, 0.56)"></i></a>
+                                    <?php } ?>
+                                    <ul class="dropdown-menu" style="min-width:250px;">
+                                        <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
+                                            <li><a href='<?php echo $this->config->config['oae_url']; ?>/clouds'><?php echo __('List Clouds'); ?></a></li>
+                                        <?php } else { ?>
+                                            <li class="disabled"><a href="#"><?php echo __('List Clouds'); ?></a></li>
+                                        <?php } ?>
+                                        <?php if ($this->m_users->get_user_permission('', 'clouds', 'c')) { ?>
+                                            <?php if ($this->config->config['oae_license'] == 'commercial') { ?>
+                                                <li><a href="<?php echo $this->config->config['oae_url']; ?>/clouds/create"><?php echo __('Create Clouds'); ?></a></li>
+                                            <?php } else { ?>
+                                                <li class="disabled"><a href="#"><?php echo __('Create Clouds'); ?></a></li>
+                                            <?php } ?>
+                                        <?php } ?>
+                                        <?php if ($this->config->config['oae_license'] != 'commercial') { ?>
+                                            <li><a style="color: #337ab7;" href='<?php echo $this->config->config['oae_url']; ?>/features/clouds'><?php echo __('Learn About Clouds'); ?></a></li>
+                                        <?php } ?>
+                                    </ul>
+                                </li>
+                            <?php
+                            } ?>
                             <?php
                             if ($this->m_users->get_user_permission('', 'credentials', 'r')) { ?>
                                 <li class="dropdown-submenu">
@@ -182,8 +223,8 @@ if (!empty($this->config->config['servers'])) {
                     </li>
 
                     <?php
-                    $collections = array('applications','attributes','baselines','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','orgs','queries','roles','summaries','users','widgets');
-                    $commercial_collections = array('applications','baselines','dashboards','maps','roles','widgets');
+                    $collections = array('applications','attributes','baselines','connections','dashboards','devices','fields','groups','licenses','locations','maps','networks','orgs','queries','racks','roles','summaries','users','widgets');
+                    $commercial_collections = array('applications','baselines','dashboards','maps','racks','roles','widgets');
                     ?>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?php echo __('Manage'); ?> <span class="caret"></span></a>

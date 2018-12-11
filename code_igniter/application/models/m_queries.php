@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_queries extends MY_Model
@@ -212,8 +212,8 @@ class M_queries extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->summary = 'start';
         stdlog($this->log);
+        $CI = & get_instance();
         if ($id == '') {
-            $CI = & get_instance();
             $id = intval($CI->response->meta->id);
         } else {
             $id = intval($id);
@@ -289,15 +289,15 @@ class M_queries extends MY_Model
                 }
             }
         }
-        if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false) {
-            $filter .= ' AND system.status = "production"';
-            $temp = new stdClass();
-            $temp->name = 'system.status';
-            $temp->operator = '=';
-            $temp->value = 'production';
-            $CI->response->meta->filter[] = $temp;
-            unset($temp);
-        }
+        // if (stripos($filter, ' status ') === false and stripos($filter, ' system.status ') === false) {
+        //     $filter .= ' AND system.status = "production"';
+        //     $temp = new stdClass();
+        //     $temp->name = 'system.status';
+        //     $temp->operator = '=';
+        //     $temp->value = 'production';
+        //     $CI->response->meta->filter[] = $temp;
+        //     unset($temp);
+        // }
         return($filter);
     }
 

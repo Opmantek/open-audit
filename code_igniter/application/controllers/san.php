@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -704,7 +704,12 @@ class San extends CI_Controller
             stdlog($log_details);
 
             $details->last_seen = $this->config->config['timestamp'];
-            $details->id = intval($this->m_device->match($details));
+
+            $parameters = new stdCLass();
+            $parameters->details = $details;
+            $parameters->log = $log_details;
+            $details->id = $this->m_device->match($parameters);
+
             $details->last_seen_by = 'audit';
             $details->audits_ip = @ip_address_to_db($_SERVER['REMOTE_ADDR']);
 
@@ -747,16 +752,36 @@ class San extends CI_Controller
             unset($temp_user);
 
             $this->m_audit_log->update('debug', 'san', $details->id, $details->last_seen);
-            $this->m_devices_components->process_component('san', $details, $san);
+            $parameters = new stdClass();
+            $parameters->table = 'san';
+            $parameters->details = $details;
+            $parameters->input = $san;
+            $parameters->log = $log_details;
+            $this->m_devices_components->process_component($parameters);
 
             $this->m_audit_log->update('debug', 'network', $details->id, $details->last_seen);
-            $this->m_devices_components->process_component('network', $details, $network);
+            $parameters = new stdClass();
+            $parameters->table = 'network';
+            $parameters->details = $details;
+            $parameters->input = $network;
+            $parameters->log = $log_details;
+            $this->m_devices_components->process_component($parameters);
 
             $this->m_audit_log->update('debug', 'disk', $details->id, $details->last_seen);
-            $this->m_devices_components->process_component('disk', $details, $disk);
+            $parameters = new stdClass();
+            $parameters->table = 'disk';
+            $parameters->details = $details;
+            $parameters->input = $disk;
+            $parameters->log = $log_details;
+            $this->m_devices_components->process_component($parameters);
 
             $this->m_audit_log->update('debug', 'ip address', $details->id, $details->last_seen);
-            $this->m_devices_components->process_component('ip', $details, $ip);
+            $parameters = new stdClass();
+            $parameters->table = 'ip';
+            $parameters->details = $details;
+            $parameters->input = $ip;
+            $parameters->log = $log_details;
+            $this->m_devices_components->process_component($parameters);
 
             $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
 

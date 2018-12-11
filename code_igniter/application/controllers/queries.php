@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -206,7 +206,7 @@ class Queries extends MY_Controller
     */
     public function execute()
     {
-        $this->response->data = $this->m_queries->execute();
+        $this->response->data = $this->m_queries->execute($this->response->meta->id);
         $this->response->meta->include = 'v_devices_collection';
         $this->response->meta->filtered = count($this->response->data);
         $this->response->meta->total = count($this->response->data);

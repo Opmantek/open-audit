@@ -31,7 +31,7 @@
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.2.7
+ * @version   2.3.0
 
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -39,9 +39,47 @@
 
 # Vendor Cisco
 
-$get_oid_details = function ($ip, $credentials, $oid) {
+
+$get_oid_details = function ($ip, $credentials, $oid) {  
+     
     $details = new stdClass();
+    $log = new stdClass();
+    $log->summary = "snmp_9_helper";
+    
+    $log->message = 'memory_count retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.9.3.6.6.0';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
+    #Memory
+    # the only MIB providing overall RAM is 1.3.6.1.4.1.9.3.6.6.0 which is deprecated
+        $details->memory_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.3.6.6.0") / 1024);
+
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->memory_count;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+    
+    
+    $log->message = 'storage_count retrieval via SNMP for '.$ip;
+        $log->command = 'snmpget 1.3.6.1.4.1.9.2.10.1.0';
+        $log->command_status = 'fail';
+        $log->id = discovery_log($log);
+        $item_start = microtime(true);
+    #Disk 1.3.6.1.4.1.2620.1.6.7.3.6 may require /1048576 for MB sizing
+        $details->storage_count = intval(my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.2.10.1.0") / 1048576); 
+        $log->command_time_to_execute = (microtime(true) - $item_start);
+        $log->command_output = (string)$details->disk_model;
+        $log->command_status = '';
+        discovery_log($log);
+        unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output); 
+    
+ 
+
+     
     $details->description = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.1.1.0");
+    
     if ($oid == '1.3.6.1.4.1.9.1.1') {
         $details->model = 'Cisco Gateway Server';
         $details->type = 'network device';
@@ -7849,6 +7887,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.141') {
         $details->model = 'Cisco Chassis Cat 6006';
         $details->type = 'cisco module';
+    }
+    if ($oid == '1.3.6.1.4.1.9.12.3.1.3.1410') {
+        $details->model = 'Cisco Nexus 5672UP';
+        $details->type = 'switch';
     }
     if ($oid == '1.3.6.1.4.1.9.12.3.1.3.142') {
         $details->model = 'Cisco Chassis Cat 6009';

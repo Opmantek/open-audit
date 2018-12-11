@@ -70,91 +70,120 @@ foreach ($csv as $key => $value) {
         $item->{$header[$i]} = $value[$i];
     }
     $item->org_id = @intval($item->org_id);
-    if ($item->org_id === 0 and $this->response->meta->collection != 'roles') {
-        log_error('ERR-0011');
-        break;
+
+    // Check user is auth on org_id
+    $test = false;
+    $count_all += 1;
+
+    // if ($this->response->meta->collection === 'roles') {
+    //     $test = $this->m_users->has_role('admin');
+    // } elseif ($this->response->meta->collection !== 'roles' and $this->response->meta->collection !== 'orgs') {
+    //     $test = $this->m_users->user_org($item->org_id);
+    // } elseif ($this->response->meta->collection === 'orgs') {
+    //     $test = $this->m_users->user_org($item->parent_id);
+    // }
+
+    if ($this->response->meta->collection === 'roles') {
+        $test = $this->m_users->has_role('admin');
+    } elseif ($this->response->meta->collection === 'orgs') {
+        $test = $this->m_users->user_org($item->parent_id);
     } else {
-        // Check user is auth on org_id
-        $test = false;
-        $count_all += 1;
-
-        if ($this->response->meta->collection === 'roles') {
-            $test = $this->m_users->has_role('admin');
-        } elseif ($this->response->meta->collection !== 'roles' and $this->response->meta->collection !== 'orgs') {
-            $test = $this->m_users->user_org($item->org_id);
-        } elseif ($this->response->meta->collection === 'orgs') {
-            $test = $this->m_users->user_org($item->parent_id);
-        }
-
-        if ($this->response->meta->collection == 'credentials') {
-            if (empty($item->credentials)) {
-                $item->credentials = new stdClass();
-                foreach ($item as $name => $value) {
-                    $attribute = explode('.', $name);
-                    if ($attribute[0] == 'credentials' and !empty($attribute[1]) and !empty($value)) {
-                        $item->credentials->{$attribute[1]} = $value;
-                        unset($item->{$name});
-                    }
-                }
+        if (!empty($item->id)) {
+            # We have an ID - use that to get the OrgId
+            $table = $this->response->meta->collection;
+            if ($table == 'devices') {
+                $table = 'system';
             }
-        }
-
-        if ($this->response->meta->collection == 'discoveries') {
-            if (empty($item->other)) {
-                $item->other = new stdClass();
-                foreach ($item as $name => $value) {
-                    $attribute = explode('.', $name);
-                    if ($attribute[0] == 'other' and !empty($attribute[1]) and !empty($value)) {
-                        $item->other->{$attribute[1]} = $value;
-                        unset($item->{$name});
-                    }
-                }
-            }
-        }
-
-        if ($this->response->meta->collection == 'roles') {
-            if (empty($item->permissions)) {
+            if (!$this->db->table_exists($table)) {
                 $test = false;
+            } else {
+                $sql = "/* include_import */ " . "SELECT org_id FROM `$table` WHERE `id` = ?";
+                $data = array(intval($item->id));
+                $query = $this->db->query($sql, $data);
+                $result = $query->result();
+                if (!empty($result[0]->org_id)) {
+                    $test = $this->m_users->user_org($result[0]->org_id);
+                } else {
+                    $test = false;
+                }
+            }
+        } else {
+            if (empty($item->org_id)) {
+                $test = false;
+            } else {
+                $test = $this->m_users->user_org($item->org_id);
             }
         }
+    }
 
-        if ($test === false) {
-            $count_bad += 1;
-        } else {
-            if ($this->response->meta->collection === 'devices') {
-                $item->last_seen_by = $last_seen_by;
-                $item->last_seen = $last_seen;
+    if ($this->response->meta->collection == 'credentials') {
+        if (empty($item->credentials)) {
+            $item->credentials = new stdClass();
+            foreach ($item as $name => $value) {
+                $attribute = explode('.', $name);
+                if ($attribute[0] == 'credentials' and !empty($attribute[1]) and !empty($value)) {
+                    $item->credentials->{$attribute[1]} = $value;
+                    unset($item->{$name});
+                }
             }
+        }
+    }
+
+    if ($this->response->meta->collection == 'discoveries') {
+        if (empty($item->other)) {
+            $item->other = new stdClass();
+            foreach ($item as $name => $value) {
+                $attribute = explode('.', $name);
+                if ($attribute[0] == 'other' and !empty($attribute[1]) and !empty($value)) {
+                    $item->other->{$attribute[1]} = $value;
+                    unset($item->{$name});
+                }
+            }
+        }
+    }
+
+    if ($this->response->meta->collection == 'roles') {
+        if (empty($item->permissions)) {
             $test = false;
-            if (!empty($item->id)) {
-                # UPDATE
-                $id = $item->id;
-                if ($this->response->meta->collection !== 'devices') {
-                    $test = $this->{'m_collection'}->update($item, $this->response->meta->collection);
-                } else {
-                    $test = $this->{'m_devices'}->update($item, $this->response->meta->collection);
-                }
-                if ($test !== false) {
-                    $count_update += 1;
-                }
+        }
+    }
+
+    if ($test === false) {
+        $count_bad += 1;
+    } else {
+        if ($this->response->meta->collection === 'devices') {
+            $item->last_seen_by = $last_seen_by;
+            $item->last_seen = $last_seen;
+        }
+        $test = false;
+        if (!empty($item->id)) {
+            # UPDATE
+            $id = $item->id;
+            if ($this->response->meta->collection !== 'devices') {
+                $test = $this->{'m_collection'}->update($item, $this->response->meta->collection);
             } else {
-                # CREATE
-                unset($item->id);
-                if ($this->response->meta->collection !== 'devices') {
-                    $test = $this->{'m_collection'}->create($item, $this->response->meta->collection);
-                } else {
-                    $test = $this->{'m_devices'}->create($item, $this->response->meta->collection);
-                }
-                if ($test !== false) {
-                    $count_create += 1;
-                    $id = $test;
-                }
+                $test = $this->{'m_devices'}->update($item, $this->response->meta->collection);
             }
             if ($test !== false) {
-                $this->response->data = array_merge($this->response->data, $this->{'m_'.$this->response->meta->collection}->read($id));
-            } else {
-                $count_bad += 1;
+                $count_update += 1;
             }
+        } else {
+            # CREATE
+            unset($item->id);
+            if ($this->response->meta->collection !== 'devices') {
+                $test = $this->{'m_collection'}->create($item, $this->response->meta->collection);
+            } else {
+                $test = $this->{'m_devices'}->create($item, $this->response->meta->collection);
+            }
+            if ($test !== false) {
+                $count_create += 1;
+                $id = $test;
+            }
+        }
+        if ($test !== false) {
+            $this->response->data = array_merge($this->response->data, $this->{'m_'.$this->response->meta->collection}->read($id));
+        } else {
+            $count_bad += 1;
         }
     }
 }
@@ -179,6 +208,12 @@ $this->response->meta->flash->status = $flash_status;
 $this->response->meta->flash->message = $flash_message;
 
 if ($this->response->meta->format === 'json') {
+    $this->response->data = array();
+    $item = new stdClass();
+    $item->total = $count_all;
+    $item->created = $count_create;
+    $item->updated = $count_update;
+    $this->response->data[] = $item;
     output($this->response);
 } else {
     redirect($this->response->meta->collection);

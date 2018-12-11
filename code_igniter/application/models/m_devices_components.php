@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_devices_components extends MY_Model
@@ -298,82 +298,90 @@ class M_devices_components extends MY_Model
         return($match_columns);
     }
 
-    public function process_component($table = '', $details, $input, $display = 'n', $match_columns = array())
+    /*
+    $parameters is an object that looks as below.
+    $parameters->table
+    $parameters->details
+    $parameters->input
+    $parameters->log
+    **/
+    public function process_component($parameters)
     {
         $create_alerts = $this->config->config['discovery_create_alerts'];
 
-        $log = new stdClass();
-        $log->discovery_id = (string)@$details->discovery_id;
-        $log->system_id = (string)$details->id;
-        $log->timestamp = null;
+        if (empty($parameters) or empty($parameters->table) or empty($parameters->details) or empty($parameters->input)) {
+            $mylog = new stdClass();
+            $mylog->severity = 4;
+            $mylog->status = 'fail';
+            $mylog->message = 'Function process_component called without correct params object';
+            $mylog->file = 'm_devices_components';
+            $mylog->function = 'process_component';
+            stdlog($mylog);
+            return;
+        }
+
+        $table = $parameters->table;
+        if (!$this->db->table_exists($table)) {
+            $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $log->command_status = 'fail';
+            $log->severity = 4;
+            discovery_log($log);
+            return;
+        }
+
+        $details = $parameters->details;
+
+        $input = $parameters->input;
+
+        if (!empty($parameters->match_columns)) {
+            $match_columns = $parameters->match_columns;
+        } else {
+            $match_columns = $this->match_columns($table);
+        }
+
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else {
+            $log = new stdClass();
+            if (!empty($GLOBALS['discovery_id'])) {
+                $log->discovery_id = intval($GLOBALS['discovery_id']);
+            } else if (!empty($details->discovery_id)) {
+                $log->discovery_id = intval($details->discovery_id);
+            }
+            $log->system_id = (string)$details->id;
+            $log->timestamp = null;
+            $log->severity_text = '';
+            $log->pid = getmypid();
+            $log->ip = '127.0.0.1';
+            if (!empty($details->ip)) {
+                $log->ip = (string)$details->ip;
+            }
+            $log->message = 'No log object passed in for ' . $table;
+        }
         $log->severity = 7;
-        $log->severity_text = '';
-        $log->pid = getmypid();
-        $log->ip = (string)$details->ip;
         $log->file = 'm_devices_componenets';
         $log->function = 'process_component';
         $log->command = 'process audit';
+        unset($display);
         $log->message = '';
 
-        $log_details = new stdClass();
-        $log_details->message = '';
-        $log_details->severity = 7;
-        $log_details->file = 'system';
-        if ($display != 'y') {
-            $display = 'n';
-        }
-        $log_details->display = $display;
-        unset($display);
-
+        $name = '';
         if (empty($details->name) and !empty($details->hostname)) {
             $name = $details->hostname;
         } else {
             $name = $details->name;
         }
 
-        // ensure we have a valid table name
-        if (!$this->db->table_exists($table)) {
-            $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log->severity = 4;
-            discovery_log($log);
-            return;
-        }
-
-        if (!$input) {
-            $log->message = 'No input supplied (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            $log->severity = 7;
-            discovery_log($log);
-            return;
-        }
-
-        if (!isset($match_columns) or count($match_columns) == 0) {
-            $match_columns = $this->match_columns($table);
-        }
-
-        if ($table == '' or count($match_columns) == 0 or !isset($details->id)) {
-            if ($table == '') {
-                $log->message = 'No table supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
-                $message = "No table name supplied - failed";
-            }
-            if (count($match_columns) == 0) {
-                $log->message = 'No columns to match supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
-                $message = "$table - No columns to match supplied - failed";
-            }
-            if (!isset($details->id)) {
-                $log->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
-                $message = "$table - No id supplied - failed";
-            }
+        if (!isset($details->id)) {
+            $log->message = 'No id supplied for '.@ip_address_from_db($details->ip).' ('.$name.')';
+            $message = "No device id supplied - failed";
             $this->m_audit_log->update('debug', $message, $details->id, $details->last_seen);
             unset($message);
             $log->severity = 5;
+            $log->message = 'No device id supplied to process component';
+            $log->command_status = 'fail';
             discovery_log($log);
             return;
-        } else {
-            # removed - just way too much log output
-            // $this->m_audit_log->update('debug', "$table - start", $details->id, $details->last_seen);
-            // $log->message = 'Processing component (' . $table . ') start for '.@ip_address_from_db($details->ip).' ('.$name.')';
-            // $log->severity = 7;
-            // discovery_log($log);
         }
 
         ### NETSTAT ###
@@ -386,11 +394,10 @@ class M_devices_components extends MY_Model
             }
         }
 
-        // make sure we have an entry for each match column, even if it's empty
         foreach ($match_columns as $match_column) {
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]) and !isset($input->item[$i]->$match_column)) {
-                    $input->item[$i]->$match_column = '';
+            for ($i=0; $i<count($input); $i++) {
+                if (isset($input[$i]) and !isset($input[$i]->{$match_column})) {
+                    $input[$i]->$match_column = '';
                 }
             }
         }
@@ -398,65 +405,65 @@ class M_devices_components extends MY_Model
         ### IP ADDRESS ###
         if ((string)$table == 'ip') {
             $this->load->model('m_networks');
-            for ($i=0; $i<count($input->item); $i++) {
+            for ($i=0; $i<count($input); $i++) {
                 # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-                $input->item[$i]->mac = strtolower($input->item[$i]->mac);
+                $input[$i]->mac = strtolower($input[$i]->mac);
                 # As at 1.5.6 we pass an additional attribute called 'type' for bonded adapters
                 # We use this to test and not pad the MAC address if set
-                if (!isset($input->item[$i]->type)) {
-                    $input->item[$i]->type = '';
+                if (!isset($input[$i]->type)) {
+                    $input[$i]->type = '';
                 }
-                if (!isset($input->item[$i]->version) or $input->item[$i]->version != '6') {
-                    $input->item[$i]->version = 4;
+                if (!isset($input[$i]->version) or $input[$i]->version != '6') {
+                    $input[$i]->version = 4;
                 }
                 # Set a default netmask of 255.255.255.0 if we don't have one (and we're on IPv4)
-                if ($input->item[$i]->version == 4 and (empty($input->item[$i]->netmask) or $input->item[$i]->netmask == '0.0.0.0')) {
-                    $input->item[$i]->netmask = '255.255.255.0';
+                if ($input[$i]->version == 4 and (empty($input[$i]->netmask) or $input[$i]->netmask == '0.0.0.0')) {
+                    $input[$i]->netmask = '255.255.255.0';
                 }
                 # calculate the network this address is on
-                if ($input->item[$i]->version == 4 and !empty($input->item[$i]->ip)) {
-                    $temp_long = ip2long($input->item[$i]->netmask);
+                if ($input[$i]->version == 4 and !empty($input[$i]->ip)) {
+                    $temp_long = ip2long($input[$i]->netmask);
                     $temp_base = ip2long('255.255.255.255');
                     $temp_subnet = 32-log(($temp_long ^ $temp_base)+1, 2);
-                    $net = network_details($input->item[$i]->ip.'/'.$temp_subnet);
+                    $net = network_details($input[$i]->ip.'/'.$temp_subnet);
                     if (isset($net->network) and $net->network != '') {
-                        #$input->item[$i]->network = $net->network.' / '.$temp_subnet;
-                        $input->item[$i]->network = $net->network.'/'.$temp_subnet;
+                        #$input[$i]->network = $net->network.' / '.$temp_subnet;
+                        $input[$i]->network = $net->network.'/'.$temp_subnet;
                     } else {
-                        $input->item[$i]->network = '';
+                        $input[$i]->network = '';
                     }
                     if (isset($net->network_slash) and $net->network_slash != '') {
-                        $input->item[$i]->cidr = $net->network_slash;
+                        $input[$i]->cidr = $net->network_slash;
                     } else {
-                        $input->item[$i]->cidr = '';
+                        $input[$i]->cidr = '';
                     }
                     unset($temp_long);
                     unset($temp_base);
                     unset($temp_subnet);
                     unset($net);
                 }
-                if ($input->item[$i]->type != 'bonded') {
-                    if (isset($input->item[$i]->mac) and $input->item[$i]->mac != '') {
-                        $mymac = explode(":", $input->item[$i]->mac);
+                if ($input[$i]->type != 'bonded') {
+                    if (isset($input[$i]->mac) and $input[$i]->mac != '') {
+                        $mymac = explode(":", $input[$i]->mac);
                         for ($j = 0; $j<count($mymac); $j++) {
                             $mymac[$j] = mb_substr("00".$mymac[$j], -2);
                         }
                         if (count($mymac) > 0) {
-                            $input->item[$i]->mac = implode(":", $mymac);
+                            $input[$i]->mac = implode(":", $mymac);
                         }
                     }
                 }
                 # ensure we have the correctly padded ip v4 address
-                if ($input->item[$i]->version == 4) {
-                    $input->item[$i]->ip = ip_address_to_db($input->item[$i]->ip);
+                if ($input[$i]->version == 4) {
+                    $input[$i]->ip = ip_address_to_db($input[$i]->ip);
                 }
-                if (!isset($input->item[$i]->ip) or $input->item[$i]->ip == '') {
-                    unset($input->item[$i]);
+                if (!isset($input[$i]->ip) or $input[$i]->ip == '') {
+                    unset($input[$i]);
                 }
                 # ensure we add the network to the networks list
-                if (!empty($input->item[$i]->network)) {
+                if (!empty($input[$i]->network)) {
                     $network = new stdClass();
-                    $network->name = $input->item[$i]->network;
+                    $network->name = $input[$i]->network;
                     if (!empty($details->org_id)) {
                         $network->org_id = intval($details->org_id);
                     } else {
@@ -466,7 +473,7 @@ class M_devices_components extends MY_Model
                     $this->m_networks->upsert($network);
                 }
             }
-            if ($details->type == 'computer' and 
+            if ($details->type == 'computer' and
                 !empty($details->os_group) and $details->os_group == 'VMware') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that ESXi provides different values for network cards from the command line and from SNMP
@@ -477,8 +484,8 @@ class M_devices_components extends MY_Model
                 # set the below so we don't generate alerts for this
                 $create_alerts = 'n';
             }
-            if ($details->type == 'computer' and 
-                !empty($details->manufacturer) and $details->manufacturer == 'Xen' and 
+            if ($details->type == 'computer' and
+                !empty($details->manufacturer) and $details->manufacturer == 'Xen' and
                 !empty($details->model) and $details->model == 'HVM domU') {
                 # TODO - fix the below somewhow ?!??
                 # the issue is that AWS provides no IPv6 information via the API
@@ -492,7 +499,6 @@ class M_devices_components extends MY_Model
         }
 
         ### NETWORK ###
-        # depending on the device type we need to alter our matching columns for the network card
         if ((string)$table == 'network') {
             if ($details->type == 'computer' and $details->os_group != 'VMware') {
                 # we already match only on MAC Address
@@ -514,11 +520,11 @@ class M_devices_components extends MY_Model
             }
 
             # some devices may provide upper case MAC addresses - ensure all stored in the DB are lower
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]->mac)) {
-                    $input->item[$i]->mac = strtolower($input->item[$i]->mac);
+            for ($i=0; $i<count($input); $i++) {
+                if (isset($input[$i]->mac)) {
+                    $input[$i]->mac = strtolower($input[$i]->mac);
                 } else {
-                    $input->item[$i]->mac = '';
+                    $input[$i]->mac = '';
                 }
             }
         }
@@ -531,39 +537,42 @@ class M_devices_components extends MY_Model
 
         ### PROCESSOR ###
         if ((string)$table == 'processor') {
-            $input->item[0]->description = str_ireplace('(R)', '', $input->item[0]->description);
-            $input->item[0]->description = str_ireplace('(TM)', '', $input->item[0]->description);
-            $input->item[0]->description = str_ireplace('  ', ' ', $input->item[0]->description);
-            $input->item[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input->item[0]->manufacturer);
-            $input->item[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input->item[0]->manufacturer);
+            if (!empty($input[0]->description)) {
+                $input[0]->description = str_ireplace('(R)', '', $input[0]->description);
+                $input[0]->description = str_ireplace('(TM)', '', $input[0]->description);
+                $input[0]->description = str_ireplace('  ', ' ', $input[0]->description);
+            }
+            if (!empty($input[0]->manufacturer)) {
+                $input[0]->manufacturer = str_ireplace('AuthenticAMD', 'AMD', $input[0]->manufacturer);
+                $input[0]->manufacturer = str_ireplace('GenuineIntel', 'Intel', $input[0]->manufacturer);
+            }
         }
 
         ### SERVER ###
         if ((string)$table == 'server') {
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]->version) and $input->item[$i]->version != '' and $input->item[$i]->type == 'database') {
+            for ($i=0; $i<count($input); $i++) {
+                if (isset($input[$i]->version) and $input[$i]->version != '' and $input[$i]->type == 'database') {
                     #$input->item[$i]->full_name = (string)$this->get_sql_server_version_string($input->item[$i]->version);
-                    $input->item[$i]->version_string = (string)$this->get_sql_server_version_string($input->item[$i]->version);
+                    $input[$i]->version_string = (string)$this->get_sql_server_version_string($input[$i]->version);
                 }
             }
         }
 
         ### SOFTWARE ###
-        # need to pad the version
         if ((string)$table == 'software') {
             $this->load->helper('software_version');
-            for ($i=0; $i<count($input->item); $i++) {
-                if (isset($input->item[$i]->version) and $input->item[$i]->version != '') {
-                    $input->item[$i]->version_padded = version_padded($input->item[$i]->version);
+            for ($i=0; $i<count($input); $i++) {
+                if (isset($input[$i]->version) and $input[$i]->version != '') {
+                    $input[$i]->version_padded = version_padded($input[$i]->version);
                 } else {
-                    $input->item[$i]->version_padded = '';
+                    $input[$i]->version_padded = '';
                 }
             }
         }
 
         ### VIRTUAL MACHINE ###
         if ((string)$table == 'vm') {
-            foreach ($input->item as $vm) {
+            foreach ($input as $vm) {
                 if (!isset($vm->group)) {
                     $vm->group = '';
                 }
@@ -624,7 +633,39 @@ class M_devices_components extends MY_Model
         // ensure we have a filtered array with only single copies of each $item
         $items = array();
         // for every input item
-        foreach ($input->item as $input_key => $input_item) {
+        // foreach ($input->item as $input_key => $input_item) {
+        //     $matched = 'n';
+        //     // loop through them, building up item array
+        //     foreach ($items as $output_key => $output_item) {
+        //         // the matched count is the number of columns in the match_columns array
+        //         // that have equal values in our input items
+        //         $match_count = 0;
+        //         // loop through our match_columns array
+        //         for ($i = 0; $i < count($match_columns); $i++) {
+        //             // and test if the variables match
+        //             if ((string)$input_item->{$match_columns[$i]} === (string)$output_item->{$match_columns[$i]}) {
+        //                 // they match so increment the count
+        //                 $match_count ++;
+        //             }
+        //         }
+        //         if ($match_count == (count($match_columns))) {
+        //             // we have all the same matching items - combine them
+        //             # NOTE - we use isset and != '' because if we used empty, 0 would falsely match
+        //             foreach ($fields as $field) {
+        //                 if ((!isset($output_item->$field) or $output_item->$field == '') and isset($input_item->$field) and $input_item->$field != '') {
+        //                     $output_item->$field = (string) $input_item->$field;
+        //                 }
+        //             }
+        //             $items[$output_key] = $output_item;
+        //             $matched = 'y';
+        //         }
+        //     }
+        //     if ($matched != 'y') {
+        //         // no match, add the input item to the item array
+        //         $items[] = $input_item;
+        //     }
+        // }
+        foreach ($input as $input_item) {
             $matched = 'n';
             // loop through them, building up item array
             foreach ($items as $output_key => $output_item) {
@@ -656,6 +697,7 @@ class M_devices_components extends MY_Model
                 $items[] = $input_item;
             }
         }
+
         // for each item from the audit
         foreach ($items as $input_item) {
             // set these flags on a per audit item basis
@@ -771,6 +813,12 @@ class M_devices_components extends MY_Model
                 if (empty($details->org_id)) {
                     $details->org_id = 1;
                 }
+                if (!isset($input_item->used) or $input_item->used =='') {
+                    $input_item->used = 0;
+                }
+                if (!isset($input_item->free) or $input_item->free =='') {
+                    $input_item->free = 0;
+                }
                 $sql = "INSERT INTO graph VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $sql = $this->clean_sql($sql);
                 $data = array(intval($details->org_id), intval($details->id), "$table", intval($id), "$table", intval($used_percent),
@@ -792,6 +840,7 @@ class M_devices_components extends MY_Model
         if (count($db_result) > 0) {
             $log->message = 'Inserting change logs (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log->severity = 7;
+            $log->command_status = 'notice';
             discovery_log($log);
         }
 
@@ -864,7 +913,7 @@ class M_devices_components extends MY_Model
         // http://sqlserverbuilds.blogspot.com.au/
         // https://support.microsoft.com/en-au/kb/2936603
         // https://buildnumbers.wordpress.com/sqlserver/
-        
+
         // find the version string, based on the version integer.
         $version_string = '';
 
@@ -1383,10 +1432,11 @@ class M_devices_components extends MY_Model
                 }
             }
         }
-        $object = new stdClass();
-        $object->item = array();
-        $object->item = $input_array;
-        return($object);
+        // $object = new stdClass();
+        // $object->item = array();
+        // $object->item = $input_array;
+        // return($object);
+        return($input_array);
     }
 
     public function set_initial_address($id, $force = 'n')
@@ -1486,7 +1536,7 @@ class M_devices_components extends MY_Model
     {
         $user_id = intval($user_id);
         $resultset = array();
-        $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`, 
+        $sql = "SELECT DISTINCT(`system`.`id`), `system`.`name`, `status`, `function`, `environment`, `system`.`description`,
                 `partition`.`id` as partition_id, `partition`.`mount_point`, `partition`.`name` as partition_name
             FROM `system`, `oa_group_sys`, `partition`
             WHERE
@@ -1596,36 +1646,21 @@ class M_devices_components extends MY_Model
         return ($resultset);
     }
 
-    public function nmap_ip($device = null, $ip = null) {
-        $this->load->helper('log');
-        $log = new stdClass();
-        $log->file = 'system';
-        $log->severity = 7;
+    public function nmap_ip($parameters) {
+        if (empty($parameters) or empty($parameters->log) or empty($parameters->device) or empty($parameters->ip) or empty($device->id) or empty($ip->ip)) {
+            $log = new stdClass();
+            $log->severity = 4;
+            $log->message = "Function audit_format_system called without parameters object.";
+            $log->status = 'fail';
+            stdlog($log);
+            return false;
+        }
 
-        if (is_null($device)) {
-            $log->message = 'No device object passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
-        if (is_null($ip)) {
-            $log->message = 'No ip object passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
-        if (empty($device->id)) {
-            $log->message = 'No device id passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
-        if (empty($ip->ip)) {
-            $log->message = 'No ip address passed to nmap_ip.';
-            $log->severity = 4;
-            discovery_log($log);
-            return false;
-        }
+        $log = $parameters->log;
+        $device = $parameters->device;
+        $ip = $parameters->ip;
+
+        $this->load->helper('log');
 
         # We're talking to the DB, so ensure IP is of the correct format
         $ip->ip = ip_address_to_db($ip->ip);
@@ -1683,14 +1718,11 @@ class M_devices_components extends MY_Model
             # INSERT
             $log->message = 'Inserting ip ' . $ip->ip;
             discovery_log($log);
-            $sql = "INSERT INTO `ip` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, ?, ?, ?, ?, '')";
+            $sql = "INSERT INTO `ip` VALUES (NULL, ?, 'y', ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '')";
             $data = array($device->id, $device->first_seen, $device->last_seen, $ip->mac, $ip->net_index, $ip->ip, $ip->netmask, $ip->cidr, $ip->version, $ip->network);
             $sql = $this->clean_sql($sql);
             $query = $this->db->query($sql, $data);
         }
-
-
-
     }
 
     public function create_dns_entries($id = 0)

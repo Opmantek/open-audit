@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -205,5 +205,5 @@ class Licenses extends MY_Controller
     }
 
 }
-// End of file locations.php
-// Location: ./controllers/locations.php
+// End of file licenses.php
+// Location: ./controllers/licenses.php

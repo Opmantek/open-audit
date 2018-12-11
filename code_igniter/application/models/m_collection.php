@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_collection extends MY_Model
@@ -232,32 +232,32 @@ class M_collection extends MY_Model
 
         if ($collection == 'discoveries' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
-                $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND (`command_status` LIKE '% of %' OR `command_status` LIKE 'stopped%') ORDER BY `timestamp` DESC LIMIT 1";
-                $data = array(intval($result[$i]->id));
-                $data_result = $this->run_sql($sql, $data);
-                if (!empty($data_result)) {
-                    $result[$i]->discovered = $data_result[0]->command_status;
-                    if($data_result[0]->command_status == 'stopped' ){
-                        $result[$i]->discovered = '';
-                        $result[$i]->status = 'stopped';
-                    }else{
-                        $temp = explode(' ', $result[$i]->discovered);
-                        $temp[0] = str_replace('(', '', $temp[0]);
-                        $temp[2] = str_replace(')', '', $temp[2]);
-                        if ($temp[0] == $temp[2]) {
-                            if (strtolower($result[$i]->complete) != 'y') {
-                                $result[$i]->status = 'failed';
-                            } else {
-                                $result[$i]->status = 'complete';
-                            }
-                        } else {
-                                $result[$i]->status = 'in progress';
-                        }
-                    }
-                } else {
-                    $result[$i]->discovered = '';
-                    $result[$i]->status = 'complete';
-                }
+                // $sql = "SELECT * FROM discovery_log WHERE `discovery_id` = ? AND `function` = 'logs' AND (`command_status` LIKE '% of %' OR `command_status` LIKE 'stopped%') ORDER BY `timestamp` DESC LIMIT 1";
+                // $data = array(intval($result[$i]->id));
+                // $data_result = $this->run_sql($sql, $data);
+                // if (!empty($data_result)) {
+                //     $result[$i]->discovered = $data_result[0]->command_status;
+                //     if($data_result[0]->command_status == 'stopped' ){
+                //         $result[$i]->discovered = '';
+                //         $result[$i]->status = 'stopped';
+                //     }else{
+                //         $temp = explode(' ', $result[$i]->discovered);
+                //         $temp[0] = str_replace('(', '', $temp[0]);
+                //         $temp[2] = str_replace(')', '', $temp[2]);
+                //         if ($temp[0] == $temp[2]) {
+                //             if (strtolower($result[$i]->complete) != 'y') {
+                //                 $result[$i]->status = 'failed';
+                //             } else {
+                //                 $result[$i]->status = 'complete';
+                //             }
+                //         } else {
+                //                 $result[$i]->status = 'in progress';
+                //         }
+                //     }
+                // } else {
+                //     $result[$i]->discovered = '';
+                //     $result[$i]->status = 'complete';
+                // }
 
                 if (!empty($result[$i]->other)) {
                     $result[$i]->other = json_decode($result[$i]->other);
@@ -502,6 +502,17 @@ class M_collection extends MY_Model
             }
 
             if ($data->type == 'subnet') {
+                if (!preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
                 if (empty($data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Missing field: subnet');
                    // $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' could not be created - no Subnet supplied.');
@@ -579,6 +590,17 @@ class M_collection extends MY_Model
         if ($collection === 'orgs') {
             if (!empty($data->name)) {
                 $data->ad_group = 'open-audit_orgs_' . strtolower(str_replace(' ', '_', $data->name));
+            }
+        }
+
+        if ($collection === 'rack_devices') {
+            $sql = "SELECT name, org_id FROM system WHERE id = " . intval($data->system_id);
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql);
+            $result = $query->result();
+            if (!empty($result)) {
+                $data->name = $result[0]->name;
+                $data->org_id = $result[0]->org_id;
             }
         }
 
@@ -661,7 +683,7 @@ class M_collection extends MY_Model
         foreach ($mandatory_fields as $mandatory_field) {
             if (!isset($data->{$mandatory_field}) or $data->{$mandatory_field} == '') {
                 $this->session->set_flashdata('error', 'Object in ' . $collection . ' could not be created - no ' . $mandatory_field . ' supplied.');
-                log_error('ERR-0021', 'm_collection::create (' . $collection . ')', 'Missing field: ' . $mandatory_field);
+                log_error('ERR-0021', 'm_collection::create (' . $collection . ' ' . $mandatory_field . ')', 'Missing field: ' . $mandatory_field);
                 return false;
             }
         }
@@ -687,8 +709,32 @@ class M_collection extends MY_Model
         $sql .= ") VALUES (" . $sql_data . ")";
         $id = intval($this->run_sql($sql, $data_array));
 
+        if (!empty($id) and $collection == 'locations') {
+            # Need to insert default entries for buildings, floors, rooms and rows
+            $org_id = 1;
+            if (!empty($data->attributes->org_id)) {
+                $org_id = intval($data->attributes->org_id);
+            }
+            $location_id = $id;
+            $sql = "INSERT INTO `buildings` VALUES (NULL, 'Default Building', ?, ?, 'The default entry for a building at this location.', '', '', '', ?, NOW())";
+            $data_array = array($org_id, $location_id, $CI->user->full_name);
+            $building_id = intval($this->run_sql($sql, $data_array));
+
+            $sql = "INSERT INTO `floors` VALUES (NULL, 'Ground Floor', ?, ?, 'The default entry for a floor at this location.', '', '', '', ?, NOW())";
+            $data_array = array($org_id, $building_id, $CI->user->full_name);
+            $floor_id = intval($this->run_sql($sql, $data_array));
+
+            $sql = "INSERT INTO `rooms` VALUES (NULL, 'Default Room', ?, ?, 'The default entry for a room at this location.', '', '', '', ?, NOW())";
+            $data_array = array($org_id, $floor_id, $CI->user->full_name);
+            $room_id = intval($this->run_sql($sql, $data_array));
+
+            $sql = "INSERT INTO `rows` VALUES (NULL, 'Default Row', ?, ?, 'The default entry for a row at this location.', '', '', '', ?, NOW())";
+            $data_array = array($org_id, $room_id, $CI->user->full_name);
+            $this->run_sql($sql, $data_array);
+        }
+
         if (!empty($id)) {
-            $CI->session->set_flashdata('success', 'New object in ' . $this->response->meta->collection . ' created "' . htmlentities($data->name) . '".');
+            $CI->session->set_flashdata('success', 'New object in ' . $collection . ' created "' . htmlentities($data->name) . '".');
             return ($id);
         } else {
             # TODO - log a better error
@@ -793,6 +839,19 @@ class M_collection extends MY_Model
                 foreach ($data->other as $key => $value) {
                         $received_other->$key = $value;
                 }
+
+                if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
+                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
                 $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
                 $result = $query->result();
                 $existing_other = json_decode($result[0]->other);
@@ -965,6 +1024,10 @@ class M_collection extends MY_Model
                 return(' name org_id resource type value ');
                 break;
 
+            case "buildings":
+                return(' name org_id location_id description notes tags ');
+                break;
+
             case "clouds":
                 return(' name org_id description type credentials ');
                 break;
@@ -990,7 +1053,7 @@ class M_collection extends MY_Model
                 break;
 
             case "discoveries":
-                return(' name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete ');
+                return(' name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete status ');
                 break;
 
             case "fields":
@@ -1001,8 +1064,12 @@ class M_collection extends MY_Model
                 return(' name org_id description path ');
                 break;
 
+            case "floors":
+                return(' name org_id building_id description notes tags ');
+                break;
+
             case "groups":
-                return(' name org_id description sql ');
+                return(' name org_id description expose sql ');
                 break;
 
             case "ldap_servers":
@@ -1014,11 +1081,11 @@ class M_collection extends MY_Model
                 break;
 
             case "locations":
-                return(' name org_id type description room suite level address suburb city district region area state postcode country tags phone picture external_ident options latitude longitude geo ');
+                return(' name org_id type description room suite level address suburb city district region area state postcode country tags phone picture external_ident options latitude longitude geo cloud_id ');
                 break;
 
             case "networks":
-                return(' name org_id description type network external_ident options ');
+                return(' name org_id description type network external_ident options cloud_id ');
                 break;
 
             case "orgs":
@@ -1029,8 +1096,24 @@ class M_collection extends MY_Model
                 return(' name org_id description sql menu_category menu_display ');
                 break;
 
+            case "racks":
+                return(' name org_id description row_id row_position pod physical_height physical_width physical_depth weight_empty weight_current weight_max ru_start ru_height type purpose manufacturer model series serial asset_number asset_tag bar_code power_circuit power_sockets circuit_count btu_total btu_max options notes ');
+                break;
+
+            case "rack_devices":
+                return(' name org_id rack_id system_id position height width orientation options type ');
+                break;
+
             case "roles":
                 return(' name description permissions ad_group ');
+                break;
+
+            case "rooms":
+                return(' name org_id floor_id description notes tags ');
+                break;
+
+            case "rows":
+                return(' name org_id room_id description notes tags ');
                 break;
 
             case "scripts":
@@ -1042,7 +1125,7 @@ class M_collection extends MY_Model
                 break;
 
             case "tasks":
-                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options last_run ');
+                return(' name org_id description enabled type minute hour day_of_month month day_of_week options uuid sub_resource_id options last_run first_run ');
                 break;
 
             case "users":
@@ -1071,6 +1154,10 @@ class M_collection extends MY_Model
 
             case "attributes":
                 return(array('name','org_id','type','resource','value'));
+                break;
+
+            case "buildings":
+                return(array('name','org_id','location_id'));
                 break;
 
             case "clouds":
@@ -1109,6 +1196,10 @@ class M_collection extends MY_Model
                 return(array('name','org_id','path'));
                 break;
 
+            case "floors":
+                return(array('name','org_id','building_id'));
+                break;
+
             case "groups":
                 return(array('name','org_id','sql'));
                 break;
@@ -1137,8 +1228,24 @@ class M_collection extends MY_Model
                 return(array('name','org_id','sql','menu_category','menu_display'));
                 break;
 
+            case "racks":
+                return(array('name','org_id','row_id'));
+                break;
+
+            case "rack_devices":
+                return(array('rack_id','system_id','position','height'));
+                break;
+
             case "roles":
                 return(array('name','permissions'));
+                break;
+
+            case "rooms":
+                return(array('name','org_id','floor_id'));
+                break;
+
+            case "rows":
+                return(array('name','org_id','room_id'));
                 break;
 
             case "scripts":

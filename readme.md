@@ -19,11 +19,11 @@ The other Linux prerequisites are:
 
 #### RedHat / Centos
 
-mariadb-server httpd php php-cli php-mysql php-ldap php-mbstring php-mcrypt php-process php-snmp php-xml nmap zip curl wget sshpass screen samba-client logrotate perl-Time-modules ipmitool
+awscli curl httpd ipmitool logrotate mariadb-server nmap perl-Time-modules php php-cli php-ldap php-mbstring php-mcrypt php-mysql php-process php-snmp php-xml samba-client screen sshpass wget zip
 
 #### Debian / Ubuntu
 
-mysql-server apache2 apache2-utils libapache2-mod-proxy-html libapache2-mod-php5 openssh-client php5 php5-ldap php5-mcrypt php5-mysql php5-snmp nmap zip wget curl sshpass screen smbclient logrotate libtime-modules-perl ipmitool
+apache2 apache2-utils awscli curl ipmitool libapache2-mod-php5 libapache2-mod-proxy-html libtime-modules-perl logrotate mysql-server nmap openssh-client php5 php5-ldap php5-mcrypt php5-mysql php5-snmp screen smbclient sshpass wget zip
 
 ### Installing
 

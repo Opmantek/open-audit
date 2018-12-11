@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_scripts extends MY_Model
@@ -217,7 +217,7 @@ class M_scripts extends MY_Model
             # inject our default network address
             $test = @$CI->config->item('default_network_address');
             if (!empty($test)) {
-                $options->url = 'http://' . $CI->config->item('default_network_address') . '/open-audit/index.php/input/devices';
+                $options->url = $CI->config->item('default_network_address') . 'index.php/input/devices';
             } else {
                 unset($options->url);
             }

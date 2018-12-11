@@ -30,27 +30,28 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
-
-$proto = 'http://';
-if ($this->config->config['is_ssl'] === true) {
-    $proto = 'https://';
-}
-$network_address = '';
 $network_address_array = array();
+$selected = '';
+if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'http://') !== false) {
+    $selected = 'selected';
+}
+$network_address_array[] = "                                <option value='http://127.0.0.1/open-audit/' " . $selected . ">http://127.0.0.1/open-audit/</option>";
+
+
+$selected = '';
+if (!empty($this->config->config['default_network_address']) and stripos($this->config->config['default_network_address'], 'https://') !== false) {
+    $selected = 'selected';
+}
+$network_address_array[] = "                                <option value='https://127.0.0.1/open-audit/' " . $selected . ">https://127.0.0.1/open-audit/</option>";
+
 if (!empty($this->config->config['default_network_address'])) {
-    $network_address = "<option data-id=\"default\" selected value='" . $proto . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "/open-audit/'>" . $proto . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "/open-audit/</option>\n";
+    $network_address = "<option data-id=\"default\" value='" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "'>" . htmlspecialchars($this->config->config['default_network_address'], REPLACE_FLAGS, CHARSET) . "</option>\n";
     $network_address_array[] =  $network_address;
 }
-$address_array = explode(",", $this->config->config['ip']);
-foreach ($address_array as $key => $value) {
-    if ($value != $this->config->config['default_network_address']) {
-        $network_address = "                                <option value='" . $proto . $value . "/open-audit/'>" . $proto . $value . "/open-audit/</option>\n";
-        $network_address_array[] = $network_address;
-    }
-}
+
 $network_address_array[] = "                                <option value='other'>Other</option>";
 
 # check if we have nmap installed
@@ -252,6 +253,7 @@ if ($nmap_warning != '') {
                                     <li>192.168.1-3.1-20 (a range of IP addresses)</li>
                                 </ul>
             <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />
+            As at Open-AudIT 2.3.1, the network address should be set to localhost. Only use https if you have configured and enabled HTTPS on this server and HTTP has been disabled from localhost.
                         </div>
                     </div>
                 </div>

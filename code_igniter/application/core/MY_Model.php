@@ -31,7 +31,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 
@@ -194,6 +194,14 @@ class MY_Model extends CI_Model
         $this->db->db_debug = false;
         // run the query
         $query = $this->db->query($sql, $data);
+        // $temp = explode(';', $sql);
+        // if (count($temp) > 1) {
+        //     foreach ($temp as $split_sql) {
+        //         $query = $this->db->query($split_sql, $data);
+        //     }
+        // } else {
+        //    $query = $this->db->query($sql, $data);
+        // }
         // store the query in our response object
         $CI->response->meta->sql[] = $this->db->last_query();
         // log the query
@@ -236,11 +244,11 @@ class MY_Model extends CI_Model
             log_error('ERR-0009', strtolower(@$caller['class'] . '::' . @$caller['function'] . ")"), $db_error);
             if (!empty($CI->response)) {
                 if (!empty($CI->response->errors)) {
-                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $this->db->_error_message();
+                    $CI->response->errors[count($CI->response->errors)-1]->detail_specific = $db_error;
                 } else {
                     $CI->response->errors = array();
                     $item = new stdClass();
-                    $item->detail_specific = $this->db->_error_message();
+                    $item->detail_specific = $db_error;
                     $CI->response->errors[0] = $item;
                 }
             }
@@ -445,7 +453,7 @@ class MY_Model extends CI_Model
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'locations') {
-                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
+                $sql = "SELECT " . $return['properties'] . ", COUNT(DISTINCT system.id) AS `device_count`, orgs.name AS `org_name`, orgs.name AS `orgs.name` FROM `locations` LEFT JOIN system ON (locations.id = system.location_id) LEFT JOIN orgs ON (locations.org_id = orgs.id) " . $return['filter'] . " GROUP BY locations.id " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'logs') {
                 $sql = "SELECT " . $return['properties'] . " FROM `logs` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
@@ -470,5 +478,20 @@ class MY_Model extends CI_Model
         } else {
             return($return);
         }
+    }
+
+    public function get_all_columns($table = '')
+    {
+        if ($table == '') {
+            return;
+        }
+        $return = '';
+        $fields = $this->db->list_fields($table);
+        foreach ($fields as $field)
+        {
+            $return .= ', ' . $table . '.' . $field . ' AS `' . $table . '.' . $field . '`';
+        }
+        $return = substr($return, 1);
+        return $return;
     }
 }

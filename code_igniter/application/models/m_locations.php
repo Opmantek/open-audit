@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 class M_locations extends MY_Model
@@ -43,7 +43,7 @@ class M_locations extends MY_Model
         $this->log->type = 'system';
     }
 
-    public function read($id = '')
+    public function read($id = 0)
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
@@ -53,7 +53,7 @@ class M_locations extends MY_Model
         } else {
             $id = intval($id);
         }
-        $sql = "SELECT * FROM locations WHERE id = ?";
+        $sql = "SELECT locations.*, orgs.id AS `orgs.id` FROM `locations` LEFT JOIN `orgs` ON (orgs.id = locations.org_id) WHERE locations.id = ?";
         $data = array($id);
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'locations');
@@ -65,22 +65,35 @@ class M_locations extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         $this->log->status = 'deleting data';
         stdlog($this->log);
-        if ($id == '') {
-            $CI = & get_instance();
-            $id = intval($CI->response->meta->id);
-        } else {
-            $id = intval($id);
-        }
+        $id = intval($id);
+        # never allowed to delete the default location
         if ($id != 1) {
             $CI = & get_instance();
             $sql = "DELETE FROM `locations` WHERE id = ?";
-            $data = array(intval($id));
-            $this->run_sql($sql, $data);
-            return true;
+            $data = array($id);
+            $test = $this->run_sql($sql, $data);
+            if (!empty($test)) {
+                return true;
+            } else {
+                return false;
+            }
         } else {
             log_error('ERR-0013', 'm_locations::delete');
             return false;
         }
+    }
+
+    public function children($id = '')
+    {
+        $this->log->function = strtolower(__METHOD__);
+        $this->log->status = 'reading children data';
+        stdlog($this->log);
+        $id = intval($id);
+        $sql = "SELECT buildings.* from buildings WHERE buildings.location_id = ?";
+        $data = array(intval($id));
+        $result = $this->run_sql($sql, $data);
+        $result = $this->format_data($result, 'buildings');
+        return ($result)    ;
     }
 
     public function collection()

@@ -49,7 +49,35 @@ if (strtoupper($this->input->server('REQUEST_METHOD')) == 'GET') {
 }
 
 if (!empty($log->type) and $log->type == 'discovery') {
-    discovery_log($log);
+    $log_id = discovery_log($log);
+    if (strpos($log->command_status, ' of ') !== false) {
+        # PROGRESS
+        $progress = str_replace('(', '', $log->command_status);
+        $progress = str_replace(')', '', $progress);
+        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `discovered` = ?, `last_log` = (SELECT `timestamp` FROM discovery_log WHERE `id` = ?) WHERE id = ?";
+        $data = array($progress, $log_id, $log->discovery_id);
+        $query = $this->db->query($sql, $data);
+    }
+    if (strpos($log->message, 'Completed discovery') !== false) {
+        # STATUS
+        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'complete' WHERE id = ?";
+        $data = array($log->discovery_id);
+        $query = $this->db->query($sql, $data);
+    } else {
+        # STATUS
+        $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'running' WHERE `id` = ?";
+        $data = array($log->discovery_id);
+        $query = $this->db->query($sql, $data);
+    }
+
+    $sql = '/* input::logs */ ' . "UPDATE discoveries SET `duration` = TIMEDIFF(last_log, last_run) WHERE id = ?";
+    $data = array($log->discovery_id);
+    $query = $this->db->query($sql, $data);
+
+    $sql = '/* input::logs */ ' . "UPDATE `discoveries` SET `status` = 'zombie' WHERE `last_log` < (NOW() - INTERVAL 20 MINUTE) AND `last_log` != '2000-01-01 00:00:00' AND `status` != 'complete'";
+    $query = $this->db->query($sql);
+    # TODO - check the discovery PID (discovery_log.pid) and kill it if required
+
 }
 
 if ($this->response->meta->format == 'json') {

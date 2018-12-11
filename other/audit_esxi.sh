@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   2.2.7
+# @version   2.3.0
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -79,7 +79,7 @@ self_delete='n'
 debugging=2
 
 # Version
-version="2.2.7"
+version="2.3.0"
 
 discovery_id=""
 
@@ -373,6 +373,12 @@ system_pc_cores=$(trim `echo "$hostsummaryHardware" | grep numCpuCores | cut -d=
 system_pc_processors=$(trim `echo "$hostsummaryHardware" | grep numCpuPkgs | cut -d= -f2 | sed 's/,//g'`)
 system_pc_date_os_installation=`esxcli software profile get | grep '^   Creation Time:' | sed 's/Creation Time://g' | sed 's/^ *//g' | sed 's/T/ /g'`
 
+net_description=$(esxcli network ip interface list | grep "$net_mac_address" -B1 | grep "Name: " | cut -d: -f2 | sed 's/ //')
+for address in $(esxcli network ip interface ipv4 get | grep "$net_description" | sed 's/ \+/ /g'); do
+	ip=$(echo "$address" | cut -d" " -f2)
+done
+
+
 echo "<?xml version="\"1.0\"" encoding="\"UTF-8\""?>" > $xml_file
 echo "<system>" >> $xml_file
 echo "	<sys>" >> $xml_file
@@ -380,8 +386,8 @@ echo "		<script_version>$version</script_version>" >> $xml_file
 echo "		<uuid>"$(escape_xml "$system_uuid")"</uuid>" >> $xml_file
 echo "		<hostname>"$(escape_xml "$system_hostname")"</hostname>" >> $xml_file
 echo "		<domain>"$(escape_xml "$system_domain")"</domain>" >> $xml_file
+echo "		<ip>"$(escape_xml "$ip")"</ip>" >> $xml_file
 echo "		<description></description>" >> $xml_file
-echo "		<type>computer</type>" >> $xml_file
 echo "		<type>computer</type>" >> $xml_file
 echo "		<os_icon>"$(escape_xml "$system_os_icon")"</os_icon>" >> $xml_file
 echo "		<os_group>"$(escape_xml "$system_os_group")"</os_group>" >> $xml_file

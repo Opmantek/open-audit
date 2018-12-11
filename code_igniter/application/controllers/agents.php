@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -44,8 +44,13 @@
 * @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
 * @link     http://www.open-audit.org
  */
-class agents extends MY_Controller
+class Agents extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
     public function __construct()
     {
         parent::__construct();
@@ -54,6 +59,12 @@ class agents extends MY_Controller
         $this->output->url = $this->config->item('oa_web_index');
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }
@@ -75,7 +86,7 @@ class agents extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create()
+    public function create()
     {
         include 'include_create.php';
     }
@@ -86,7 +97,7 @@ class agents extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function read()
+    public function read()
     {
         include 'include_read.php';
     }
@@ -130,7 +141,7 @@ class agents extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create_form()
+    public function create_form()
     {
         include 'include_create_form.php';
     }
@@ -141,7 +152,7 @@ class agents extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function update_form()
+    public function update_form()
     {
         include 'include_update_form.php';
     }

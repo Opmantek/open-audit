@@ -32,7 +32,7 @@ if (!defined('BASEPATH')) {
  * @package Open-AudIT
  * @author Mark Unwin <marku@opmantek.com>
  *
- * @version   2.2.7
+ * @version   2.3.0
 
  * @copyright Copyright (c) 2014, Opmantek
  * @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -185,6 +185,10 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     if ($oid == '1.3.6.1.4.1.30065.1.3011.7250.3095.64.761') {
         $details->type = 'switch';
         $details->model = 'DCS-7250Q-X64SSD';
+    }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7280.3735.48.2878.6') {
+        $details->type = 'switch';
+        $details->model = 'DCS-7280-SR48C6';
     }
     if ($oid == '1.3.6.1.4.1.30065.1.3011.7304') {
         $details->type = 'switch';

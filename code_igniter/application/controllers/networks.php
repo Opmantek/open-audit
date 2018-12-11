@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -46,6 +46,12 @@
  */
 class Networks extends MY_Controller
 {
+    /**
+    * Constructor
+    *
+    * @access    public
+
+    */
     public function __construct()
     {
         parent::__construct();
@@ -54,6 +60,12 @@ class Networks extends MY_Controller
         $this->output->url = $this->config->item('oa_web_index');
     }
 
+    /**
+    * Index that is unused
+    *
+    * @access public
+    * @return NULL
+    */
     public function index()
     {
     }
@@ -88,7 +100,7 @@ class Networks extends MY_Controller
     */
     public function read()
     {
-        #$this->response->included = $this->m_networks->sub_resource();
+        // $this->response->included = $this->m_networks->sub_resource();
         include 'include_read.php';
     }
 

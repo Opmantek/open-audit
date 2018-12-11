@@ -28,7 +28,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com> and others
 # 
-# @version   2.2.7
+# @version   2.3.0
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -78,7 +78,7 @@ self_delete="n"
 debugging=2
 
 # Version
-version="2.2.7"
+version="2.3.0"
 
 # Display help
 help="n"
@@ -621,6 +621,10 @@ if [ -z "$system_os_family" ] && [ -f "/etc/os-release" ]; then
 	system_os_version=$(grep VERSION_ID /etc/os-release | cut -d\" -f2)
 	system_os_name=$(grep PRETTY_NAME /etc/os-release | cut -d\" -f2)
 	system_os_family=$(grep ^ID /etc/os-release | grep -v LIKE | cut -d= -f2)
+fi
+
+if [ "$system_os_family" == "\"amzn\"" ]; then
+	system_os_family="Amazon"
 fi
 
 if [ "$system_os_family" == "debian" ]; then
@@ -1251,7 +1255,7 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Shares Info"
 fi
 
-echo "	<shares>" >> "$xml_file"
+echo "	<share>" >> "$xml_file"
 
 case $system_os_family in
 		'Ubuntu' | 'Debian' )
@@ -1264,7 +1268,7 @@ case $system_os_family in
 					tail -n +6 >>\
 					"$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
 				service smb status > /dev/null 2>&1 &&\
 					sed -e '/^$/d' -e 's/^[ \t]*//' -e '/^[#;]/d' /etc/samba/smb.conf |\
 					grep -E "^\[|^comment|^path" |\
@@ -1275,7 +1279,7 @@ case $system_os_family in
 			;;
 esac
 
-echo "	</shares>" >> "$xml_file"
+echo "	</share>" >> "$xml_file"
 
 ##################################
 # NETWORK CARDS SECTION          #
@@ -1540,6 +1544,10 @@ if [ -n "$net_cards" ]; then
 			set_by="static"
 			net_card_dhcp_server=""
 			net_card_dhcp_lease_expire=""
+			net_card_dhcp_lease_time=""
+			net_card_dhcp_lease_days=""
+			net_card_dhcp_serverp_lease_obtained=""
+
 		else
 			net_card_dhcp_enab="True"
 			set_by="dhcp"
@@ -1628,13 +1636,48 @@ echo "	</network>" >> "$xml_file"
 # ADDRESSES SECTION              #
 ##################################
 
-if [ -n "$addr_info" ]; then
+# if [ -n "$addr_info" ]; then
+# 	{
+# 	echo "	<ip>$addr_info"
+# 	echo "	</ip>"
+# 	} >> "$xml_file"
+# fi
+IFS="$NEWLINEIFS"
+echo "	<ip>" >> "$xml_file"
+for line in $(ip -o a | grep -v "^1: lo"); do
+	interface=$(echo "$line" | awk '{print $2}')
+	mac=$(ip a show "$interface" | grep ether | awk '{print $2}')
+	net_index=$(echo "$line" | cut -d: -f1)
+	ip=$(echo "$line" | awk '{print $4}' | cut -d/ -f1)
+	netmask=""
+	cidr=$(echo "$line" | awk '{print $4}' | cut -d/ -f2)
+	if [[ "$ip" = *":"* ]]; then
+		version="6"
+	else
+		version="4"
+	fi
+	network=""
+	lease_file=$(ps -ef 2>/dev/null | grep dhclient | grep "$interface" | sed -e 's/^.*-lf//' | cut -d" " -f2)
+	if [ ! -e "$lease_file" ]; then
+		set_by="static"
+	else
+		set_by="dhcp"
+	fi
 	{
-	echo "	<ip>$addr_info"
-	echo "	</ip>"
+	echo "		<item>"
+	echo "			<mac>$(escape_xml "$mac")</mac>"
+	echo "			<net_index>$(escape_xml "$net_index")</net_index>"
+	echo "			<ip>$(escape_xml "$ip")</ip>"
+	echo "			<netmask>$(escape_xml "$netmask")</netmask>"
+	echo "			<cidr>$(escape_xml "$cidr")</cidr>"
+	echo "			<version>$(escape_xml "$version")</version>"
+	echo "			<network>$(escape_xml "$network")</network>"
+	echo "			<set_by>$(escape_xml "$set_by")</set_by>"
+	echo "			<interface>$(escape_xml "$interface")</interface>"
+	echo "		</item>"
 	} >> "$xml_file"
-fi
-
+done
+echo "	</ip>" >> "$xml_file"
 
 ##################################
 # DISK SECTION                   #
@@ -2218,7 +2261,7 @@ case $system_os_family in
 			dpkg-query --show --showformat="\t\t<item>\n\t\t\t<name><![CDATA[\${Package}]]></name>\n\t\t\t<version><![CDATA[\${Version}]]></version>\n\t\t\t<url></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
-		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' )
+		'CentOS' | 'RedHat' | 'SUSE' | 'Fedora' | 'Suse' | 'Amazon' )
 			rpm -qa --queryformat="\t\t<item>\n\t\t\t<name><\!\[CDATA\[%{NAME}\]\]></name>\n\t\t\t<version><\!\[CDATA\[%{VERSION}-%{RELEASE}\]\]></version>\n\t\t\t<url><\!\[CDATA\[%{URL}\]\]></url>\n\t\t</item>\n" |\
 				sed -e 's/\&.*]]/]]/' >> "$xml_file"
 			;;
@@ -2310,7 +2353,8 @@ if hash systemctl 2>/dev/null; then
 fi
 
 if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; then
-	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	#INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf)
+	INITDEFAULT=$(awk -F= ' /^env\ DEFAULT_RUNLEVEL/ { print $2 } ' /etc/init/rc-sysinit.conf 2>/dev/null)
 	# upstart services
 	if [ -n `which initctl 2>/dev/null` ]; then
 		if [ "$debugging" -gt "1" ]; then
@@ -2349,7 +2393,7 @@ if [ "$system_os_family" = "Ubuntu" ] || [ "$system_os_family" = "Debian" ]; the
 	fi
 fi
 
-if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ]; then
+if [ "$system_os_family" = "CentOS" ] || [ "$system_os_family" = "RedHat" ] || [ "$system_os_family" = "SUSE" ] || [ "$system_os_family" = "Suse" ] || [ "$system_os_family" = "Amazon" ]; then
 	INITDEFAULT=$(awk -F: '/id:/,/:initdefault:/ { print $2 }' /etc/inittab)
 fi
 

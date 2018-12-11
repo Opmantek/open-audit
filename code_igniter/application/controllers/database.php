@@ -30,7 +30,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
 */
 
@@ -149,13 +149,12 @@ class Database extends MY_Controller
         $this->data = $this->m_database->execute();
         $this->response->meta->action = 'read';
         $this->response->meta->format = 'screen';
-        if (!empty($this->response->meta->groupby)) {
+        if ( ! empty($this->response->meta->groupby)) {
             $this->response->meta->format = 'json';
             $this->response->special = $this->data;
         }
         $this->response->errors = array();
         include 'include_read.php';
-        #output($this->response);
     }
 
     /**
@@ -174,13 +173,13 @@ class Database extends MY_Controller
     * Drop a foreign key on a table
     *
     * @access public
-    * @param  string    table      The table to be altered
-    * @param  string    key        The foreign key to be added
+    * @param  string $table The table to be altered
+    * @param  string $key   The foreign key to be added
     * @return void
     */
     private function drop_foreign_key($table = '', $key = '')
     {
-        if ($table == '' or $key == '') {
+        if (empty($table) or empty($key)) {
             $this->log_db("WARNING - Required attributes not provided to 'drop_foreign_key'");
             return;
         }
@@ -746,9 +745,9 @@ class Database extends MY_Controller
             include "db_upgrades/db_2.2.7.php";
         }
 
-	if (($db_internal_version < '20180820') and ($this->db->platform() == 'mysql')) {
-            # upgrade for 2.2.8
-            include "db_upgrades/db_2.2.8.php";
+        if (($db_internal_version < '20180925') and ($this->db->platform() == 'mysql')) {
+            # upgrade for 2.3.0
+            include "db_upgrades/db_2.3.0.php";
         }
 
         $this->data['include'] = 'v_database_update';

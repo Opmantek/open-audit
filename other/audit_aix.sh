@@ -36,7 +36,7 @@
 # @package Open-AudIT
 # @author Mark Unwin <marku@opmantek.com>
 # 
-# @version   2.2.7
+# @version   2.3.0
 
 # @copyright Copyright (c) 2014, Opmantek
 # @license http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
@@ -60,7 +60,7 @@ url="http://localhost/open-audit/index.php/input/devices"
 debugging=1
 
 # Version
-version="2.2.7"
+version="2.3.0"
 
 discovery_id=""
 help=""
@@ -410,7 +410,7 @@ for interface in $(eval "lsdev -Cc if | grep Available | grep 'Standard Ethernet
 			<model>$(escape_xml "$net_card_model")</model>
 			<description>$(escape_xml "$net_card_description")</description>
 			<ip_enabled>$(escape_xml "$net_card_enabled")</ip_enabled>
-			<connectio>$(escape_xml "$net_card_id")</connection>
+			<connection>$(escape_xml "$net_card_id")</connection>
 			<connection_status>$(escape_xml "$net_card_status")</connection_status>
 			<speed>$(escape_xml "$net_card_speed")</speed>
 			<dhcp_enabled>$(escape_xml "$net_dhcp_enabled")</dhcp_enabled>

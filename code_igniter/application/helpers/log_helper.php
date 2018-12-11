@@ -34,7 +34,7 @@ if (!defined('BASEPATH')) {
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.2.7
+* @version   2.3.0
 * @link      http://www.open-audit.org
  */
 if (! function_exists('log_error')) {
@@ -381,8 +381,12 @@ if (! function_exists('stdlog')) {
             $log['collection'] = $CI->response->meta->collection;
         }
 
-        if (!empty($CI->response->meta->action)) {
+        if (empty($log_details->action) and !empty($CI->response->meta->action)) {
             $log['action'] = $CI->response->meta->action;
+        }
+
+        if (!empty($log_details->action)) {
+            $log['action'] = $log_details->action;
         }
 
         if (!empty($log_details->function)) {
