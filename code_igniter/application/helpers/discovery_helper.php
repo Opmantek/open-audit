@@ -932,7 +932,7 @@ if (!function_exists('process_scan')) {
         $audit_result = false;
 
         if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
-            $log->command_status = 'error';
+            $log->command_status = 'fail';
             $log->severity = 5;
             $log->message = 'No valid credentials for ' . $device->ip;
             discovery_log($log);
@@ -1172,19 +1172,12 @@ if (!function_exists('process_scan')) {
                 }
                 if ($copy) {
                     $audit_result = file_get_contents($destination);
-                    if(is_file($destination) && @unlink($destination)){
-                        // delete success
-                    } else if (is_file ($destination)) {
-                        // unlink failed
-                        $perms = substr(sprintf('%o', fileperms($destination)), -4);
+                    if (empty($audit_result)) {
                         $log->command_status = 'fail';
-                        $log->command_output = 'Could not delete file, file permissions are: ' . $perms . '.';
-                        $log->severity = 4;
-                    } else {
-                      // file doesn't exist
-                        $log->command_status = 'fail';
-                        $log->command_output = 'File does not exist.';
-                        $log->severity = 4;
+                        $log->message = 'Could not read audit result file.';
+                        $log->command = "file_get_contents('$destination')";
+                        $log->command_output = '';
+                        discovery_log($log);
                     }
                 }
             }
@@ -1505,7 +1498,7 @@ if (!function_exists('delete_local_file')) {
         if (empty($params)) {
             $mylog = new stdClass();
             $mylog->severity = 4;
-            $mylog->status = 'fail';
+            $mylog->command_status = 'fail';
             $mylog->message = 'Function delete_local_file called without params object';
             $mylog->file = 'discovery_helper';
             $mylog->function = 'delete_local_file';
@@ -1519,20 +1512,20 @@ if (!function_exists('delete_local_file')) {
         $mylog->function = 'delete_local_file';
         $mylog->command = 'unlink(\'' . $file .'\')';
         $mylog->message = 'Attempt to delete "' . $file . '" succeeded';
-        $mylog->status = 'success';
+        $mylog->command_status = 'success';
         if (is_file($file) && @unlink($file)){
             // delete success
         } else if (is_file ($file)) {
             // unlink failed
             $perms = substr(sprintf('%o', fileperms($file)), -4);
             $mylog->severity = 4;
-            $mylog->status = 'fail';
+            $mylog->command_status = 'fail';
             $mylog->message = 'Could not delete file "' . $file . '"" , file permissions are: ' . $perms . '.';
             unset($perms);
         } else {
             // file doesn't exist
             $mylog->severity = 4;
-            $mylog->status = 'fail';
+            $mylog->command_status = 'fail';
             $mylog->message = 'File "' . $file . '" does not exist.';
         }
         discovery_log($mylog);
