@@ -229,6 +229,8 @@ class Input extends CI_Controller
         $this->response->data = array();
         if (!empty($input)) {
             $this->response->data[] = $input;
+        } else {
+            $this->response->data[] = $log;
         }
         $this->response->meta->action = '';
         $this->response->meta->collection = 'discoveries';
