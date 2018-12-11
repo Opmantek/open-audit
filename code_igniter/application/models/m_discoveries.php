@@ -151,7 +151,7 @@ class M_discoveries extends MY_Model
         $data = array(intval($id));
         $discovery = $this->run_sql($sql, $data);
         if (!empty($discovery)) {
-            $sql = "INSERT INTO `queue` VALUES (null, 'discoveries', 0, ?, NOW())";
+            $sql = "INSERT INTO `queue` VALUES (null, 'discoveries', 0, ?, NOW(), '')";
             $data = array(json_encode($discovery[0]));
             $this->run_sql($sql, $data);
             $sql = 'UPDATE `discoveries` SET `status` = "queued", `discovered` = "" WHERE `id` = ?';
