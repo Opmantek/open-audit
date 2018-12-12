@@ -184,8 +184,8 @@ if ($queue == 'scans' and empty($id)) {
                         stdlog($log);
                         pclose(popen($command_string, "r"));
                     }
-                    // We sleep for 2 seconds to allow the called script to trigger a DB pid update
-                    sleep(2);
+                    // We sleep for 1 second to allow the called script to trigger a DB pid update
+                    sleep(1);
                     // process_scan(json_decode($result[0]->details));
                 } else {
                     #$sql = '/* input::queue */ ' . "UNLOCK TABLES";
