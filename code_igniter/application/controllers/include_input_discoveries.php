@@ -487,11 +487,9 @@ foreach ($xml->children() as $input) {
         }
     }
 
-
     $log->file = 'discovery_helper';
     $log->function = 'discoveries';
     $log->command_status = 'notice';
-
 
     # We do not want to attempt to audit using WMI anything that's not a Windows machine
     if (!empty($device->os_group) and $device->os_group != 'Windows') {
@@ -499,7 +497,6 @@ foreach ($xml->children() as $input) {
         $log->message = 'Setting WMI to false because we have an os_group that is not Windows, it is: ' . $device->os_group;
         discovery_log($log);
     }
-
 
     # WMI
     if ($input->wmi_status == 'true') {
@@ -957,6 +954,13 @@ foreach ($xml->children() as $input) {
     }
     
     $audit_result = false;
+
+    if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
+        $log->command_status = 'fail';
+        $log->severity = 5;
+        $log->message = 'No valid credentials for ' . $device->ip;
+        discovery_log($log);
+    }
 
     // Get and make the audit script
     if (!empty($credentials_windows) or !empty($credentials_ssh)) {
