@@ -853,10 +853,6 @@ if (! function_exists('ssh_audit')) {
         }
         unset($device->ubiquiti_model);
 
-        if (!empty($device->os_group) and $device->os_group == 'Linux' and !empty($device->manufacturer) and $device->manufacturer != 'Ubiquiti Networks Inc.') {
-            $device->type = 'computer';
-        }
-
         if (!empty($device->ubuntu_os_codename)) {
             $device->os_name = $device->os_name . ' (' . $device->ubuntu_os_codename . ')';
         }
@@ -884,7 +880,7 @@ if (! function_exists('ssh_audit')) {
             $device->type = 'computer';
         }
         unset($device->vmware_os_version);
-        if (strtolower($device->os_group) == 'darwin') {
+        if (strtolower($device->os_group) === 'darwin') {
             $device->type = 'computer';
             $device->os_family = 'Apple OSX';
             if (!empty($device->osx_os_version)) {
