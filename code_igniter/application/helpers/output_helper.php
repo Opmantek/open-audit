@@ -47,8 +47,6 @@ if (! function_exists('output')) {
      *
      * @author    Mark Unwin <marku@opmantek.com>
      *
-     * @param     Object    log_details     An object containing details you wish to log
-     *
      * @return NULL [logs the provided string to the log file]
      */
     function output()
@@ -122,7 +120,7 @@ if (! function_exists('output')) {
                     $array = array();
                     if (!empty($CI->response->data)) {
                         foreach ($CI->response->data as $item) {
-                            if (!empty($item->attributes)) {
+                            if (!empty($item->attributes) and !empty($item->attributes->{$column})) {
                                 foreach ($item->attributes->{$column} as $key => $value) {
                                     $array[] = $column.'.'.$key;
                                 }
