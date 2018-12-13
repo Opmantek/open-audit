@@ -166,6 +166,7 @@ foreach ($xml->children() as $input) {
     $log->system_id = null;
     $log->ip = $input->ip;
 
+
     // The end submit from the script that indicates there are no more items to be submitted
     if (!empty($input->complete) and $input->complete == 'y') {
         $sql = "/* input::discoveries */ " . "UPDATE `discoveries` SET `complete` = 'y' WHERE id = ?";
@@ -285,6 +286,7 @@ foreach ($xml->children() as $input) {
     $parameters->details = $device;
     $parameters->log = $log;
     $device->id = $this->m_device->match($parameters);
+    $log->command_output = '';
 
     if (!empty($device->id)) {
         $log->system_id = $device->id;
@@ -402,6 +404,7 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
     }
 
+    $credentials_snmp = false;
     if (extension_loaded('snmp') and $input->snmp_status == 'true') {
         $log->message = 'Testing SNMP credentials for '.$device->ip;
         if (!empty($device->id)) {
@@ -409,32 +412,30 @@ foreach ($xml->children() as $input) {
         }
         discovery_log($log);
         $credentials_snmp = snmp_credentials($device->ip, $credentials, $log);
-    } else {
-        $credentials_snmp = false;
-    }
-    # run SNMP audit commands
-    if ($credentials_snmp) {
-        $temp_array = snmp_audit($device->ip, $credentials_snmp);
-        if (!empty($temp_array['details'])) {
-            foreach ($temp_array['details'] as $key => $value) {
-                if (!empty($value)) {
-                    $device->$key = $value;
+        # run SNMP audit commands
+        if (!empty($credentials_snmp)) {
+            $temp_array = snmp_audit($device->ip, $credentials_snmp, $log);
+            if (!empty($temp_array['details'])) {
+                foreach ($temp_array['details'] as $key => $value) {
+                    if (!empty($value)) {
+                        $device->$key = $value;
+                    }
                 }
+                $device->last_seen_by = 'snmp';
+                $device->audits_ip = '127.0.0.1';
             }
-            $device->last_seen_by = 'snmp';
-            $device->audits_ip = '127.0.0.1';
-        }
-        if (!empty($temp_array['interfaces'])) {
-            $network_interfaces = $temp_array['interfaces'];
-        }
-        if (!empty($temp_array['modules'])) {
-            $modules = $temp_array['modules'];
-        }
-        if (!empty($temp_array['ip'])) {
-            $ip = $temp_array['ip'];
-        }
-        if (!empty($temp_array['guests'])) {
-            $guests = $temp_array['guests'];
+            if (!empty($temp_array['interfaces'])) {
+                $network_interfaces = $temp_array['interfaces'];
+            }
+            if (!empty($temp_array['modules'])) {
+                $modules = $temp_array['modules'];
+            }
+            if (!empty($temp_array['ip'])) {
+                $ip = $temp_array['ip'];
+            }
+            if (!empty($temp_array['guests'])) {
+                $guests = $temp_array['guests'];
+            }
         }
     }
     $log->file = 'include_input_discoveries';
@@ -453,6 +454,7 @@ foreach ($xml->children() as $input) {
 
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
+    $log->command_status = 'notice';
 
     # SSH
     if ($input->ssh_status == 'true') {
