@@ -83,12 +83,15 @@ class M_queue extends MY_Model
     }
 
     # Return a queue array on success or FALSE on failure
-    public function list($type = '')
+    public function collection($parameters)
     {
         $this->log->function = strtolower(__METHOD__);
-        $this->log->action = 'list';
-        $this->log->summary = string($type);
-        $type = strtolower($type);
+        $this->log->action = 'collection';
+        $type = '';
+        if (!empty($parameters->type)) {
+            $type = strtolower($parameters->type);
+        }
+        $this->log->summary = 'Passed type: ' . string($type);
         if ($type != 'discoveries' and $type != 'scans' and $type != 'audits') {
             $sql = "SELECT * FROM `queue`";
         } else {
