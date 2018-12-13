@@ -478,7 +478,7 @@ foreach ($xml->children() as $input) {
             $device->last_seen_by = 'ssh';
             $device->audits_ip = '127.0.0.1';
             foreach ($ssh_details as $key => $value) {
-                if (!empty($value)) {
+                if (!empty($value) and empty($device->$key)) {
                     $device->$key = $value;
                 }
             }
