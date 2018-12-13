@@ -223,8 +223,10 @@ class M_collection extends MY_Model
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
                     $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
-                    foreach ($result[$i]->credentials as $key => $value) {
-                        $result[$i]->{'credentials.'.$key} = $value;
+                    if (!empty($result[$i]->credentials)) {
+                        foreach ($result[$i]->credentials as $key => $value) {
+                            $result[$i]->{'credentials.'.$key} = $value;
+                        }
                     }
                 }
             }
