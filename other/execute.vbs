@@ -43,6 +43,8 @@ Option Explicit
 dim url, objHTTP
 dim objArgs, strArg, varArray
 Set objArgs = WScript.Arguments
+dim method
+method = "GET"
 
 for each strArg in objArgs
     if instr(strArg, "=") then
@@ -52,15 +54,24 @@ for each strArg in objArgs
             case "url"
                 url = varArray(1)
 
+            case "method"
+                method = ucase(varArray(1))
+
         end select
     end if
 next
 
 if url <> "" then
-	on error resume next
-	    Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
-	    objHTTP.setTimeouts 5000, 5000, 5000, 120000
-	    objHTTP.SetOption 2, 13056
-	    objHTTP.Open "GET", url, TRUE 
-	on error goto 0
+    on error resume next
+        Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
+        objHTTP.setTimeouts 5000, 5000, 5000, 120000
+        objHTTP.SetOption 2, 13056
+        if method = "GET" then
+            objHTTP.Open method, url, True
+        else
+            objHTTP.Open method, url, False
+            objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+            objHTTP.Send "data=1" + vbcrlf
+        end if
+    on error goto 0
 end if
