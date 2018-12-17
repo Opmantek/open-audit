@@ -33,7 +33,7 @@
 * @author    Mark Unwin <marku@opmantek.com>
 * @copyright 2014 Opmantek
 * @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
-* @version   2.3.0
+* @version   2.3.2
 * @link      http://www.open-audit.org
  */
 
