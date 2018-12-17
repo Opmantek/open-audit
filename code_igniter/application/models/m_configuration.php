@@ -242,7 +242,10 @@ class M_configuration extends MY_Model
             }
             unset($temp_name);
         }
-        $temp = explode('/', $_SERVER['REQUEST_URI']);
+        $temp = array();
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            $temp = explode('/', $_SERVER['REQUEST_URI']);
+        }
         $basic_url = '';
         for ($i = 0; $i<count($temp); $i++) {
             if ($temp[$i] == 'index.php') {
