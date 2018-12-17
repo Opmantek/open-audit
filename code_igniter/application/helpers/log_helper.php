@@ -309,7 +309,10 @@ if (! function_exists('stdlog')) {
         $log['pid'] = getmypid();
         $log['user'] = '';
         $log['server'] = php_uname('n');
-        $log['ip'] = $_SERVER['REMOTE_ADDR'];
+        $log['ip'] = '127.0.0.1';
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            $log['ip'] = $_SERVER['REMOTE_ADDR'];
+        }
         $log['collection'] = '';
         $log['action'] = '';
         $log['function'] = $router->fetch_method();

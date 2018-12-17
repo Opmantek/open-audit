@@ -77,7 +77,7 @@ class Input extends CI_Controller
         $log->severity = 7;
         stdlog($log);
 
-        if ($_SERVER['REMOTE_ADDR'] == '::1') {
+        if (empty($_SERVER['REMOTE_ADDR']) or $_SERVER['REMOTE_ADDR'] == '::1') {
             $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
         }
 

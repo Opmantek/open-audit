@@ -60,8 +60,10 @@ class MY_Controller extends CI_Controller
 
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
-        if (strrpos($_SERVER['REQUEST_URI'], '/') === strlen($_SERVER['REQUEST_URI'])-1) {
-            redirect(uri_string());
+        if (!empty($_SERVER['REQUEST_URI'])) {
+            if (strrpos($_SERVER['REQUEST_URI'], '/') === strlen($_SERVER['REQUEST_URI'])-1) {
+                redirect(uri_string());
+            }
         }
 
         $this->load->helper('log');

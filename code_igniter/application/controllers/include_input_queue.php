@@ -111,7 +111,7 @@ if ($queue == 'scans' and empty($id)) {
     } else {
         $start = true;
         $log->status = 'Starting';
-        $log->summary = 'Starting - Empty PID,.';
+        $log->summary = 'Starting - Empty PID.';
         $log->detail = 'The PID is empty, there are no scans being processed.';
         stdlog($log);
     }
