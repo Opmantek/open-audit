@@ -850,7 +850,7 @@ CREATE TABLE `credentials` (
 
 LOCK TABLES `credentials` WRITE;
 /*!40000 ALTER TABLE `credentials` DISABLE KEYS */;
-INSERT INTO `credentials` VALUES (1,'Default SNMP','The default SNMP string "public".','snmp','ZO6BkpM46ukP0SjCV7oJKkV/ab1pf2KXVgBxstNZIP9a9pEVoHG6oytxCp2C9GtG3wx2qDHjuIO8bo2wm1MwwQ==',1,'system','2018-06-25 06:07:12');
+INSERT INTO `credentials` VALUES (1,'Default SNMP','The default SNMP string "public".','snmp','2c3a54a60e0058d2a37bdbd8421b2d09a0ac4074f209fd23551a9a7ed5123cca52ff975e897c6605ac4252e0b79b8651baddfd4298e32d3e287aa778db98',1,'system','2018-06-25 06:07:12');
 /*!40000 ALTER TABLE `credentials` ENABLE KEYS */;
 UNLOCK TABLES;
 
