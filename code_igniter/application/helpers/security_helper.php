@@ -63,7 +63,10 @@ if (! function_exists('oa_decrypt')) {
             $key = mb_substr("00000000000000000000000000000000".$CI->config->config['encryption_key'], -32);
         }
 
-        $message = hex2bin($message);
+        $message = @hex2bin($message);
+        if (empty($message)) {
+            return '';
+        }
         $nonce = mb_substr($message, 0, 24, '8bit');
         $ciphertext = mb_substr($message, 24, null, '8bit');
         $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt(
