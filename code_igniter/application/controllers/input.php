@@ -60,6 +60,7 @@ class Input extends CI_Controller
         $this->load->helper('audit');
         $this->load->helper('network');
         $this->load->helper('output');
+        $this->load->helper('security');
         $this->load->helper('ssh');;
         $this->load->helper('url');
         $this->load->helper('wmi');

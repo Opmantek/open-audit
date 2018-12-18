@@ -58,6 +58,7 @@ class Logon extends CI_Controller
 
         $this->load->helper('url');
         $this->load->helper('error');
+        $this->load->helper('security');
         $this->load->library('session');
         $this->load->library('encrypt');
         $this->load->model('m_configuration');

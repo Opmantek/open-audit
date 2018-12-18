@@ -63,6 +63,7 @@ class San extends CI_Controller
         // No need for user to be logged in
         // Have to be able to submit systems via the audit script
         $this->data['title'] = 'Open-AudIT';
+        $this->load->helper('security');
         $this->load->library('session');
         $this->load->model('m_configuration');
         $this->m_configuration->load();
