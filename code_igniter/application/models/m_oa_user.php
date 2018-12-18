@@ -35,6 +35,7 @@
  */
 class M_oa_user extends MY_Model
 {
+    // Left here for historical upgrades before 1.0.8
     public function __construct()
     {
         parent::__construct();

@@ -592,7 +592,7 @@ class M_logon extends MY_Model
                 # hash the password being tested
                 $test_hash = hash("sha256", $salt.$password);
                 # if the hashes are exactly the same, the password is valid
-                if ($test_hash == $valid_hash) {
+                if ($test_hash == $valid_hash or sodium_crypto_pwhash_str_verify($db_user->password, $password)) {
                     $log->message = "User $username logged on (local account).";
                     $log->status = 'success';
                     $log->severity = 6;

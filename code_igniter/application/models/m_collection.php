@@ -672,12 +672,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'users') {
             if (!empty($data->password)) {
-                // password - get 256 random bits in hex
-                $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
-                // password - hash
-                $hash = hash("sha256", $salt.(string)$data->password);
-                // password - prepend the salt
-                $data->password = $salt.$hash;
+                $data->password = sodium_crypto_pwhash_str($data->password, SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE);
             }
         }
 
@@ -972,12 +967,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'users') {
             if (!empty($data->password)) {
-                // password - get 256 random bits in hex
-                $salt = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
-                // password - hash
-                $hash = hash("sha256", $salt.(string)$data->password);
-                // password - prepend the salt
-                $data->password = $salt.$hash;
+                $data->password = sodium_crypto_pwhash_str($data->password, SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE);
             }
         }
 
