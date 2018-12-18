@@ -391,7 +391,7 @@ class M_devices extends MY_Model
             $this->load->library('encrypt');
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
-                    $result[$i]->credentials = json_decode($this->encrypt->decode($result[$i]->credentials));
+                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                 }
             }
         }
@@ -497,9 +497,9 @@ class M_devices extends MY_Model
 
             foreach ($device_ids as $id) {
                 if (!empty($data->credentials)) {
-                    $credentials = $this->encrypt->encode(json_encode($data->credentials));
+                    $credentials = (string)simpleEncrypt(json_encode($data->credentials));
                 } elseif (!empty($CI->response->meta->received_data->attributes->credentials)) {
-                    $credentials = $this->encrypt->encode(json_encode($CI->response->meta->received_data->attributes->credentials));
+                    $credentials = (string)simpleEncrypt(json_encode($CI->response->meta->received_data->attributes->credentials));
                 } else {
                     $log->level = 5;
                     $log->message = "No credentials supplied to sub_resource_create.";
@@ -752,7 +752,7 @@ class M_devices extends MY_Model
         if ($CI->response->meta->sub_resource == 'credential' and count($result) > 0) {
             foreach ($result as &$item) {
                 if (!empty($item->attributes->credentials)) {
-                    $item->attributes->credentials = json_decode($this->encrypt->decode($item->attributes->credentials));
+                    $item->attributes->credentials = json_decode(simpleDecrypt($item->attributes->credentials));
                 }
             }
         }

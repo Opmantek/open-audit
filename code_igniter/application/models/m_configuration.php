@@ -213,23 +213,6 @@ class M_configuration extends MY_Model
             $this->load->library('encrypt');
             $sql = "SELECT config_name AS `name`, config_value AS `value` FROM `oa_config`";
             $result = $this->run_sql($sql, array());
-            foreach ($result as $key => $value) {
-                $config_item_name = $result[$key]->name;
-                if (($config_item_name == 'default_ipmi_password' or
-                    $config_item_name == 'default_snmp_community' or
-                    $config_item_name == 'default_ssh_password' or
-                    $config_item_name == 'default_windows_password') and
-                    ($result[$key]->value != '')) {
-                    # we need to decrypt
-                        $temp = $this->encrypt->decode($result[$key]->value);
-                    if (!isset($temp) or is_null($temp) or $temp == false) {
-                        $result[$key]->value = '';
-                    } else {
-                        $result[$key]->value = $temp;
-                    }
-                    unset($temp);
-                }
-            }
         }
 
         # set all items to value or ''

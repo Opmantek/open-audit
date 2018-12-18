@@ -99,7 +99,7 @@ class M_ldap_servers extends MY_Model
         if (!empty($result)) {
             foreach ($result as $row) {
                 if (!empty($row->dn_password)) {
-                    $row->dn_password = (string)$this->encrypt->decode($row->dn_password);
+                    $row->dn_password = (string)simpleDecrypt($row->dn_password);
                 }
             }
         }

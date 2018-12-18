@@ -58,7 +58,7 @@ class M_clouds extends MY_Model
         $result = $this->run_sql($sql, $data);
         $result = $this->format_data($result, 'clouds');
         if (!empty($result[0]->attributes->credentials)) {
-            $result[0]->attributes->credentials = json_decode($this->encrypt->decode($result[0]->attributes->credentials));
+            $result[0]->attributes->credentials = json_decode(simpleDecrypt($result[0]->attributes->credentials));
         }
         return ($result);
     }
@@ -83,7 +83,7 @@ class M_clouds extends MY_Model
             }
             $select = "SELECT * FROM clouds WHERE id = ?";
             $existing_credentials = $this->run_sql($select, array($CI->response->meta->id));
-            $existing_credentials = json_decode($this->encrypt->decode($existing_credentials[0]->credentials));
+            $existing_credentials = json_decode(simpleDecrypt($existing_credentials[0]->credentials));
             $new_credentials = new stdClass();
             foreach ($existing_credentials as $key => $value) {
                 if (!empty($received_credentials->$key)) {
@@ -93,7 +93,7 @@ class M_clouds extends MY_Model
                 }
             }
             $sql .= "`credentials` = ?, ";
-            $data[] = (string)$this->encrypt->encode(json_encode($new_credentials));
+            $data[] = (string)simpleEncrypt(json_encode($new_credentials));
         }
         
         if (!empty($CI->response->meta->received_data->attributes->name)) {

@@ -49,7 +49,8 @@ class M_credentials extends MY_Model
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
         $CI = & get_instance();
-        if ($id == '') {
+
+        if (empty($id)) {
             $id = @intval($CI->response->meta->id);
         } else {
             $id = intval($id);
@@ -57,13 +58,14 @@ class M_credentials extends MY_Model
         if (empty($id)) {
             return null;
         }
+
         $sql = "SELECT * FROM credentials WHERE id = ?";
         $result = $this->run_sql($sql, array($id));
-        $result = $this->format_data($result, 'credentials');
-        if (!empty($result[0]->attributes->credentials)) {
-            $result[0]->attributes->credentials = json_decode($this->encrypt->decode($result[0]->attributes->credentials));
+        if (!empty($result[0]->credentials)) {
+            $result[0]->credentials = json_decode(simpleDecrypt($result[0]->credentials));
         }
-        if ($result) {
+        $result = $this->format_data($result, 'credentials');
+        if (!empty($result[0])) {
             return($result);
         } else {
             return null;
@@ -97,7 +99,8 @@ class M_credentials extends MY_Model
             }
             $select = "SELECT * FROM credentials WHERE id = ?";
             $existing_credentials = $this->run_sql($select, array($CI->response->meta->id));
-            $existing_credentials = json_decode($this->encrypt->decode($existing_credentials[0]->credentials));
+            $existing_credentials = json_decode(simpleDecrypt($existing_credentials[0]->credentials));
+
             $new_credentials = new stdClass();
             foreach ($existing_credentials as $existing_key => $existing_value) {
                 if (!empty($received_credentials->$existing_key)) {
@@ -107,7 +110,7 @@ class M_credentials extends MY_Model
                 }
             }
             $sql .= "`credentials` = ?, ";
-            $data[] = (string)$this->encrypt->encode(json_encode($new_credentials));
+            $data[] = (string)simpleEncrypt(json_encode($new_credentials));
         }
         
         if (!empty($CI->response->meta->received_data->attributes->name)) {
@@ -127,11 +130,12 @@ class M_credentials extends MY_Model
 
         if ($sql == 'UPDATE `credentials` SET ') {
             # TODO - THROW AN ERROR, no credentials or name or description supplied for updating
+        } else {
+            $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
+            $data[] = (string)$CI->user->full_name;
+            $data[] = intval($CI->response->meta->id);
+            $this->run_sql($sql, $data);
         }
-        $sql .= " `edited_by` = ?, `edited_date` = NOW() WHERE id = ?";
-        $data[] = (string)$CI->user->full_name;
-        $data[] = intval($CI->response->meta->id);
-        $this->run_sql($sql, $data);
         #echo $sql; exit();
         return;
     }
@@ -157,7 +161,7 @@ class M_credentials extends MY_Model
         $result = $this->format_data($result, 'credentials');
         for ($i=0; $i < count($result); $i++) {
             if (!empty($result[$i]->attributes->credentials)) {
-                $result[$i]->attributes->credentials = json_decode($this->encrypt->decode($result[$i]->attributes->credentials));
+                $result[$i]->attributes->credentials = json_decode(simpleDecrypt($result[$i]->attributes->credentials));
             }
         }
         return ($result);

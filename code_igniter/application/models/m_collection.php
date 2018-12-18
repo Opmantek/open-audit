@@ -222,7 +222,7 @@ class M_collection extends MY_Model
         if ($collection == 'credentials' and !empty($result)) {
             for ($i=0; $i < count($result); $i++) {
                 if (!empty($result[$i]->credentials)) {
-                    $result[$i]->credentials = json_decode($CI->encrypt->decode($result[$i]->credentials));
+                    $result[$i]->credentials = json_decode(simpleDecrypt($result[$i]->credentials));
                     if (!empty($result[$i]->credentials)) {
                         foreach ($result[$i]->credentials as $key => $value) {
                             $result[$i]->{'credentials.'.$key} = $value;
@@ -465,11 +465,11 @@ class M_collection extends MY_Model
         stdlog($this->log);
 
         if ($collection === 'clouds') {
-            $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
+            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
 
         if ($collection === 'credentials') {
-            $data->credentials = (string)$this->encrypt->encode(json_encode($data->credentials));
+            $data->credentials = (string)simpleEncrypt(json_encode($data->credentials));
         }
 
         if ($collection === 'dashboards') {
@@ -585,7 +585,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'ldap_servers') {
             if (!empty($data->dn_password)) {
-                $data->dn_password = (string)$this->encrypt->encode($data->dn_password);
+                $data->dn_password = (string)simpleEncrypt($data->dn_password);
             }
         }
 
@@ -788,7 +788,7 @@ class M_collection extends MY_Model
                 $select = "SELECT * FROM credentials WHERE id = ?";
                 $query = $this->db->query($select, array($data->id));
                 $result = $query->result();
-                $existing_credentials = @json_decode($this->encrypt->decode($result[0]->credentials));
+                $existing_credentials = json_decode(simpleDecrypt($result[0]->credentials));
                 $new_credentials = new stdClass();
                 if (count($existing_credentials) > 0) {
                     foreach ($existing_credentials as $existing_key => $existing_value) {
@@ -799,7 +799,7 @@ class M_collection extends MY_Model
                         }
                     }
                 }
-                $data->credentials = (string)$this->encrypt->encode(json_encode($new_credentials));
+                $data->credentials = (string)simpleEncrypt(json_encode($new_credentials));
             }
         }
 
@@ -901,7 +901,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'ldap_servers') {
             if (!empty($data->dn_password)) {
-                $data->dn_password = (string)$CI->encrypt->encode($data->dn_password);
+                $data->dn_password = (string)simpleEncrypt($data->dn_password);
             }
         }
 

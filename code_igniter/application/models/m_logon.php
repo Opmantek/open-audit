@@ -223,7 +223,7 @@ class M_logon extends MY_Model
                             $log->severity = 7;
                             stdlog($log);
                         }
-                        $ldap->dn_password = (string)$this->encrypt->decode($ldap->dn_password);
+                        $ldap->dn_password = (string)simpleDecrypt($ldap->dn_password));
                         if (!empty($ldap->dn_account) and empty($ldap->dn_password)) {
                             $CI->session->set_flashdata('error', 'DN Account set, but no DN Password.');
                         }
