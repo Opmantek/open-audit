@@ -1604,97 +1604,77 @@ foreach ($list as $item) {
                 <table class="table">
                     <thead>
                         <tr>
-                            <?php
-                            if ($item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
-                                foreach ($attributes[$item] as $key => $value) {
-                                    echo "                            <th>$value</th>\n";
-                                }
-                            } else {
-                                foreach ($data[$item][0] as $key => $value) {
-                                    if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
-                                        # some special cases for cisco modules
-                                        if ($item == 'module') {
-                                            if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
-                                                echo '                            <th>' . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET) . "</th>\n";
-                                            }
-                                        } elseif ($item == 'change_log') {
-                                            if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
-                                                echo '                            <th>' . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET) . "</th>\n";
-                                            }
-                                        } else {
-                                            # everything else
-                                            if (is_int($value)) {
-                                                echo "                            <th class=\"text-right\">" . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET)  . "</th>\n";
-                                            } else {
-                                                echo "                            <th>" . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET)  . "</th>\n";
-                                            }
-                                        }
+                        <?php
+                        foreach ($data[$item][0] as $key => $value) {
+                            if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
+                                # some special cases for cisco modules
+                                if ($item == 'module') {
+                                    if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
+                                        echo '                            <th>' . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET) . "</th>\n";
+                                    }
+                                } elseif ($item == 'change_log') {
+                                    if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
+                                        echo '                            <th>' . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET) . "</th>\n";
+                                    }
+                                } else {
+                                    # everything else
+                                    if (is_int($value)) {
+                                        echo "                            <th class=\"text-right\">" . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET)  . "</th>\n";
+                                    } else {
+                                        echo "                            <th>" . htmlspecialchars(ucwords(str_replace('_', ' ', $key)), REPLACE_FLAGS, CHARSET)  . "</th>\n";
                                     }
                                 }
                             }
-                            ?>
+                        }
+                        ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
-                        if ($item == 'service' or $item == 'disk' or $item == 'partition' or $item == 'file' or $item == 'user' or $item == 'route') {
-                            foreach ($data[$item] as $row) {
-                                echo "                        <tr>\n";
-                                foreach ($attributes[$item] as $key => $value) {
-                                    if (is_integer($row->$key)) {
-                                        echo "                            <td class=\"text-right\">" . number_format($row->$key) . "</td>\n";
-                                    } else {
-                                        echo "                            <td>" . htmlspecialchars($row->$key, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                    }
-                                }
-                                echo "                        </tr>\n";
-                            }
-                        } else {
-                            foreach ($data[$item] as $row) {
-                                echo "                        <tr>\n";
-                                foreach ($row as $key => $value) {
-                                    if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
-                                        # some special cases for cisco modules
-                                        if ($item == 'module') {
-                                            if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
-                                                if (is_int($value)) {
-                                                    echo "                            <td class=\"text-right\">" . number_format($value) . "</td>\n";
-                                                } else {
-                                                    echo "                            <td>" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                                }
-                                            }
-                                        } elseif ($item == 'change_log') {
-                                            if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
-                                                echo "                            <td>" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                            }
-                                        } elseif ($item == 'vm'and $key == 'guest_system_id') {
-                                            if (!empty($value)) {
-                                                echo "                            <td class=\"text-center\"><a href=\"" . base_url() . "index.php/devices/" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "\" class=\"btn btn-sm btn-success\">" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</a></td>\n";
-                                            } else {
-                                                echo "                            <td></td>\n";
-                                            }
-                                        } elseif ($item == 'vm'and $key == 'icon') {
-                                            if (!empty($value)) {
-                                                echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . base_url() . "device_images/" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . ".svg\" /></td>\n";
-                                            } else {
-                                                echo "                            <td class=\"text-center\"></td>\n";
-                                            }
-                                        } else {
-                                            # everything else
+                        foreach ($data[$item] as $row) {
+                            echo "                        <tr>\n";
+                            foreach ($row as $key => $value) {
+                                if ($key != 'id' and $key != 'system_id' and $key != 'current' and $key != 'first_seen' and $key != 'last_seen' and $key != 'ip_padded' and $key != 'system.id') {
+                                    # some special cases for cisco modules
+                                    if ($item == 'module') {
+                                        if ($key != 'software_revision' and $key != 'object_id' and $key != 'class') {
                                             if (is_int($value)) {
                                                 echo "                            <td class=\"text-right\">" . number_format($value) . "</td>\n";
                                             } else {
-                                                if (strlen($value) > 40) {
-                                                    echo "                            <td class=\"wrap\">" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                                } else {
-                                                    echo "                            <td>" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
-                                                }
+                                                echo "                            <td>" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                            }
+                                        }
+                                    } elseif ($item == 'change_log') {
+                                        if ($key != 'external_link' and $key != 'external_ident' and $key != 'note' and $key != 'change_id' and $key != 'change_type' and $key != 'user_id' and $key != 'ack_time') {
+                                            echo "                            <td>" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                        }
+                                    } elseif ($item == 'vm'and $key == 'guest_system_id') {
+                                        if (!empty($value)) {
+                                            echo "                            <td class=\"text-center\"><a href=\"" . base_url() . "index.php/devices/" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "\" class=\"btn btn-sm btn-success\">" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</a></td>\n";
+                                        } else {
+                                            echo "                            <td></td>\n";
+                                        }
+                                    } elseif ($item == 'vm'and $key == 'icon') {
+                                        if (!empty($value)) {
+                                            echo "                            <td class=\"text-center\"><img alt=\"\" class=\"center-block img-responsive\" style=\"width:20px;\" title=\"\" src=\"" . base_url() . "device_images/" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . ".svg\" /></td>\n";
+                                        } else {
+                                            echo "                            <td class=\"text-center\"></td>\n";
+                                        }
+                                    } else {
+                                        # everything else
+                                        if (is_int($value)) {
+                                            echo "                            <td class=\"text-right\">" . number_format($value) . "</td>\n";
+                                        } else {
+                                            if (strlen($value) > 40) {
+                                                echo "                            <td class=\"wrap\">" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                                            } else {
+                                                echo "                            <td>" . htmlspecialchars($value, REPLACE_FLAGS, CHARSET) . "</td>\n";
                                             }
                                         }
                                     }
                                 }
-                                echo "                        </tr>\n";
                             }
+                            echo "                        </tr>\n";
                         }
                         ?>
                     </tbody>
