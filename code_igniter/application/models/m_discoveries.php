@@ -146,14 +146,13 @@ class M_discoveries extends MY_Model
 
     public function execute($id = 0)
     {
+        $this->load->model('m_queue');
         $this->log->function = strtolower(__METHOD__);
         $sql = "SELECT * FROM `discoveries` WHERE `id` = ?";
         $data = array(intval($id));
         $discovery = $this->run_sql($sql, $data);
         if (!empty($discovery)) {
-            $sql = "INSERT INTO `queue` VALUES (null, 'discoveries', 0, ?, NOW(), '')";
-            $data = array(json_encode($discovery[0]));
-            $this->run_sql($sql, $data);
+            $this->m_queue->create('discoveries', json_encode($discovery[0]));
             $sql = 'UPDATE `discoveries` SET `status` = "queued", `discovered` = "" WHERE `id` = ?';
             $data = array(intval($discovery[0]->id));
             $this->run_sql($sql, $data);
