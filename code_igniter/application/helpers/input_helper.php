@@ -66,7 +66,7 @@ if (! function_exists('set_collection')) {
     {
         $CI = & get_instance();
         $collection = @$CI->uri->segment(1);
-        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','errors','fields','files','floors','graphs','groups','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
+        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','errors','fields','files','floors','graphs','groups','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
             # a valid collection
         } else {
@@ -188,7 +188,7 @@ if (! function_exists('inputRead')) {
         $actions = ' bulk_update_form collection create create_form debug delete download execute export export_form import import_form read reset sub_resource_create sub_resource_read sub_resource_create_form sub_resource_delete sub_resource_download test update update_form ';
         $action = '';
 
-        $collections = ' agents applications attributes charts clouds collectors configuration connections credentials dashboards database devices discoveries errors fields files graphs groups invoices invoice_items ldap_servers licenses locations logs networks nmis orgs queries racks reports roles scripts search sessions summaries tasks users widgets ';
+        $collections = ' agents applications attributes charts clouds collectors configuration connections credentials dashboards database devices discoveries errors fields files graphs groups invoices invoice_items ldap_servers licenses locations logs networks nmis orgs queue queries racks reports roles scripts search sessions summaries tasks users widgets ';
         $collection = '';
 
         # Allow for URLs thus:
@@ -1150,17 +1150,17 @@ if (! function_exists('inputRead')) {
         }
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
-            $check_premission = true;
+            $check_permission = true;
             if ($CI->response->meta->collection == 'users' and $CI->user->id == $CI->response->meta->id and !empty($CI->response->meta->received_data) and $CI->response->meta->action == 'update') {
                 $user_allowed_attributes = array('id', 'name', 'full_name', 'email', 'lang', 'password', 'dashboard_id');
-                $check_premission = false;
+                $check_permission = false;
                 foreach ($CI->response->meta->received_data->attributes as $key => $value) {
                     if (!in_array($key, $user_allowed_attributes)) {
-                        $check_premission = true;
+                        $check_permission = true;
                     }
                 }
             }
-            if (!empty($check_permission)) {
+            if ($check_permission) {
                 if ((!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {
                     log_error('ERR-0015', $CI->response->meta->collection . ':' . $permission[$CI->response->meta->action]);
                     //output();
@@ -1179,7 +1179,6 @@ if (! function_exists('inputRead')) {
                 }
             }
         }
-
         if (empty($CI->user->orgs)) {
             $CI->session->unset_userdata('user_id');
             $CI->session->set_flashdata('error', 'User has no permissions on any orgs.');
@@ -1197,6 +1196,7 @@ if (! function_exists('inputRead')) {
             $CI->response->meta->collection != 'errors' and
             $CI->response->meta->collection != 'ldap_servers' and
             $CI->response->meta->collection != 'logs' and
+            $CI->response->meta->collection != 'queue' and
             $CI->response->meta->collection != 'report' and
             $CI->response->meta->collection != 'roles') {
             if (! $CI->m_users->get_user_collection_org_permission($CI->response->meta->collection, $CI->response->meta->id)) {
