@@ -688,7 +688,7 @@ if (! function_exists('ssh_audit')) {
         $log->command_status = 'success';
         $log->message = 'The default shell for ' . $username . ' is ' . $device->shell;
         if (strpos($device->shell, 'bash') === false) {
-            $log->command_status = 'warning';
+            $log->command_status = 'notice';
             $log->message = 'The default shell for ' . $username . ' is ' . $device->shell . ' (not bash)';
             $log->severity = 6;  
         }
@@ -706,7 +706,7 @@ if (! function_exists('ssh_audit')) {
                 $log->message = 'Bash installed';
             } else {
                 $log->message = 'Bash not installed';
-                $log->command_status = 'warning';
+                $log->command_status = 'notice';
                 $log->severity = 6;
             }
             discovery_log($log);
@@ -722,7 +722,7 @@ if (! function_exists('ssh_audit')) {
             $log->command_status = 'notice';
             if ($device->bash === '') {
                 $log->message = 'Unable to detect shell. Running commands in a shell other than bash may fail.';
-                $log->command_status = 'warning';
+                $log->command_status = 'notice';
             }
             discovery_log($log);
         }
