@@ -190,7 +190,7 @@ class Input extends CI_Controller
         $id = '';
         if (!empty($input)) {
             # insert this into the queue
-            $id = $this->m_queue->insert('scans', $input);
+            $id = $this->m_queue->create('scans', $input);
         }
 
         # Run the scan if requested to execute

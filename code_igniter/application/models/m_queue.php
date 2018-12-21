@@ -113,7 +113,7 @@ class M_queue extends MY_Model
     }
 
     # Return a queue ID (integer) on success or FALSE on failure
-    public function insert($type, $details)
+    public function create($type, $details)
     {
         $this->log->function = strtolower(__METHOD__);
         $this->log->action = 'insert';
@@ -128,9 +128,18 @@ class M_queue extends MY_Model
         if (!is_string($details)) {
             $details = json_encode($details);
         }
+        $temp_details = json_decode($details);
+        $name = '';
+        $org_id = 1;
+        if (!empty($temp_details->name)) {
+            $name = $temp_details->name;
+        }
+        if (!empty($temp_details->org_id)) {
+            $org_id = intval($temp_details->org_id);
+        }
         $this->log->details = $details;
-        $sql = "INSERT INTO `queue` VALUES (null, ?, 0, ?, NOW(), '')";
-        $data = array($type, $details);
+        $sql = "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '')";
+        $data = array($name, $type, $org_id, $details);
         $this->db->query($sql, $data);
         $result = intval($this->db->insert_id());
         if (empty($result)) {
