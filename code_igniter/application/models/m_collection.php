@@ -295,6 +295,17 @@ class M_collection extends MY_Model
             }
         }
 
+        if ($collection == 'queue' and !empty($result)) {
+            for ($i=0; $i < count($result); $i++) {
+                if (!empty($result[$i]->details)) {
+                    $result[$i]->details = json_decode($result[$i]->details);
+                    foreach ($result[$i]->details as $key => $value) {
+                        $result[$i]->{'details.'.$key} = $value;
+                    }
+                }
+            }
+        }
+
         if ($collection == 'tasks') {
             if ($result !== false) {
                 for ($i=0; $i < count($result); $i++) {
