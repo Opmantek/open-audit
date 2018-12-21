@@ -45,7 +45,7 @@ $log->detail = '';
 if ($queue == 'scans' and !empty($id)) {
     $exec = true;
 
-    $sql = "SELECT * FROM queue WHERE id = " . intval($id);
+    $sql = "SELECT * FROM queue WHERE status = 'queued' AND id = " . intval($id);
     $query = $this->db->query($sql);
     $result = $query->result();
 
@@ -64,7 +64,7 @@ if ($queue == 'scans' and !empty($id)) {
         stdlog($log);
         $exec = false;
     } else {
-        $sql = '/* input::queue */ ' . "UPDATE `queue` SET `pid` = " . intval(getmypid()) . ", started_date = NOW() WHERE `id` = $id";
+        $sql = '/* input::queue */ ' . "UPDATE `queue` SET `pid` = " . intval(getmypid()) . ", started_date = NOW(), status = 'processing' WHERE `id` = $id";
         $query = $this->db->query($sql);
         $result = $query->result();
     }
@@ -137,7 +137,7 @@ if ($queue == 'scans' and empty($id)) {
 
                 #$sql = '/* input::queue */ ' . "LOCK TABLES queue WRITE, logs WRITE";
                 #$query = $this->db->query($sql);
-                $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'scans' AND `pid` = 0 ORDER BY `id` LIMIT 1";
+                $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'scans' AND `pid` = 0 AND `status` = 'queued' ORDER BY `id` LIMIT 1";
                 $query = $this->db->query($sql);
                 $result = $query->result();
 
@@ -326,7 +326,7 @@ if ($queue == 'discoveries') {
                 stdlog($log);
                 $sql = '/* input::queue */ ' . "LOCK TABLES queue WRITE, logs WRITE";
                 $query = $this->db->query($sql);
-                $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'discoveries' ORDER BY `id` LIMIT 1";
+                $sql = '/* input::queue */ ' . "SELECT SQL_NO_CACHE * FROM `queue` WHERE `type` = 'discoveries' AND `status` = 'queued' ORDER BY `id` LIMIT 1";
                 $query = $this->db->query($sql);
                 $result = $query->result();
                 if (!empty($result[0]->id)) {
