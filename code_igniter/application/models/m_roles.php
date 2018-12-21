@@ -166,8 +166,8 @@ class M_roles extends MY_Model
     public function collection()
     {
         $this->log->function = strtolower(__METHOD__);
-        $this->log->summary = 'start';
-        stdlog($this->log);
+        #$this->log->summary = 'start';
+        #stdlog($this->log);
         $CI = & get_instance();
         if (!$this->db->table_exists('roles')) {
             return;
@@ -207,8 +207,8 @@ class M_roles extends MY_Model
         $sql = "SELECT * FROM `roles`";
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'roles');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
+        #$this->log->summary = 'finish';
+        #stdlog($this->log);
         return ($result);
     }
 
