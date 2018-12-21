@@ -114,7 +114,7 @@ if (! function_exists('output')) {
                 }
             }
 
-            $special = array('credentials' => 'credentials', 'discoveries' => 'other', 'queue' => 'detail', 'tasks' => 'options');
+            $special = array('credentials' => 'credentials', 'discoveries' => 'other', 'queue' => 'details', 'tasks' => 'options');
             foreach ($special as $table => $column) {
                 if ($CI->response->meta->collection == $table) {
                     $array = array();
@@ -326,7 +326,7 @@ if (! function_exists('output')) {
         }
         if ($CI->response->meta->collection == 'queue') {
             foreach ($CI->response->meta->data_order as $key => $value) {
-                if ($value == 'detail') {
+                if ($value == 'details') {
                     unset($CI->response->meta->data_order[$key]);
                 }
             }
