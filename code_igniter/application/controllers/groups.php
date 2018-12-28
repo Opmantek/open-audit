@@ -95,10 +95,8 @@ class Groups extends MY_Controller
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
             $allowed = false;
-            foreach ($this->user->roles as $key => $value) {
-                if ($value == 'admin') {
-                    $allowed = true;
-                }
+            if (in_array("admin", $this->user->roles)) {
+                $allowed = true;
             }
             if ($allowed === false) {
                 unset($allowed);
@@ -135,10 +133,8 @@ class Groups extends MY_Controller
             // We don't have the HIGHLY RECOMMENDED @filter in our SQL
             // Ensure the user creating this query has the admin role
             $allowed = false;
-            foreach ($this->user->roles as $key => $value) {
-                if ($value == 'admin') {
-                    $allowed = true;
-                }
+            if (in_array("admin", $this->user->roles)) {
+                $allowed = true;
             }
             if ($allowed === false) {
                 unset($allowed);

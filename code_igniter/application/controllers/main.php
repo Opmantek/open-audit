@@ -378,7 +378,6 @@ class Main extends MY_Controller
 
     public function ip_address_from_db($ip)
     {
-        $ip_pre = $ip;
         if (($ip != "") and (!(is_null($ip)))) {
             $myip = explode(".", $ip);
             $myip[0] = ltrim($myip[0], "0");

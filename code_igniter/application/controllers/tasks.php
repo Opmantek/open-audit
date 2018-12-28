@@ -75,7 +75,7 @@ class tasks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create()
+    public function create()
     {
         include 'include_create.php';
     }
@@ -86,7 +86,7 @@ class tasks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function read()
+    public function read()
     {
         include 'include_read.php';
     }
@@ -130,7 +130,7 @@ class tasks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create_form()
+    public function create_form()
     {
         $this->response->meta->response = 'json';
         include 'include_create_form.php';
@@ -142,7 +142,7 @@ class tasks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function update_form()
+    public function update_form()
     {
         include 'include_update_form.php';
     }

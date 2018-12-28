@@ -226,7 +226,7 @@ class Scripts extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function download()
+    public function download()
     {
         $this->response->meta->format = 'json';
         $script = $this->m_scripts->download($this->response->meta->id);

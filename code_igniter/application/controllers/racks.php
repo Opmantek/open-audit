@@ -87,7 +87,7 @@ class Racks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create()
+    public function create()
     {
         include 'include_create.php';
     }
@@ -98,7 +98,7 @@ class Racks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function read()
+    public function read()
     {
         include 'include_read.php';
     }
@@ -142,7 +142,7 @@ class Racks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create_form()
+    public function create_form()
     {
         include 'include_create_form.php';
     }
@@ -153,7 +153,7 @@ class Racks extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function update_form()
+    public function update_form()
     {
         include 'include_update_form.php';
     }

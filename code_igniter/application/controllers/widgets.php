@@ -75,7 +75,7 @@ class widgets extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function create()
+    public function create()
     {
         include 'include_create.php';
     }
@@ -86,7 +86,7 @@ class widgets extends MY_Controller
     * @access public
     * @return NULL
     */
-    private function read()
+    public function read()
     {
         include 'include_read.php';
     }
