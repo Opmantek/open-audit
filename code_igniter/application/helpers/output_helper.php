@@ -372,6 +372,12 @@ if (! function_exists('output')) {
                     if (!empty($item->attributes->$field)) {
                         $value = $item->attributes->$field;
                     }
+                    if (empty($value) and  stripos($field, '.') !== false) {
+                        $temp = explode('.', $field);
+                        if (!empty($item->attributes->{$temp[1]})) {
+                            $value = $item->attributes->{$temp[1]};
+                        }
+                    }
                     $value = str_replace('"', '""', $value);
                     if (!empty($output_escape_csv) and $output_escape_csv === 'y') {
                         if (strpos($value, '=') === 0 or strpos($value, '+') === 0 or strpos($value, '-') === 0 or strpos($value, '@') === 0) {
