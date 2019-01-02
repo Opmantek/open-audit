@@ -372,7 +372,7 @@ class MY_Model extends CI_Model
 
         // filter
         $filter = '';
-        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
+        if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection and !empty($CI->response->meta->filter)) {
             $reserved = ' properties limit resource action sort current offset format ';
             foreach ($CI->response->meta->filter as $item) {
                 if (empty($item->operator)) {
@@ -390,7 +390,7 @@ class MY_Model extends CI_Model
                 }
             }
         }
-        if ($filter != '') {
+        if (!empty($filter)) {
             if ($collection == 'configuration' or $collection == 'logs' ) {
                 $filter = ' WHERE ' . substr($filter, 4);
             } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
@@ -422,7 +422,7 @@ class MY_Model extends CI_Model
         // sort
         $sort = '';
         if (!empty($CI->response->meta->collection) and $CI->response->meta->collection == $collection) {
-            if ($CI->response->meta->sort == '') {
+            if (empty($CI->response->meta->sort)) {
                 if ($table == 'orgs') {
                     $sort = 'ORDER BY ' . $table . '.name';
                 } else {
@@ -445,6 +445,7 @@ class MY_Model extends CI_Model
             }
         }
         $return['limit'] = $limit;
+
         if ($type == 'sql') {
             if ($collection == 'configuration') {
                 $sql = "SELECT configuration.* FROM configuration " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
