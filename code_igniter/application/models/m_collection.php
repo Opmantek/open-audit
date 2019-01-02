@@ -412,7 +412,7 @@ class M_collection extends MY_Model
 
         if ($collection != 'database') {
             if ($collection == 'orgs') {
-                # Orgs don't have an org_id, the have an id
+                # Orgs don't have an org_id, they have an id
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $collection . "` WHERE id IN (" . $CI->user->org_list . ")";
             } else if ($collection == 'logs') {
                 # logs are special as we have 2x different types
