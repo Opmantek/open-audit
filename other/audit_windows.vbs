@@ -3411,25 +3411,27 @@ if (windows_domain_role <> "Backup Domain Controller" and windows_domain_role <>
         for Each objItem in colItems
             users = ""
             set objDSO = GetObject("WinNT:")
-            set colGroups = objDSO.OpenDSObject("WinNT://" & system_hostname & "", struser, strpass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
-            colGroups.Filter = Array("group")
-            group_members = ""
-            for Each objGroup In colGroups
-                if objGroup.Name = objItem.Name then
-                    for each objUser in objGroup.Members
-                        group_domain = split(objUser.ADSPath, "/")
-                        member_domain = group_domain(ubound(group_domain)-1)
-                        group_members = group_members & objUser.Name & "@" & member_domain & ", "
-                    next
-                end if
-            next
-            result.WriteText "      <item>" & vbcrlf
-            result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
-            result.WriteText "          <description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
-            result.WriteText "          <sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
-            result.WriteText "          <members>" & escape_xml(group_members) & "</members>" & vbcrlf
-            result.WriteText "      </item>" & vbcrlf
-            group_members = ""
+            on error resume next
+                set colGroups = objDSO.OpenDSObject("WinNT://" & system_hostname & "", struser, strpass, ADS_USE_ENCRYPTION OR ADS_SECURE_AUTHENTICATION)
+                colGroups.Filter = Array("group")
+                group_members = ""
+                for Each objGroup In colGroups
+                    if objGroup.Name = objItem.Name then
+                        for each objUser in objGroup.Members
+                            group_domain = split(objUser.ADSPath, "/")
+                            member_domain = group_domain(ubound(group_domain)-1)
+                            group_members = group_members & objUser.Name & "@" & member_domain & ", "
+                        next
+                    end if
+                next
+                result.WriteText "      <item>" & vbcrlf
+                result.WriteText "          <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+                result.WriteText "          <description>" & escape_xml(objItem.Description) & "</description>" & vbcrlf
+                result.WriteText "          <sid>" & escape_xml(objItem.SID) & "</sid>" & vbcrlf
+                result.WriteText "          <members>" & escape_xml(group_members) & "</members>" & vbcrlf
+                result.WriteText "      </item>" & vbcrlf
+                group_members = ""
+            on error goto 0
         next
     end if
     result.WriteText "  </user_group>" & vbcrlf
