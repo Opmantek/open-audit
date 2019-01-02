@@ -339,7 +339,7 @@ class MY_Model extends CI_Model
             // get the total count
             if ($collection == 'orgs') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE id IN (" . $CI->user->org_list . ")";
-            } elseif ($collection == 'configuration' or $collection == 'logs' or $collection == 'attributes') {
+            } elseif ($collection == 'configuration' or $collection == 'discovery_log'  or $collection == 'logs') {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "`";
             } else {
                 $sql = "SELECT COUNT(*) as `count` FROM `" . $table . "` WHERE org_id IN (" . $CI->user->org_list . ")";
@@ -393,6 +393,10 @@ class MY_Model extends CI_Model
         if (!empty($filter)) {
             if ($collection == 'configuration' or $collection == 'logs' ) {
                 $filter = ' WHERE ' . substr($filter, 4);
+
+            } else if ($collection == 'discovery_log') {
+                $filter = ' LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) WHERE discoveries.org_id IN (' . $CI->user->org_list . ') ' . $filter;
+
             } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
                 $filter = substr($filter, 5);
                 if (!empty($CI->user->org_parents)) {
@@ -407,6 +411,10 @@ class MY_Model extends CI_Model
         } else {
             if ($collection == 'configuration' or $collection == 'logs' ) {
                 $filter = '';
+
+            } else if ($collection == 'discovery_log') {
+                $filter = ' LEFT JOIN discoveries ON (discovery_log.discovery_id = discoveries.id) WHERE discoveries.org_id IN (' . $CI->user->org_list . ')';
+
             } else if ($collection == 'attributes' or $collection == 'credentials' or $collection == 'groups' or $collection == 'queries' or $collection == 'summaries') {
                 if (!empty($CI->user->org_parents)) {
                     $filter = ' WHERE (orgs.id IN (' . $CI->user->org_list . ') OR orgs.id IN (' . $CI->user->org_parents . '))';
@@ -449,6 +457,10 @@ class MY_Model extends CI_Model
         if ($type == 'sql') {
             if ($collection == 'configuration') {
                 $sql = "SELECT configuration.* FROM configuration " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
+
+
+            } else if ($collection == 'discovery_log') {
+                $sql = "SELECT " . $return['properties'] . " FROM `discovery_log` " . $return['filter'] . " " . $return['sort'] . " " . $return['limit'];
 
             } else if ($collection == 'fields') {
                 $sql = "SELECT " . $return['properties'] . ", orgs.name AS `org_name`, groups.name AS `groups.name` FROM `fields` LEFT JOIN orgs ON (fields.org_id = orgs.id) LEFT JOIN `groups` ON (fields.group_id = groups.id) " . $return['filter'] . " GROUP BY fields.id " . $return['sort'] . " " . $return['limit'];

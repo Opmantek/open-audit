@@ -203,6 +203,9 @@ class M_users extends MY_Model
         if ($endpoint == '') {
             return false;
         }
+        if ($endpoint === 'discovery_log') {
+            $endpoint = 'discoveries';
+        }
         if ($permission == '') {
             return false;
         }
