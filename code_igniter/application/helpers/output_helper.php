@@ -635,7 +635,7 @@ if (! function_exists('output')) {
                 $include = false;
             }
         }
-        if ($include) {
+        if ($include and $CI->response->meta->collection !== 'attributes') {
             if ($CI->db->table_exists('attributes')) {
                 $CI->load->model('m_attributes');
                 $attributes = $CI->m_attributes->collection();
@@ -643,7 +643,6 @@ if (! function_exists('output')) {
                 $CI->response->included = array_merge($CI->response->included, $attributes);
             }
         }
-
         if (!empty($CI->response->errors)) {
             unset($CI->response->data);
             $CI->response->include = 'v_error';
@@ -655,6 +654,7 @@ if (! function_exists('output')) {
             $CI->response->include = 'v_' . $CI->response->meta->collection . '_' . $CI->response->meta->action;
             $CI->response->heading = $CI->response->meta->heading;
         }
+
         $CI->load->view('v_template', $CI->response);
     }
 
