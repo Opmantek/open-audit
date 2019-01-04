@@ -34,7 +34,7 @@ $sql = "DELETE FROM configuration WHERE name = 'discovery_default_preset'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_default_preset','5','number','n','system','2000-01-01 00:00:00','The default discovery preset for Nmap settings.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_default_preset','90','number','n','system','2000-01-01 00:00:00','The default discovery preset for Nmap settings.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 

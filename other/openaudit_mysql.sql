@@ -747,7 +747,7 @@ INSERT INTO `configuration` VALUES (63,'discovery_ssh_timeout','300','number','y
 INSERT INTO `configuration` VALUES (64,'discovery_limit','20','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent discoveries we should run.');
 INSERT INTO `configuration` VALUES (65,'discovery_scan_limit','50','number','y','system','2000-01-01 00:00:00','The maximum number of concurrent device scans we should process.');
 INSERT INTO `configuration` VALUES (66,'discovery_pid','','number','n','system','2000-01-01 00:00:00','The discovery queue process pid.');
-INSERT INTO `configuration` VALUES (67,'discovery_default_preset','5','number','n','system','2000-01-01 00:00:00','The default discovery preset for Nmap settings.');
+INSERT INTO `configuration` VALUES (67,'discovery_default_preset','90','number','n','system','2000-01-01 00:00:00','The default discovery preset for Nmap settings.');
 /*!40000 ALTER TABLE `configuration` ENABLE KEYS */;
 UNLOCK TABLES;
 
