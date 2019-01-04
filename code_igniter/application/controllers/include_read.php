@@ -167,7 +167,9 @@ if ($this->response->meta->collection == 'discoveries') {
     $this->load->model('m_locations');
     $this->response->included = array_merge($this->response->included, $this->m_locations->collection($this->response->meta->id));
     # The discovery log
-    $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+    if ($this->response->meta->format === 'screen') {
+        $this->response->included = array_merge($this->response->included, $this->m_discoveries->read_sub_resource($this->response->meta->id));
+    }
 }
 
 # fields
