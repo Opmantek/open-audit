@@ -285,6 +285,7 @@ foreach ($xml->children() as $input) {
     $parameters = new stdCLass();
     $parameters->details = $device;
     $parameters->log = $log;
+    $parameters->match = $discovery->other->match;
     $device->id = $this->m_device->match($parameters);
     $log->command_output = '';
 
@@ -593,6 +594,7 @@ foreach ($xml->children() as $input) {
         $parameters = new stdCLass();
         $parameters->details = $device;
         $parameters->log = $log;
+        $parameters->match = $discovery->other->match;
         $device->id = $this->m_device->match($parameters);
         if (!empty($device->id)) {
             $log->system_id = $device->id;
@@ -1320,7 +1322,12 @@ foreach ($xml->children() as $input) {
 
         $log->message = 'Matching device from audit result';
         discovery_log($log);
-        $i = $this->m_device->match($audit->system, 'process audit');
+        $parameters = new stdCLass();
+        $parameters->details = $audit->system;
+        $parameters->log = $log;
+        $parameters->match = $discovery->other->match;
+        $i = $this->m_device->match($parameters);
+
         if (empty($audit->system->discovery_id)) {
             $audit->system->discovery_id = '';
         } else {

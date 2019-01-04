@@ -75,6 +75,31 @@ class M_device extends MY_Model
         $message->command_output = '';
         $log_message[] = $message;
 
+        $match = new stdClass();
+        if (!empty($parameters->match)) {
+            $match = $parameters->match;
+            // Ensure we have a fully populated (even if blank) match list
+            $matches = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
+            foreach ($matches as $item) {
+                if (!isset($match->{$item})) {
+                    $match->{$item} = $this->config->config[$item];
+                }
+            }
+        } else {
+            $match->match_dbus = $this->config->config['match_dbus'];
+            $match->match_fqdn = $this->config->config['match_fqdn'];
+            $match->match_hostname = $this->config->config['match_hostname'];
+            $match->match_hostname_dbus = $this->config->config['match_hostname_dbus'];
+            $match->match_hostname_serial = $this->config->config['match_hostname_serial'];
+            $match->match_hostname_uuid = $this->config->config['match_hostname_uuid'];
+            $match->match_ip = $this->config->config['match_ip'];
+            $match->match_mac = $this->config->config['match_mac'];
+            $match->match_mac_vmware = $this->config->config['match_mac_vmware'];
+            $match->match_serial = $this->config->config['match_serial'];
+            $match->match_serial_type = $this->config->config['match_serial_type'];
+            $match->match_uuid = $this->config->config['match_uuid'];
+        }
+
         # TODO: fix this by making sure (snmp in particular) calls with the proper variable name
         if (!isset($details->mac_address) and (isset($details->mac))) {
             $details->mac_address = $details->mac;
@@ -199,7 +224,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_hostname_uuid']) == 'y' and empty($details->id) and !empty($details->uuid) and !empty($details->hostname)) {
+        if (strtolower($match->match_hostname_uuid) == 'y' and empty($details->id) and !empty($details->uuid) and !empty($details->hostname)) {
             #$log_message[] = "Running match_hostname_uuid for uuid: " . $details->uuid . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.uuid = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -228,9 +253,9 @@ class M_device extends MY_Model
             $message->command_output = 'Hostname: ' . $details->hostname . ', UUID: ' . $details->uuid;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_hostname_uuid']) != 'y') {
+            if (strtolower($match->match_hostname_uuid) !== 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_hostname_uuid, config item not set.';
+                $message->message = 'Not running match_hostname_uuid, matching rule set to: ' . $match->match_hostname_uuid .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -261,7 +286,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_hostname_dbus']) == 'y' and empty($details->id) and !empty($details->dbus_identifier) and !empty($details->hostname)) {
+        if (strtolower($match->match_hostname_dbus) == 'y' and empty($details->id) and !empty($details->dbus_identifier) and !empty($details->hostname)) {
             #$log_message[] = "Running match_hostname_dbus for dbus_identifier: " . $details->dbus_identifier . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -290,9 +315,9 @@ class M_device extends MY_Model
             $message->command_output = 'Hostname: ' . $details->hostname . ', DbusID: ' . $details->dbus_identifier;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_hostname_dbus']) != 'y') {
+            if (strtolower($match->match_hostname_dbus) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_hostname_dbus, config item not set.';
+                $message->message = 'Not running match_hostname_dbus, matching rule set to: ' . $match->match_hostname_dbus .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -323,7 +348,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_hostname_serial']) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->hostname)) {
+        if (strtolower($match->match_hostname_serial) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->hostname)) {
             #$log_message[] = "Running match_hostname_serial for serial: " . $details->serial . ", hostname: " . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE system.hostname = ? AND system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -352,9 +377,9 @@ class M_device extends MY_Model
             $message->command_output = 'Hostname: ' . $details->hostname . ', Serial: ' . $details->serial;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_hostname_serial']) != 'y') {
+            if (strtolower($match->match_hostname_serial) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_hostname_serial, config item not set.';
+                $message->message = 'Not running match_hostname_serial, matching rule set to: ' . $match->match_hostname_serial .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -385,7 +410,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_dbus']) == 'y' and empty($details->id) and !empty($details->dbus_identifier)) {
+        if (strtolower($match->match_dbus) == 'y' and empty($details->id) and !empty($details->dbus_identifier)) {
             #$log_message[] = "Running match_dbus for " . $details->dbus_identifier;
             $sql = "SELECT system.id FROM system WHERE system.dbus_identifier = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -414,9 +439,9 @@ class M_device extends MY_Model
             $message->command_output = 'DbusID: ' . $details->dbus_identifier;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_dbus']) != 'y') {
+            if (strtolower($match->match_dbus) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_dbus, config item not set.';
+                $message->message = 'Not running match_dbus, matching rule set to: ' . $match->match_dbus .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -441,7 +466,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_fqdn']) == 'y' and empty($details->id) and !empty($details->fqdn)) {
+        if (strtolower($match->match_fqdn) == 'y' and empty($details->id) and !empty($details->fqdn)) {
             #$log_message[] = "Running match_fqdn for " . $details->fqdn;
             $sql = "SELECT system.id FROM system WHERE system.fqdn = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -470,9 +495,9 @@ class M_device extends MY_Model
             $message->command_output = 'FQDN: ' . $details->fqdn;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_fqdn']) != 'y') {
+            if (strtolower($match->match_fqdn) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_fqdn, config item not set.';
+                $message->message = 'Not running match_fqdn, matching rule set to: ' . $match->match_fqdn .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -497,7 +522,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_serial_type']) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->type)) {
+        if (strtolower($match->match_serial_type) == 'y' and empty($details->id) and !empty($details->serial) and !empty($details->type)) {
             #$log_message[] = "Running match_serial_type for serial: " . $details->serial . ", with type: " . $details->type;
             $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.type = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -526,9 +551,9 @@ class M_device extends MY_Model
             $message->command_output = 'Serial: ' . $details->serial . ', type: ' . $details->type;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_serial_type']) != 'y') {
+            if (strtolower($match->match_serial_type) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_serial_type, config item not set.';
+                $message->message = 'Not running match_serial_type, matching rule set to: ' . $match->match_serial_type .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -559,7 +584,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_serial']) == 'y' and empty($details->id) and !empty($details->serial)) {
+        if (strtolower($match->match_serial) == 'y' and empty($details->id) and !empty($details->serial)) {
             #$log_message[] = "Running match_serial for serial: " . $details->serial;
             $sql = "SELECT system.id FROM system WHERE system.serial = ? AND system.status != 'deleted' LIMIT 1";
             $sql = $this->clean_sql($sql);
@@ -588,9 +613,9 @@ class M_device extends MY_Model
             $message->command_output = 'Serial: ' . $details->serial;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_serial']) != 'y') {
+            if (strtolower($match->match_serial) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_serial, config item not set.';
+                $message->message = 'Not running match_serial, matching rule set to: ' . $match->match_serial .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -615,8 +640,8 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
-            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+        if (strtolower($match->match_mac) == 'y' and empty($details->id) and !empty($details->mac_address)) {
+            if (strtolower($match->match_mac_vmware) == 'n') {
                 #$log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' excluding VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
             } else {
@@ -650,9 +675,9 @@ class M_device extends MY_Model
             $message->command_output = 'MAC: ' . $details->mac_address;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_mac']) != 'y') {
+            if (strtolower($match->match_mac) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (ip table), config item not set.';
+                $message->message = 'Not running match_mac (ip table), matching rule set to: ' . $match->match_mac .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -677,8 +702,8 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_address)) {
-            if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+        if (strtolower($match->match_mac) == 'y' and empty($details->id) and !empty($details->mac_address)) {
+            if (strtolower($match->match_mac_vmware) == 'n') {
                 #$log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' excluding VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
             } else {
@@ -712,9 +737,9 @@ class M_device extends MY_Model
             $message->command_output = 'MAC: ' . $details->mac_address;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_mac']) != 'y') {
+            if (strtolower($match->match_mac) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (network table), config item not set.';
+                $message->message = 'Not running match_mac (network table), matching rule set to: ' . $match->match_mac .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -739,12 +764,12 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_mac']) == 'y' and empty($details->id) and !empty($details->mac_addresses)) {
+        if (strtolower($match->match_mac) == 'y' and empty($details->id) and !empty($details->mac_addresses)) {
             # check all MAC addresses - this caters for an actual audit script result
             foreach ($details->mac_addresses as $mac) {
                 if (!empty($mac) and (string)$mac != '00:00:00:00:00:00') {
                     # check the ip table
-                    if (strtolower($this->config->config['match_mac_vmware']) == 'n') {
+                    if (strtolower($match->match_mac_vmware) == 'n') {
                         #$log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' excluding VMware MACs';
                         $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
                     } else {
@@ -779,9 +804,9 @@ class M_device extends MY_Model
             $message->command_output = 'MAC: ' . $mac . ', SystemID : ' . $details->id;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_mac']) != 'y') {
+            if (strtolower($match->match_mac) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_mac (addresses), config item not set';
+                $message->message = 'Not running match_mac (addresses), matching rule set to: ' . $match->match_mac .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -807,7 +832,7 @@ class M_device extends MY_Model
         }
 
         # check IP Address in system, then ip tables
-        if (strtolower($this->config->config['match_ip']) == 'y' and empty($details->id) and !empty($details->ip) and filter_var($details->ip, FILTER_VALIDATE_IP)) {
+        if (strtolower($match->match_ip) == 'y' and empty($details->id) and !empty($details->ip) and filter_var($details->ip, FILTER_VALIDATE_IP)) {
             # first check the ip table as eny existing devices that have been seen
             # by more than just Nmap will have an entry here
             #$log_message[] = 'Running match_ip for IP: ' . $details->ip;
@@ -867,9 +892,9 @@ class M_device extends MY_Model
             $message->command_output = 'IP: ' . $details->ip;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_ip']) != 'y') {
+            if (strtolower($match->match_ip) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_ip, config item not set.';
+                $message->message = 'Not running match_ip, matching rule set to: ' . $match->match_ip .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
@@ -894,7 +919,7 @@ class M_device extends MY_Model
             }
         }
 
-        if (strtolower($this->config->config['match_hostname']) == 'y' and empty($details->id) and !empty($details->hostname)) {
+        if (strtolower($match->match_hostname) == 'y' and empty($details->id) and !empty($details->hostname)) {
             #$log_message[] = 'Running match_hostname for hostname: ' . $details->hostname;
             $sql = "SELECT system.id FROM system WHERE (system.hostname = ?) AND system.status != 'deleted'";
             $sql = $this->clean_sql($sql);
@@ -957,9 +982,9 @@ class M_device extends MY_Model
             $message->command_output = 'Hostname: ' . $details->hostname;
             $log_message[] = $message;
         } else {
-            if (strtolower($this->config->config['match_hostname']) != 'y') {
+            if (strtolower($match->match_hostname) != 'y') {
                 $message = new stdClass();
-                $message->message = 'Not running match_hostname, config item not set.';
+                $message->message = 'Not running match_hostname, matching rule set to: ' . $match->match_hostname .  '.';
                 $message->command_status = 'notice';
                 $message->command_output = '';
                 $log_message[] = $message;
