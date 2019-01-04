@@ -344,7 +344,8 @@ if ($table == 'discoveries') {
     Discoveries are preprepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />
     ' . $link . '<br /><br /></p>';
     $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br />
-    <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />As at Open-AudIT 2.3.1, the network address should be set to localhost for Linux and the server\'s IP for Windows. Only use https if you have configured and enabled HTTPS on this server and HTTP has been disabled from localhost.<br /><br /></p>';
+    <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />As at Open-AudIT 2.3.1, the network address should be set to localhost for Linux and the server\'s IP for Windows. Only use https if you have configured and enabled HTTPS on this server and HTTP has been disabled from localhost.<br /><br />
+    </p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -378,7 +379,7 @@ if ($table == 'discoveries') {
     $dictionary->columns->udp_ports = "Any specific UDP ports you wish tested (comma seperated, no spaces).";
     $dictionary->columns->exclude_tcp_ports = "Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
     $dictionary->columns->exclude_udp_ports = "Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
-    $dictionary->columns->exclude_ip = "Any IP addresses (comma seperated, no spaces) you wish to exclude from this discovery.";
+    $dictionary->columns->exclude_ip = "Specifies a comma-separated list of targets (no spaces) to be excluded from the scan even if they are part of the overall network range you specify. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.";
     $dictionary->columns->ssh_ports = "If any of the (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing.";
 
     $dictionary->columns->match_dbus = "Should we match a device based on its dbus id.";
