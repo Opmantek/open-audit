@@ -343,8 +343,8 @@ if ($table == 'discoveries') {
     How else would you know "What is on my network?"<br /><br />
     Discoveries are preprepared data items that enable you to run a discovery upon a network in a single click, without entering the details of that network each and every time.<br /><br />
     ' . $link . '<br /><br /></p>';
-    $dictionary->notes = 'Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br />
-    <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />As at Open-AudIT 2.3.1, the network address should be set to localhost. Only use https if you have configured and enabled HTTPS on this server and HTTP has been disabled from localhost.';
+    $dictionary->notes = '<p>Some examples of valid Subnet attributes are: 192.168.1.1 (a single IP address), 192.168.1.0/24 (a subnet), 192.168.1-3.1-20 (a range of IP addresses).<br /><br />
+    <b>NOTE</b> - Only a subnet (as per the examples - 192.168.1.0/24) will be able to automatically create a valid network for Open-AudIT. If you use a single IP or a range, please ensure that before you run the Discovery you have added a corresponding <a href="../networks">network</a> so Open-AudIT will accept audit results from those targets.<br /><br /><br />As at Open-AudIT 2.3.1, the network address should be set to localhost for Linux and the server\'s IP for Windows. Only use https if you have configured and enabled HTTPS on this server and HTTP has been disabled from localhost.<br /><br /></p>';
     $dictionary->columns->id = $id;
     $dictionary->columns->name = $name;
     $dictionary->columns->org_id = $org_id;
@@ -365,6 +365,35 @@ if ($table == 'discoveries') {
     $dictionary->columns->discard = 'Used internally when discovering a single device.';
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
+
+
+    $dictionary->columns->preset_select = "Common groups of options for most scenarios. The preset itself is not stored, only the options as below.";
+    $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, halt the scan.";
+    $dictionary->columns->service = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
+    $dictionary->columns->filtered = "Should we conside a 'filtered' port as a running service, but not accessible - and therefore flag this IP as having a device attached?";
+    $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
+    $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";
+    $dictionary->columns->nmap_udp_ports = "The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.";
+    $dictionary->columns->tcp_ports = "Any specific TCP ports you wish tested (comma seperated, no spaces).";
+    $dictionary->columns->udp_ports = "Any specific UDP ports you wish tested (comma seperated, no spaces).";
+    $dictionary->columns->exclude_tcp_ports = "Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
+    $dictionary->columns->exclude_udp_ports = "Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
+    $dictionary->columns->exclude_ip = "Any IP addresses (comma seperated, no spaces) you wish to exclude from this discovery.";
+    $dictionary->columns->ssh_ports = "If any of the (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing.";
+
+    $dictionary->columns->match_dbus = "Should we match a device based on its dbus id.";
+    $dictionary->columns->match_fqdn = "Should we match a device based on its fqdn.";
+    $dictionary->columns->match_hostname = "Should we match a device based only on its hostname.";
+    $dictionary->columns->match_hostname_dbus = "Should we match a device based on its hostname and dbus id.";
+    $dictionary->columns->match_hostname_serial = "Should we match a device based on its hostname and serial.";
+    $dictionary->columns->match_hostname_uuid = "Should we match a device based on its hostname and UUID.";
+    $dictionary->columns->match_ip = "Should we match a device based on its ip.";
+    $dictionary->columns->match_mac = "Should we match a device based on its mac address.";
+    $dictionary->columns->match_mac_vmware = "Should we match a device based mac address even if its a known likely duplicate from VMware.";
+    $dictionary->columns->match_serial = "Should we match a device based on its serial number.";
+    $dictionary->columns->match_serial_type = "Should we match a device based on its serial and type.";
+    $dictionary->columns->match_uuid = "Should we match a device based on its UUID.";
+
     $dictionary->attributes->create = array('name','org_id','type','network_address','other');array('name','org_id','description','type','devices_assigned_to_org','devices_assigned_to_location','network_address','system_id','other','discard','last_run','complete');
 }
 
