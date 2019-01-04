@@ -406,6 +406,8 @@ class M_discoveries extends MY_Model
                             $ad_discovery->other->subnet = $subnet['name'][0];
                             $sql = "/* m_discoveries::execute */ " . 'SELECT * FROM discoveries WHERE other = ? AND org_id = ' . intval($ad_discovery->org_id);
                             $result = $this->run_sql($sql, array(json_encode($ad_discovery->other)));
+                            # TODO - JSON decode this and test the subnet. We know have other items stored inside 'other' (nmap options, etc).
+                            # TODO - Update the 'other' JSON filed with this discoveries Nmap Options
                             if (empty($result)) {
                                 $this_id = $this->m_collection->create($ad_discovery, 'discoveries');
                                 $log->message = "Creating and executing discovery on subnet " . $network->name;
