@@ -370,8 +370,8 @@ if ($table == 'discoveries') {
 
     $dictionary->columns->preset = "Common groups of options for most scenarios.";
     $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, halt the scan.";
-    $dictionary->columns->service = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
-    $dictionary->columns->filtered = "Should we conside a 'filtered' port as a running service, but not accessible - and therefore flag this IP as having a device attached?";
+    $dictionary->columns->version = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
+    $dictionary->columns->filtered = "Should we consider a filtered port as a running service, but not accessible - and therefore flag this IP as having a device attached?";
     $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
     $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";
     $dictionary->columns->nmap_udp_ports = "The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.";
