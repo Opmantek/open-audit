@@ -850,8 +850,68 @@ class M_collection extends MY_Model
 
                 if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
-                    $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Subnet supplied.');
                     $data->other->subnet = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
+                if (!empty($received_other->nmap->tcp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->tcp_ports)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for tcp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
+                    $data->other->nmap->tcp_ports = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
+                if (!empty($received_other->nmap->udp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->udp_ports)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for udp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
+                    $data->other->nmap->udp_ports = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
+                if (!empty($received_other->nmap->exclude_tcp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_tcp_ports)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
+                    $data->other->nmap->exclude_tcp_ports = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
+                if (!empty($received_other->nmap->exclude_udp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_udp_ports)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
+                    $data->other->nmap->exclude_udp_ports = '';
+                    if ($CI->response->meta->format == 'screen') {
+                        redirect('/discoveries');
+                    } else {
+                        output($CI->response);
+                        exit();
+                    }
+                }
+
+                if (!empty($received_other->nmap->exclude_ip) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_ip');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
+                    $data->other->nmap->exclude_ip = '';
                     if ($CI->response->meta->format == 'screen') {
                         redirect('/discoveries');
                     } else {
@@ -862,18 +922,42 @@ class M_collection extends MY_Model
 
                 $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
                 $result = $query->result();
-                $existing_other = json_decode($result[0]->other);
-                $new_other = new stdClass();
-                foreach ($existing_other as $existing_key => $existing_value) {
-                    if (!empty($received_other->$existing_key)) {
-                        $new_other->$existing_key = $received_other->$existing_key;
-                    } else {
-                        $new_other->$existing_key = $existing_other->$existing_key;
+                $other = json_decode($result[0]->other);
+
+                // top level - subnet, ad_domain, ad_server
+                if (!empty($received_other->subnet)) {
+                    $other->subnet = $received_other->subnet;
+                }
+                if (!empty($received_other->ad_domain)) {
+                    $other->ad_domain = $received_other->ad_domain;
+                }
+                if (!empty($received_other->ad_server)) {
+                    $other->ad_server = $received_other->ad_server;
+                }
+
+                foreach ($other->nmap as $key => $value) {
+                    if (isset($received_other->nmap->{$key})) {
+                        $other->nmap->{$key} = $received_other->nmap->{$key};
                     }
                 }
 
+                foreach ($other->match as $key => $value) {
+                    if (isset($received_other->match->{$key})) {
+                        $other->match->{$key} = $received_other->match->{$key};
+                    }
+                }
+
+                // foreach ($existing_other as $existing_key => $existing_value) {
+                //     if (!empty($received_other->$existing_key)) {
+                //         $new_other->$existing_key = $received_other->$existing_key;
+                //     } else {
+                //         $new_other->$existing_key = $existing_other->$existing_key;
+                //     }
+                // }
+
                 unset($data->other);
-                $data->other = (string)json_encode($new_other);
+                // $data->other = (string)json_encode($new_other);
+                $data->other = (string)json_encode($other);
                 if (!empty($received_other->subnet)) {
                     $data->description = 'Subnet - ' . $received_other->subnet;
                     if (stripos($received_other->subnet, '-') === false) {
