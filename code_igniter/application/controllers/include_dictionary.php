@@ -368,7 +368,7 @@ if ($table == 'discoveries') {
     $dictionary->columns->edited_date = $edited_date;
 
 
-    $dictionary->columns->preset_select = "Common groups of options for most scenarios. The preset itself is not stored, only the options as below.";
+    $dictionary->columns->preset = "Common groups of options for most scenarios.";
     $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, halt the scan.";
     $dictionary->columns->service = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
     $dictionary->columns->filtered = "Should we conside a 'filtered' port as a running service, but not accessible - and therefore flag this IP as having a device attached?";
