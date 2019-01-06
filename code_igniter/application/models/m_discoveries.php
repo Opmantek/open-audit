@@ -240,6 +240,18 @@ class M_discoveries extends MY_Model
         $discovery->other = json_decode($discovery->other);
 
         if ($discovery->type == 'subnet') {
+            $nmap_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'ping', 'tcp_ports', 'timing', 'udp_ports', 'version');
+            $options_command = '';
+            foreach ($nmap_options as $item) {
+                if (!isset($discovery->other->nmap->{$item})) {
+                    $value = $this->config->config[$item];
+                } else {
+                    $value = $discovery->other->nmap->{$item};
+                }
+                if (!empty($value)) {
+                    $options_command .= ' ' . $item . '=' . $value;
+                }
+            }
             // Unix based discovery
             if (php_uname('s') != 'Windows NT') {
                 $filepath = $this->config->config['base_path'] . '/other';
@@ -250,7 +262,9 @@ class M_discoveries extends MY_Model
                                     " echo_output=n" .
                                     " create_file=n" .
                                     " debugging=" . $debugging .
-                                    " discovery_id=" . $discovery->id . " > /dev/null 2>&1 &";
+                                    " discovery_id=" . $discovery->id . 
+                                    $options_command .
+                                    " > /dev/null 2>&1 &";
                 if (php_uname('s') == 'Linux') {
                     $command_string = 'nohup ' . $command_string;
                 }
@@ -267,7 +281,10 @@ class M_discoveries extends MY_Model
                     $this->session->set_flashdata('success', $message);
                     $this->log->status = 'executing script - success';
                     $this->log->summary = $message;
+                    $this->log->command = $command_string;
+                    $this->log->severity = 4;
                     stdlog($this->log);
+                    $this->log->severity = 7;
                 }
             }
 
