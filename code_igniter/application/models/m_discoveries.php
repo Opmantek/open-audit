@@ -240,7 +240,7 @@ class M_discoveries extends MY_Model
         $discovery->other = json_decode($discovery->other);
 
         if ($discovery->type == 'subnet') {
-            $nmap_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'ping', 'tcp_ports', 'timing', 'udp_ports', 'version');
+            $nmap_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'ping', 'tcp_ports', 'timing', 'udp_ports', 'service_version');
             $options_command = '';
             foreach ($nmap_options as $item) {
                 if (!isset($discovery->other->nmap->{$item})) {
