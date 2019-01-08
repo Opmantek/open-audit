@@ -1420,7 +1420,9 @@ if ((windows_part_of_domain = True Or windows_part_of_domain = "True") and (wind
         objTrans.Set ADS_NAME_TYPE_NT4, windows_user_domain & "\" & sam_account_name
         struserDN = objTrans.Get(ADS_NAME_TYPE_1779)
         struserDN = Replace(struserDN, "/", "\/")
-        stemp = split(struserDN, ",")
+        ' Edited by mka
+        stemp = SplitEscaped(struserDN)
+        ' stemp = split(struserDN, ",")
         stemp(0) = ""
         ttemp = join(stemp, ",")
         ttemp = mid(ttemp, 2)
@@ -7851,6 +7853,38 @@ function gcd(ByVal a, ByVal b)
         end if
     wend
     gcd = a
+end function
+
+'*****************************************************************
+'Function for escaped splitting (do not split if "\" before the ",")
+'*****************************************************************
+'
+function SplitEscaped(ByVal strString)
+
+    Dim strReturn()
+    Dim strTmp()
+    Dim i, j
+    strTmp = Split(strString, ",")
+    For i = 1 To UBound(strTmp)
+        'beginning with the 2nd Split: Checking whether there is a "\" (escape-character) in the split array as last character
+        If InStr(1, strTmp(i - 1), "\") = Len(strTmp(i - 1)) Then
+                'restore the split
+                strTmp(i - 1) = strTmp(i - 1) & "," & strTmp(i)
+                strTmp(i) = ""
+        End If
+    Next
+    'Store the data in strReturn (graduately resize the array to fitting size)
+    j = 0
+    ReDim strReturn(j)
+    For i = 0 To UBound(strTmp)
+        If strTmp(i) <> "" Then
+            strReturn(j) = strTmp(i)
+            j = j + 1
+            ReDim Preserve strReturn(j)
+        End If
+    Next
+    ReDim Preserve strReturn(j - 1)
+    SplitEscaped = strReturn
 end function
 
 Sub forceCScriptExecution
