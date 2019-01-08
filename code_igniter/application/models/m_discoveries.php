@@ -268,7 +268,7 @@ class M_discoveries extends MY_Model
                 if (php_uname('s') == 'Linux') {
                     $command_string = 'nohup ' . $command_string;
                 }
-                @exec($command_string, $output, $return_var);
+                exec($command_string, $output, $return_var);
                 $this->log->detail = $command_string;
                 if ($return_var != '0') {
                     $message = 'Discovery subnet starting script discover_subnet.sh ('.$discovery->other->subnet.') has failed';
@@ -282,9 +282,7 @@ class M_discoveries extends MY_Model
                     $this->log->status = 'executing script - success';
                     $this->log->summary = $message;
                     $this->log->command = $command_string;
-                    $this->log->severity = 4;
                     stdlog($this->log);
-                    $this->log->severity = 7;
                 }
             }
 
