@@ -514,6 +514,27 @@ class M_collection extends MY_Model
                 $data->network_address = $data->network_address.'/';
             }
 
+            if (empty($data->other->nmap)) {
+                if ($this->config->config['discovery_default_preset'] == 1) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","preset":"1","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161"}';
+                } else if ($this->config->config['discovery_default_preset'] == 5) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"10","nmap_udp_ports":"10","ping":"y","preset":"5","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":""}';
+                } else if ($this->config->config['discovery_default_preset'] == 40) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"100","nmap_udp_ports":"100","ping":"y","preset":"40","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":""}';
+                } else if ($this->config->config['discovery_default_preset'] == 90) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"0","ping":"n","preset":"90","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":"161"}';
+                } else if ($this->config->config['discovery_default_preset'] == 100) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"1000","nmap_udp_ports":"100","ping":"y","preset":"100","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":""}';
+                } else if ($this->config->config['discovery_default_preset'] == 240) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"100","ping":"y","preset":"240","service_version":"y","tcp_ports":"62078","timing":"3","udp_ports":""}';
+                } else if ($this->config->config['discovery_default_preset'] == 1200) {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"1000","ping":"n","preset":"1200","service_version":"y","tcp_ports":"62078","timing":"2","udp_ports":""}';
+                } else {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"0","ping":"n","preset":"90","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":"161"}';
+                }
+                $data->other->nmap = json_decode($json);
+            }
+
             if ($data->type == 'subnet') {
                 if (!preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
