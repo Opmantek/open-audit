@@ -1116,6 +1116,9 @@ class M_device extends MY_Model
         if (empty($details->location_id)) {
             $details->location_id = '1';
         }
+        if (empty($details->first_seen)) {
+            $details->first_seen = $this->config->config['timestamp'];
+        }
 
         $columns = $this->db->list_fields('system');
 
