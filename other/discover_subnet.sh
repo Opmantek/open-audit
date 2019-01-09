@@ -155,6 +155,9 @@ function db_log()
 	if [ -z "$ip" ]; then
 		ip="127.0.0.1"
 	fi
+	if [ -z "$status" ]; then
+		status="notice"
+	fi
 
 	curl -d "type=discovery&timestamp=$now&discovery_id=$discovery_id&severity=$severity&pid=$$&ip=$ip&file=discover_subnet.sh&message=$message&command_time_to_execute=$duration&command_status=$status&command_output=$output&command=$command" -X POST http://localhost/open-audit/index.php/input/logs
 	if [ "$debugging" -gt 0 ]; then
@@ -247,6 +250,14 @@ function check_output ()
 		mac_address=$(echo "$line" | cut -d" " -f3)
 		manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 		db_log "Host $host is up, received mac addess $mac_address" "" "" "7" "$line" "" "" "$host"
+	fi
+	test=""
+
+
+	test=$(echo $line | grep "Nmap done: 1 IP address (1 host up)")
+	if [[ "$test" != "" && -z "$ping" ]]; then
+		host_is_up="true"
+		db_log "Host $host is up, received Nmap ping response" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
 }
@@ -387,6 +398,7 @@ fi
 result_file=""
 result=""
 hosts_scanned=0
+ip_list=""
 
 # Nmap command line switches explained
 # -n   == no name resolution
@@ -402,23 +414,43 @@ hosts_scanned=0
 # -vv  == very verboseNmap scan report for
 
 hosts_in_subnet=$(nmap -n -sL $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-db_log "IPs in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
+db_log "IPs in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL --exclude $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
 
 hosts_in_subnet=$(nmap -n -sL --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-db_log "IPs with exclusions in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
+db_log "IPs after exclusions in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL --exclude $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
 
 if [ -z "$ping" ]; then
+	# Run a scan on all IPs and return only those responding to an Nmap ping
 	alive_ips=$(nmap -n -oG - -sP --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Host:" | cut -d" " -f2)
 	count=$(echo "$alive_ips" | wc -l)
-	db_log "IPs responding to Nmap ping in subnet: $count" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
+	db_log "IPs responding to Nmap ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -sL --exclude $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
 	hosts_in_subnet="$count"
+	ip_list=$(nmap -n -sL --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap scan report for" | awk '{print $5}')
 
 else
+	# Scan these IPs, ignoring their ping (or not) response
 	alive_ips=$(nmap -n -sL --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5)
 	count=$(echo "$alive_ips" | wc -l)
-	db_log "IPs ignoring ping in subnet: $count" "" "" "" "" "" "nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep Host: | cut -d\" \" -f2"
+	db_log "IPs after ignoring ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -oG - -sP --exclude $exclude_ip $subnet_range 2>/dev/null | grep Host: | cut -d\" \" -f2"
 	hosts_in_subnet="$count"
 fi
+
+# In the case of only scnning devices responding to an Nmap ping,
+#    send a log line that this IP didn't respond
+if [ -n "$ip_list" ];then
+	for ip in $ip_list; do
+		response=""
+		for host in $alive_ips; do
+			if [ "$host" = "$ip" ]; then
+				response="true"
+			fi
+		done
+		if [ -z "$response" ]; then
+			db_log "IP $ip not responding, ignoring." "" "" "" "" "" "" "$ip"
+		fi
+	done
+fi
+
 
 for host in $alive_ips; do
 	let "hosts_scanned = hosts_scanned + 1"

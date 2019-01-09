@@ -54,7 +54,6 @@ dim discovery_id : discovery_id = ""
 dim syslog : syslog = "y"
 dim url : url = "http://localhost/open-audit/index.php/input/discoveries"
 dim objHTTP
-dim sequential : sequential = "y"
 dim hosts
 dim hosts_in_subnet
 dim host
@@ -90,6 +89,19 @@ dim db_log_output : db_log_output = ""
 dim db_log_level : db_log_level = 5
 dim db_log_command : db_log_command = ""
 
+' new options for 2.3.2'
+dim exclude_ip : exclude_ip = ""
+dim exclude_tcp_ports : exclude_tcp_ports = ""
+dim exclude_udp_ports : exclude_udp_ports = ""
+dim filtered : filtered = ""
+dim nmap_tcp_ports : nmap_tcp_ports = ""
+dim nmap_udp_ports : nmap_udp_ports = ""
+dim ping : ping = ""
+dim service_version : service_version = ""
+dim tcp_ports : tcp_ports = ""
+dim timing : timing = ""
+dim udp_ports : udp_ports = ""
+
 ' below we take any command line arguements
 ' to override the variables above, simply include them on the command line like submit_online=n
 ' NOTE - argurments are case sensitive
@@ -106,8 +118,14 @@ for each strArg in objArgs
             case "debugging"
                 debugging = varArray(1)
 
+            case "discovery_id"
+                discovery_id = varArray(1)
+
             case "echo_output"
                 echo_output = varArray(1)
+
+            case "exclude_ip"
+                exclude_ip = varArray(1)
 
             case "help"
                 help = varArray(1)
@@ -115,8 +133,20 @@ for each strArg in objArgs
             case "log_no_response"
                 log_no_response = varArray(1)
 
+            case "nmap_tcp_ports"
+                nmap_tcp_ports = varArray(1)
+
+            case "nmap_udp_ports"
+                nmap_udp_ports = varArray(1)
+
             case "org_id"
                 org_id = varArray(1)
+
+            case "ping"
+                ping = varArray(1)
+
+            case "service_version"
+                service_version = varArray(1)
 
             case "submit_online"
                 submit_online = varArray(1)
@@ -124,17 +154,20 @@ for each strArg in objArgs
             case "subnet_range"
                 subnet_range = varArray(1)
 
-            case "discovery_id"
-                discovery_id = varArray(1)
-
             case "syslog"
                 syslog = varArray(1)
 
+            case "tcp_ports"
+                tcp_ports = varArray(1)
+
+            case "timing"
+                timing = varArray(1)
+
+            case "udp_ports"
+                udp_ports = varArray(1)
+
             case "url"
                 url = varArray(1)
-
-            case "sequential"
-                sequential = varArray(1)
 
         end select
     else
@@ -181,10 +214,6 @@ if (help = "y") then
     wscript.echo ""
     wscript.echo "  org_id"
     wscript.echo "        - The org_id (an integer) taken from Open-AudIT. If set all devices found will be associated to that Organisation."
-    wscript.echo ""
-    wscript.echo "  sequential"
-    wscript.echo "     *y - When we run this script, post each device result and wait for a response before continuing to the next device."
-    wscript.echo "      n - Post each device result and continue on processing the next device without waiting for a response from the Open-AudIT server."
     wscript.echo ""
     wscript.echo "  submit_online"
     wscript.echo "      *y - Submit the audit result to the Open-AudIT server."
@@ -290,18 +319,57 @@ end if
 exit_status = "n"
 command = nmap_path & " --version"
 execute_command()
-Do Until objExecObject.StdOut.AtEndOfStream
+do until objExecObject.StdOut.AtEndOfStream
     line = objExecObject.StdOut.ReadLine
     if instr(lcase(line), "nmap version") then
         temp = split(line)
         nmap_version = temp(2)
     end if
-Loop
+loop
 
 db_log_severity = 7
 db_log_status = ""
 db_log_message = "Discovery for " & subnet_range & " using Nmap version " & nmap_version & " at " & nmap_path
 db_log()
+
+if (ping = "y") then
+    ping = ""
+else
+    ping = "-Pn"
+end if
+
+if (exclude_ip <> "") then
+    exclude_ip = "--exclude " & exclude_ip
+end if
+
+if (exclude_tcp_ports <> "") then
+    exclude_tcp_ports = "--exclude-ports T:" & exclude_tcp_ports
+end if
+
+if (exclude_udp_ports <> "") then
+    exclude_udp_ports = "--exclude-ports U:" & exclude_udp_ports
+end if
+
+if (nmap_tcp_ports <> "") then
+    nmap_tcp_ports = "--top-ports " & nmap_tcp_ports
+end if
+
+if (nmap_udp_ports <> "") then
+    nmap_udp_ports = "--top-ports " & nmap_udp_ports
+end if
+
+if (tcp_ports <> "") then
+    tcp_ports = "-p T:" & tcp_ports
+end if
+
+if (udp_ports <> "") then
+    udp_ports = "-p U:" & udp_ports
+end if
+
+if (service_version = "y") then
+    service_version = "-sV"
+end if
+
 
 if debugging > "0" then
     wscript.echo "----------------------------"
@@ -317,29 +385,125 @@ if debugging > "0" then
     wscript.echo "Submit Online:      " & submit_online
     wscript.echo "Subnet Range:       " & subnet_range
     wscript.echo "URL:                " & url
+    wscript.echo "Nmap Options"
+    wscript.echo "Subnet Range:       " & subnet_range
+    wscript.echo "Exclude IPs:        " & exclude_ip
+    wscript.echo "Ping:               " & ping
+    wscript.echo "Service Version:    " & service_version
+    wscript.echo "Timing:             " & timing
+    wscript.echo "Top TCP Ports:      " & nmap_tcp_ports
+    wscript.echo "Top UDP Ports:      " & nmap_udp_ports
+    wscript.echo "Custom TCP Ports:   " & tcp_ports
+    wscript.echo "Custom UDP Ports:   " & udp_ports
+    wscript.echo "Excluded TCP Ports: " & exclude_tcp_ports
     wscript.echo "----------------------------"
 end if
 
 exit_status = "y"
 command = nmap_path & " -n -sL " & subnet_range
+'command = nmap_path & " -n -sL " & subnet_range
 execute_command()
-Do Until objExecObject.StdOut.AtEndOfStream
+do until objExecObject.StdOut.AtEndOfStream
     line = objExecObject.StdOut.ReadLine
-    if (instr(lcase(line), "scan report for")) then
-        line_split = split(line)
-        hosts = hosts & " " & line_split(4)
-    end if
     if (instr(lcase(line), "nmap done")) then
         line_split = split(line)
         hosts_in_subnet = line_split(2)
     end if
-Loop
-
-db_log_message = "Scanning " & hosts_in_subnet & " IP addresses"
+loop
+db_log_message = "IPs in subnet: " & hosts_in_subnet
 db_log_command = command
 db_log()
 
+
+command = nmap_path & " -n -sL " & exclude_ip & " " & subnet_range
+'command = nmap_path & " -n -sL --exclude '" & exclude_ip & "' " & subnet_range
+execute_command()
+do until objExecObject.StdOut.AtEndOfStream
+    line = objExecObject.StdOut.ReadLine
+    if (instr(lcase(line), "nmap done")) then
+        line_split = split(line)
+        hosts_in_subnet = line_split(2)
+    end if
+loop
+db_log_message = "IPs after exclusions in subnet: " & hosts_in_subnet
+db_log_command = command
+db_log()
+dim ip_list : ip_list=""
+dim ips
+dim ip
+
+if (ping <> "") then
+    '' Scan these IPs, ignoring their ping (or not) response
+    command = nmap_path & " -n -sL " & exclude_ip & " " & subnet_range
+    execute_command()
+    do until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if (instr(lcase(line), "scan report for")) then
+            line_split = split(line)
+            hosts = hosts & " " & line_split(4)
+            count = count + 1
+        end if
+    loop
+    db_log_message = "IPs after ignoring ping in subnet (to be scanned): " & count
+    hosts_in_subnet = count
+    db_log()
+else
+    ' Run a scan on all IPs and return only those responding to an Nmap ping
+    command = nmap_path & " -n -oG - -sP " & exclude_ip & " " & subnet_range
+    execute_command()
+    do until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if (instr(lcase(line), "host:")) then
+            line_split = split(line)
+            hosts = hosts & " " & line_split(1)
+            count = count + 1
+        end if
+    loop
+    db_log_message = "IPs responding to Nmap ping in subnet (to be scanned): " & count
+    hosts_in_subnet = count
+    db_log()
+
+    command = nmap_path & " -n -sL " & exclude_ip & " " & subnet_range
+    execute_command()
+    do until objExecObject.StdOut.AtEndOfStream
+        line = objExecObject.StdOut.ReadLine
+        if (instr(lcase(line), "scan report for")) then
+            line_split = split(line)
+            ip_list = ip_list & " " & line_split(4)
+        end if
+    loop
+    ips = split(trim(ip_list))
+end if
+
 hosts = split(trim(hosts))
+
+' In the case of only scnning devices responding to an Nmap ping,
+'    send a log line that this IP didn't respond
+dim response : response = ""
+if (ip_list <> "") then
+    for each ip in ips
+        response = ""
+        for each host in hosts
+            if (host = ip) then
+                response = "true"
+            end if
+        next
+        if (response = "") then
+            if debugging > 1 then 
+                wscript.echo "IP " & ip & " not responding, ignoring."
+            end if
+            db_log_status = ""
+            db_log_severity = 6
+            db_log_message = "IP " & ip & " not responding, ignoring."
+            db_log_output = ""
+            db_log()
+            db_log_severity = 7
+        end if
+    next
+end if
+
+
+
 for each host in hosts
     hosts_scanned = hosts_scanned + 1
     db_log_status = ""
@@ -356,153 +520,90 @@ for each host in hosts
     wmi_status = "false"
     exit_status = "y"
     host_is_up = "false"
-    command = nmap_path & " -vv -n --host-timeout 30 " & host
+
+
     nmap_ports = ""
     db_log_severity = 7
     db_log_level = 7
+    db_log_ip = host
     db_log_message = "Scanning Host: " & host
-    db_log_command = command
-    db_log()
-    execute_command()
-
-    Do Until objExecObject.Status = 0
-        WScript.Sleep 100
-    Loop
-
-    db_log_duration = Timer - host_timer
-    db_log_message = "Nmap TCP scan time for " & host & ": " & db_log_duration
+    db_log_command = ""
     db_log()
 
-    Do Until objExecObject.StdOut.AtEndOfStream
-        line = objExecObject.StdOut.ReadLine
 
-        temp = line
-        'temp = replace(temp, vbTab, " ")
-        Do While InStr(1, temp, "  ")
-            temp = Replace(temp, "  ", " ")
-        Loop
-        if instr(temp, "/tcp open ") then
-            temp = split(temp, " ")
-            port = temp(0)
-            program = temp(2)
-            nmap_ports = nmap_ports & "," & port & "/" & program
-            if debugging > 1 then
-                db_log_duration = ""
-                db_log_message = "Host " & host & " is up, received port " & port & " response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
+    if (nmap_tcp_ports <> "") then
+        host_timer = Timer
+        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & nmap_tcp_ports & " " & host
+        db_log_message = "Nmap Command"
+        db_log_severity = 7
+        db_log_level = 7
+        db_log_command = command
+        execute_command()
+        do until objExecObject.Status = 0
+            WScript.Sleep 100
+        loop
+        db_log_duration = Timer - host_timer
+        db_log()
+        do until objExecObject.StdOut.AtEndOfStream
+            line = objExecObject.StdOut.ReadLine
+            check_output()
+        loop
+    end if
 
-        if instr(lcase(line), "/tcp") then
-            if instr(lcase(line), "open") then
-                host_is_up = "true"
-                db_log_message = "Host " & host & " is up, received port " & port & " open response"
-                db_log_output = line
-                db_log()
-            end if
-            if instr(lcase(line), "closed ") then
-                host_is_up = "true"
-                db_log_message = "Host " & host & " is up, received port " & port & " closed response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
+    if (nmap_udp_ports <> "") then
+        host_timer = Timer
+        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & nmap_udp_ports & " " & host
+        db_log_message = "Nmap Command"
+        db_log_severity = 7
+        db_log_level = 7
+        db_log_command = command
+        execute_command()
+        do until objExecObject.Status = 0
+            WScript.Sleep 100
+        loop
+        db_log_duration = Timer - host_timer
+        db_log()
+        do until objExecObject.StdOut.AtEndOfStream
+            line = objExecObject.StdOut.ReadLine
+            check_output()
+        loop
+    end if
 
-        if instr(lcase(line), "Host " & host & " is up, received arp-response") then
-            host_is_up="true"
-            if debugging > 1 then
-                db_log_duration = ""
-                db_log_message = "Host " & host & " is up, received arp-response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
+    if (tcp_ports <> "") then
+        host_timer = Timer
+        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & tcp_ports & " " & host
+        db_log_message = "Nmap Command"
+        db_log_severity = 7
+        db_log_level = 7
+        db_log_command = command
+        execute_command()
+        do until objExecObject.Status = 0
+            WScript.Sleep 100
+        loop
+        db_log_duration = Timer - host_timer
+        db_log()
+        do until objExecObject.StdOut.AtEndOfStream
+            line = objExecObject.StdOut.ReadLine
+            check_output()
+        loop
+    end if
 
-        if instr(lcase(line), "mac address:") then
-            i = split(line, " ")
-            mac_address = i(2)
-            manufacturer = i(3)
-            i = ""
-            i = split(line, "(")
-            manufacturer = replace(i(1), ")", "")
-            manufacturer = trim(manufacturer)
-            host_is_up="true"
-            if debugging > 1 then
-                db_log_duration = ""
-                db_log_message = "Host " & host & " is up, received arp-response from " & mac_address
-                db_log_output = line
-                db_log()
-            end if
-        end if
+    if (udp_ports <> "") then
+        host_timer = Timer
+        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & udp_ports & " " & host
 
-        if instr(lcase(line), "device type:") then
-            if instr(line, "|") then
-                ' could be one of multiple - insert it as the description
-                i = split(line, ":")
-                description = trim(i(1))
-            else
-                description = ""
-            end if
-        end if
-
-        if instr(lcase(line), "22/tcp") then
-            if instr(lcase(line), "open") then
-                ssh_status = "true"
-                db_log_message = "Host " & host & " is up, received ssh (TCP port 22 open) response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
-
-        if instr(lcase(line), "135/tcp") then
-            if instr(lcase(line), "open") then
-                wmi_status = "true"
-                db_log_message = "Host " & host & " is up, received wmi (TCP port 135 open) response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
-    Loop
-
-    ' Apple IOS check
-    command = nmap_path & " -n -Pn -p62078 --host-timeout 20 " & host
-    execute_command()
-    Do Until objExecObject.Status = 0
-        WScript.Sleep 100
-    Loop
-    Do Until objExecObject.StdOut.AtEndOfStream
-        line = objExecObject.StdOut.ReadLine
-        if instr(lcase(line), "62078/tcp") then
-            if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
-                nmap_ports = nmap_ports & ",62078/tcp/iphone-sync"
-                host_is_up = "true"
-                db_log_message = "Host " & host & " is up, received iphone-sync (TCP port 62078) response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
-    Loop
-
-    ' UDP check
-    command = nmap_path & " -n -sU -p161 --host-timeout 20 " & host
-    execute_command()
-    Do Until objExecObject.Status = 0
-        WScript.Sleep 100
-    Loop
-    Do Until objExecObject.StdOut.AtEndOfStream
-        line = objExecObject.StdOut.ReadLine
-        if instr(lcase(line), "161/udp") then
-            ' if (instr(lcase(line), "open") and not instr(lcase(line), "filtered")) then
-            if (instr(lcase(line), "open")) then
-                nmap_ports = nmap_ports & ",161/udp/snmp"
-                snmp_status = "true"
-                db_log_message = "Received snmp (UDP port 161 open) response"
-                db_log_output = line
-                db_log()
-            end if
-        end if
-    Loop
+        db_log_command = command
+        execute_command()
+        do until objExecObject.Status = 0
+            WScript.Sleep 100
+        loop
+        db_log_duration = Timer - host_timer
+        db_log()
+        do until objExecObject.StdOut.AtEndOfStream
+            line = objExecObject.StdOut.ReadLine
+            check_output()
+        loop
+    end if
 
     ' special case of determining WMI on localhost on Windows
     if (instr(local_net, host & " ") > 0) then
@@ -516,11 +617,11 @@ for each host in hosts
         if len(nmap_ports) > 0 then
             nmap_ports = Right(nmap_ports,Len(nmap_ports)-1)
         else
-            db_log_message = "No open ports, but device is up for IP: " & host
+            db_log_message = "No detected ports, but device is up for IP: " & host
             db_log_output = ""
             db_log()
             if debugging > "0" then
-                wscript.echo "No open ports, but device is up for IP: " & host
+                wscript.echo "No detected ports, but device is up for IP: " & host
             end if
         end if
         result =          " <device>" & vbcrlf
@@ -561,39 +662,11 @@ for each host in hosts
             Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
             objHTTP.setTimeouts 5000, 5000, 5000, 120000
             objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-            if sequential = "y" then
-                objHTTP.Open "POST", url, False ' wait for a response before continuing
-            else
-                objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
-            end if
+            objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
             error_returned = Err.Number
             error_description = Err.Description
             on error goto 0
-            if error_returned = 0 then
-                on error resume next
-                objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-                objHTTP.Send "data=" + result + vbcrlf
-                on error goto 0
-                if sequential = "y" then
-                    while objHTTP.readyState <> 4
-                        objHTTP.waitForResponse 5
-                    wend
-                    error_returned = objHTTP.status
-                    error_description = Err.Description
-                    if (error_returned <> 200) then
-                        wscript.echo "Error when submitting discovery result (device)."
-                        wscript.echo "Error Returned: " & error_returned
-                        wscript.echo "Error Description: " & error_description
-                        db_log_message = "Error when submitting discovery result (device)."
-                        db_log_status = "fail"
-                        db_log_severity = 3
-                        db_log_output = objHTTP.ResponseText
-                        db_log()
-                    elseif echo_output = "y" then
-                        wscript.echo objHTTP.ResponseText
-                    end if
-                end if
-            else
+            if error_returned <> 0 then
                 wscript.echo "Cannot open URL: " & url
                 wscript.echo "Error Returned: " & error_returned
                 wscript.echo "Error Description: " & error_description
@@ -606,6 +679,9 @@ for each host in hosts
                 db_log()
                 wscript.exit 1
             end if
+            on error resume next
+            objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
+            objHTTP.Send "data=" + result + vbcrlf
         else
             wscript.echo "IP " & host & " responding."
         end if ' submit_online
@@ -697,6 +773,7 @@ if submit_online = "y" then
     end if
 end if
 
+db_log_ip = "127.0.0.1"
 db_log_message = "Completed discovery, scanned " & hosts_scanned & " IP addresses"
 db_log_duration = Timer - script_timer
 db_log_status = "finish"
@@ -715,14 +792,21 @@ function db_log()
     ' db_log_output (the command output)
     ' db_log_level (1-5)
     ' db_log_command (the actual command that was executed)
+    ' db_log_ip is usually the host, but in some cases 127.0.0.1
     timestamp = get_timestamp()
+    if (db_log_status = "") then
+        db_log_status = "notice"
+    end if
+    if (db_ip = "") then
+        db_ip = "127.0.0.1"
+    end if
     on error resume next
         Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
         objHTTP.setTimeouts 5000, 5000, 5000, 120000
         objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
         objHTTP.Open "POST", "http://localhost/open-audit/index.php/input/logs", FALSE
         objHTTP.setRequestHeader "Content-Type","application/x-www-form-urlencoded"
-        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=" & db_log_severity & "&pid=" & current_pid & "&ip=127.0.0.1&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=" & db_log_duration & "&command_status=" & db_log_status & "&command_output=" & db_log_output & "&command=" & db_log_command
+        objHTTP.Send "type=discovery&timestamp=" & timestamp & "&discovery_id=" & discovery_id & "&severity=" & db_log_severity & "&pid=" & current_pid & "&ip=" & db_log_ip & "&file=discover_subnet.vbs&message=" & db_log_message & "&command_time_to_execute=" & db_log_duration & "&command_status=" & db_log_status & "&command_output=" & db_log_output & "&command=" & db_log_command
     on error goto 0
     db_log_message = ""
     db_log_command = ""
@@ -733,9 +817,9 @@ function execute_command()
     if debugging > 1 then wscript.echo "Executing: " & command end if
     on error resume next
         set objExecObject = objShell.Exec(command)
-        Do Until objExecObject.Status = 0
+        do until objExecObject.Status = 0
             WScript.Sleep 1000
-        Loop
+        loop
         error_returned = Err.Number
         error_description = Err.Description
     on error goto 0
@@ -757,4 +841,113 @@ function execute_command()
             wscript.quit 1
         end if
     end if
+end function
+
+
+function check_output()
+    db_log_duration = ""
+    dim line_temp
+    temp = line
+    do while InStr(1, temp, "  ")
+        temp = Replace(temp, "  ", " ")
+    loop
+
+    if instr(temp, "/tcp open ") then
+        host_is_up="true"
+        line_temp = split(temp, " ")
+        port = line_temp(0)
+        program = line_temp(2)
+        nmap_ports = nmap_ports & "," & port & "/" & program
+        if (port = "22/tcp") then
+            ssh_status = "true"
+            db_log_message = "Host " & host & " is up, received ssh (TCP port 22 open) response"
+        elseif (port = "135/tcp") then
+            wmi_status = "true"
+            db_log_message = "Host " & host & " is up, received wmi (TCP port 135 open) response"
+        else
+            db_log_message = "Host " & host & " is up, received port " & port & " response"
+        end if
+        db_log_output = line
+        db_log()
+    end if
+
+    if instr(temp, "/tcp open|filtered") and (filtered = "y") then
+        host_is_up="true"
+        line_temp = split(temp, " ")
+        port = line_temp(0)
+        program = line_temp(2)
+        nmap_ports = nmap_ports & "," & port & "/" & program
+        if (port = "22/tcp") then
+            ssh_status = "true"
+            db_log_message = "Host " & host & " is up, received filtered ssh (TCP port 22 open|filtered) response"
+        elseif (port = "135/tcp") then
+            wmi_status = "true"
+            db_log_message = "Host " & host & " is up, received filtered wmi (TCP port 135 open|filtered) response"
+        else
+            db_log_message = "Host " & host & " is up, received filtered port " & port & " response"
+        end if
+        db_log_output = line
+        db_log()
+    end if
+
+    if instr(temp, "/udp open ") then
+        host_is_up="true"
+        line_temp = split(temp, " ")
+        port = line_temp(0)
+        program = line_temp(2)
+        nmap_ports = nmap_ports & "," & port & "/" & program
+        if (port = "161/udp") then
+            snmp_status = "true"
+            db_log_message = "Host " & host & " is up, received snmp (UDP port 161 open) response"
+        else
+            db_log_message = "Host " & host & " is up, received UDP port $port open response"
+        end if
+        db_log_output = line
+        db_log()
+    end if
+
+    if instr(temp, "/udp open|filtered") and (filtered = "y") then
+        host_is_up="true"
+        line_temp = split(temp, " ")
+        port = line_temp(0)
+        program = line_temp(2)
+        nmap_ports = nmap_ports & "," & port & "/" & program
+        if (port = "161/udp") then
+            snmp_status = "true"
+            db_log_message = "Host " & host & " is up, received filtered snmp (UDP port 161 open|filtered) response"
+        else
+            db_log_message = "Host " & host & " is up, received filtered UDP port $port open|filtered response"
+        end if
+        db_log_output = line
+        db_log()
+    end if
+
+    if instr(lcase(temp), "Host " & host & " is up, received arp-response") then
+        host_is_up="true"
+        db_log_message = "Host " & host & " is up, received arp-response"
+        db_log_output = line
+        db_log()
+    end if
+
+    if instr(lcase(temp), "mac address:") then
+        host_is_up="true"
+        i = split(temp, " ")
+        mac_address = i(2)
+        manufacturer = i(3)
+        i = ""
+        i = split(line, "(")
+        manufacturer = replace(i(1), ")", "")
+        manufacturer = trim(manufacturer)
+        db_log_message = "Host " & host & " is up, received arp-response from " & mac_address
+        db_log_output = line
+        db_log()
+    end if
+
+    if (instr(lcase(temp), "Nmap done: 1 IP address (1 host up)") and ping = "") then
+        host_is_up="true"
+        db_log_message = "Host " & host & " is up, received Nmap ping response"
+        db_log_output = line
+        db_log()
+    end if
+
 end function
