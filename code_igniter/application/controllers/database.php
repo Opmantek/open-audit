@@ -758,6 +758,7 @@ class Database extends MY_Controller
         if (($db_internal_version < '20181225') and ($this->db->platform() == 'mysql')) {
             # upgrade for 2.3.2
             include "db_upgrades/db_2.3.2.php";
+            $this->data['warning'] = "As at Open-AudIT 2.3.2 we have changed the default Nmap discovery options. Please see the wiki page at <a href=\"https://community.opmantek.com/display/OA/Nmap+Options\">https://community.opmantek.com/display/OA/Nmap+Options</a> for more details.";
         }
 
         $this->data['include'] = 'v_database_update';
