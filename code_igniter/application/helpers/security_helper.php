@@ -102,6 +102,13 @@ if (! function_exists('simpleEncrypt')) {
         }
         require_once "autoload.php";
 
+        if (php_uname('s') != 'Windows NT') {
+            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/random_compat');
+        } else {
+            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\random_compat');
+        }
+        require_once "lib/random.php";
+
         if (empty($key)) {
             $CI = & get_instance();
             $key = mb_substr("00000000000000000000000000000000".$CI->config->config['encryption_key'], -32);
