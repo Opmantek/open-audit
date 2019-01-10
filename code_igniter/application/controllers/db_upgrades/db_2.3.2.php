@@ -95,7 +95,7 @@ if (!empty($result)) {
 # queue
 $this->alter_table('queue', 'name', "ADD `name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add');
 $this->alter_table('queue', 'status', "ADD `status` varchar(20) NOT NULL DEFAULT '' AFTER `pid`", 'add');
-$this->alter_table('queue', 'org_id', "ADD `org_id` int(10) unsigned NOT NULL DEFAULT '1', AFTER `type`", 'add');
+$this->alter_table('queue', 'org_id', "ADD `org_id` int(10) unsigned NOT NULL DEFAULT '1' AFTER `type`", 'add');
 
 $this->load->model('m_roles');
 $this->m_roles->update_permissions('admin', 'queue', 'crud');
