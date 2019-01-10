@@ -99,6 +99,7 @@ dim nmap_udp_ports : nmap_udp_ports = ""
 dim ping : ping = ""
 dim service_version : service_version = ""
 dim tcp_ports : tcp_ports = ""
+dim timeout : timeout = ""
 dim timing : timing = ""
 dim udp_ports : udp_ports = ""
 
@@ -342,6 +343,10 @@ if (exclude_ip <> "") then
     exclude_ip = "--exclude " & exclude_ip
 end if
 
+if (timeout <> "") then
+    timeout = "--host-timeout " & timeout
+end if
+
 if (exclude_tcp_ports <> "") then
     exclude_tcp_ports = "--exclude-ports T:" & exclude_tcp_ports
 end if
@@ -533,7 +538,7 @@ for each host in hosts
 
     if (nmap_tcp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & nmap_tcp_ports & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & nmap_tcp_ports & " " & timeout & " " & host
         db_log_message = "Nmap Command"
         db_log_severity = 7
         db_log_level = 7
@@ -552,7 +557,7 @@ for each host in hosts
 
     if (nmap_udp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & nmap_udp_ports & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & nmap_udp_ports & " " & timeout & " " & host
         db_log_message = "Nmap Command"
         db_log_severity = 7
         db_log_level = 7
@@ -571,7 +576,7 @@ for each host in hosts
 
     if (tcp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & tcp_ports & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sS " & service_version & " " & exclude_ip & " " & exclude_tcp_ports & " " & tcp_ports & " " & timeout & " " & host
         db_log_message = "Nmap Command"
         db_log_severity = 7
         db_log_level = 7
@@ -590,7 +595,7 @@ for each host in hosts
 
     if (udp_ports <> "") then
         host_timer = Timer
-        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & udp_ports & " " & host
+        command = nmap_path & " -n " & timing & " " & ping & " -sU " & service_version & " " & exclude_ip & " " & exclude_udp_ports & " " & udp_ports & " " & timeout & " " & host
 
         db_log_command = command
         execute_command()
@@ -946,6 +951,13 @@ function check_output()
     if (instr(lcase(temp), "Nmap done: 1 IP address (1 host up)") and ping = "") then
         host_is_up="true"
         db_log_message = "Host " & host & " is up, received Nmap ping response"
+        db_log_output = line
+        db_log()
+    end if
+
+    if (instr(lcase(temp), "due to host timeout") and ping = "") then
+        host_is_up="true"
+        db_log_message = "Host " & host & " timed out. Exceeded " & timeout & " seconds."
         db_log_output = line
         db_log()
     end if

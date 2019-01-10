@@ -35,8 +35,12 @@
 
 # turn off globbing
 set -f
-IFS='
-'
+
+ORIGIFS=$IFS
+NEWLINEIFS=$(echo -en "\n\b")
+IFS="$NEWLINEIFS"
+#IFS='
+#'
 
 create_file="n"
 debugging=1
@@ -260,6 +264,13 @@ function check_output ()
 		db_log "Host $host is up, received Nmap ping response" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
+
+	test=$(echo $line | grep "due to host timeout")
+	if [[ "$test" != "" && -z "$ping" ]]; then
+		db_log "Host $host timed out. Exceeded $timeout seconds." "" "" "7" "$line" "" "" "$host"
+	fi
+	test=""
+
 }
 
 script_start=$(timer)
@@ -327,6 +338,76 @@ else
 	service_version=""
 fi
 
+if [ -n "$timeout" ]; then
+	if ! [[ $timeout =~ $int ]]; then
+		if [ "$debugging" -gt 0 ]; then
+			echo "Bad value for timeout, removing value"
+		fi
+		db_log "Bad value for timeout" "" "warning" "5" "" "" "Removing value"
+		timeout=""
+	else
+		timeout="--host-timeout $timeout"
+	fi
+else
+	timeout=""
+fi
+
+if [ -n "$nmap_tcp_ports" ]; then
+	if ! [[ $nmap_tcp_ports =~ $int ]]; then
+		if [ "$debugging" -gt 0 ]; then
+			echo "Bad value for nmap_tcp_ports, removing value"
+		fi
+		db_log "Bad value for nmap_tcp_ports" "" "warning" "5" "" "" "Removing value"
+		nmap_tcp_ports=""
+	else
+		nmap_tcp_ports="--top-ports $nmap_tcp_ports"
+	fi
+else
+	nmap_tcp_ports=""
+fi
+
+if [ -n "$nmap_udp_ports" ]; then
+	if ! [[ $nmap_udp_ports =~ $int ]]; then
+		if [ "$debugging" -gt 0 ]; then
+			echo "Bad value for nmap_udp_ports, removing value"
+		fi
+		db_log "Bad value for nmap_udp_ports" "" "warning" "5" "" "" "Removing value"
+		nmap_udp_ports=""
+	else
+		nmap_udp_ports="--top-ports $nmap_udp_ports"
+	fi
+else
+	nmap_udp_ports=""
+fi
+
+if [ -n "$tcp_ports" ]; then
+	if ! [[ $tcp_ports =~ $ports ]]; then
+		if [ "$debugging" -gt 0 ]; then
+			echo "Bad value for tcp_ports, removing"
+		fi
+		db_log "Bad value for tcp_ports" "" "warning" "5" "" "" "Removing value"
+		tcp_ports=""
+	else
+		tcp_ports="-p $tcp_ports"
+	fi
+else
+	tcp_ports=""
+fi
+
+if [ -n "$udp_ports" ]; then
+	if ! [[ $udp_ports =~ $ports ]]; then
+		if [ "$debugging" -gt 0 ]; then
+			echo "Bad value for udp_ports, removing"
+		fi
+		db_log "Bad value for udp_ports" "" "warning" "5" "" "" "Removing value"
+		udp_ports=""
+	else
+		udp_ports="-p $udp_ports"
+	fi
+else
+	udp_ports=""
+fi
+
 if [ -n "$exclude_ip" ]; then
 	if ! [[ $exclude_ip =~ $range ]]; then
 		if [ "$debugging" -gt 0 ]; then
@@ -334,6 +415,8 @@ if [ -n "$exclude_ip" ]; then
 		fi
 		db_log "Bad value for exclude_ip" "" "warning" "5" "" "" "Removing value"
 		exclude_ip=""
+	else
+		exclude_ip="--exclude $exclude_ip"
 	fi
 else
 	exclude_ip=""
@@ -347,7 +430,7 @@ if [ -n "$exclude_tcp_ports" ]; then
 		db_log "Bad value for exclude_tcp_ports" "" "warning" "5" "" "" "Removing value"
 		exclude_tcp_ports=""
 	else
-		exclude_tcp_ports="T:$exclude_tcp_ports"
+		exclude_tcp_ports="--exclude-ports T:$exclude_tcp_ports"
 	fi
 else
 	exclude_tcp_ports=""
@@ -361,7 +444,7 @@ if [ -n "$exclude_udp_ports" ]; then
 		db_log "Bad value for exclude_udp_ports" "" "warning" "5" "" "" "Removing value"
 		exclude_udp_ports=""
 	else
-		exclude_udp_ports="U:$exclude_udp_ports"
+		exclude_udp_ports="--exclude-ports U:$exclude_udp_ports"
 	fi
 else
 	exclude_udp_ports=""
@@ -412,28 +495,33 @@ ip_list=""
 # -T4  == timing (0-5) higher is faster
 # -v   == verbose
 # -vv  == very verboseNmap scan report for
-
+IFS=$ORIGIFS
 hosts_in_subnet=$(nmap -n -sL $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-db_log "IPs in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL --exclude $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
+db_log "IPs in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
 
-hosts_in_subnet=$(nmap -n -sL --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-db_log "IPs after exclusions in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL --exclude $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
+hosts_in_subnet=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
+db_log "IPs after exclusions in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
 
 if [ -z "$ping" ]; then
 	# Run a scan on all IPs and return only those responding to an Nmap ping
-	alive_ips=$(nmap -n -oG - -sP --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Host:" | cut -d" " -f2)
+	#command="nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep \"Host:\" | cut -d\" \" -f2"
+	#alive_ips=$($command)
+	alive_ips=$(nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep "Host:" | cut -d" " -f2)
 	count=$(echo "$alive_ips" | wc -l)
-	db_log "IPs responding to Nmap ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -sL --exclude $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
+	db_log "IPs responding to Nmap ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
 	hosts_in_subnet="$count"
-	ip_list=$(nmap -n -sL --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap scan report for" | awk '{print $5}')
-
+	ip_list=$(nmap -n -sL "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap scan report for" | awk '{print $5}')
+	echo "Alive IPs 2: $alive_ips"
 else
 	# Scan these IPs, ignoring their ping (or not) response
-	alive_ips=$(nmap -n -sL --exclude "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5)
+	alive_ips=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5)
 	count=$(echo "$alive_ips" | wc -l)
-	db_log "IPs after ignoring ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -oG - -sP --exclude $exclude_ip $subnet_range 2>/dev/null | grep Host: | cut -d\" \" -f2"
+	db_log "IPs after ignoring ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep Host: | cut -d\" \" -f2"
 	hosts_in_subnet="$count"
 fi
+IFS=$NEWLINEIFS
+
+
 
 # In the case of only scnning devices responding to an Nmap ping,
 #    send a log line that this IP didn't respond
@@ -450,7 +538,6 @@ if [ -n "$ip_list" ];then
 		fi
 	done
 fi
-
 
 for host in $alive_ips; do
 	let "hosts_scanned = hosts_scanned + 1"
@@ -470,18 +557,16 @@ for host in $alive_ips; do
 
 	if [ -n "$nmap_tcp_ports" ]; then
 		nmap_timer_start=$(timer)
-		if [ -n "$exclude_tcp_ports" ]; then
-			nmap_scan=$($nmap_path -n $timing $ping -sS $service_version --exclude "$exclude_ip" --exclude-ports "$exclude_tcp_ports" --top-ports $nmap_tcp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sS $service_version --exclude "$exclude_ip" --exclude-ports "$exclude_tcp_ports" --top-ports $nmap_tcp_ports $host 2>/dev/null"
-		else
-			nmap_scan=$($nmap_path -n $timing $ping -sS $service_version --exclude "$exclude_ip" --top-ports $nmap_tcp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sS $service_version --exclude "$exclude_ip" --top-ports $nmap_tcp_ports $host 2>/dev/null"
-		fi
+		IFS=$ORIGIFS
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host 2>/dev/null"
+		nmap_scan=$($command)
+		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
 		db_log "Nmap Command (Top TCP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
-			echo "Scanning Host took $nmap_timer_end seconds using the command: nmap -v -n$command"
+			echo "Scanning Host took $nmap_timer_end seconds using the command:"
+			echo "$command"
 			echo ""
 		fi
 		if [ "$debugging" -gt 1 ]; then
@@ -497,18 +582,16 @@ for host in $alive_ips; do
 
 	if [ -n "$nmap_udp_ports" ]; then
 		nmap_timer_start=$(timer)
-		if [ -n "$exclude_tcp_ports" ]; then
-			nmap_scan=$($nmap_path -n $timing $ping -sU $service_version --exclude "$exclude_ip" --exclude-ports "$exclude_udp_ports" --top-ports $nmap_udp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sU $service_version --exclude "$exclude_ip" --exclude-ports "$exclude_udp_ports" --top-ports $nmap_udp_ports $host 2>/dev/null"
-		else
-			nmap_scan=$($nmap_path -n $timing $ping -sU $service_version --exclude "$exclude_ip" --top-ports $nmap_udp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sU $service_version --exclude "$exclude_ip" --top-ports $nmap_udp_ports $host 2>/dev/null"
-		fi
+		IFS=$ORIGIFS
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host 2>/dev/null"
+		nmap_scan=$($command)
+		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
 		db_log "Nmap Command (Top UDP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
-			echo "Scanning Host took $nmap_timer_end seconds using the command: nmap -v -n$command"
+			echo "Scanning Host took $nmap_timer_end seconds using the command:"
+			echo "$command"
 			echo ""
 		fi
 		if [ "$debugging" -gt 1 ]; then
@@ -524,18 +607,16 @@ for host in $alive_ips; do
 
 	if [ -n "$tcp_ports" ]; then
 		nmap_timer_start=$(timer)
-		if [ -n "$exclude_tcp_ports" ]; then
-			nmap_scan=$($nmap_path -n $timing $ping -sS $service_version --exclude "$exclude_ip" --exclude-ports "$exclude_tcp_ports" -p $tcp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sS $service_version --exclude \"$exclude_ip\" --exclude-ports \"$exclude_tcp_ports\" -p $tcp_ports $host 2>/dev/null"
-		else
-			nmap_scan=$($nmap_path -n $timing $ping -sS $service_version --exclude "$exclude_ip" -p $tcp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sS $service_version --exclude \"$exclude_ip\" -p $tcp_ports $host 2>/dev/null"
-		fi
+		IFS=$ORIGIFS
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host 2>/dev/null"
+		nmap_scan=$($command)
+		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
 		db_log "Nmap Command (Custom TCP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
-			echo "Scanning Host took $nmap_timer_end seconds using the command: nmap -v -n$command"
+			echo "Scanning Host took $nmap_timer_end seconds using the command:"
+			echo "$command"
 			echo ""
 		fi
 		if [ "$debugging" -gt 1 ]; then
@@ -551,18 +632,16 @@ for host in $alive_ips; do
 
 	if [ -n "$udp_ports" ]; then
 		nmap_timer_start=$(timer)
-		if [ -n "$exclude_udp_ports" ]; then
-			nmap_scan=$($nmap_path -n $timing $ping -sU $service_version --exclude "$exclude_ip" --exclude-ports "$exclude_udp_ports" -p $udp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sU $service_version --exclude \"$exclude_ip\" --exclude-ports \"$exclude_udp_ports\" -p $udp_ports $host 2>/dev/null"
-		else
-			nmap_scan=$($nmap_path -n $timing $ping -sU $service_version --exclude "$exclude_ip" -p $udp_ports $host 2>/dev/null)
-			command="$nmap_path -n $timing $ping -sU $service_version --exclude \"$exclude_ip\" -p $udp_ports $host 2>/dev/null"
-		fi
+		IFS=$ORIGIFS
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host 2>/dev/null"
+		nmap_scan=$($command)
+		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
 		db_log "Nmap Command (Custom UDP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
-			echo "Scanning Host took $nmap_timer_end seconds using the command: nmap -v -n$command"
+			echo "Scanning Host took $nmap_timer_end seconds using the command:"
+			echo "$command"
 			echo ""
 		fi
 		if [ "$debugging" -gt 1 ]; then
