@@ -36,7 +36,7 @@
 ?>
 <div class="alert alert-success" role="alert"><?php echo htmlspecialchars( $success, REPLACE_FLAGS, CHARSET); ?></div>
 <?php if (!empty($warning)) { ?>
-<div class="alert alert-warning" role="alert"><?php echo htmlspecialchars( $warning, REPLACE_FLAGS, CHARSET); ?></div>
+<div class="alert alert-warning" role="alert"><?php echo $warning; ?></div>
 <?php } ?>
 <form class="form-horizontal" id="form_update" method="post" action="database">
     <div class="panel panel-default">
