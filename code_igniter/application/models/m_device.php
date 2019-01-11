@@ -1065,6 +1065,8 @@ class M_device extends MY_Model
         $log->ip = $_SERVER['REMOTE_ADDR'];
         if (!empty($details->ip)) {
             $log->ip = ip_address_from_db($details->ip);
+        } else {
+            $details->ip = '';
         }
         $log->function = 'insert';
         $log->system_id = '';
@@ -1101,9 +1103,6 @@ class M_device extends MY_Model
             }
         }
 
-        if (empty($details->ip)) {
-            $details->ip = '';
-        }
         if (empty($details->status)) {
             $details->status = 'production';
         }
@@ -1271,6 +1270,11 @@ class M_device extends MY_Model
         $log_details->display = $display;
         unset($display);
         stdlog($log_details);
+
+        $parameters = new stdClass();
+        $parameters->log = $log_details;
+        $parameters->input = $details;
+        $details = audit_format_system($parameters);
 
         if (empty($details->name)) {
             if (!empty($details->hostname)) {
