@@ -289,6 +289,7 @@ if (!function_exists('audit_format_system')) {
             }
         }
 
+        $mylog->command_status = 'notice';
         $mylog->message = 'Formatting system details';
         discovery_log($mylog);
 
@@ -320,6 +321,7 @@ if (!function_exists('audit_format_system')) {
 
         if (!empty($input->last_seen_by) and $input->last_seen_by == 'nmap') {
             unset($input->type);
+            $mylog->command_status = 'notice';
             $mylog->message = "Last Seen By is nmap - unsetting type attribute.";
             discovery_log($mylog);
         }
