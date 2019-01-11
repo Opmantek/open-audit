@@ -724,7 +724,7 @@ foreach ($xml->children() as $input) {
     // update any network interfaces retrieved by SNMP
     if (isset($network_interfaces) and is_array($network_interfaces) and count($network_interfaces) > 0) {
         $log->message = 'Processing found network interfaces for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        #$log->command = json_encode($network_interfaces);
+        $log->command = '';
         $log->command_output = '';
         discovery_log($log);
         $parameters = new stdClass();
@@ -742,7 +742,7 @@ foreach ($xml->children() as $input) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing found ip addresses for ' . $device->ip . ' (System ID ' . $device->id . ')';
-        #$log->command = json_encode($ip);
+        $log->command = '';
         $log->command_output = '';
         discovery_log($log);
         $parameters = new stdClass();
@@ -756,6 +756,7 @@ foreach ($xml->children() as $input) {
     // create or update the entry in the ip table from non-SNMP data
     //     so our 'networks' endpoint and functions can find the device
     if (empty($ip)) {
+        $log->command = '';
         $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
         $item = new stdClass();
@@ -797,6 +798,7 @@ foreach ($xml->children() as $input) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing found modules for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->command = '';
         discovery_log($log);
         $parameters = new stdClass();
         $parameters->table = 'module';
@@ -813,6 +815,7 @@ foreach ($xml->children() as $input) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing found VMs for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->command = '';
         discovery_log($log);
         $parameters = new stdClass();
         $parameters->table = 'vm';
@@ -849,6 +852,7 @@ foreach ($xml->children() as $input) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->message = 'Processing Nmap ports for ' . $device->ip . ' (System ID ' . $device->id . ')';
+        $log->command = '';
         discovery_log($log);
         $parameters = new stdClass();
         $parameters->table = 'nmap';
@@ -867,6 +871,7 @@ foreach ($xml->children() as $input) {
     $log->severity = 5;
     $individual_ip_end = microtime(true);
     $log->command_time_to_execute = $individual_ip_end - $individual_ip_start;
+    $log->command = '';
     if (!empty($device->type)) {
         $log->message = "At IP $device->ip, discovery found a device of type '$device->type'.";
     } else {
