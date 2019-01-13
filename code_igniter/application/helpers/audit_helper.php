@@ -39,7 +39,8 @@ if (!defined('BASEPATH')) {
 }
 
 
-
+# Return FALSE on error, or an object if the input can be converted
+# from JSON or XML
 if (!function_exists('accept_input')) {
     function accept_input($input = '')
     {
