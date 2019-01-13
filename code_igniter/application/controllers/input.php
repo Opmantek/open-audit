@@ -193,7 +193,7 @@ class Input extends CI_Controller
             $id = $this->m_queue->create('scans', $input);
         }
 
-        # Run the scan if requested to execute
+        # Run the scan unless requested to not execute
         $execute = true;
         if (!empty($_POST['execute']) and strtolower($_POST['execute']) === 'n') {
             $execute = false;
