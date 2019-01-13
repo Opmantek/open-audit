@@ -107,7 +107,7 @@ if (!function_exists('process_scan')) {
             discovery_log($log);
 
             $sql = '/* input::discoveries */ ' . 'SELECT * FROM `discoveries` WHERE id = ?';
-            $data = array($log->discovery_id);
+            $data = array($input->discovery_id);
             $query = $CI->db->query($sql, $data);
             $result = $query->result();
             $discovery = $result[0];
