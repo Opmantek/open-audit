@@ -1131,7 +1131,7 @@ class M_device extends MY_Model
                     if ($key == $column) {
                         $keys .= $key.", ";
                         $values .= '?, ';
-                        $data[] = $value;
+                        $data[] = (string)$value;
                     }
                 }
             }
@@ -1353,7 +1353,7 @@ class M_device extends MY_Model
             if ($key != 'id' AND in_array($key, $disallowed_fields)) {
                 $update = new stdClass();
                 $update->key = $key;
-                $update->value = $value;
+                $update->value = (string)$value;
                 $update_device[] = $update;
             }
         }
@@ -1364,7 +1364,7 @@ class M_device extends MY_Model
             $sql = "UPDATE `system` SET ";
             foreach ($update_device as $field) {
                 $sql .= "`" . $field->key . "` = ?, ";
-                $data[] = $field->value;
+                $data[] = (string)$field->value;
             }
             $sql = substr($sql, 0, strlen($sql)-2);
             $sql .= ' WHERE `id` = ?';
