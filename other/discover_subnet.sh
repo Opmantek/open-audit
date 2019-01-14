@@ -506,12 +506,21 @@ if [ -z "$ping" ]; then
 	# Run a scan on all IPs and return only those responding to an Nmap ping
 	#command="nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep \"Host:\" | cut -d\" \" -f2"
 	#alive_ips=$($command)
+	if [ "$debugging" -gt 1 ]; then
+		echo "Running command: nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep \"Host:\" | cut -d\" \" -f2"
+		echo ""
+	fi
 	alive_ips=$(nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep "Host:" | cut -d" " -f2)
+
 	count=$(echo "$alive_ips" | wc -l)
-	db_log "IPs responding to Nmap ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | cut -d\" \" -f5"
+	db_log "IPs responding to Nmap ping in subnet (to be scanned): $count" "" "" "" "" "" "nmap -n -oG - -sP $exclude_ip $subnet_range 2>/dev/null | grep \"Host:\" | cut -d\" \" -f2"
 	hosts_in_subnet="$count"
-	ip_list=$(nmap -n -sL "$exclude_ip" $subnet_range 2>/dev/null | grep "Nmap scan report for" | awk '{print $5}')
-	echo "Alive IPs 2: $alive_ips"
+
+	if [ "$debugging" -gt 1 ]; then
+		echo "Running command: nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap scan report for\" | awk '{print \$5}'"
+		echo ""
+	fi
+	ip_list=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap scan report for" | awk '{print $5}')
 else
 	# Scan these IPs, ignoring their ping (or not) response
 	alive_ips=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap scan report for" | cut -d" " -f5)
