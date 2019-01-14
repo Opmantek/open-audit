@@ -206,6 +206,7 @@ function check_output ()
 	fi
 	if [ -n "$test" ]; then
 		host_is_up="true"
+		response_reason="received open TCP port"
 		port=$(echo $line | awk '{print $1}')
 		program=$(echo $line | awk '{print $3}')
 		nmap_ports="$nmap_ports,$port/$program"
@@ -229,6 +230,7 @@ function check_output ()
 	fi
 	if [ -n "$test" ]; then
 		host_is_up="true"
+		response_reason="received open UDP port"
 		port=$(echo $line | awk '{print $1}')
 		program=$(echo $line | awk '{print $3}')
 		nmap_ports="$nmap_ports,$port/$program"
@@ -244,6 +246,7 @@ function check_output ()
 	test=$(echo $line | grep "Host $host is up, received arp-response")
 	if [[ "$test" != "" ]]; then
 		host_is_up="true"
+		response_reason="arp response"
 		db_log "Host $host is up, received arp-response" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
@@ -251,6 +254,7 @@ function check_output ()
 	test=$(echo $line | grep "MAC Address:")
 	if [[ "$test" != "" ]]; then
 		host_is_up="true"
+		response_reason="MAC address retrieved"
 		mac_address=$(echo "$line" | cut -d" " -f3)
 		manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
 		db_log "Host $host is up, received mac addess $mac_address" "" "" "7" "$line" "" "" "$host"
@@ -261,6 +265,7 @@ function check_output ()
 	test=$(echo $line | grep "Nmap done: 1 IP address (1 host up)")
 	if [[ "$test" != "" && -z "$ping" ]]; then
 		host_is_up="true"
+		response_reason="ping reply"
 		db_log "Host $host is up, received Nmap ping response" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
@@ -561,6 +566,11 @@ for host in $alive_ips; do
 	tel_status="false"
 	host_is_up="false"
 	nmap_ports=""
+	response_reason=""
+
+	if [ -z "$ping" ]; then
+		response_reason="ping reply"
+	fi
 
 	db_log "Scanning Host: $host" "" "" "7" "" "7" "" "$host"
 
@@ -665,7 +675,7 @@ for host in $alive_ips; do
 	fi
 
 	result=""
-	if [ "$host_is_up" == "true" ]; then
+	if [ "$host_is_up" == "true" ] || [ -z "$ping" ]; then
 		nmap_ports=${nmap_ports#?}
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
@@ -697,7 +707,7 @@ for host in $alive_ips; do
 		fi
 
 		if [[ "$submit_online" == "y" ]]; then
-			db_log "IP $host responding, submitting online." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url" "$host"
+			db_log "IP $host responding, $response_reason, adding to device list." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url" "$host"
 			# curl options
 			# -k = ignore invalid (self signed) certs
 			# -s = Silent mode. Don’t show progress meter or error messages.
