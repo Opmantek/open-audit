@@ -104,7 +104,7 @@ if (! function_exists('windows_credentials')) {
         $log->command_status = 'warning';
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
-        $log->message = "No valid Windows credentials for $ip.";
+        $log->message = "WMI detected but no valid Windows credentials for $ip.";
         $log->severity = 7;
         discovery_log($log);
         return false;

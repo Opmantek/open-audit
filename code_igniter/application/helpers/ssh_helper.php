@@ -76,7 +76,7 @@ if (! function_exists('scp')) {
             return false;
         }
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to scp function.';
+            $log->message = 'Invalid IP supplied to scp function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
@@ -209,7 +209,7 @@ if (! function_exists('scp_get')) {
             return false;
         }
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to scp_get function.';
+            $log->message = 'Invalid IP supplied to scp_get function.';
             $log->severity = 3;
             discovery_log($log);
             $log->severity = 7;
@@ -345,7 +345,7 @@ if (! function_exists('ssh_command')) {
         $CI = & get_instance();
 
         if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'No valid IP supplied to ssh_command function.';
+            $log->message = 'Invalid IP supplied to ssh_command function.';
             $log->severity = 5;
             $log->command_status = 'fail';
             discovery_log($log);
@@ -570,7 +570,7 @@ if (! function_exists('ssh_audit')) {
             $log->command = '';
             $log->command_output = '';
             $log->command_status = 'warning';
-            $log->message = "No valid SSH credentials for $ip.";
+            $log->message = "SSH detected but no valid SSH credentials for $ip.";
             discovery_log($log);
             return false;
         }
