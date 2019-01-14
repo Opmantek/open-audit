@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->load->model('m_users');
 $this->load->helper('file');
 $this->load->helper('log');
@@ -206,6 +207,12 @@ $this->session->set_flashdata($flash_status, $flash_message);
 
 $this->response->meta->flash->status = $flash_status;
 $this->response->meta->flash->message = $flash_message;
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Import.';
+$GLOBALS['timer_log'][] = $entry;
 
 if ($this->response->meta->format === 'json') {
     $this->response->data = array();

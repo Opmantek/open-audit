@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->load->model('m_collection');
 if ($this->m_collection->reset($this->response->meta->collection)) {
     $this->response->data = array();
@@ -36,6 +37,13 @@ if ($this->m_collection->reset($this->response->meta->collection)) {
     log_error('ERR-0013');
     $this->session->set_flashdata('error', 'Table ' . $this->response->meta->collection . ' not reset.');
 }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Reset.';
+$GLOBALS['timer_log'][] = $entry;
+
 if ($this->response->meta->format === 'json') {
     output($this->response);
 } else {

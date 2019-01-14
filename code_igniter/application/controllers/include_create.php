@@ -24,8 +24,15 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->load->model('m_collection');
 $this->response->meta->id = $this->{'m_collection'}->create();
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Create.';
+$GLOBALS['timer_log'][] = $entry;
 
 if (!empty($this->response->meta->id)) {
     if ($this->response->meta->format === 'json') {

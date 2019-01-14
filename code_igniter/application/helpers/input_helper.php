@@ -108,6 +108,8 @@ if (! function_exists('inputRead')) {
 
         // Can set individual items using parameters /devices/1 == /devices?id=1 ???
 
+        $timer_start = microtime(true);
+
         // set up our logging object
         $log = new stdClass();
         $log->severity = 7;
@@ -174,6 +176,13 @@ if (! function_exists('inputRead')) {
         $CI->response->meta->sort = '';
         $CI->response->meta->sub_resource = '';
         $CI->response->meta->sub_resource_id = 0;
+        if (!empty($GLOBALS['timer_start'])) {
+            $CI->response->meta->time_start = $GLOBALS['timer_start'];
+        } else {
+            $CI->response->meta->time_start = microtime(true);
+        }
+        $CI->response->meta->time_end = 0;
+        $CI->response->meta->time_elapsed = 0;
         $CI->response->meta->total = 0;
         $CI->response->meta->timestamp = $CI->config->config['timestamp'];
         $CI->response->meta->version = 1;
@@ -1242,7 +1251,13 @@ if (! function_exists('inputRead')) {
                 unset($temp);
             }
         }
-        #echo "<pre>\n"; print_r(json_encode($CI->response)); exit();
+
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'InputRead.';
+        $GLOBALS['timer_log'][] = $entry;
+
     }
 }
 

@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read($this->response->meta->id);
 $this->response->meta->filtered = count($this->response->data);
 
@@ -388,6 +389,12 @@ if ($this->response->meta->collection == 'users') {
 if ($this->m_users->get_user_permission('', $this->response->meta->collection, 'u')) {
     $this->response->edit = true;
 }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Read.';
+$GLOBALS['timer_log'][] = $entry;
 
 output($this->response);
 

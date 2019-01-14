@@ -51,6 +51,7 @@ if (! function_exists('output')) {
      */
     function output()
     {
+        $timer_start = microtime(true);
         error_reporting(E_ALL);
         $CI = & get_instance();
         if ($CI->response->meta->id == 888888888888) {
@@ -215,6 +216,11 @@ if (! function_exists('output')) {
             $CI->response->meta->data_order = array_values($CI->response->meta->data_order);
         }
 
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Output Format.';
+        $GLOBALS['timer_log'][] = $entry;
 
         switch ($CI->response->meta->format) {
             case 'screen':
@@ -413,6 +419,7 @@ if (! function_exists('output')) {
 
     function output_json()
     {
+        $timer_start = microtime(true);
         $CI = & get_instance();
         $CI->output->enable_profiler(false);
 
@@ -439,6 +446,22 @@ if (! function_exists('output')) {
             unset($CI->response->meta->internal);
             unset($CI->response->meta->sql);
         }
+
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Output JSON.';
+        $GLOBALS['timer_log'][] = $entry;
+
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $CI->response->meta->time_start);
+        $entry->detail = 'Finish.';
+        $GLOBALS['timer_log'][] = $entry;
+
+        $CI->response->meta->timing = $GLOBALS['timer_log'];
+        $CI->response->meta->time_end = microtime(true);
+        $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
+
         echo json_encode($CI->response);
     }
 
@@ -460,6 +483,7 @@ if (! function_exists('output')) {
 
     function output_screen()
     {
+        $timer_start = microtime(true);
         $CI = & get_instance();
         header($CI->response->meta->header);
         $CI->response->meta->user = $CI->user;
@@ -661,6 +685,15 @@ if (! function_exists('output')) {
             $CI->response->heading = $CI->response->meta->heading;
         }
 
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Output Screen.';
+        $GLOBALS['timer_log'][] = $entry;
+
+        $CI->response->meta->timing = $GLOBALS['timer_log'];
+        $CI->response->meta->time_end = microtime(true);
+        $CI->response->meta->time_elapsed = ($CI->response->meta->time_end - $CI->response->meta->time_start);
         $CI->load->view('v_template', $CI->response);
     }
 

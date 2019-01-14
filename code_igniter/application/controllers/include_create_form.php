@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->response->data = array();
 $temp = new stdClass();
 $temp->type = $this->response->meta->collection;
@@ -217,6 +218,12 @@ if ($collection == 'users') {
         $this->load->model('m_dashboards');
         $this->response->included = array_merge($this->response->included, $this->m_dashboards->collection());
 }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Create Form.';
+$GLOBALS['timer_log'][] = $entry;
 
 unset($collection);
 output($this->response);

@@ -58,6 +58,15 @@ class MY_Controller extends CI_Controller
     {
         parent::__construct();
 
+        $timer_start = microtime(true);
+        $GLOBALS['timer_start'] = $timer_start;
+        $GLOBALS['timer_log'] = array();
+
+        $entry = new stdClass();
+        $entry->time = 0;
+        $entry->detail = 'Start.';
+        $GLOBALS['timer_log'][] = $entry;
+
         # ensure our URL doesn't have a trailing / as this may break image (and other) relative paths
         $this->load->helper('url');
         if (!empty($_SERVER['REQUEST_URI'])) {
@@ -75,9 +84,9 @@ class MY_Controller extends CI_Controller
         $this->benchmark->mark('code_start');
         $this->load->library('session');
         $this->load->model('m_configuration');
-        $this->m_configuration->load();
+        #$this->m_configuration->load();
         $this->load->model('m_users');
-        $this->m_users->validate();
+        #$this->m_users->validate();
 
         $this->load->helper('input');
         $this->load->helper('output');
@@ -86,6 +95,29 @@ class MY_Controller extends CI_Controller
         $this->load->helper('security');
         $this->load->model('m_orgs');
 
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Load models and helpers.';
+        $GLOBALS['timer_log'][] = $entry;
+
+        $timer_start = microtime(true);
+        $this->m_configuration->load();
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Load configuration.';
+        $GLOBALS['timer_log'][] = $entry;
+
+        $timer_start = microtime(true);
+        $this->m_users->validate();
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Validate User.';
+        $GLOBALS['timer_log'][] = $entry;
+
+        $timer_start = microtime(true);
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
         if (!empty($this->user->org_id)) {
@@ -120,6 +152,12 @@ class MY_Controller extends CI_Controller
                 stdlog($log);
             }
         }
+
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Load user details.';
+        $GLOBALS['timer_log'][] = $entry;
     }
 }
 // End of file MY_Controller.php

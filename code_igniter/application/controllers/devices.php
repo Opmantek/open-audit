@@ -66,6 +66,7 @@ class devices extends MY_Controller
 
     private function collection()
     {
+        $timer_start = microtime(true);
         if ($this->response->meta->sub_resource != '' and  ($this->response->meta->sub_resource != 'report' and $this->response->meta->sub_resource != 'query' and $this->response->meta->sub_resource != 'group')) {
             $this->response->data = $this->m_devices->collection_sub_resource();
         } else if ($this->response->meta->sub_resource != '' and $this->response->meta->sub_resource == 'report') {
@@ -86,6 +87,13 @@ class devices extends MY_Controller
         } else {
             $this->response->meta->filtered = 0;
         }
+
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Collection.';
+        $GLOBALS['timer_log'][] = $entry;
+
         output($this->response);
         $log = new stdClass();
         $log->type = 'access';
@@ -101,6 +109,7 @@ class devices extends MY_Controller
 
     private function read()
     {
+        $timer_start = microtime(true);
         $this->load->model('m_orgs');
         $this->load->model('m_locations');
         $this->load->model('m_devices_components');
@@ -189,6 +198,13 @@ class devices extends MY_Controller
         if (is_null($this->response->data)) {
             log_error('ERR-0002');
         }
+
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Read.';
+        $GLOBALS['timer_log'][] = $entry;
+
         output($this->response);
         $log = new stdClass();
         $log->type = 'access';
@@ -202,6 +218,7 @@ class devices extends MY_Controller
 
     private function create()
     {
+        $timer_start = microtime(true);
         if (empty($_POST['input_type']) or $_POST['input_type'] == 'manual_input') {
             $device = new stdClass();
             foreach ($this->response->meta->received_data->attributes as $key => $value) {
@@ -242,6 +259,12 @@ class devices extends MY_Controller
                     $error = $this->m_devices_components->process_component($parameters);
                 }
             }
+
+            $timer_end = microtime(true);
+            $entry = new stdClass();
+            $entry->time = ($timer_end - $timer_start);
+            $entry->detail = 'Create.';
+            $GLOBALS['timer_log'][] = $entry;
 
             if ($this->response->meta->format == 'screen') {
                 redirect('devices/' . $id);
@@ -347,6 +370,7 @@ class devices extends MY_Controller
 
     private function bulk_update_form()
     {
+        $timer_start = microtime(true);
         $sql = "SELECT id, icon, type, name, domain, ip, description, os_family, status FROM system WHERE id in (" . $this->response->meta->ids . ")";
         $query = $this->db->query($sql);
         # TODO - change the below to use this->response->included
@@ -367,6 +391,13 @@ class devices extends MY_Controller
         } elseif ($this->response->meta->sub_resource == 'credential') {
             $this->response->meta->action = 'create_form_credentials';
         }
+
+        $timer_end = microtime(true);
+        $entry = new stdClass();
+        $entry->time = ($timer_end - $timer_start);
+        $entry->detail = 'Bulk Update Form.';
+        $GLOBALS['timer_log'][] = $entry;
+
         output($this->response);
         $log = new stdClass();
         $log->type = 'access';

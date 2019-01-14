@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 unset($this->response->data);
 $this->load->model('m_collection');
 
@@ -62,6 +63,13 @@ if ($this->response->meta->collection === 'licenses') {
 // if ($this->response->meta->collection == 'configuration') {
 //     $this->response->meta->total = $this->response->meta->filtered;
 // }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Collection.';
+$GLOBALS['timer_log'][] = $entry;
+
 $this->response->meta->links = $this->response->links;
 output($this->response);
 

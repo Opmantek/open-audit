@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 if (empty($this->response->meta->received_data)) {
     log_error('ERR-0025');
     output($this->response);
@@ -36,6 +37,12 @@ if ($this->response->meta->collection === 'clouds') {
 	$this->load->model('m_collection');
 	$this->{'m_collection'}->update();
 }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Update.';
+$GLOBALS['timer_log'][] = $entry;
 
 if ($this->response->meta->format === 'json') {
     #$this->response->data = $this->{'m_'.$this->response->meta->collection}->read();

@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->load->model('m_database');
 $db_table = $this->response->meta->collection;
 if ($this->response->meta->collection === 'devices') {
@@ -32,6 +33,13 @@ if ($this->response->meta->collection === 'devices') {
 $this->response->data = $this->m_database->read($db_table);
 
 $this->response->meta->include = 'v_collection_import_form';
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Import Form.';
+$GLOBALS['timer_log'][] = $entry;
+
 output($this->response);
 
 $log = new stdClass();

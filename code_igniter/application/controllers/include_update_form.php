@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 $this->response->data = $this->{'m_'.$this->response->meta->collection}->read();
 $this->response->meta->filtered = count($this->response->data);
 
@@ -135,6 +136,12 @@ if ($this->response->meta->collection == 'users') {
         $this->response->data[0]->attributes->org_list = implode(',', $this->m_users->get_orgs($this->response->meta->id));
     }
 }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Update Form.';
+$GLOBALS['timer_log'][] = $entry;
 
 output($this->response);
 

@@ -24,6 +24,7 @@
 #  www.opmantek.com or email contact@opmantek.com
 #
 # *****************************************************************************
+$timer_start = microtime(true);
 if ($this->{'m_'.$this->response->meta->collection}->delete($this->response->meta->id)) {
     $this->response->data = array();
     $temp = new stdClass();
@@ -35,6 +36,13 @@ if ($this->{'m_'.$this->response->meta->collection}->delete($this->response->met
     log_error('ERR-0013');
     $this->session->set_flashdata('error', 'Object in ' . $this->response->meta->collection . ' not deleted.');
 }
+
+$timer_end = microtime(true);
+$entry = new stdClass();
+$entry->time = ($timer_end - $timer_start);
+$entry->detail = 'Delete.';
+$GLOBALS['timer_log'][] = $entry;
+
 if ($this->response->meta->format === 'json') {
     output($this->response);
 } else {
