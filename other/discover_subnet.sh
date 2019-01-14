@@ -534,7 +534,7 @@ IFS=$NEWLINEIFS
 
 # In the case of only scnning devices responding to an Nmap ping,
 #    send a log line that this IP didn't respond
-if [ -n "$ip_list" ];then
+if [ -n "$ip_list" ]; then
 	for ip in $ip_list; do
 		response=""
 		for host in $alive_ips; do
