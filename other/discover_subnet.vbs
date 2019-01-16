@@ -338,10 +338,10 @@ db_log_status = ""
 db_log_message = "Discovery for " & subnet_range & " using Nmap version " & nmap_version & " at " & nmap_path
 db_log()
 
-if (ping = "y") then
-    ping = ""
-else
+if (ping = "n") then
     ping = "-Pn"
+else
+    ping = ""
 end if
 
 if (exclude_ip <> "") then
@@ -657,6 +657,9 @@ for each host in hosts
 
         db_log_duration = Timer - host_timer
         if submit_online = "y" then
+            if ping = "" and response_reason = "" then
+                response_reason = "ping response"
+            end if
             if debugging > 0 then
                 wscript.echo "IP " & host & " responding, " & response_reason & ", adding to device list."
             end if
@@ -865,11 +868,13 @@ function check_output()
 
     if instr(temp, "/tcp open ") then
         host_is_up = "true"
-        response_reason = "received open TCP port"
         line_temp = split(temp, " ")
         port = line_temp(0)
         program = line_temp(2)
         nmap_ports = nmap_ports & "," & port & "/" & program
+        if response_reason = "" then
+            response_reason = "received open TCP port (" & port & ", " & program & ")"
+        end if
         if (port = "22/tcp") then
             ssh_status = "true"
             db_log_message = "Host " & host & " is up, received ssh (TCP port 22 open) response"
@@ -885,11 +890,13 @@ function check_output()
 
     if instr(temp, "/tcp open|filtered") and (filtered = "y") then
         host_is_up = "true"
-        response_reason = "received filtered TCP port"
         line_temp = split(temp, " ")
         port = line_temp(0)
         program = line_temp(2)
         nmap_ports = nmap_ports & "," & port & "/" & program
+        if response_reason = "" then
+            response_reason = "received filtered TCP port (" & port & ", " & program & ")"
+        end if
         if (port = "22/tcp") then
             ssh_status = "true"
             db_log_message = "Host " & host & " is up, received filtered ssh (TCP port 22 open|filtered) response"
@@ -905,11 +912,13 @@ function check_output()
 
     if instr(temp, "/udp open ") then
         host_is_up = "true"
-        response_reason = "received open UDP port"
         line_temp = split(temp, " ")
         port = line_temp(0)
         program = line_temp(2)
         nmap_ports = nmap_ports & "," & port & "/" & program
+        if response_reason = "" then
+            response_reason = "received open UDP port (" & port & ", " & program & ")"
+        end if
         if (port = "161/udp") then
             snmp_status = "true"
             db_log_message = "Host " & host & " is up, received snmp (UDP port 161 open) response"
@@ -922,11 +931,13 @@ function check_output()
 
     if instr(temp, "/udp open|filtered") and (filtered = "y") then
         host_is_up = "true"
-        response_reason = "received filtered UDP port"
         line_temp = split(temp, " ")
         port = line_temp(0)
         program = line_temp(2)
         nmap_ports = nmap_ports & "," & port & "/" & program
+        if response_reason = "" then
+            response_reason = "received filtered UDP port (" & port & ", " & program & ")"
+        end if
         if (port = "161/udp") then
             snmp_status = "true"
             db_log_message = "Host " & host & " is up, received filtered snmp (UDP port 161 open|filtered) response"
@@ -939,7 +950,9 @@ function check_output()
 
     if instr(lcase(temp), "Host " & host & " is up, received arp-response") then
         host_is_up = "true"
-        response_reason = "arp response"
+        if response_reason = "" then
+            response_reason = "arp response received"
+        end if
         db_log_message = "Host " & host & " is up, received arp-response"
         db_log_output = line
         db_log()
@@ -947,7 +960,9 @@ function check_output()
 
     if instr(lcase(temp), "mac address:") then
         host_is_up = "true"
-        response_reason = "MAC address retrieved"
+        if response_reason = "" then
+            response_reason = "MAC address retrieved (" & mac_address & ")"
+        end if
         i = split(temp, " ")
         mac_address = i(2)
         manufacturer = i(3)
@@ -962,7 +977,9 @@ function check_output()
 
     if (instr(lcase(temp), "Nmap done: 1 IP address (1 host up)") and ping = "") then
         host_is_up = "true"
-        response_reason = "ping reply"
+        if response_reason = "" then
+            response_reason = "ping reply"
+        end if
         db_log_message = "Host " & host & " is up, received Nmap ping response"
         db_log_output = line
         db_log()
@@ -970,7 +987,9 @@ function check_output()
 
     if (instr(lcase(temp), "due to host timeout") and ping = "") then
         host_is_up = "true"
-        response_reason = "host responded but timed out"
+        if response_reason = "" then
+            response_reason = "host responded but timed out"
+        end if
         db_log_message = "Host " & host & " timed out. Exceeded " & timeout & " seconds."
         db_log_output = line
         db_log()
