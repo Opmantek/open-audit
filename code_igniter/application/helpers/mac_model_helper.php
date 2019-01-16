@@ -8448,6 +8448,7 @@ if (! function_exists('mac_model')) {
 		if ($serial == 'J1GQ') { $description = 'iMac (Retina 5K, 27-inch, 2017)'; }
 		if ($serial == 'J3RW') { $description = 'Mac Pro (Late 2013)'; }
 		if ($serial == 'J3RY') { $description = 'Mac Pro (Late 2013)'; }
+		if ($serial == 'JGH8') { $description = 'MacBook Pro (15-inch, 2018)'; }
 
 		if ($description == '') {
 			$model_xml = @implode('', @file('https://support-sp.apple.com/sp/product?cc='.$serial));
@@ -8455,7 +8456,7 @@ if (! function_exists('mac_model')) {
 				try {
 				    $model_xml = new SimpleXMLElement($model_xml, LIBXML_NOCDATA);
 				} catch (Exception $error) {
-				    $errors = libxml_get_errors();
+				    #$errors = libxml_get_errors();
 				    $error = true;
 				}
 				$description = @$model_xml->configCode;
