@@ -263,7 +263,7 @@ if (! function_exists('copy_to_windows')) {
      *
      * @param     display   Should we output to the screen or not?
      *
-     * @return    false || $return array containing the output and status flag
+     * @return    false || true
      */
    function copy_to_windows($ip = '', $credentials, $share, $source = '', $destination, $log)
     {
