@@ -443,6 +443,7 @@ foreach ($xml->children() as $input) {
     $log->function = 'discoveries';
 
     if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and stripos($device->manufacturer, 'Ubiquiti') === false ) {
+        $log->severity = 7;
         $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
@@ -1146,6 +1147,13 @@ foreach ($xml->children() as $input) {
                 # As at 2.3.0, we now wait for this to complete and parse the
                 # output looking for 'File    ' so we can retrieve the file
                 $output = execute_windows($device->ip, $credentials_windows, $command, $log);
+            } else {
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'Could not audit script to ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
             }
             $audit_file = false;
             if (!empty($output)) {
@@ -1154,6 +1162,13 @@ foreach ($xml->children() as $input) {
                         $audit_file = trim(str_replace('File    ', '', $line));
                     }
                 }
+            } else {
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'No script output from ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
             }
             $copy = false;
             if ($audit_file) {
@@ -1164,10 +1179,32 @@ foreach ($xml->children() as $input) {
                     $destination = $filepath . '/scripts/' . end($temp);
                 }
                 $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $log);
-            }
-            if ($copy) {
-                $audit_result = file_get_contents($destination);
-                unlink($destination);
+                if ($copy) {
+                    $audit_result = file_get_contents($destination);
+                    unlink($destination);
+                    if (empty($audit_result)) {
+                        $log->severity = 3;
+                        $log->command_time_to_execute = '';
+                        $log->message = 'Could not open audit result on localhost ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
+                        $log->command_status = 'fail';
+                        discovery_log($log);
+                        $log->severity = 7;
+                    }
+                } else {
+                    $log->severity = 3;
+                    $log->command_time_to_execute = '';
+                    $log->message = 'Could not copy audit result file to localhost ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                    $log->command_status = 'fail';
+                    discovery_log($log);
+                    $log->severity = 7;
+                }
+            } else {
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'Could not find audit result path in script output from ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
             }
         }
     }
@@ -1189,9 +1226,12 @@ foreach ($xml->children() as $input) {
         $temp = scp($device->ip, $credentials_ssh, $source, $destination, $log);
         if (!$temp) {
             $audit_script = '';
+
+            $log->severity = 3;
             $log->message = 'Could not SCP audit script to ' . $device->ip . ' ' . $destination .')';
             $log->command_status = 'fail';
             discovery_log($log);
+            $log->severity = 7;
         }
         # Successfully copied the audit script, now chmod it
         $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
@@ -1201,7 +1241,17 @@ foreach ($xml->children() as $input) {
         $parameters->ip = $device->ip;
         $parameters->credentials = $credentials_ssh;
         $parameters->command = $command;
-        ssh_command($parameters);
+        $test = ssh_command($parameters);
+        if ($test === false) {
+            $log->file = 'include_input_discoveries';
+            $log->function = 'discoveries';
+            $log->severity = 3;
+            $log->command_time_to_execute = '';
+            $log->message = 'Could not chmod script on ' . $device->ip . ' (System ID ' . $device->id . ').';
+            $log->command_status = 'fail';
+            discovery_log($log);
+            $log->severity = 7;
+        }
 
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
@@ -1235,8 +1285,16 @@ foreach ($xml->children() as $input) {
             if (!empty($result)) {
                 $log->command_status = 'success';
             } else {
+                $log->severity = 3;
                 $log->command_status = 'fail';
             }
+            discovery_log($log);
+            $log->severity = 7;
+        } else {
+            $log->severity = 3;
+            $log->command_time_to_execute = '';
+            $log->message = 'No audit script for ' . $device->ip . ' (System ID ' . $device->id . ').';
+            $log->command_status = 'fail';
             discovery_log($log);
             $log->severity = 7;
         }
