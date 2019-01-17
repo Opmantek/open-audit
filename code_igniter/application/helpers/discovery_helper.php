@@ -418,6 +418,7 @@ if (!function_exists('process_scan')) {
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';
         if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and stripos($device->manufacturer, 'Ubiquiti') === false ) {
+            $log->severity = 7;
             $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
             if (!empty($device->id)) {
                 $log->message .= ' (System ID ' . $device->id . ')';
