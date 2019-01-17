@@ -682,7 +682,7 @@ CREATE TABLE `configuration` (
 LOCK TABLES `configuration` WRITE;
 /*!40000 ALTER TABLE `configuration` DISABLE KEYS */;
 INSERT INTO `configuration` VALUES (1,'blessed_subnets_use','y','bool','y','system','2000-01-01 00:00:00','Should we only accept data from the blessed subnets list.');
-INSERT INTO `configuration` VALUES (2,'default_network_address','','text','y','system','2000-01-01 00:00:00','The ip address or resolvable hostname used by external devices to talk to Open-AudIT.');
+INSERT INTO `configuration` VALUES (2,'default_network_address','','text','y','system','2000-01-01 00:00:00','The URL used by external devices to talk to Open-AudIT.');
 INSERT INTO `configuration` VALUES (3,'delete_noncurrent','n','bool','y','system','2000-01-01 00:00:00','Should we delete any attributes that are not present when we audit a device.');
 INSERT INTO `configuration` VALUES (4,'discovery_create_alerts','y','bool','y','system','2000-01-01 00:00:00','Should Open-AudIT create an entry in the alert table if a change is detected.');
 INSERT INTO `configuration` VALUES (5,'discovery_ip_exclude','','text','y','system','2000-01-01 00:00:00','Populate this list with ip addresses to be excluded from discovery. IPs should be separated by a space.');

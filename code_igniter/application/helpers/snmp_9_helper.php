@@ -45,6 +45,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     $log = new stdClass();
     $log->summary = "snmp_9_helper";
+    $log->severity = 7;
     
     $log->message = 'memory_count retrieval via SNMP for '.$ip;
         $log->command = 'snmpget 1.3.6.1.4.1.9.3.6.6.0';

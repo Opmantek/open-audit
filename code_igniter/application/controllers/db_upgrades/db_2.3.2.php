@@ -38,6 +38,10 @@ $sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_default_preset','1',
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+$sql = "UPDATE configuration SET description = 'The URL used by external devices to talk to Open-AudIT.' WHERE name = 'default_network_address'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # re-encode or credentials
 $this->load->helper('security');
 $sql = "SELECT * FROM `credentials` WHERE (`edited_by` != 'system' or `id` = 1)";
