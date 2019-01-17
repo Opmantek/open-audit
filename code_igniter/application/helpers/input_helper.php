@@ -831,6 +831,11 @@ if (! function_exists('inputRead')) {
             $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', because screen format and no limit requested, so default (page_size).';
             stdlog($log);
         }
+        if ($CI->response->meta->format == 'json' and empty($CI->response->meta->limit)) {
+            $CI->response->meta->limit = intval($CI->config->config['database_show_row_limit']);
+            $log->detail = 'Set limit to ' . $CI->response->meta->limit . ', because JSON format and no limit requested, so default (database_show_row_limit).';
+            stdlog($log);
+        }
         if (!empty($CI->response->meta->limit)) {
             $CI->response->meta->internal->limit = 'LIMIT ' . $CI->response->meta->offset . ',' . intval($CI->response->meta->limit);
         } else {
