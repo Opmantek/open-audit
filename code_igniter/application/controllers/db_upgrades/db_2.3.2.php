@@ -30,11 +30,11 @@
 $this->log_db('Upgrade database to 2.3.2 commenced');
 
 # configuration
-$sql = "DELETE FROM configuration WHERE name = 'discovery_default_preset'";
+$sql = "DELETE FROM configuration WHERE name = 'discovery_default_scan_option'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_default_preset','1','number','y','system','2000-01-01 00:00:00','The default discovery preset for Nmap settings.')";
+$sql = "INSERT INTO `configuration` VALUES (NULL,'discovery_default_scan_option','1','number','y','system','2000-01-01 00:00:00','The default discovery options for Nmap.')";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
@@ -96,6 +96,66 @@ if (!empty($result)) {
     }
 }
 
+
+# discovery scan profiles
+$sql = "DROP table if exists `discovery_scan_options`";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "CREATE TABLE `discovery_scan_options` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL DEFAULT '',
+  `org_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `description` text NOT NULL,
+  `ping` enum('','y','n') NOT NULL DEFAULT 'y',
+  `service_version` enum('','y','n') NOT NULL DEFAULT 'n',
+  `filtered` enum('','y','n') NOT NULL DEFAULT 'n',
+  `timeout` int(10) unsigned NOT NULL DEFAULT '0',
+  `timing` int(1) unsigned NOT NULL DEFAULT 4,
+  `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT '0',
+  `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT '0',
+  `tcp_ports` text NOT NULL,
+  `udp_ports` text NOT NULL,
+  `exclude_tcp_ports` text NOT NULL,
+  `exclude_udp_ports` text NOT NULL,
+  `exclude_ip` text NOT NULL,
+  `ssh_ports` int(10) unsigned NOT NULL,
+  `options` text NOT NULL,
+  `edited_by` varchar(200) NOT NULL DEFAULT '',
+  `edited_date` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (1,'UltraFast',1,'Approximately 1 second per target. Scan only the ports that Open-AudIT needs to use to talk to the device and detect an IOS device (WMI, SSH, SNMP, Apple Sync). A filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n',0,4,0,0,'22,135,62078','161','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (2,'SuperFast',1,'Approximately 5 seconds per target. Scan the top 10 TCP and UDP ports, as well as port 62078 (Apple IOS detection). A filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n',0,4,10,10,'62078','','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (3,'Fast',1,'Approximately 40 seconds per target. Scan the top 100 TCP and UDP ports, as well as port 62078 (Apple IOS detection). A filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n',0,4,100,100,'62078','','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (4,'Medium (Classic)',1,'Approximately 90 seconds per target. As close to a traditional Open-AudIT scan as we can make it. Scan the top 1000 TCP ports, as well as 62078 (Apple IOS detection) and UDP 161 (SNMP). A filtered port is considered open (and will trigger device detection). Devices are scanned regardless of a response to an Nmap ping. Use aggressive timing.','n','n','y',0,4,1000,0,'62078','161','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (5,'Medium',1,'Approximately 100 seconds per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). A filtered port is not considered open. Device must respond to an Nmap ping. Use aggressive timing.','y','n','n',0,4,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (6,'Slow',1,'Approximately 4 minutes per target. Scan the top 1000 TCP and top 100 UDP ports, as well as port 62078 (Apple IOS detection). Version detection enabled. A filtered port is considered open (and will trigger device detection). Device must respond to an Nmap ping. Use normal timing.','y','y','y',0,3,1000,100,'62078','','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `discovery_scan_options` VALUES (7,'UltraSlow',1,'Approximately 20 minutes. Not recommended. Scan the top 1000 TCP and UDP ports, as well as port 62078 (Apple IOS detection). Devices are scanned regardless of a response to an Nmap ping. Version detection enabled. A filtered port is considered open (and will trigger device detection). Use polite timing.','n','y','y',0,2,1000,1000,'62078','','','','','22','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # queue
 $this->alter_table('queue', 'name', "ADD `name` varchar(100) NOT NULL DEFAULT '' AFTER `id`", 'add');
 $this->alter_table('queue', 'status', "ADD `status` varchar(20) NOT NULL DEFAULT '' AFTER `pid`", 'add');
@@ -106,6 +166,8 @@ $this->m_roles->update_permissions('admin', 'queue', 'crud');
 $this->m_roles->update_permissions('org_admin', 'queue', 'cr');
 $this->m_roles->update_permissions('reporter', 'queue', 'r');
 $this->m_roles->update_permissions('user', 'queue', 'r');
+
+$this->m_roles->update_permissions('org_admin', 'discovery_scan_options', 'crud');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20181225' WHERE `name` = 'internal_version'";
