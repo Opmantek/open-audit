@@ -393,9 +393,9 @@ if ($table == 'discovery_scan_options') {
     $dictionary->columns->org_id = $org_id;
     $dictionary->columns->description = $description;
 
-    $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, halt the scan.";
+    $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.";
     $dictionary->columns->service_version = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
-    $dictionary->columns->filtered = "Should we consider a filtered port as a running service, but not accessible - and therefore flag this IP as having a device attached?";
+    $dictionary->columns->filtered = "Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?";
     $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
     $dictionary->columns->timeout = "The number of seconds to try and communicate with the target IP.";
     $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";
@@ -404,8 +404,8 @@ if ($table == 'discovery_scan_options') {
     $dictionary->columns->udp_ports = "Any specific UDP ports you wish tested (comma seperated, no spaces).";
     $dictionary->columns->exclude_tcp_ports = "Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
     $dictionary->columns->exclude_udp_ports = "Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
-    $dictionary->columns->exclude_ip = "Specifies a comma-separated list of targets (no spaces) to be excluded from the scan even if they are part of the overall network range you specify. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.";
-    $dictionary->columns->ssh_ports = "If any of the (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing.";
+    $dictionary->columns->exclude_ip = "Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.";
+    $dictionary->columns->ssh_ports = "If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.";
 }
 
 if ($table == 'export') {
