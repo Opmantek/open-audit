@@ -81,4 +81,15 @@ class M_discovery_scan_options extends MY_Model
             return false;
         }
     }
+
+    public function collection()
+    {
+        $this->log->function = strtolower(__METHOD__);
+        stdlog($this->log);
+        # TODO - add the users allowed Orgs here
+        $sql = "SELECT * FROM `discovery_scan_options`";
+        $result = $this->run_sql($sql);
+        $result = $this->format_data($result, 'discovery_scan_options');
+        return ($result);
+    }
 }
