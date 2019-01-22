@@ -66,7 +66,7 @@ if (! function_exists('set_collection')) {
     {
         $CI = & get_instance();
         $collection = @$CI->uri->segment(1);
-        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','errors','fields','files','floors','graphs','groups','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
+        $collections = array('agents','applications','attributes','buildings','charts','clouds','collectors','configuration','connections','credentials','dashboards','database','devices','discoveries','discovery_log','discovery_scan_options','errors','fields','files','floors','graphs','groups','invoices','invoice_items','ldap_servers','licenses','locations','logs','networks','nmis','orgs','queries','queue','racks','rack_devices','reports','roles','rooms','rows','scripts','search','sessions','summaries','tasks','users','widgets');
         if (!empty($collection) and in_array($collection, $collections)) {
             # a valid collection
         } else {
