@@ -553,6 +553,7 @@ foreach ($xml->children() as $input) {
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         $device->type = 'iphone';
         $device->model = 'Apple iPhone';
+        $device->manufacturer = 'Apple';
         $device->os_group = 'Apple IOS';
         $device->os_family = 'Apple IOS';
         $device->os_name = 'Apple IOS';
