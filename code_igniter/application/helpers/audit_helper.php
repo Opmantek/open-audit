@@ -374,12 +374,47 @@ if (!function_exists('audit_format_system')) {
             $input->hostname = '';
         }
 
+        # Virtual Machines
         if (isset($input->manufacturer) and (
             (strripos($input->manufacturer, "vmware") !== false) or
             (strripos($input->manufacturer, "parallels") !== false) or
             (strripos($input->manufacturer, "virtual") !== false))) {
             $input->form_factor = 'Virtual';
             $mylog->message = "Manufacturer match, setting form factor to Virtual.";
+            discovery_log($mylog);
+        }
+
+        # Mac Model
+        if (!empty($input->os_family) and $input->os_family == 'Apple OSX') {
+            $CI->load->helper('mac_model');
+            $input->description = mac_model($input->serial);
+            $input->class = mac_class($input->model);
+            $input->form_factor = mac_form_factor($input->model);
+            $mylog->message = "OSX detected, setting description, class and form factor.";
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor == 'Virtual' and !empty($input->os_group) and $input->os_group != 'Windows' and $input->os_group != '' and empty($input->class)) {
+            $input->class = 'virtual server';
+            $mylog->message = "Setting class to " . $input->class;
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor != 'Virtual' and !empty($input->os_group) and $input->os_group != 'Windows' and $input->os_group != '' and empty($input->class)) {
+            $input->class = 'server';
+            $mylog->message = "Setting class to " . $input->class;
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor == 'Virtual' and !empty($input->os_group) and $input->os_group == 'Windows' and stripos($input->os_name, 'server') !== false and empty($input->class)) {
+            $input->class = 'virtual server';
+            $mylog->message = "Setting class to " . $input->class;
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor != 'Virtual' and !empty($input->os_group) and $input->os_group == 'Windows' and stripos($input->os_name, 'server') !== false and empty($input->class)) {
+            $input->class = 'server';
+            $mylog->message = "Setting class to " . $input->class;
             discovery_log($mylog);
         }
 
@@ -407,16 +442,6 @@ if (!function_exists('audit_format_system')) {
             if ($input->mac_address == '00:00:00:00:00:00') {
                 unset($input->mac_address);
             }
-        }
-
-        # Mac Model
-        if (!empty($input->os_family) and $input->os_family == 'Apple OSX') {
-            $CI->load->helper('mac_model');
-            $input->description = mac_model($input->serial);
-            $input->class = mac_class($input->model);
-            $input->form_factor = mac_form_factor($input->model);
-            $mylog->message = "OSX detected, setting description, class and form factor.";
-            discovery_log($mylog);
         }
 
         # because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial
