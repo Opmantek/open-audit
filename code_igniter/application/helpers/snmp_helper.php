@@ -704,6 +704,31 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
         }
+        //  guess at model parsing host resources mib
+        if (empty($details->model)) {
+            $log->message = 'Model based on Host Resources MIB retrieval for '.$ip;
+            $log->command = 'snmpget 1.3.6.1.2.1.25.1.4.0';
+            $log->command_status = 'fail';
+            $log->id = discovery_log($log);
+            $item_start = microtime(true);
+
+            $temp = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.25.1.4.0");
+
+            $log->command_time_to_execute = (microtime(true) - $item_start);
+            $log->command_output = (string)$temp;
+            $log->command_status = 'notice';
+            discovery_log($log);
+            unset($log->id, $log->command, $log->command_time_to_execute);
+
+            if (stripos($temp, 'board=') !== false) {
+                $temp = explode(' ', $temp);
+                foreach ($temp as $item) {
+                    if (stripos($item, 'board=') !== false) {
+                        $details->model = trim(str_replace('board=', '', $item));
+                    }
+                }
+            }
+        }
 
         if (!empty($details->model) and strpos($details->model, 'UBNT ') !== false) {
             $details->manufacturer = 'Ubiquiti Networks Inc.';
