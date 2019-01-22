@@ -61,34 +61,7 @@ class M_discoveries extends MY_Model
             $result[0]->other = json_decode($result[0]->other);
         }
         if ($result[0]->type == 'subnet') {
-            $command = '';
-            // Unix based discovery
-            if (php_uname('s') != 'Windows NT') {
-                $filepath = $this->config->config['base_path'] . '/other';
-                $command = "$filepath/discover_subnet.sh" .
-                            " subnet_range=" .  $result[0]->other->subnet .
-                            " url=".            $result[0]->network_address . "index.php/input/discoveries" .
-                            " submit_online=y" .
-                            " echo_output=n" .
-                            " create_file=n" .
-                            " debugging=0" .
-                            " discovery_id=" . $result[0]->id . " > /dev/null 2>&1 &";
-                if (php_uname('s') == 'Linux') {
-                    $command = 'nohup ' . $command;
-                }
-            } else if (php_uname('s') == 'Windows NT') {
-                $filepath = $this->config->config['base_path'] . '\\other';
-                // run the script and continue (do not wait for result)
-                $command = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
-                            " subnet_range=" . $result[0]->other->subnet .
-                            " url=".           $result[0]->network_address . "index.php/input/discoveries" .
-                            " submit_online=y" .
-                            " echo_output=n" .
-                            " create_file=n" .
-                            " debugging=0" .
-                            " discovery_id=" . $result[0]->id;
-            }
-            $result[0]->command = $command;
+            $result[0]->command = $this->create_command($result[0]);
         }
         $result = $this->format_data($result, 'discoveries');
         return ($result);
@@ -178,7 +151,183 @@ class M_discoveries extends MY_Model
             }
             $this->log->detail = $command_string;
             stdlog($this->log);
+
+
+            if (!empty($discovery[0]->other)) {
+                $discovery[0]->other = json_decode($discovery[0]->other);
+            }
+            if ($discovery[0]->type == 'subnet') {
+                $discovery[0]->command = $this->create_command($discovery[0]);
+            }
+            $result = $this->format_data($discovery[0], 'discoveries');
+            return $result;
+        } else {
+            return false;
         }
+    }
+
+    public function create_command($discovery = null)
+    {
+        if (empty($discovery)) {
+            // log an error
+        }
+        $options = $discovery->other->nmap;
+        $command_options = '';
+        $discovery_scan_options = new stdClass();
+        $nmap_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'ping', 'tcp_ports', 'timing', 'udp_ports', 'service_version', 'ssh_ports');
+
+        if (!empty($options->discovery_scan_option_id)) {
+            $sql = "SELECT * FROM `discovery_scan_options` WHERE id = ?";
+            $data = array(intval($options->discovery_scan_option_id));
+            $result = $this->run_sql($sql, $data);
+            if (!empty($result)) {
+                $discovery_scan_options = $result[0];
+            }
+            // Take selected attributes from the discovery_options as authoritative
+            $options->ping = $discovery_scan_options->ping;
+            $options->service_version = $discovery_scan_options->service_version;
+            $options->filtered = $discovery_scan_options->filtered;
+            $options->timing = $discovery_scan_options->timing;
+            $options->nmap_tcp_ports = $discovery_scan_options->nmap_tcp_ports;
+            $options->nmap_udp_ports = $discovery_scan_options->nmap_udp_ports;
+            $options->tcp_ports = $discovery_scan_options->tcp_ports;
+            $options->udp_ports = $discovery_scan_options->udp_ports;
+            if (empty($options->timeout)) {
+                if (!empty($discovery_scan_options->timeout)) {
+                    $options->timeout = $discovery_scan_options->timeout;
+                } else {
+                    $options->timeout = '';
+                }
+            }
+            // Combine the exclude_tcp_ports attributes
+            if (empty($options->exclude_tcp_ports)) {
+                if (!empty($discovery_scan_options->exclude_tcp_ports)) {
+                    $options->exclude_tcp_ports = $discovery_scan_options->exclude_tcp_ports;
+                } else {
+                    $options->exclude_tcp_ports = '';
+                }
+            } else {
+                if (!empty($discovery_scan_options->exclude_tcp_ports)) {
+                    $temp_db = explode(',', $discovery_scan_options->exclude_tcp_ports);
+                    $temp_submit = explode(',', $options->exclude_tcp_ports);
+                    $exclude_tcp_ports = array_merge($temp_db, $temp_submit);
+                    $exclude_tcp_ports = array_unique($exclude_tcp_ports);
+                    $exclude_tcp_ports = implode(',', $exclude_tcp_ports);
+                    $options->exclude_tcp_ports = $exclude_tcp_ports;
+                    unset($temp_db);
+                    unset($temp_submit);
+                    unset($exclude_tcp_ports);
+                }
+            }
+            // Combine the exclude_udp_ports attributes
+            if (empty($options->exclude_udp_ports)) {
+                if (!empty($discovery_scan_options->exclude_udp_ports)) {
+                    $options->exclude_udp_ports = $discovery_scan_options->exclude_udp_ports;
+                } else {
+                    $options->exclude_udp_ports = '';
+                }
+            } else {
+                if (!empty($discovery_scan_options->exclude_udp_ports)) {
+                    $temp_db = explode(',', $discovery_scan_options->exclude_udp_ports);
+                    $temp_submit = explode(',', $options->exclude_udp_ports);
+                    $exclude_udp_ports = array_merge($temp_db, $temp_submit);
+                    $exclude_udp_ports = array_unique($exclude_udp_ports);
+                    $exclude_udp_ports = implode(',', $exclude_udp_ports);
+                    $options->exclude_udp_ports = $exclude_udp_ports;
+                    unset($temp_db);
+                    unset($temp_submit);
+                    unset($exclude_udp_ports);
+                }
+            }
+            // Combine the exclude_ip attributes
+            if (empty($options->exclude_ip)) {
+                if (!empty($discovery_scan_options->exclude_ip)) {
+                    $options->exclude_ip = $discovery_scan_options->exclude_ip;
+                } else {
+                    $options->exclude_ip = '';
+                }
+            } else {
+                if (!empty($discovery_scan_options->exclude_ip)) {
+                    $temp_db = explode(',', $discovery_scan_options->exclude_ip);
+                    $temp_submit = explode(',', $options->exclude_ip);
+                    $exclude_ip = array_merge($temp_db, $temp_submit);
+                    $exclude_ip = array_unique($exclude_ip);
+                    $exclude_ip = implode(',', $exclude_ip);
+                    $options->exclude_ip = $exclude_ip;
+                    unset($temp_db);
+                    unset($temp_submit);
+                    unset($exclude_ip);
+                }
+            }
+            // SSH ports check
+            if (empty($options->ssh_ports)) {
+                if (!empty($discovery_scan_options->ssh_ports)) {
+                    $options->ssh_ports = $discovery_scan_options->ssh_ports;
+                } else {
+                    $options->ssh_ports = '22';
+                }
+            } else {
+                if (!empty($discovery_scan_options->ssh_ports)) {
+                    $temp_db = explode(',', $discovery_scan_options->ssh_ports);
+                    $temp_submit = explode(',', $options->ssh_ports);
+                    $ssh_ports = array_merge($temp_db, $temp_submit);
+                    $ssh_ports = array_unique($ssh_ports);
+                    $ssh_ports = implode(',', $ssh_ports);
+                    $options->ssh_ports = $ssh_ports;
+                    unset($temp_db);
+                    unset($temp_submit);
+                    unset($ssh_ports);
+                }
+            }
+        }
+
+        if (!empty($options->ssh_ports)) {
+            $temp_db = explode(',', $options->tcp_ports);
+            $temp_submit = explode(',', $options->ssh_ports);
+            $tcp_ports = array_merge($temp_db, $temp_submit);
+            $tcp_ports = array_unique($tcp_ports);
+            $tcp_ports = implode(',', $tcp_ports);
+            $options->tcp_ports = $tcp_ports;
+            unset($temp_db);
+            unset($temp_submit);
+            unset($tcp_ports);
+        }
+
+        // ended retrieval and populate from discovery_scan_options
+        // Loop through and set option where !empty
+        $command_options = '';
+        foreach ($options as $key => $value) {
+            if (!empty($value) and $key != 'discovery_scan_option_id') {
+                $command_options .= ' ' . $key . '=' . $value;
+            }
+        }
+
+        if (php_uname('s') != 'Windows NT') {
+            $filepath = $this->config->config['base_path'] . '/other';
+            $command = "$filepath/discover_subnet.sh" .
+                        " subnet_range=" .  $discovery->other->subnet .
+                        " url=".            $discovery->network_address . "index.php/input/discoveries" .
+                        " submit_online=y" .
+                        " echo_output=n" .
+                        " create_file=n" .
+                        " debugging=0" .
+                        " discovery_id=" . $discovery->id . " " . $command_options . " > /dev/null 2>&1 &";
+            if (php_uname('s') == 'Linux') {
+                $command = 'nohup ' . $command;
+            }
+        } else if (php_uname('s') == 'Windows NT') {
+            $filepath = $this->config->config['base_path'] . '\\other';
+            // run the script and continue (do not wait for result)
+            $command = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
+                        " subnet_range=" . $discovery->other->subnet .
+                        " url=".           $discovery->network_address . "index.php/input/discoveries" .
+                        " submit_online=y" .
+                        " echo_output=n" .
+                        " create_file=n" .
+                        " debugging=0" .
+                        " discovery_id=" . $rdiscovery->id . " " . $command_options;
+        }
+        return $command;
     }
 
     public function run($id = '')
@@ -240,34 +389,9 @@ class M_discoveries extends MY_Model
         $discovery->other = json_decode($discovery->other);
 
         if ($discovery->type == 'subnet') {
-            $nmap_options = array('exclude_ip', 'exclude_tcp_ports', 'exclude_udp_ports', 'filtered', 'nmap_tcp_ports', 'nmap_udp_ports', 'ping', 'tcp_ports', 'timing', 'udp_ports', 'service_version');
-            $options_command = '';
-            foreach ($nmap_options as $item) {
-                if (!isset($discovery->other->nmap->{$item})) {
-                    $value = $this->config->config[$item];
-                } else {
-                    $value = $discovery->other->nmap->{$item};
-                }
-                if (!empty($value)) {
-                    $options_command .= ' ' . $item . '=' . $value;
-                }
-            }
+            $command_string = $this->create_command($discovery);
             // Unix based discovery
             if (php_uname('s') != 'Windows NT') {
-                $filepath = $this->config->config['base_path'] . '/other';
-                $command_string = "$filepath/discover_subnet.sh" .
-                                    " subnet_range=" .  $discovery->other->subnet .
-                                    " url=".            $discovery->network_address . "index.php/input/discoveries" .
-                                    " submit_online=y" .
-                                    " echo_output=n" .
-                                    " create_file=n" .
-                                    " debugging=" . $debugging .
-                                    " discovery_id=" . $discovery->id . 
-                                    $options_command .
-                                    " > /dev/null 2>&1 &";
-                if (php_uname('s') == 'Linux') {
-                    $command_string = 'nohup ' . $command_string;
-                }
                 exec($command_string, $output, $return_var);
                 $this->log->detail = $command_string;
                 if ($return_var != '0') {
@@ -288,16 +412,6 @@ class M_discoveries extends MY_Model
 
             // Windows based discovery
             if (php_uname('s') == 'Windows NT') {
-                $filepath = $this->config->config['base_path'] . '\\other';
-                // run the script and continue (do not wait for result)
-                $command_string = "%comspec% /c start /b cscript //nologo $filepath\\discover_subnet.vbs" .
-                                    " subnet_range=" . $discovery->other->subnet .
-                                    " url=".           $discovery->network_address . "index.php/input/discoveries" .
-                                    " submit_online=y" .
-                                    " echo_output=n" .
-                                    " create_file=n" .
-                                    " debugging=0" .
-                                    " discovery_id=" . $discovery->id;
                 pclose(popen($command_string, "r"));
             }
         }
