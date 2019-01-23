@@ -231,7 +231,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname", "$details->uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
