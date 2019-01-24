@@ -367,8 +367,6 @@ if [ "$help" = "y" ]; then
 	echo "    *http://localhost/open-audit/index.php/discovery/process_subnet - The http url of the Open-AudIT Server used to submit the result to."
 	echo ""
 	echo ""
-	echo "NOTE - The netstat section can take a few minutes to complete."
-	echo ""
 	echo "The name of the resulting XML file will be in the format HOSTNAME-YYMMDDHHIISS.xml, as in the hostname of the machine the the complete timestamp the audit was started."
 	exit
 fi
@@ -2672,11 +2670,32 @@ if [ "$debugging" -gt "0" ]; then
 	echo "Netstat Info"
 fi
 netstatdump=$(netstat -lntup 2>/dev/null | grep -v "(only servers)" | grep -v "Foreign Address")
-{
-echo "	<netstat>"
-echo "		<![CDATA[$netstatdump]]>"
-echo "	</netstat>"
-} >> "$xml_file"
+echo "	<netstat>" >> "$xml_file"
+for line in $netstatdump; do
+	protocol=$(echo "$line" | awk '{print $1}')
+	ip=$(echo "$line" | awk '{print $4}')
+	ip=${ip%:*}
+	if [  "$ip" = "" ]; then
+		ip="0.0.0.0"
+	fi
+	port=$(echo "$line" | awk '{print $4}')
+	port=${port##*:}
+	program=$(echo "$line" | awk '{print $6}')
+	if [ "$program" != "LISTEN" ]; then
+		program=$(echo "$program" | cut -d\/ -f2)
+	else
+		program=$(echo "$line" | awk '{print $7}' | cut -d\/ -f2)
+	fi
+	{
+	echo "		<item>"
+	echo "			<protocol>$(escape_xml "$protocol")</protocol>"
+	echo "			<ip>$(escape_xml "$ip")</ip>"
+	echo "			<port>$(escape_xml "$port")</port>"
+	echo "			<program>$(escape_xml "$program")</program>"
+	echo "		</item>"
+	} >> "$xml_file"
+done
+echo "	</netstat>" >> "$xml_file"
 
 
 ########################################################

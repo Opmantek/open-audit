@@ -123,10 +123,6 @@ if (!function_exists('audit_convert')) {
                         unset($audit->system->{$key});
                     }
                 }
-                if (!empty($json->netstat)) {
-                    $audit->netstat = $json->netstat;
-                    unset($json->netstat);
-                }
                 foreach ($json as $section => $something) {
                     $audit->{$section} = array();
                     if (!empty($json->{$section}->item) and is_array($json->{$section}->item)) {
@@ -138,7 +134,7 @@ if (!function_exists('audit_convert')) {
                     }
                 }
                 foreach ($audit as $section => $something) {
-                    if ($section != 'system' and $section != 'netstat') {
+                    if ($section != 'system') {
                         for ($i=0; $i < count($audit->{$section}); $i++) {
                             if (!empty($audit->{$section}[$i])) {
                                 foreach ($audit->{$section}[$i] as $key => $value) {
@@ -196,11 +192,8 @@ if (!function_exists('audit_convert')) {
                 }
 
                 unset($newxml);
-                if (!empty($xml->netstat)) {
-                    $audit->netstat = $xml->netstat;
-                }
                 foreach ($xml as $section => $something) {
-                    if ($section != 'sys' and $section != 'netstat') {
+                    if ($section != 'sys') {
                         $audit->{$section} = array();
                         foreach ($xml->{$section}->item as $item) {
                             $newitem = new stdClass();

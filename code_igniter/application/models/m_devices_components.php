@@ -294,10 +294,27 @@ class M_devices_components extends MY_Model
         $create_alerts = $this->config->config['discovery_create_alerts'];
 
         if (empty($parameters) or empty($parameters->table) or empty($parameters->details) or empty($parameters->input)) {
+            $message = '';
+            if (empty($parameters->table)) {
+                $message = 'No table supplied.';
+            } else {
+                $message = 'Table '  . $parameters->table . ' supplied.';
+            }
+            if (empty($parameters->details)) {
+                $message .= ' No details supplied.';
+            } else {
+                $message .= ' Details supplied.';
+            }
+            if (empty($parameters->input)) {
+                $message .= ' No input supplied.';
+            } else {
+                $message .= ' Input supplied.';
+            }
             $mylog = new stdClass();
             $mylog->severity = 4;
             $mylog->status = 'fail';
-            $mylog->message = 'Function process_component called without correct params object';
+            $mylog->summary = 'Function process_component called without correct params object';
+            $mylog->message = $message;
             $mylog->file = 'm_devices_components';
             $mylog->function = 'process_component';
             stdlog($mylog);
@@ -366,16 +383,6 @@ class M_devices_components extends MY_Model
             $log->command_status = 'fail';
             discovery_log($log);
             return;
-        }
-
-        ### NETSTAT ###
-        # Need to do this first as until we convert the data
-        # there won't be an input->item
-        if ((string)$table == 'netstat') {
-            $input = $this->format_netstat_data($input, $details);
-            if (empty($input)) {
-                return;
-            }
         }
 
         foreach ($match_columns as $match_column) {
