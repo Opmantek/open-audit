@@ -344,8 +344,13 @@ class Nmis extends MY_Controller
     public function collection()
     {
         $this->load->model('m_devices');
+        $this->response->meta->internal->properties = 'system.id, system.name, system.ip, system.nmis_manage, system.type, system.nmis_name, system.omk_uuid, system.nmis_notes, system.nmis_role, system.nmis_business_service, system.nmis_group';
         $devices = $this->m_devices->collection();
-        $this->response->meta->total = intval(count($devices));
+        if (!empty($devices)) {
+            $this->response->meta->total = intval(count($devices));
+        } else {
+            $this->response->meta->total = 0;
+        }
         if ($devices) {
             foreach ($devices as &$device) {
                 $this_device = new stdClass();
