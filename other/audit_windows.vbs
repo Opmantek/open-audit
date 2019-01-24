@@ -35,7 +35,7 @@ forceCScriptExecution
 
 start_time = Timer
 
-' NOTE - Scheduled Tasks and Share Sizes can only be retrieved when running locally.
+' NOTE - Netstat Ports, Scheduled Tasks and Share Sizes can only be retrieved when running locally.
 ' below are the default settings
 
 ' default to localhost
@@ -6512,37 +6512,53 @@ end if
 
 result.WriteText "  </software_key>" & vbcrlf
 
-if ((audit_netstat = "y") or (audit_netstat = "s" and instr(lcase(system_os_name), "server"))) then
-    if debugging > "0" then wscript.echo "netstat info" end if
-    cmd = "netstat -abn"
-    on error resume next
-    set rexec = objShell.exec(cmd)
-    on error goto 0
-    old_line = ""
-    new_line = ""
-    if (isobject(rexec)) then
-        result.WriteText "  <netstat>" & vbcrlf
-        result.WriteText "  <![CDATA["
-        do while not rexec.StdOut.AtEndofStream
-            strtext = rexec.stdout.readline()
-            if (instr(strtext, "Active Connections") or instr(strtext, "Proto  Local Address")) then
-                ' do noting - these are header lines
-            else
-                if ((instr(strtext, "  TCP") = 1) or (instr(strtext, "  UDP") = 1)) then
-                    ' we have a new line, write out the old line
-                    if (instr(old_line, "LISTENING") or instr(old_line, "  UDP") = 1) then
-                        ' only write out the line if it's a "listening" port
-                        result.WriteText old_line & vbcrlf
-                    end if
-                    old_line = strText
+
+if (strcomputer = "." and audit_location = "local") then
+    if ((audit_netstat = "y") or (audit_netstat = "s" and instr(lcase(system_os_name), "server"))) then
+        if debugging > "0" then wscript.echo "netstat info" end if
+        cmd = "netstat -nao"
+        on error resume next
+        set rexec = objShell.exec(cmd)
+        on error goto 0
+        old_line = ""
+        new_line = ""
+        if (isobject(rexec)) then
+            result.WriteText "    <netstat>" & vbcrlf
+            do while not rexec.StdOut.AtEndofStream
+                strtext = rexec.stdout.readline()
+                if (instr(strtext, "Active Connections") or instr(strtext, "Proto  Local Address")) then
+                    ' do noting - these are header lines
                 else
-                    ' we have to add on to the previous line
-                    old_line = old_line & " " & strText
+                    if ((instr(strtext, "  TCP") = 1) or (instr(strtext, "  UDP") = 1)) then
+                        if (instr(strtext, "LISTENING") or instr(strtext, "  UDP") = 1) then
+                            ' only write out the line if it's a "listening" port
+                            Dim words, ip, protocol, ports, port, pid, program
+                            do while instr(strtext, "  ") > 0
+                                strtext = Replace(strtext, "  ", " ")
+                            loop
+                            strtext = trim(strtext)
+                            words = split(strtext)
+                            ports = split(words(1), ":")
+                            port = ports(UBound(ports))
+                            ip = replace(words(1), ":" & port, "")
+                            pid = words(Ubound(words))
+                            set colItems = objWMIService.ExecQuery("Select * from Win32_Process where ProcessID = " & pid,,32)
+                            program = ""
+                            for each objItem in colItems
+                                program = objItem.CommandLine
+                            next
+                            result.WriteText "    <item>" & vbcrlf
+                            result.WriteText "        <protocol>" & escape_xml(words(0)) & "</protocol>" & vbcrlf
+                            result.WriteText "        <ip>" & escape_xml(ip) & "</ip>" & vbcrlf
+                            result.WriteText "        <port>" & escape_xml(port) & "</port>" & vbcrlf
+                            result.WriteText "        <program>" & escape_xml(program) & "</program>" & vbcrlf
+                            result.WriteText "    </item>" & vbcrlf
+                        end if
+                    end if
                 end if
-            end if
-        loop
-        result.WriteText "]]>" & vbcrlf
-        result.WriteText "  </netstat>" & vbcrlf
+            loop
+            result.WriteText "  </netstat>" & vbcrlf
+        end if
     end if
 end if
 
