@@ -350,6 +350,23 @@ if (!function_exists('process_scan')) {
         }
         discovery_log($log);
 
+        $input->ssh_port = '22';
+        if ($discovery->other->nmap->ssh_ports != '22') {
+            $nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
+            foreach (explode(',', $input->nmap_ports) as $port) {
+                $temp = explode('/', $port);
+                $port = $temp[0];
+                foreach ($nmap_ports as $nmap_port) {
+                    if ($port == $nmap_port) {
+                        $input->ssh_port = $port;
+                        $input->ssh_status = 'true';
+                    }
+                }
+                unset($nmap_item);
+                unset($temp);
+            }
+        }
+
         $log->message = 'SSH Status is '.$input->ssh_status.' on '.$device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
@@ -448,6 +465,7 @@ if (!function_exists('process_scan')) {
             }
             $parameters->log = $log;
             $parameters->credentials = $credentials;
+            $parameters->ssh_port = $ssh_port;
             $ssh_details = ssh_audit($parameters);
             if (!empty($ssh_details)) {
 
@@ -1207,7 +1225,14 @@ if (!function_exists('process_scan')) {
                 $destination .= '/';
             }
             $destination .= $audit_script;
-            $temp = scp($device->ip, $credentials_ssh, $source, $destination, $log);
+            $parameters = new stdClass();
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->source = $source;
+            $parameters->destination = $destination;
+            $parameters->log = $log;
+            $parameters->ssh_port = $input->ssh_port;
+            $temp = scp($parameters);
 
             # Delete the local audit script if it's not a default script
             if ($audit_script != '' and $source_name != $audit_script) {
@@ -1232,8 +1257,8 @@ if (!function_exists('process_scan')) {
             $parameters->ip = $device->ip;
             $parameters->credentials = $credentials_ssh;
             $parameters->command = $command;
+            $parameters->ssh_port = $input->ssh_port;
             ssh_command($parameters);
-            #ssh_command($device->ip, $credentials_ssh, $command, $discovery->id);
 
             $log->file = 'discovery_helper';
             $log->function = 'discoveries';
@@ -1261,8 +1286,8 @@ if (!function_exists('process_scan')) {
                 $parameters->ip = $device->ip;
                 $parameters->credentials = $credentials_ssh;
                 $parameters->command = $command;
+                $parameters->ssh_port = $input->ssh_port;
                 $result = ssh_command($parameters);
-                #$result = ssh_command($device->ip, $credentials_ssh, $command, $discovery->id);
                 $command_end = microtime(true);
                 $log->command_time_to_execute = $command_end - $command_start;
                 if (!empty($result)) {
@@ -1295,7 +1320,14 @@ if (!function_exists('process_scan')) {
                 } else {
                     $destination = $filepath . '/scripts/' . end($temp);
                 }
-                $temp = scp_get($device->ip, $credentials_ssh, $audit_file, $destination, $log);
+                $parameters = new stdClass();
+                $parameters->log = $log;
+                $parameters->ip = $device->ip;
+                $parameters->credentials = $credentials_ssh;
+                $parameters->source = $audit_file;
+                $parameters->destination = $destination;
+                $parameters->ssh_port = $input->ssh_port;
+                $temp = scp_get($parameters);
                 if ($temp) {
                     $audit_result = file_get_contents($destination);
                     if (empty($audit_result)) {
@@ -1308,8 +1340,6 @@ if (!function_exists('process_scan')) {
                 }
             }
         }
-
-
 
         $log->file = 'discovery_helper';
         $log->function = 'discoveries';

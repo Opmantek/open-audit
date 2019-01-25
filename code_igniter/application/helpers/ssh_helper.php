@@ -58,37 +58,62 @@ if (! function_exists('scp')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-    function scp($ip = '', $credentials = '', $source = '', $destination = '', $log)
+    #function scp($ip = '', $credentials = '', $source = '', $destination = '', $log)
+    function scp($parameters)
     {
 
+        $message = '';
+        if (empty($parameters->ip)) {
+            $message = 'No IP supplied to scp function.';
+        }
+        if (!filter_var($parameters->ip, FILTER_VALIDATE_IP)) {
+            $message = 'Invalid IP supplied to scp function.';
+        }
+        if (!is_object($parameters->credentials)) {
+            $message = 'No credentials supplied to scp function.';
+        }
+        if (empty($parameters->source)) {
+            $message = 'No source supplied to scp function.';
+        }
+        if (empty($parameters->destination)) {
+            $message = 'No destination supplied to scp function.';
+        }
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else {
+            $log = new stdClass();
+        }
         $log->severity = 7;
         $log->file = 'ssh_helper';
         $log->function = 'scp';
         $log->command = '';
         $log->command_output = '';
+        if (!empty($message)) {
+            $log->message = $message;
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+
+        $log->message = 'Inside SCP function.';
+        discovery_log($log);
+
+
+        $ip = $parameters->ip;
+        $credentials = $parameters->credentials;
+        $source = $parameters->source;
+        $destination = $parameters->destination;
+        if (!empty($parameters->ssh_port)) {
+            $ssh_port = intval($parameters->ssh_port);
+        }
+        if (empty($ssh_port)) {
+            $ssh_port = '22';
+        }
+
         $item_start = microtime(true);
         $CI = & get_instance();
-        if (empty($ip)) {
-            $log->message = 'No IP supplied to scp function.';
-            $log->severity = 3;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'Invalid IP supplied to scp function.';
-            $log->severity = 3;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to scp function.';
-            $log->severity = 3;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
+
         if (php_uname('s') != 'Windows NT') {
             set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
         } else {
@@ -96,10 +121,15 @@ if (! function_exists('scp')) {
         }
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
-        if (!defined('NET_SSH2_LOGGING')) {
-            define('NET_SSH2_LOGGING', 2);
+        define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
+        $ssh = new Net_SFTP($ip, $ssh_port);
+        if (empty($ssh)) {
+            $log->message = 'Could not instanciate SSH object to ' . $ip . ':' . $ssh_port . '.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
         }
-        $ssh = new Net_SFTP($ip);
         if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
             $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
         }
@@ -115,27 +145,29 @@ if (! function_exists('scp')) {
                 $username = $credentials->credentials->username;
                 $password = @$credentials->credentials->password;
             } else {
-                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                $log->message = "Failure, credentials named " . $credentials->name . " (key) not used to log in to $ip.";
                 $log->command_status = 'fail';
                 $log->command =  $ssh->getLog();
                 discovery_log($log);
                 return false;
             }
         } else if ($credentials->type == 'ssh') {
-            // $log->message = 'Using SSH to copy file.';
-            // discovery_log($log);
+            $log->message = 'Using SSH to copy file.';
+            discovery_log($log);
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
             $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
+            $log->command_status = 'notice';
             try {
                 $ssh->login($credentials->credentials->username, $credentials->credentials->password);
             } catch (Exception $e) {
                 $log->message = "Failure, credentials named " . $username . " not used to log in to $ip.";
                 $log->command_status = 'fail';
+                $log->command =  $ssh->getLog();
                 $log->severity = 3;
-                discovery_log($log);
                 return false;
             }
+            discovery_log($log);
         } else {
             $log->message = 'No credentials of ssh or ssh_key passed to scp function.';
             $log->command_status = 'fail';
@@ -146,15 +178,14 @@ if (! function_exists('scp')) {
         }
 
         $status = true;
-        $log->command = 'sftp ' . $source . ' to ' . $destination;
+        $log->command = 'sftp ' . $source . ' to ' . $ip . ':' . $destination;
         $log->command_status = 'success';
         $log->message = 'Copy file to ' . $ip;
         try {
-            $output = $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
-            $log->command_output = $output;
+            $ssh->put($destination, $source, NET_SFTP_LOCAL_FILE);
         } catch (Exception $e) {
             $log->command = $ssh->getLog();
-            $log->command_output = $output;
+            $log->command_output = '';
             $log->command_status = 'fail';
             $status = false;
         }
@@ -190,38 +221,57 @@ if (! function_exists('scp_get')) {
      *
      * @return    false || $return array containing the output and status flag
      */
-    function scp_get($ip = '', $credentials = '', $source = '', $destination = false, $log)
+    #function scp_get($ip = '', $credentials = '', $source = '', $destination = false, $log)
+    function scp_get($parameters)
     {
-
+        $message = '';
+        if (empty($parameters->ip)) {
+            $message = 'No IP supplied to scp_get function.';
+        } else {
+            if (!filter_var($parameters->ip, FILTER_VALIDATE_IP)) {
+                $message = 'Invalid IP supplied to scp_get function.';
+            }
+        }
+        if (!is_object($parameters->credentials)) {
+            $message = 'No credentials supplied to scp_get function.';
+        }
+        if (empty($parameters->source)) {
+            $message = 'No source supplied to scp_get function.';
+        }
+        if (empty($parameters->destination)) {
+            $message = 'No destination supplied to scp_get function.';
+        }
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else {
+            $log = new stdClass();
+        }
         $log->severity = 7;
         $log->file = 'ssh_helper';
-        $log->function = 'scp';
+        $log->function = 'scp_get';
         $log->command = '';
         $log->command_output = '';
-        $CI = & get_instance();
+        if (!empty($message)) {
+            $log->message = $message;
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
 
+        $ip = $parameters->ip;
+        $credentials = $parameters->credentials;
+        $source = $parameters->source;
+        $destination = $parameters->destination;
+        if (!empty($parameters->ssh_port)) {
+            $ssh_port = intval($parameters->ssh_port);
+        }
+        if (empty($ssh_port)) {
+            $ssh_port = '22';
+        }
+
+        $CI = & get_instance();
         $item_start = microtime(true);
-        if (empty($ip)) {
-            $log->message = 'No IP supplied to scp_get function.';
-            $log->severity = 3;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-            $log->message = 'Invalid IP supplied to scp_get function.';
-            $log->severity = 3;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
-        if (!is_object($credentials)) {
-            $log->message = 'No credentials supplied to scp_get function.';
-            $log->severity = 3;
-            discovery_log($log);
-            $log->severity = 7;
-            return false;
-        }
         if (php_uname('s') != 'Windows NT') {
             set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
         } else {
@@ -232,7 +282,14 @@ if (! function_exists('scp_get')) {
         if (!defined('NET_SSH2_LOGGING')) {
             define('NET_SSH2_LOGGING', 2);
         }
-        $ssh = new Net_SFTP($ip);
+        $ssh = new Net_SFTP($ip, $ssh_port);
+        if (empty($ssh)) {
+            $log->message = 'Could not instanciate SFTP to ' . $ip . ':' . $ssh_port . '.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
         if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
             $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
         }
@@ -250,7 +307,7 @@ if (! function_exists('scp_get')) {
                 $username = $credentials->credentials->username;
                 $password = @$credentials->credentials->password;
             } else {
-                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
+                $log->message = "Failure, credentials named " . $credentials->name . " (key) not used to log in to $ip.";
                 $log->command =  $ssh->getLog();
                 discovery_log($log);
             }
@@ -336,6 +393,12 @@ if (! function_exists('ssh_command')) {
         $ip = $parameters->ip;
         $credentials = $parameters->credentials;
         $command = $parameters->command;
+        if (!empty($parameters->ssh_port)) {
+            $ssh_port = intval($parameters->ssh_port);
+        }
+        if (empty($ssh_port)) {
+            $ssh_port = '22';
+        }
 
         $log->file = 'ssh_helper';
         $log->function = 'ssh_command';
@@ -368,12 +431,19 @@ if (! function_exists('ssh_command')) {
         if (!defined('NET_SSH2_LOGGING')) {
             define('NET_SSH2_LOGGING', 2);
         }
+        $ssh = new Net_SSH2($ip, $ssh_port);
+        if (empty($ssh)) {
+            $log->message = 'Could not instanciate SSH object to ' . $ip . ':' . $ssh_port . '.';
+            $log->severity = 3;
+            discovery_log($log);
+            $log->severity = 7;
+            return false;
+        }
+        if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
+            $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
+        }
+        $key = new Crypt_RSA();
         if ($credentials->type == 'ssh_key') {
-            $ssh = new Net_SSH2($ip);
-            if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-                $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-            }
-            $key = new Crypt_RSA();
             if (!empty($credentials->credentials->password)) {
                 $key->setPassword($credentials->credentials->password);
             }
@@ -382,8 +452,8 @@ if (! function_exists('ssh_command')) {
                 $username = $credentials->credentials->username;
                 $password = @$credentials->credentials->password;
             } else {
-                $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                $log->command = 'ssh login attempt';
+                $log->message = "Failure, credentials named " . $credentials->name . " (key) not used to log in to $ip.";
+                $log->command = 'ssh login attempt to run - ' . $command;
                 $log->command_output = $ssh->getLastError();
                 $log->command_status = 'fail';
                 $log->severity = 5;
@@ -391,18 +461,13 @@ if (! function_exists('ssh_command')) {
                 return false;
             }
         } else if ($credentials->type == 'ssh') {
-            $ssh = new Net_SSH2($ip);
-            if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
-                $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
-            }
-            $key = new Crypt_RSA();
             if ($ssh->login($credentials->credentials->username, $credentials->credentials->password)) {
                 $username = $credentials->credentials->username;
                 $password = $credentials->credentials->password;
             } else {
                 $log->message = "Failure, credentials named " . $credentials->name . " not used to log in to $ip.";
-                $log->command = 'ssh login attempt';
-                $log->command_output = $ssh->getLastError();
+                $log->command = 'ssh login attempt to run - ' . $command;
+                $log->command_output = json_encode($ssh->getLog());
                 $log->command_status = 'fail';
                 $log->severity = 5;
                 discovery_log($log);
@@ -467,7 +532,6 @@ if (! function_exists('ssh_command')) {
 }
 
 if (! function_exists('ssh_audit')) {
-    #function ssh_audit($ip = '', $credentials = '')
     function ssh_audit($parameters)
     {
 
@@ -508,6 +572,12 @@ if (! function_exists('ssh_audit')) {
             discovery_log($log);
             return false;
         }
+        if (!empty($parameters->ssh_port)) {
+            $ssh_port = intval($parameters->ssh_port);
+        }
+        if (empty($ssh_port)) {
+            $ssh_port = '22';
+        }
 
         $CI = & get_instance();
         if (php_uname('s') != 'Windows NT') {
@@ -521,7 +591,7 @@ if (! function_exists('ssh_audit')) {
 
         foreach ($credentials as $credential) {
             if ($credential->type == 'ssh_key') {
-                $ssh = new Net_SSH2($ip);
+                $ssh = new Net_SSH2($ip, $ssh_port);
                 if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
                     $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
                 }
@@ -545,7 +615,7 @@ if (! function_exists('ssh_audit')) {
                     unset($ssh);
                 }
             } else if ($credential->type == 'ssh') {
-                $ssh = new Net_SSH2($ip);
+                $ssh = new Net_SSH2($ip, $ssh_port);
                 if (intval($CI->config->config['discovery_ssh_timeout']) > 0) {
                     $ssh->setTimeout(intval($CI->config->config['discovery_ssh_timeout']));
                 }

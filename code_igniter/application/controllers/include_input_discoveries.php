@@ -376,6 +376,23 @@ foreach ($xml->children() as $input) {
     }
     discovery_log($log);
 
+    $input->ssh_port = '22';
+    if ($discovery->other->nmap->ssh_ports != '22') {
+        $nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
+        foreach (explode(',', $input->nmap_ports) as $port) {
+            $temp = explode('/', $port);
+            $port = $temp[0];
+            foreach ($nmap_ports as $nmap_port) {
+                if ($port == $nmap_port) {
+                    $input->ssh_port = $port;
+                    $input->ssh_status = 'true';
+                }
+            }
+            unset($nmap_item);
+            unset($temp);
+        }
+    }
+
     $log->message = 'SSH Status is '.$input->ssh_status.' on '.$device->ip;
     if (!empty($device->id)) {
         $log->message .= ' (System ID ' . $device->id . ')';
@@ -473,6 +490,7 @@ foreach ($xml->children() as $input) {
         }
         $parameters->log = $log;
         $parameters->credentials = $credentials;
+        $parameters->ssh_port = $input->ssh_port;
         $ssh_details = ssh_audit($parameters);
         if (!empty($ssh_details)) {
             if (!empty($ssh_details->credentials)) {
@@ -1224,42 +1242,48 @@ foreach ($xml->children() as $input) {
             $destination .= '/';
         }
         $destination .= $audit_script;
-        $temp = scp($device->ip, $credentials_ssh, $source, $destination, $log);
-        if (!$temp) {
-            $audit_script = '';
-
-            $log->severity = 3;
-            $log->message = 'Could not SCP audit script to ' . $device->ip . ' ' . $destination .')';
-            $log->command_status = 'fail';
-            discovery_log($log);
-            $log->severity = 7;
-        }
-        # Successfully copied the audit script, now chmod it
-        $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
-        # No use testing for a result as a chmod produces no output
         $parameters = new stdClass();
-        $parameters->log = $log;
         $parameters->ip = $device->ip;
         $parameters->credentials = $credentials_ssh;
-        $parameters->command = $command;
-        $test = ssh_command($parameters);
-        if ($test === false) {
-            $log->file = 'include_input_discoveries';
-            $log->function = 'discoveries';
+        $parameters->source = $source;
+        $parameters->destination = $destination;
+        $parameters->log = $log;
+        $parameters->ssh_port = $input->ssh_port;
+        $temp = scp($parameters);
+        if (!$temp) {
+            $audit_script = '';
             $log->severity = 3;
-            $log->command_time_to_execute = '';
-            $log->message = 'Could not chmod script on ' . $device->ip . ' (System ID ' . $device->id . ').';
+            $log->message = 'Could not SCP audit script to ' . $device->ip . ' at ' . $destination;
             $log->command_status = 'fail';
             discovery_log($log);
             $log->severity = 7;
+        } else {
+            # Successfully copied the audit script, now chmod it
+            $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
+            # No use testing for a result as a chmod produces no output
+            $parameters = new stdClass();
+            $parameters->log = $log;
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->command = $command;
+            $parameters->ssh_port = $input->ssh_port;
+            $test = ssh_command($parameters);
+            if ($test === false) {
+                $log->file = 'include_input_discoveries';
+                $log->function = 'discoveries';
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'Could not chmod script on ' . $device->ip . ' (System ID ' . $device->id . ').';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
+            }
+            $log->file = 'include_input_discoveries';
+            $log->function = 'discoveries';
+            $log->command_status = '';
+            $log->severity = 7;
+            $result = false;
         }
-
-        $log->file = 'include_input_discoveries';
-        $log->function = 'discoveries';
-        $log->command_status = '';
-        $log->severity = 7;
-
-        $result = false;
         if ($audit_script != '') {
             $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
             $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
@@ -1280,6 +1304,7 @@ foreach ($xml->children() as $input) {
             $parameters->ip = $device->ip;
             $parameters->credentials = $credentials_ssh;
             $parameters->command = $command;
+            $parameters->ssh_port = $input->ssh_port;
             $result = ssh_command($parameters);
             $command_end = microtime(true);
             $log->command_time_to_execute = $command_end - $command_start;
@@ -1289,6 +1314,7 @@ foreach ($xml->children() as $input) {
                 $log->severity = 3;
                 $log->command_status = 'fail';
             }
+            $log->command_output = '';
             discovery_log($log);
             $log->severity = 7;
         } else {
@@ -1321,7 +1347,14 @@ foreach ($xml->children() as $input) {
             } else {
                 $destination = $filepath . '/scripts/' . end($temp);
             }
-            $temp = scp_get($device->ip, $credentials_ssh, $audit_file, $destination, $log);
+            $parameters = new stdClass();
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->source = $audit_file;
+            $parameters->destination = $destination;
+            $parameters->log = $log;
+            $parameters->ssh_port = $input->ssh_port;
+            $temp = scp_get($parameters);
             if ($temp) {
                 $audit_result = file_get_contents($destination);
                 if (empty($audit_result)) {
