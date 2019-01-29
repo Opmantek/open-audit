@@ -549,12 +549,14 @@ foreach ($xml->children() as $input) {
     # Set manufacturer based on MAC address (if not already set)
     if (empty($device->manufacturer) and !empty($input->mac_address)) {
         $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
+            $log->severity = 7;
             $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
     if (empty($device->manufacturer) and !empty($device->mac_address)) {
         $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
+            $log->severity = 7;
             $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
@@ -737,7 +739,7 @@ foreach ($xml->children() as $input) {
     if (!empty($device->ip)) {
         $log->ip = $device->ip;
     }
-    $log->discovery_id = $device->discovery_id;
+    $log->discovery_id = $discovery->id;
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
@@ -987,6 +989,7 @@ foreach ($xml->children() as $input) {
         $log->severity = 5;
         $log->message = 'No valid credentials for ' . $device->ip;
         discovery_log($log);
+        $log->severity = 7;
     }
 
     // Get and make the audit script
