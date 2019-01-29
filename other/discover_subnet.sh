@@ -201,27 +201,49 @@ function check_output ()
 
 	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
 		test=$(echo $line | grep "tcp.*open")
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open TCP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "22/tcp" ]; then
+				ssh_status="true"
+				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
+			elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
+				wmi_status="true"
+				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
+
+		fi
 	else
 		test=$(echo $line | grep "tcp.*open" | grep -v filtered)
-	fi
-	if [ -n "$test" ]; then
-		host_is_up="true"
-		port=$(echo $line | awk '{print $1}')
-		program=$(echo $line | awk '{print $3}')
-		nmap_ports="$nmap_ports,$port/$program"
-		if [ -z "$response_reason" ]; then
-			response_reason="received open TCP port ($port, $program)"
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open TCP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "22/tcp" ]; then
+				ssh_status="true"
+				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
+			elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
+				wmi_status="true"
+				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
 		fi
-		if [ -n $port ] && [ "$port" = "22/tcp" ]; then
-			ssh_status="true"
-			db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
-		elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
-			wmi_status="true"
-			db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
-		else
-			db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+		test=$(echo $line | grep "tcp.*filterred")
+		if [ -n "$test" ]; then
+			db_log "Host $host had a filtered port, but options state not to detect" "" "" "7" "$line" "" "" "$host"
 		fi
-
 	fi
 	test=""
 
@@ -230,19 +252,45 @@ function check_output ()
 	else
 		test=$(echo $line | grep "udp.*open" | grep -v filtered)
 	fi
-	if [ -n "$test" ]; then
-		host_is_up="true"
-		port=$(echo $line | awk '{print $1}')
-		program=$(echo $line | awk '{print $3}')
-		nmap_ports="$nmap_ports,$port/$program"
-		if [ -z "$response_reason" ]; then
-			response_reason="received open UDP port ($port, $program)"
+
+
+	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
+		test=$(echo $line | grep "udp.*open")
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open UDP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "161/udp" ]; then
+				snmp_status="true"
+				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
 		fi
-		if [ -n $port ] && [ "$port" = "161/udp" ]; then
-			snmp_status="true"
-			db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
-		else
-			db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+	else
+		test=$(echo $line | grep "udp.*open" | grep -v filtered)
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open UDP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "161/udp" ]; then
+				snmp_status="true"
+				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
+		fi
+		test=$(echo $line | grep "udp.*filterred")
+		if [ -n "$test" ]; then
+			db_log "Host $host had a filtered port, but options state not to detect" "" "" "7" "$line" "" "" "$host"
 		fi
 	fi
 	test=""
