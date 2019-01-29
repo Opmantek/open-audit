@@ -526,12 +526,14 @@ if (!function_exists('process_scan')) {
         # Set manufacturer based on MAC address (if not already set)
         if (empty($device->manufacturer) and !empty($input->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
+                $log->severity = 7;
                 $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
                 discovery_log($log);
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
         if (empty($device->manufacturer) and !empty($device->mac_address)) {
             $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
+                $log->severity = 7;
                 $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
                 discovery_log($log);
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
@@ -956,6 +958,7 @@ if (!function_exists('process_scan')) {
             $log->severity = 5;
             $log->message = 'No valid credentials for ' . $device->ip;
             discovery_log($log);
+            $log->severity = 7;
             return true;
         }
 
@@ -1362,6 +1365,7 @@ if (!function_exists('process_scan')) {
                 delete_local_file($params);
             }
 
+            $log->discovery_id = $discovery->id;
             $parameters = new stdClass();
             $parameters->log = $log;
             $parameters->input = $audit->system;
