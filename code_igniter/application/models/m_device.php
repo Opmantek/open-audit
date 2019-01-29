@@ -1078,9 +1078,9 @@ class M_device extends MY_Model
         $log->command_output = '';
         if (!empty($GLOBALS['discovery_id'])) {
             $log->discovery_id = $GLOBALS['discovery_id'];
-        } else if (!empty($input->discovery_id)) {
-            $log->discovery_id = $input->discovery_id;
-            $GLOBALS['discovery_id'] = $input->discovery_id;
+        } else if (!empty($details->discovery_id)) {
+            $log->discovery_id = $details->discovery_id;
+            $GLOBALS['discovery_id'] = $details->discovery_id;
         } else {
             $log->discovery_id = '';
         }
@@ -1270,6 +1270,15 @@ class M_device extends MY_Model
         $log_details->display = $display;
         unset($display);
         stdlog($log_details);
+
+        if (!empty($GLOBALS['discovery_id'])) {
+            $log_details->discovery_id = $GLOBALS['discovery_id'];
+        } else if (!empty($details->discovery_id)) {
+            $log_details->discovery_id = $details->discovery_id;
+            $GLOBALS['discovery_id'] = $details->discovery_id;
+        } else {
+            $log_details->discovery_id = '';
+        }
 
         $parameters = new stdClass();
         $parameters->log = $log_details;
