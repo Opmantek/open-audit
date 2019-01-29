@@ -31,11 +31,15 @@ $this->log_db('Upgrade database to 2.3.1 commenced');
 
 # configuration
 $value = $this->config->config['default_network_address'];
-$value = str_replace('https://', '', $value);
-$value = str_replace('http://', '', $value);
-$value = str_replace('/open-audit/', '', $value);
-$value = str_replace('/open-audit', '', $value);
-$value = 'http://' . $value . '/open-audit/';
+if (!empty($value)) {
+	$value = str_replace('https://', '', $value);
+	$value = str_replace('http://', '', $value);
+	$value = str_replace('/open-audit/', '', $value);
+	$value = str_replace('/open-audit', '', $value);
+	$value = 'http://' . $value . '/open-audit/';
+} else {
+	$value = '';
+}
 $data = array($value);
 $sql = "UPDATE `configuration` SET `value` = ? WHERE `name` = 'default_network_address'";
 $this->db->query($sql, $data);
