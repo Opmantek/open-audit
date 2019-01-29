@@ -38,8 +38,29 @@ if (!defined('BASEPATH')) {
 * @link      http://www.open-audit.org
  */
 
+# For PHP < 5.4.0 (ie, Centos 6)
+if (!function_exists('hex2bin')) {
+    function hex2bin($hexstr)
+    {
+        $count = 0;
+        $length = strlen($hexstr);
+        $binary = "";
+        while($count < $length) {
+            $extract = substr($hexstr, $count, 2);
+            $packed = pack("H*", $extract);
+            if ($count == 0) {
+                $binary = $packed;
+            } else {
+                $binary .= $packed;
+            }
+            $count += 2;
+        }
+        return $binary;
+    }
+}
+
 # Take a string and return the decrypted variant
-if (! function_exists('oa_decrypt')) {
+if (! function_exists('simpleDecrypt')) {
     /**
      * Wrap crypto_aead_*_decrypt() in a drop-dead-simple decryption interface
      *
@@ -57,30 +78,33 @@ if (! function_exists('oa_decrypt')) {
             set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\sodium_compat');
         }
         require_once "autoload.php";
-
         if (empty($key)) {
             $CI = & get_instance();
             $key = mb_substr("00000000000000000000000000000000".$CI->config->config['encryption_key'], -32);
         }
-
-        $message = @hex2bin($message);
+        $message = hex2bin($message);
         if (empty($message)) {
             return '';
         }
         $nonce = mb_substr($message, 0, 24, '8bit');
-        $ciphertext = mb_substr($message, 24, null, '8bit');
-        $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt(
-            $ciphertext,
-            $nonce,
-            $nonce,
-            $key
-        );
+        $ciphertext = mb_substr($message, 24, strlen($message), '8bit');
+        try {
+            $plaintext = ParagonIE_Sodium_Compat::crypto_aead_xchacha20poly1305_ietf_decrypt(
+                $ciphertext,
+                $nonce,
+                $nonce,
+                $key
+            );
+        } catch (Exception $e) {
+            echo "<pre>\n";
+            print_r($e);
+            exit();
+        }
         if (!is_string($plaintext)) {
             throw new Exception('Invalid message');
         }
         return $plaintext;
     }
-
 }
 
 # Take a string and return the encrypted variant
