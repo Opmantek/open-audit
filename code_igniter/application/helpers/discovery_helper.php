@@ -956,6 +956,9 @@ if (!function_exists('process_scan')) {
             return true;
         }
 
+        // set the identification with what we have
+        $this->m_device->set_identification($device->id);
+
         // Get and make the audit script
         if (!empty($credentials_windows) or !empty($credentials_ssh)) {
             $timestamp = date('y_m_d_H_i_s');
@@ -1515,6 +1518,9 @@ if (!function_exists('process_scan')) {
             $log->message = 'No audit script result to process';
             discovery_log($log);
         }
+        // set the identification with what we have
+        $this->m_device->set_identification($device->id);
+        // finish
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
         discovery_log($log);
         return true;
