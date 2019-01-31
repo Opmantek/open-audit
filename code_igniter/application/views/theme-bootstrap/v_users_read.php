@@ -223,12 +223,13 @@ $item = $this->response->data[0];
                     $org->attributes->parent_name = '';
                 }
                 $checked = '';
-                if (!empty($item->attributes->orgs) and
-                    count($item->attributes->orgs) > 0 and
-                    $item->attributes->orgs != 'Array') {
-                    foreach(json_decode($item->attributes->orgs) as $key => $value) {
-                        if ($org->id == $value) {
-                            $checked = 'checked';
+                if (!empty($item->attributes->orgs) and $item->attributes->orgs !== 'Array') {
+                    $orgs = json_decode($item->attributes->orgs);
+                    if (is_array($orgs)) {
+                        foreach($orgs as $key => $value) {
+                            if ($org->id == $value) {
+                                $checked = 'checked';
+                            }
                         }
                     }
                 }

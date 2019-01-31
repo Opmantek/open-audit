@@ -584,6 +584,12 @@ class M_logon extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (count($result) > 0) {
+            if (php_uname('s') != 'Windows NT') {
+                set_include_path('/usr/local/open-audit/code_igniter/application/third_party/sodium_compat');
+            } else {
+                set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\sodium_compat');
+            }
+            require_once "autoload.php";
             foreach ($result as $db_user) {
                 # get the salt from the front of the hash
                 $salt = substr($db_user->password, 0, 64);
@@ -592,7 +598,7 @@ class M_logon extends MY_Model
                 # hash the password being tested
                 $test_hash = hash("sha256", $salt.$password);
                 # if the hashes are exactly the same, the password is valid
-                if ($test_hash == $valid_hash or sodium_crypto_pwhash_str_verify($db_user->password, $password)) {
+                if ($test_hash == $valid_hash) {
                     $log->message = "User $username logged on (local account).";
                     $log->status = 'success';
                     $log->severity = 6;
