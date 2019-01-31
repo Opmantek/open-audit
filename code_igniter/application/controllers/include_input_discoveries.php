@@ -988,11 +988,19 @@ foreach ($xml->children() as $input) {
     $audit_result = false;
 
     if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
-        $log->command_status = 'fail';
-        $log->severity = 5;
-        $log->message = 'No valid credentials for ' . $device->ip;
-        discovery_log($log);
-        $log->severity = 7;
+        if ($input->snmp_status == 'true' or $input->ssh_status == 'true' or $input->wmi_status == 'true') {
+            $log->command_status = 'fail';
+            $log->severity = 5;
+            $log->message = 'No valid credentials for ' . $device->ip;
+            discovery_log($log);
+            $log->severity = 7;
+        } else {
+            $log->command_status = 'fail';
+            $log->severity = 5;
+            $log->message = 'No management protocols for ' . $device->ip;
+            discovery_log($log);
+            $log->severity = 7;
+        }
     }
 
     // Get and make the audit script
@@ -1376,7 +1384,7 @@ foreach ($xml->children() as $input) {
     }
 
     # Delete the local audit script if it's not a default script
-    if ($audit_script != '' and $source_name != $audit_script) {
+    if (!empty($audit_script) and $source_name != $audit_script) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->command = 'unlink(\'' . $source .'\')';

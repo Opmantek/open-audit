@@ -948,12 +948,19 @@ if (!function_exists('process_scan')) {
         $audit_result = false;
 
         if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
-            $log->command_status = 'fail';
-            $log->severity = 5;
-            $log->message = 'No valid credentials for ' . $device->ip;
-            discovery_log($log);
-            $log->severity = 7;
-            return true;
+            if ($input->snmp_status == 'true' or $input->ssh_status == 'true' or $input->wmi_status == 'true') {
+                $log->command_status = 'fail';
+                $log->severity = 5;
+                $log->message = 'No valid credentials for ' . $device->ip;
+                discovery_log($log);
+                $log->severity = 7;
+            } else {
+                $log->command_status = 'fail';
+                $log->severity = 5;
+                $log->message = 'No management protocols for ' . $device->ip;
+                discovery_log($log);
+                $log->severity = 7;
+            }
         }
 
         // set the identification with what we have
