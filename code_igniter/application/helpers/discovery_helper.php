@@ -459,7 +459,7 @@ if (!function_exists('process_scan')) {
             }
             $parameters->log = $log;
             $parameters->credentials = $credentials;
-            $parameters->ssh_port = $ssh_port;
+            $parameters->ssh_port = $input->ssh_port;
             $ssh_details = ssh_audit($parameters);
             if (!empty($ssh_details)) {
 
@@ -548,17 +548,17 @@ if (!function_exists('process_scan')) {
             $device->os_group = 'Apple IOS';
             $device->os_family = 'Apple IOS';
             $device->os_name = 'Apple IOS';
-            if (stripos($device->hostname, 'ipad') !== false) {
+            if (stripos($device->hostname, 'ipad') !== false or stripos($device->dns_hostname, 'ipad') !== false) {
                 $device->type = 'ipad';
                 $device->model = 'Apple iPad';
             }
-            if (stripos($device->hostname, 'ipod') !== false) {
+            if (stripos($device->hostname, 'ipod') !== false or stripos($device->dns_hostname, 'ipod') !== false) {
                 $device->type = 'ipod';
                 $device->model = 'Apple iPod';
             }
         }
         # Android devices typically have a hostname of android-***
-        if (stripos($device->hostname, 'android') !== false) {
+        if (stripos($device->hostname, 'android') !== false or stripos($device->dns_hostname, 'android') !== false) {
             # Could be a table or smart phone or anything else.
             # We have no way of knowing so simply setting it to android.
             $device->type = 'android';
@@ -580,6 +580,13 @@ if (!function_exists('process_scan')) {
                 discovery_log($log);
                 unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
             }
+        }
+        # Playstation guess
+        if (stripos($device->manufacturer, 'Sony') !== false and ($device->hostname == 'playstation' or $device->dns_hostname == 'playstation')) {
+            $device->type = 'game console';
+            $log->message = 'Assigning type = game console to Sony Playstation.';
+            discovery_log($log);
+            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
 
         # If we don't have a device.id, check with our updated device attributes (if any)

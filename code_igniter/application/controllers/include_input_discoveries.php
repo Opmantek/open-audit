@@ -613,7 +613,6 @@ foreach ($xml->children() as $input) {
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
 
-
     # If we don't have a device.id, check with our updated device attributes (if any)
     if (empty($device->id)) {
         $parameters = new stdCLass();
