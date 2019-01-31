@@ -886,8 +886,7 @@ if (! function_exists('inputRead')) {
             if ($CI->response->meta->action == 'collection' and $CI->response->meta->collection == 'devices') {
                 # we're requesting a list of devices without properties - set the below as defaults
                 if ($CI->response->meta->sub_resource == '' or strtolower($CI->response->meta->sub_resource) == 'system') {
-                    $CI->response->meta->properties = 'system.id, system.icon, system.type, system.name, system.domain, system.ip, system.description, system.manufacturer, system.os_family, system.status';
-                    $CI->response->meta->properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.description,system.manufacturer,system.os_family,system.status';
+                    $CI->response->meta->properties = 'system.id,system.icon,system.type,system.name,system.domain,system.ip,system.identification,system.description,system.manufacturer,system.os_family,system.status';
                     $log->detail = 'Set properties to ' . $CI->response->meta->properties . ', because devices default.';
                     stdlog($log);
                 } else {
