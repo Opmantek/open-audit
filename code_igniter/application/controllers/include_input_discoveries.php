@@ -571,18 +571,18 @@ foreach ($xml->children() as $input) {
         $device->os_group = 'Apple IOS';
         $device->os_family = 'Apple IOS';
         $device->os_name = 'Apple IOS';
-        if (stripos($device->hostname, 'ipad') !== false) {
+        if (stripos($device->hostname, 'ipad') !== false or stripos($device->dns_hostname, 'ipad') !== false) {
             $device->type = 'ipad';
             $device->model = 'Apple iPad';
         }
-        if (stripos($device->hostname, 'ipod') !== false) {
+        if (stripos($device->hostname, 'ipod') !== false or stripos($device->dns_hostname, 'ipod') !== false) {
             $device->type = 'ipod';
             $device->model = 'Apple iPod';
         }
     }
 
     # Android devices typically have a hostname of android-***
-    if (stripos($device->hostname, 'android') !== false) {
+    if (stripos($device->hostname, 'android') !== false or stripos($device->dns_hostname, 'android') !== false) {
         # Could be a table or smart phone or anything else.
         # We have no way of knowing so simply setting it to android.
         $device->type = 'android';
@@ -606,7 +606,7 @@ foreach ($xml->children() as $input) {
         }
     }
     # Playstation guess
-    if (stripos($device->manufacturer, 'Sony') !== false and $device->hostname == 'playstation') {
+    if (stripos($device->manufacturer, 'Sony') !== false and ($device->hostname == 'playstation' or $device->dns_hostname == 'playstation')) {
         $device->type = 'game console';
         $log->message = 'Assigning type = game console to Sony Playstation.';
         discovery_log($log);
