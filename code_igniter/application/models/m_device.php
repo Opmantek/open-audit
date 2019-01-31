@@ -473,7 +473,7 @@ class M_device extends MY_Model
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -1096,6 +1096,8 @@ class M_device extends MY_Model
                 $details->name = $details->hostname;
             } else if (!empty($details->sysName)) {
                 $details->name = $details->sysName;
+            } else if (!empty($details->dns_hostname)) {
+                $details->name = $details->dns_hostname;
             } else if (!empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
             } else {
@@ -1290,6 +1292,8 @@ class M_device extends MY_Model
                 $details->name = $details->hostname;
             } else if (!empty($details->sysName)) {
                 $details->name = $details->sysName;
+            } else if (!empty($details->dns_hostname)) {
+                $details->name = $details->dns_hostname;
             } else if (!empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
             } else {
