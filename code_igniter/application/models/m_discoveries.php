@@ -60,6 +60,17 @@ class M_discoveries extends MY_Model
         if (!empty($result[0]->other)) {
             $result[0]->other = json_decode($result[0]->other);
         }
+        if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
+            $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
+            $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
+            $result = $this->run_sql($sql, $data);
+            if (!empty($result)) {
+                $options = $result[0];
+                foreach ($options as $key => $value) {
+                    $discovery->other->nmap->{$key} = $value;
+                }
+            }
+        }
         if ($result[0]->type == 'subnet') {
             $result[0]->command = $this->create_command($result[0]);
         }
@@ -387,6 +398,19 @@ class M_discoveries extends MY_Model
 
         // decode our other attributes
         $discovery->other = json_decode($discovery->other);
+
+        if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
+            $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
+            $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
+            $result = $this->run_sql($sql, $data);
+            if (!empty($result)) {
+                $options = $result[0];
+                foreach ($options as $key => $value) {
+                    $discovery->other->nmap->{$key} = $value;
+                }
+            }
+        }
+
 
         if ($discovery->type == 'subnet') {
             $command_string = $this->create_command($discovery);
