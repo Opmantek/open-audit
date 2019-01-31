@@ -887,14 +887,13 @@ class M_collection extends MY_Model
                 }
 
                 if (!empty($received_other->nmap->discovery_scan_option_id)) {
-                    $sql = "SELECT count(id) FROM discovery_scan_options WHERE id = ?";
-                    $data = array(intval($received_other->nmap->discovery_scan_option_id));
-                    $query = $this->db->query($select, $data);
+                    $select = "SELECT count(id) FROM discovery_scan_options WHERE id = ?";
+                    $data_array = array(intval($received_other->nmap->discovery_scan_option_id));
+                    $query = $this->db->query($select, $data_array);
                     $result = $query->result();
                     if (empty($result)) {
                         log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
                         $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
-                        $data->other->subnet = '';
                         if ($CI->response->meta->format == 'screen') {
                             redirect('/discoveries');
                         } else {
