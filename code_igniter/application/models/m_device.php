@@ -1472,4 +1472,92 @@ class M_device extends MY_Model
         unset($log_details);
         unset($temp_ip);
     }
+
+
+
+    public function set_identification($id)
+    {
+        if (empty($id) or ! is_numeric($id)) {
+            return false;
+        }
+        $identification = '';
+        $sql = "SELECT * FROM `system` WHERE `id` = ?";
+        $data = array(intval($id));
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (!empty($result)) {
+            $device = $result[0];
+        } else {
+            return false;
+        }
+        # Based on type
+        if ($device->type !== 'unknown' and $device->type !== 'unclassified') {
+            if ($device->type === 'computer' and $device->class !== '') {
+                $identification = ucfirst($device->class);
+            } else if ($device->type === 'computer' and $device->os_group !== '') {
+                $identification = 'Computer running ' . $device->os_group;
+            } else {
+                if ($device->type !== 'iphone' and $device->type !== 'ipod' and $device->type !== 'ipad') {
+                    $identification = ucfirst($device->type);
+                } else {
+                    $identification = $device->type;
+                }
+            }
+        }
+        # Add the manufactuer
+        if ($device->manufacturer !== '') {
+            if ($identification !== '') {
+                $identification .= ' from ' . $device->manufacturer;
+            } else {
+                $identification = 'Vendor: ' . $device->manufacturer;
+            }
+        }
+        # Only resort to the Nmap ports if we have to
+        if ($identification === '') {
+            $sql = "SELECT * FROM nmap WHERE system_id = ? and current = 'y'";
+            $data = array(intval($id));
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql, $data);
+            $nmap_ports = $query->result();
+            if (!empty($nmap_ports)) {
+                foreach ($nmap_ports as $port) {
+                    if ($port->program === 'ssh') {
+                        $identification = 'Device running SSH';
+                    }
+                    if ($port->program === 'snmp') {
+                        if ($identification === '') {
+                            $identification = 'Device running SNMP';
+                        } else {
+                            $identification .= ' and SNMP';
+                        }
+                    }
+                    if ($port->program === 'msrpc') {
+                        if ($identification === '') {
+                            $identification = 'Device running WMI (likely a Windows computer)';
+                        } else {
+                            $identification .= ' and WMI (likely a Windows computer)';
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($identification)) {
+            if ($device->type === 'unknown') {
+                $type = 'unclassified';
+            } else {
+                $type = $device->type;
+            }
+        } else {
+            $identification = 'No information could be retrieved.';
+            $type = $device->type;
+        }
+        $sql = "UPDATE `system` SET `type` = ?, `identification` = ? WHERE `id` = ?";
+        $data = array($type, $identification, intval($id));
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql, $data);
+        return true;
+    }
+
+
 }

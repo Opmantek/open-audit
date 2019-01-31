@@ -1590,6 +1590,7 @@ foreach ($xml->children() as $input) {
         $log->message = 'No audit script result to process';
         discovery_log($log);
     }
+    $this->m_device->set_identification($device->id);
     $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
     discovery_log($log);
 }
