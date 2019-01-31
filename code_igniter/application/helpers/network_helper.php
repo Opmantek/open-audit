@@ -495,7 +495,7 @@ if (! function_exists('dns_validate')) {
             }
         }
 
-        if (emptyt($details->fqdn)) {
+        if (empty($details->fqdn)) {
             $details->fqdn = '';
             $log_details->message = 'No FQDN set for ' . @$details->ip;
             stdlog($log_details);
