@@ -605,6 +605,14 @@ foreach ($xml->children() as $input) {
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
     }
+    # Playstation guess
+    if (stripos($device->manufacturer, 'Sony') !== false and $device->hostname == 'playstation') {
+        $device->type = 'game console';
+        $log->message = 'Assigning type = game console to Sony Playstation.';
+        discovery_log($log);
+        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
+    }
+
 
     # If we don't have a device.id, check with our updated device attributes (if any)
     if (empty($device->id)) {
