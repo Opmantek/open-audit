@@ -29,6 +29,15 @@
  
 $this->log_db('Upgrade database to 2.3.2 commenced');
 
+# attributes
+$sql = "DELETE from attributes WHERE resource = 'devices' AND `type` = 'type' AND `name` = 'Unclassified'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO attributes VALUES (NULL, 1, 'devices', 'type', 'Unclassified', 'unclassified', 'system', '2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
 # configuration
 $sql = "DELETE FROM configuration WHERE name = 'discovery_default_scan_option'";
 $this->db->query($sql);
@@ -168,6 +177,9 @@ $this->m_roles->update_permissions('reporter', 'queue', 'r');
 $this->m_roles->update_permissions('user', 'queue', 'r');
 
 $this->m_roles->update_permissions('org_admin', 'discovery_scan_options', 'crud');
+
+# system
+$this->alter_table('system', 'identification', "ADD `identification` TEXT NOT NULL AFTER `discovery_id`", 'add');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20181225' WHERE `name` = 'internal_version'";

@@ -362,6 +362,7 @@ INSERT INTO `attributes` VALUES (199,1,'devices','type','Patch Panel','patch pan
 INSERT INTO `attributes` VALUES (200,1,'devices','type','Monitor','monitor','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (201,1,'devices','type','Shelf','shelf','system','2000-01-01 00:00:00');
 INSERT INTO `attributes` VALUES (202,1,'locations','type','Campus','Campus','system','2000-01-01 00:00:00');
+INSERT INTO `attributes` VALUES (203,1,'devices','type','Unclassified','unclassified','system','2000-01-01 00:00:00');
 /*!40000 ALTER TABLE `attributes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -3252,6 +3253,7 @@ CREATE TABLE `system` (
   `instance_tags` text NOT NULL,
   `instance_options` text NOT NULL,
   `discovery_id` int(10) unsigned DEFAULT NULL,
+  `identification` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `ip` (`ip`),
   KEY `name` (`name`)
