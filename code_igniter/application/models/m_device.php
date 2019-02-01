@@ -1093,11 +1093,11 @@ class M_device extends MY_Model
 
         if (empty($details->name)) {
             if (!empty($details->hostname)) {
-                $details->name = $details->hostname;
+                $details->name = strtolower($details->hostname);
             } else if (!empty($details->sysName)) {
-                $details->name = $details->sysName;
+                $details->name = strtolower($details->sysName);
             } else if (!empty($details->dns_hostname)) {
-                $details->name = $details->dns_hostname;
+                $details->name = strtolower($details->dns_hostname);
             } else if (!empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
             } else {
@@ -1289,11 +1289,11 @@ class M_device extends MY_Model
 
         if (empty($details->name)) {
             if (!empty($details->hostname)) {
-                $details->name = $details->hostname;
+                $details->name = strtolower($details->hostname);
             } else if (!empty($details->sysName)) {
-                $details->name = $details->sysName;
+                $details->name = strtolower($details->sysName);
             } else if (!empty($details->dns_hostname)) {
-                $details->name = $details->dns_hostname;
+                $details->name = strtolower($details->dns_hostname);
             } else if (!empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
             } else {
