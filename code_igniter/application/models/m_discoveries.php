@@ -60,20 +60,32 @@ class M_discoveries extends MY_Model
         if (!empty($result[0]->other)) {
             $result[0]->other = json_decode($result[0]->other);
         }
+        // Ensure we have some defaults
+        if (empty($result[0]->other->nmap)) {
+            $result[0]->other->nmap = new stdClass();
+        }
+        if (empty($result[0]->other->nmap->discovery_scan_option_id)) {
+            $result[0]->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
+        }
         if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
+            $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
             $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
             $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
             $result = $this->run_sql($sql, $data);
             if (!empty($result)) {
                 $options = $result[0];
                 foreach ($options as $key => $value) {
-                    $discovery->other->nmap->{$key} = $value;
+                    if (!in_array($key, $do_not_use)) {
+                        $discovery->other->nmap->{$key} = $value;
+                    }
                 }
             }
         }
         if ($result[0]->type == 'subnet') {
             $result[0]->command = $this->create_command($result[0]);
         }
+
+
         $result = $this->format_data($result, 'discoveries');
         return ($result);
     }
@@ -181,6 +193,10 @@ class M_discoveries extends MY_Model
     {
         if (empty($discovery)) {
             // log an error
+            return '';
+        }
+        if (empty($discovery->other->nmap)) {
+            return '';
         }
         $options = $discovery->other->nmap;
         $command_options = '';
@@ -399,14 +415,25 @@ class M_discoveries extends MY_Model
         // decode our other attributes
         $discovery->other = json_decode($discovery->other);
 
+        // Ensure we have some defaults
+        if (empty($discovery->other->nmap)) {
+            $discovery->other->nmap = new stdClass();
+        }
+        if (empty($discovery->other->nmap->discovery_scan_option_id)) {
+            $discovery->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
+        }
+
         if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
             $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
             $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
             $result = $this->run_sql($sql, $data);
+            $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
             if (!empty($result)) {
                 $options = $result[0];
                 foreach ($options as $key => $value) {
-                    $discovery->other->nmap->{$key} = $value;
+                    if (!in_array($key, $do_not_use)) {
+                        $discovery->other->nmap->{$key} = $value;
+                    }
                 }
             }
         }
