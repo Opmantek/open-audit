@@ -1382,6 +1382,9 @@ if (!function_exists('process_scan')) {
             $parameters->input = $audit->system;
             $audit->system = audit_format_system($parameters);
 
+            # We don't care what the audit result says is the "ip", we KNOW it's the IP we just used to discover this device
+            $audit->system->ip = $device->ip;
+
             $i = $CI->m_device->match($audit->system, 'process audit');
             if (empty($audit->system->discovery_id)) {
                 $audit->system->discovery_id = '';
@@ -1486,8 +1489,8 @@ if (!function_exists('process_scan')) {
 
             // set the ip (if not already set)
             $CI->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
-            $CI->m_devices_components->set_initial_address($audit->system->id);
-            $CI->m_audit_log->update('debug', '', $audit->system->id, $audit->system->last_seen);
+            #$CI->m_devices_components->set_initial_address($audit->system->id);
+            #$CI->m_audit_log->update('debug', '', $audit->system->id, $audit->system->last_seen);
             # If we are configured as a collector, forward the information to the server
             if ($CI->config->config['servers'] !== '') {
                 $server = json_decode($CI->config->config['servers']);

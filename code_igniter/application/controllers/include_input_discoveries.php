@@ -1326,9 +1326,9 @@ foreach ($xml->children() as $input) {
             } else {
                 $log->severity = 3;
                 $log->command_status = 'fail';
+                discovery_log($log);
             }
             $log->command_output = '';
-            discovery_log($log);
             $log->severity = 7;
         } else {
             $log->severity = 3;
@@ -1429,6 +1429,8 @@ foreach ($xml->children() as $input) {
         $parameters->log = $log;
         $parameters->input = $audit->system;
         $audit->system = audit_format_system($parameters);
+
+        $audit->system->ip = $device->ip;
 
         $log->message = 'Matching device from audit result';
         discovery_log($log);
@@ -1553,8 +1555,8 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
 
         // set the ip (if not already set)
-        $this->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
-        $this->m_devices_components->set_initial_address($audit->system->id);
+        #$this->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
+        #$this->m_devices_components->set_initial_address($audit->system->id);
         $this->m_audit_log->update('debug', '', $audit->system->id, $audit->system->last_seen);
         # If we are configured as a collector, forward the information to the server
         if ($this->config->config['servers'] !== '') {
