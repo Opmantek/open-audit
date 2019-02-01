@@ -615,6 +615,7 @@ class M_logon extends MY_Model
         $log->status = 'HTTP/1.1 401 Unauthorized';
         $log->severity = 5;
         stdlog($log);
+        sleep(5);
         $CI->session->set_flashdata('error', "Invalid credentials.");
         return false;
     }
