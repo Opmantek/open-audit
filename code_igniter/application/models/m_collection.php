@@ -1018,14 +1018,28 @@ class M_collection extends MY_Model
                     $other->ad_server = $received_other->ad_server;
                 }
 
-                foreach ($other->nmap as $key => $value) {
-                    if (isset($received_other->nmap->{$key})) {
-                        $other->nmap->{$key} = $received_other->nmap->{$key};
+                if (!empty($other->nmap)) {
+                    foreach ($other->nmap as $key => $value) {
+                        if (isset($received_other->nmap->{$key})) {
+                            $other->nmap->{$key} = $received_other->nmap->{$key};
+                        }
+                    }
+                } else if (!empty($received_other->nmap)) {
+                    $other->nmap = new stdClass();
+                    foreach ($received_other->nmap as $key => $value) {
+                        $other->nmap->{$key} = $value;
                     }
                 }
 
-                foreach ($other->match as $key => $value) {
-                    if (isset($received_other->match->{$key})) {
+                if (!empty($other->match)) {
+                    foreach ($other->match as $key => $value) {
+                        if (isset($received_other->match->{$key})) {
+                            $other->match->{$key} = $received_other->match->{$key};
+                        }
+                    }
+                } else if (!empty($received_other->match)) {
+                    $other->match = new stdClass();
+                    foreach ($received_other->nmap as $key => $value) {
                         $other->match->{$key} = $received_other->match->{$key};
                     }
                 }
