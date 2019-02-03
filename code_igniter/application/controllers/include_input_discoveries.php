@@ -1430,6 +1430,7 @@ foreach ($xml->children() as $input) {
         $parameters->input = $audit->system;
         $audit->system = audit_format_system($parameters);
 
+        # We don't care what the audit result says is the "ip", we KNOW it's the IP we just used to discover this device
         $audit->system->ip = $device->ip;
 
         $log->message = 'Matching device from audit result';
