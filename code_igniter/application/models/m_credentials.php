@@ -152,11 +152,16 @@ class M_credentials extends MY_Model
         return true;
     }
 
-    public function collection()
+    public function collection($orgs = null)
     {
         $this->log->function = strtolower(__METHOD__);
         stdlog($this->log);
-        $sql = $this->collection_sql('credentials', 'sql');
+        // We use $orgs when requesting credentials for AD Discovery. Seem's the $this->user, $CI doesn't work.
+        if (!empty($orgs)) {
+            $sql = 'SELECT credentials.*, orgs.name AS `org_name` FROM `credentials` LEFT JOIN orgs ON (`credentials`.org_id = orgs.id) WHERE orgs.id IN (' . $orgs . ')';
+        } else {
+            $sql = $this->collection_sql('credentials', 'sql');
+        }
         $result = $this->run_sql($sql, array());
         $result = $this->format_data($result, 'credentials');
         for ($i=0; $i < count($result); $i++) {
