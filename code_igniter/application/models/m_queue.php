@@ -138,7 +138,7 @@ class M_queue extends MY_Model
             $org_id = intval($temp_details->org_id);
         }
         $this->log->details = $details;
-        $sql = "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '')";
+        $sql = "INSERT INTO `queue` VALUES (null, ?, ?, ?, 0, 'queued', ?, NOW(), '2000-01-01 00:00:00')";
         $data = array($name, $type, $org_id, $details);
         $this->db->query($sql, $data);
         $result = intval($this->db->insert_id());
