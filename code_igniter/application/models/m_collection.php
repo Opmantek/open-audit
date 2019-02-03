@@ -737,7 +737,11 @@ class M_collection extends MY_Model
         if ($this->db->field_exists('edited_by', $db_table)) {
             $sql .= '`edited_by`, `edited_date`';    // the user.name and timestamp
             $sql_data .= '?, NOW()';                 // the user.name and timestamp
-            $data_array[] = $CI->user->full_name;    // the user.name
+            if (empty($CI->user->full_name)) {
+                $data_array[] = 'system';
+            } else {
+                $data_array[] = $CI->user->full_name;    // the user.name
+            }
         }
 
         $sql .= ") VALUES (" . $sql_data . ")";
