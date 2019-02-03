@@ -69,6 +69,7 @@ class M_discoveries extends MY_Model
         }
         if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
             $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
+            $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
             $sql = 'SELECT * FROM discovery_scan_options WHERE id = ?';
             $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
             $result = $this->run_sql($sql, $data);
@@ -76,7 +77,13 @@ class M_discoveries extends MY_Model
                 $options = $result[0];
                 foreach ($options as $key => $value) {
                     if (!in_array($key, $do_not_use)) {
-                        $discovery->other->nmap->{$key} = $value;
+                        if (in_array($key, $prefer_individual)) {
+                            if (!empty($value) and empty($discovery->other->nmap->{$key})) {
+                                $discovery->other->nmap->{$key} = $value;
+                            }
+                        } else {
+                            $discovery->other->nmap->{$key} = $value;
+                        }
                     }
                 }
             }
@@ -432,7 +439,13 @@ class M_discoveries extends MY_Model
                 $options = $result[0];
                 foreach ($options as $key => $value) {
                     if (!in_array($key, $do_not_use)) {
-                        $discovery->other->nmap->{$key} = $value;
+                        if (in_array($key, $prefer_individual)) {
+                            if (!empty($value) and empty($discovery->other->nmap->{$key})) {
+                                $discovery->other->nmap->{$key} = $value;
+                            }
+                        } else {
+                            $discovery->other->nmap->{$key} = $value;
+                        }
                     }
                 }
             }
@@ -584,10 +597,12 @@ class M_discoveries extends MY_Model
                             $ad_discovery->complete = 'y';
                             $ad_discovery->other = new stdClass();
                             $ad_discovery->other->subnet = $subnet['name'][0];
+                            $ad_discovery->other->nmap = new stdClass();
+                            $ad_discovery->other->nmap->discovery_scan_option_id = $this->config->config['discovery_default_scan_option'];
+                            $ad_discovery->other->match = new stdClass();
                             $sql = "/* m_discoveries::execute */ " . 'SELECT * FROM discoveries WHERE other = ? AND org_id = ' . intval($ad_discovery->org_id);
                             $result = $this->run_sql($sql, array(json_encode($ad_discovery->other)));
                             # TODO - JSON decode this and test the subnet. We know have other items stored inside 'other' (nmap options, etc).
-                            # TODO - Update the 'other' JSON filed with this discoveries Nmap Options
                             if (empty($result)) {
                                 $this_id = $this->m_collection->create($ad_discovery, 'discoveries');
                                 $log->message = "Creating and executing discovery on subnet " . $network->name;
