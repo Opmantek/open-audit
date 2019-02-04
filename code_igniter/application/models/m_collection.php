@@ -905,9 +905,6 @@ class M_collection extends MY_Model
                             exit();
                         }
                     }
-                } else {
-                    // Empty discovery scan options id, set to 0 - equivalent to a custom scan
-                    $received_other->nmap->discovery_scan_option_id = 0;
                 }
 
                 if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
