@@ -435,6 +435,7 @@ class M_discoveries extends MY_Model
                 $data = array(intval($discovery->other->nmap->discovery_scan_option_id));
                 $result = $this->run_sql($sql, $data);
                 $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
+                $prefer_individual = array('timeout', 'exclude_tcp', 'exclude_udp', 'exclude_ip', 'ssh_port');
                 if (!empty($result)) {
                     $options = $result[0];
                     foreach ($options as $key => $value) {
