@@ -620,6 +620,11 @@ class M_discoveries extends MY_Model
                     discovery_log($log);
                     return false;
                 }
+
+                $sql = "UPDATE `discoveries` SET `status` = 'complete', `device_count` = 0, `complete` = 'y', `last_run` = NOW(), last_log = NOW(), `duration` = '00:00:00' WHERE id = ?";
+                $data = array($limit, intval($id));
+                $this->run_sql($sql, $data);
+
             }
         }
     }
