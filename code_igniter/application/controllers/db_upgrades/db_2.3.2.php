@@ -70,6 +70,24 @@ if (!empty($result)) {
     }
 }
 
+# device specific credentials
+$sql = "SELECT * FROM `credential` WHERE `edited_by` != 'system'";
+$query = $this->db->query($sql);
+$this->log_db($this->db->last_query());
+$result = $query->result();
+if (!empty($result)) {
+    foreach ($result as $item) {
+        $credentials = @json_decode($this->encrypt->decode($item->credentials));
+        if (!empty($credentials)) {
+            $item->credentials = simpleEncrypt(json_encode($credentials));
+            $sql = "UPDATE `credential` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
+            $data = array($item->credentials, intval($item->id));
+            $this->db->query($sql, $data);
+            $this->log_db($this->db->last_query());
+        }
+    }
+}
+
 # re-encode the ldap_servers.dn_password
 $sql = "SELECT * FROM `ldap_servers` WHERE `edited_by` != 'system'";
 $query = $this->db->query($sql);
