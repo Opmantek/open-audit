@@ -169,6 +169,7 @@ class M_networks extends MY_Model
     # supply a standard ip address - 192.168.1.1
     # supply a list of comma separated subnets - 192.168.1.0/24,172.16.0.0/16 or an emptty string to retrieve from the DB
     # returns true if ip is contained in a subnet, false otherwise
+    # TODO - we should take an OrgID (or 1 if not exists)
     public function check_ip($ip_address = '')
     {
         $this->log->function = strtolower(__METHOD__);

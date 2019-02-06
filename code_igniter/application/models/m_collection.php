@@ -508,10 +508,13 @@ class M_collection extends MY_Model
             }
             $data->options = json_encode($my_options);
         }
-
         if ($collection === 'discoveries') {
             if(substr($data->network_address, -1) !== '/'){
                 $data->network_address = $data->network_address.'/';
+            }
+
+            if (empty($data->other)) {
+                $data->other = new stdClass();
             }
 
             if (empty($data->other->nmap)) {
@@ -519,8 +522,7 @@ class M_collection extends MY_Model
                 if (empty($this->config->config['discovery_default_scan_option'])) {
                     $this->config->config['discovery_default_scan_option'] = 1;
                 }
-                $sql = "SELECT `id` AS 'discovery_scan_option_id', ping, service_version, filtered, timeout, timing, nmap_tcp_ports, nmap_udp_ports, tcp_ports, udp_ports, exclude_tcp_ports, exclude_udp_ports, exclude_ip, ssh_ports FROM discovery_scan_options WHERE id = ?";
-                $data = array(intval($this->config->config['discovery_default_scan_option']));
+                $sql = "SELECT `id` AS 'discovery_scan_option_id', ping, service_version, filtered, timeout, timing, nmap_tcp_ports, nmap_udp_ports, tcp_ports, udp_ports, exclude_tcp_ports, exclude_udp_ports, exclude_ip, ssh_ports FROM discovery_scan_options WHERE id = " . intval($this->config->config['discovery_default_scan_option']);
                 $sql = $this->clean_sql($sql);
                 $query = $this->db->query($sql);
                 $result = $query->result();
@@ -533,7 +535,7 @@ class M_collection extends MY_Model
             }
 
             if ($data->type == 'subnet') {
-                if (!preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
+                if (!empty($data->other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $data->other->subnet)) {
                     log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for subnet');
                     $this->session->set_flashdata('error', 'Discovery could not be created - invalid Subnet supplied.');
                     $data->other->subnet = '';
@@ -571,6 +573,7 @@ class M_collection extends MY_Model
 
             if ($data->type == 'subnet' and !empty($data->other->subnet) and stripos($data->other->subnet, '-') === false and filter_var($data->other->subnet, FILTER_VALIDATE_IP) !== false) {
                 # We have a single IP - ie 192.168.1.1
+                # TODO - we should pass the OrgID
                 $test = $this->m_networks->check_ip($data->other->subnet);
                 if (!$test) {
                     # This IP is not in any existing subnets - insert a /30
@@ -708,7 +711,6 @@ class M_collection extends MY_Model
                 unset($salt);
             }
         }
-
         $mandatory_fields = $this->mandatory_fields($collection);
         foreach ($mandatory_fields as $mandatory_field) {
             if (!isset($data->{$mandatory_field}) or $data->{$mandatory_field} == '') {
