@@ -5712,7 +5712,26 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Cisco Catalyst 2960CX-8PC-L';
         $details->type = 'switch';
     }
-
+    if ($oid == '1.3.6.1.4.1.9.1.2349') {
+        $details->model = 'Cisco NCS 5508';
+        $details->type = 'chassis';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2350') {
+        $details->model = 'Cisco NCS 5501-SE';
+        $details->type = 'chassis';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2351') {
+        $details->model = 'Cisco NCS 5502-SE';
+        $details->type = 'chassis';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2400') {
+        $details->model = 'Cisco NCS 5501';
+        $details->type = 'chassis';
+    }
+    if ($oid == '1.3.6.1.4.1.9.1.2401') {
+        $details->model = 'Cisco NCS 5502';
+        $details->type = 'chassis';
+    }
     if ($oid == '1.3.6.1.4.1.9.5.5') {
         $details->model = 'Cisco Catalyst 1200';
         $details->type = 'switch';
