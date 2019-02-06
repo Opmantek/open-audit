@@ -992,7 +992,7 @@ CREATE TABLE `discovery_scan_options` (
   `service_version` enum('','y','n') NOT NULL DEFAULT 'n',
   `filtered` enum('','y','n') NOT NULL DEFAULT 'n',
   `timeout` int(10) unsigned NOT NULL DEFAULT '0',
-  `timing` int(1) unsigned NOT NULL DEFAULT 4,
+  `timing` int(1) unsigned NOT NULL DEFAULT '4',
   `nmap_tcp_ports` int(10) unsigned NOT NULL DEFAULT '0',
   `nmap_udp_ports` int(10) unsigned NOT NULL DEFAULT '0',
   `tcp_ports` text NOT NULL,
