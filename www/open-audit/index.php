@@ -174,10 +174,13 @@ if (defined('ENVIRONMENT')) {
     if ((string) php_uname('s') == 'Windows NT') {
         // windows
         $system_path = 'c:/xampplite/open-audit/code_igniter/system';
+        if (file_exists('c:/xampp/open-audit/code_igniter/system')) {
+            $system_path = 'c:/xampp/open-audit/code_igniter/system';
+        }
     } else {
-        // linux
+        // everything else
         $system_path = '/usr/local/open-audit/code_igniter/system';
-        if ( file_exists('/home/vagrant/Code/open-audit')) {
+        if (file_exists('/home/vagrant/Code/open-audit')) {
             $system_path = '/home/vagrant/Code/open-audit/code_igniter/system';
         }
     }
@@ -199,10 +202,13 @@ if (defined('ENVIRONMENT')) {
     if ((string) php_uname('s') == 'Windows NT') {
         // windows
         $application_folder = 'c:/xampplite/open-audit/code_igniter/application';
+        if (file_exists('c:/xampp/open-audit/code_igniter/application')) {
+            $application_folder = 'c:/xampp/open-audit/code_igniter/application';
+        }
     } else {
-        // linux
+        // everything else
         $application_folder = '/usr/local/open-audit/code_igniter/application';
-        if ( file_exists('/home/vagrant/Code/open-audit')) {
+        if (file_exists('/home/vagrant/Code/open-audit')) {
             $application_folder = '/home/vagrant/Code/open-audit/code_igniter/application';
         }
     }
