@@ -826,7 +826,7 @@ class M_collection extends MY_Model
                 $result = $query->result();
                 $existing_credentials = json_decode(simpleDecrypt($result[0]->credentials));
                 $new_credentials = new stdClass();
-                if (count($existing_credentials) > 0) {
+                if (!empty($existing_credentials)) {
                     foreach ($existing_credentials as $existing_key => $existing_value) {
                         if (!empty($received_credentials->$existing_key)) {
                             $new_credentials->$existing_key = $received_credentials->$existing_key;
