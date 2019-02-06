@@ -36,10 +36,11 @@
 number_of_audits = 25
 
 ' the name and path of the nmap_windows script
-nmap_windows = "c:\xampplite\open-audit\other\nmap_windows.vbs"
+Dim oFSO : Set oFSO = CreateObject("Scripting.FileSystemObject")
+Dim nmap_windows : nmap_windows = oFSO.GetParentFolderName(WScript.ScriptFullName) & "\nmap_windows.vbs"
 
 ' the name and path of the audit_windows script
-audit_windows = "c:\xampplite\open-audit\other\audit_windows.vbs"
+Dim audit_windows : audit_windows = oFSO.GetParentFolderName(WScript.ScriptFullName) & "\audit_windows.vbs"
 
 ' 0 = no debug
 ' 1 = basic debug

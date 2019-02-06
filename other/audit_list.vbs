@@ -61,7 +61,9 @@ Dim script_timeout
 script_timeout = 600
 
 ' the name and path of the audit script to use
-script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
+Dim oFSO : Set oFSO = CreateObject("Scripting.FileSystemObject")
+Dim script_name : script_name = oFSO.GetParentFolderName(WScript.ScriptFullName) & "\audit_windows.vbs"
+Dim script_dir : script_name = oFSO.GetParentFolderName(WScript.ScriptFullName)
 
 help = "n"
 
@@ -131,7 +133,7 @@ if (help = "y") then
 	wscript.echo "    *25 - The number of concurrently spawned Windows audits."
 	wscript.echo ""
 	wscript.echo "  script_name"
-	wscript.echo "   c:\xampplite\open-audit\other\audit_windows.vbs - The full path to and file name of audit_windows.vbs."
+	wscript.echo "   " & script_name & " - The full path to and file name of audit_windows.vbs."
 	wscript.echo ""
 	wscript.echo "  remote_password"
 	wscript.echo "        - The passowrd of the supplied username (if any)."
@@ -184,14 +186,14 @@ if audit_run_type = "remote" then
 			if debugging > 0 then wscript.echo("--------------") end if
 			
 			remote_location = "\\"& pc_array(i) & "\admin$\"
-			objFSO.CopyFile "c:\xampplite\open-audit\other\audit_windows.vbs", remote_location, True
-			'objFSO.CopyFile "c:\xampplite\open-audit\other\bin\RMTSHARE.EXE", remote_location, True
+			objFSO.CopyFile script_name, remote_location, True
+			'objFSO.CopyFile script_dir & "\bin\RMTSHARE.EXE", remote_location, True
 			wscript.sleep 4000
 			
 			Set Command = WScript.CreateObject("WScript.Shell")
 			' note - specify -d on the command below to run in non-interactive mode (locally)
 			' if you specify -d you will see command windows of the remote processes
-			cmd = "c:\xampplite\open-audit\other\bin\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
+			cmd = script_dir & "\bin\psexec.exe \\" & pc_array(i) & " -u " & remote_user & " -p " & remote_password & " -d cscript.exe " & remote_location & "audit_windows.vbs self_delete=y "
 			if debugging > 2 then wscript.echo cmd end if
 			Command.Run (cmd)
 			set Command = nothing

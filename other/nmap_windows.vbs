@@ -40,7 +40,8 @@ Dim audit_windows, colItems, command, count, current_pid, debugging, ip_address,
 number_of_audits = 25
 
 ' the name and path of the audit script to use
-audit_windows = "c:\xampplite\open-audit\other\audit_windows.vbs"
+Dim oFSO : Set oFSO = CreateObject("Scripting.FileSystemObject")
+Dim audit_windows : audit_windows = oFSO.GetParentFolderName(WScript.ScriptFullName) & "\audit_windows.vbs"
 
 ' if set, create an output file of all retrieved systems scanned
 output_file = ""

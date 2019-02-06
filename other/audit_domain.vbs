@@ -52,7 +52,8 @@ remote_user = ""
 remote_password = ""
 
 ' the name and path of the audit script to use
-script_name = "c:\xampplite\open-audit\other\audit_windows.vbs"
+Dim oFSO : Set oFSO = CreateObject("Scripting.FileSystemObject")
+Dim script_name : script_name = oFSO.GetParentFolderName(WScript.ScriptFullName) & "\audit_windows.vbs"
 
 ' set the below to your active directory domain
 ' you can add multiple domains in the array below.
@@ -155,7 +156,7 @@ if (help = "y") then
 	wscript.echo " *Windows - A string to match against each computer in the Active Directory domain. The provided script should match any part of a computers operating system name. Samples provided in the script."
 	wscript.echo ""
 	wscript.echo "  script_name"
-	wscript.echo "   c:\xampplite\open-audit\other\audit_windows.vbs - The full path to and file name of audit_windows.vbs."
+	wscript.echo "   " & script_name & " - The full path to and file name of audit_windows.vbs."
 	wscript.echo ""
 	wscript.echo "  remote_password"
 	wscript.echo "        - The password of the supplied username (if any)."
