@@ -584,11 +584,7 @@ class M_logon extends MY_Model
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (count($result) > 0) {
-            if (php_uname('s') != 'Windows NT') {
-                set_include_path('/usr/local/open-audit/code_igniter/application/third_party/sodium_compat');
-            } else {
-                set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\sodium_compat');
-            }
+            set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/sodium_compat');
             require_once "autoload.php";
             foreach ($result as $db_user) {
                 # get the salt from the front of the hash

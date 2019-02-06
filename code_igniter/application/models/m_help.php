@@ -47,12 +47,7 @@ class M_help extends MY_Model
     public function groups()
     {
         $CI = & get_instance();
-        if ((string) php_uname('s') === 'Windows NT') {
-            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
-        } else {
-            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
-        }
-
+        $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
             if (strpos($sql_file[$i], "INSERT INTO `groups` VALUES") !== false) {
                 $line = $sql_file[$i];
@@ -69,12 +64,7 @@ class M_help extends MY_Model
     public function queries()
     {
         $CI = & get_instance();
-        if ((string) php_uname('s') === 'Windows NT') {
-            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
-        } else {
-            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
-        }
-
+        $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
             if (strpos($sql_file[$i], "INSERT INTO `queries` VALUES") !== false) {
                 $line = $sql_file[$i];
@@ -91,12 +81,7 @@ class M_help extends MY_Model
     public function roles()
     {
         $CI = & get_instance();
-        if ((string) php_uname('s') === 'Windows NT') {
-            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
-        } else {
-            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
-        }
-
+        $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
             if (strpos($sql_file[$i], "INSERT INTO `roles` VALUES") !== false) {
                 $line = $sql_file[$i];
@@ -113,12 +98,7 @@ class M_help extends MY_Model
     public function summaries()
     {
         $CI = & get_instance();
-        if ((string) php_uname('s') === 'Windows NT') {
-            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
-        } else {
-            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
-        }
-
+        $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         for ($i=0; $i < count($sql_file); $i++) { 
             if (strpos($sql_file[$i], "INSERT INTO `summaries` VALUES") !== false) {
                 // $line = $sql_file[$i];
@@ -147,12 +127,7 @@ class M_help extends MY_Model
     public function defaults($collection)
     {
         $CI = & get_instance();
-        if ((string) php_uname('s') === 'Windows NT') {
-            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
-        } else {
-            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
-        }
-
+        $sql_file = file($CI->config->config['base_path'] . '/other/openaudit_mysql.sql');
         $result = array();
         $sql = "DROP TABLE IF EXISTS `temp`";
         $query = $this->db->query($sql);
@@ -284,12 +259,11 @@ class M_help extends MY_Model
         $data->php->timestamp = date('Y-m-d h:i:s a', time());
         $data->php->upload_max_filesize = ini_get('upload_max_filesize');
         $data->php->version = phpversion();
+        $data->php->ini = php_ini_loaded_file();
 
 
         if (php_uname('s') == 'Windows NT') {
             $data->os->name = 'Windows';
-            $opCommon = 'c:\omk\conf\opCommon.nmis';
-            $phpini = 'c:\xampplite\php\php.ini';
             exec("echo. |WMIC OS Get Caption", $output);
             if (isset($output[1])) {
                 $data->os->version = $output[1];

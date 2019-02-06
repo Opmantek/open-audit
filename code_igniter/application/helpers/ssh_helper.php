@@ -114,11 +114,7 @@ if (! function_exists('scp')) {
         $item_start = microtime(true);
         $CI = & get_instance();
 
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
-        }
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
         define('NET_SFTP_LOGGING', NET_SFTP_LOG_COMPLEX);
@@ -272,11 +268,8 @@ if (! function_exists('scp_get')) {
 
         $CI = & get_instance();
         $item_start = microtime(true);
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
-        }
+
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SFTP.php';
         if (!defined('NET_SSH2_LOGGING')) {
@@ -421,11 +414,8 @@ if (! function_exists('ssh_command')) {
             discovery_log($log);
             return false;
         }
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
-        }
+
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         require_once 'Crypt/RSA.php';
         require_once 'Net/SSH2.php';
         if (!defined('NET_SSH2_LOGGING')) {
@@ -580,11 +570,8 @@ if (! function_exists('ssh_audit')) {
         }
 
         $CI = & get_instance();
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/phpseclib');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\phpseclib');
-        }
+
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/phpseclib');
         include 'Crypt/RSA.php';
         include('Net/SSH2.php');
         define('NET_SSH2_LOGGING', 2);

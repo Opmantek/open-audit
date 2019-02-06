@@ -137,6 +137,7 @@ if (! function_exists('execute_windows')) {
         $log->file = 'wmi_helper';
         $log->function = 'execute_windows';
         $log->command = '';
+        $CI = & get_instance();
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::execute_windows';
@@ -163,7 +164,7 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') == 'Darwin') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+            $filepath = $CI->config->config['base_path'] . '/other';
             if (!file_exists('/usr/local/bin/winexe')) {
                 $log->message = 'Winexe not installed on OSX, cannot run execute_windows.';
                 discovery_log($log);
@@ -180,7 +181,7 @@ if (! function_exists('execute_windows')) {
         }
 
         if (php_uname('s') == 'Linux') {
-            $filepath = dirname(dirname(dirname(dirname(dirname(__FILE__)))))."/open-audit/other";
+            $filepath = $CI->config->config['base_path'] . '/other';
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
@@ -228,7 +229,8 @@ if (! function_exists('execute_windows')) {
             } else {
                 $domain = '';
             }
-            $command_string = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
+            $command_string = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
+
             $log->command = str_replace($credentials->credentials->password, '******', $command_string);
             discovery_log($log);
             exec($command_string, $output, $return_var);
@@ -269,6 +271,7 @@ if (! function_exists('copy_to_windows')) {
     {
         $log->file = 'wmi_helper';
         $log->function = 'copy_to_windows';
+        $CI = & get_instance();
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::copy_to_windows';
@@ -458,8 +461,8 @@ if (! function_exists('copy_to_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             # Must have paexec
-            if (!file_exists('c:\\xampplite\\open-audit\\other\\paexec.exe')) {
-                $log->message = 'You must have paexec.exe in c:\\xampplite\\open-audit\\other\\';
+            if (!file_exists($CI->config->config['base_path'] . '\\other\\paexec.exe')) {
+                $log->message = 'You must have paexec.exe in ' . $CI->config->config['base_path'] . '\\open-audit\\other\\';
                 $log->command = '';
                 $log->command_status = 'fail';
                 discovery_log($log);
@@ -475,8 +478,8 @@ if (! function_exists('copy_to_windows')) {
             }
             unset($temp);
             $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
-            $log->command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" -c "c:\\windows\\' . $source . '"';
+            $command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "c:\\windows\\' . $source . '"';
+            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" -c "c:\\windows\\' . $source . '"';
             $log->message = 'Attempting to copy file to Windows.';
             discovery_log($log);
             exec($command, $output, $return_var);
@@ -517,6 +520,7 @@ if (! function_exists('copy_from_windows')) {
     {
         $log->file = 'wmi_helper';
         $log->function = 'copy_from_windows';
+        $CI = & get_instance();
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::copy_from_windows';
@@ -700,8 +704,8 @@ if (! function_exists('copy_from_windows')) {
 
         if (php_uname('s') == 'Windows NT') {
             # Must have paexec
-            if (!file_exists('c:\\xampplite\\open-audit\\other\\paexec.exe')) {
-                $log->message = 'You must have paexec.exe in c:\\xampplite\\open-audit\\other\\';
+            if (!file_exists($CI->config->config['base_path'] . '\\other\\paexec.exe')) {
+                $log->message = 'You must have paexec.exe in ' . $CI->config->config['base_path'] . '\\open-audit\\other\\';
                 $log->command = '';
                 $log->command_status = 'fail';
                 discovery_log($log);
@@ -717,8 +721,8 @@ if (! function_exists('copy_from_windows')) {
             }
             unset($temp);
             $password = str_replace('"', '\"', $credentials->credentials->password);
-            $command = 'c:\\xampplite\\open-audit\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "' . $source . ' ' . $destination . '"';
-            $log->command = str_replace($password, '******', $command);
+            $command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" -c "' . $source . ' ' . $destination . '"';
+            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" -c "' . $source . ' ' . $destination . '"';
             $log->message = 'Attempting to copy file to Windows.';
             discovery_log($log);
             exec($command, $output, $return_var);

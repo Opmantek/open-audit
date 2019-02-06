@@ -122,7 +122,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.username" class="col-sm-3 control-label"><?php echo __('Username'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="text" class="form-control" id="credentials.username" name="credentials.username" value="<?php echo htmlspecialchars($item->attributes->credentials->username, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="text" class="form-control" id="credentials.username" name="credentials.username" value="<?php echo @htmlspecialchars($item->attributes->credentials->username, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.username" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.username"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
@@ -136,7 +136,7 @@ $item = $this->response->data[0];
                     <div class="form-group">
                         <label for="credentials.password" class="col-sm-3 control-label"><?php echo __('Password'); ?></label>
                         <div class="col-sm-8 input-group">
-                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo htmlspecialchars($item->attributes->credentials->password, REPLACE_FLAGS, CHARSET); ?>" disabled>
+                            <input type="password" class="form-control" id="credentials.password" name="credentials.password" value="<?php echo @htmlspecialchars($item->attributes->credentials->password, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php if (!empty($edit)) { ?>
                             <span class="input-group-btn">
                                 <button id="edit_credentials.password" data-action="edit" class="btn btn-default edit_button" type="button" data-attribute="credentials.password"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>

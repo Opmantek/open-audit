@@ -72,14 +72,10 @@ if (! function_exists('simpleDecrypt')) {
      */
     function simpleDecrypt($message, $key = '')
     {
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/sodium_compat');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\sodium_compat');
-        }
+        $CI = & get_instance();
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/sodium_compat');
         require_once "autoload.php";
         if (empty($key)) {
-            $CI = & get_instance();
             $key = mb_substr("00000000000000000000000000000000".$CI->config->config['encryption_key'], -32);
         }
         $message = hex2bin($message);
@@ -119,18 +115,11 @@ if (! function_exists('simpleEncrypt')) {
      */
     function simpleEncrypt($message, $key = '')
     {
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/sodium_compat');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\sodium_compat');
-        }
+        $CI = & get_instance();
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/sodium_compat');
         require_once "autoload.php";
 
-        if (php_uname('s') != 'Windows NT') {
-            set_include_path('/usr/local/open-audit/code_igniter/application/third_party/random_compat');
-        } else {
-            set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\random_compat');
-        }
+        set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/random_compat');
         require_once "lib/random.php";
 
         if (empty($key)) {

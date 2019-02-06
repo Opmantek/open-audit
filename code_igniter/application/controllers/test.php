@@ -69,8 +69,10 @@ class Test extends CI_Controller
 
     public function iana()
     {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers');
         echo "<pre>\n";
-        $file = file('/usr/local/open-audit/other/imports/enterprise-numbers');
         $oids = array();
         for ($i=0; $i < count($file); $i++) { 
             if (preg_match('/^\d./', $file[$i])) {
@@ -84,8 +86,10 @@ class Test extends CI_Controller
 
     public function oui()
     {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
         echo "<pre>\n";
-        $file = file('/usr/local/open-audit/other/imports/oui.txt');
         $ouis = array();
         for ($i=0; $i < count($file); $i++) { 
             if (strpos($file[$i], "   (hex)\t\t")) {
@@ -97,23 +101,24 @@ class Test extends CI_Controller
         foreach ($ouis as $mac => $manufacturer) {
             $sql = "INSERT IGNORE INTO `manufacturers_mac` VALUES (NULL, ?, ?, 'system', NOW())";
             $data = array($mac, $manufacturer);
-            $query = @$this->db->query($sql, $data);
+            @$this->db->query($sql, $data);
         }
     }
      
     public function manufacturers_oid()
     {
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $oid_file = file($this->config->config['base_path'] . '/other/imports/enterprise-numbers');
         echo "<pre>\n";
         $manufacturers = array();
-
-        $oid_file = file('/usr/local/open-audit/other/enterprise-numbers.txt');
         for ($i=0; $i < count($oid_file); $i++) {
             if (ctype_digit(trim($oid_file[$i]))) {
                 $manufacturers[] = trim($oid_file[$i+1]);
             }
         }
 
-        $oid_file = file('/usr/local/open-audit/other/oui.txt');
+        $oid_file = file($this->config->config['base_path'] . '/other/imports/oui.txt');
         for ($i=0; $i < count($oid_file); $i++) {
             if (strpos($oid_file[$i], '(hex)') !== false) {
                 $manufacturers[] = trim(substr($oid_file[$i], 18));
@@ -269,11 +274,9 @@ class Test extends CI_Controller
 
         $tables = $this->db->list_tables();
 
-        if ((string) php_uname('s') === 'Windows NT') {
-            $sql_file = file('c:\\xampplite\\open-audit\\other\\openaudit_mysql.sql');
-        } else {
-            $sql_file = file('/usr/local/open-audit/other/openaudit_mysql.sql');
-        }
+        $this->load->model('m_configuration');
+        $this->m_configuration->load();
+        $sql_file = file($this->config->config['base_path'] . '/other/openaudit_mysql.sql');
 
         echo "<style>";
         echo ".diff td {\n  vertical-align: top;\n  white-space: pre;\n  white-space: pre-wrap;\n  font-family: monospace;\n}\n";

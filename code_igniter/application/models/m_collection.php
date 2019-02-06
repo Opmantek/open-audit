@@ -701,11 +701,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'users') {
             if (!empty($data->password)) {
-                if (php_uname('s') != 'Windows NT') {
-                    set_include_path('/usr/local/open-audit/code_igniter/application/third_party/random_compat');
-                } else {
-                    set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\random_compat');
-                }
+                set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/random_compat');
                 require_once "lib/random.php";
                 $salt = bin2hex(random_bytes(32));
                 $data->password = $salt.hash("sha256", $salt.(string)$data->password);
@@ -1151,11 +1147,7 @@ class M_collection extends MY_Model
 
         if ($collection === 'users') {
             if (!empty($data->password)) {
-                if (php_uname('s') != 'Windows NT') {
-                    set_include_path('/usr/local/open-audit/code_igniter/application/third_party/random_compat');
-                } else {
-                    set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\random_compat');
-                }
+                set_include_path($CI->config->config['base_path'] . '/code_igniter/application/third_party/random_compat');
                 require_once "lib/random.php";
                 $salt = bin2hex(random_bytes(32));
                 $data->password = $salt.hash("sha256", $salt.(string)$data->password);

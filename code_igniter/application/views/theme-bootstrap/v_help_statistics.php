@@ -38,7 +38,7 @@ if (php_uname('s') == "Windows NT") {
     if (isset($output[1])) {
         $operating_system = $output[1];
     } else {
-        $operating_system = "unknown (You must run XAMPPLite as an administrator on Windows to determine this)";
+        $operating_system = "unknown (You must run Apache as an administrator on Windows to determine this)";
     }
 } else {
     $operating_system = php_uname('s');

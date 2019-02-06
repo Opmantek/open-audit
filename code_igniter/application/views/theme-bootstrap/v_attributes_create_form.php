@@ -113,7 +113,7 @@
 
                 </div>
                 <div class="col-md-6">
-                    <p>If you're adding a device type, don't forget to add an icon file in the below directories:<br /><br />Linux - /var/www/html/open-audit/device_images/<br /><br />Windows - c:\xampplite\htdocs\open-audit\device_images\<br /><br />These should be in SVG format.
+                    <p>If you're adding a device type, don't forget to add an icon file in the below directories:<br /><br />Linux - /var/www/html/open-audit/device_images/<br /><br />Windows - <?php echo $this->config->config['base_path']; ?>\htdocs\open-audit\device_images\<br /><br />These should be in SVG format.
                 </div>
             </div>
 
