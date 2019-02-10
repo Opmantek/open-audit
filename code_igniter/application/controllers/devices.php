@@ -249,9 +249,8 @@ class devices extends MY_Controller
                     $device_ip->version = 4;
                     $device_ip->network = $network->network . '/' . $network->network_slash;
                     $device_ip->set_by = '';
-                    $input = new stdClass();
-                    $input->item = array();
-                    $input->item[] = $device_ip;
+                    $input = array();
+                    $input[] = $device_ip;
                     $parameters = new stdClass();
                     $parameters->table = 'ip';
                     $parameters->details = $device;
