@@ -793,7 +793,7 @@ if (!function_exists('process_scan')) {
         $CI->m_devices_components->update_missing_interfaces($device->id);
 
         // insert any modules from SNMP
-        if (isset($modules) and is_array($guests) and count($modules) > 0) {
+        if (isset($modules) and is_array($modules) and count($modules) > 0) {
             $log->ip = $device->ip;
             $log->discovery_id = $device->discovery_id;
             $log->file = 'discovery_helper';
