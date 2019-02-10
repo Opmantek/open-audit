@@ -471,23 +471,66 @@ class devices extends MY_Controller
             $device_names = array();
             $this->load->model('m_discoveries');
             $this->load->model('m_collection');
+            $this->load->model('m_discovery_scan_options');
             foreach ($ids as $id) {
                 $this->response->data = $this->m_devices->read($id);
-                $data = new stdClass();
-                $data->name = $this->response->data[0]->attributes->name;
-                $device_names[] = $this->response->data[0]->attributes->name;
-                if (empty($data->name)) {
-                    $data->name = ip_address_from_db($this->response->data[0]->attributes->ip);
+                $sql = "SELECT * FROM discoveries WHERE name = 'Device Discovery - " . $this->response->data[0]->attributes->name . "' AND system_id = " . intval($id);
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if (!empty($result)) {
+                    # We already have a previously created device discovery - use that
+                    $discovery_id = $result[0]->id;
+                    $this->m_discoveries->execute($discovery_id);
+                } else {
+                    # make a new one and run it
+                    $data = new stdClass();
+                    $data->name = 'Device Discovery - ' . $this->response->data[0]->attributes->name;
+                    $device_names[] = $this->response->data[0]->attributes->name;
+                    if (empty($data->name)) {
+                        $data->name = ip_address_from_db($this->response->data[0]->attributes->ip);
+                    }
+                    $data->system_id = $this->response->data[0]->attributes->id;
+                    $data->org_id = $this->response->data[0]->attributes->org_id;
+                    $data->type = 'subnet';
+                    $data->network_address = $this->config->config['default_network_address'];
+                    $data->other = new stdClass();
+                    $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
+                    $data->other->nmap = new stdClass();
+                    $data->other->match = new stdClass();
+                    if (!empty($this->response->data[0]->attributes->discovery_id)) {
+                        $discovery = $this->m_discoveries->read($this->response->data[0]->attributes->discovery_id);
+                        if (!empty($discovery[0]->attributes->other->nmap)) {
+                            $data->other->nmap = $discovery[0]->attributes->other->nmap;
+                        } else {
+                            $this->response->data[0]->attributes->discovery_id = 0;
+                        }
+                        if (!empty($discovery[0]->attributes->other->match)) {
+                            $data->other->match = $discovery[0]->attributes->other->match;
+                        }
+                    }
+                    if (empty($this->response->data[0]->attributes->discovery_id)) {
+                        $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
+                        $discovery_scan_options = $this->m_discovery_scan_options->read($this->config->config['discovery_default_scan_option']);
+                        if (!empty($discovery_scan_options->data)) {
+                            foreach ($discovery_scan_options->data as $item) {
+                                foreach ($item as $key => $value) {
+                                    if (!in_array($key, $do_not_use)) {
+                                        $data->other->nmap->{$key} = $value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (empty($data->other->match->match_hostname)) {
+                        # use the defaults
+                        $match_rules = array('match_dbus', 'match_fqdn', 'match_hostname', 'match_hostname_dbus', 'match_hostname_serial', 'match_hostname_uuid', 'match_ip', 'match_mac', 'match_mac_vmware', 'match_serial', 'match_serial_type', 'match_uuid');
+                        foreach ($match_rules as $item) {
+                            $data->other->match->{$item} = $this->config->config[$item];
+                        }
+                    }
+                    $discovery_id = $this->m_collection->create($data, 'discoveries');
+                    $this->m_discoveries->execute($discovery_id);
                 }
-                $data->system_id = $this->response->data[0]->attributes->id;
-                $data->org_id = $this->response->data[0]->attributes->org_id;
-                $data->type = 'subnet';
-                $data->discard = 'y';
-                $data->network_address = $this->config->config['default_network_address'];
-                $data->other = new stdClass();
-                $data->other->subnet = ip_address_from_db($this->response->data[0]->attributes->ip);
-                $discovery_id = $this->m_collection->create($data, 'discoveries');
-                $this->m_discoveries->execute($discovery_id);
             }
             $message = htmlentities('Discovery started for devices: ' . htmlentities(implode(', ', $device_names)));
             $this->session->set_flashdata('success', $message);

@@ -231,7 +231,7 @@ class M_device extends MY_Model
             $data = array("$details->hostname", "$details->uuid");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -473,7 +473,7 @@ class M_device extends MY_Model
             $data = array("$details->fqdn");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
-            if (count($row) > 0) {
+            if (!empty($row)) {
                 $details->id = $row->id;
                 $log->system_id = $details->id;
                 $message = new stdClass();
@@ -1078,9 +1078,9 @@ class M_device extends MY_Model
         $log->command_output = '';
         if (!empty($GLOBALS['discovery_id'])) {
             $log->discovery_id = $GLOBALS['discovery_id'];
-        } else if (!empty($input->discovery_id)) {
-            $log->discovery_id = $input->discovery_id;
-            $GLOBALS['discovery_id'] = $input->discovery_id;
+        } else if (!empty($details->discovery_id)) {
+            $log->discovery_id = $details->discovery_id;
+            $GLOBALS['discovery_id'] = $details->discovery_id;
         } else {
             $log->discovery_id = '';
         }
@@ -1093,9 +1093,11 @@ class M_device extends MY_Model
 
         if (empty($details->name)) {
             if (!empty($details->hostname)) {
-                $details->name = $details->hostname;
+                $details->name = strtolower($details->hostname);
             } else if (!empty($details->sysName)) {
-                $details->name = $details->sysName;
+                $details->name = strtolower($details->sysName);
+            } else if (!empty($details->dns_hostname)) {
+                $details->name = strtolower($details->dns_hostname);
             } else if (!empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
             } else {
@@ -1131,7 +1133,7 @@ class M_device extends MY_Model
                     if ($key == $column) {
                         $keys .= $key.", ";
                         $values .= '?, ';
-                        $data[] = $value;
+                        $data[] = (string)$value;
                     }
                 }
             }
@@ -1271,6 +1273,15 @@ class M_device extends MY_Model
         unset($display);
         stdlog($log_details);
 
+        if (!empty($GLOBALS['discovery_id'])) {
+            $log_details->discovery_id = $GLOBALS['discovery_id'];
+        } else if (!empty($details->discovery_id)) {
+            $log_details->discovery_id = $details->discovery_id;
+            $GLOBALS['discovery_id'] = $details->discovery_id;
+        } else {
+            $log_details->discovery_id = '';
+        }
+
         $parameters = new stdClass();
         $parameters->log = $log_details;
         $parameters->input = $details;
@@ -1278,9 +1289,11 @@ class M_device extends MY_Model
 
         if (empty($details->name)) {
             if (!empty($details->hostname)) {
-                $details->name = $details->hostname;
+                $details->name = strtolower($details->hostname);
             } else if (!empty($details->sysName)) {
-                $details->name = $details->sysName;
+                $details->name = strtolower($details->sysName);
+            } else if (!empty($details->dns_hostname)) {
+                $details->name = strtolower($details->dns_hostname);
             } else if (!empty($details->ip)) {
                 $details->name = ip_address_from_db($details->ip);
             } else {
@@ -1353,7 +1366,7 @@ class M_device extends MY_Model
             if ($key != 'id' AND in_array($key, $disallowed_fields)) {
                 $update = new stdClass();
                 $update->key = $key;
-                $update->value = $value;
+                $update->value = (string)$value;
                 $update_device[] = $update;
             }
         }
@@ -1364,7 +1377,7 @@ class M_device extends MY_Model
             $sql = "UPDATE `system` SET ";
             foreach ($update_device as $field) {
                 $sql .= "`" . $field->key . "` = ?, ";
-                $data[] = $field->value;
+                $data[] = (string)$field->value;
             }
             $sql = substr($sql, 0, strlen($sql)-2);
             $sql .= ' WHERE `id` = ?';
@@ -1463,4 +1476,91 @@ class M_device extends MY_Model
         unset($log_details);
         unset($temp_ip);
     }
+
+
+
+    public function set_identification($id)
+    {
+        if (empty($id) or ! is_numeric($id)) {
+            return false;
+        }
+        $identification = '';
+        $sql = "SELECT * FROM `system` WHERE `id` = ?";
+        $data = array(intval($id));
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql, $data);
+        $result = $query->result();
+        if (!empty($result)) {
+            $device = $result[0];
+        } else {
+            return false;
+        }
+        # Based on type
+        if ($device->type !== 'unknown' and $device->type !== 'unclassified') {
+            if ($device->type === 'computer' and $device->class !== '') {
+                $identification = ucfirst($device->class);
+            } else if ($device->type === 'computer' and $device->os_group !== '') {
+                $identification = 'Computer running ' . $device->os_group;
+            } else {
+                if ($device->type !== 'iphone' and $device->type !== 'ipod' and $device->type !== 'ipad') {
+                    $identification = ucfirst($device->type);
+                } else {
+                    $identification = $device->type;
+                }
+            }
+        }
+        # Add the manufactuer
+        if ($device->manufacturer !== '') {
+            if ($identification !== '') {
+                $identification .= ' from ' . $device->manufacturer;
+            } else {
+                $identification = 'Vendor: ' . $device->manufacturer;
+            }
+        }
+        # Only resort to the Nmap ports if we have to
+        if ($identification === '') {
+            $sql = "SELECT * FROM nmap WHERE system_id = ? and current = 'y'";
+            $data = array(intval($id));
+            $sql = $this->clean_sql($sql);
+            $query = $this->db->query($sql, $data);
+            $nmap_ports = $query->result();
+            if (!empty($nmap_ports)) {
+                foreach ($nmap_ports as $port) {
+                    if ($port->program === 'ssh') {
+                        $identification = 'Device running SSH';
+                    }
+                    if ($port->program === 'snmp') {
+                        if ($identification === '') {
+                            $identification = 'Device running SNMP';
+                        } else {
+                            $identification .= ' and SNMP';
+                        }
+                    }
+                    if ($port->program === 'msrpc') {
+                        if ($identification === '') {
+                            $identification = 'Device running WMI (likely a Windows computer)';
+                        } else {
+                            $identification .= ' and WMI (likely a Windows computer)';
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($identification)) {
+            if (empty($device->type) or $device->type === 'unknown') {
+                $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = '$identification' WHERE `id` = ?";
+            } else {
+                $sql = "UPDATE `system` SET `identification` = '$identification' WHERE `id` = ?";
+            }
+        } else {
+            $identification = 'No information could be retrieved.';
+            $sql = "UPDATE `system` SET `identification` = '$identification' WHERE `id` = ?";
+        }
+        $data = array(intval($id));
+        $sql = $this->clean_sql($sql);
+        $query = $this->db->query($sql, $data);
+        return true;
+    }
+
+
 }

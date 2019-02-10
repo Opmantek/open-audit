@@ -129,6 +129,11 @@ if ($this->response->meta->collection == 'collectors') {
 
 # configuration
 if ($this->response->meta->collection == 'configuration') {
+    if ($this->response->data[0]->attributes->name == 'discovery_default_scan_option') {
+        $this->load->model('m_discovery_scan_options');
+        $options = $this->m_discovery_scan_options->collection();
+        $this->response->included = array_merge($this->response->included, $options);
+    }
 }
 
 # connections

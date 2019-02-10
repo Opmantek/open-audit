@@ -310,6 +310,10 @@ if(!empty($json)){
     $this->m_audit_log->update('debug', 'check and set initial ip', $details->id, $details->last_seen);
     $this->m_devices_components->set_initial_address($details->id);
 
+    // set the identification
+    $this->m_audit_log->update('debug', 'set the identification', $details->id, $details->last_seen);
+    $this->m_device->set_identification($details->id);
+
     $this->m_audit_log->update('debug', '', $details->id, $details->last_seen);
     $this->benchmark->mark('code_end');
     if ($this->response->meta->format == 'screen') {

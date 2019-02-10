@@ -104,7 +104,7 @@ if (! function_exists('windows_credentials')) {
         $log->command_status = 'warning';
         $log->file = 'wmi_helper';
         $log->function = 'windows_credentials';
-        $log->message = "No valid Windows credentials for $ip.";
+        $log->message = "WMI detected but no valid Windows credentials for $ip.";
         $log->severity = 7;
         discovery_log($log);
         return false;
@@ -263,13 +263,12 @@ if (! function_exists('copy_to_windows')) {
      *
      * @param     display   Should we output to the screen or not?
      *
-     * @return    false || $return array containing the output and status flag
+     * @return    false || true
      */
    function copy_to_windows($ip = '', $credentials, $share, $source = '', $destination, $log)
     {
         $log->file = 'wmi_helper';
         $log->function = 'copy_to_windows';
-        $return = array('output' => '', 'status' => '');
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::copy_to_windows';
@@ -392,64 +391,61 @@ if (! function_exists('copy_to_windows')) {
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
             exec($command, $output, $return_var);
             if ($return_var == 0) {
-                $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows (SMB2 raw)';
                 $log->command_status = 'success';
                 $log->severity = 7;
                 discovery_log($log);
                 return true;
             } else {
-                $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                $log->command_status = 'fail';
-                $log->severity = 5;
+                $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows (SMB2 raw). Error:' . $output[0];
+                $log->command_status = 'notice';
+                $log->severity = 7;
                 discovery_log($log);
                 $temp = explode('@', $credentials->credentials->username);
                 $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                 $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%******"  -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                 exec($command, $output, $return_var);
-                if ($display == 'y') {
-                    echo 'DEBUG - Windows Copy Command: ' . str_replace($password, '******', $command) . "\n";
-                }
                 if ($return_var == 0) {
-                    $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                    $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows (SMB2 split)';
                     $log->command_status = 'success';
                     $log->severity = 7;
                     discovery_log($log);
                     return true;
                 } else {
-                    $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                    $log->command_status = 'fail';
-                    $log->severity = 5;
+                    $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows (SMB2 split). Error:' . $output[0];
+                    $log->command_status = 'notice';
+                    $log->severity = 7;
                     discovery_log($log);
                     $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                     $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                     exec($command, $output, $return_var);
                     if ($return_var == 0) {
-                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows (SMB 1 raw)';
                         $log->command_status = 'success';
                         $log->severity = 7;
                         discovery_log($log);
                         return true;
                     } else {
-                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                        $log->command_status = 'fail';
-                        $log->severity = 5;
+                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows (SMB 1 raw). Error:' . $output[0];
+                        $log->command_status = 'notice';
+                        $log->severity = 7;
                         discovery_log($log);
                         $temp = explode('@', $credentials->credentials->username);
                         $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                         $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%******" -c "put ' . $source . ' ' . $destination . ' 2>&1"';
                         exec($command, $output, $return_var);
                         if ($return_var == 0) {
-                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows (SMB1 split)';
                             $log->command_status = 'success';
                             $log->severity = 7;
                             discovery_log($log);
                             return true;
                         } else {
-                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                            $log->message = 'Linux could not copy file to ' . $ip;
                             $log->command_status = 'fail';
                             $log->severity = 5;
                             discovery_log($log);
@@ -521,7 +517,6 @@ if (! function_exists('copy_from_windows')) {
     {
         $log->file = 'wmi_helper';
         $log->function = 'copy_from_windows';
-        $return = array('output' => '', 'status' => '');
 
         if (empty($ip)) {
             $log->message = 'No IP supplied to wmi_helper::copy_from_windows';
@@ -638,55 +633,62 @@ if (! function_exists('copy_from_windows')) {
             $password = str_replace('$', '\$', $credentials->credentials->password);
             $password = str_replace("'", "", escapeshellarg($password));
             $username = str_replace("'", "", escapeshellarg($credentials->credentials->username));
-            $command =      'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+            $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $username . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
             exec($command, $output, $return_var);
             if ($return_var == 0) {
-                $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                $log->message = 'Linux attempt (1) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                $log->command_status = 'success';
                 $log->severity = 7;
                 discovery_log($log);
                 return true;
             } else {
-                $log->message = 'Linux attempt (1) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                $log->severity = 5;
+                $log->message = 'Linux attempt (1) to copy file from ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                $log->command_status = 'notice';
+                $log->severity = 7;
                 discovery_log($log);
                 $temp = explode('@', $credentials->credentials->username);
                 $command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+                $log->command = 'smbclient -m SMB2 \\\\\\\\'.$ip.'\\\\admin\$ -U "' . $temp[1] . '\\' . $temp[0] . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                 exec($command, $output, $return_var);
-                if ($display == 'y') {
-                    echo 'DEBUG - Windows Copy Command: ' . str_replace($password, '******', $command) . "\n";
-                }
                 if ($return_var == 0) {
-                    $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                    $log->message = 'Linux attempt (2) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                    $log->command_status = 'success';
                     $log->severity = 7;
                     discovery_log($log);
                     return true;
                 } else {
-                    $log->message = 'Linux attempt (2) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                    $log->severity = 5;
+                    $log->message = 'Linux attempt (2) to copy file from ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                    $log->command_status = 'notice';
+                    $log->severity = 7;
                     discovery_log($log);
                     $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                     $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $username . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                     exec($command, $output, $return_var);
                     if ($return_var == 0) {
-                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                        $log->message = 'Linux attempt (3) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                        $log->command_status = 'success';
                         $log->severity = 7;
                         discovery_log($log);
                         return true;
                     } else {
-                        $log->message = 'Linux attempt (3) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
-                        $log->severity = 5;
+                        $log->message = 'Linux attempt (3) to copy file from ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                        $log->command_status = 'notice';
+                        $log->severity = 7;
                         discovery_log($log);
                         $temp = explode('@', $credentials->credentials->username);
                         $command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
+                        $log->command = 'smbclient \\\\\\\\'.$ip.'\\\\' . $share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%******" -c "get ' . $source . ' ' . $destination . ' 2>&1"';
                         exec($command, $output, $return_var);
                         if ($return_var == 0) {
-                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                            $log->message = 'Linux attempt (4) to copy file from ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
+                            $log->command_status = 'success';
                             $log->severity = 7;
                             discovery_log($log);
                             return true;
                         } else {
-                            $log->message = 'Linux attempt (4) to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows. Error:' . $output[0];
+                            $log->message = 'Linux attempt to copy file from ' . $ip . ' failed in wmi_helper::copy_to_windows.';
+                            $log->command_status = 'fail';
                             $log->severity = 5;
                             discovery_log($log);
                             return false;
@@ -720,20 +722,9 @@ if (! function_exists('copy_from_windows')) {
             $log->message = 'Attempting to copy file to Windows.';
             discovery_log($log);
             exec($command, $output, $return_var);
-            return true;
             # NOTE - We expect this to report that it fails as paexec attempts to EXECUTE the file.
-            # In this function, we just want the file copied to the target, which does appear to work as it should.
-            // if ($return_var == 0) {
-            //     $log->message = 'Windows attempt to copy file to ' . $ip . ' succeeded in wmi_helper::copy_to_windows';
-            //     $log->severity = 7;
-            //     stdlog($log);
-            //     return true;
-            // } else {
-            //     $log->message = 'Windows attempt to copy file to ' . $ip . ' failed in wmi_helper::copy_to_windows.';
-            //     $log->severity = 5;
-            //     stdlog($log);
-            //     return false;
-            // }
+            # In this function, we just want the file copied to the target, which does appear to work as it should (ie, witrhout generating an error)
+            return true;
         }
     }
 }

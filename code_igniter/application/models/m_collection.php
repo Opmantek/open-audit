@@ -515,24 +515,21 @@ class M_collection extends MY_Model
             }
 
             if (empty($data->other->nmap)) {
-                if ($this->config->config['discovery_default_preset'] == 1) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","preset":"1","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161"}';
-                } else if ($this->config->config['discovery_default_preset'] == 5) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"10","nmap_udp_ports":"10","ping":"y","preset":"5","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":""}';
-                } else if ($this->config->config['discovery_default_preset'] == 40) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"100","nmap_udp_ports":"100","ping":"y","preset":"40","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":""}';
-                } else if ($this->config->config['discovery_default_preset'] == 90) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"0","ping":"n","preset":"90","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":"161"}';
-                } else if ($this->config->config['discovery_default_preset'] == 100) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"1000","nmap_udp_ports":"100","ping":"y","preset":"100","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":""}';
-                } else if ($this->config->config['discovery_default_preset'] == 240) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"100","ping":"y","preset":"240","service_version":"y","tcp_ports":"62078","timing":"3","udp_ports":""}';
-                } else if ($this->config->config['discovery_default_preset'] == 1200) {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"1000","ping":"n","preset":"1200","service_version":"y","tcp_ports":"62078","timing":"2","udp_ports":""}';
-                } else {
-                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"y","nmap_tcp_ports":"1000","nmap_udp_ports":"0","ping":"n","preset":"90","service_version":"n","tcp_ports":"62078","timing":"4","udp_ports":"161"}';
+                $data->other->nmap = new stdClass();
+                if (empty($this->config->config['discovery_default_scan_option'])) {
+                    $this->config->config['discovery_default_scan_option'] = 1;
                 }
-                $data->other->nmap = json_decode($json);
+                $sql = "SELECT `id` AS 'discovery_scan_option_id', ping, service_version, filtered, timeout, timing, nmap_tcp_ports, nmap_udp_ports, tcp_ports, udp_ports, exclude_tcp_ports, exclude_udp_ports, exclude_ip, ssh_ports FROM discovery_scan_options WHERE id = ?";
+                $data = array(intval($this->config->config['discovery_default_scan_option']));
+                $sql = $this->clean_sql($sql);
+                $query = $this->db->query($sql);
+                $result = $query->result();
+                if (!empty($result[0])) {
+                    $data->other->nmap = $result[0];
+                } else {
+                    $json = '{"exclude_ip":"","exclude_tcp_ports":"","exclude_udp_ports":"","filtered":"n","nmap_tcp_ports":"0","nmap_udp_ports":"0","ping":"y","discovery_scan_options_id":"0","service_version":"n","tcp_ports":"22,135,62078","timing":"4","udp_ports":"161","ssh_ports":"22"}';
+                    $data->other->nmap = json_decode($json);
+                }
             }
 
             if ($data->type == 'subnet') {
@@ -704,7 +701,15 @@ class M_collection extends MY_Model
 
         if ($collection === 'users') {
             if (!empty($data->password)) {
-                $data->password = sodium_crypto_pwhash_str($data->password, SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE);
+                if (php_uname('s') != 'Windows NT') {
+                    set_include_path('/usr/local/open-audit/code_igniter/application/third_party/random_compat');
+                } else {
+                    set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\random_compat');
+                }
+                require_once "lib/random.php";
+                $salt = bin2hex(random_bytes(32));
+                $data->password = $salt.hash("sha256", $salt.(string)$data->password);
+                unset($salt);
             }
         }
 
@@ -732,7 +737,11 @@ class M_collection extends MY_Model
         if ($this->db->field_exists('edited_by', $db_table)) {
             $sql .= '`edited_by`, `edited_date`';    // the user.name and timestamp
             $sql_data .= '?, NOW()';                 // the user.name and timestamp
-            $data_array[] = $CI->user->full_name;    // the user.name
+            if (empty($CI->user->full_name)) {
+                $data_array[] = 'system';
+            } else {
+                $data_array[] = $CI->user->full_name;    // the user.name
+            }
         }
 
         $sql .= ") VALUES (" . $sql_data . ")";
@@ -869,9 +878,9 @@ class M_collection extends MY_Model
                         $received_other->$key = $value;
                 }
 
-                if (!empty($received_other->nmap->preset) and !is_numeric($received_other->nmap->preset)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for preset (non-numeric)');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Preset (non-numeric) supplied.');
+                if (!empty($received_other->nmap->discovery_scan_option_id) and !is_numeric($received_other->nmap->discovery_scan_option_id)) {
+                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
+                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (non-numeric) supplied.');
                     $data->other->subnet = '';
                     if ($CI->response->meta->format == 'screen') {
                         redirect('/discoveries');
@@ -881,22 +890,20 @@ class M_collection extends MY_Model
                     }
                 }
 
-                if (!empty($received_other->nmap->preset) and intval($received_other->nmap->preset) !== 0 and 
-                    intval($received_other->nmap->preset) !== 1 and
-                    intval($received_other->nmap->preset) !== 5 and
-                    intval($received_other->nmap->preset) !== 40 and
-                    intval($received_other->nmap->preset) !== 90 and
-                    intval($received_other->nmap->preset) !== 100 and
-                    intval($received_other->nmap->preset) !== 240 and
-                    intval($received_other->nmap->preset) !== 1200 ) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for preset (invalid value)');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid Preset (invalid value) supplied.');
-                    $data->other->subnet = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
-                    } else {
-                        output($CI->response);
-                        exit();
+                if (!empty($received_other->nmap->discovery_scan_option_id)) {
+                    $select = "SELECT count(id) FROM discovery_scan_options WHERE id = ?";
+                    $data_array = array(intval($received_other->nmap->discovery_scan_option_id));
+                    $query = $this->db->query($select, $data_array);
+                    $result = $query->result();
+                    if (empty($result)) {
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
                     }
                 }
 
@@ -912,185 +919,88 @@ class M_collection extends MY_Model
                     }
                 }
 
-                if (!empty($received_other->nmap->tcp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->tcp_ports)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for tcp_ports');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
-                    $data->other->nmap->tcp_ports = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
+                if (!empty($received_other->nmap->tcp_ports)) {
+                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->tcp_ports)) {
+                        // Invalid TCP ports
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for tcp_ports');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid tcp_ports supplied.');
+                        $data->other->nmap->tcp_ports = '';
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
                     } else {
-                        output($CI->response);
-                        exit();
+                        // Valid TCP ports
                     }
                 }
 
-                if (!empty($received_other->nmap->udp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->udp_ports)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for udp_ports');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
-                    $data->other->nmap->udp_ports = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
+                if (!empty($received_other->nmap->udp_ports)) {
+                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->udp_ports)) {
+                        // Invalid UDP ports
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for udp_ports');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid udp_ports supplied.');
+                        $data->other->nmap->udp_ports = '';
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
                     } else {
-                        output($CI->response);
-                        exit();
+                        // Valid UDP ports
                     }
                 }
 
-                if (!empty($received_other->nmap->exclude_tcp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_tcp_ports)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
-                    $data->other->nmap->exclude_tcp_ports = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
+                if (!empty($received_other->nmap->exclude_tcp_ports)) {
+                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_tcp_ports)) {
+                        // Invalud Exclude TCP ports
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_tcp_ports');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_tcp_ports supplied.');
+                        $data->other->nmap->exclude_tcp_ports = '';
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
                     } else {
-                        output($CI->response);
-                        exit();
+                        // Valid Exclude TCP ports
                     }
                 }
 
-                if (!empty($received_other->nmap->exclude_udp_ports) and !preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_udp_ports)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
-                    $data->other->nmap->exclude_udp_ports = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
+                if (!empty($received_other->nmap->exclude_udp_ports)) {
+                    if (!preg_match('/^[\d,\/,]*$/', $received_other->nmap->exclude_udp_ports)) {
+                        // Invalid Exclude UDP ports
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_udp_ports');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_udp_ports supplied.');
+                        $data->other->nmap->exclude_udp_ports = '';
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
                     } else {
-                        output($CI->response);
-                        exit();
+                        // Valid Exclude UDP ports
                     }
                 }
 
-                if (!empty($received_other->nmap->exclude_ip) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_ip');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
-                    $data->other->nmap->exclude_ip = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
+                if (!empty($received_other->nmap->exclude_ip)) {
+                    if (!preg_match('/^[\d,\.,\/,-]*$/', $received_other->nmap->exclude_ip)) {
+                        // Invalid Exclude IP
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for exclude_ip');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid exclude_ip supplied.');
+                        $data->other->nmap->exclude_ip = '';
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
                     } else {
-                        output($CI->response);
-                        exit();
-                    }
-                }
-
-                if (!empty($received_other->nmap->timing) or 
-                    !empty($received_other->nmap->ping) or 
-                    !empty($received_other->nmap->service_version) or 
-                    !empty($received_other->nmap->filtered) or 
-                    !empty($received_other->nmap->timeout) or 
-                    !empty($received_other->nmap->nmap_tcp_ports) or 
-                    !empty($received_other->nmap->nmap_udp_ports) or 
-                    !empty($received_other->nmap->tcp_ports) or 
-                    !empty($received_other->nmap->udp_ports) or 
-                    !empty($received_other->nmap->exclude_tcp_ports) or 
-                    !empty($received_other->nmap->exclude_udp_ports) or 
-                    !empty($received_other->nmap->exclude_ip)) {
-                    $received_other->nmap->preset = 0;
-                }
-
-                if (!empty($received_other->nmap->preset)) {
-                    if ($received_other->nmap->preset == '1') {
-                        $received_other->nmap->timing = "4";
-                        $received_other->nmap->ping = "y";
-                        $received_other->nmap->service_version = "n";
-                        $received_other->nmap->filtered = "n";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "";
-                        $received_other->nmap->nmap_udp_ports = "";
-                        $received_other->nmap->tcp_ports = "22,135,62078";
-                        $received_other->nmap->udp_ports = "161";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
-                    }
-
-                    if ($received_other->nmap->preset == '5') {
-                        $received_other->nmap->timing = "4";
-                        $received_other->nmap->ping = "y";
-                        $received_other->nmap->service_version = "n";
-                        $received_other->nmap->filtered = "n";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "10";
-                        $received_other->nmap->nmap_udp_ports = "10";
-                        $received_other->nmap->tcp_ports = "62078";
-                        $received_other->nmap->udp_ports = "";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
-                    }
-
-                    if ($received_other->nmap->preset == '40') {
-                        $received_other->nmap->timing = "4";
-                        $received_other->nmap->ping = "y";
-                        $received_other->nmap->service_version = "n";
-                        $received_other->nmap->filtered = "n";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "100";
-                        $received_other->nmap->nmap_udp_ports = "100";
-                        $received_other->nmap->tcp_ports = "62078";
-                        $received_other->nmap->udp_ports = "";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
-                    }
-
-                    if ($received_other->nmap->preset == '90') {
-                        $received_other->nmap->timing = "4";
-                        $received_other->nmap->ping = "n";
-                        $received_other->nmap->service_version = "n";
-                        $received_other->nmap->filtered = "y";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "1000";
-                        $received_other->nmap->nmap_udp_ports = "";
-                        $received_other->nmap->tcp_ports = "62078";
-                        $received_other->nmap->udp_ports = "161";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
-                    }
-
-                    if ($received_other->nmap->preset == '100') {
-                        $received_other->nmap->timing = "4";
-                        $received_other->nmap->ping = "y";
-                        $received_other->nmap->service_version = "n";
-                        $received_other->nmap->filtered = "n";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "1000";
-                        $received_other->nmap->nmap_udp_ports = "100";
-                        $received_other->nmap->tcp_ports = "62078";
-                        $received_other->nmap->udp_ports = "";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
-                    }
-
-                    if ($received_other->nmap->preset == '240') {
-                        $received_other->nmap->timing = "3";
-                        $received_other->nmap->ping = "y";
-                        $received_other->nmap->service_version = "y";
-                        $received_other->nmap->filtered = "y";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "1000";
-                        $received_other->nmap->nmap_udp_ports = "100";
-                        $received_other->nmap->tcp_ports = "62078";
-                        $received_other->nmap->udp_ports = "";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
-                    }
-
-                    if ($received_other->nmap->preset == '1200') {
-                        $received_other->nmap->timing = "2";
-                        $received_other->nmap->ping = "n";
-                        $received_other->nmap->service_version = "y";
-                        $received_other->nmap->filtered = "y";
-                        $received_other->nmap->timeout = "";
-                        $received_other->nmap->nmap_tcp_ports = "1000";
-                        $received_other->nmap->nmap_udp_ports = "1000";
-                        $received_other->nmap->tcp_ports = "62078";
-                        $received_other->nmap->udp_ports = "";
-                        $received_other->nmap->exclude_tcp_ports = "";
-                        $received_other->nmap->exclude_udp_ports = "";
-                        $received_other->nmap->exclude_ip = "";
+                        // Valid Exclude IP
                     }
                 }
 
@@ -1109,28 +1019,33 @@ class M_collection extends MY_Model
                     $other->ad_server = $received_other->ad_server;
                 }
 
-                foreach ($other->nmap as $key => $value) {
-                    if (isset($received_other->nmap->{$key})) {
-                        $other->nmap->{$key} = $received_other->nmap->{$key};
+                if (!empty($other->nmap)) {
+                    foreach ($other->nmap as $key => $value) {
+                        if (isset($received_other->nmap->{$key})) {
+                            $other->nmap->{$key} = $received_other->nmap->{$key};
+                        }
+                    }
+                } else if (!empty($received_other->nmap)) {
+                    $other->nmap = new stdClass();
+                    foreach ($received_other->nmap as $key => $value) {
+                        $other->nmap->{$key} = $value;
                     }
                 }
 
-                foreach ($other->match as $key => $value) {
-                    if (isset($received_other->match->{$key})) {
+                if (!empty($other->match)) {
+                    foreach ($other->match as $key => $value) {
+                        if (isset($received_other->match->{$key})) {
+                            $other->match->{$key} = $received_other->match->{$key};
+                        }
+                    }
+                } else if (!empty($received_other->match)) {
+                    $other->match = new stdClass();
+                    foreach ($received_other->nmap as $key => $value) {
                         $other->match->{$key} = $received_other->match->{$key};
                     }
                 }
 
-                // foreach ($existing_other as $existing_key => $existing_value) {
-                //     if (!empty($received_other->$existing_key)) {
-                //         $new_other->$existing_key = $received_other->$existing_key;
-                //     } else {
-                //         $new_other->$existing_key = $existing_other->$existing_key;
-                //     }
-                // }
-
                 unset($data->other);
-                // $data->other = (string)json_encode($new_other);
                 $data->other = (string)json_encode($other);
                 if (!empty($received_other->subnet)) {
                     $data->description = 'Subnet - ' . $received_other->subnet;
@@ -1236,7 +1151,15 @@ class M_collection extends MY_Model
 
         if ($collection === 'users') {
             if (!empty($data->password)) {
-                $data->password = sodium_crypto_pwhash_str($data->password, SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE, SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE);
+                if (php_uname('s') != 'Windows NT') {
+                    set_include_path('/usr/local/open-audit/code_igniter/application/third_party/random_compat');
+                } else {
+                    set_include_path('c:\\xampplite\\open-audit\\code_igniter\\application\\third_party\\random_compat');
+                }
+                require_once "lib/random.php";
+                $salt = bin2hex(random_bytes(32));
+                $data->password = $salt.hash("sha256", $salt.(string)$data->password);
+                unset($salt);
             }
         }
 
@@ -1315,6 +1238,10 @@ class M_collection extends MY_Model
 
             case "discoveries":
                 return(' name org_id description type devices_assigned_to_org devices_assigned_to_location network_address system_id other discard last_run complete status ');
+                break;
+
+            case "discovery_scan_options":
+                return(' name org_id description ping service_version filtered timeout timing nmap_tcp_ports nmap_udp_ports tcp_ports udp_ports exclude_tcp_ports exclude_udp_ports exclude_ip ssh_ports ');
                 break;
 
             case "fields":
@@ -1447,6 +1374,10 @@ class M_collection extends MY_Model
 
             case "discoveries":
                 return(array('name','org_id','type','network_address','other'));
+                break;
+
+            case "discovery_scan_options":
+                return(array('name','org_id'));
                 break;
 
             case "fields":

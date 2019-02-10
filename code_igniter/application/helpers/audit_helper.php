@@ -123,10 +123,6 @@ if (!function_exists('audit_convert')) {
                         unset($audit->system->{$key});
                     }
                 }
-                if (!empty($json->netstat)) {
-                    $audit->netstat = $json->netstat;
-                    unset($json->netstat);
-                }
                 foreach ($json as $section => $something) {
                     $audit->{$section} = array();
                     if (!empty($json->{$section}->item) and is_array($json->{$section}->item)) {
@@ -138,7 +134,7 @@ if (!function_exists('audit_convert')) {
                     }
                 }
                 foreach ($audit as $section => $something) {
-                    if ($section != 'system' and $section != 'netstat') {
+                    if ($section != 'system') {
                         for ($i=0; $i < count($audit->{$section}); $i++) {
                             if (!empty($audit->{$section}[$i])) {
                                 foreach ($audit->{$section}[$i] as $key => $value) {
@@ -196,11 +192,8 @@ if (!function_exists('audit_convert')) {
                 }
 
                 unset($newxml);
-                if (!empty($xml->netstat)) {
-                    $audit->netstat = $xml->netstat;
-                }
                 foreach ($xml as $section => $something) {
-                    if ($section != 'sys' and $section != 'netstat') {
+                    if ($section != 'sys') {
                         $audit->{$section} = array();
                         foreach ($xml->{$section}->item as $item) {
                             $newitem = new stdClass();
@@ -320,13 +313,6 @@ if (!function_exists('audit_format_system')) {
             $input->last_seen = $CI->config->item('timestamp');
         }
 
-        if (!empty($input->last_seen_by) and $input->last_seen_by == 'nmap') {
-            unset($input->type);
-            $mylog->command_status = 'notice';
-            $mylog->message = "Last Seen By is nmap - unsetting type attribute.";
-            discovery_log($mylog);
-        }
-
         if (empty($input->timestamp)) {
             $input->timestamp = $CI->config->item('timestamp');
         }
@@ -374,12 +360,47 @@ if (!function_exists('audit_format_system')) {
             $input->hostname = '';
         }
 
+        # Virtual Machines
         if (isset($input->manufacturer) and (
             (strripos($input->manufacturer, "vmware") !== false) or
             (strripos($input->manufacturer, "parallels") !== false) or
             (strripos($input->manufacturer, "virtual") !== false))) {
             $input->form_factor = 'Virtual';
             $mylog->message = "Manufacturer match, setting form factor to Virtual.";
+            discovery_log($mylog);
+        }
+
+        # Mac Model
+        if (!empty($input->os_family) and $input->os_family == 'Apple OSX') {
+            $CI->load->helper('mac_model');
+            $input->description = mac_model($input->serial);
+            $input->class = mac_class($input->model);
+            $input->form_factor = mac_form_factor($input->model);
+            $mylog->message = "OSX detected, setting description, class and form factor.";
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor == 'Virtual' and !empty($input->os_group) and $input->os_group != 'Windows' and $input->os_group != '' and empty($input->class)) {
+            $input->class = 'virtual server';
+            $mylog->message = "Setting class to " . $input->class;
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor != 'Virtual' and !empty($input->os_group) and $input->os_group != 'Windows' and $input->os_group != '' and empty($input->class)) {
+            $input->class = 'server';
+            $mylog->message = "Setting class to " . $input->class;
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor == 'Virtual' and !empty($input->os_group) and $input->os_group == 'Windows' and stripos($input->os_name, 'server') !== false and empty($input->class)) {
+            $input->class = 'virtual server';
+            $mylog->message = "Setting class to " . $input->class;
+            discovery_log($mylog);
+        }
+
+        if (!empty($input->form_factor) and $input->form_factor != 'Virtual' and !empty($input->os_group) and $input->os_group == 'Windows' and stripos($input->os_name, 'server') !== false and empty($input->class)) {
+            $input->class = 'server';
+            $mylog->message = "Setting class to " . $input->class;
             discovery_log($mylog);
         }
 
@@ -407,16 +428,6 @@ if (!function_exists('audit_format_system')) {
             if ($input->mac_address == '00:00:00:00:00:00') {
                 unset($input->mac_address);
             }
-        }
-
-        # Mac Model
-        if (!empty($input->os_family) and $input->os_family == 'Apple OSX') {
-            $CI->load->helper('mac_model');
-            $input->description = mac_model($input->serial);
-            $input->class = mac_class($input->model);
-            $input->form_factor = mac_form_factor($input->model);
-            $mylog->message = "OSX detected, setting description, class and form factor.";
-            discovery_log($mylog);
         }
 
         # because Windows doesn't supply an identical UUID, but it does supply the required digits, make a UUID from the serial

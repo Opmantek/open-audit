@@ -262,21 +262,15 @@ foreach ($xml->children() as $input) {
 
     if ($this->config->item('discovery_use_dns') == 'y') {
         $device = dns_validate($device);
-        if (!empty($device->hostname)) {
+        if (!empty($device->dns_hostname)) {
             $log->command_status = 'success';
-            $log->message = 'IP ' . $device->ip . ' resolved to hostname ' . $device->hostname;
+            $log->message = 'IP ' . $device->ip . ' resolved to DNS hostname ' . $device->dns_hostname;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
-        if (!empty($device->domain)) {
+        if (!empty($device->dns_domain)) {
             $log->command_status = 'success';
-            $log->message = 'IP ' . $device->ip . ' resolved to domain ' . $device->domain;
-            discovery_log($log);
-            unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
-        }
-        if (!empty($device->fqdn)) {
-            $log->command_status = 'success';
-            $log->message = 'IP ' . $device->ip . ' resolved to fqdn ' . $device->fqdn;
+            $log->message = 'IP ' . $device->ip . ' resolved to DNS domain ' . $device->dns_domain;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
@@ -376,6 +370,23 @@ foreach ($xml->children() as $input) {
     }
     discovery_log($log);
 
+    $input->ssh_port = '22';
+    if ($discovery->other->nmap->ssh_ports != '22') {
+        $nmap_ports = explode(',', $discovery->other->nmap->ssh_ports);
+        foreach (explode(',', $input->nmap_ports) as $port) {
+            $temp = explode('/', $port);
+            $port = $temp[0];
+            foreach ($nmap_ports as $nmap_port) {
+                if ($port == $nmap_port) {
+                    $input->ssh_port = $port;
+                    $input->ssh_status = 'true';
+                }
+            }
+            unset($nmap_item);
+            unset($temp);
+        }
+    }
+
     $log->message = 'SSH Status is '.$input->ssh_status.' on '.$device->ip;
     if (!empty($device->id)) {
         $log->message .= ' (System ID ' . $device->id . ')';
@@ -443,6 +454,7 @@ foreach ($xml->children() as $input) {
     $log->function = 'discoveries';
 
     if ($device->type != 'computer' and $device->type != '' and $device->type != 'unknown' and $device->os_family != 'DD-WRT' and stripos($device->sysDescr, 'dd-wrt') === false and stripos($device->manufacturer, 'Ubiquiti') === false ) {
+        $log->severity = 7;
         $log->message = 'Not a computer and not a DD-WRT device, setting SSH status to false for ' . $device->ip;
         if (!empty($device->id)) {
             $log->message .= ' (System ID ' . $device->id . ')';
@@ -472,6 +484,7 @@ foreach ($xml->children() as $input) {
         }
         $parameters->log = $log;
         $parameters->credentials = $credentials;
+        $parameters->ssh_port = $input->ssh_port;
         $ssh_details = ssh_audit($parameters);
         if (!empty($ssh_details)) {
             if (!empty($ssh_details->credentials)) {
@@ -530,12 +543,16 @@ foreach ($xml->children() as $input) {
     # Set manufacturer based on MAC address (if not already set)
     if (empty($device->manufacturer) and !empty($input->mac_address)) {
         $device->manufacturer = get_manufacturer_from_mac($input->mac_address);
+            $log->severity = 7;
+            $log->command_status = 'notice';
             $log->message = 'MAC ' . $input->mac_address . ' (input) matched to manufacturer ' . $device->manufacturer;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
     if (empty($device->manufacturer) and !empty($device->mac_address)) {
         $device->manufacturer = get_manufacturer_from_mac($device->mac_address);
+            $log->severity = 7;
+            $log->command_status = 'notice';
             $log->message = 'MAC ' . $device->mac_address . ' (device) matched to manufacturer ' . $device->manufacturer;
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
@@ -552,20 +569,22 @@ foreach ($xml->children() as $input) {
         unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         $device->type = 'iphone';
         $device->model = 'Apple iPhone';
+        $device->manufacturer = 'Apple';
         $device->os_group = 'Apple IOS';
         $device->os_family = 'Apple IOS';
         $device->os_name = 'Apple IOS';
-        if (stripos($device->hostname, 'ipad') !== false) {
+        if (stripos($device->hostname, 'ipad') !== false or stripos($device->dns_hostname, 'ipad') !== false) {
             $device->type = 'ipad';
             $device->model = 'Apple iPad';
         }
-        if (stripos($device->hostname, 'ipod') !== false) {
+        if (stripos($device->hostname, 'ipod') !== false or stripos($device->dns_hostname, 'ipod') !== false) {
             $device->type = 'ipod';
             $device->model = 'Apple iPod';
         }
     }
+
     # Android devices typically have a hostname of android-***
-    if (stripos($device->hostname, 'android') !== false) {
+    if (stripos($device->hostname, 'android') !== false or stripos($device->dns_hostname, 'android') !== false) {
         # Could be a table or smart phone or anything else.
         # We have no way of knowing so simply setting it to android.
         $device->type = 'android';
@@ -587,6 +606,13 @@ foreach ($xml->children() as $input) {
             discovery_log($log);
             unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
         }
+    }
+    # Playstation guess
+    if (stripos($device->manufacturer, 'Sony') !== false and ($device->hostname == 'playstation' or $device->dns_hostname == 'playstation')) {
+        $device->type = 'game console';
+        $log->message = 'Assigning type = game console to Sony Playstation.';
+        discovery_log($log);
+        unset($log->title, $log->message, $log->command, $log->command_time_to_execute, $log->command_error_message);
     }
 
     # If we don't have a device.id, check with our updated device attributes (if any)
@@ -717,7 +743,7 @@ foreach ($xml->children() as $input) {
     if (!empty($device->ip)) {
         $log->ip = $device->ip;
     }
-    $log->discovery_id = $device->discovery_id;
+    $log->discovery_id = $discovery->id;
     $log->file = 'include_input_discoveries';
     $log->function = 'discoveries';
 
@@ -963,10 +989,19 @@ foreach ($xml->children() as $input) {
     $audit_result = false;
 
     if (empty($credentials_windows) and empty($credentials_ssh) and empty($credentials_snmp)) {
-        $log->command_status = 'fail';
-        $log->severity = 5;
-        $log->message = 'No valid credentials for ' . $device->ip;
-        discovery_log($log);
+        if ($input->snmp_status == 'true' or $input->ssh_status == 'true' or $input->wmi_status == 'true') {
+            $log->command_status = 'fail';
+            $log->severity = 5;
+            $log->message = 'No valid credentials for ' . $device->ip;
+            discovery_log($log);
+            $log->severity = 7;
+        } else {
+            $log->command_status = 'fail';
+            $log->severity = 5;
+            $log->message = 'No management protocols for ' . $device->ip;
+            discovery_log($log);
+            $log->severity = 7;
+        }
     }
 
     // Get and make the audit script
@@ -1146,6 +1181,13 @@ foreach ($xml->children() as $input) {
                 # As at 2.3.0, we now wait for this to complete and parse the
                 # output looking for 'File    ' so we can retrieve the file
                 $output = execute_windows($device->ip, $credentials_windows, $command, $log);
+            } else {
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'Could not audit script to ' . $device->ip . ' (System ID ' . $device->id . ')';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
             }
             $audit_file = false;
             if (!empty($output)) {
@@ -1154,6 +1196,13 @@ foreach ($xml->children() as $input) {
                         $audit_file = trim(str_replace('File    ', '', $line));
                     }
                 }
+            } else {
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'No script output from ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
             }
             $copy = false;
             if ($audit_file) {
@@ -1164,10 +1213,32 @@ foreach ($xml->children() as $input) {
                     $destination = $filepath . '/scripts/' . end($temp);
                 }
                 $copy = copy_from_windows($device->ip, $credentials_windows, end($temp), $destination, $log);
-            }
-            if ($copy) {
-                $audit_result = file_get_contents($destination);
-                unlink($destination);
+                if ($copy) {
+                    $audit_result = file_get_contents($destination);
+                    unlink($destination);
+                    if (empty($audit_result)) {
+                        $log->severity = 3;
+                        $log->command_time_to_execute = '';
+                        $log->message = 'Could not open audit result on localhost ' . $device->ip . ' (System ID ' . $device->id . '). Cannot process audit result.';
+                        $log->command_status = 'fail';
+                        discovery_log($log);
+                        $log->severity = 7;
+                    }
+                } else {
+                    $log->severity = 3;
+                    $log->command_time_to_execute = '';
+                    $log->message = 'Could not copy audit result file to localhost ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                    $log->command_status = 'fail';
+                    discovery_log($log);
+                    $log->severity = 7;
+                }
+            } else {
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'Could not find audit result path in script output from ' . $device->ip . ' (System ID ' . $device->id . '). Cannot retrieve audit result.';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
             }
         }
     }
@@ -1186,29 +1257,48 @@ foreach ($xml->children() as $input) {
             $destination .= '/';
         }
         $destination .= $audit_script;
-        $temp = scp($device->ip, $credentials_ssh, $source, $destination, $log);
-        if (!$temp) {
-            $audit_script = '';
-            $log->message = 'Could not SCP audit script to ' . $device->ip . ' ' . $destination .')';
-            $log->command_status = 'fail';
-            discovery_log($log);
-        }
-        # Successfully copied the audit script, now chmod it
-        $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
-        # No use testing for a result as a chmod produces no output
         $parameters = new stdClass();
-        $parameters->log = $log;
         $parameters->ip = $device->ip;
         $parameters->credentials = $credentials_ssh;
-        $parameters->command = $command;
-        ssh_command($parameters);
-
-        $log->file = 'include_input_discoveries';
-        $log->function = 'discoveries';
-        $log->command_status = '';
-        $log->severity = 7;
-
-        $result = false;
+        $parameters->source = $source;
+        $parameters->destination = $destination;
+        $parameters->log = $log;
+        $parameters->ssh_port = $input->ssh_port;
+        $temp = scp($parameters);
+        if (!$temp) {
+            $audit_script = '';
+            $log->severity = 3;
+            $log->message = 'Could not SCP audit script to ' . $device->ip . ' at ' . $destination;
+            $log->command_status = 'fail';
+            discovery_log($log);
+            $log->severity = 7;
+        } else {
+            # Successfully copied the audit script, now chmod it
+            $command = 'chmod ' . $this->config->item('discovery_linux_script_permissions') . ' ' . $destination;
+            # No use testing for a result as a chmod produces no output
+            $parameters = new stdClass();
+            $parameters->log = $log;
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->command = $command;
+            $parameters->ssh_port = $input->ssh_port;
+            $test = ssh_command($parameters);
+            if ($test === false) {
+                $log->file = 'include_input_discoveries';
+                $log->function = 'discoveries';
+                $log->severity = 3;
+                $log->command_time_to_execute = '';
+                $log->message = 'Could not chmod script on ' . $device->ip . ' (System ID ' . $device->id . ').';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                $log->severity = 7;
+            }
+            $log->file = 'include_input_discoveries';
+            $log->function = 'discoveries';
+            $log->command_status = '';
+            $log->severity = 7;
+            $result = false;
+        }
         if ($audit_script != '') {
             $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
             $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
@@ -1229,14 +1319,24 @@ foreach ($xml->children() as $input) {
             $parameters->ip = $device->ip;
             $parameters->credentials = $credentials_ssh;
             $parameters->command = $command;
+            $parameters->ssh_port = $input->ssh_port;
             $result = ssh_command($parameters);
             $command_end = microtime(true);
             $log->command_time_to_execute = $command_end - $command_start;
             if (!empty($result)) {
                 $log->command_status = 'success';
             } else {
+                $log->severity = 3;
                 $log->command_status = 'fail';
+                discovery_log($log);
             }
+            $log->command_output = '';
+            $log->severity = 7;
+        } else {
+            $log->severity = 3;
+            $log->command_time_to_execute = '';
+            $log->message = 'No audit script for ' . $device->ip . ' (System ID ' . $device->id . ').';
+            $log->command_status = 'fail';
             discovery_log($log);
             $log->severity = 7;
         }
@@ -1262,7 +1362,14 @@ foreach ($xml->children() as $input) {
             } else {
                 $destination = $filepath . '/scripts/' . end($temp);
             }
-            $temp = scp_get($device->ip, $credentials_ssh, $audit_file, $destination, $log);
+            $parameters = new stdClass();
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->source = $audit_file;
+            $parameters->destination = $destination;
+            $parameters->log = $log;
+            $parameters->ssh_port = $input->ssh_port;
+            $temp = scp_get($parameters);
             if ($temp) {
                 $audit_result = file_get_contents($destination);
                 if (empty($audit_result)) {
@@ -1278,7 +1385,7 @@ foreach ($xml->children() as $input) {
     }
 
     # Delete the local audit script if it's not a default script
-    if ($audit_script != '' and $source_name != $audit_script) {
+    if (!empty($audit_script) and $source_name != $audit_script) {
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->command = 'unlink(\'' . $source .'\')';
@@ -1324,6 +1431,9 @@ foreach ($xml->children() as $input) {
         $parameters->log = $log;
         $parameters->input = $audit->system;
         $audit->system = audit_format_system($parameters);
+
+        # We don't care what the audit result says is the "ip", we KNOW it's the IP we just used to discover this device
+        $audit->system->ip = $device->ip;
 
         $log->message = 'Matching device from audit result';
         discovery_log($log);
@@ -1448,8 +1558,8 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
 
         // set the ip (if not already set)
-        $this->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
-        $this->m_devices_components->set_initial_address($audit->system->id);
+        #$this->m_audit_log->update('debug', 'check and set initial ip', $audit->system->id, $audit->system->last_seen);
+        #$this->m_devices_components->set_initial_address($audit->system->id);
         $this->m_audit_log->update('debug', '', $audit->system->id, $audit->system->last_seen);
         # If we are configured as a collector, forward the information to the server
         if ($this->config->config['servers'] !== '') {
@@ -1495,6 +1605,7 @@ foreach ($xml->children() as $input) {
         $log->message = 'No audit script result to process';
         discovery_log($log);
     }
+    $this->m_device->set_identification($device->id);
     $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
     discovery_log($log);
 }

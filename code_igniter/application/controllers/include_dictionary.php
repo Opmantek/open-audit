@@ -367,21 +367,6 @@ if ($table == 'discoveries') {
     $dictionary->columns->edited_by = $edited_by;
     $dictionary->columns->edited_date = $edited_date;
 
-
-    $dictionary->columns->preset = "Common groups of options for most scenarios.";
-    $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, halt the scan.";
-    $dictionary->columns->service_version = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
-    $dictionary->columns->filtered = "Should we consider a filtered port as a running service, but not accessible - and therefore flag this IP as having a device attached?";
-    $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
-    $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";
-    $dictionary->columns->nmap_udp_ports = "The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.";
-    $dictionary->columns->tcp_ports = "Any specific TCP ports you wish tested (comma seperated, no spaces).";
-    $dictionary->columns->udp_ports = "Any specific UDP ports you wish tested (comma seperated, no spaces).";
-    $dictionary->columns->exclude_tcp_ports = "Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
-    $dictionary->columns->exclude_udp_ports = "Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
-    $dictionary->columns->exclude_ip = "Specifies a comma-separated list of targets (no spaces) to be excluded from the scan even if they are part of the overall network range you specify. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.";
-    $dictionary->columns->ssh_ports = "If any of the (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing.";
-
     $dictionary->columns->match_dbus = "Should we match a device based on its dbus id.";
     $dictionary->columns->match_fqdn = "Should we match a device based on its fqdn.";
     $dictionary->columns->match_hostname = "Should we match a device based only on its hostname.";
@@ -396,6 +381,31 @@ if ($table == 'discoveries') {
     $dictionary->columns->match_uuid = "Should we match a device based on its UUID.";
 
     $dictionary->attributes->create = array('name','org_id','type','network_address','other');array('name','org_id','description','type','devices_assigned_to_org','devices_assigned_to_location','network_address','system_id','other','discard','last_run','complete');
+}
+
+if ($table == 'discovery_scan_options') {
+    $dictionary->sentence = '';
+    $dictionary->marketing = '';
+    $dictionary->about = '<p>Scanning options allow you to easily apply a set of options to a discovery.<br /><br /></p>';
+    $dictionary->notes = '<p>The attributes of timeout, ssh ports and excluding TCP, UDP & IPs can be set here and overwritten for a specific discovery.<br /><br /></p><p>Nmap timing details are found on the bottom of this linked page <a href="https://nmap.org/book/man-performance.html" target="_blank">https://nmap.org/book/man-performance.html</a>. From that page:<br /><br /><blockquote><p>If you are on a decent broadband or ethernet connection, I would recommend always using -T4 (Aggressive). Some people love -T5 (Insane) though it is too aggressive for my taste. People sometimes specify -T2 (Polite) because they think it is less likely to crash hosts or because they consider themselves to be polite in general. They often don\'t realize just how slow -T2 really is. Their scan may take ten times longer than a default scan. Machine crashes and bandwidth problems are rare with the default timing options -T3 (Normal) and so I normally recommend that for cautious scanners. Omitting version detection is far more effective than playing with timing values at reducing these problems.</p><footer>Gordon \'Fyodor\' Lyon</footer></blockquote><br /><br /></p>';
+    $dictionary->columns->id = $id;
+    $dictionary->columns->name = $name;
+    $dictionary->columns->org_id = $org_id;
+    $dictionary->columns->description = $description;
+
+    $dictionary->columns->ping = "Should we ping the device before attempting to scan it? If it does not respond to the ping, skip this device.";
+    $dictionary->columns->service_version = "When we receive an open port, should we attempt to test for the version of the service currently running upon it? This assists in confirming actual running services.";
+    $dictionary->columns->filtered = "Should we consider a filtered port to be an open port - and therefore flag this IP as having a device attached?";
+    $dictionary->columns->timing = "The standard Nmap timing options. We usually use -T4 as this is recommended for a decent broadband or ethernet connection.";
+    $dictionary->columns->timeout = "The number of seconds to try and communicate with the target IP.";
+    $dictionary->columns->nmap_tcp_ports = "The top 10, 100 or 1000 (or none) TCP ports commonly in use according to Nmap.";
+    $dictionary->columns->nmap_udp_ports = "The top 10, 100 or 1000 (or none) UDP ports commonly in use according to Nmap.";
+    $dictionary->columns->tcp_ports = "Any specific TCP ports you wish tested (comma seperated, no spaces).";
+    $dictionary->columns->udp_ports = "Any specific UDP ports you wish tested (comma seperated, no spaces).";
+    $dictionary->columns->exclude_tcp_ports = "Any TCP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
+    $dictionary->columns->exclude_udp_ports = "Any UDP ports (comma seperated, no spaces) you wish to exclude from this discovery.";
+    $dictionary->columns->exclude_ip = "Specifies a comma-separated list of targets (no spaces) to be excluded from the scan. The list you pass in uses normal Nmap syntax, so it can include hostnames, CIDR netblocks, octet ranges, etc.";
+    $dictionary->columns->ssh_ports = "If any of these (comma seperated, no spaces) ports are detected, assume SSH is running on them and use them for auditing. No need to add this port to the Custom TCP ports - it will be added automatically.";
 }
 
 if ($table == 'export') {

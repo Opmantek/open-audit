@@ -64,7 +64,7 @@ $item = $this->response->data[0];
                         if (empty($item->attributes->type)) {
                             $item->attributes->type = 'text';
                         }
-                        if ($item->attributes->name != 'discovery_default_preset') {
+                        if ($item->attributes->name != 'discovery_default_scan_option') {
                             if ($item->attributes->type != 'bool') { ?>
                                 <input type="<?php echo htmlspecialchars( $item->attributes->type , REPLACE_FLAGS, CHARSET) ?>" class="form-control" id="value" name="value" value="<?php echo htmlspecialchars($item->attributes->value, REPLACE_FLAGS, CHARSET); ?>" disabled>
                             <?php } else { ?>
@@ -75,13 +75,14 @@ $item = $this->response->data[0];
                             <?php } ?>
                         <?php } else { ?>
                             <select class="form-control" id="value" name="value" disabled>
-                                <option value="1" <?php if ($item->attributes->value == '1') { echo "selected"; } ?>><?php echo __('UltraFast'); ?></option>
-                                <option value="5" <?php if ($item->attributes->value == '5') { echo "selected"; } ?>><?php echo __('SuperFast'); ?></option>
-                                <option value="40" <?php if ($item->attributes->value == '40') { echo "selected"; } ?>><?php echo __('Fast'); ?></option>
-                                <option value="90" <?php if ($item->attributes->value == '90') { echo "selected"; } ?>><?php echo __('Medium (Classic)'); ?></option>
-                                <option value="100" <?php if ($item->attributes->value == '100') { echo "selected"; } ?>><?php echo __('Medium'); ?></option>
-                                <option value="240" <?php if ($item->attributes->value == '240') { echo "selected"; } ?>><?php echo __('Slow'); ?></option>
-                                <option value="1200" <?php if ($item->attributes->value == '1200') { echo "selected"; } ?>><?php echo __('ltraSlow'); ?></option>
+                                <?php foreach ($this->response->included as $row) {
+                                    if ($row->type == 'discovery_scan_options') {
+                                        echo '<option value="' . $row->id . '" ';
+                                        if ($item->attributes->value == $row->id) { echo "selected"; }
+                                        echo '>' . $row->attributes->name . '</option>';
+                                    }
+                                }
+                                ?>
                             </select>
                         <?php } ?>
                         <?php if (!empty($edit) and $item->attributes->editable == 'y') { ?>

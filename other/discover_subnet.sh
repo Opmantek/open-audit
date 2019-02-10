@@ -201,24 +201,49 @@ function check_output ()
 
 	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
 		test=$(echo $line | grep "tcp.*open")
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open TCP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "22/tcp" ]; then
+				ssh_status="true"
+				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
+			elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
+				wmi_status="true"
+				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
+
+		fi
 	else
 		test=$(echo $line | grep "tcp.*open" | grep -v filtered)
-	fi
-	if [ -n "$test" ]; then
-		host_is_up="true"
-		port=$(echo $line | awk '{print $1}')
-		program=$(echo $line | awk '{print $3}')
-		nmap_ports="$nmap_ports,$port/$program"
-		if [ -n $port ] && [ "$port" = "22/tcp" ]; then
-			ssh_status="true"
-			db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
-		elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
-			wmi_status="true"
-			db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
-		else
-			db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open TCP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "22/tcp" ]; then
+				ssh_status="true"
+				db_log "Host $host is up, received ssh (TCP port 22 open) response" "" "" "7" "$line" "" "" "$host"
+			elif [ -n $port ] && [ "$port" = "135/tcp" ]; then
+				wmi_status="true"
+				db_log "Host $host is up, received wmi (TCP port 135 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received TCP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
 		fi
-
+		test=$(echo $line | grep "tcp.*filterred")
+		if [ -n "$test" ]; then
+			db_log "Host $host had a filtered port, but options state not to detect" "" "" "7" "$line" "" "" "$host"
+		fi
 	fi
 	test=""
 
@@ -227,16 +252,45 @@ function check_output ()
 	else
 		test=$(echo $line | grep "udp.*open" | grep -v filtered)
 	fi
-	if [ -n "$test" ]; then
-		host_is_up="true"
-		port=$(echo $line | awk '{print $1}')
-		program=$(echo $line | awk '{print $3}')
-		nmap_ports="$nmap_ports,$port/$program"
-		if [ -n $port ] && [ "$port" = "161/udp" ]; then
-			snmp_status="true"
-			db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
-		else
-			db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+
+
+	if [ -n "$filtered" ] && [ "$filtered" == "y" ]; then
+		test=$(echo $line | grep "udp.*open")
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open UDP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "161/udp" ]; then
+				snmp_status="true"
+				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
+		fi
+	else
+		test=$(echo $line | grep "udp.*open" | grep -v filtered)
+		if [ -n "$test" ]; then
+			host_is_up="true"
+			port=$(echo $line | awk '{print $1}')
+			program=$(echo $line | awk '{print $3}')
+			nmap_ports="$nmap_ports,$port/$program"
+			if [ -z "$response_reason" ]; then
+				response_reason="received open UDP port ($port, $program)"
+			fi
+			if [ -n $port ] && [ "$port" = "161/udp" ]; then
+				snmp_status="true"
+				db_log "Host $host is up, received snmp (UDP port 161 open) response" "" "" "7" "$line" "" "" "$host"
+			else
+				db_log "Host $host is up, received UDP port $port open response" "" "" "7" "$line" "" "" "$host"
+			fi
+		fi
+		test=$(echo $line | grep "udp.*filterred")
+		if [ -n "$test" ]; then
+			db_log "Host $host had a filtered port, but options state not to detect" "" "" "7" "$line" "" "" "$host"
 		fi
 	fi
 	test=""
@@ -244,6 +298,7 @@ function check_output ()
 	test=$(echo $line | grep "Host $host is up, received arp-response")
 	if [[ "$test" != "" ]]; then
 		host_is_up="true"
+		response_reason="arp response received"
 		db_log "Host $host is up, received arp-response" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
@@ -253,6 +308,9 @@ function check_output ()
 		host_is_up="true"
 		mac_address=$(echo "$line" | cut -d" " -f3)
 		manufacturer=$(echo "$line" | cut -d"(" -f2 | cut -d")" -f1 | sed 's/^ *//g' | sed 's/ *$//g')
+		if [ -z "$response_reason" ]; then
+			response_reason="MAC address retrieved ($mac_address)"
+		fi
 		db_log "Host $host is up, received mac addess $mac_address" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
@@ -261,12 +319,19 @@ function check_output ()
 	test=$(echo $line | grep "Nmap done: 1 IP address (1 host up)")
 	if [[ "$test" != "" && -z "$ping" ]]; then
 		host_is_up="true"
+		if [ -z "$response_reason" ]; then
+			response_reason="ping reply"
+		fi
 		db_log "Host $host is up, received Nmap ping response" "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
 
 	test=$(echo $line | grep "due to host timeout")
 	if [[ "$test" != "" && -z "$ping" ]]; then
+        host_is_up="true"
+		if [ -z "$response_reason" ]; then
+        	response_reason="host responded but timed out"
+        fi
 		db_log "Host $host timed out. Exceeded $timeout seconds." "" "" "7" "$line" "" "" "$host"
 	fi
 	test=""
@@ -325,7 +390,7 @@ if [ -n "$ping" ]; then
 		ping=""
 	fi
 else
-	ping="-Pn"
+	ping=""
 fi
 
 if [ -n "$service_version" ]; then
@@ -450,7 +515,6 @@ else
 	exclude_udp_ports=""
 fi
 
-
 if [ "$debugging" -gt 0 ]; then
 	echo "----------------------------"
 	echo "Open-AudIT Discover Subnet script"
@@ -497,7 +561,7 @@ ip_list=""
 # -vv  == very verboseNmap scan report for
 IFS=$ORIGIFS
 hosts_in_subnet=$(nmap -n -sL $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
-db_log "IPs in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
+db_log "IPs in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
 
 hosts_in_subnet=$(nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep "Nmap done" | cut -d" " -f3)
 db_log "IPs after exclusions in subnet: $hosts_in_subnet" "" "" "" "" "" "nmap -n -sL $exclude_ip $subnet_range 2>/dev/null | grep \"Nmap done\" | cut -d\" \" -f3"
@@ -535,6 +599,7 @@ IFS=$NEWLINEIFS
 # In the case of only scnning devices responding to an Nmap ping,
 #    send a log line that this IP didn't respond
 if [ -n "$ip_list" ]; then
+	db_log "Updating discovery log with non-responding IPs" "" "" "7" "" "" ""
 	for ip in $ip_list; do
 		response=""
 		for host in $alive_ips; do
@@ -561,17 +626,18 @@ for host in $alive_ips; do
 	tel_status="false"
 	host_is_up="false"
 	nmap_ports=""
+	response_reason=""
 
 	db_log "Scanning Host: $host" "" "" "7" "" "7" "" "$host"
 
 	if [ -n "$nmap_tcp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host 2>/dev/null"
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $nmap_tcp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Top TCP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
+		db_log "Nmap Command (Top TCP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -592,11 +658,11 @@ for host in $alive_ips; do
 	if [ -n "$nmap_udp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host 2>/dev/null"
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $nmap_udp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Top UDP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
+		db_log "Nmap Command (Top UDP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -617,11 +683,11 @@ for host in $alive_ips; do
 	if [ -n "$tcp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host 2>/dev/null"
+		command="$nmap_path -n $timing $ping -sS $service_version $exclude_ip $exclude_tcp_ports $tcp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Custom TCP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
+		db_log "Nmap Command (Custom TCP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -642,11 +708,11 @@ for host in $alive_ips; do
 	if [ -n "$udp_ports" ]; then
 		nmap_timer_start=$(timer)
 		IFS=$ORIGIFS
-		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host 2>/dev/null"
+		command="$nmap_path -n $timing $ping -sU $service_version $exclude_ip $exclude_udp_ports $udp_ports $timeout $host"
 		nmap_scan=$($command)
 		IFS=$NEWLINEIFS
 		nmap_timer_end=$(timer "$nmap_timer_start")
-		db_log "Nmap Command (Custom UDP Ports)" "$nmap_timer_end" "" "" "" "" "$command" "$host"
+		db_log "Nmap Command (Custom UDP Ports)" "$nmap_timer_end" "" "7" "" "" "$command" "$host"
 		if [ "$debugging" -gt 0 ]; then
 			echo ""
 			echo "Scanning Host took $nmap_timer_end seconds using the command:"
@@ -665,7 +731,7 @@ for host in $alive_ips; do
 	fi
 
 	result=""
-	if [ "$host_is_up" == "true" ]; then
+	if [ "$host_is_up" == "true" ] || [ -z "$ping" ]; then
 		nmap_ports=${nmap_ports#?}
 		result="	<device>"$'\n'
 		result="$result		<subnet_range>$subnet_range</subnet_range>"$'\n'
@@ -697,7 +763,10 @@ for host in $alive_ips; do
 		fi
 
 		if [[ "$submit_online" == "y" ]]; then
-			db_log "IP $host responding, submitting online." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url" "$host"
+			if [ -z "$ping" ] && [ -z "$response_reason" ]; then
+				response_reason="ping response"
+			fi
+			db_log "IP $host responding, $response_reason, adding to device list." $(timer "$start") "($hosts_scanned of $hosts_in_subnet)" "" "" "" "$url" "$host"
 			# curl options
 			# -k = ignore invalid (self signed) certs
 			# -s = Silent mode. Don’t show progress meter or error messages.
