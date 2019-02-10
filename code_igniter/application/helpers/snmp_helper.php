@@ -1603,6 +1603,7 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute);
         } // end of network interfaces
 
+        // Special for ExaBlaze
         if (!isset($modules_list) or !is_array($modules_list) or count($modules_list) === 0) {
             if ($vendor_oid == 43296) {
                 $interfaces_filtered = @$get_modules($ip, $credentials, $log, $log->discovery_id, $details->id);
