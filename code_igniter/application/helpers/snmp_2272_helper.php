@@ -146,5 +146,9 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         $details->model = 'Accelar 105X';
         $details->type = 'switch';
     }
+    if ($oid == '1.3.6.1.4.1.2272.201') {
+        $details->model = 'Avaya VSP-9000 Series';
+        $details->type = 'switch';
+    }
     return($details);
 };
