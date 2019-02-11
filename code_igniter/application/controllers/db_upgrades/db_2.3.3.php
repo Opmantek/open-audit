@@ -27,17 +27,17 @@
 *
 **/
 
-$this->log_db('Upgrade database to 2.4.0 commenced');
+$this->log_db('Upgrade database to 2.3.3 commenced');
 
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190211' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$sql = "UPDATE `configuration` SET `value` = '2.4.0' WHERE `name` = 'display_version'";
+$sql = "UPDATE `configuration` SET `value` = '2.3.3' WHERE `name` = 'display_version'";
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
-$this->log_db("Upgrade database to 2.4.0 completed");
+$this->log_db("Upgrade database to 2.3.3 completed");
 $this->config->config['internal_version'] = '20190211';
-$this->config->config['display_version'] = '2.4.0';
+$this->config->config['display_version'] = '2.3.3';
