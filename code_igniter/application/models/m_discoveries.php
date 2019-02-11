@@ -65,7 +65,11 @@ class M_discoveries extends MY_Model
             $result[0]->other->nmap = new stdClass();
         }
         if (empty($result[0]->other->nmap->discovery_scan_option_id)) {
-            $result[0]->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
+            if (!empty($this->config->config['discovery_default_scan_option'])) {
+                $result[0]->other->nmap->discovery_scan_option_id = intval($this->config->config['discovery_default_scan_option']);
+            } else {
+                $result[0]->other->nmap->discovery_scan_option_id = 1;
+            }
         }
         if (!empty($discovery->other->nmap->discovery_scan_option_id)) {
             $do_not_use = array('id', 'name', 'org_id', 'description', 'options', 'edited_by', 'edited_date');
