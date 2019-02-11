@@ -73,8 +73,8 @@ switch ($this->response->meta->collection) {
 
     case "discoveries":
         $values = "'name','org_id','type','network_address' and 'other.subnet'";
-        $sample = '<tr><td>"name","org_id","type","network_address","other.subnet"</td></tr>
-                   <tr><td>"My Test Discovery","1","subnet","http://SERVER/open-audit/","192.168.1.1"</td></tr>';
+        $sample = '<tr><td>"name","org_id","type","network_address","other.subnet","other.nmap.discovery_scan_option_id"</td></tr>
+                   <tr><td>"My Test Discovery","1","subnet","http://SERVER/open-audit/","192.168.1.1","1"</td></tr>';
         $extra = "The field 'other' is stored as a JSON object. You should use the field names of 'other.attribute name'. For an example, subnet would be 'other.subnet'.</p><p>For an example, use the web interface to create a discovery and then go to menu -> Admin -> Database and click on Discoveries. Then export to CSV.</p><p>Valid 'other' attributes are subnet, ad_domain and ad_server.";
         break;
 

@@ -133,9 +133,17 @@ foreach ($csv as $key => $value) {
     if ($this->response->meta->collection == 'discoveries') {
         if (empty($item->other)) {
             $item->other = new stdClass();
+            $item->other->nmap = new stdClass();
+            $item->other->match = new stdClass();
             foreach ($item as $name => $value) {
                 $attribute = explode('.', $name);
-                if ($attribute[0] == 'other' and !empty($attribute[1]) and !empty($value)) {
+                if ($attribute[0] == 'other' and !empty($attribute[1])  and $attribute[1] == 'nmap' and !empty($attribute[2]) and !empty($value)) {
+                    $item->other->nmap->{$attribute[2]} = $value;
+                    unset($item->{$name});
+                } else if ($attribute[0] == 'other' and !empty($attribute[1])  and $attribute[1] == 'match' and !empty($attribute[2]) and !empty($value)) {
+                    $item->other->match->{$attribute[2]} = $value;
+                    unset($item->{$name});
+                } else if ($attribute[0] == 'other' and !empty($attribute[1]) and !empty($value)) {
                     $item->other->{$attribute[1]} = $value;
                     unset($item->{$name});
                 }
