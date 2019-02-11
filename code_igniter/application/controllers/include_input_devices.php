@@ -142,8 +142,8 @@ if(!empty($json)){
     }
 
     $parameters = new stdClass();
-    $parameters->input = $json->system;
     $parameters->log = $log;
+    $parameters->input = $json->system;
     $json->system = audit_format_system($parameters);
     $details = $json->system;
 

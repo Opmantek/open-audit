@@ -310,14 +310,17 @@ class M_devices_components extends MY_Model
             } else {
                 $message .= ' Input supplied.';
             }
-            $mylog = new stdClass();
-            $mylog->severity = 4;
-            $mylog->status = 'fail';
-            $mylog->summary = 'Function process_component called without correct params object';
-            $mylog->message = $message;
-            $mylog->file = 'm_devices_components';
-            $mylog->function = 'process_component';
-            stdlog($mylog);
+            # Don't bother to log the below as most of the time, they're empty
+            if ($table !== 'file' and $table !== 'share' and $table !== 'server_item') {
+                $mylog = new stdClass();
+                $mylog->severity = 6;
+                $mylog->status = 'notice';
+                $mylog->summary = 'Function process_component called without correct params object';
+                $mylog->message = $message;
+                $mylog->file = 'm_devices_components';
+                $mylog->function = 'process_component';
+                stdlog($mylog);
+            }
             return;
         }
 
