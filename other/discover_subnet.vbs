@@ -81,6 +81,8 @@ dim nmap_path : nmap_path = ""
 ' nmap path on a default install is - C:\Program Files (x86)\Nmap\nmap.exe
 ' Only set the above if you have installed into a custom directory AND it is not on your users $path
 
+dim db_ip : db_ip = ""
+dim db_log_ip : db_log_ip = ""
 dim db_log_message : db_log_message = ""
 dim db_log_duration : db_log_duration = 0
 dim db_log_status : db_log_status = ""
