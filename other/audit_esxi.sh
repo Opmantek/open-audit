@@ -79,7 +79,7 @@ self_delete='n'
 debugging=2
 
 # Version
-version="2.3.3"
+version="3.0.0"
 
 discovery_id=""
 

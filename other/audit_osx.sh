@@ -49,7 +49,7 @@ system_id=""
 last_seen_by="audit"
 
 # Version
-version="2.3.3"
+version="3.0.0"
 
 # DO NOT REMOVE THE LINE BELOW
 # Configuration from web UI here
