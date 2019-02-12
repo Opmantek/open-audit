@@ -95,11 +95,6 @@ if (! function_exists('scp')) {
             $log->severity = 7;
             return false;
         }
-
-        $log->message = 'Inside SCP function.';
-        discovery_log($log);
-
-
         $ip = $parameters->ip;
         $credentials = $parameters->credentials;
         $source = $parameters->source;
@@ -148,12 +143,10 @@ if (! function_exists('scp')) {
                 return false;
             }
         } else if ($credentials->type == 'ssh') {
-            $log->message = 'Using SSH to copy file.';
-            discovery_log($log);
             $username = $credentials->credentials->username;
             $password = $credentials->credentials->password;
             $log->message = "Success, credentials named " . $credentials->name . " used to log in using sftp to $ip.";
-            $log->command_status = 'notice';
+            $log->command_status = 'success';
             try {
                 $ssh->login($credentials->credentials->username, $credentials->credentials->password);
             } catch (Exception $e) {

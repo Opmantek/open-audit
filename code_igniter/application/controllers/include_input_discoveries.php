@@ -1232,6 +1232,14 @@ foreach ($xml->children() as $input) {
                     discovery_log($log);
                     $log->severity = 7;
                 }
+                // delete the remote audit result
+                $parameters = new stdClass();
+                $parameters->log = $log;
+                $parameters->ip = $device->ip;
+                $parameters->share = 'admin$';
+                $parameters->file = end($temp);
+                $parameters->credentials = $credentials_windows;
+                delete_windows_result($parameters);
             } else {
                 $log->severity = 3;
                 $log->command_time_to_execute = '';
@@ -1381,24 +1389,41 @@ foreach ($xml->children() as $input) {
                 }
                 unlink ($destination);
             }
+            // Delete the remote file
+            $command = 'rm ' . $audit_file;
+            if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
+                // add sudo
+                $command = 'sudo ' . $command;
+            }
+            $parameters = new stdClass();
+            $parameters->log = $log;
+            $parameters->ip = $device->ip;
+            $parameters->credentials = $credentials_ssh;
+            $parameters->command = $command;
+            $parameters->ssh_port = $input->ssh_port;
+            ssh_command($parameters);
         }
     }
 
     # Delete the local audit script if it's not a default script
     if (!empty($audit_script) and $source_name != $audit_script) {
+        $log->command_output = '';
+        $log->severity = 7;
+        $log->message = '';
         $log->file = 'include_input_discoveries';
         $log->function = 'discoveries';
         $log->command = 'unlink(\'' . $source .'\')';
         $log->message = 'Attempt to delete temp audit script succeeded';
+        $log->command_status = 'notice';
         try {
             unlink($source);
         } catch (Exception $e) {
             $log->severity = 4;
             $log->command_status = 'fail';
             $log->message = 'Could not delete temp audit script';
+            discovery_log($log);
+            $log->severity = 7;
         }
-        discovery_log($log);
-        $log->severity = 7;
         unset($log->command, $log->message);
     }
 
@@ -1423,9 +1448,6 @@ foreach ($xml->children() as $input) {
             discovery_log($log);
             break;
         }
-
-        $log->message = 'Formating system section of audit result';
-        discovery_log($log);
 
         $parameters = new stdClass();
         $parameters->log = $log;

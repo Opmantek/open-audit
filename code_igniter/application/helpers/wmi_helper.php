@@ -231,7 +231,8 @@ if (! function_exists('execute_windows')) {
             }
             $command_string = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "' . $credentials->credentials->password . '" cmd /c "' . $command . '"';
 
-            $log->command = str_replace($credentials->credentials->password, '******', $command_string);
+            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $ip . ' -s -u ' . $domain . $username . ' -p "******" cmd /c "' . $command . '"';
+
             discovery_log($log);
             exec($command_string, $output, $return_var);
         }
@@ -489,6 +490,126 @@ if (! function_exists('copy_to_windows')) {
             $log->severity = 7;
             stdlog($log);
             return true;
+        }
+    }
+}
+
+if (! function_exists('delete_windows_result')) {
+    /**
+     * Delete the audit result from a Windows target
+     *
+     * @access    public
+     *
+     * @category  Function
+     *
+     * @author    Mark Unwin <marku@opmantek.com>
+     *
+     * @param     parameters    Object containing ip, share, file, credentials, log
+     *
+     * @return    false || true Depending on success
+     */
+    function delete_windows_result($parameters)
+    {
+        if (!empty($parameters->log)) {
+            $log = $parameters->log;
+        } else {
+            $log = new stdClass();
+        }
+        $log->file = 'wmi_helper';
+        $log->function = 'delete_windows_result';
+        $CI = & get_instance();
+
+        if (empty($parameters->ip)) {
+            $log->message = 'No IP supplied to wmi_helper::delete_windows_result';
+            discovery_log($log);
+            return false;
+        }
+
+        if (!filter_var($parameters->ip, FILTER_VALIDATE_IP)) {
+            $log->message = 'No valid IP supplied to wmi_helper::delete_windows_result ' . $ip;
+            discovery_log($log);
+            return false;
+        }
+
+        if (!is_object($parameters->credentials)) {
+            $log->message = 'No credentials passed to wmi_helper::delete_windows_result';
+            discovery_log($log);
+            return false;
+        }
+
+        if ($parameters->share == '') {
+            $log->message = 'No share passed to wmi_helper::delete_windows_result';
+            discovery_log($log);
+            return false;
+        }
+
+        if ($parameters->file == '') {
+            $log->message = 'No filename passed to wmi_helper::delete_windows_result';
+            discovery_log($log);
+            return false;
+        }
+
+        if (php_uname('s') == 'Linux') {
+            $password = str_replace('$', '\$', $parameters->credentials->credentials->password);
+            $password = str_replace("'", "", escapeshellarg($password));
+            $temp = explode('@', $parameters->credentials->credentials->username);
+
+
+            // $command =      'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "rm ' . $parameters->file . '" 2>&1';
+            // $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . "*******" . '" -c "rm ' . $parameters->file . '" 2>&1';
+            $command =      'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . $password . '" -c "rm ' . $parameters->file . '"';
+            $log->command = 'smbclient -m SMB2 \\\\\\\\'.$parameters->ip.'\\\\' . $parameters->share . ' -U "' . $temp[1] . '\\' . $temp[0] . '%' . "*******" . '" -c "rm ' . $parameters->file . '"';
+
+            exec($command, $output, $return_var);
+
+            $log->message = 'Linux attempt to delete file \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . ' in wmi_helper::delete_windows_result (SMB2 split)';
+            $log->command_output = json_encode($output);
+            if ($return_var != 0) {
+                return true;
+            } else {
+                $log->severity = 6;
+                $log->command_status = 'fail';
+                discovery_log($log);
+                return false;
+            }
+        }
+
+
+        if (php_uname('s') == 'Windows NT') {
+            # Must have paexec
+            if (!file_exists($CI->config->config['base_path'] . '\\other\\paexec.exe')) {
+                $log->message = 'You must have paexec.exe in ' . $CI->config->config['base_path'] . '\\open-audit\\other\\';
+                $log->command = '';
+                $log->command_status = 'fail';
+                discovery_log($log);
+                return false;
+            }
+            # NOTE - the file to be copied MUST be in c:\windows\
+            $temp = explode('@', $parameters->credentials->credentials->username);
+            $username = $temp[0];
+            if (!empty($temp[1])) {
+                $domain = $temp[1] . '/';
+            } else {
+                $domain = '';
+            }
+            unset($temp);
+            $password = str_replace('"', '\"', $parameters->credentials->credentials->password);
+
+            $command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $parameters->ip . ' -s -u ' . $domain . $username . ' -p "' . $password . '" cmd /c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
+
+            $log->command = $CI->config->config['base_path'] . '\\other\\paexec.exe \\\\' . $parameters->ip . ' -s -u ' . $domain . $username . ' -p "******" cmd /c "del \\\\' . $parameters->ip . '\\' . $parameters->share . '\\' . $parameters->file . '"';
+
+            exec($command, $output, $return_var);
+            $log->message = 'Windows attempt to delete file on ' . $ip . ' in wmi_helper::delete_windows_result';
+            $log->command_output = json_encode($output);
+            if (empty($return_var)) {
+                return false;
+            } else {
+                $log->status = 'fail';
+                $log->severity = 6;
+                stdlog($log);
+                return true;
+            }
         }
     }
 }

@@ -1216,6 +1216,16 @@ if (!function_exists('process_scan')) {
                         discovery_log($log);
                     }
                 }
+                if ($audit_file) {
+                    // delete the remote audit result
+                    $parameters = new stdClass();
+                    $parameters->log = $log;
+                    $parameters->ip = $device->ip;
+                    $parameters->share = 'admin$';
+                    $parameters->file = end($temp);
+                    $parameters->credentials = $credentials_windows;
+                    delete_windows_result($parameters);
+                }
             }
         }
 
@@ -1354,6 +1364,19 @@ if (!function_exists('process_scan')) {
                         discovery_log($log);
                     }
                 }
+                // Delete the remote file
+                $command = 'rm ' . $audit_file;
+                if (!empty($device->which_sudo) and $device->use_sudo and $credentials_ssh->credentials->username != 'root') {
+                    // add sudo
+                    $command = 'sudo ' . $command;
+                }
+                $parameters = new stdClass();
+                $parameters->log = $log;
+                $parameters->ip = $device->ip;
+                $parameters->credentials = $credentials_ssh;
+                $parameters->command = $command;
+                $parameters->ssh_port = $input->ssh_port;
+                ssh_command($parameters);
             }
         }
 
