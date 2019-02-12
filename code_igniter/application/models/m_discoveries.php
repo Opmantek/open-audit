@@ -363,7 +363,7 @@ class M_discoveries extends MY_Model
                         " echo_output=n" .
                         " create_file=n" .
                         " debugging=0" .
-                        " discovery_id=" . $rdiscovery->id . " " . $command_options;
+                        " discovery_id=" . $discovery->id . " " . $command_options;
         }
         return $command;
     }
