@@ -975,7 +975,7 @@ foreach ($list as $item) {
                         <?php } ?>
                     </div>
                 </div>
-                <?php $fields = array('UUID' => 'omk_uuid', 'Group' => 'nmis_group', 'Name' => 'nmis_name', 'Role' => 'nmis_role', 'Notes' => 'nmis_notes', 'Business Service' => 'nmis_business_service' ); ?>
+                <?php $fields = array('UUID' => 'omk_uuid', 'Group' => 'nmis_group', 'Name' => 'nmis_name', 'Role' => 'nmis_role', 'Notes' => 'nmis_notes', 'Business Service' => 'nmis_business_service', 'Poller' => 'nmis_poller' ); ?>
                 <?php foreach ($fields as $human => $db) { ?>
                     <div class="form-group">
                         <label for="<?php echo htmlspecialchars($db, REPLACE_FLAGS, CHARSET); ?>" class="col-sm-4 control-label"><?php echo __($human); ?></label>

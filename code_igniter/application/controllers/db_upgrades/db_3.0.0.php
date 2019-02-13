@@ -29,6 +29,9 @@
 
 $this->log_db('Upgrade database to 3.0.0 commenced');
 
+# system
+$this->alter_table('system', 'nmis_poller', "ADD `nmis_poller` TEXT NOT NULL AFTER `nmis_business_service`", 'add');
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190214' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
