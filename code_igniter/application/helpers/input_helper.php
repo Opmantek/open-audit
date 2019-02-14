@@ -349,7 +349,7 @@ if (! function_exists('inputRead')) {
                     break;
             }
             if ($sql != '') {
-                $data = array($CI->uri->segment(2));
+                $data = array(urldecode($CI->uri->segment(2)));
                 $query = $CI->db->query($sql, $data);
                 $result = $query->result();
                 if (count($result) > 0) {
