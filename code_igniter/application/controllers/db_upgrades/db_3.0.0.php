@@ -28,6 +28,14 @@
 **/
 
 $this->log_db('Upgrade database to 3.0.0 commenced');
+# queries
+$sql = "DELETE FROM queries WHERE `name` = 'NMIS' AND `edited_by` = 'system' AND `edited_date` = '2000-01-01 00:00:00'";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
+
+$sql = "INSERT INTO `queries` VALUES (NULL,1,'NMIS','Device','y','NMIS Export query','SELECT system.id AS `system.id`, system.name AS `system.name`, system.ip AS `system.ip`, system.hostname AS `system.hostname`, system.fqdn AS `system.fqdn`, system.dns_hostname AS `system.dns_hostname`, system.omk_uuid AS `system.omk_uuid`, system.nmis_name AS `system.nmis_name`, system.nmis_group AS `system.nmis_group`, system.nmis_role AS `system.nmis_role`, system.nmis_manage AS `system.nmis_manage`, system.nmis_business_service AS `system.nmis_business_service`, system.nmis_poller AS `system.nmis_poller` FROM `system` WHERE @filter AND system.nmis_manage = \'y\'','','system','2000-01-01 00:00:00')";
+$this->db->query($sql);
+$this->log_db($this->db->last_query());
 
 # system
 $this->alter_table('system', 'nmis_poller', "ADD `nmis_poller` TEXT NOT NULL AFTER `nmis_business_service`", 'add');
