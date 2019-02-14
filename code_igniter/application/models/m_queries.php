@@ -222,27 +222,31 @@ class M_queries extends MY_Model
         $sql = "SELECT * FROM queries WHERE id = ?";
         $data = array($id);
         $queries = $this->run_sql($sql, $data);
-        $query = $queries[0];
-        # below accounts for queries that end in a ; and/or a CR or spaces, etc
-        # when we add on LIMIT = 12345, it will break unless we strip those characters
-        $sql = trim($query->sql);
-        if (strpos($sql, ';') == strlen($sql)-1) {
-            $sql = substr($sql, 0, strlen($sql)-1);
-            $sql = trim($sql);
+        if (!empty($queries)) {
+            $query = $queries[0];
+            # below accounts for queries that end in a ; and/or a CR or spaces, etc
+            # when we add on LIMIT = 12345, it will break unless we strip those characters
+            $sql = trim($query->sql);
+            if (strpos($sql, ';') == strlen($sql)-1) {
+                $sql = substr($sql, 0, strlen($sql)-1);
+                $sql = trim($sql);
+            }
+            unset($queries);
+            $filter = "system.org_id IN (" . $CI->user->org_list . ")";
+            $user_filter = $this->build_filter();
+            if (!empty($user_filter)) {
+                $filter .= $user_filter;
+            }
+            $sql = str_replace('WHERE @filter', "WHERE $filter", $sql);
+            $sql .= ' ' . $CI->response->meta->internal->limit;
+            $result = $this->run_sql($sql, array());
+            $result = $this->format_data($result, 'queries');
+            $this->log->summary = 'finish';
+            stdlog($this->log);
+            return $result;
+        } else {
+            return array();
         }
-        unset($queries);
-        $filter = "system.org_id IN (" . $CI->user->org_list . ")";
-        $user_filter = $this->build_filter();
-        if (!empty($user_filter)) {
-            $filter .= $user_filter;
-        }
-        $sql = str_replace('WHERE @filter', "WHERE $filter", $sql);
-        $sql .= ' ' . $CI->response->meta->internal->limit;
-        $result = $this->run_sql($sql, array());
-        $result = $this->format_data($result, 'queries');
-        $this->log->summary = 'finish';
-        stdlog($this->log);
-        return $result;
     }
 
     public function sub_resource($id = '')
