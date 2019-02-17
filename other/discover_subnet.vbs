@@ -337,6 +337,9 @@ loop
 
 db_log_severity = 7
 db_log_status = ""
+db_log_message = "Starting discovery for " & subnet_range
+db_log()
+
 db_log_message = "Discovery for " & subnet_range & " using Nmap version " & nmap_version & " at " & nmap_path
 db_log()
 
@@ -352,6 +355,12 @@ end if
 
 if (timeout <> "") then
     timeout = "--host-timeout " & timeout
+end if
+
+if (timing <> "") then
+    timing = "-T" & timing
+else
+    timing = "-T4"
 end if
 
 if (exclude_tcp_ports <> "") then
@@ -380,6 +389,8 @@ end if
 
 if (service_version = "y") then
     service_version = "-sV"
+else
+    service_version = ""
 end if
 
 
@@ -505,6 +516,7 @@ if (ip_list <> "") then
             db_log_severity = 6
             db_log_message = "IP " & ip & " not responding, ignoring."
             db_log_output = ""
+            db_log_ip = ip
             db_log()
             db_log_severity = 7
         end if
@@ -669,6 +681,7 @@ for each host in hosts
             db_log_severity = 6
             db_log_message = "IP " & host & " responding, " & response_reason & ", adding to device list."
             db_log_output = ""
+            db_log_command = url
             db_log()
             db_log_severity = 7
             result = "<devices>" & vbcrlf & result & "</devices>"
@@ -678,7 +691,9 @@ for each host in hosts
             Set objHTTP = WScript.CreateObject("MSXML2.ServerXMLHTTP.3.0")
             objHTTP.setTimeouts 5000, 5000, 5000, 120000
             objHTTP.SetOption 2, 13056  ' Ignore all SSL errors
-            objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
+            'objHTTP.Open "POST", url, True ' do not wait for a respone before continuing
+            ' 3.0.0 seems to require us to wait for a response
+            objHTTP.Open "POST", url, False
             error_returned = Err.Number
             error_description = Err.Description
             on error goto 0
