@@ -1628,6 +1628,8 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
     }
     $this->m_device->set_identification($device->id);
+    $log->severity = 7;
+    $log->command_status = 'notice';
     $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
     discovery_log($log);
 }

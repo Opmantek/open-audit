@@ -1079,6 +1079,8 @@ if (!function_exists('process_scan')) {
             }
         } else {
             // go back now as we don't have a script
+            $log->severity = 7;
+            $log->command_status = 'notice';
             $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
             discovery_log($log);
             return true;
@@ -1563,6 +1565,8 @@ if (!function_exists('process_scan')) {
         // set the identification with what we have
         $this->m_device->set_identification($device->id);
         // finish
+        $log->severity = 7;
+        $log->command_status = 'notice';
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
         discovery_log($log);
         return true;
