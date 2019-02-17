@@ -283,6 +283,9 @@ if (!function_exists('audit_format_system')) {
             }
         }
 
+        if (!empty($input->ip)) {
+            $mylog->ip = $input->ip;
+        }
         $mylog->command_status = 'notice';
         $mylog->message = 'Formatting system details';
         discovery_log($mylog);
