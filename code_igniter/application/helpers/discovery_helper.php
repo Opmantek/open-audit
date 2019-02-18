@@ -1511,7 +1511,7 @@ if (!function_exists('process_scan')) {
             }
 
             $CI->m_audit_log->update('debug', 'finished processing', $audit->system->id, $audit->system->last_seen);
-            $log->message = 'Completed processing audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';
+            $log->message = 'Processed audit result for ' . $audit->system->hostname . ' (System ID ' . $audit->system->id . ')';
             discovery_log($log);
 
             // set the ip (if not already set)
@@ -1567,6 +1567,7 @@ if (!function_exists('process_scan')) {
         // finish
         $log->severity = 7;
         $log->command_status = 'notice';
+        $log->command = '';
         $log->message = "Discovery has completed processing $device->ip (System ID $device->id).";
         discovery_log($log);
         return true;
