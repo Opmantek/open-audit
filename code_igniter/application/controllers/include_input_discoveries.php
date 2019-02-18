@@ -475,11 +475,11 @@ foreach ($xml->children() as $input) {
 
     # SSH
     if ($input->ssh_status == 'true') {
-        $log->message = 'Testing SSH credentials for '.$device->ip;
-        if (!empty($device->id)) {
-            $log->message .= ' (System ID ' . $device->id . ')';
-        }
-        discovery_log($log);
+        // $log->message = 'Testing SSH credentials for '.$device->ip;
+        // if (!empty($device->id)) {
+        //     $log->message .= ' (System ID ' . $device->id . ')';
+        // }
+        // discovery_log($log);
         $parameters = new stdClass();
         $parameters->ip = $device->ip;
         $parameters->system_id = '';
@@ -512,7 +512,8 @@ foreach ($xml->children() as $input) {
     # We do not want to attempt to audit using WMI anything that's not a Windows machine
     if (!empty($device->os_group) and $device->os_group != 'Windows') {
         $input->wmi_status = 'false';
-        $log->message = 'Setting WMI to false because we have an os_group that is not Windows, it is: ' . $device->os_group;
+        $log->message = 'Setting WMI to false because we have an os_group that is not Windows.';
+        $log->command_output = $device->os_group;
         discovery_log($log);
     }
 
@@ -683,7 +684,7 @@ foreach ($xml->children() as $input) {
             }
         }
     }
-
+    $log->command_output = '';
     // insert or update the device
     if (!empty($device->id)) {
         // we have a system id - UPDATE
@@ -1314,8 +1315,11 @@ foreach ($xml->children() as $input) {
         if ($audit_script != '') {
             $command = $this->config->item('discovery_linux_script_directory').$audit_script.' submit_online=n create_file=y debugging=1 system_id='.$device->id.' display=' . $display . ' last_seen_by=audit_ssh discovery_id='.$discovery->id;
             $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . '.';
+            $log->command_output = '';
+            $log->command = '';
+            $log->command_status = 'notice';
             if ($credentials_ssh->credentials->username == 'root') {
-                $log->message = 'Running audit using root username.';
+                $log->message = 'Running audit using root user.';
             } else if (!empty($device->which_sudo) and $device->use_sudo) {
                 $command = 'sudo ' . $command;
                 $log->message = 'Running audit using ' .  $credentials_ssh->credentials->username . ' with sudo, as per config.';
@@ -1369,6 +1373,9 @@ foreach ($xml->children() as $input) {
                 }
             }
             $audit_file = str_replace('File                ', '', $audit_file);
+            if (strpos($audit_file, '//') === 0) {
+                $audit_file = str_replace('//', '/', $audit_file);
+            }
             $temp = explode('/', $audit_file);
             if (php_uname('s') == 'Windows NT') {
                 $destination = $filepath . '\\scripts\\' . end($temp);
