@@ -338,8 +338,6 @@ if (!function_exists('audit_format_system')) {
         if (!filter_var($input->hostname, FILTER_VALIDATE_IP)) {
             if (strpos($input->hostname, '.') !== false) {
                 # we have a fqdn in the hostname field
-                $mylog->message = "FQDN supplied in hostname, converting.";
-                discovery_log($mylog);
                 if (empty($input->fqdn)) {
                     $input->fqdn = $input->hostname;
                 }
@@ -350,6 +348,9 @@ if (!function_exists('audit_format_system')) {
                     $input->domain = implode('.', $temp);
                 }
                 unset($temp);
+                $mylog->message = "FQDN supplied in hostname, converting.";
+                $mylog->command_output = 'Hostname: ' . $input->hostname . ' Domain: ' .  $input->domain;
+                discovery_log($mylog);
             }
         }
 
@@ -358,6 +359,7 @@ if (!function_exists('audit_format_system')) {
             if (empty($input->ip)) {
                 $input->ip = $input->hostname;
                 $mylog->message = "IP supplied in hostname, setting device IP.";
+                $mylog->command_output = 'IP: ' . $input->ip;
                 discovery_log($mylog);
             }
             $input->hostname = '';
@@ -370,8 +372,11 @@ if (!function_exists('audit_format_system')) {
             (strripos($input->manufacturer, "virtual") !== false))) {
             $input->form_factor = 'Virtual';
             $mylog->message = "Manufacturer match, setting form factor to Virtual.";
+            $mylog->command_output = 'Manufacturer: ' . $input->manufacturer;
             discovery_log($mylog);
         }
+
+        $mylog->command_output = '';
 
         # Mac Model
         if (!empty($input->os_family) and $input->os_family == 'Apple OSX') {

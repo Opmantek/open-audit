@@ -364,8 +364,8 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             return false;
         } else {
-            $log->message = 'SNMP PHP function loaded and attempting to run snmp_helper::snmp_audit function';
-            discovery_log($log);
+            #$log->message = 'SNMP PHP function loaded and attempting to run snmp_helper::snmp_audit function';
+            #discovery_log($log);
         }
 
         # we need an ip address
@@ -380,8 +380,8 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             return false;
         } else {
-            $log->message = 'Received ip ' . $ip;
-            discovery_log($log);
+            #$log->message = 'Received ip ' . $ip;
+            #discovery_log($log);
         }
 
         if (empty($credentials) or !is_object($credentials)) {
@@ -390,8 +390,8 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             return false;
         } else {
-            $log->message = 'Received credentials for ip ' . $ip;
-            discovery_log($log);
+            #$log->message = 'Received credentials for ip ' . $ip;
+            #discovery_log($log);
         }
 
         # new in 1.5 - remove the type from the returned SNMP query.
@@ -488,14 +488,14 @@ if (!function_exists('snmp_audit')) {
         } else {
             $details->uptime = intval($details->sysUpTime / 100);
         }
-        if (!empty($details->uptime)) {
-            $log->message = 'derive uptime from sysUpTime for '.$ip;
-            $log->command = '';
-            $log->command_output = (string)$details->uptime;
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
-        }
+        // if (!empty($details->uptime)) {
+        //     $log->message = 'derive uptime from sysUpTime for '.$ip;
+        //     $log->command = '';
+        //     $log->command_output = (string)$details->uptime;
+        //     $log->command_time_to_execute = (microtime(true) - $item_start);
+        //     discovery_log($log);
+        //     unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
+        // }
 
         $log->message = 'sysObjectID retrieval for '.$ip;
         $log->command = 'snmpget 1.3.6.1.2.1.1.2.0';
@@ -804,11 +804,14 @@ if (!function_exists('snmp_audit')) {
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
         }
 
-        $log->message = 'SNMP audit thinks '.$ip.' is of type:'.$details->type;
+        $log->message = 'SNMP audit thinks '.$ip.' is of type: '.$details->type;
+        $log->command_output = $details->type;
         discovery_log($log);
-        $log->message = 'SNMP audit thinks '.$ip.' is a model:' . $details->model;
+        $log->message = 'SNMP audit thinks '.$ip.' is a model: ' . $details->model;
+        $log->command_output = $details->model;
         discovery_log($log);
-        $log->message = 'SNMP audit thinks '.$ip.' has a serial:' . $details->serial;
+        $log->message = 'SNMP audit thinks '.$ip.' has a serial: ' . $details->serial;
+        $log->command_output = $details->serial;
         discovery_log($log);
 
         // subnet
@@ -840,20 +843,22 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute);
 
-            $log->message = 'MAC Address for interface ' . $interface_number . ' using IP ' . $ip . '  retrieval for '.$ip;
-            $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.'.$interface_number;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
-            snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
-            $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.".$interface_number);
-            snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $details->mac_address = format_mac($details->mac_address);
-            $log->command_output = (string)$details->mac_address;
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            if (!empty($interface_number)) {
+                $log->message = 'MAC Address for interface ' . $interface_number . ' using IP ' . $ip . '  retrieval for '.$ip;
+                $log->command = 'snmpget 1.3.6.1.2.1.2.2.1.6.'.$interface_number;
+                $log->command_status = 'fail';
+                $log->id = discovery_log($log);
+                $item_start = microtime(true);
+                snmp_set_valueretrieval(SNMP_VALUE_LIBRARY);
+                $details->mac_address = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.2.2.1.6.".$interface_number);
+                snmp_set_valueretrieval(SNMP_VALUE_PLAIN);
+                $log->command_time_to_execute = (microtime(true) - $item_start);
+                $details->mac_address = format_mac($details->mac_address);
+                $log->command_output = (string)$details->mac_address;
+                $log->command_status = 'notice';
+                discovery_log($log);
+                unset($log->id, $log->command, $log->command_time_to_execute);
+            }
         }
         // last attempt at a MAC - just use whatever's in the first interface MAC
         if (empty($details->mac_address)) {
@@ -1241,10 +1246,10 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Processing modules for '.$ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
+            // $log->message = 'Processing modules for '.$ip;
+            // $log->command_status = 'fail';
+            // $log->id = discovery_log($log);
+            // $item_start = microtime(true);
             foreach ($modules_list as $key => $value) {
 
                 $module = new stdClass();
@@ -1306,10 +1311,10 @@ if (!function_exists('snmp_audit')) {
 
                 $modules[] = $module;
             }
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            // $log->command_time_to_execute = (microtime(true) - $item_start);
+            // $log->command_status = 'notice';
+            // discovery_log($log);
+            // unset($log->id, $log->command, $log->command_time_to_execute);
         }
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
@@ -1505,10 +1510,10 @@ if (!function_exists('snmp_audit')) {
             discovery_log($log);
             unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
 
-            $log->message = 'Processing interfaces for '.$ip;
-            $log->command_status = 'fail';
-            $log->id = discovery_log($log);
-            $item_start = microtime(true);
+            // $log->message = 'Processing interfaces for '.$ip;
+            // $log->command_status = 'fail';
+            // $log->id = discovery_log($log);
+            // $item_start = microtime(true);
 
             foreach ($interfaces as $key => $value) {
                 // $log->message = 'Processing interface '. $value .' for '.$ip;
@@ -1597,10 +1602,10 @@ if (!function_exists('snmp_audit')) {
                 // unset($log->id, $log->command, $log->command_time_to_execute);
             }
 
-            $log->command_time_to_execute = (microtime(true) - $item_start);
-            $log->command_status = 'notice';
-            discovery_log($log);
-            unset($log->id, $log->command, $log->command_time_to_execute);
+            // $log->command_time_to_execute = (microtime(true) - $item_start);
+            // $log->command_status = 'notice';
+            // discovery_log($log);
+            // unset($log->id, $log->command, $log->command_time_to_execute);
         } // end of network interfaces
 
         // Special for ExaBlaze

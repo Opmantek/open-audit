@@ -505,7 +505,11 @@ if (! function_exists('ssh_command')) {
         if (stripos($command, 'audit_') !== false and stripos($command, 'submit_online') !== false) {
             $log->command_output = 'Audit console output removed.';
         } else {
-            $log->command_output = json_encode($result);
+            if (!empty($result)) {
+                $log->command_output = json_encode($result);
+            } else {
+                $log->command_output = '';
+            }
         }
         $log->command_status = 'success';
         discovery_log($log);
@@ -763,17 +767,13 @@ if (! function_exists('ssh_audit')) {
         }
         $log->severity = 7;
 
-        if (strpos($device->shell, 'bash') === false) {
+        if (strpos($device->shell, 'bash') === false and $device->bash === '') {
             $log->command = '';
             $log->command_output = $device->shell;
             $log->command_time_to_execute = '';
             $log->severity = 6;
-            $log->message = 'Will use ' . $device->bash . ' to run commands. Running commands in a shell other than bash may fail.';
+            $log->message = 'Will use ' . $device->shell . ' to run commands. Running commands in a shell other than bash may fail.';
             $log->command_status = 'notice';
-            if ($device->bash === '') {
-                $log->message = 'Unable to detect shell. Running commands in a shell other than bash may fail.';
-                $log->command_status = 'notice';
-            }
             discovery_log($log);
         }
         $log->severity = 7;
@@ -850,18 +850,18 @@ if (! function_exists('ssh_audit')) {
                 } else {
                     $device->$item = $temp1;
                 }
-                $log->command = $command . '; # ' . $item;
+                $log->command = $command;
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->command_output = $temp1;
                 $log->command_status = 'success';
-                $log->message = 'SSH command';
+                $log->message = 'SSH command - ' . $item;
                 discovery_log($log);
             } else {
-                $log->command = $command . '; # ' . $item;
+                $log->command = $command;
                 $log->command_time_to_execute = (microtime(true) - $item_start);
                 $log->command_output = $temp1;
                 $log->command_status = 'notice';
-                $log->message = 'SSH command';
+                $log->message = 'SSH command - ' . $item;
                 discovery_log($log);
             }
         }
