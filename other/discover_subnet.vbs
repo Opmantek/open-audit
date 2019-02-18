@@ -82,7 +82,7 @@ dim nmap_path : nmap_path = ""
 ' Only set the above if you have installed into a custom directory AND it is not on your users $path
 
 dim db_ip : db_ip = ""
-dim db_log_ip : db_log_ip = ""
+dim db_log_ip : db_log_ip = "127.0.0.1"
 dim db_log_message : db_log_message = ""
 dim db_log_duration : db_log_duration = 0
 dim db_log_status : db_log_status = ""
@@ -453,7 +453,7 @@ db_log_command = command
 db_log()
 
 if (ping <> "") then
-    '' Scan these IPs, ignoring their ping (or not) response
+    ' Scan these IPs, ignoring their ping (or not) response
     command = nmap_path & " -n -sL " & exclude_ip & " " & subnet_range
     execute_command()
     do until objExecObject.StdOut.AtEndOfStream
@@ -465,11 +465,13 @@ if (ping <> "") then
         end if
     loop
     db_log_message = "IPs after ignoring ping in subnet (to be scanned): " & count
+    db_log_command = command
     hosts_in_subnet = count
     db_log()
 else
     ' Run a scan on all IPs and return only those responding to an Nmap ping
     command = nmap_path & " -n -oG - -sP " & exclude_ip & " " & subnet_range
+    db_log_command = command
     execute_command()
     do until objExecObject.StdOut.AtEndOfStream
         line = objExecObject.StdOut.ReadLine
@@ -496,7 +498,7 @@ else
 end if
 
 hosts = split(trim(hosts))
-
+db_log_command = ""
 ' In the case of only scnning devices responding to an Nmap ping,
 '    send a log line that this IP didn't respond
 dim response : response = ""
