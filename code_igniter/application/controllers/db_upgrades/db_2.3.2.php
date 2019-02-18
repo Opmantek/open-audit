@@ -26,8 +26,10 @@
 # *****************************************************************************
 *
 **/
- 
+
 $this->log_db('Upgrade database to 2.3.2 commenced');
+
+$this->load->library('encrypt');
 
 # attributes
 $sql = "DELETE from attributes WHERE resource = 'devices' AND `type` = 'type' AND `name` = 'Unclassified'";
@@ -59,13 +61,15 @@ $this->log_db($this->db->last_query());
 $result = $query->result();
 if (!empty($result)) {
     foreach ($result as $item) {
-        $credentials = @json_decode($this->encrypt->decode($item->credentials));
+        $credentials = json_decode(simpleDecrypt($item->credentials));
         if (!empty($credentials)) {
             $item->credentials = simpleEncrypt(json_encode($credentials));
             $sql = "UPDATE `credentials` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
             $data = array($item->credentials, intval($item->id));
             $this->db->query($sql, $data);
             $this->log_db($this->db->last_query());
+        } else {
+            $this->log_db("Could not unencrypt credentials " . $item->name);
         }
     }
 }
@@ -77,13 +81,15 @@ $this->log_db($this->db->last_query());
 $result = $query->result();
 if (!empty($result)) {
     foreach ($result as $item) {
-        $credentials = @json_decode($this->encrypt->decode($item->credentials));
+        $credentials = json_decode(simpleDecrypt($item->credentials));
         if (!empty($credentials)) {
             $item->credentials = simpleEncrypt(json_encode($credentials));
             $sql = "UPDATE `credential` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
             $data = array($item->credentials, intval($item->id));
             $this->db->query($sql, $data);
             $this->log_db($this->db->last_query());
+        } else {
+            $this->log_db("Could not unencrypt device credentials " . $item->name);
         }
     }
 }
@@ -95,13 +101,15 @@ $this->log_db($this->db->last_query());
 $result = $query->result();
 if (!empty($result)) {
     foreach ($result as $item) {
-        $dn_password = $this->encrypt->decode($item->dn_password);
+        $dn_password = simpleDecrypt($item->dn_password);
         if (!empty($dn_password)) {
             $item->dn_password = simpleEncrypt($dn_password);
             $sql = "UPDATE `ldap_servers` SET `dn_password` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
             $data = array($item->dn_password, intval($item->id));
             $this->db->query($sql, $data);
             $this->log_db($this->db->last_query());
+        } else {
+            $this->log_db("Could not unencrypt ldap credentials " . $item->name);
         }
     }
 }
@@ -112,13 +120,15 @@ $this->log_db($this->db->last_query());
 $result = $query->result();
 if (!empty($result)) {
     foreach ($result as $item) {
-        $credentials = @json_decode($this->encrypt->decode($item->credentials));
+        $credentials = json_decode(simpleDecrypt($item->credentials));
         if (!empty($credentials)) {
             $item->credentials = simpleEncrypt(json_encode($credentials));
             $sql = "UPDATE `clouds` SET `credentials` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
             $data = array($item->credentials, intval($item->id));
             $this->db->query($sql, $data);
             $this->log_db($this->db->last_query());
+        } else {
+            $this->log_db("Could not unencrypt cloud credentials " . $item->name);
         }
     }
 }
