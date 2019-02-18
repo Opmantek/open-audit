@@ -112,7 +112,11 @@ try {
 unset($xml_input);
 
 # So we can output back to the discovery script, and continue processing
-echo "";
+if (php_uname('s') == 'Windows NT') {
+    print_r($xml);
+} else {
+    echo "";
+}
 header('Connection: close');
 header('Content-Length: '.ob_get_length());
 ob_end_flush();
@@ -1320,6 +1324,7 @@ foreach ($xml->children() as $input) {
             } else if (empty($device->which_sudo)) {
                 $log->message = 'Running audit using ' . $credentials_ssh->credentials->username . ' as sudo not present.';
             }
+            discovery_log($log);
             $log->command = $command;
             $command_start = microtime(true);
             $parameters = new stdClass();
