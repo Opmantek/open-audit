@@ -141,13 +141,13 @@ class Migrate extends CI_Controller
 
         $file = fopen("c:\\xampplite\\open-audit\\migrate.json", "w");
         if (!$file) {
-            echo "Could not open c:\\xampplite\\open-audit\\migrate.json to export credentials. Please check the file doesn't exist.";
+            echo "Could not open c:\\xampplite\\open-audit\\migrate.json to export credentials. Please check the directory and/or file permissions and refresh this page.";
         } else {
             if (fwrite($file, json_encode($output))) {
                 echo '<h1>Attention</h1>
-                <br />For Open-AudIT to move from using PHP 5.3.1 to PHP 7.3.1, we must decrypt our stored credentials using our existing (PHP 5.3.1) codebase, save them and import them back when using our new (PHP 7.3.1 code). This function has just done that decrypt and export. You will find the file at c:\xampplite\open-audit\migrate.json<br /><br />There is no need to touch this file until after you have upgraded Open-AudIT and checked your credentials have been imported correctly (this will be done for you).<br /><br />Once you are happy your credentials have been successfully imported, you are free to delete the file.<br /><br />Please close this tab.';
+                <br />For Open-AudIT to move from using PHP 5.3.1 to PHP 7.3.1, we must decrypt our stored credentials using our existing (PHP 5.3.1) codebase, save them and import them back when upgrading to our new (PHP 7.3.1) codebase. This function has just done that decrypt and export. You will find the file at c:\xampplite\open-audit\migrate.json<br /><br />There is no need to touch this file until after you have upgraded Open-AudIT and checked your credentials have been imported correctly (this will automatically be done for you).<br /><br />Once you are happy your credentials have been successfully imported, you are free to delete the file. This affects credentials (credentials), specific device credentials (credential), clouds (clouds) and LDAP servers (ldap_servers) items in the Open-AudIT database.<br /><br />Please close this tab.';
             } else {
-                echo "Could not write to c:\\xampplite\\open-audit\\migrate.json to export credentials. Please check the file permissions.";
+                echo "Could not write to c:\\xampplite\\open-audit\\migrate.json to export credentials. Please check the file permissions and refresh this page.";
             }
             fclose($file);
         }
