@@ -78,7 +78,9 @@ if (! function_exists('simpleDecrypt')) {
         if (empty($key)) {
             $key = mb_substr("00000000000000000000000000000000".$CI->config->config['encryption_key'], -32);
         }
-        $message = hex2bin($message);
+        if (ctype_xdigit($message)) {
+            $message = hex2bin($message);
+        }
         if (empty($message)) {
             return '';
         }
