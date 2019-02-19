@@ -38,6 +38,9 @@
 <?php if (!empty($warning)) { ?>
 <div class="alert alert-warning" role="alert"><?php echo $warning; ?></div>
 <?php } ?>
+<?php if (!empty($alert)) { ?>
+<div class="alert alert-danger" role="alert"><?php echo $alert; ?></div>
+<?php } ?>
 <form class="form-horizontal" id="form_update" method="post" action="database">
     <div class="panel panel-default">
         <div class="panel-heading clearfix">

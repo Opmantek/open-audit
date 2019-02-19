@@ -1,0 +1,155 @@
+<?php
+/**
+#  Copyright 2003-2015 Opmantek Limited (www.opmantek.com)
+#
+#  ALL CODE MODIFICATIONS MUST BE SENT TO CODE@OPMANTEK.COM
+#
+#  This file is part of Open-AudIT.
+#
+#  Open-AudIT is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU Affero General Public License as published
+#  by the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Open-AudIT is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU Affero General Public License for more details.
+#
+#  You should have received a copy of the GNU Affero General Public License
+#  along with Open-AudIT (most likely in a file named LICENSE).
+#  If not, see <http://www.gnu.org/licenses/>
+#
+#  For further information on Open-AudIT or for a license other than AGPL please see
+#  www.opmantek.com or email contact@opmantek.com
+#
+# *****************************************************************************
+*
+* @category  Controller
+* @package   Open-AudIT
+* @author    Mark Unwin <marku@opmantek.com>
+* @copyright 2014 Opmantek
+* @license   http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @version   3.0.0
+* @link      http://www.open-audit.org
+*/
+
+/**
+* Base Object Test
+*
+* @access   public
+* @category Object
+* @package  Open-AudIT
+* @author   Mark Unwin <marku@opmantek.com>
+* @license  http://www.gnu.org/licenses/agpl-3.0.html aGPL v3
+* @link     http://www.open-audit.org
+ */
+class Migrate extends CI_Controller
+{
+    /**
+    * Constructor
+    *
+    * @access    public
+    */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+    * Index that is used ONLY on Windows for migrating encrypted credentials
+    *
+    * @access public
+    * @return NULL
+    */
+    public function index()
+    {
+        if (php_uname('s') != 'Windows NT') {
+            redirect('summaries');
+        }
+
+        $output = array();
+        $this->load->library('encrypt');
+        
+        # credentials
+        $sql = "SELECT * FROM `credentials`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as $row) {
+            if (!empty($row->credentials)) {
+                $credentials = $this->encrypt->decode($row->credentials);
+                if (!empty($credentials)) {
+                    $item = new stdClass();
+                    $item->type = 'credentials';
+                    $item->id = $row->id;
+                    $item->credentials = $credentials;
+                    $output[] = $item;
+                }
+            }
+        }
+
+        # device credentials
+        $sql = "SELECT * FROM `credential`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as $row) {
+            if (!empty($row->credentials)) {
+            $credentials = $this->encrypt->decode($row->credentials);
+                if (!empty($credentials)) {
+                    $item = new stdClass();
+                    $item->type = 'credential';
+                    $item->id = $row->id;
+                    $item->credentials = $credentials;
+                    $output[] = $item;
+                }
+            }
+        }
+
+        # clouds
+        $sql = "SELECT * FROM `clouds`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as $row) {
+            if (!empty($row->credentials)) {
+            $credentials = $this->encrypt->decode($row->credentials);
+                if (!empty($credentials)) {
+                    $item = new stdClass();
+                    $item->type = 'clouds';
+                    $item->id = $row->id;
+                    $item->credentials = $credentials;
+                    $output[] = $item;
+                }
+            }
+        }
+
+        # ldap servers
+        $sql = "SELECT * FROM `ldap_servers`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        foreach ($result as $row) {
+            if (!empty($row->dn_password)) {
+            $credentials = $this->encrypt->decode($row->dn_password);
+                if (!empty($credentials)) {
+                    $item = new stdClass();
+                    $item->type = 'ldap_servers';
+                    $item->id = $row->id;
+                    $item->credentials = $credentials;
+                    $output[] = $item;
+                }
+            }
+        }
+
+        $file = fopen("c:\\xampplite\\open-audit\\migrate.json", "w");
+        if (!$file) {
+            echo "Could not open c:\\xampplite\\open-audit\\migrate.json to export credentials. Please check the file doesn't exist.";
+        } else {
+            if (fwrite($file, json_encode($output))) {
+                echo '<h1>Attention</h1>
+                <br />For Open-AudIT to move from using PHP 5.3.1 to PHP 7.3.1, we must decrypt our stored credentials using our existing (PHP 5.3.1) codebase, save them and import them back when using our new (PHP 7.3.1 code). This function has just done that decrypt and export. You will find the file at c:\xampplite\open-audit\migrate.json<br /><br />There is no need to touch this file until after you have upgraded Open-AudIT and checked your credentials have been imported correctly (this will be done for you).<br /><br />Once you are happy your credentials have been successfully imported, you are free to delete the file.<br /><br />Please close this tab.';
+            } else {
+                echo "Could not write to c:\\xampplite\\open-audit\\migrate.json to export credentials. Please check the file permissions.";
+            }
+            fclose($file);
+        }
+    }
+}
