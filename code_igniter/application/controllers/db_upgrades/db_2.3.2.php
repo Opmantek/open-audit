@@ -151,7 +151,7 @@ if (php_uname('s') != 'Windows NT') {
         foreach ($json as $item) {
             $item->credentials = simpleEncrypt($item->credentials);
             $field = 'credentials';
-            if ($item->type = 'ldap_servers') {
+            if ($item->type == 'ldap_servers') {
                 $field = 'dn_password';
             }
             $sql = "UPDATE `" . $item->type . "` SET `" . $field . "` = ?, `edited_by` = 'system', `edited_date` = NOW() WHERE `id` = ?";
