@@ -43,74 +43,30 @@ if (!defined('BASEPATH')) {
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     $details->manufacturer = 'Ruckus';
-    $details->type = 'wap';
-    if ($oid == '1.3.6.1.4.1.25053.3') {
-        $details->model = 'Wireless Router';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.1') {
-        $details->model = 'Wireless Router';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.1.1') {
-        $details->model = 'Wireless Router VF2825';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.1.2') {
-        $details->model = 'Wireless Router VF2811';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.1.3') {
-        $details->model = 'Wireless Router VF2821';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.1.4') {
-        $details->model = 'Wireless Router VF2835';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.1.5') {
-        $details->model = 'Wireless Router VF7811';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.2') {
-        $details->model = 'Wireless Adapter';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.2.1') {
-        $details->model = 'Wireless Adapter VF2111';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.2.2') {
-        $details->model = 'Wireless Adapter VF2121';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.2.3') {
-        $details->model = 'Wireless Adapter VF7111';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.3') {
-        $details->model = 'Wireless Metro';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.3.1') {
-        $details->model = 'Wireless Metro MM2225';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.3.2') {
-        $details->model = 'Wireless Metro MM2211';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.3.3') {
-        $details->model = 'Wireless Metro MM2221';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.4') {
-        $details->model = 'Wireless Hotzone';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.4.1') {
-        $details->model = 'Wireless Hotzone ZF2925';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.4.2') {
-        $details->model = 'Wireless Hotzone ZF2942';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.4.3') {
-        $details->model = 'Wireless Hotzone ZF7942';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.4.4') {
-        $details->model = 'Wireless Hotzone ZF7962';
-    }
-    if ($oid == '1.3.6.1.4.1.25053.3.1.4.5') {
-        $details->model = 'Wireless Hotzone ZF2741';
-    }
+    if ($oid == '1.3.6.1.4.1.25053.3') { $details->model = 'Wireless Router'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1') { $details->model = 'Wireless Router'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.1') { $details->model = 'Wireless Router VF2825'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.2') { $details->model = 'Wireless Router VF2811'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.3') { $details->model = 'Wireless Router VF2821'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.4') { $details->model = 'Wireless Router VF2835'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.1.5') { $details->model = 'Wireless Router VF7811'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2') { $details->model = 'Wireless Adapter'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2.1') { $details->model = 'Wireless Adapter VF2111'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2.2') { $details->model = 'Wireless Adapter VF2121'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.2.3') { $details->model = 'Wireless Adapter VF7111'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3') { $details->model = 'Wireless Metro'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3.1') { $details->model = 'Wireless Metro MM2225'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3.2') { $details->model = 'Wireless Metro MM2211'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.3.3') { $details->model = 'Wireless Metro MM2221'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4') { $details->model = 'Wireless Hotzone'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.1') { $details->model = 'Wireless Hotzone ZF2925'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.2') { $details->model = 'Wireless Hotzone ZF2942'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.3') { $details->model = 'Wireless Hotzone ZF7942'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.4') { $details->model = 'Wireless Hotzone ZF7962'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.25053.3.1.4.5') { $details->model = 'Wireless Hotzone ZF2741'; $details->type = 'wap'; }
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.25053.1.1.2.1.1.1.2.0");
     if (empty($details->model)) {
         $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.25053.1.1.2.1.1.1.1.0");
     }
-
     return($details);
 };

@@ -42,13 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.1139') {
-        $details->model = 'EMC Celerra';
-        $details->type = 'nas';
-    }
-    if ($oid == '1.3.6.1.4.1.1139.16') {
-        $details->model = 'SecureID Appliance';
-        $details->type = 'access server';
-    }
+    if ($oid == '1.3.6.1.4.1.1139') { $details->model = 'EMC Celerra'; $details->type = 'nas'; }
+    if ($oid == '1.3.6.1.4.1.1139.16') { $details->model = 'SecureID Appliance'; $details->type = 'access server'; }
     return($details);
 };

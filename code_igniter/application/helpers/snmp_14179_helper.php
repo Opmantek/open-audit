@@ -42,13 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.14179.1.1.4.3') {
-        $details->model = '4402 WLAN Controller';
-        $details->os_group = 'Cisco';
-        $details->manufacturer = 'Cisco Systems';
-        $details->type = 'wap';
-        $details->os_family = 'Cisco IOS';
-    }
+    if ($oid == '1.3.6.1.4.1.14179.1.1.4.3') { $details->model = '4402 WLAN Controller'; $details->os_group = 'Cisco'; $details->manufacturer = 'Cisco Systems'; $details->type = 'wap'; $details->os_family = 'Cisco IOS'; }
     $test = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.9.9.23.1.2.1.1.5.29.2");
     if ($test != '') {
         if (stripos($test, 'Cisco IOS Software') !== false) {
@@ -68,8 +62,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     }
     unset($test);
     # Cisco specific model OID
-    if ($details->model == '') {
-        $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13.1");
+    if ($details->model == '') { $details->model = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.13.1");
     }
     # Generic Cisco serial
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.2.1.47.1.1.1.1.11.1");

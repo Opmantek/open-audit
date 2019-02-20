@@ -42,113 +42,32 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.2272.2') {
-        $details->model = 'Accelar 1100';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.20') {
-        $details->model = 'Accelar 740';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.21') {
-        $details->model = 'Accelar 750';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.22') {
-        $details->model = 'Accelar 790';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.23') {
-        $details->model = 'Accelar 750S';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.30') {
-        $details->model = 'Ethernet Routing Switch 8610';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.31') {
-        $details->model = 'Ethernet Routing Switch 8606';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.32') {
-        $details->model = 'Passport 8110';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.33') {
-        $details->model = 'Passport 8106';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.34') {
-        $details->model = 'Passport 8003';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.35') {
-        $details->model = 'Passport 8103';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.36') {
-        $details->model = 'Passport 8110co';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.37') {
-        $details->model = 'Passport 8610co';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.38') {
-        $details->model = 'Passport 1424T';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.42') {
-        $details->model = 'Passport 1424T';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.43') {
-        $details->model = 'Passport 1648';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.44') {
-        $details->model = 'Passport 1612G';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.45') {
-        $details->model = 'Passport 1624G';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.47') {
-        $details->model = 'Passport 8310';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.48') {
-        $details->model = 'ERS-8306 Ethernet Routing Switch';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.49') {
-        $details->model = 'ERS-8010 Ethernet Routing Switch';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.50') {
-        $details->model = 'ERS-8006 Ethernet Routing Switch';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.6') {
-        $details->model = 'Accelar 1250';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.7') {
-        $details->model = 'Accelar 1150';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.8') {
-        $details->model = 'Accelar 1200';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.9') {
-        $details->model = 'Accelar 105X';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.2272.201') {
-        $details->model = 'Avaya VSP-9000 Series';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.2272.2') { $details->model = 'Accelar 1100'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.20') { $details->model = 'Accelar 740'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.21') { $details->model = 'Accelar 750'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.22') { $details->model = 'Accelar 790'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.23') { $details->model = 'Accelar 750S'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.30') { $details->model = 'Ethernet Routing Switch 8610'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.31') { $details->model = 'Ethernet Routing Switch 8606'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.32') { $details->model = 'Passport 8110'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.33') { $details->model = 'Passport 8106'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.34') { $details->model = 'Passport 8003'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.35') { $details->model = 'Passport 8103'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.36') { $details->model = 'Passport 8110co'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.37') { $details->model = 'Passport 8610co'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.38') { $details->model = 'Passport 1424T'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.42') { $details->model = 'Passport 1424T'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.43') { $details->model = 'Passport 1648'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.44') { $details->model = 'Passport 1612G'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.45') { $details->model = 'Passport 1624G'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.47') { $details->model = 'Passport 8310'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.48') { $details->model = 'ERS-8306 Ethernet Routing Switch'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.49') { $details->model = 'ERS-8010 Ethernet Routing Switch'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.50') { $details->model = 'ERS-8006 Ethernet Routing Switch'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.6') { $details->model = 'Accelar 1250'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.7') { $details->model = 'Accelar 1150'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.8') { $details->model = 'Accelar 1200'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.9') { $details->model = 'Accelar 105X'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.2272.201') { $details->model = 'Avaya VSP-9000 Series'; $details->type = 'switch'; }
     return($details);
 };

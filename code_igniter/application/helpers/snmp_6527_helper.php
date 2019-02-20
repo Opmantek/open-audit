@@ -42,33 +42,12 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.6527.1.3.1') {
-        $details->model = 'Alcatel 7750 SR1';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.6527.1.3.2') {
-        $details->model = 'Alcatel 7750 SR4';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.6527.1.3.3') {
-        $details->model = 'Alcatel 7750 SR';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.6527.1.3.4') {
-        $details->model = 'Alcatel 7750 SR7';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.6527.1.3.5') {
-        $details->model = 'Alcatel 7750 SR6';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.6527.1.3.6') {
-        $details->model = 'Alcatel 7750 SRc12';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.6527.1.3.7') {
-        $details->model = 'Alcatel 7750 SRc4';
-        $details->type = '';
-    }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.1') { $details->model = 'Alcatel 7750 SR1'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.2') { $details->model = 'Alcatel 7750 SR4'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.3') { $details->model = 'Alcatel 7750 SR'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.4') { $details->model = 'Alcatel 7750 SR7'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.5') { $details->model = 'Alcatel 7750 SR6'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.6') { $details->model = 'Alcatel 7750 SRc12'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.6527.1.3.7') { $details->model = 'Alcatel 7750 SRc4'; $details->type = ''; }
     return($details);
 };

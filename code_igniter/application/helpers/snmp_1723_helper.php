@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.1723.2.1.3') {
-        $details->model = 'Serial to Ethernet Adapter';
-        $details->type = 'serial to ethernet';
-    }
+    if ($oid == '1.3.6.1.4.1.1723.2.1.3') { $details->model = 'Serial to Ethernet Adapter'; $details->type = 'serial to ethernet'; }
     return($details);
 };

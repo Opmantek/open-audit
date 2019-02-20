@@ -43,18 +43,8 @@ if (!defined('BASEPATH')) {
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
 
-    if ($oid == '1.3.6.1.4.1.7262.2.2') {
-        $details->model = 'Horizon Compact Plus';
-    	$details->type = 'wireless link';
-    }
-    if ($oid == '1.3.6.1.4.1.7262.2.4') {
-        $details->model = 'Horizon Compact Plus';
-    	$details->type = 'wireless link';
-    }
-    if ($oid == '1.3.6.1.4.1.7262.2.5') {
-        $details->model = 'Horizon Compact Plus';
-    	$details->type = 'wireless link';
-    }
-
+    if ($oid == '1.3.6.1.4.1.7262.2.2') { $details->model = 'Horizon Compact Plus'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.7262.2.4') { $details->model = 'Horizon Compact Plus'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.7262.2.5') { $details->model = 'Horizon Compact Plus'; $details->type = 'wireless link'; }
     return($details);
 };

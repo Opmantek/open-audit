@@ -43,8 +43,6 @@ if (!defined('BASEPATH')) {
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     if (strpos($oid, '1.3.6.1.4.1.21671.1.2') == 0) {
-        $details->model = 'VSS Monitor';
-        $details->type = 'network device';
-    }
+        $details->model = 'VSS Monitor'; $details->type = 'network device'; }
     return($details);
 };

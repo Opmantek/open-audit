@@ -42,8 +42,6 @@
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     if (strpos($oid, '1.3.6.1.4.1.705.1.2') == 0) {
-        $details->model = 'Pulsar UPS';
-        $details->type = 'ups';
-    }
+        $details->model = 'Pulsar UPS'; $details->type = 'ups'; }
     return($details);
 };

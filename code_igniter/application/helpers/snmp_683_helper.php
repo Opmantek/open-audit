@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.683.6') {
-        $details->model = 'ZebraNet PrintServer';
-        $details->type = 'print server';
-    }
+    if ($oid == '1.3.6.1.4.1.683.6') { $details->model = 'ZebraNet PrintServer'; $details->type = 'print server'; }
     return($details);
 };

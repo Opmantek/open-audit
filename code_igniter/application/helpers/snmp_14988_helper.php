@@ -61,8 +61,7 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->os_name = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.14988.1.1.17.1.1.4.1");
 
     if (stripos($details->model, 'RB921UAGS-5SHPacT')) {
-        $details->type = 'wireless router';
-    }
+        $details->type = 'wireless router'; }
 
 
 

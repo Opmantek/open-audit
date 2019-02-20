@@ -44,57 +44,20 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     # catch all
     if (strpos($oid, '1.3.6.1.4.1.278.1.19') == 0) {
-        $details->model = 'Unknown';
-        $details->type = 'wap';
-    }
+        $details->model = 'Unknown'; $details->type = 'wap'; }
     if (strpos($oid, '1.3.6.1.4.1.278.1.27') == 0) {
-        $details->model = 'Apresia';
-        $details->type = 'switch';
-    }
+        $details->model = 'Apresia'; $details->type = 'switch'; }
     # individual oid's
-    if ($oid == '1.3.6.1.4.1.278.1.19.4') {
-        $details->model = 'HAP5520AG';
-        $details->type = 'wap';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.7') {
-        $details->model = 'Apresia 3124GT';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.8') {
-        $details->model = 'Apresia 3124GT-PSR';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.17') {
-        $details->model = 'Apresia 3248G';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.27') {
-        $details->model = 'Apresia 4224GT-PSR';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.35') {
-        $details->model = 'Apresia 3124GT2';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.55') {
-        $details->model = 'Apresia 3424GT-SS';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.57') {
-        $details->model = 'Apresia 3448GT';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.65') {
-        $details->model = 'Apresia 5428GT';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.69') {
-        $details->model = 'Apresia 13200-52GT-PSR';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.278.1.27.70') {
-        $details->model = 'Apresia 13200-52GT';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.278.1.19.4') { $details->model = 'HAP5520AG'; $details->type = 'wap'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.7') { $details->model = 'Apresia 3124GT'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.8') { $details->model = 'Apresia 3124GT-PSR'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.17') { $details->model = 'Apresia 3248G'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.27') { $details->model = 'Apresia 4224GT-PSR'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.35') { $details->model = 'Apresia 3124GT2'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.55') { $details->model = 'Apresia 3424GT-SS'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.57') { $details->model = 'Apresia 3448GT'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.65') { $details->model = 'Apresia 5428GT'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.69') { $details->model = 'Apresia 13200-52GT-PSR'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.278.1.27.70') { $details->model = 'Apresia 13200-52GT'; $details->type = 'switch'; }
     return($details);
 };

@@ -42,10 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.5776.1') {
-        $details->model = 'LSM10/100-8';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.5776.1') { $details->model = 'LSM10/100-8'; $details->type = 'switch'; }
 
     return($details);
 };

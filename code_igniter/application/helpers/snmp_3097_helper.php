@@ -42,78 +42,26 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.3097.1.4.1') {
-        $details->model = 'fbX500';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.10') {
-        $details->model = 'fbX5000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.11') {
-        $details->model = 'fbX5500e';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.12') {
-        $details->model = 'fbX6000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.13') {
-        $details->model = 'fbX6500e';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.14') {
-        $details->model = 'fbX8000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.15') {
-        $details->model = 'fbX8500e';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.16') {
-        $details->model = 'fbX8500e-F';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.2') {
-        $details->model = 'fbX550e';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.3') {
-        $details->model = 'fbX700';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.4') {
-        $details->model = 'fbX750e';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.5') {
-        $details->model = 'fbX750e-4';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.6') {
-        $details->model = 'fbX1000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.7') {
-        $details->model = 'fbX1250e';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.8') {
-        $details->model = 'fbX1250e-4';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.4.9') {
-        $details->model = 'fbX2500';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3097.1.5.12') {
-        $details->model = 'Watchguard Firewall';
-        $details->type = 'firewall';
-    }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.1') { $details->model = 'fbX500'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.10') { $details->model = 'fbX5000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.11') { $details->model = 'fbX5500e'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.12') { $details->model = 'fbX6000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.13') { $details->model = 'fbX6500e'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.14') { $details->model = 'fbX8000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.15') { $details->model = 'fbX8500e'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.16') { $details->model = 'fbX8500e-F'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.2') { $details->model = 'fbX550e'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.3') { $details->model = 'fbX700'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.4') { $details->model = 'fbX750e'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.5') { $details->model = 'fbX750e-4'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.6') { $details->model = 'fbX1000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.7') { $details->model = 'fbX1250e'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.8') { $details->model = 'fbX1250e-4'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.4.9') { $details->model = 'fbX2500'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3097.1.5.12') { $details->model = 'Watchguard Firewall'; $details->type = 'firewall'; }
 
     if (empty($details->type)) {
-        $details->type = 'firewall';
-        $details->model = "Watchguard Firewall";
+        $details->type = 'firewall'; $details->model = "Watchguard Firewall";
     }
 
     # model

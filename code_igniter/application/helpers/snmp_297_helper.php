@@ -42,13 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.297.1.11.93.1.6.2.1.1') {
-        $details->model = 'Document Centre 550/450 CP';
-        $details->type = 'network printer';
-    }
-    if ($oid == '1.3.6.1.4.1.297.1.11.93.1.6.30.1.1') {
-        $details->model = 'Document Centre 405';
-        $details->type = 'network printer';
-    }
+    if ($oid == '1.3.6.1.4.1.297.1.11.93.1.6.2.1.1') { $details->model = 'Document Centre 550/450 CP'; $details->type = 'network printer'; }
+    if ($oid == '1.3.6.1.4.1.297.1.11.93.1.6.30.1.1') { $details->model = 'Document Centre 405'; $details->type = 'network printer'; }
     return($details);
 };

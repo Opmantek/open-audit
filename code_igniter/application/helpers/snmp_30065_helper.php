@@ -42,170 +42,47 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7048.427.3648') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7048T-A';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7048.427.4.3282') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7048T-4S';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.2512.16') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050Q-16';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.2512.16.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050Q-16SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3095.32') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050Q-X32';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3095.32.2745.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050Q-X32CLSSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3095.32.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050Q-X32SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.52') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050S-52';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.52.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050S-52SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.64') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050S-64';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.64.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050S-64SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3741.128') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050S-X128';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3741.128.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050S-X128SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.36') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050T-36';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.52') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050T-52';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.52.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050T-52SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.64') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050T-64';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.64.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7050T-64SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7120.427.4.3282') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7120T-4S';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.2312') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7124F-X';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.2312.2745') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7124F-XCL';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.3282') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7124-S';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.3741') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7124-SX';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.3741.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7124S-XSSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7140.427.8.3282') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7140T-8S';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7148.3282') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7148S';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7148.3741') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7148S-X';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.24') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-24';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.24.2745') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-24CL';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.24.2745.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-24CLSSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.52.2745') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-52CL';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.52.2745.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-52CLSSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.64.2745') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-64CL';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.64.2745.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7150S-64CLSSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7250.3095.64') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7250Q-X64';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7250.3095.64.761') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7250Q-X64SSD';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7280.3735.48.2878.6') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7280-SR48C6';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7304') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7304';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7308') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7308';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7504') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7504';
-    }
-    if ($oid == '1.3.6.1.4.1.30065.1.3011.7508') {
-        $details->type = 'switch';
-        $details->model = 'DCS-7508';
-    }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7048.427.3648') { $details->model = 'DCS-7048T-A'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7048.427.4.3282') { $details->model = 'DCS-7048T-4S'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.2512.16') { $details->model = 'DCS-7050Q-16'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.2512.16.761') { $details->model = 'DCS-7050Q-16SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3095.32') { $details->model = 'DCS-7050Q-X32'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3095.32.2745.761') { $details->model = 'DCS-7050Q-X32CLSSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3095.32.761') { $details->model = 'DCS-7050Q-X32SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.52') { $details->model = 'DCS-7050S-52'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.52.761') { $details->model = 'DCS-7050S-52SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.64') { $details->model = 'DCS-7050S-64'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3282.64.761') { $details->model = 'DCS-7050S-64SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3741.128') { $details->model = 'DCS-7050S-X128'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.3741.128.761') { $details->model = 'DCS-7050S-X128SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.36') { $details->model = 'DCS-7050T-36'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.52') { $details->model = 'DCS-7050T-52'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.52.761') { $details->model = 'DCS-7050T-52SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.64') { $details->model = 'DCS-7050T-64'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7050.427.64.761') { $details->model = 'DCS-7050T-64SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7120.427.4.3282') { $details->model = 'DCS-7120T-4S'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.2312') { $details->model = 'DCS-7124F-X'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.2312.2745') { $details->model = 'DCS-7124F-XCL'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.3282') { $details->model = 'DCS-7124-S'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.3741') { $details->model = 'DCS-7124-SX'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7124.3741.761') { $details->model = 'DCS-7124S-XSSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7140.427.8.3282') { $details->model = 'DCS-7140T-8S'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7148.3282') { $details->model = 'DCS-7148S'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7148.3741') { $details->model = 'DCS-7148S-X'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.24') { $details->model = 'DCS-7150S-24'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.24.2745') { $details->model = 'DCS-7150S-24CL'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.24.2745.761') { $details->model = 'DCS-7150S-24CLSSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.52.2745') { $details->model = 'DCS-7150S-52CL'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.52.2745.761') { $details->model = 'DCS-7150S-52CLSSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.64.2745') { $details->model = 'DCS-7150S-64CL'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7150.3282.64.2745.761') { $details->model = 'DCS-7150S-64CLSSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7250.3095.64') { $details->model = 'DCS-7250Q-X64'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7250.3095.64.761') { $details->model = 'DCS-7250Q-X64SSD'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7280.3735.48.2878.6') { $details->model = 'DCS-7280-SR48C6'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7304') { $details->model = 'DCS-7304'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7308') { $details->model = 'DCS-7308'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7504') { $details->model = 'DCS-7504'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.30065.1.3011.7508') { $details->model = 'DCS-7508'; $details->type = 'switch'; }
 
     return($details);
 };

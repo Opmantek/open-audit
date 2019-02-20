@@ -45,33 +45,12 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     $details->manufacturer = 'Alcatel';
     $i = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.8059.1.1.2.1.1.1.1");
-    if ($i == '1') {
-        $details->model = '12000';
-        $details->type = 'dslam';
-    }
-    if ($i == '2') {
-        $details->model = '4000';
-        $details->type = 'dslam';
-    }
-    if ($i == '3') {
-        $details->model = 'Mini DSLAM';
-        $details->type = 'dslam';
-    }
-    if ($i == '4') {
-        $details->model = 'Micro DSLAM';
-        $details->type = 'dslam';
-    }
-    if ($i == '5') {
-        $details->model = 'Network Extender';
-        $details->type = 'network device';
-    }
-    if ($i == '6') {
-        $details->model = '12000E';
-        $details->type = 'dslam';
-    }
-    if ($i == '7') {
-        $details->model = '4000E';
-        $details->type = 'dslam';
-    }
+    if ($i == '1') { $details->model = '12000'; $details->type = 'dslam'; }
+    if ($i == '2') { $details->model = '4000'; $details->type = 'dslam'; }
+    if ($i == '3') { $details->model = 'Mini DSLAM'; $details->type = 'dslam'; }
+    if ($i == '4') { $details->model = 'Micro DSLAM'; $details->type = 'dslam'; }
+    if ($i == '5') { $details->model = 'Network Extender'; $details->type = 'network device'; }
+    if ($i == '6') { $details->model = '12000E'; $details->type = 'dslam'; }
+    if ($i == '7') { $details->model = '4000E'; $details->type = 'dslam'; }
     return($details);
 };

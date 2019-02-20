@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.10418.16.1.1') {
-        $details->model = 'Cyclades ACS 6016';
-        $details->type = 'kvm';
-    }
+    if ($oid == '1.3.6.1.4.1.10418.16.1.1') { $details->model = 'Cyclades ACS 6016'; $details->type = 'kvm'; }
     return($details);
 };

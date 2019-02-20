@@ -42,78 +42,23 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.25461.2.3.1') {
-        $details->model = 'PA-4050 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.2') {
-        $details->model = 'PA-4020 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.3') {
-        $details->model = 'PA-2050 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.4') {
-        $details->model = 'PA-2020 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.5') {
-        $details->model = 'PA-4060 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.6') {
-        $details->model = 'PA-500 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.7') {
-        $details->model = 'Panorama firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.8') {
-        $details->model = 'PA-5060 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.9') {
-        $details->model = 'PA-5050 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.11') {
-        $details->model = 'PA-5020 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.12') {
-        $details->model = 'PA-200 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.17') {
-        $details->model = 'PA-3020 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.18') {
-        $details->model = 'PA-3020 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.19') {
-        $details->model = 'PA-3060 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.29') {
-        $details->model = 'PA-VM firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.30') {
-        $details->model = 'M-100 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.34') {
-        $details->model = 'PA-7080 firewall';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.25461.2.3.34') {
-        $details->model = 'M-500 firewall';
-        $details->type = 'firewall';
-    }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.1') { $details->model = 'PA-4050 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.2') { $details->model = 'PA-4020 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.3') { $details->model = 'PA-2050 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.4') { $details->model = 'PA-2020 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.5') { $details->model = 'PA-4060 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.6') { $details->model = 'PA-500 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.7') { $details->model = 'Panorama firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.8') { $details->model = 'PA-5060 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.9') { $details->model = 'PA-5050 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.11') { $details->model = 'PA-5020 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.12') { $details->model = 'PA-200 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.17') { $details->model = 'PA-3020 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.18') { $details->model = 'PA-3020 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.19') { $details->model = 'PA-3060 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.29') { $details->model = 'PA-VM firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.30') { $details->model = 'M-100 firewall'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.25461.2.3.34') { $details->model = 'PA-7080 firewall'; $details->type = 'firewall'; }
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.25461.2.1.2.1.3.0");
     return($details);
 };

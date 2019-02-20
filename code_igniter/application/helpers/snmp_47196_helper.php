@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.47196.4.1.1.1.2') {
-        $details->model = 'Aruba HPE-2930M';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.47196.4.1.1.1.2') { $details->model = 'Aruba HPE-2930M'; $details->type = 'switch'; }
     return($details);
 };

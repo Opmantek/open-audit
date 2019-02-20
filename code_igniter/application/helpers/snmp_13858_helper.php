@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.13858') {
-        $details->model = 'Valere DC Power Plant';
-        $details->type = 'ups';
-    }
+    if ($oid == '1.3.6.1.4.1.13858') { $details->model = 'Valere DC Power Plant'; $details->type = 'ups'; }
     return($details);
 };

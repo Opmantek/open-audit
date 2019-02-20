@@ -42,11 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-
-    if ($oid == '1.3.6.1.4.1.7309.6') {
-        $details->model = 'FXM 2000';
-    	$details->type = 'ups';
-    }
-
+    if ($oid == '1.3.6.1.4.1.7309.6') { $details->model = 'FXM 2000'; $details->type = 'ups'; }
     return($details);
 };

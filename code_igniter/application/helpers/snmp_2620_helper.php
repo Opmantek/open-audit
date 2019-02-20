@@ -88,230 +88,61 @@ $get_oid_details = function ($ip, $credentials, $oid) {
         discovery_log($log);
         unset($log->id, $log->command, $log->command_time_to_execute, $log->command_output);
     
-    
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.1') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-1450';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.2') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-11050';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.3') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-12050';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.4') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-1130';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.5') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-1270';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.6') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-1570';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.7') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-11070';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.8') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-12070';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.9') {
-        $details->type = 'firewall';
-        $details->model = 'UTM-13070';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.10') {
-        $details->type = 'firewall';
-        $details->model = 'Power-15070';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.11') {
-        $details->type = 'firewall';
-        $details->model = 'Power-19070';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.12') {
-        $details->type = 'firewall';
-        $details->model = 'Power-111000';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.13') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-15';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.14') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-125';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.15') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-150';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.16') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-1150';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.17') {
-        $details->type = 'firewall';
-        $details->model = 'IP150';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.18') {
-        $details->type = 'firewall';
-        $details->model = 'IP280';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.19') {
-        $details->type = 'firewall';
-        $details->model = 'IP290';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.20') {
-        $details->type = 'firewall';
-        $details->model = 'IP390';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.21') {
-        $details->type = 'firewall';
-        $details->model = 'IP560';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.22') {
-        $details->type = 'firewall';
-        $details->model = 'IP690';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.23') {
-        $details->type = 'firewall';
-        $details->model = 'IP1280';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.24') {
-        $details->type = 'firewall';
-        $details->model = 'IP2450';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.25') {
-        $details->type = 'firewall';
-        $details->model = 'UNIVERGE UnifiedWall 1000';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.26') {
-        $details->type = 'firewall';
-        $details->model = 'UNIVERGE UnifiedWall 2000';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.27') {
-        $details->type = 'firewall';
-        $details->model = 'UNIVERGE UnifiedWall 4000';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.28') {
-        $details->type = 'firewall';
-        $details->model = 'UNIVERGE UnifiedWall 100';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.29') {
-        $details->type = 'firewall';
-        $details->model = 'DLP-19571';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.30') {
-        $details->type = 'firewall';
-        $details->model = 'DLP-12571';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.31') {
-        $details->type = 'firewall';
-        $details->model = 'IPS-12076';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.32') {
-        $details->type = 'firewall';
-        $details->model = 'IPS-15076';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.33') {
-        $details->type = 'firewall';
-        $details->model = 'IPS-19076';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.34') {
-        $details->type = 'firewall';
-        $details->model = '2200';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.35') {
-        $details->type = 'firewall';
-        $details->model = '4200';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.36') {
-        $details->type = 'firewall';
-        $details->model = '4400';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.37') {
-        $details->type = 'firewall';
-        $details->model = '4600';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.38') {
-        $details->type = 'firewall';
-        $details->model = '4800';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.39') {
-        $details->type = 'firewall';
-        $details->model = 'TE250';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.40') {
-        $details->type = 'firewall';
-        $details->model = '12200';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.41') {
-        $details->type = 'firewall';
-        $details->model = '12400';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.42') {
-        $details->type = 'firewall';
-        $details->model = '12600';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.43') {
-        $details->type = 'firewall';
-        $details->model = 'TE1000';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.44') {
-        $details->type = 'firewall';
-        $details->model = '13500';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.45') {
-        $details->type = 'firewall';
-        $details->model = '21400';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.46') {
-        $details->type = 'firewall';
-        $details->model = '21600';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.47') {
-        $details->type = 'firewall';
-        $details->model = '21700';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.48') {
-        $details->type = 'firewall';
-        $details->model = 'VMware';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.49') {
-        $details->type = 'firewall';
-        $details->model = 'OpenServer';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.50') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-1205';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.51') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-1210';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.52') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-1225';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.53') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-13050';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.54') {
-        $details->type = 'firewall';
-        $details->model = 'Smart-13150';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.55') {
-        $details->type = 'firewall';
-        $details->model = '13800';
-    }
-    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.56') {
-        $details->type = 'firewall';
-        $details->model = '21800';
-    }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.1') { $details->model = 'UTM-1450'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.2') { $details->model = 'UTM-11050'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.3') { $details->model = 'UTM-12050'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.4') { $details->model = 'UTM-1130'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.5') { $details->model = 'UTM-1270'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.6') { $details->model = 'UTM-1570'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.7') { $details->model = 'UTM-11070'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.8') { $details->model = 'UTM-12070'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.9') { $details->model = 'UTM-13070'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.10') { $details->model = 'Power-15070'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.11') { $details->model = 'Power-19070'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.12') { $details->model = 'Power-111000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.13') { $details->model = 'Smart-15'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.14') { $details->model = 'Smart-125'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.15') { $details->model = 'Smart-150'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.16') { $details->model = 'Smart-1150'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.17') { $details->model = 'IP150'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.18') { $details->model = 'IP280'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.19') { $details->model = 'IP290'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.20') { $details->model = 'IP390'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.21') { $details->model = 'IP560'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.22') { $details->model = 'IP690'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.23') { $details->model = 'IP1280'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.24') { $details->model = 'IP2450'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.25') { $details->model = 'UNIVERGE UnifiedWall 1000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.26') { $details->model = 'UNIVERGE UnifiedWall 2000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.27') { $details->model = 'UNIVERGE UnifiedWall 4000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.28') { $details->model = 'UNIVERGEUnifiedWall 100'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.29') { $details->model = 'DLP-19571'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.30') { $details->model = 'DLP-12571'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.31') { $details->model = 'IPS-12076'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.32') { $details->model = 'IPS-15076'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.33') { $details->model = 'IPS-19076'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.34') { $details->model = '2200'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.35') { $details->model = '4200'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.36') { $details->model = '4400'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.37') { $details->model = '4600'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.38') { $details->model = '4800'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.39') { $details->model = 'TE250'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.40') { $details->model = '12200'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.41') { $details->model = '12400'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.42') { $details->model = '12600'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.43') { $details->model = 'TE1000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.44') { $details->model = '13500'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.45') { $details->model = '21400'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.46') { $details->model = '21600'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.47') { $details->model = '21700'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.48') { $details->model = 'VMware'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.49') { $details->model = 'OpenServer'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.50') { $details->model = 'Smart-1205'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.51') { $details->model = 'Smart-1210'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.52') { $details->model = 'Smart-1225'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.53') { $details->model = 'Smart-13050'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.54') { $details->model = 'Smart-13150'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.55') { $details->model = '13800'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.2620.1.6.123.1.56') { $details->model = '21800'; $details->type = 'firewall'; }
     return($details);
 };

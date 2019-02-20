@@ -42,29 +42,11 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.800.3.1.1.1') {
-        $details->model = 'Alcatel OmniSwitch 5';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.800.3.1.1.16') {
-        $details->model = 'Alcatel OmniStack 5024';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.800.3.1.1.17') {
-        $details->model = 'Alcatel OmniStack 4024G';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.800.3.1.1.2') {
-        $details->model = 'Alcatel OmniSwitch 9';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.800.3.1.1.3') {
-        $details->model = 'Alcatel OmniStack 4024G/5024C';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.800.3.1.1.9') {
-        $details->model = 'Alcatel OmniStack 6024';
-        $details->type = '';
-    }
+    if ($oid == '1.3.6.1.4.1.800.3.1.1.1') { $details->model = 'Alcatel OmniSwitch 5'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.800.3.1.1.16') { $details->model = 'Alcatel OmniStack 5024'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.800.3.1.1.17') { $details->model = 'Alcatel OmniStack 4024G'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.800.3.1.1.2') { $details->model = 'Alcatel OmniSwitch 9'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.800.3.1.1.3') { $details->model = 'Alcatel OmniStack 4024G/5024C'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.800.3.1.1.9') { $details->model = 'Alcatel OmniStack 6024'; $details->type = ''; }
     return($details);
 };

@@ -41,10 +41,7 @@
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.43296.3') {
-        $details->model = 'ExaLINK Fusion';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.43296.3') { $details->model = 'ExaLINK Fusion'; $details->type = 'switch'; }
 
     $model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43296.3.1.3");
     if (!empty($model)) {

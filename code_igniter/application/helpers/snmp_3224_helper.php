@@ -42,146 +42,41 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.3224.1.1') {
-        $details->model = 'NetScreen Generic';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.10') {
-        $details->model = 'NetScreen Ns208';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.11') {
-        $details->model = 'NetScreen Ns5XT';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.12') {
-        $details->model = 'NetScreen Ns5XP';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.13') {
-        $details->model = 'NetScreen Ns5000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.14') {
-        $details->model = 'NetScreen Ns5GT';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.15') {
-        $details->model = 'NetScreen HardwareSecurityClient';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.16') {
-        $details->model = 'NetScreen ISG2000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.17') {
-        $details->model = 'NetScreen -5GT-ADSL-AnnexA';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.19') {
-        $details->model = 'NetScreen -5GT-ADSL-AnnexB';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.2') {
-        $details->model = 'NetScreen Ns5';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.21') {
-        $details->model = 'NetScreen -5GT-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.23') {
-        $details->model = 'NetScreen -5GT-ADSL-AnnexA-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.25') {
-        $details->model = 'NetScreen -5GT-ADSL-AnnexB-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.28') {
-        $details->model = 'NetScreen ISG1000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.29') {
-        $details->model = 'NetScreen SSG5';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.3') {
-        $details->model = 'NetScreen Ns10';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.30') {
-        $details->model = 'NetScreen SSG5-ISDN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.31') {
-        $details->model = 'NetScreen SSG5-v92';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.32') {
-        $details->model = 'NetScreen SSG5-Serial-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.33') {
-        $details->model = 'NetScreen SSG5-ISDN-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.34') {
-        $details->model = 'NetScreen SSG5-v92-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.35') {
-        $details->model = 'NetScreen SSG20';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.36') {
-        $details->model = 'NetScreen SSG20-WLAN';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.4') {
-        $details->model = 'NetScreen Ns100';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.5') {
-        $details->model = 'NetScreen Ns1000';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.50') {
-        $details->model = 'NetScreen SSG520';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.51') {
-        $details->model = 'NetScreen SSG550';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.52') {
-        $details->model = 'NetScreen SSG140';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.54') {
-        $details->model = 'NetScreen SSG320';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.55') {
-        $details->model = 'NetScreen SSG350';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.6') {
-        $details->model = 'NetScreen Ns500';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.7') {
-        $details->model = 'NetScreen Ns50';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.8') {
-        $details->model = 'NetScreen Ns25';
-        $details->type = 'firewall';
-    }
-    if ($oid == '1.3.6.1.4.1.3224.1.9') {
-        $details->model = 'NetScreen Ns204';
-        $details->type = 'firewall';
-    }
+    if ($oid == '1.3.6.1.4.1.3224.1.1') { $details->model = 'NetScreen Generic'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.10') { $details->model = 'NetScreen Ns208'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.11') { $details->model = 'NetScreen Ns5XT'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.12') { $details->model = 'NetScreen Ns5XP'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.13') { $details->model = 'NetScreen Ns5000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.14') { $details->model = 'NetScreen Ns5GT'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.15') { $details->model = 'NetScreen HardwareSecurityClient'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.16') { $details->model = 'NetScreen ISG2000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.17') { $details->model = 'NetScreen -5GT-ADSL-AnnexA'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.19') { $details->model = 'NetScreen -5GT-ADSL-AnnexB'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.2') { $details->model = 'NetScreen Ns5'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.21') { $details->model = 'NetScreen -5GT-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.23') { $details->model = 'NetScreen -5GT-ADSL-AnnexA-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.25') { $details->model = 'NetScreen -5GT-ADSL-AnnexB-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.28') { $details->model = 'NetScreen ISG1000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.29') { $details->model = 'NetScreen SSG5'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.3') { $details->model = 'NetScreen Ns10'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.30') { $details->model = 'NetScreen SSG5-ISDN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.31') { $details->model = 'NetScreen SSG5-v92'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.32') { $details->model = 'NetScreen SSG5-Serial-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.33') { $details->model = 'NetScreen SSG5-ISDN-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.34') { $details->model = 'NetScreen SSG5-v92-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.35') { $details->model = 'NetScreen SSG20'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.36') { $details->model = 'NetScreen SSG20-WLAN'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.4') { $details->model = 'NetScreen Ns100'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.5') { $details->model = 'NetScreen Ns1000'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.50') { $details->model = 'NetScreen SSG520'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.51') { $details->model = 'NetScreen SSG550'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.52') { $details->model = 'NetScreen SSG140'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.54') { $details->model = 'NetScreen SSG320'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.55') { $details->model = 'NetScreen SSG350'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.6') { $details->model = 'NetScreen Ns500'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.7') { $details->model = 'NetScreen Ns50'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.8') { $details->model = 'NetScreen Ns25'; $details->type = 'firewall'; }
+    if ($oid == '1.3.6.1.4.1.3224.1.9') { $details->model = 'NetScreen Ns204'; $details->type = 'firewall'; }
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.3224.7.1.5.0");
     return($details);
 };

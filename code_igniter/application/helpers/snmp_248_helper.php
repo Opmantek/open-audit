@@ -42,133 +42,37 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.248.14.10.2') {
-        $details->model = 'RS 2FXFX';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.3') {
-        $details->model = 'Mach 3000';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.4') {
-        $details->model = 'MS 2108-2';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.5') {
-        $details->model = 'MS 3124-4';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.7') {
-        $details->model = 'RS 2-4R';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.10') {
-        $details->model = 'MS 4128-5';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.20') {
-        $details->model = 'Eagle';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.21') {
-        $details->model = 'RR-EPL';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.22') {
-        $details->model = 'Eagle Mguard';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.23') {
-        $details->model = 'Eagle 20';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.24') {
-        $details->model = 'Eagle One';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.30') {
-        $details->model = 'MS 20';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.31') {
-        $details->model = 'MS 30';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.40') {
-        $details->model = 'RS 20';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.41') {
-        $details->model = 'RS 30';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.44') {
-        $details->model = 'RS B20';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.45') {
-        $details->model = 'OS B20';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.50') {
-        $details->model = 'Mach 4002-48-4G';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.60') {
-        $details->model = 'OCTOPUS 24M';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.70') {
-        $details->model = 'Mach 4002-24G';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.71') {
-        $details->model = 'Mach 4002-24G-3X';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.75') {
-        $details->model = 'Mach 4002-48G';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.76') {
-        $details->model = 'Mach 4002-48G-3X';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.90') {
-        $details->model = 'Rugged Switch';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.100') {
-        $details->model = 'Rail Switch Rugged';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.110') {
-        $details->model = 'Mach 100';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.120') {
-        $details->model = 'Octopus OS';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.130') {
-        $details->model = 'Mach 100GE';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.131') {
-        $details->model = 'Mach 1000GE';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.200') {
-        $details->model = 'EEM1';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.14.10.300') {
-        $details->model = 'Gecko';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.248.11.2.1.2') {
-        $details->model = 'Rail Switch Power';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.248.14.10.2') { $details->model = 'RS 2FXFX'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.3') { $details->model = 'Mach 3000'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.4') { $details->model = 'MS 2108-2'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.5') { $details->model = 'MS 3124-4'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.7') { $details->model = 'RS 2-4R'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.10') { $details->model = 'MS 4128-5'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.20') { $details->model = 'Eagle'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.21') { $details->model = 'RR-EPL'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.22') { $details->model = 'Eagle Mguard'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.23') { $details->model = 'Eagle 20'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.24') { $details->model = 'Eagle One'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.30') { $details->model = 'MS 20'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.31') { $details->model = 'MS 30'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.40') { $details->model = 'RS 20'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.41') { $details->model = 'RS 30'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.44') { $details->model = 'RS B20'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.45') { $details->model = 'OS B20'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.50') { $details->model = 'Mach 4002-48-4G'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.60') { $details->model = 'OCTOPUS 24M'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.70') { $details->model = 'Mach 4002-24G'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.71') { $details->model = 'Mach 4002-24G-3X'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.75') { $details->model = 'Mach 4002-48G'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.76') { $details->model = 'Mach 4002-48G-3X'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.90') { $details->model = 'Rugged Switch'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.100') { $details->model = 'Rail Switch Rugged'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.110') { $details->model = 'Mach 100'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.120') { $details->model = 'Octopus OS'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.130') { $details->model = 'Mach 100GE'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.131') { $details->model = 'Mach 1000GE'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.200') { $details->model = 'EEM1'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.14.10.300') { $details->model = 'Gecko'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.248.11.2.1.2') { $details->model = 'Rail Switch Power'; $details->type = 'switch'; }
     return($details);
 };

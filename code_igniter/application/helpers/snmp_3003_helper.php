@@ -42,17 +42,8 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.3003.2.2.2.1') {
-        $details->model = 'OmniCore 5052';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.3003.2.2.2.2') {
-        $details->model = 'OmniCore 5022';
-        $details->type = '';
-    }
-    if ($oid == '1.3.6.1.4.1.3003.2.2.2.3') {
-        $details->model = 'OmniCore 5010';
-        $details->type = '';
-    }
+    if ($oid == '1.3.6.1.4.1.3003.2.2.2.1') { $details->model = 'OmniCore 5052'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.3003.2.2.2.2') { $details->model = 'OmniCore 5022'; $details->type = ''; }
+    if ($oid == '1.3.6.1.4.1.3003.2.2.2.3') { $details->model = 'OmniCore 5010'; $details->type = ''; }
     return($details);
 };

@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.850.1') {
-        $details->model = 'Tripplite UPS';
-        $details->type = 'ups';
-    }
+    if ($oid == '1.3.6.1.4.1.850.1') { $details->model = 'Tripplite UPS'; $details->type = 'ups'; }
     return($details);
 };

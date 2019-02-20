@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.1981.1.1') {
-        $details->model = 'CLARiiON CX Series';
-        $details->type = 'san';
-    }
+    if ($oid == '1.3.6.1.4.1.1981.1.1') { $details->model = 'CLARiiON CX Series'; $details->type = 'san'; }
     return($details);
 };

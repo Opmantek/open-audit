@@ -46,64 +46,23 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details->type = 'wireless link';
 
     if (strpos($oid, '1.3.6.1.4.1.2281.1.20') !== false) {
-        $details->model = 'FibeAir IP-20';
-    }
+        $details->model = 'FibeAir IP-20'; }
 
     if (strpos($oid, '1.3.6.1.4.1.2281.1.20.1.3') !== false) {
-        $details->model = 'FibeAir IP-20G/GX';
-    }
+        $details->model = 'FibeAir IP-20G/GX'; }
 
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1') {
-        $details->model = 'FibeAir IP-20N 1RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1.2') {
-        $details->model = 'FibeAir IP-20N 1RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1.3') {
-        $details->model = 'FibeAir IP-20LH 1RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1.4') {
-        $details->model = 'FibeAir IP-20 Evolution LH 1RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2') {
-        $details->model = 'FibeAir IP-20N 2RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2.2') {
-        $details->model = 'FibeAir IP-20A 2RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2.3') {
-        $details->model = 'FibeAir IP-20LH 2RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2.4') {
-        $details->model = 'FibeAir IP-20 Evolution LH 2RU';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.3.1') {
-        $details->model = 'FibeAir IP-20G';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.1.3.2') {
-        $details->model = 'FibeAir IP-20GX';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.2.2') {
-        $details->model = 'FibeAir IP-20C';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.2.2.2') {
-        $details->model = 'FibeAir IP-20S';
-    }
-
-    if ($oid == '1.3.6.1.4.1.2281.1.20.2.2.3') {
-        $details->model = 'FibeAir IP-20E';
-    }
-
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1') { $details->model = 'FibeAir IP-20N 1RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1.2') { $details->model = 'FibeAir IP-20N 1RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1.3') { $details->model = 'FibeAir IP-20LH 1RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.1.4') { $details->model = 'FibeAir IP-20 Evolution LH 1RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2') { $details->model = 'FibeAir IP-20N 2RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2.2') { $details->model = 'FibeAir IP-20A 2RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2.3') { $details->model = 'FibeAir IP-20LH 2RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.2.4') { $details->model = 'FibeAir IP-20 Evolution LH 2RU'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.3.1') { $details->model = 'FibeAir IP-20G'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.1.3.2') { $details->model = 'FibeAir IP-20GX'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.2.2') { $details->model = 'FibeAir IP-20C'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.2.2.2') { $details->model = 'FibeAir IP-20S'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.2281.1.20.2.2.3') { $details->model = 'FibeAir IP-20E'; $details->type = 'wireless link'; }
     return($details);
 };

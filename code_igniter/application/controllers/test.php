@@ -67,6 +67,154 @@ class Test extends CI_Controller
         redirect('/');
     }
 
+    public function ttt()
+    {
+
+        $t1 = microtime(true);
+        $device = new stdClass();
+        $device->id = 1;
+        $device->snmp_oid = '1.3.6.1.4.1.9.12.3.1.11.3';
+
+        echo "<pre>\n";
+        echo "\n\n\n\n\nBEFORE\n";
+        print_r($device);
+        echo "\n\n\n\n\nAFTER\n";
+
+        $sql = "SELECT * FROM conditions";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        $t2 = microtime(true);
+
+        foreach ($result as $condition) {
+            #echo "$condition->name\n";
+            $condition->inputs = json_decode($condition->inputs);
+            $condition->outputs = json_decode($condition->outputs);
+
+            $input_count = count($condition->inputs);
+            $hit = 0;
+            foreach ($condition->inputs as $input) {
+                switch ($input->operator) {
+                    case 'eq':
+                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} == $input->value) {
+                            echo "hit on " . $device->{$input->attribute} . " eq " . $input->value . " for " . $condition->name . "\n";
+                            print_r($condition->outputs);
+                            $hit++;
+                        }
+                    break;
+
+                    case 'ne':
+                        if (empty($device->{$input->attribute}) or $device->{$input->attribute} != $input->value) {
+                            echo "hit on " . $device->{$input->attribute} . " ne " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'gt':
+                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} > $input->value) {
+                            echo "hit on " . $device->{$input->attribute} . " gt " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'ge':
+                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} >= $input->value) {
+                            echo "hit on " . $device->{$input->attribute} . " ge " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'lt':
+                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} < $input->value) {
+                            echo "hit on " . $device->{$input->attribute} . " lt " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'le':
+                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} <= $input->value) {
+                            echo "hit on " . $device->{$input->attribute} . " le" . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'li':
+                        if (!empty($device->{$input->attribute}) and stripos($device->{$input->attribute}, $input->value) !== false) {
+                            echo "hit on " . $device->{$input->attribute} . " li " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'nl':
+                        if (!empty($device->{$input->attribute}) and stripos($device->{$input->attribute}, $input->value) === false) {
+                            echo "hit on " . $device->{$input->attribute} . " nl " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'in':
+                        $values = explode(',', $input->value);
+                        if (!empty($device->{$input->attribute}) and in_array($device->{$input->attribute}, $values)) {
+                            echo "hit on " . $device->{$input->attribute} . " in " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+
+                    case 'ni':
+                        $values = explode(',', $input->value);
+                        if (!empty($device->{$input->attribute}) and !in_array($device->{$input->attribute}, $values)) {
+                            echo "hit on " . $device->{$input->attribute} . " ni " . $input->value . " for " . $condition->name . "\n";
+                            $hit++;
+                        }
+                    break;
+                    
+                    default:
+                        if (!empty($device->{$input->attribute}) and $device->{$input->attribute} == $input->value) {
+                            echo "hit on default\n";
+                            $hit++;
+                        }
+                    break;
+                }
+                if ($hit === $input_count) {
+                    foreach ($condition->outputs as $output) {
+                        switch ($output->value_type) {
+                            case 'string':
+                                $device->{$output->attribute} = (string)$output->value;
+                            break;
+                            
+                            case 'integer':
+                                $device->{$output->attribute} = intval($output->value);
+                            break;
+                            
+                            case 'timestamp':
+                                if ($output->value == 'NOW') {
+                                    #$device->{$output->attribute} = $this->config->config->['timestamp'];
+                                    $device->{$output->attribute} = date('Y-M-D H:i:s');
+                                } else {
+                                    $device->{$output->attribute} = intval($output->value);
+                                }
+                            break;
+                            
+                            default:
+                                $device->{$output->attribute} = (string)$output->value;
+                            break;
+                        }
+                        $device->{$output->attribute} = $output->value;
+                    }
+                }
+            }
+        }
+
+        $t3 = microtime(true);
+
+        print_r($device);
+
+        echo "$t1\n$t2\n$t3\n";
+        $time = $t2 - $t1;
+        echo "Time for SQL: " . $time . " seconds.\n";
+        $time = $t3 - $t2;
+        echo "Time for Conditions: " . $time . " seconds.\n";
+    }
+
     public function iana()
     {
         $this->load->model('m_configuration');

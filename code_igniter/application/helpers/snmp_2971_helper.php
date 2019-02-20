@@ -42,13 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.2971.13') {
-        $details->model = 'DSL-6524';
-        $details->type = 'dslam';
-    }
-    if ($oid == '1.3.6.1.4.1.2971.13.2.1.1.3') {
-        $details->model = 'FX5408M';
-        $details->type = 'switch';
-    }
+    if ($oid == '1.3.6.1.4.1.2971.13') { $details->model = 'DSL-6524'; $details->type = 'dslam'; }
+    if ($oid == '1.3.6.1.4.1.2971.13.2.1.1.3') { $details->model = 'FX5408M'; $details->type = 'switch'; }
     return($details);
 };

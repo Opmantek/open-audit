@@ -42,13 +42,7 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.3607.1.20.10.10') {
-        $details->model = 'Cisco ONS 15454';
-        $details->type = 'wdm';
-    }
-    if ($oid == '1.3.6.1.4.1.3607.1.20.10.70') {
-        $details->model = 'wdm';
-        $details->type = '';
-    }
+    if ($oid == '1.3.6.1.4.1.3607.1.20.10.10') { $details->model = 'Cisco ONS 15454'; $details->type = 'wdm'; }
+    if ($oid == '1.3.6.1.4.1.3607.1.20.10.70') { $details->model = 'wdm'; $details->type = ''; }
     return($details);
 };

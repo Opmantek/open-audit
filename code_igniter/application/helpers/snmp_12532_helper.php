@@ -43,94 +43,35 @@ if (!defined('BASEPATH')) {
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     $details->manufacturer = 'Pulse Secure';
-    $details->type = 'vpn terminator';
 
-    if ($oid == '1.3.6.1.4.1.12532.252') {
-        $details->model = 'iveSA Product';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.253') {
-        $details->model = 'IC Product';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254') {
-        $details->model = 'MAG Product';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.255') {
-        $details->model = 'VA Product';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256') {
-        $details->model = 'PSA Product';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.1') {
-        $details->model = 'MAG-2600';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.2') {
-        $details->model = 'MAG-4610';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.3') {
-        $details->model = 'SM-160';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.4') {
-        $details->model = 'SM-360';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.255.1') {
-        $details->model = 'VA-SPE';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.255.2') {
-        $details->model = 'VA-DTE';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.1') {
-        $details->model = 'PSA-300';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.2') {
-        $details->model = 'PSA-3000';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.3') {
-        $details->model = 'PSA-5000';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.4') {
-        $details->model = 'PSA-7000f';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.5') {
-        $details->model = 'PSA-7000c';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.6') {
-        $details->model = 'PSA-10000';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.1.1') {
-        $details->model = 'MAG-2600';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.2.1') {
-        $details->model = 'MAG-4610';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.3.1') {
-        $details->model = 'MAG-SM160';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.254.4.1') {
-        $details->model = 'MAG-SM360';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.255.1.1') {
-        $details->model = 'VA-SPE';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.255.2.1') {
-        $details->model = 'VA-DTE';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.1.1') {
-        $details->model = 'PSA-300';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.2.1') {
-        $details->model = 'PSA-3000';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.3.1') {
-        $details->model = 'PSA-5000';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.4.1') {
-        $details->model = 'PSA-7000f';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.5.1') {
-        $details->model = 'PSA-7000c';
-    }
-    if ($oid == '1.3.6.1.4.1.12532.256.6.1') {
-        $details->model = 'PSA-10000';
-    }
+    if ($oid == '1.3.6.1.4.1.12532.252') { $details->model = 'iveSA Product'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.253') { $details->model = 'IC Product'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254') { $details->model = 'MAG Product'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.255') { $details->model = 'VA Product'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256') { $details->model = 'PSA Product'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.1') { $details->model = 'MAG-2600'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.2') { $details->model = 'MAG-4610'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.3') { $details->model = 'SM-160'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.4') { $details->model = 'SM-360'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.255.1') { $details->model = 'VA-SPE'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.255.2') { $details->model = 'VA-DTE'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.1') { $details->model = 'PSA-300'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.2') { $details->model = 'PSA-3000'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.3') { $details->model = 'PSA-5000'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.4') { $details->model = 'PSA-7000f'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.5') { $details->model = 'PSA-7000c'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.6') { $details->model = 'PSA-10000'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.1.1') { $details->model = 'MAG-2600'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.2.1') { $details->model = 'MAG-4610'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.3.1') { $details->model = 'MAG-SM160'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.254.4.1') { $details->model = 'MAG-SM360'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.255.1.1') { $details->model = 'VA-SPE'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.255.2.1') { $details->model = 'VA-DTE'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.1.1') { $details->model = 'PSA-300'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.2.1') { $details->model = 'PSA-3000'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.3.1') { $details->model = 'PSA-5000'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.4.1') { $details->model = 'PSA-7000f'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.5.1') { $details->model = 'PSA-7000c'; $details->type = 'vpn terminator'; }
+    if ($oid == '1.3.6.1.4.1.12532.256.6.1') { $details->model = 'PSA-10000'; $details->type = 'vpn terminator'; }
     return($details);
 };

@@ -43,106 +43,30 @@ if (!defined('BASEPATH')) {
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     # http://www.oidview.com/mibs/674/DELL-RAC-MIB.html
-    if ($oid == '1.3.6.1.4.1.674.10892.2') {
-        $details->model = 'DRAC 4/P';
-        $details->type = 'remote access controller';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10892.2') {
-        $details->model = 'DRAC 4/P';
-        $details->type = 'remote access controller';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.1') {
-        $details->model = 'PowerConnect 3024';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.1000') {
-        $details->model = 'PowerConnect 5212';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3') {
-        $details->model = 'PowerConnect 3248';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3000') {
-        $details->model = 'PowerConnect 6024';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3002') {
-        $details->model = 'PowerConnect 3324';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3003') {
-        $details->model = 'PowerConnect 3348';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3004') {
-        $details->model = 'PowerConnect 5324';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3005') {
-        $details->model = 'PowerConnect 5316M';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3006') {
-        $details->model = 'PowerConnect 3400';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3007') {
-        $details->model = 'PowerConnect 3400';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3008') {
-        $details->model = 'PowerConnect 3424';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3009') {
-        $details->model = 'PowerConnect 3448P';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3010') {
-        $details->model = 'PowerConnect 6224';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3011') {
-        $details->model = 'PowerConnect 6248';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3013') {
-        $details->model = 'PowerConnect 6248P';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3015') {
-        $details->model = 'PowerConnect 6220M';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3018') {
-        $details->model = 'PowerConnect 3524P';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3022') {
-        $details->model = 'PowerConnect M8024';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3024') {
-        $details->model = 'PowerConnect 8024F';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.3025') {
-        $details->model = 'PowerConnect M6348';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.4') {
-        $details->model = 'PowerConnect 5224';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10895.5') {
-        $details->model = 'PowerConnect 3048';
-        $details->type = 'switch';
-    }
-    if ($oid == '1.3.6.1.4.1.674.10899.100.1.1') {
-        $details->model = 'Dell 5100MP Projector';
-        $details->type = 'projector';
-    }
+    if ($oid == '1.3.6.1.4.1.674.10892.2') { $details->model = 'DRAC 4/P'; $details->type = 'remote access controller'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.1') { $details->model = 'PowerConnect 3024'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.1000') { $details->model = 'PowerConnect 5212'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3') { $details->model = 'PowerConnect 3248'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3000') { $details->model = 'PowerConnect 6024'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3002') { $details->model = 'PowerConnect 3324'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3003') { $details->model = 'PowerConnect 3348'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3004') { $details->model = 'PowerConnect 5324'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3005') { $details->model = 'PowerConnect 5316M'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3006') { $details->model = 'PowerConnect 3400'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3007') { $details->model = 'PowerConnect 3400'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3008') { $details->model = 'PowerConnect 3424'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3009') { $details->model = 'PowerConnect 3448P'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3010') { $details->model = 'PowerConnect 6224'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3011') { $details->model = 'PowerConnect 6248'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3013') { $details->model = 'PowerConnect 6248P'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3015') { $details->model = 'PowerConnect 6220M'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3018') { $details->model = 'PowerConnect 3524P'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3022') { $details->model = 'PowerConnect M8024'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3024') { $details->model = 'PowerConnect 8024F'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.3025') { $details->model = 'PowerConnect M6348'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.4') { $details->model = 'PowerConnect 5224'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10895.5') { $details->model = 'PowerConnect 3048'; $details->type = 'switch'; }
+    if ($oid == '1.3.6.1.4.1.674.10899.100.1.1') { $details->model = 'Dell 5100MP Projector'; $details->type = 'projector'; }
     $temp_model = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.674.10892.2.1.1.2.0");
     if (!empty($temp_model)) {
         $details->model = $temp_model;

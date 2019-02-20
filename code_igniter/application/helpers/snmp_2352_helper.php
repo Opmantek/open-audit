@@ -42,77 +42,23 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.2352.1.1') {
-        $details->model = 'SMS 1000';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.2') {
-        $details->model = 'SMS 500';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.3') {
-        $details->model = 'SMS 1800';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.4') {
-        $details->model = 'SMS 10000';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.5') {
-        $details->model = 'Smart Edge IDT';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.6') {
-        $details->model = 'ESP 200';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.7') {
-        $details->model = 'ESP 5000';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.8') {
-        $details->model = 'ESP 6000';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.9') {
-        $details->model = 'SMS 2800';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.10') {
-        $details->model = 'Smart Edge 800';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.11') {
-        $details->model = 'Smart Edge 400';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.12') {
-        $details->model = 'Smart Edge 100';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.13') {
-        $details->model = 'Smart Edge 1200';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.14') {
-        $details->model = 'Smart Metro 480';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.15') {
-        $details->model = 'Smart Edge 600';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.16') {
-        $details->model = 'SM 240';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.17') {
-        $details->model = 'SSR 8020';
-        $details->type = 'router';
-    }
-    if ($oid == '1.3.6.1.4.1.2352.1.18') {
-        $details->model = 'SSR 8010';
-        $details->type = 'router';
-    }
+    if ($oid == '1.3.6.1.4.1.2352.1.1') { $details->model = 'SMS 1000'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.2') { $details->model = 'SMS 500'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.3') { $details->model = 'SMS 1800'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.4') { $details->model = 'SMS 10000'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.5') { $details->model = 'Smart Edge IDT'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.6') { $details->model = 'ESP 200'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.7') { $details->model = 'ESP 5000'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.8') { $details->model = 'ESP 6000'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.9') { $details->model = 'SMS 2800'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.10') { $details->model = 'Smart Edge 800'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.11') { $details->model = 'Smart Edge 400'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.12') { $details->model = 'Smart Edge 100'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.13') { $details->model = 'Smart Edge 1200'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.14') { $details->model = 'Smart Metro 480'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.15') { $details->model = 'Smart Edge 600'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.16') { $details->model = 'SM 240'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.17') { $details->model = 'SSR 8020'; $details->type = 'router'; }
+    if ($oid == '1.3.6.1.4.1.2352.1.18') { $details->model = 'SSR 8010'; $details->type = 'router'; }
     return($details);
 };

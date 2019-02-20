@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.36.2.15.2.3') {
-        $details->model = 'AlphaServer 4100 5/30';
-        $details->type = 'computer';
-    }
+    if ($oid == '1.3.6.1.4.1.36.2.15.2.3') { $details->model = 'AlphaServer 4100 5/30'; $details->type = 'computer'; }
     return($details);
 };

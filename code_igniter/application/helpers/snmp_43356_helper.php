@@ -41,22 +41,10 @@
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.43356.1.1.1') {
-        $details->model = 'Mimosa B5';
-        $details->type = 'wireless link';
-    }
-    if ($oid == '1.3.6.1.4.1.43356.1.1.2') {
-        $details->model = 'Mimosa B5 Lite';
-        $details->type = 'wireless link';
-    }
-    if ($oid == '1.3.6.1.4.1.43356.1.1.3') {
-        $details->model = 'Mimosa A5';
-        $details->type = 'wireless link';
-    }
-    if ($oid == '1.3.6.1.4.1.43356.1.1.4') {
-        $details->model = 'Mimosa C5';
-        $details->type = 'wireless link';
-    }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.1') { $details->model = 'Mimosa B5'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.2') { $details->model = 'Mimosa B5 Lite'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.3') { $details->model = 'Mimosa A5'; $details->type = 'wireless link'; }
+    if ($oid == '1.3.6.1.4.1.43356.1.1.4') { $details->model = 'Mimosa C5'; $details->type = 'wireless link'; }
 
     # serial
     $details->serial = my_snmp_get($ip, $credentials, "1.3.6.1.4.1.43356.2.1.2.1.2.0");

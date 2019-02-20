@@ -42,9 +42,6 @@ if (!defined('BASEPATH')) {
 
 $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
-    if ($oid == '1.3.6.1.4.1.818.1.100.1.1 ') {
-        $details->model = 'LP33';
-        $details->type = 'pdu';
-    }
+    if ($oid == '1.3.6.1.4.1.818.1.100.1.1 ') { $details->model = 'LP33'; $details->type = 'pdu'; }
     return($details);
 };

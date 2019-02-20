@@ -44,70 +44,22 @@ $get_oid_details = function ($ip, $credentials, $oid) {
     $details = new stdClass();
     $details->type = 'computer';
     $details->model = '';
-    if ($oid == '1.3.6.1.4.1.8072.3.2.1') {
-        $details->os_group = 'Unix';
-        $details->os_family = 'HP UX 9';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.2') {
-        $details->os_group = 'SunOS';
-        $details->os_family = 'Sun OS4';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.3') {
-        $details->os_group = 'Solaris';
-        $details->os_family = 'Sun Solaris';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.4') {
-        $details->os_group = 'Unix';
-        $details->os_group = 'DEC OSF/1';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.5') {
-        $details->os_group = 'Unix';
-        $details->os_group = 'DEC Ultrix';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.6') {
-        $details->os_group = 'Unix';
-        $details->os_family = 'HP UX 10';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.7') {
-        $details->os_group = 'BSD';
-        $details->os_family = 'Net BSD';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.8') {
-        $details->os_group = 'BSD';
-        $details->os_family = 'Free BSD';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.9') {
-        $details->os_group = 'Irix';
-        $details->os_family = 'SGI Irix';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.10') {
-        $details->os_group = 'Linux';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.11') {
-        $details->os_group = 'BSD';
-        $details->os_family = 'BSDi';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.12') {
-        $details->os_group = 'BSD';
-        $details->os_family = 'Open BSD';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.13') {
-        $details->os_group = 'Windows';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.14') {
-        $details->os_group = 'Unix';
-        $details->os_family = 'HP UX 11';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.15') {
-        $details->os_group = 'Unix';
-        $details->os_family = 'IBM AIX';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.16') {
-        $details->os_group = 'Apple';
-        $details->os_family = 'Apple OSX';
-    }
-    if ($oid == '1.3.6.1.4.1.8072.3.2.255') {
-        $details->os_group = '';
-    }
+    $details->os_group = '';
+    if ($oid == '1.3.6.1.4.1.8072.3.2.1') { $details->os_group = 'Unix'; $details->os_family = 'HP UX 9'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.2') { $details->os_group = 'SunOS'; $details->os_family = 'Sun OS4'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.3') { $details->os_group = 'Solaris'; $details->os_family = 'Sun Solaris'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.4') { $details->os_group = 'Unix'; $details->os_group = 'DEC OSF/1'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.5') { $details->os_group = 'Unix'; $details->os_group = 'DEC Ultrix'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.6') { $details->os_group = 'Unix'; $details->os_family = 'HP UX 10'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.7') { $details->os_group = 'BSD'; $details->os_family = 'Net BSD'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.8') { $details->os_group = 'BSD'; $details->os_family = 'Free BSD'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.9') { $details->os_group = 'Irix'; $details->os_family = 'SGI Irix'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.10') { $details->os_group = 'Linux'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.11') { $details->os_group = 'BSD'; $details->os_family = 'BSDi'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.12') { $details->os_group = 'BSD'; $details->os_family = 'Open BSD'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.13') { $details->os_group = 'Windows'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.14') { $details->os_group = 'Unix'; $details->os_family = 'HP UX 11'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.15') { $details->os_group = 'Unix'; $details->os_family = 'IBM AIX'; }
+    if ($oid == '1.3.6.1.4.1.8072.3.2.16') { $details->os_group = 'Apple'; $details->os_family = 'Apple OSX'; }
     return($details);
 };
