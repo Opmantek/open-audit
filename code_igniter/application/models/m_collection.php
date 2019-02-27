@@ -1017,34 +1017,29 @@ class M_collection extends MY_Model
                     $other->ad_server = $received_other->ad_server;
                 }
 
-                if (!empty($other->nmap)) {
-                    foreach ($other->nmap as $key => $value) {
-                        if (isset($received_other->nmap->{$key})) {
-                            $other->nmap->{$key} = $received_other->nmap->{$key};
-                        }
-                    }
-                } else if (!empty($received_other->nmap)) {
+                if (empty($other->nmap) or count((array)$other->nmap) == 0) {
+                    $other->nmap = new stdClass();
+                }
+                if (!empty($received_other->nmap)) {
                     $other->nmap = new stdClass();
                     foreach ($received_other->nmap as $key => $value) {
                         $other->nmap->{$key} = $value;
                     }
                 }
 
-                if (!empty($other->match)) {
-                    foreach ($other->match as $key => $value) {
-                        if (isset($received_other->match->{$key})) {
-                            $other->match->{$key} = $received_other->match->{$key};
-                        }
-                    }
-                } else if (!empty($received_other->match)) {
+                if (empty($other->match) or count((array)$other->match) == 0) {
                     $other->match = new stdClass();
-                    foreach ($received_other->nmap as $key => $value) {
+                }
+                if (!empty($received_other->match)) {
+                    foreach ($received_other->match as $key => $value) {
                         $other->match->{$key} = $received_other->match->{$key};
                     }
                 }
 
                 unset($data->other);
                 $data->other = (string)json_encode($other);
+
+
                 if (!empty($received_other->subnet)) {
                     $data->description = 'Subnet - ' . $received_other->subnet;
                     if (stripos($received_other->subnet, '-') === false) {
