@@ -1164,7 +1164,7 @@ if (! function_exists('inputRead')) {
         if ($CI->config->config['internal_version'] >= 20160904) {
             $CI->load->model('m_users');
             $check_permission = true;
-            if ($CI->response->meta->collection == 'users' and $CI->user->id == $CI->response->meta->id and !empty($CI->response->meta->received_data) and $CI->response->meta->action == 'update') {
+            if ($CI->response->meta->collection == 'users' and $CI->user->id == $CI->response->meta->id and $CI->response->meta->action == 'update' and !empty($CI->response->meta->received_data)) {
                 $user_allowed_attributes = array('id', 'name', 'full_name', 'email', 'lang', 'password', 'dashboard_id');
                 $check_permission = false;
                 foreach ($CI->response->meta->received_data->attributes as $key => $value) {
@@ -1172,6 +1172,10 @@ if (! function_exists('inputRead')) {
                         $check_permission = true;
                     }
                 }
+            }
+            if ($CI->response->meta->collection == 'users' and $CI->user->id == $CI->response->meta->id and $CI->response->meta->action == 'read' ) {
+                # Always allow a user to READ their own object
+                $check_permission = false;
             }
             if ($check_permission) {
                 if ((!$CI->m_users->get_user_permission($CI->user->id, $CI->response->meta->collection, $permission[$CI->response->meta->action]) and $CI->response->meta->collection != 'errors')) {

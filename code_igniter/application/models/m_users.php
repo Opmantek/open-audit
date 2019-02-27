@@ -298,6 +298,10 @@ class M_users extends MY_Model
             return false;
         }
 
+        if ($table == 'users' and $CI->response->meta->id == $CI->user->id) {
+            return true;
+        }
+
         $sql = "SELECT $org_id_name AS org_id FROM $table WHERE $id_name = ?";
         $data = array(intval($id));
         $query = $this->db->query($sql, $data);
