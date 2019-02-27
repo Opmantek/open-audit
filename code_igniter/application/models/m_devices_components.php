@@ -221,6 +221,9 @@ class M_devices_components extends MY_Model
         if ($table == 'partition') {
                 $match_columns = array('name', 'hard_drive_index', 'mount_point', 'size');
         }
+        if ($table == 'policy') {
+                $match_columns = array('type', 'name', 'value', 'guid');
+        }
         if ($table == 'print_queue') {
                 $match_columns = array('device');
         }
@@ -293,6 +296,11 @@ class M_devices_components extends MY_Model
     {
         $create_alerts = $this->config->config['discovery_create_alerts'];
 
+        $table = '';
+        if (!empty($parameters->table)) {
+            $table = $parameters->table;
+        }
+
         if (empty($parameters) or empty($parameters->table) or empty($parameters->details) or empty($parameters->input)) {
             $message = '';
             if (empty($parameters->table)) {
@@ -324,7 +332,6 @@ class M_devices_components extends MY_Model
             return;
         }
 
-        $table = $parameters->table;
         if (!$this->db->table_exists($table)) {
             $log->message = 'Table supplied does not exist (' . $table . ') for '.@ip_address_from_db($details->ip).' ('.$name.')';
             $log->command_status = 'fail';
@@ -366,7 +373,6 @@ class M_devices_components extends MY_Model
         $log->file = 'm_devices_componenets';
         $log->function = 'process_component';
         $log->command = 'process audit';
-        unset($display);
         $log->message = '';
 
         $name = '';

@@ -621,6 +621,19 @@ if ((struser <> "") and (instr(lcase(local_net), lcase(strcomputer)) = 0)) then
                 if debugging > "0" then wscript.echo "Error Description:" & error_description end if
             end if
         end if
+
+        if (error_returned = 0) then
+            On Error Resume Next
+            Set objWMIService3 = wmiLocator.ConnectServer(strcomputer, "\root\rsop\computer",struser,strpass, "", "", wbemConnectFlagUseMaxWait)
+            error_returned = Err.Number
+            error_description = Err.Description
+            on error goto 0
+            if (error_returned <> 0) then
+                if debugging > "0" then wscript.echo "Problem authenticating (6.1) to " &  strcomputer end if
+                if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+                if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+            end if
+        end if
     end if ' pc_alive or ping_target = n
 else
     ' localhost or no credentials passed, therefore auditing as the user running this script
@@ -665,6 +678,21 @@ else
                 if debugging > "1" then wscript.echo "Error Description:" & error_description end if
             end if
         end if
+
+        if (error_returned = 0) then
+            On Error Resume Next
+            Set objWMIService3 = GetObject("winmgmts:\\" & strComputer & "\root\rsop\computer")
+            error_returned = Err.Number
+            error_description = Err.Description
+            on error goto 0
+            if (error_returned <> 0) then
+                if debugging > "0" then wscript.echo "Problem authenticating (10) to " &  strcomputer end if
+                if debugging > "0" then wscript.echo "Error Number:" & error_returned end if
+                if debugging > "0" then wscript.echo "Error Description:" & error_description end if
+            end if
+        end if
+
+
     end if ' pc_alive or ping_target = n
 end if
 
@@ -1536,6 +1564,122 @@ result.WriteText "          <install_directory>" & escape_xml(windows_install_di
 result.WriteText "          <active_directory_ou>" & escape_xml(windows_active_directory_ou) & "</active_directory_ou>" & vbcrlf
 result.WriteText "      </item>" & vbcrlf
 result.WriteText "  </windows>" & vbcrlf
+
+
+
+
+
+
+
+
+
+item = ""
+if debugging > "0" then wscript.echo "policy info" end if
+on error resume next
+Set colItems = objWMIService3.ExecQuery("Select * from RSOP_GPO")
+for each objItem in colItems
+    options = "{" & _
+    """AccessDenied"":"""   & objItem.AccessDenied   & """," & _
+    """Enabled"":"""        & objItem.Enabled        & """," & _
+    """FileSystemPath"":""" & objItem.FileSystemPath & """," & _
+    """FilterAllowed"":"""  & objItem.FilterAllowed  & """," & _
+    """FilterId"":"""       & objItem.FilterId       & """," & _
+    """GUIDName"":"""       & objItem.GUIDName       & """," & _
+    """Name"":"""           & objItem.Name           & """," & _
+    """Version"":"""        & objItem.Version        & """}"
+
+    item = item & "     <item>" & vbcrlf
+    item = item & "         <type>RSOP_GPO</type>" & vbcrlf
+    item = item & "         <name>" & escape_xml(objItem.Name) & "</name>" & vbcrlf
+    item = item & "         <value>" & escape_xml(objItem.Enabled) & "</value>" & vbcrlf
+    item = item & "         <guid>" & escape_xml(objItem.GUIDName) & "</guid>" & vbcrlf
+    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "     </item>" & vbcrlf
+next
+on error goto 0
+
+on error resume next
+Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingString")
+For Each objItem in colItems
+    options = "{" & _
+    """errorcode"":"""  & objItem.ErrorCode  & """," & _
+    """gpoid"":"""      & objItem.GPOID      & """," & _
+    """id"":"""         & objItem.ID         & """," & _
+    """keyname"":"""    & objItem.KeyName    & """," & _
+    """name"":"""       & objItem.Name       & """," & _
+    """precedence"":""" & objItem.Precedence & """," & _
+    """setting"":"""    & objItem.Setting    & """," & _
+    """somid"":"""      & objItem.SOMID      & """," & _
+    """status"":"""     & objItem.Status     & """}"
+
+    item = item & "     <item>" & vbcrlf
+    item = item & "         <type>RSOP_SecuritySettingString</type>" & vbcrlf
+    item = item & "         <name>" & escape_xml(objItem.KeyName) & "</name>" & vbcrlf
+    item = item & "         <value>" & escape_xml(objItem.Setting) & "</value>" & vbcrlf
+    item = item & "         <guid>" & escape_xml(objItem.ID) & "</guid>" & vbcrlf
+    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "     </item>" & vbcrlf
+next
+on error goto 0
+
+on error resume next
+Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingNumeric")
+For Each objItem in colItems
+    options = "{" & _
+    """errorcode"":"""  & objItem.ErrorCode  & """," & _
+    """gpoid"":"""      & objItem.GPOID      & """," & _
+    """id"":"""         & objItem.ID         & """," & _
+    """keyname"":"""    & objItem.KeyName    & """," & _
+    """name"":"""       & objItem.Name       & """," & _
+    """precedence"":""" & objItem.Precedence & """," & _
+    """setting"":"""    & objItem.Setting    & """," & _
+    """somid"":"""      & objItem.SOMID      & """," & _
+    """status"":"""     & objItem.Status     & """}"
+
+    item = item & "     <item>" & vbcrlf
+    item = item & "         <type>RSOP_SecuritySettingNumeric</type>" & vbcrlf
+    item = item & "         <name>" & escape_xml(objItem.KeyName) & "</name>" & vbcrlf
+    item = item & "         <value>" & escape_xml(objItem.Setting) & "</value>" & vbcrlf
+    item = item & "         <guid>" & escape_xml(objItem.ID) & "</guid>" & vbcrlf
+    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "     </item>" & vbcrlf
+next
+on error goto 0
+
+on error resume next
+Set colItems = objWMIService3.ExecQuery("Select * from RSOP_SecuritySettingBoolean")
+For Each objItem in colItems
+    options = "{" & _
+    """errorcode"":"""  & objItem.ErrorCode  & """," & _
+    """gpoid"":"""      & objItem.GPOID      & """," & _
+    """id"":"""         & objItem.ID         & """," & _
+    """keyname"":"""    & objItem.KeyName    & """," & _
+    """name"":"""       & objItem.Name       & """," & _
+    """precedence"":""" & objItem.Precedence & """," & _
+    """setting"":"""    & objItem.Setting    & """," & _
+    """somid"":"""      & objItem.SOMID      & """," & _
+    """status"":"""     & objItem.Status     & """}"
+
+    item = item & "     <item>" & vbcrlf
+    item = item & "         <type>RSOP_SecuritySettingBoolean</type>" & vbcrlf
+    item = item & "         <name>" & escape_xml(objItem.KeyName) & "</name>" & vbcrlf
+    item = item & "         <value>" & escape_xml(objItem.Setting) & "</value>" & vbcrlf
+    item = item & "         <guid>" & escape_xml(objItem.ID) & "</guid>" & vbcrlf
+    item = item & "         <options>" & replace(options, "\", "\/") & "</options>" & vbcrlf
+    item = item & "     </item>" & vbcrlf
+next
+on error goto 0
+
+if item > "" then
+    result.WriteText "  <policy>" & vbcrlf
+    result.WriteText item
+    result.WriteText "  </policy>" & vbcrlf
+end if
+item = ""
+
+
+
+
 
 
 

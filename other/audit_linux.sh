@@ -873,10 +873,74 @@ echo "	</sys>"
 } > "$xml_file"
 
 
+
+##################################
+# POLICY SECTION                 #
+##################################
+if [ "$debugging" -gt "0" ]; then
+	echo "Policy Info"
+fi
+	echo "	<policy>" >> "$xml_file"
+	IFS="$NEWLINEIFS"
+for policy in $(grep -v ^# /etc/login.defs 2>/dev/null | grep -v ^$); do
+	type="/etc/login.defs"
+	name=$(echo "$policy" | awk '{print $1}')
+	value=$(echo "$policy" | awk '{print $2}')
+	guid=$(echo "$policy" | awk '{print $1}')
+	options="{\"name\":\"$name\",\"value\":\"$value\"}"
+	{
+	echo "		<item>"
+	echo "			<type>$(escape_xml "$type")</type>"
+	echo "			<name>$(escape_xml "$name")</name>"
+	echo "			<value>$(escape_xml "$value")</value>"
+	echo "			<guid>$(escape_xml "$guid")</guid>"
+	echo "			<options>$(escape_xml "$options")</options>"
+	echo "		</item>"
+	} >> "$xml_file"
+done
+for policy in $(grep -v ^# /etc/pam.d/common-password 2>/dev/null | grep -v ^$ | sed 's/ \+ /\t/g' | tr -s '\t' '\t'); do
+	type="/etc/pam.d/common-password"
+	name=$(echo "$policy" | cut -f1)
+	enabled=$(echo "$policy" | cut -f2)
+	json_value=$(echo "$policy" | cut -f3)
+	value="$enabled : $json_value"
+	guid="$name-$enabled-$json_value"
+	options="{\"name\":\"$name\",\"enabled\":\"$enabled\",\"value\":\"$json_value\"}"
+	{
+	echo "		<item>"
+	echo "			<type>$(escape_xml "$type")</type>"
+	echo "			<name>$(escape_xml "$name")</name>"
+	echo "			<value>$(escape_xml "$value")</value>"
+	echo "			<guid>$(escape_xml "$guid")</guid>"
+	echo "			<options>$(escape_xml "$options")</options>"
+	echo "		</item>"
+	} >> "$xml_file"
+done
+for policy in $(grep -v ^# /etc/pam.d/system-auth 2>/dev/null | grep -v ^$ | sed 's/ \+ /\t/g' | tr -s '\t' '\t'); do
+	type="/etc/pam.d/system-auth"
+	name=$(echo "$policy" | cut -f1)
+	enabled=$(echo "$policy" | cut -f2)
+	json_value=$(echo "$policy" | cut -f3)
+	value="$enabled : $json_value"
+	guid="$name-$enabled-$json_value"
+	options="{\"name\":\"$name\",\"enabled\":\"$enabled\",\"value\":\"$json_value\"}"
+	{
+	echo "		<item>"
+	echo "			<type>$(escape_xml "$type")</type>"
+	echo "			<name>$(escape_xml "$name")</name>"
+	echo "			<value>$(escape_xml "$value")</value>"
+	echo "			<guid>$(escape_xml "$guid")</guid>"
+	echo "			<options>$(escape_xml "$options")</options>"
+	echo "		</item>"
+	} >> "$xml_file"
+done
+IFS="$ORIGIFS";
+echo "	</policy>" >> "$xml_file"
+
+
 ##################################
 # BIOS SECTION                   #
 ##################################
-
 if [ "$debugging" -gt "0" ]; then
 	echo "BIOS Info"
 fi

@@ -257,7 +257,7 @@ if (empty($data['mount_point'])) {
 
         <?php
         // the settings categories
-        $software = array('dns', 'file', 'log', 'netstat', 'share', 'pagefile', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
+        $software = array('dns', 'file', 'log', 'netstat', 'share', 'pagefile', 'policy', 'print_queue', 'route', 'user', 'user_group', 'variable', 'vm');
         $display_software = false;
         foreach ($software as $item) {
             if (isset($data[$item])) {
@@ -1580,6 +1580,53 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
 <?php
 }
 ?>
+
+
+
+<?php
+// Policies
+if (!empty($data['policy'])) { ?>
+    <div id="policy" class="section">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left"><?php echo __('Policies'); ?></h3>
+                <span class="glyphicon glyphicon-remove-circle pull-right myCloseButton" data-menuitem="policy"></span>
+                <span class="pull-right" style="padding-right:10px;"><?php echo htmlspecialchars(count($data['policy']), REPLACE_FLAGS, CHARSET); ?> items</span>
+            <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Value</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($data['policy'] as $row) {
+                        echo "                      <tr>\n";
+                        echo "                        <td>" . htmlspecialchars($row->type, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "                        <td>" . htmlspecialchars($row->name, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "                        <td>" . htmlspecialchars($row->value, REPLACE_FLAGS, CHARSET) . "</td>\n";
+                        echo "                          <td>";
+                        echo "<table class=\"table table-striped\"><thead><tr><th>Key</th><th>Value</th></tr></thead><tbody>";
+                        $options = json_decode($row->options);
+                        foreach ($options as $key => $value) {
+                            echo "<tr><td>" . $key . "</td><td>" . $value . "</td></tr>\n";
+                        }
+                        echo "</tbody></table>\n";
+                        echo "                          </td>";
+
+                        echo "                      </tr>\n";
+                    } ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+<?php } ?>
 
 
 <?php
