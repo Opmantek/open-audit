@@ -691,11 +691,11 @@ INSERT INTO `configuration` VALUES (6,'discovery_linux_script_directory','/tmp/'
 INSERT INTO `configuration` VALUES (7,'discovery_linux_script_permissions','700','text','y','system','2000-01-01 00:00:00','The permissions set on the audit_linux.sh script when it is copied to the target device.');
 INSERT INTO `configuration` VALUES (8,'discovery_use_dns','y','bool','y','system','2000-01-01 00:00:00','Should we use DNS for looking up the hostname and domain.');
 INSERT INTO `configuration` VALUES (9,'discovery_use_ipmi','y','bool','y','system','2000-01-01 00:00:00','Should we use ipmitool for discovering management ports if ipmitool is installed.');
-INSERT INTO `configuration` VALUES (10,'display_version','3.0.0','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
+INSERT INTO `configuration` VALUES (10,'display_version','3.0.1','text','n','system','2000-01-01 00:00:00','The version shown on the web pages.');
 INSERT INTO `configuration` VALUES (11,'download_reports','download','text','y','system','2000-01-01 00:00:00','Tells Open-AudIT to advise the browser to download as a file or display the csv, xml, json reports. Valid values are download and display.');
 INSERT INTO `configuration` VALUES (12,'graph_days','30','number','y','system','2000-01-01 00:00:00','The number of days to report on for the Enterprise graphs.');
 INSERT INTO `configuration` VALUES (13,'homepage','groups','text','y','system','2000-01-01 00:00:00','Any links to the default page should be directed to this endpoint.');
-INSERT INTO `configuration` VALUES (14,'internal_version','20190214','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
+INSERT INTO `configuration` VALUES (14,'internal_version','20190301','number','n','system','2000-01-01 00:00:00','The internal numerical version.');
 INSERT INTO `configuration` VALUES (15,'log_level','5','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT which severity of event (at least) should be logged.');
 INSERT INTO `configuration` VALUES (16,'log_retain_level_0','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 0.');
 INSERT INTO `configuration` VALUES (17,'log_retain_level_1','180','number','y','system','2000-01-01 00:00:00','Tells Open-AudIT how many days to keep logs with severity 1.');
@@ -2303,6 +2303,39 @@ CREATE TABLE `partition` (
 LOCK TABLES `partition` WRITE;
 /*!40000 ALTER TABLE `partition` DISABLE KEYS */;
 /*!40000 ALTER TABLE `partition` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `policy`
+--
+
+DROP TABLE IF EXISTS `policy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `policy` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `system_id` int(10) unsigned DEFAULT NULL,
+  `current` enum('y','n') NOT NULL DEFAULT 'y',
+  `last_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `first_seen` datetime NOT NULL DEFAULT '2000-01-01 00:00:00',
+  `type` varchar(100) NOT NULL DEFAULT '',
+  `name` text NOT NULL,
+  `value` varchar(100) NOT NULL DEFAULT '',
+  `guid` text NOT NULL,
+  `options` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `system_id` (`system_id`),
+  CONSTRAINT `policy_system_id` FOREIGN KEY (`system_id`) REFERENCES `system` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `policy`
+--
+
+LOCK TABLES `policy` WRITE;
+/*!40000 ALTER TABLE `policy` DISABLE KEYS */;
+/*!40000 ALTER TABLE `policy` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
