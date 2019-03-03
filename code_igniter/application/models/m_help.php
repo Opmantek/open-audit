@@ -210,7 +210,7 @@ class M_help extends MY_Model
         //     $data->database->tables->{$table->attributes->name} = intval($table->attributes->count);
         // }
 
-        $sql = "SELECT COUNT(*) AS `count`, `type`, `manufacturer`, `model`, `snmp_oid` FROM system GROUP BY type, manufacturer, model ORDER BY type, manufacturer, model";
+        $sql = "SELECT COUNT(*) AS `count`, `type`, `manufacturer`, `model`, `snmp_oid` FROM system GROUP BY type, manufacturer, model, snmp_oid ORDER BY type, manufacturer, model";
         $query = $this->db->query($sql);
         $data->devices = $query->result();
 
