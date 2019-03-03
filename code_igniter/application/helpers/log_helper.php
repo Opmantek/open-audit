@@ -199,7 +199,7 @@ if (! function_exists('discovery_log')) {
             $log->command_status = '';
         }
         if (empty($log->command_time_to_execute)) {
-            $log->command_time_to_execute = '';
+            $log->command_time_to_execute = '0';
         }
         if (empty($log->command_output)) {
             $log->command_output = '';
