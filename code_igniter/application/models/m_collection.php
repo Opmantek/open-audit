@@ -509,6 +509,12 @@ class M_collection extends MY_Model
             $data->options = json_encode($my_options);
         }
         if ($collection === 'discoveries') {
+            if (empty($data->devices_assigned_to_org)) {
+                unset($data->devices_assigned_to_org);
+            }
+            if (empty($data->devices_assigned_to_location)) {
+                unset($data->devices_assigned_to_location);
+            }
             if(substr($data->network_address, -1) !== '/'){
                 $data->network_address = $data->network_address.'/';
             }
