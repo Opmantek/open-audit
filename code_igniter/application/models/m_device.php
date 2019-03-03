@@ -644,12 +644,12 @@ class M_device extends MY_Model
             if (strtolower($match->match_mac_vmware) == 'n') {
                 #$log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' excluding VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+                $sql = $this->clean_sql($sql);
             } else {
                 #$log_message[] = 'Running match_mac (ip table) for: ' . $details->mac_address . ' including VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
+                $sql = $this->clean_sql($sql);
             }
-
-            $sql = $this->clean_sql($sql);
             $data = array("$details->mac_address");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -704,14 +704,12 @@ class M_device extends MY_Model
 
         if (strtolower($match->match_mac) == 'y' and empty($details->id) and !empty($details->mac_address)) {
             if (strtolower($match->match_mac_vmware) == 'n') {
-                #$log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' excluding VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND LOWER(network.mac) NOT LIKE '00:0c:29:%' AND network.mac NOT LIKE '00:50:56:%' AND network.mac NOT LIKE '00:05:69:%' AND LOWER(network.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+                $sql = $this->clean_sql($sql);
             } else {
-                #$log_message[] = 'Running match_mac (network table) for: ' . $details->mac_address . ' including VMware MACs';
                 $sql = "SELECT system.id FROM system LEFT JOIN network ON (system.id = network.system_id AND network.current = 'y') WHERE network.mac = ? AND system.status != 'deleted' LIMIT 1";
+                $sql = $this->clean_sql($sql);
             }
-
-            $sql = $this->clean_sql($sql);
             $data = array("$details->mac_address");
             $query = $this->db->query($sql, $data);
             $row = $query->row();
@@ -772,11 +770,12 @@ class M_device extends MY_Model
                     if (strtolower($match->match_mac_vmware) == 'n') {
                         #$log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' excluding VMware MACs';
                         $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND LOWER(ip.mac) NOT LIKE '00:0c:29:%' AND ip.mac NOT LIKE '00:50:56:%' AND ip.mac NOT LIKE '00:05:69:%' AND LOWER(ip.mac) NOT LIKE '00:1c:14:%' AND system.status != 'deleted' LIMIT 1";
+                            $sql = $this->clean_sql($sql);
                     } else {
                         #$log_message[] = 'Running match_mac (addresses) for: ' . $mac . ' including VMware MACs';
                         $sql = "SELECT system.id FROM system LEFT JOIN ip ON (system.id = ip.system_id AND ip.current = 'y') WHERE ip.mac = ? AND system.status != 'deleted' LIMIT 1";
+                        $sql = $this->clean_sql($sql);
                     }
-                    $sql = $this->clean_sql($sql);
                     $data = array("$mac");
                     $query = $this->db->query($sql, $data);
                     $row = $query->row();
@@ -1173,13 +1172,7 @@ class M_device extends MY_Model
             if (!empty($details->mac_address) and !empty($details->ip) and !empty($details->subnet)) {
                 $sql = "INSERT INTO ip (id, system_id, current, first_seen, last_seen, mac, net_index, ip, netmask, version, network, set_by) VALUES (NULL, ?, 'y', ?, ?, ?, '', ?, ?, '4', '', '')";
                 $sql = $this->clean_sql($sql);
-                $data = array(
-                    "$details->id",
-                    "$details->timestamp",
-                    "$details->timestamp",
-                    "$details->mac_address",
-                    "$details->ip",
-                    "$details->subnet");
+                $data = array("$details->id", "$details->timestamp", "$details->timestamp", "$details->mac_address", "$details->ip", "$details->subnet");
                 $query = $this->db->query($sql, $data);
             }
         }
@@ -1326,7 +1319,8 @@ class M_device extends MY_Model
         }
 
 
-        $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column";
+        $sql = "SELECT weight, db_column, MAX(timestamp) as `timestamp`, value, previous_value, source FROM edit_log WHERE system_id = ? AND `db_table` = 'system' GROUP BY db_column, weight, value, previous_value, source";
+        $sql = $this->clean_sql($sql);
         $data = array($details->id);
         $query = $this->db->query($sql, $data);
         $edit_log = $query->result();
@@ -1353,6 +1347,7 @@ class M_device extends MY_Model
                         $update->value = $value;
                         $update_device[] = $update;
                         $sql = "INSERT INTO edit_log VALUES (NULL, ?, ?, 'Data was changed', ?, ?, 'system', ?, ?, ?, ?)";
+                        $sql = $this->clean_sql($sql);
                         $data = array(0, intval($details->id), (string)$details->last_seen_by, intval($weight), (string)$key, (string)$details->timestamp, (string)$value, (string)$previous_value);
                         $query = $this->db->query($sql, $data);
                     } else {
@@ -1486,8 +1481,8 @@ class M_device extends MY_Model
         }
         $identification = '';
         $sql = "SELECT * FROM `system` WHERE `id` = ?";
-        $data = array(intval($id));
         $sql = $this->clean_sql($sql);
+        $data = array(intval($id));
         $query = $this->db->query($sql, $data);
         $result = $query->result();
         if (!empty($result)) {
@@ -1520,8 +1515,8 @@ class M_device extends MY_Model
         # Only resort to the Nmap ports if we have to
         if ($identification === '') {
             $sql = "SELECT * FROM nmap WHERE system_id = ? and current = 'y'";
-            $data = array(intval($id));
             $sql = $this->clean_sql($sql);
+            $data = array(intval($id));
             $query = $this->db->query($sql, $data);
             $nmap_ports = $query->result();
             if (!empty($nmap_ports)) {
@@ -1549,15 +1544,17 @@ class M_device extends MY_Model
         if (!empty($identification)) {
             if (empty($device->type) or $device->type === 'unknown') {
                 $sql = "UPDATE `system` SET `type` = 'unclassified', `icon` = 'unclassified', `identification` = '$identification' WHERE `id` = ?";
+                $sql = $this->clean_sql($sql);
             } else {
                 $sql = "UPDATE `system` SET `identification` = '$identification' WHERE `id` = ?";
+                $sql = $this->clean_sql($sql);
             }
         } else {
             $identification = 'No information could be retrieved.';
             $sql = "UPDATE `system` SET `identification` = '$identification' WHERE `id` = ?";
+            $sql = $this->clean_sql($sql);
         }
         $data = array(intval($id));
-        $sql = $this->clean_sql($sql);
         $query = $this->db->query($sql, $data);
         return true;
     }
