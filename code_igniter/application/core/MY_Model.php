@@ -479,7 +479,7 @@ class MY_Model extends CI_Model
 
             } else if ($collection == 'queries') {
                 $sql = "SELECT ANY_VALUE(queries.id) AS `id`, ANY_VALUE(queries.org_id) AS `org_id`, ANY_VALUE(queries.name) AS `name`, ANY_VALUE(queries.description) AS `description`, ANY_VALUE(queries.sql) AS `sql`, ANY_VALUE(queries.link) AS `link`, ANY_VALUE(queries.expose) AS `expose`, ANY_VALUE(queries.edited_by) AS `edited_by`, MAX(queries.edited_date) AS `edited_date`, ANY_VALUE(orgs.name) AS `org_name` FROM `queries` LEFT JOIN orgs ON (`queries`.org_id = orgs.id) " . $return['filter'] . " GROUP BY queries.name " . $return['sort'] . " " . $return['limit'];
-                $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) GROUP BY queries.name" . " " . $return['limit'];
+                $sql = "SELECT queries.*, orgs.name AS `org_name` FROM queries LEFT JOIN orgs ON (queries.org_id = orgs.id) GROUP BY queries.id " . $return['limit'];
 
             } elseif ($collection == 'reports') {
                 $sql = "(SELECT CONCAT('queries/',queries.id) as `link`, queries.type as `type`, queries.id as `id`, queries.name as `name`, queries.org_id as `org_id` FROM queries WHERE queries.org_id IN (" . $CI->user->org_list . ")) UNION ALL (SELECT CONCAT('summaries/',summaries.id) as `link`, summaries.type as `type`, summaries.id as `id`, summaries.name as `name`, summaries.org_id as `org_id` FROM summaries WHERE summaries.org_id IN (" . $CI->user->org_list . ")) ORDER BY `type`, `name`";
