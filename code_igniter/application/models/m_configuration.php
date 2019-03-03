@@ -135,7 +135,7 @@ class M_configuration extends MY_Model
         if (empty($edited_by)) {
             $edited_by = $this->user->full_name;
         }
-        if ($this->db->dbdriver === 'mysql') {
+        if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
             $sql = "/* m_configuration::update */ " . "UPDATE configuration SET value = ?, edited_by = ?, edited_date = NOW() WHERE id = ?";
         } else if ($this->db->dbdriver === 'mssql') {
             $sql = "/* m_configuration::update */ " . "UPDATE [configuration] SET value = ?, edited_by = ?, edited_date = getdatetime2() WHERE id = ?";
@@ -159,7 +159,7 @@ class M_configuration extends MY_Model
         stdlog($this->log);
 
         if ($this->db->table_exists('configuration')) {
-            if ($this->db->dbdriver === 'mysql') {
+            if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
                 $sql = "SELECT name, value FROM `configuration`";
             } else if ($this->db->dbdriver === 'mssql') {
                 $sql = "SELECT name, value FROM [configuration]";
@@ -205,7 +205,7 @@ class M_configuration extends MY_Model
 
         # set the timestamp
         
-        if ($this->db->dbdriver === 'mysql') {
+        if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
             $sql = "SELECT NOW() as `timestamp`";
         } else if ($this->db->dbdriver === 'mssql') {
             $sql = "SELECT CONVERT (smalldatetime, SYSDATETIME()) AS [timestamp]";

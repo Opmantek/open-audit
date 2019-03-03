@@ -382,7 +382,7 @@ class M_users extends MY_Model
         if (empty($this->config->config['access_token_count'])) {
             $this->config->config['access_token_count'] = 10;
         }
-        if ($this->db->dbdriver === 'mysql') {
+        if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
             $sql = "SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '" . $this->db->database . "' AND `TABLE_NAME` = 'users'";
             $query = $this->db->query($sql);
             $result = $query->result();
@@ -395,7 +395,7 @@ class M_users extends MY_Model
             $db_table = 'users';
         }
 
-        if ($this->db->dbdriver === 'mysql') {
+        if ($this->db->dbdriver === 'mysql' or $this->db->dbdriver === 'mysqli') {
             # See if we have a column named $column in the DB
             # SELECT * FROM COLUMNS WHERE `TABLE_SCHEMA` = 'openaudit' AND `TABLE_NAME` = 'bios' AND `COLUMN_NAME` = 'system_id';
             $sql = "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE `TABLE_SCHEMA` = '" . $this->db->database . "' AND `TABLE_NAME` = '" . $db_table . "' AND `COLUMN_NAME` = 'user_id'";
