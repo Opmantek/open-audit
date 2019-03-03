@@ -1552,19 +1552,6 @@ if (isset($data[$item]) and count($data[$item]) > 0) {
                 <tbody>
                     <?php
                     foreach ($data[$item] as $row) {
-                        if (intval($row->speed) < 1000) {
-                            $speed = number_format(intval($row->speed))." b/s";
-                        }
-                        if (intval($row->speed) >= 1000 and intval($row->speed) < 1000000) {
-                            $speed = number_format(intval($row->speed / 1000))." Kb/s";
-                        }
-                        if (intval($row->speed) >= 1000000 and intval($row->speed) < 1000000000) {
-                            $speed = number_format(intval($row->speed / 1000 / 1000))." Mb/s";
-                        }
-                        if (intval($row->speed) >= 1000000000) {
-                            $speed = number_format(intval($row->speed / 1000 / 1000 / 1000))." Gb/s";
-                        }
-
                         echo '<tr>';
                         foreach ($attributes as $key) {
                             echo '<td>' . htmlspecialchars($row->$key, REPLACE_FLAGS, CHARSET) . '</td>';
