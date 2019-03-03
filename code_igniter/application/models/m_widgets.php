@@ -233,7 +233,7 @@ class M_widgets extends MY_Model
                                 $this->sql_esc($widget->secondary) . " AS " . $this->sql_esc('description') . ", " . 
                                 $this->sql_esc($widget->ternary) . " AS " . $this->sql_esc('ternary') . ", " . 
                                 " COUNT(" . $this->sql_esc($widget->primary) . ") AS " . $this->sql_esc('count') . ", " . 
-                                " CAST((COUNT(*) / (SELECT COUNT(" . $this->sql_esc($widget->primary) . ") FROM " . $this->sql_esc($primary_table) . " WHERE " . $this->sql_esc('system.org_id') . "IN (" . $org_list . ")) * 100) AS unsigned) AS 'percent'" . 
+                                " CAST((COUNT(*) / (SELECT COUNT(" . $this->sql_esc($widget->primary) . ") FROM " . $this->sql_esc($primary_table) . " WHERE " . $this->sql_esc('system.org_id') . " IN (" . $org_list . ")) * 100) AS unsigned) AS 'percent'" . 
                                 " FROM " .  $this->sql_esc('system') . 
                                 " WHERE @filter GROUP BY " . $this->sql_esc($group_by);
             if (!empty($widget->where)) {
