@@ -51,6 +51,9 @@ $sql = "CREATE TABLE `policy` (
 $this->db->query($sql);
 $this->log_db($this->db->last_query());
 
+# oa_user_sessions
+$this->alter_table('oa_user_sessions', 'user_data', "TEXT AFTER last_activity");
+
 # set our versions
 $sql = "UPDATE `configuration` SET `value` = '20190301' WHERE `name` = 'internal_version'";
 $this->db->query($sql);
