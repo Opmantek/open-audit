@@ -70,8 +70,7 @@ class CI_DB_mysql_driver extends CI_DB {
 			$this->hostname .= ':'.$this->port;
 		}
 
-		#return @mysql_connect($this->hostname, $this->username, $this->password, TRUE);
-		return @mysqli_connect($this->hostname, $this->username, $this->password, TRUE);
+		return @mysql_connect($this->hostname, $this->username, $this->password, TRUE);
 	}
 
 	// --------------------------------------------------------------------
@@ -89,8 +88,7 @@ class CI_DB_mysql_driver extends CI_DB {
 			$this->hostname .= ':'.$this->port;
 		}
 
-		#return @mysql_pconnect($this->hostname, $this->username, $this->password);
-		return @mysqli_connect($this->hostname, $this->username, $this->password);
+		return @mysql_pconnect($this->hostname, $this->username, $this->password);
 	}
 
 	// --------------------------------------------------------------------
@@ -106,8 +104,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function reconnect()
 	{
-		#if (mysql_ping($this->conn_id) === FALSE)
-		if (mysqli_ping($this->conn_id) === FALSE)
+		if (mysql_ping($this->conn_id) === FALSE)
 		{
 			$this->conn_id = FALSE;
 		}
@@ -123,8 +120,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function db_select()
 	{
-		#return @mysql_select_db($this->database, $this->conn_id);
-		return @mysqli_select_db($this->conn_id, $this->database);
+		return @mysql_select_db($this->database, $this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -142,19 +138,16 @@ class CI_DB_mysql_driver extends CI_DB {
 		if ( ! isset($this->use_set_names))
 		{
 			// mysql_set_charset() requires PHP >= 5.2.3 and MySQL >= 5.0.7, use SET NAMES as fallback
-			#$this->use_set_names = (version_compare(PHP_VERSION, '5.2.3', '>=') && version_compare(mysql_get_server_info(), '5.0.7', '>=')) ? FALSE : TRUE;
-			$this->use_set_names = (version_compare(PHP_VERSION, '5.2.3', '>=') && version_compare(mysqli_get_server_info($this->conn_id), '5.0.7', '>=')) ? FALSE : TRUE;
+			$this->use_set_names = (version_compare(PHP_VERSION, '5.2.3', '>=') && version_compare(mysql_get_server_info(), '5.0.7', '>=')) ? FALSE : TRUE;
 		}
 
 		if ($this->use_set_names === TRUE)
 		{
-			#return @mysql_query("SET NAMES '".$this->escape_str($charset)."' COLLATE '".$this->escape_str($collation)."'", $this->conn_id);
-			return @mysqli_query($this->conn_id, "SET NAMES '".$this->escape_str($charset)."' COLLATE '".$this->escape_str($collation)."'");
+			return @mysql_query("SET NAMES '".$this->escape_str($charset)."' COLLATE '".$this->escape_str($collation)."'", $this->conn_id);
 		}
 		else
 		{
-			#return @mysql_set_charset($charset, $this->conn_id);
-			return @mysqli_set_charset($this->conn_id,$charset);
+			return @mysql_set_charset($charset, $this->conn_id);
 		}
 	}
 
@@ -183,8 +176,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	function _execute($sql)
 	{
 		$sql = $this->_prep_query($sql);
-		#return @mysql_query($sql, $this->conn_id);
-		return @mysqli_query($this->conn_id, $sql);
+		return @mysql_query($sql, $this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -306,33 +298,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 * @param	bool	whether or not the string will be used in a LIKE condition
 	 * @return	string
 	 */
- public function escape_str($str, $like = FALSE)
- {
-  if (is_array($str))
-  {
-   foreach ($str as $key => $val)
-      {
-    $str[$key] = $this->escape_str($val, $like);
-      }
-
-      return $str;
-     }
-
-  #$str = is_resource($this->conn_id) ? mysql_real_escape_string($str, $this->conn_id) : addslashes($str);
-  $str = is_resource($this->conn_id) ? mysqli_real_escape_string($this->conn_id, $str) : addslashes($str);
-
-  // escape LIKE condition wildcards
-  if ($like === TRUE)
-  {
-   return str_replace(array($this->_like_escape_chr, '%', '_'),
-      array($this->_like_escape_chr.$this->_like_escape_chr, $this->_like_escape_chr.'%', $this->_like_escape_chr.'_'),
-      $str);
-  }
-
-  return $str;
- }
- 
-	function escape_str_old($str, $like = FALSE)
+	function escape_str($str, $like = FALSE)
 	{
 		if (is_array($str))
 		{
@@ -344,17 +310,13 @@ class CI_DB_mysql_driver extends CI_DB {
 	   		return $str;
 	   	}
 
-		#if (function_exists('mysql_real_escape_string') AND is_resource($this->conn_id))
-		#elseif (function_exists('mysql_escape_string'))
-			#$str = mysql_real_escape_string($str, $this->conn_id);
-			#$str = mysql_escape_string($str);
-		if (function_exists('mysqli_real_escape_string') AND is_resource($this->conn_id))
+		if (function_exists('mysql_real_escape_string') AND is_resource($this->conn_id))
 		{
-			$str = mysqli_real_escape_string($this->conn_id, $str);
+			$str = mysql_real_escape_string($str, $this->conn_id);
 		}
-		elseif (function_exists('mysqli_escape_string'))
+		elseif (function_exists('mysql_escape_string'))
 		{
-			$str = mysqli_escape_string($this->conn_id, $str);
+			$str = mysql_escape_string($str);
 		}
 		else
 		{
@@ -380,8 +342,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function affected_rows()
 	{
-		#return @mysql_affected_rows($this->conn_id);
-		return @mysqli_affected_rows($this->conn_id);
+		return @mysql_affected_rows($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -394,8 +355,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function insert_id()
 	{
-		#return @mysql_insert_id($this->conn_id);
-		return @mysqli_insert_id($this->conn_id);
+		return @mysql_insert_id($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -494,8 +454,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function _error_message()
 	{
-		#return mysql_error($this->conn_id);
-		return mysqli_error($this->conn_id);
+		return mysql_error($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -508,8 +467,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function _error_number()
 	{
-		#return mysql_errno($this->conn_id);
-		return mysqli_errno($this->conn_id);
+		return mysql_errno($this->conn_id);
 	}
 
 	// --------------------------------------------------------------------
@@ -811,8 +769,7 @@ class CI_DB_mysql_driver extends CI_DB {
 	 */
 	function _close($conn_id)
 	{
-		#@mysql_close($conn_id);
-		@mysqli_close($conn_id);
+		@mysql_close($conn_id);
 	}
 
 }
