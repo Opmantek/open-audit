@@ -94,7 +94,7 @@ class CI_DB_cubrid_result extends CI_DB_result {
 			// provide a patch for it. primary_key property will be added
 			// in the next release.
 
-			// @todo later version of CUBRID will provide primary_key
+			// TODO: later version of CUBRID will provide primary_key
 			// property.
 			// When PK is defined in CUBRID, an index is automatically
 			// created in the db_index system table in the form of
