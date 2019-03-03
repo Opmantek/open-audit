@@ -358,6 +358,7 @@ foreach ($xml->children() as $input) {
     }
     unset($temp);
     # TODO - replace the ugly code below
+    # We don't want the usual id (int), name (string), attributes (object) list, we just want the attributes.
     $creds = array();
     foreach ($credentials as $credential) {
         $creds[] = $credential->attributes;
@@ -396,14 +397,6 @@ foreach ($xml->children() as $input) {
         $log->message .= ' (System ID ' . $device->id . ')';
     }
     discovery_log($log);
-
-    // On OSX we cannot run Nmap and get a UDP port result for 161 as 'You requested a scan type which requires root privileges.'
-    // So just set the snmp_status to true and attempt to snmp_audit the target device
-    // As at 2016-12-16 this no longer appears to be an issue. Commenting out below code.
-    // if (php_uname('s') == 'Darwin') {
-    //     $input->snmp_status = 'true';
-    //     $input->nmap_ports .= ',161/udp/snmp';
-    // }
 
     $log->message = 'SNMP Status is '.$input->snmp_status.' on '.$device->ip;
     if (!empty($device->id)) {
@@ -473,13 +466,8 @@ foreach ($xml->children() as $input) {
     $log->function = 'discoveries';
     $log->command_status = 'notice';
 
-    # SSH
+    # test for working SSH credentials
     if ($input->ssh_status == 'true') {
-        // $log->message = 'Testing SSH credentials for '.$device->ip;
-        // if (!empty($device->id)) {
-        //     $log->message .= ' (System ID ' . $device->id . ')';
-        // }
-        // discovery_log($log);
         $parameters = new stdClass();
         $parameters->ip = $device->ip;
         $parameters->system_id = '';
@@ -517,7 +505,7 @@ foreach ($xml->children() as $input) {
         discovery_log($log);
     }
 
-    # WMI
+    # test for working WMI credentials
     if ($input->wmi_status == 'true') {
         $log->message = 'Testing Windows credentials for ' . $device->ip;
         if (!empty($device->id)) {
