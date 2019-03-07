@@ -1294,6 +1294,10 @@ class M_device extends MY_Model
             }
         }
 
+        if (empty($details->discovery_id)) {
+            unset($details->discovery_id);
+        }
+
         # we check a few items when we are submitting an audit script result
         # if they are blank (previously submitted info is incomplete) we over write them
         $sql = "SELECT * FROM system WHERE id = ? LIMIT 1";
