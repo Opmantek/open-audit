@@ -1616,6 +1616,22 @@ if (!function_exists('snmp_audit')) {
             }
         }
 
+        if (!empty($details->mac_address) and !empty($details->ip) and empty($return_ips->item)) {
+            $new_ip = new stdclass();
+            $new_ip->net_index = 0;
+            $new_ip->ip = $details->ip;
+            $new_ip->mac = $details->mac_address;
+            $new_ip->netmask = '255.55.255.0';
+            if (!empty($details->netmask)) {
+                $new_ip->netmask = $details->netmask;
+            }
+            $new_ip->version = '4';
+            if ($new_ip->ip != '127.0.0.1' and $new_ip->ip != '127.0.1.1') {
+                $return_ips->item[] = $new_ip;
+            }
+            $new_ip = null;
+        }
+
         // Virtual Guests
         $guests = array();
         if ($vendor_oid == 6876) {
