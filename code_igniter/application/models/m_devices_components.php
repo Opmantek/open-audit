@@ -498,6 +498,14 @@ class M_devices_components extends MY_Model
             }
         }
 
+        ### MEMORY ###
+        if ((string)$table == 'memory') {
+            for ($i=0; $i<count($input); $i++) {
+                if (!is_int($input[$i]->speed)) {
+                    unset($input[$i]->speed);
+                }
+            }
+        }
         ### NETWORK ###
         if ((string)$table == 'network') {
             if ($details->type == 'computer' and $details->os_group != 'VMware') {
