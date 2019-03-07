@@ -74,33 +74,28 @@ class MY_Controller extends CI_Controller
                 redirect(uri_string());
             }
         }
-
         $this->load->helper('log');
         $log = new stdClass();
         $log->status = 'start';
         $log->function = 'MY_Controller::__construct';
         stdlog($log);
-        
         $this->benchmark->mark('code_start');
         $this->load->library('session');
         $this->load->model('m_configuration');
         #$this->m_configuration->load();
         $this->load->model('m_users');
         #$this->m_users->validate();
-
         $this->load->helper('input');
         $this->load->helper('output');
         $this->load->helper('error');
         $this->load->helper('json');
         $this->load->helper('security');
         $this->load->model('m_orgs');
-
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
         $entry->detail = 'Load models and helpers.';
         $GLOBALS['timer_log'][] = $entry;
-
         $timer_start = microtime(true);
         $this->m_configuration->load();
         $timer_end = microtime(true);
@@ -108,7 +103,6 @@ class MY_Controller extends CI_Controller
         $entry->time = ($timer_end - $timer_start);
         $entry->detail = 'Load configuration.';
         $GLOBALS['timer_log'][] = $entry;
-
         $timer_start = microtime(true);
         $this->m_users->validate();
         $timer_end = microtime(true);
@@ -116,7 +110,6 @@ class MY_Controller extends CI_Controller
         $entry->time = ($timer_end - $timer_start);
         $entry->detail = 'Validate User.';
         $GLOBALS['timer_log'][] = $entry;
-
         $timer_start = microtime(true);
         set_time_limit(600);
         $this->user->org_list = implode(',', $this->m_users->get_orgs($this->user->id));
@@ -152,12 +145,26 @@ class MY_Controller extends CI_Controller
                 stdlog($log);
             }
         }
-
         $timer_end = microtime(true);
         $entry = new stdClass();
         $entry->time = ($timer_end - $timer_start);
         $entry->detail = 'Load user details.';
         $GLOBALS['timer_log'][] = $entry;
+    }
+
+    public function log_access()
+    {
+        $log = new stdClass();
+        $log->object = $this->response->meta->collection;
+        $log->function = strtolower($this->response->meta->collection) . '::' . strtolower($this->response->meta->action);
+        $log->severity = 6;
+        $log->status = 'success';
+        $log->summary = 'finish';
+        $log->type = 'access';
+        if ($this->config->config['log_level'] == 7) {
+            $log->detail = json_encode($this->response->meta);
+        }
+        stdLog($log);
     }
 }
 // End of file MY_Controller.php
