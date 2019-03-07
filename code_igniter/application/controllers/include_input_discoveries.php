@@ -755,7 +755,7 @@ foreach ($xml->children() as $input) {
     }
 
     // update any ip addresses retrieved by SNMP
-    if (!empty($ip) and is_array($ip) and count($ip) > 0) {
+    if (!empty($ip) and is_array($ip->item) and count($ip->item) > 0) {
         $log->ip = $device->ip;
         $log->discovery_id = $device->discovery_id;
         $log->file = 'include_input_discoveries';
@@ -767,7 +767,7 @@ foreach ($xml->children() as $input) {
         $parameters = new stdClass();
         $parameters->table = 'ip';
         $parameters->details = $device;
-        $parameters->input = $ip;
+        $parameters->input = $ip->item;
         $parameters->log = $log;
         $this->m_devices_components->process_component($parameters);
     }
