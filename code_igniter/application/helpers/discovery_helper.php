@@ -735,7 +735,7 @@ if (!function_exists('process_scan')) {
         }
 
         // update any ip addresses retrieved by SNMP
-        if (!empty($ip) and is_array($ip) and count($ip) > 0) {
+        if (!empty($ip) and is_array($ip->item) and count($ip->item) > 0) {
             $log->ip = $device->ip;
             $log->discovery_id = $device->discovery_id;
             $log->file = 'discovery_helper';
@@ -748,7 +748,7 @@ if (!function_exists('process_scan')) {
             $parameters = new stdClass();
             $parameters->table = 'ip';
             $parameters->details = $device;
-            $parameters->input = $ip;
+            $parameters->input = $ip->item;
             $parameters->log = $log;
             $CI->m_devices_components->process_component($parameters);
         }
