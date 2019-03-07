@@ -2613,6 +2613,28 @@ if [ -e "/etc/mysql/mysql.conf.d/mysqld.cnf" ]; then
 			echo "			<type>database</type>"
 			echo "			<parent_name>MySQL</parent_name>"
 			echo "			<name>$(escape_xml "$i")</name>"
+			echo "			<description></description>"
+			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+			echo "			<instance>MySQL</instance>"
+			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+			echo "			<size>$(escape_xml "$size")</size>"
+			echo "		</item>"
+			} >> "$xml_file"
+		done
+	fi
+fi
+
+if [ -e "/etc/my.cnf" ]; then
+	datadir=$(grep datadir /etc/my.cnf 2>/dev/null | cut -d= -f2)
+	if [ -n "$datadir" ]; then
+		for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+			size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+			{
+			echo "		<item>"
+			echo "			<type>database</type>"
+			echo "			<parent_name>MySQL</parent_name>"
+			echo "			<name>$(escape_xml "$i")</name>"
+			echo "			<description></description>"
 			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
 			echo "			<instance>MySQL</instance>"
 			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
@@ -2633,6 +2655,7 @@ if [ -e "/etc/mysql/my.cnf" ]; then
 			echo "			<type>database</type>"
 			echo "			<parent_name>MySQL</parent_name>"
 			echo "			<name>$(escape_xml "$i")</name>"
+			echo "			<description></description>"
 			echo "			<id_internal>$(escape_xml "$i")</id_internal>"
 			echo "			<instance>MySQL</instance>"
 			echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
@@ -2641,6 +2664,25 @@ if [ -e "/etc/mysql/my.cnf" ]; then
 			} >> "$xml_file"
 		done
 	fi
+fi
+
+datadir=$(grep -R datadir /etc/mysql/mariadb.conf.d/ | cut -d= -f2 | cut -d" " -f2)
+if [ -n "$datadir" ]; then
+	for i in $(find "$datadir" -type d | rev | cut -d/ -f1 | rev); do
+		size=$(ls -lk "$datadir"/"$i" | awk '{ total += $5 }; END { print total/1024/1024 }')
+		{
+		echo "		<item>"
+		echo "			<type>database</type>"
+		echo "			<parent_name>MySQL</parent_name>"
+		echo "			<name>$(escape_xml "$i")</name>"
+		echo "			<description></description>"
+		echo "			<id_internal>$(escape_xml "$i")</id_internal>"
+		echo "			<instance>MySQL</instance>"
+		echo "			<path>$(escape_xml "$datadir")/$(escape_xml "$i")</path>"
+		echo "			<size>$(escape_xml "$size")</size>"
+		echo "		</item>"
+		} >> "$xml_file"
+	done
 fi
 
 for i in $(apachectl -S 2>/dev/null  | grep port); do
