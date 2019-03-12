@@ -774,7 +774,7 @@ foreach ($xml->children() as $input) {
 
     // create or update the entry in the ip table from non-SNMP data
     //     so our 'networks' endpoint and functions can find the device
-    if (empty($ip)) {
+    if (empty($ip->item)) {
         $log->command = '';
         $log->message = 'Processing found ip addresses (non-snmp) for ' . $device->ip . ' (System ID ' . $device->id . ')';
         discovery_log($log);
