@@ -781,7 +781,8 @@ if (! function_exists('ssh_audit')) {
         $commands = array(
             'hostname' => 'hostname -s 2>/dev/null',
             'domain' => 'hostname -d 2>/dev/null',
-            'fqdn' => 'hostname -f 2>/dev/null | grep -F . 2>/dev/null',
+            # NOTE - removed below because on Solaris this sets the hostname
+            #'fqdn' => 'hostname -f 2>/dev/null | grep -F . 2>/dev/null',
             'solaris_domain' => 'domainname 2>/dev/null',
 
             'osx_serial' => 'system_profiler SPHardwareDataType 2>/dev/null | grep "Serial Number (system):" | cut -d: -f2 | sed "s/^ *//g"',
