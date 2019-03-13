@@ -469,7 +469,7 @@ local_net = local_net & " " & local_hostname & " "
 if debugging > "1" then
     wscript.echo "LocalNet: " & local_net
     wscript.echo "Target: " & strcomputer
-    if (instr(lcase(local_net), lcase(strcomputer)) <> 0) then
+    if (instr(lcase(local_net), lcase(strcomputer) & " ") <> 0) then
     wscript.echo "Match: Auditing localhost."
     else
     wscript.echo "No Match: Auditing remote host."
