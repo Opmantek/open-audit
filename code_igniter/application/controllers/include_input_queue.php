@@ -87,7 +87,7 @@ if ($queue == 'scans' and empty($id)) {
     $sleep = 30;
     $this->response->data = array();
     # So we can output back to the execute script, and continue processing
-    # NOTE - does not seem to wkr for Mojo::UA
+    # NOTE - does not seem to work for Mojo::UA
     header('Content-type: text/html; charset=utf-8');
     ob_start();
     echo json_encode($this->response);
