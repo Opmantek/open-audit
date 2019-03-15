@@ -1624,7 +1624,11 @@ foreach ($xml->children() as $input) {
             }
         }
     } else {
-        $log->message = 'No audit script result to process';
+        if (php_uname('s') == 'Windows NT' and exec('whoami') == 'nt authority\system') {
+            $log->message = 'Audit result incoming from target.';
+        } else {
+            $log->message = 'No audit script result to process';
+        }
         discovery_log($log);
     }
     $this->m_device->set_identification($device->id);
