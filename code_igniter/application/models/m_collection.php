@@ -872,43 +872,21 @@ class M_collection extends MY_Model
 
         if ($collection === 'discoveries') {
 
+            $all_options = array('ping', 'service_version', 'filtered', 'timeout', 'timing', 'nmap_tcp_ports', 'nmap_udp_ports', 'tcp_ports', 'udp_ports', 'exclude_tcp_ports', 'exclude_udp_ports', 'exclude_ip', 'ssh_ports');
+
             if(!empty($data->network_address) and substr($data->network_address, -1) !== '/'){
                 $data->network_address = $data->network_address.'/';
             }
+
+            $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
+            $result = $query->result();
+            $db_discovery = $result[0];
+            $other = json_decode($db_discovery->other);
 
             if (!empty($data->other)) {
                 $received_other = new stdClass();
                 foreach ($data->other as $key => $value) {
                         $received_other->$key = $value;
-                }
-
-                if (!empty($received_other->nmap->discovery_scan_option_id) and !is_numeric($received_other->nmap->discovery_scan_option_id)) {
-                    log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
-                    $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (non-numeric) supplied.');
-                    $data->other->subnet = '';
-                    if ($CI->response->meta->format == 'screen') {
-                        redirect('/discoveries');
-                    } else {
-                        output($CI->response);
-                        exit();
-                    }
-                }
-
-                if (!empty($received_other->nmap->discovery_scan_option_id)) {
-                    $select = "SELECT count(id) FROM discovery_scan_options WHERE id = ?";
-                    $data_array = array(intval($received_other->nmap->discovery_scan_option_id));
-                    $query = $this->db->query($select, $data_array);
-                    $result = $query->result();
-                    if (empty($result)) {
-                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
-                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
-                        if ($CI->response->meta->format == 'screen') {
-                            redirect('/discoveries');
-                        } else {
-                            output($CI->response);
-                            exit();
-                        }
-                    }
                 }
 
                 if (!empty($received_other->subnet) and !preg_match('/^[\d,\.,\/,-]*$/', $received_other->subnet)) {
@@ -921,6 +899,60 @@ class M_collection extends MY_Model
                         output($CI->response);
                         exit();
                     }
+                }
+
+                $discovery_scan_options = '';
+                if (isset($received_other->nmap->discovery_scan_option_id)) {
+                    if (!is_numeric($received_other->nmap->discovery_scan_option_id) and $received_other->nmap->discovery_scan_option_id != '') {
+                        log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (non-numeric)');
+                        $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (non-numeric) supplied.');
+                        $data->other->subnet = '';
+                        if ($CI->response->meta->format == 'screen') {
+                            redirect('/discoveries');
+                        } else {
+                            output($CI->response);
+                            exit();
+                        }
+                    } else {
+                        if ($received_other->nmap->discovery_scan_option_id != '' and $received_other->nmap->discovery_scan_option_id != '0') {
+                            $select = "SELECT * FROM discovery_scan_options WHERE id = ?";
+                            $data_array = array(intval($received_other->nmap->discovery_scan_option_id));
+                            $query = $this->db->query($select, $data_array);
+                            $result = $query->result();
+                            if (empty($result)) {
+                                log_error('ERR-0024', 'm_collection::create (discoveries)', 'Invalid field data supplied for discovery_scan_option_id (invalid value)');
+                                $this->session->set_flashdata('error', 'Discovery could not be updated - invalid discovery_scan_option_id (invalid value) supplied.');
+                                if ($CI->response->meta->format == 'screen') {
+                                    redirect('/discoveries');
+                                } else {
+                                    output($CI->response);
+                                    exit();
+                                }
+                            } else {
+                                $discovery_scan_options = $result[0];
+                            }
+                        }
+                    }
+                }
+
+                # If any of the below are changed, we're not using a default
+                if (!empty($received_other->nmap->filtered)) {
+                    $received_other->nmap->discovery_scan_option_id = '0';
+                }
+                if (!empty($received_other->nmap->ping)) {
+                    $received_other->nmap->discovery_scan_option_id = '0';
+                }
+                if (!empty($received_other->nmap->service_version)) {
+                    $received_other->nmap->discovery_scan_option_id = '0';
+                }
+                if (!empty($received_other->nmap->timing)) {
+                    $received_other->nmap->discovery_scan_option_id = '0';
+                }
+                if (!empty($received_other->nmap->nmap_tcp_ports)) {
+                    $received_other->nmap->discovery_scan_option_id = '0';
+                }
+                if (!empty($received_other->nmap->nmap_udp_ports)) {
+                    $received_other->nmap->discovery_scan_option_id = '0';
                 }
 
                 if (!empty($received_other->nmap->tcp_ports)) {
@@ -937,6 +969,7 @@ class M_collection extends MY_Model
                         }
                     } else {
                         // Valid TCP ports
+                        $received_other->nmap->discovery_scan_option_id = '0';
                     }
                 }
 
@@ -954,6 +987,7 @@ class M_collection extends MY_Model
                         }
                     } else {
                         // Valid UDP ports
+                        $received_other->nmap->discovery_scan_option_id = '0';
                     }
                 }
 
@@ -1008,45 +1042,9 @@ class M_collection extends MY_Model
                     }
                 }
 
-                $query = $this->db->query("SELECT * FROM discoveries WHERE id = ?", array($data->id));
-                $result = $query->result();
-                $other = json_decode($result[0]->other);
-
                 // top level - subnet, ad_domain, ad_server
                 if (!empty($received_other->subnet)) {
                     $other->subnet = $received_other->subnet;
-                }
-                if (!empty($received_other->ad_domain)) {
-                    $other->ad_domain = $received_other->ad_domain;
-                }
-                if (!empty($received_other->ad_server)) {
-                    $other->ad_server = $received_other->ad_server;
-                }
-
-                if (empty($other->nmap) or count((array)$other->nmap) == 0) {
-                    $other->nmap = new stdClass();
-                }
-                if (!empty($received_other->nmap)) {
-                    $other->nmap = new stdClass();
-                    foreach ($received_other->nmap as $key => $value) {
-                        $other->nmap->{$key} = $value;
-                    }
-                }
-
-                if (empty($other->match) or count((array)$other->match) == 0) {
-                    $other->match = new stdClass();
-                }
-                if (!empty($received_other->match)) {
-                    foreach ($received_other->match as $key => $value) {
-                        $other->match->{$key} = $received_other->match->{$key};
-                    }
-                }
-
-                unset($data->other);
-                $data->other = (string)json_encode($other);
-
-
-                if (!empty($received_other->subnet)) {
                     $data->description = 'Subnet - ' . $received_other->subnet;
                     if (stripos($received_other->subnet, '-') === false) {
                         $this->load->helper('network');
@@ -1059,8 +1057,44 @@ class M_collection extends MY_Model
                     }
                 }
                 if (!empty($received_other->ad_domain)) {
+                    $other->ad_domain = $received_other->ad_domain;
                     $data->description = 'Active Directory - ' . $received_other->ad_domain;
                 }
+
+                if (!empty($received_other->ad_server)) {
+                    $other->ad_server = $received_other->ad_server;
+                }
+
+                if (empty($other->nmap) or count((array)$other->nmap) == 0) {
+                    $other->nmap = new stdClass();
+                }
+
+                if (!empty($received_other->nmap)) {
+                    foreach ($received_other->nmap as $key => $value) {
+                        $other->nmap->{$key} = $value;
+                    }
+                }
+
+                if (empty($other->match) or count((array)$other->match) == 0) {
+                    $other->match = new stdClass();
+                }
+
+                if (!empty($received_other->match)) {
+                    foreach ($received_other->match as $key => $value) {
+                        $other->match->{$key} = $received_other->match->{$key};
+                    }
+                }
+
+                if (!empty($discovery_scan_options)) {
+                    # We have set a discovery options - reset all
+                    foreach ($all_options as $field) {
+                        $other->nmap->{$field} = $discovery_scan_options->{$field};
+                    }
+                }
+
+                unset($data->other);
+                $data->other = (string)json_encode($other);
+
             }
             if(!empty($data->killed)){
                 unset($data->killed);
